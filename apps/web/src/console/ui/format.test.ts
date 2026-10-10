@@ -81,6 +81,7 @@ describe("computeKpis", () => {
     expect(k.avgDurationMs).toBe(2000);
     expect(k.criticalFailures).toBe(0);
     expect(k.simulatedExcluded).toBe(1);
+    expect(k.outcomes).toEqual({ escalated: 1 });
     expect(k.datasets.map((d) => d.dataset)).toEqual(["public", "fixtures", "generated"]);
     expect(k.datasets[1]).toMatchObject({ known: 2, cases: 1, evaluated: 0, passRate: null });
     expect(k.datasets[0].passRate).toBe(0.5);

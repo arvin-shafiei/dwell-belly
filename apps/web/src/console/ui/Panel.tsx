@@ -24,7 +24,7 @@ export function Panel({
   return (
     <section
       className={cx(
-        "flex min-w-0 flex-col overflow-hidden rounded-lg border border-white/[0.07] bg-rv-card shadow-[0_1px_2px_rgba(0,0,0,0.25)]",
+        "flex min-w-0 flex-col overflow-hidden rounded-lg border border-white/[0.07] bg-rv-card",
         className,
       )}
     >
@@ -77,7 +77,7 @@ export function KpiCard({
   return (
     <div
       title={title}
-      className="flex min-w-0 flex-col gap-2 rounded-lg border border-white/[0.07] bg-rv-card px-4 py-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.25)]"
+      className="flex min-w-0 flex-col gap-2 rounded-lg border border-white/[0.07] bg-rv-card px-4 py-3.5"
     >
       <div className="flex items-center gap-2 text-[11px] font-medium tracking-[0.06em] text-white/50 uppercase">
         {icon && <span className="text-white/35">{icon}</span>}

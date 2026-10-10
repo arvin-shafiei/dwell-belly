@@ -1,6 +1,6 @@
 "use client";
-// "Execute workflow" primary button with a case picker popover. POSTs /api/console/execute and
-// calls onExecuted with the new execution (default: open it in the Executions tab).
+// "Run a case" primary button with a case picker. POSTs /api/console/execute and calls
+// onExecuted with the new run (default: open it in the Case runs tab).
 import { useEffect, useId, useRef, useState } from "react";
 import { consoleApi, useAction, useCases } from "../useApi";
 import type { ExecutionRecord } from "../types";
@@ -11,7 +11,7 @@ import { IconChevronDown, IconPlay } from "./icons";
 import { cx } from "./cx";
 
 export function ExecuteButton({
-  label = "Execute workflow",
+  label = "Run a case",
   defaultCaseId,
   onExecuted,
 }: {
@@ -74,15 +74,15 @@ export function ExecuteButton({
       {open && (
         <div
           role="dialog"
-          aria-label="Choose a case to execute"
-          className="absolute top-full right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-lg border border-white/10 bg-rv-panel shadow-2xl shadow-black/50"
+          aria-label="Pick a case to run"
+          className="absolute top-full right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-lg border border-white/10 bg-rv-panel shadow-lg shadow-black/30"
         >
           <div className="border-b border-white/[0.07] p-2">
             <input
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search cases…"
+              placeholder="Find a case…"
               aria-controls={listId}
               className="h-8 w-full rounded-md border border-white/10 bg-rv-canvas px-2.5 text-[13px] text-white placeholder:text-white/35 focus:border-rv-orange/60 focus:outline-none"
             />
@@ -113,22 +113,15 @@ export function ExecuteButton({
                   picked === c.id ? "bg-rv-orange/12 text-white" : "text-white/75 hover:bg-white/[0.04]",
                 )}
               >
-                <span className="font-mono text-[12px]">{c.id}</span>
-                <span className="min-w-0 flex-1 truncate text-white/45">{c.title ?? ""}</span>
-                <span className="text-[11px] text-white/35">{c.dataset}</span>
+                <span className="min-w-0 flex-1 truncate">{c.title ? stripCaseNo(c.title) : c.id}</span>
+                <span className="shrink-0 text-[11px] text-white/30">{c.id}</span>
               </button>
             ))}
           </div>
-          {exec.error && <ErrorState compact title="Execute failed" error={exec.error} />}
+          {exec.error && <ErrorState compact title="That case didn't start" error={exec.error} />}
           <div className="flex items-center justify-between gap-2 border-t border-white/[0.07] px-3 py-2">
             <span className="truncate text-xs text-white/45">
-              {picked ? (
-                <>
-                  Run <span className="font-mono text-white/80">{picked}</span> through the real agent
-                </>
-              ) : (
-                "Pick a case"
-              )}
+              {picked ? (pickedCase?.title ? stripCaseNo(pickedCase.title) : picked) : "Pick a case"}
             </span>
             <Button size="sm" variant="primary" disabled={!picked} loading={exec.pending} onClick={run}>
               Run
@@ -138,4 +131,9 @@ export function ExecuteButton({
       )}
     </div>
   );
+}
+
+/** "Case 003: Driver cannot access…" -> "Driver cannot access…". */
+export function stripCaseNo(title: string): string {
+  return title.replace(/^case\s*[\w-]+\s*:\s*/i, "");
 }

@@ -6,11 +6,12 @@ import { createPortal } from "react-dom";
 export const TAB_IDS = ["overview", "workflows", "executions", "evidence", "city"] as const;
 export type TabId = (typeof TAB_IDS)[number];
 
+/** What a person reads. Ids stay internal (URLs, code). */
 export const TAB_TITLES: Record<TabId, string> = {
-  overview: "Overview",
-  workflows: "Workflows",
-  executions: "Executions",
-  evidence: "Evidence",
+  overview: "Home",
+  workflows: "Playbooks",
+  executions: "Case runs",
+  evidence: "Results",
   city: "City",
 };
 
@@ -47,9 +48,10 @@ export function useConsole(): ConsoleContextValue {
 }
 
 /**
- * Render buttons into the header's right-hand action area (the "Execute" slot).
+ * Render buttons into the header's right-hand action area.
  *   <HeaderActions><ExecuteButton /></HeaderActions>
  * Only the active tab is mounted, so each tab owns the slot while visible.
+ * Rule: ONE primary button per page; anything else goes behind "Advanced" in the tab.
  */
 export function HeaderActions({ children }: { children: ReactNode }) {
   const ctx = useContext(ConsoleContext);

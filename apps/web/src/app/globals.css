@@ -40,12 +40,11 @@ body {
   --color-rv-amber: #f5a524;
   --color-rv-blue: #5aa9ff;
   --color-rv-violet: #a78bfa;
-  --font-console: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-console: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 .console-root {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-feature-settings: "cv11", "ss01";
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background: #1f1f23;
   color: #e7e7ea;
   color-scheme: dark;
@@ -93,13 +92,9 @@ body {
   animation: rv-pulse 1.4s ease-in-out infinite;
 }
 
-@keyframes rv-shimmer {
-  0% { background-position: -200px 0; }
-  100% { background-position: 200px 0; }
-}
+/* Flat loading placeholder (no shimmer). */
 .rv-skeleton {
-  background: linear-gradient(90deg, #2a2a30 0, #34343b 60px, #2a2a30 120px);
-  background-size: 400px 100%;
-  animation: rv-shimmer 1.2s linear infinite;
+  background: #303036;
   border-radius: 4px;
+  animation: rv-pulse 1.6s ease-in-out infinite;
 }

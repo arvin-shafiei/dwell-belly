@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx";
+import { plainDataset, plainGate, plainStatus } from "../../ui/plain";
 
 export type Tone = "neutral" | "orange" | "green" | "red" | "amber" | "blue" | "violet";
 
@@ -69,41 +70,41 @@ export function StatusDot({
       role={title ? "img" : undefined}
       aria-label={title}
       className={cx("inline-block shrink-0 rounded-full", DOT[tone], pulse && "rv-pulse")}
-      style={{ width: size, height: size, boxShadow: tone === "neutral" ? undefined : "0 0 0 3px rgba(255,255,255,0.04)" }}
+      style={{ width: size, height: size }}
     />
   );
 }
 
 /**
- * Mandatory label for anything with `simulated: true` (city/mock runs). PRD J0: simulated data
- * must never pass as real, so render this wherever such a record appears.
+ * Mandatory label for anything with `simulated: true` (city-made cases). PRD J0: these must never
+ * pass as real, so render this wherever such a record appears. Reads "Practice case".
  */
 export function SimulatedBadge({ className }: { className?: string }) {
   return (
     <span
-      title="Simulated: not produced by the real agent. Not evidence."
+      title="Made from the city for practice. Not a live result."
       className={cx(
-        "inline-flex h-5 shrink-0 items-center rounded border border-dashed border-rv-amber/70 bg-rv-amber/10 px-1.5 text-[10px] leading-none font-semibold tracking-[0.08em] text-rv-amber uppercase",
+        "inline-flex h-5 shrink-0 items-center rounded border border-rv-amber/50 px-1.5 text-[11px] leading-none font-medium text-rv-amber",
         className,
       )}
     >
-      Simulated
+      Practice case
     </span>
   );
 }
 
-/** Marks data read from real runner outputs (traces, ANSWER.md, eval results). */
+/** Marks real results from the live agent. Reads "Live". */
 export function RealBadge({ className, title }: { className?: string; title?: string }) {
   return (
     <span
-      title={title ?? "Real data: read from runner outputs and eval results."}
+      title={title ?? "Real results from the live agent."}
       className={cx(
-        "inline-flex h-5 shrink-0 items-center gap-1 rounded bg-rv-green/10 px-1.5 text-[10px] leading-none font-semibold tracking-[0.08em] text-rv-green uppercase ring-1 ring-rv-green/30 ring-inset",
+        "inline-flex h-5 shrink-0 items-center gap-1.5 rounded px-1.5 text-[11px] leading-none font-medium text-rv-green ring-1 ring-rv-green/40 ring-inset",
         className,
       )}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-rv-green" />
-      Real
+      Live
     </span>
   );
 }
@@ -116,7 +117,7 @@ export function ProvenanceBadge({ simulated, className }: { simulated: boolean; 
 /** Eval verdict: pass / fail / not evaluated. */
 export function PassBadge({ pass, score }: { pass: boolean | null | undefined; score?: number | null }) {
   if (pass === null || pass === undefined)
-    return <Badge tone="neutral" title="Not evaluated">n/a</Badge>;
+    return <Badge tone="neutral">Not checked</Badge>;
   const s = typeof score === "number" ? ` ${score <= 1 ? Math.round(score * 100) : Math.round(score)}` : "";
   return (
     <Badge tone={pass ? "green" : "red"} dot>
@@ -130,9 +131,9 @@ export type ExecStatus = "running" | "success" | "error";
 
 export const STATUS_TONE: Record<ExecStatus, Tone> = { running: "blue", success: "green", error: "red" };
 
-/** Execution status pill (n8n-style: Running / Succeeded / Error). */
+/** Case run status: Working on it / Finished / Didn't finish. */
 export function ExecStatusBadge({ status }: { status: ExecStatus }) {
-  const label = status === "running" ? "Running" : status === "success" ? "Succeeded" : "Error";
+  const label = plainStatus(status);
   return (
     <span className="inline-flex items-center gap-1.5 text-xs whitespace-nowrap text-white/80">
       <StatusDot tone={STATUS_TONE[status]} pulse={status === "running"} />
@@ -141,15 +142,14 @@ export function ExecStatusBadge({ status }: { status: ExecStatus }) {
   );
 }
 
-/** Safety gate verdict: allow / ask / block. */
+/** Safety check verdict: OK / Ask a person / Stop. */
 export function GateBadge({ gate }: { gate: string | null | undefined }) {
   if (!gate) return <span className="text-white/30">—</span>;
   const tone: Tone = gate === "allow" ? "green" : gate === "ask" ? "amber" : gate === "block" ? "red" : "neutral";
-  const label = gate === "allow" ? "Allowed" : gate === "ask" ? "Held" : gate === "block" ? "Blocked" : gate;
-  return <Badge tone={tone}>{label}</Badge>;
+  return <Badge tone={tone}>{plainGate(gate)}</Badge>;
 }
 
-/** Dataset chip with a stable colour per known dataset. */
+/** Where a case came from, in plain words ("Sample cases"), with a stable colour. */
 export function DatasetBadge({ dataset }: { dataset: string }) {
   const tone: Tone =
     dataset === "public"
@@ -163,7 +163,7 @@ export function DatasetBadge({ dataset }: { dataset: string }) {
             : dataset === "reality"
               ? "amber"
               : "neutral";
-  return <Badge tone={tone}>{dataset}</Badge>;
+  return <Badge tone={tone}>{dataset === "city" ? "From the city" : plainDataset(dataset)}</Badge>;
 }
 
 /** Inline keyboard/code chip, e.g. <Kbd>npm run answer</Kbd>. */

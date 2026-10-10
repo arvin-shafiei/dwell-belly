@@ -9,6 +9,7 @@
 // - Polling slows down 4x while the tab is hidden.
 // - Errors keep the last good `data` so a blip doesn't blank the screen.
 import { useCallback, useEffect, useState } from "react";
+import { scrubLeaks } from "@/ui/plain";
 import type { ConsoleApi, EvidenceRow, ExecutionRecord, WorkflowRecord } from "./types";
 
 export type ApiResponse<K extends keyof ConsoleApi> = ConsoleApi[K];
@@ -17,23 +18,29 @@ export type EvidenceResponse = ApiResponse<"GET /api/console/evidence">;
 export type StatusResponse = ApiResponse<"GET /api/console/status">;
 export type CaseOption = ApiResponse<"GET /api/console/cases?dataset&q">["cases"][number];
 
+/**
+ * `message` is plain words safe to show anyone (ui-simplify-brief: no paths, codes or server
+ * jargon on main screens). `detail` keeps the technical reason for Advanced views and logs.
+ */
 export class ApiError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    readonly detail: string = message,
   ) {
     super(message);
   }
 }
 
-function describe(status: number, body: unknown, path: string): string {
-  const msg =
+function describe(status: number, body: unknown, path: string): ApiError {
+  const server =
     body && typeof body === "object" && "error" in body && typeof (body as { error: unknown }).error === "string"
       ? (body as { error: string }).error
       : null;
-  if (msg) return msg;
-  if (status === 404) return `${path} is not available yet (HTTP 404).`;
-  return `${path} failed (HTTP ${status}).`;
+  const detail = `${path}: HTTP ${status}${server ? `: ${server}` : ""}`;
+  if (status === 404) return new ApiError("This isn't ready yet.", status, detail);
+  if (status >= 500) return new ApiError("Something went wrong. Try again in a moment.", status, detail);
+  return new ApiError(server ? scrubLeaks(server) || "That didn't work." : "That didn't work.", status, detail);
 }
 
 async function request<T>(method: string, path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
@@ -48,16 +55,16 @@ async function request<T>(method: string, path: string, body?: unknown, signal?:
     });
   } catch (e) {
     if ((e as Error)?.name === "AbortError") throw e;
-    throw new ApiError("Network error: the console server is unreachable.", 0);
+    throw new ApiError("Can't reach Rivet right now.", 0, `${path}: network error`);
   }
   const text = await res.text();
   let json: unknown = null;
   try {
     json = text ? JSON.parse(text) : null;
   } catch {
-    if (res.ok) throw new ApiError(`${path} returned non-JSON.`, res.status);
+    if (res.ok) throw new ApiError("Something went wrong. Try again in a moment.", res.status, `${path}: non-JSON response`);
   }
-  if (!res.ok) throw new ApiError(describe(res.status, json, path.split("?")[0]), res.status);
+  if (!res.ok) throw describe(res.status, json, path.split("?")[0]);
   return json as T;
 }
 
