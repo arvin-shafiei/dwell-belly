@@ -16,6 +16,7 @@ import Timeline, { MessageCard } from "./Timeline";
 import { Badge, Button, cx } from "./ui";
 import VoiceSlot from "./VoiceSlot";
 import { DownloadRunButton } from "../export/Buttons";
+import { ShowOnPlaybook } from "../ShowOnPlaybook";
 
 type DetailView = "steps" | "answer" | "reasoning";
 
@@ -166,6 +167,7 @@ export default function ExecutionDetail({
             <span className="ml-auto flex items-center gap-3">
               {error && <span className="text-xs text-[#ff5c5c]">Couldn&apos;t start it. Try again.</span>}
               {!running && <DownloadRunButton id={e.id} />}
+              {e.trace && <ShowOnPlaybook executionId={e.id} />}
               {canReplay && (
                 <Button
                   className="!px-4 !py-2 !text-sm"

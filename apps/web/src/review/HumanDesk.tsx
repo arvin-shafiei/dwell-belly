@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { decisionRerunBody, type DecisionRerunBody } from "../console/decisionRerun";
 import { useDecisionRerun } from "../console/useDecisionRerun";
 import { IconCheck, ProvenanceBadge } from "../console/ui";
+import { ShowOnPlaybook } from "../console/ShowOnPlaybook";
 import { cents, plainOwner, plainStep, riskWord, scrubLeaks } from "../ui/plain";
 import { shortLine, sortTasks } from "./model";
 import RerunStatus from "./RerunStatus";
@@ -76,7 +77,7 @@ function Clock({ task, now, big = false }: { task: ReviewTask; now: number; big?
 
 function byTime(iso: string): string {
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 }
 
 function CaseDetail({ task, now, onDecide }: {
@@ -132,7 +133,10 @@ function CaseDetail({ task, now, onDecide }: {
   return (
     <article className="review-detail" aria-label="A person needs to decide">
       <header className="review-case-heading">
-        <div className="review-caption"><span>{task.caseId}</span><ProvenanceBadge simulated={task.simulated} /></div>
+        <div className="review-caption">
+          <ProvenanceBadge simulated={task.simulated} />
+          <ShowOnPlaybook executionId={rerun.state.phase === "done" ? rerun.state.execution.id : task.executionId} className="ml-auto" />
+        </div>
         <h2>{headline(task)}</h2>
         <div className="review-case-meta">
           <span>Needs <strong>{owner}</strong></span>
@@ -286,17 +290,20 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
   const showDecided = () => { setFilter("decisions"); setSelectedId(""); };
   return (
     <div className={`review-desk ${embedded ? "review-embedded" : ""}`}>
-      <header className="review-topbar">
+      {!embedded && <header className="review-topbar">
         <Link href="/" className="review-brand" aria-label="Rivet home"><span className="review-brand-mark">R</span>Rivet</Link>
-        <nav aria-label="Pages"><Link href="/?tab=workflows" onClick={onClose}>Playbooks</Link><Link href="/city" target={embedded ? "_blank" : undefined}>City</Link><span aria-current="page">Decisions</span></nav>
+        <nav aria-label="Pages"><Link href="/?tab=workflows" onClick={onClose}>Playbooks</Link><Link href="/city">City</Link><span aria-current="page">Decisions</span></nav>
         {onClose && <button onClick={onClose} className="review-close" aria-label="Close decisions">×</button>}
-      </header>
+      </header>}
       <div className="review-page-heading">
         <div>
           <h1>Decisions</h1>
-          <p>{pending.length ? <><strong>{pending.length}</strong> {pending.length === 1 ? "case needs" : "cases need"} a person{overdue > 0 && <span className="review-late-count"> · {overdue} late</span>}</> : "The agent stopped on nothing. All clear."}</p>
+          <p>{pending.length ? <><strong>{pending.length}</strong> {pending.length === 1 ? "case needs" : "cases need"} a person{overdue > 0 && <span className="review-late-count"> · {overdue} late</span>}</> : "Nothing is waiting for a person."}</p>
         </div>
-        <div className="review-source-switch" aria-label="Which cases">{(["agent", "simulation"] as const).map((value) => <button key={value} className={source === value ? "active" : ""} aria-pressed={source === value} onClick={() => { setSource(value); setTeam(""); setSelectedId(""); }}>{value === "agent" ? "Live" : "Practice cases"}</button>)}</div>
+        <div className="review-heading-actions">
+          <div className="review-source-switch" aria-label="Which cases">{(["agent", "simulation"] as const).map((value) => <button key={value} className={source === value ? "active" : ""} aria-pressed={source === value} onClick={() => { setSource(value); setTeam(""); setSelectedId(""); }}>{value === "agent" ? "Live" : "Practice cases"}</button>)}</div>
+          {embedded && onClose && <button onClick={onClose} className="review-close" aria-label="Close decisions">×</button>}
+        </div>
       </div>
       {source === "simulation" && <p className="review-note">Practice cases come from the city. Keep the city open.</p>}
       {error && <div className="review-error-banner" role="alert">{scrubLeaks(error) || "Couldn't load the cases."}<button type="button" onClick={() => void refresh()}>Try again</button></div>}

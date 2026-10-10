@@ -30,6 +30,8 @@
 .review-page-heading p { margin:4px 0 0; color:var(--d-muted); font-size:15px; }
 .review-page-heading p strong { color:var(--d-ink); font-size:20px; }
 .review-late-count { color:var(--d-red); }
+.review-heading-actions { display:flex; align-items:center; gap:12px; }
+.review-heading-actions .review-close { margin-left:0; }
 .review-source-switch { display:flex; gap:4px; padding:4px; border:1px solid var(--d-line); border-radius:8px; }
 .review-source-switch button { padding:8px 16px; border:0; border-radius:6px; color:var(--d-muted); background:transparent; font-size:14px; }
 .review-source-switch button.active { background:var(--d-raised); color:var(--d-ink); }

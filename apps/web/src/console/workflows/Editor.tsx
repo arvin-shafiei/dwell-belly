@@ -91,6 +91,8 @@ function EditorInner() {
   const rf = useReactFlow();
   const ctx = useContext(ConsoleContext); // null when rendered outside the console shell
   const wantWorkflow = useRef(ctx?.params.get("workflow") ?? null);
+  // Deep link "Show on playbook" (?tab=workflows&run=<executionId>): open that run's playbook and play it.
+  const wantRun = useRef(ctx?.params.get("run") ?? null);
   const setParamsRef = useRef(ctx?.setParams);
   useEffect(() => { setParamsRef.current = ctx?.setParams; }, [ctx?.setParams]);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -162,12 +164,29 @@ function EditorInner() {
 
   useEffect(() => {
     let live = true;
-    loadWorkflows().then(({ workflows, fallback: why }) => {
+    // Read, not cleared, here: StrictMode runs this effect twice and the first pass is discarded.
+    const runId = wantRun.current;
+    Promise.all([loadWorkflows(), runId ? getExecution(runId) : Promise.resolve(null)]).then(([{ workflows, fallback: why }, ex]) => {
       if (!live) return;
       setRecords(workflows);
       setFallback(why);
-      const first = workflows.find((w) => w.id === wantWorkflow.current) ?? workflows.find((w) => w.active) ?? workflows[0];
+      const run = ex?.ok ? ex.data?.execution ?? null : null;
+      const want = run?.workflowId ?? wantWorkflow.current;
+      const first = workflows.find((w) => w.id === want) ?? workflows.find((w) => w.active) ?? workflows[0];
       open(first);
+      if (runId) {
+        wantRun.current = null;
+        if (run) {
+          setExecution(run);
+          setExecId(run.id);
+          setExecLoadError(null);
+          setCursor(run.trace ? 0 : null);
+        } else {
+          setExecId(runId);
+          setExecLoadError("Couldn't load that case run.");
+        }
+        setParamsRef.current?.({ run: null, workflow: first.id });
+      }
     });
     return () => { live = false; };
   }, [open]);
