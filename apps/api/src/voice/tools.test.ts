@@ -125,3 +125,12 @@ test("recordFact turns a stated fact into a claim event", () => {
   assert.equal(e.body, "Said on the call (access): I'll come down and let them in");
   assert.equal(e.source, "live_human");
 });
+
+test("fallbackReply: a failed promise check stays a refusal; a failed decision or note says so plainly", async () => {
+  const { fallbackReply } = await import("./wording.ts");
+  assert.equal(fallbackReply("propose_commitment"), DENIAL);
+  assert.equal(fallbackReply("submit_decision"), "I couldn't record that decision. Please choose on screen instead.");
+  assert.equal(fallbackReply("record_fact"), "I couldn't note that down. Could you say it again?");
+  assert.equal(fallbackReply("request_human"), "I couldn't reach a person just now. The team will follow up.");
+  assert.equal(fallbackReply("unknown_tool"), DENIAL);
+});
