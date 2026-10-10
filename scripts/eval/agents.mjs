@@ -58,3 +58,18 @@ export function baseline() {
     return output;
   };
 }
+
+// The real incident flow, called in-process. Imported lazily so the other agents work without it.
+export async function flow() {
+  const { readFile: read } = await import("node:fs/promises");
+  const api = path.resolve(import.meta.dirname, "..", "..", "apps", "api");
+  const [{ runCase }, { fromView }, { claude }, { runPanel }] = await Promise.all([
+    import(path.join(api, "src/agent/run.ts")),
+    import(path.join(api, "src/agent/load.ts")),
+    import(path.join(api, "src/agent/models.ts")),
+    import(path.join(api, "src/lib/panel.ts")),
+  ]);
+  const flowJson = JSON.parse(await read(path.join(api, "flows/default-incident.json"), "utf8"));
+  const options = { flow: flowJson, models: claude(), panel: process.env.TYPESAFE_API_KEY ? runPanel : undefined, mode: "practice", runId: `eval-${new Date().toISOString()}` };
+  return async (view) => traceToResult((await runCase(fromView(view), options)).trace);
+}

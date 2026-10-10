@@ -1,12 +1,12 @@
 // Scores an agent on the public delivery cases and the generated hard cases.
-// Usage: npm run eval -- (--agent baseline | --api http://localhost:4000/api/cases | --traces traces)
+// Usage: npm run eval -- (--agent flow | --agent baseline | --api http://localhost:4000/api/cases | --traces traces)
 //        [--set all|public|generated] [--ids delivery-024,gen-003] [--limit 10] [--concurrency 6]
 //        [--with-context]  public cases keep their title and Context section (these leak the answer)
 // Output: a table on stdout and runs/eval-<time>.json with every decision and verdict.
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { baseline, fromApi, fromTraces } from "./agents.mjs";
+import { baseline, flow, fromApi, fromTraces } from "./agents.mjs";
 import { loadCases } from "./cases.mjs";
 import { pool, spend } from "./claude.mjs";
 import { judge, scoreCase } from "./score.mjs";
@@ -24,11 +24,12 @@ const { values: args } = parseArgs({
   },
 });
 
-function pickAgent() {
+async function pickAgent() {
   if (args.api) return { name: `api ${args.api}`, run: fromApi(args.api) };
   if (args.traces) return { name: `traces ${args.traces}`, run: fromTraces(path.resolve(args.traces)) };
   if (args.agent === "baseline") return { name: "baseline", run: baseline() };
-  throw new Error("Pick an agent: --agent baseline, --api <url> or --traces <dir>");
+  if (args.agent === "flow") return { name: "flow", run: await flow() };
+  throw new Error("Pick an agent: --agent flow, --agent baseline, --api <url> or --traces <dir>");
 }
 
 function summarise(rows) {
@@ -70,7 +71,7 @@ async function evalOne(agent, c) {
 }
 
 async function main() {
-  const agent = pickAgent();
+  const agent = await pickAgent();
   let cases = await loadCases(args.set, { withContext: args["with-context"] });
   if (args.ids) cases = cases.filter((c) => args.ids.split(",").includes(c.id));
   if (args.limit) cases = cases.slice(0, Number(args.limit));
