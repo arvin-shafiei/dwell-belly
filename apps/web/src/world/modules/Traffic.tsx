@@ -1,5 +1,5 @@
 "use client";
-// Module: Traffic. 76 civilian vehicles (cars, black cabs, HGVs) driving the road
+// Module: Traffic. ~220 civilian vehicles (cars, estates, sports cars, black cabs, minibuses, vans, motorbikes, HGVs) driving the road
 // graph on the left, obeying signals, queueing, and rerouting around closed roads.
 // Logic lives in ./Traffic/ (driving.ts is pure + tested, sim.ts runs it and draws instances).
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
@@ -18,7 +18,7 @@ export default function Traffic() {
 
   useEffect(() => () => sim.dispose(), [sim]);
 
-  useFrame((_, delta) => sim.step(delta));
+  useFrame((state, delta) => sim.step(delta, state.camera));
 
   const onClick = (e: ThreeEvent<MouseEvent>) => {
     if (e.instanceId === undefined) return;

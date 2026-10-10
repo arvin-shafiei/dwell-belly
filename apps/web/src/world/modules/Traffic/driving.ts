@@ -1,6 +1,8 @@
 // Pure driving logic for civilian traffic: car-following (IDM), path following with smooth
 // junction curves, signal decisions, rerouting. No three.js, no React: unit-tested.
-import { ROAD_NODES, edgeKey, findPath, getEdge, getNode, lanePosition } from "../../roads";
+import { LANE_OFFSET } from "../../config";
+import { ROAD_EDGES, ROAD_NODES, edgeKey, getEdge, getNode, neighbours, type RoadEdge, type RoadNode } from "../../roads";
+import { fastPath } from "./pathfind";
 import type { SignalColour } from "../../signals";
 
 export interface Pose {
@@ -46,8 +48,23 @@ export interface PathState {
   t: number; // 0..1 along it
 }
 
+// Nested from -> to -> edge cache: avoids building an edge-key string per lookup (hot path).
+const EDGE_CACHE = new Map<string, Map<string, RoadEdge>>();
+for (const e of ROAD_EDGES.values()) {
+  for (const [x, y] of [[e.a, e.b], [e.b, e.a]]) {
+    let m = EDGE_CACHE.get(x);
+    if (!m) EDGE_CACHE.set(x, (m = new Map()));
+    m.set(y, e);
+  }
+}
+
+/** The road between a and b (either direction), without allocating. */
+export function edgeOf(a: string, b: string): RoadEdge | undefined {
+  return EDGE_CACHE.get(a)?.get(b) ?? getEdge(a, b);
+}
+
 export function edgeLen(a: string, b: string) {
-  return getEdge(a, b)?.length ?? 1;
+  return Math.max(edgeOf(a, b)?.length ?? 1, 0.5);
 }
 
 /** Move `ds` metres along the path. Returns how many new edges were entered. Stops at the path end. */
@@ -79,11 +96,16 @@ function cornerR(a: string, b: string, c: string) {
 }
 
 const tmpA: [number, number, number] = [0, 0, 0];
+/** Same maths as roads.lanePosition (left-hand lane), without allocating. */
 function lane(a: string, b: string, t: number, out: [number, number, number]) {
-  const r = lanePosition(a, b, t);
-  out[0] = r[0];
-  out[1] = r[1];
-  out[2] = r[2];
+  const na = getNode(a);
+  const nb = getNode(b);
+  const dx = nb.x - na.x;
+  const dz = nb.z - na.z;
+  const len = Math.hypot(dx, dz) || 1;
+  out[0] = na.x + dx * t + (dz / len) * LANE_OFFSET;
+  out[1] = na.z + dz * t - (dx / len) * LANE_OFFSET;
+  out[2] = Math.atan2(dx, dz);
   return out;
 }
 
@@ -161,6 +183,27 @@ export function turnSide(a: string, b: string, c: string): -1 | 0 | 1 {
   // left of travel direction (dx, dz) is (dz, -dx)
   const side = d2x * d1z - d2z * d1x;
   return side > 0.35 ? 1 : side < -0.35 ? -1 : 0;
+}
+
+/** Where three or more roads meet (worth indicating at). */
+export function isJunction(id: string) {
+  return neighbours(id).length >= 3;
+}
+
+const LAT_ACCEL = 5; // m/s², comfortable-ish cornering for a stylised city
+
+/** Safe speed through the corner a->b->c: from the blend curve's radius, capped at `limit`. */
+export function turnSpeed(a: string, b: string, c: string, limit: number): number {
+  if (c === a) return 3;
+  const na = getNode(a);
+  const nb = getNode(b);
+  const nc = getNode(c);
+  const h1 = Math.atan2(nb.x - na.x, nb.z - na.z);
+  const h2 = Math.atan2(nc.x - nb.x, nc.z - nb.z);
+  const theta = Math.abs(Math.atan2(Math.sin(h2 - h1), Math.cos(h2 - h1)));
+  if (theta < 0.12) return limit;
+  const r = cornerR(a, b, c) / Math.tan(Math.min(theta, 3) / 2);
+  return Math.min(limit, Math.max(3, Math.sqrt(LAT_ACCEL * r)));
 }
 
 /** Cubic arc for a mid-road U-turn from pose a to pose b (b faces the other way). */
@@ -271,7 +314,11 @@ export function blockageT(from: string, to: string, x: number, z: number) {
 
 /** True when any edge after the current one is blocked. */
 export function needsReroute(path: readonly string[], idx: number, blocked: ReadonlySet<string>): boolean {
-  for (let k = idx + 1; k + 1 < path.length; k++) if (blocked.has(edgeKey(path[k], path[k + 1]))) return true;
+  if (!blocked.size) return false;
+  for (let k = idx + 1; k + 1 < path.length; k++) {
+    const e = edgeOf(path[k], path[k + 1]);
+    if (blocked.has(e ? e.key : edgeKey(path[k], path[k + 1]))) return true;
+  }
   return false;
 }
 
@@ -286,34 +333,92 @@ export function replanPath(
   const to = path[idx + 1];
   const noBack = new Set(blocked);
   noBack.add(edgeKey(from, to));
-  const tail = findPath(to, dest, noBack) ?? findPath(to, dest, blocked);
+  const tail = fastPath(to, dest, noBack) ?? fastPath(to, dest, blocked);
   if (!tail || tail.length < 2) return null;
   const keep = idx >= 1 ? path.slice(idx - 1, idx + 1) : path.slice(idx, idx + 1);
   return { path: [...keep, ...tail], idx: idx >= 1 ? 1 : 0 };
 }
 
-export type Archetype = "hatch" | "saloon" | "suv" | "cab" | "hgv";
+export type Archetype =
+  | "hatch" | "saloon" | "suv" | "estate" | "sports" | "cab" | "minibus" | "van" | "hgv" | "moto";
 
-const ALL_IDS = [...ROAD_NODES.keys()];
-const DOWNTOWN = ALL_IDS.filter((id) => id.startsWith("g_"));
-const RING = ALL_IDS.filter((id) => id.startsWith("h_"));
-const CIVIL = ALL_IDS.filter((id) => !id.startsWith("depot_"));
+/** Relative traffic density per zone (busy districts and high streets get more cars). */
+export const ZONE_WEIGHT: Record<string, number> = {
+  downtown: 1.6, oldTown: 2, shoreditch: 1.9, southbank: 1.8, hampstead: 1, suburbs: 0.8, industrial: 0.7,
+  containerTerminal: 0.6, docks: 0.6, countryside: 0.4, airport: 0.7, depot: 0, highway: 0.7,
+};
+const FREIGHT_ZONES = new Set(["industrial", "containerTerminal", "docks"]);
 
-/** A random destination suited to the vehicle type, never the current node. */
-export function pickDestination(kind: Archetype, current: string, rand: () => number): string {
-  const pick = (pool: string[]) => {
-    for (let i = 0; i < 8; i++) {
-      const id = pool[Math.floor(rand() * pool.length)];
-      if (id !== current) return id;
-    }
-    return pool.find((id) => id !== current)!;
-  };
-  if (kind === "hgv") {
-    // a few ring nodes ahead or behind, so lorries lap the ring rather than cutting through town
-    const n = current.startsWith("h_") ? Number(current.slice(2)) : Math.floor(rand() * RING.length);
-    const step = (2 + Math.floor(rand() * 4)) * (rand() < 0.5 ? 1 : -1);
-    return `h_${(((n + step) % RING.length) + RING.length) % RING.length}`;
+const nodeList = [...ROAD_NODES.values()];
+/** Nodes on a highway-kind road (ring, motorway, slip roads). */
+export const HIGHWAY_NODES = new Set<string>();
+/** Highway nodes outside the inner ring (the motorway), empty until the Motorway district exists. */
+export const MOTORWAY_NODES = new Set<string>();
+for (const e of ROAD_EDGES.values()) {
+  if (e.kind !== "highway") continue;
+  HIGHWAY_NODES.add(e.a).add(e.b);
+  if (!(e.a.startsWith("h_") && e.b.startsWith("h_"))) MOTORWAY_NODES.add(e.a).add(e.b);
+}
+export const FREIGHT_NODES = new Set(nodeList.filter((n) => FREIGHT_ZONES.has(n.zone)).map((n) => n.id));
+
+function weighted(nodes: RoadNode[]) {
+  const ids: string[] = [];
+  const cum: number[] = [];
+  let total = 0;
+  for (const n of nodes) {
+    const w = (ZONE_WEIGHT[n.zone] ?? 1) * (isJunction(n.id) ? 1.5 : 1);
+    if (w <= 0) continue;
+    total += w;
+    ids.push(n.id);
+    cum.push(total);
   }
-  if (kind === "cab") return pick(rand() < 0.75 ? DOWNTOWN : CIVIL);
-  return pick(rand() < 0.55 ? DOWNTOWN : CIVIL);
+  return { ids, cum, total };
+}
+type Pool = ReturnType<typeof weighted>;
+
+const TOWN = weighted(nodeList.filter((n) => !n.id.startsWith("depot_")));
+const CENTRAL = weighted(nodeList.filter((n) => ["downtown", "oldTown", "shoreditch", "southbank"].includes(n.zone)));
+const HIGHWAY = weighted(nodeList.filter((n) => HIGHWAY_NODES.has(n.id)));
+const MOTORWAY = MOTORWAY_NODES.size ? weighted(nodeList.filter((n) => MOTORWAY_NODES.has(n.id))) : HIGHWAY;
+const FREIGHT = FREIGHT_NODES.size ? weighted(nodeList.filter((n) => FREIGHT_NODES.has(n.id))) : HIGHWAY;
+
+function sample(pool: Pool, rand: () => number) {
+  const r = rand() * pool.total;
+  let lo = 0;
+  let hi = pool.cum.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (pool.cum[mid] < r) lo = mid + 1;
+    else hi = mid;
+  }
+  return pool.ids[lo];
+}
+
+function poolFor(kind: Archetype, rand: () => number): Pool {
+  const r = rand();
+  if (kind === "hgv") return r < 0.4 ? MOTORWAY : r < 0.7 ? HIGHWAY : FREIGHT;
+  if (kind === "van") return r < 0.35 ? MOTORWAY : r < 0.5 ? FREIGHT : TOWN;
+  if (kind === "cab") return r < 0.7 && CENTRAL.total ? CENTRAL : TOWN;
+  return TOWN;
+}
+
+/**
+ * A random destination suited to the vehicle type, never the current node. Prefers trips of
+ * 80..900 m (lorries: up to 2 km) so traffic stays local to districts and path searches stay small.
+ */
+export function pickDestination(kind: Archetype, current: string, rand: () => number): string {
+  const here = getNode(current);
+  const maxD = kind === "hgv" ? 2000 : kind === "van" ? 1400 : 900;
+  let fallback = "";
+  for (let i = 0; i < 12; i++) {
+    const pool = poolFor(kind, rand);
+    if (!pool.total) continue;
+    const id = sample(pool, rand);
+    if (id === current) continue;
+    const n = getNode(id);
+    const d = Math.hypot(n.x - here.x, n.z - here.z);
+    if (d >= 80 && d <= maxD) return id;
+    if (!fallback || d <= maxD) fallback = id;
+  }
+  return fallback || TOWN.ids.find((id) => id !== current) || current;
 }
