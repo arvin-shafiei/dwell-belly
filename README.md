@@ -73,10 +73,35 @@ Voice: an event may carry `source` (`live_human`, `simulated_persona`, `audio_at
 
 Other scripts: `npm run build`, `npm run lint`, `npm run data` (rebuild parsed cases).
 
+## Voice
+
+Voice is a channel the agent chooses, not a separate app. Everything said by voice becomes case input and goes through the same pipeline and safety gate as written messages.
+
+| Flow | What happens |
+|---|---|
+| **Voice note** (a driver who can't type) | ElevenLabs speech-to-text, then a case event marked as the speaker's claim, stamped on the case's own timeline. The case re-runs with the desk's earlier messages included, so nothing is sent twice. |
+| **Agent calls someone** (demo mode) | A browser call (WebRTC) with the "Desk Caller" ElevenLabs agent. Every promise it wants to make goes through `propose_commitment`: the gate's hard rules, then Jev's per-boundary scores against the flow's thresholds, within 2.5 s. Anything short of a clear allow is denied with a fixed sentence. The transcript becomes claim events. |
+| **Approve by voice** | The agent reads a decision card to the desk manager, reads their choice back, and records it. |
+| **Audio files in a case** (any mode) | Transcribed into claim documents when `ELEVENLABS_API_KEY` is set; otherwise listed as not transcribed. At most 3 per case. |
+
+**Guarantees:**
+- The scored runner (`npm run answer`) never places a call.
+- Simulated voices are refused outside demo mode, and a run that heard one is marked `synthetic`.
+- The ElevenLabs key stays on the server; the browser gets a short-lived call token.
+
+**Setup:**
+1. Put `ELEVENLABS_API_KEY` in `apps/api/.env.local`.
+2. Run `node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs` and add the printed `ELEVENLABS_AGENT_ID` to the same file.
+3. Check it with `node --env-file=apps/api/.env.local scripts/voice/smoke.mjs`.
+4. Try everything at `http://localhost:3000/voice-bench` (unlinked dev page).
+
+Code: `apps/api/src/voice/`, `apps/api/src/app/api/voice/` and `apps/web/src/voice/`. Tests: `npm run test:voice`, `npm run test:agent` and `npm test -w web`.
+
 ## Models / APIs
 
 - **Jev** (TypeSafe AI): fast typed judgements (triage, clash score, risk score, verify)
 - **Claude** (Anthropic): planning, decision cards, claim extraction, Architect
+- **ElevenLabs**: speech-to-text (`scribe_v2`), text-to-speech, and the "Desk Caller" voice agent (running `claude-haiku-4-5`), via `@elevenlabs/react` 1.15.2 in the browser
 - **OR-Tools**: route replanning
 
 ## License

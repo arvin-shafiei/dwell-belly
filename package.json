@@ -17,7 +17,8 @@
     "render:adversarial": "node scripts/eval/render-raw.mjs",
     "answer": "node --env-file-if-exists=.env.local --env-file-if-exists=apps/api/.env.local apps/api/src/agent/cli.ts",
     "test:agent": "node --test apps/api/src/agent/*.test.ts",
-    "replay": "node apps/api/src/agent/replay.ts"
+    "replay": "node apps/api/src/agent/replay.ts",
+    "test:voice": "node --test apps/api/src/voice/*.test.ts"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

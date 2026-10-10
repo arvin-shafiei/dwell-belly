@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.5, 10 Oct 2026, 12:20 BST. **Owner of this doc:** Oriol.
+**Version:** 1.6, 10 Oct 2026, 12:35 BST. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -781,7 +781,7 @@ Everything said by voice goes through the same pipeline and the same gate as wri
 | **Driver → desk: voice note** | Scribe transcribes it, and it becomes a case event (channel "Voice note", `voice (unverified claim)`, stamped on the case's timeline). The case re-runs with the desk's earlier messages included. Ingest (Claude), Triage (Jev), Perspectives (Jev), Clash (Jev) and Planner (Claude) all see it as a claim, never a record. |
 | **Desk agent → recipient: call** | Planned by the Planner and checked by the gate before the call. In the call, every promise goes through `checkCommitment`, which is `gate()` plus Jev's `messageRisk`, with the same thresholds, within 2.5 s, and **deny** if there's no answer. After hang-up the transcript becomes claim events and the case re-runs. |
 | **Desk agent → desk manager: approval** | The agent reads the decision card (`whyStopped`, the evidence, each option's `effect`, what's `alreadyDone`). The manager picks an option, and it is read back. The decision goes into `run.ts` as a trusted `humanDecision`, which releases only held messages that implement it, never blocked ones. |
-| **Stretch: ring the manager's phone** | The same approval over a real call (Twilio, ElevenLabs outbound call). After hang-up, Jev answers "which option was confirmed?" from the transcript; below the threshold, nothing is approved. Built only if the rest is green by 15:00. |
+| **Dropped: ring the manager's phone** | A real phone call through Twilio. Dropped on 10 Oct: it costs money, Twilio is not a sponsor, and browser approval shows the same workflow. |
 | **Stretch, off stage: AI personas** | A test and rehearsal tool only, never on stage: it would read as a standalone voice demo. |
 
 ## I2. Modes and guarantees
@@ -1041,6 +1041,7 @@ This table is the reallocation.
 
 ## Changelog
 
+- **1.6 (12:35):** voice built on branch `oriol/voice` (see the tracker): voice notes, audio files in cases transcribed as claims, the Desk Caller agent, calls with in-call promise checks through the gate and Jev, approve by voice, and the `/voice-bench` dev page. The Twilio phone call is dropped (cost, not a sponsor).
 - **1.5 (12:20):** Part I rewritten to the final voice design after three stress tests (pipeline, ElevenLabs and browser, console fit). Voice is a channel the agent chooses. Changes: case-time stamps; earlier desk messages on re-run; in-call promise checks through `gate()` plus Jev; approval through a trusted `humanDecision` in `run.ts`; no updates during calls; the call transport dropped; personas and the Twilio phone call as stretch goals. The plan is in `docs/superpowers/plans/2026-10-10-voice-layer.md`.
 - **1.4 (11:50):** the UI decision.
   - **Who sees what (A4):** the judging agents read files, never the UI, which earns points only through the demo and People's Choice.
