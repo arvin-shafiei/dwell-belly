@@ -24,6 +24,12 @@ const ZONE_TINT: Record<ZoneName, string> = {
   depot: "rgba(255, 106, 26, 0.22)",
   suburbs: "rgba(230, 190, 120, 0.22)",
   airport: "rgba(200, 200, 210, 0.25)",
+  containerTerminal: "rgba(90, 150, 200, 0.25)",
+  industrial: "rgba(150, 120, 100, 0.28)",
+  southbank: "rgba(190, 150, 170, 0.22)",
+  oldTown: "rgba(200, 170, 120, 0.24)",
+  shoreditch: "rgba(170, 120, 160, 0.22)",
+  hampstead: "rgba(120, 190, 110, 0.22)",
 };
 
 const ZONE_LABEL: Partial<Record<ZoneName, string>> = {
@@ -32,6 +38,12 @@ const ZONE_LABEL: Partial<Record<ZoneName, string>> = {
   countryside: "FARMS",
   suburbs: "SUBURBS",
   airport: "AIRPORT",
+  containerTerminal: "TERMINAL",
+  industrial: "INDUSTRY",
+  southbank: "SOUTHBANK",
+  oldTown: "OLD TOWN",
+  shoreditch: "SHOREDITCH",
+  hampstead: "HAMPSTEAD",
 };
 
 const ROAD_STYLE: Record<RoadKind, { w: number; c: string }> = {
