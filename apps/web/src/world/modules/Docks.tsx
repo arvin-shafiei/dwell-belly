@@ -11,14 +11,12 @@ import {
   APRON_Y,
   CONTAINER,
   CRANES,
-  CRANE_BOOM_Y,
   CRANE_SLOT_ROW,
   LIGHT_TOWERS,
   SHEDS,
   SHIP,
   SHIP_BAYS,
   SHIP_ROWS,
-  craneAt,
   docksRand,
   nightFactor,
   shipBayZ,
@@ -27,7 +25,6 @@ import {
   shipRowX,
   straddleAt,
   yardSlots,
-  type CraneState,
   type StraddleState,
 } from "./Docks/layout";
 import {
@@ -41,16 +38,14 @@ import {
 import {
   beam,
   box,
-  craneFrameGeometry,
   hullGeometry,
   shedGeometry,
   shipWindowGeometry,
-  spreaderGeometry,
   straddleGeometry,
   superstructureGeometry,
-  trolleyGeometry,
 } from "./Docks/geometry";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import PortCranes from "./Docks/PortCranes";
 
 const TINTS = ["#c0392b", "#2e6fb7", "#3f8f4f", "#e0b52c", "#2a9d8f", "#8e3b46", "#8a9199", "#c76b29", "#e6e6e2", "#2c3e75", "#6d4c8c"];
 
@@ -152,10 +147,6 @@ export default function Docks() {
   const G = useMemo(() => {
     const zb = ZONES.docks;
     const g = {
-      craneFrame: craneFrameGeometry(),
-      trolley: trolleyGeometry(),
-      spreader: spreaderGeometry(),
-      cable: new THREE.BoxGeometry(0.12, 1, 0.12).translate(0, 0.5, 0),
       straddle: straddleGeometry(),
       hullLow: hullGeometry(SHIP.keelY, 0.45),
       hullBoot: hullGeometry(0.45, 0.85),
@@ -194,8 +185,6 @@ export default function Docks() {
         return mergeGeometries(parts.map((p) => p.toNonIndexed()), false)!;
       })(),
       poolDisc: new THREE.CircleGeometry(15, 24).rotateX(-Math.PI / 2),
-      craneFlood: box(1.2, 0.5, 1.2, 0, 0, 0),
-      beacon: new THREE.SphereGeometry(0.6, 8, 6),
       shed: SHEDS.map((s) => shedGeometry(s.w, s.d, s.h, s.color)),
       shedSign: new THREE.PlaneGeometry(20, 2.4),
     };
@@ -246,13 +235,10 @@ export default function Docks() {
       bollards.m.push(mat(WATER_X - 0.6, APRON_Y, z));
       fenders.m.push(mat(WATER_X + 0.3, -1.1, z + 3.5));
     }
-    const cranes: InstSpec = { m: CRANES.map((c) => mat(0, 0, c.z)) };
     const poles: InstSpec = { m: LIGHT_TOWERS.map((t) => mat(t.x, 0, t.z)) };
     const heads: InstSpec = { m: LIGHT_TOWERS.map((t, i) => mat(t.x, 0, t.z, (i * 0.7) % Math.PI)) };
     const pools: InstSpec = { m: LIGHT_TOWERS.map((t) => mat(t.x, 0.08, t.z)) };
-    const floods: InstSpec = { m: [] };
-    for (const c of CRANES) for (const x of [314, 331.5, 348, 364]) floods.m.push(mat(x, CRANE_BOOM_Y - 0.25, c.z));
-    return { generic, brands, shipGeneric, shipRivet, bollards, fenders, cranes, poles, heads, pools, floods };
+    return { generic, brands, shipGeneric, shipRivet, bollards, fenders, poles, heads, pools };
   }, []);
 
   useEffect(
@@ -267,26 +253,10 @@ export default function Docks() {
   );
 
   // ---------- animated refs ----------
-  const trolleys = useRef<THREE.InstancedMesh>(null);
-  const spreaders = useRef<THREE.InstancedMesh>(null);
-  const cables = useRef<THREE.InstancedMesh>(null);
   const boxes = useRef<THREE.InstancedMesh>(null);
-  const beacons = useRef<THREE.InstancedMesh>(null);
   const ship = useRef<THREE.Group>(null);
   const straddle = useRef<THREE.Group>(null);
-  const sim = useRef({ t: 0, night: -1, cs: CRANES.map(() => ({}) as CraneState), ss: {} as StraddleState });
-
-  // beacon instance layout is static; set once
-  useLayoutEffect(() => {
-    const b = beacons.current;
-    if (!b) return;
-    CRANES.forEach((c, i) => {
-      b.setMatrixAt(i * 2, mat(383, CRANE_BOOM_Y + 3, c.z));
-      b.setMatrixAt(i * 2 + 1, mat(331.5, 49.7, c.z));
-    });
-    b.instanceMatrix.needsUpdate = true;
-    b.computeBoundingSphere();
-  }, []);
+  const sim = useRef({ t: 0, night: -1, ss: {} as StraddleState });
 
   const mats = useRef(R); // materials are tweaked per frame (night, beacon blink) through the ref
   useFrame((_, delta) => {
@@ -314,35 +284,16 @@ export default function Docks() {
       ship.current.rotation.z = shipRoll(t);
     }
 
-    // cranes
-    const tr = trolleys.current, sp = spreaders.current, cb = cables.current, bx = boxes.current;
-    if (tr && sp && cb && bx) {
-      CRANES.forEach((c, i) => {
-        const s = craneAt(t, c, S.cs[i]);
-        tr.setMatrixAt(i, setM(s.trolleyX, 0, c.z, 0, 1, 0));
-        const hang = CRANE_BOOM_Y - 1.6 - s.spreaderY;
-        const sx = s.trolleyX + Math.sin(s.sway) * hang;
-        sp.setMatrixAt(i, setM(sx, s.spreaderY, c.z, 0, 1, s.sway));
-        const len = Math.max(0.1, hang - 1.6);
-        let k = 0;
-        for (const ox of [-0.8, 0.8])
-          for (const oz of [-1.2, 1.2]) {
-            cb.setMatrixAt(i * 4 + k++, setM(sx + ox, s.spreaderY + 1.6, c.z + oz, 0, len, s.sway));
-          }
-        const by = s.boxY + CONTAINER.h / 2;
-        const bxX = s.carrying ? s.trolleyX + Math.sin(s.sway) * (CRANE_BOOM_Y - by) : s.boxX;
-        bx.setMatrixAt(i, setM(bxX, by, c.z, 0, 1, s.carrying ? s.sway : 0));
-      });
+    // yard-loop straddle carrier (the STS cranes + quay carriers live in ./Docks/PortCranes)
+    const bx = boxes.current;
+    if (bx) {
       const st = straddleAt(t, S.ss);
-      bx.setMatrixAt(CRANES.length, setM(st.boxX, st.boxY + CONTAINER.h / 2, st.boxZ, st.boxYaw, 1, 0));
+      bx.setMatrixAt(0, setM(st.boxX, st.boxY + CONTAINER.h / 2, st.boxZ, st.boxYaw, 1, 0));
+      bx.instanceMatrix.needsUpdate = true;
       if (straddle.current) {
         straddle.current.position.set(st.x, APRON_Y, st.z);
         straddle.current.rotation.y = st.yaw;
       }
-      tr.instanceMatrix.needsUpdate = true;
-      sp.instanceMatrix.needsUpdate = true;
-      cb.instanceMatrix.needsUpdate = true;
-      bx.instanceMatrix.needsUpdate = true;
     }
   });
 
@@ -355,7 +306,6 @@ export default function Docks() {
       <mesh geometry={G.coping} material={R.coping} receiveShadow />
       <Static geometry={G.bollard} material={R.bollard} spec={L.bollards} />
       <Static geometry={G.fender} material={R.darkRubber} spec={L.fenders} />
-      <mesh geometry={G.moorings} material={R.darkRubber} />
 
       {/* container yard */}
       <Static geometry={R.containerGeo} material={R.genericMat} spec={L.generic} cast receive />
@@ -363,31 +313,24 @@ export default function Docks() {
         <Static key={i} geometry={R.containerGeo} material={R.brandMats[i]} spec={b} cast receive />
       ))}
 
-      {/* cranes */}
-      <Static geometry={G.craneFrame} material={R.vc} spec={L.cranes} cast />
-      <instancedMesh ref={trolleys} args={[G.trolley, R.vc, CRANES.length]} frustumCulled={false} castShadow />
-      <instancedMesh ref={spreaders} args={[G.spreader, R.vc, CRANES.length]} frustumCulled={false} castShadow />
-      <instancedMesh ref={cables} args={[G.cable, R.steel, CRANES.length * 4]} frustumCulled={false} />
-      <instancedMesh ref={boxes} args={[R.containerGeo, R.brandMats[0], CRANES.length + 1]} frustumCulled={false} castShadow />
-      <instancedMesh ref={beacons} args={[G.beacon, R.red, CRANES.length * 2]} />
-      <Static geometry={G.craneFlood} material={R.lamp} spec={L.floods} />
+      {/* STS cranes working the berth, quay straddle carriers, buffer blocks, crews, quay lights */}
+      <PortCranes
+        containerGeo={R.containerGeo}
+        genericMat={R.genericMat}
+        brandMats={R.brandMats}
+        vc={R.vc}
+        lamp={R.lamp}
+        red={R.red}
+        steel={R.steel}
+      />
+      <instancedMesh ref={boxes} args={[R.containerGeo, R.brandMats[0], 1]} frustumCulled={false} castShadow />
 
       {/* straddle carrier */}
       <group ref={straddle}>
         <mesh geometry={G.straddle} material={R.vc} castShadow />
       </group>
 
-      {/* ship (pivot on its centre line so it rolls in place) */}
-      <group ref={ship} position={[SHIP.x, 0, 0]}>
-        <mesh geometry={G.hullLow} material={R.hullLow} />
-        <mesh geometry={G.hullBoot} material={R.hullBoot} />
-        <mesh geometry={G.hullTop} material={[R.deck, R.hullTop]} castShadow receiveShadow />
-        <mesh geometry={G.hullName} material={R.hullName} />
-        <mesh geometry={G.superstructure} material={R.vc} castShadow />
-        <mesh geometry={G.shipWindows} material={R.windows} />
-        <Static geometry={R.containerGeo} material={R.genericMat} spec={L.shipGeneric} cast />
-        <Static geometry={R.containerGeo} material={R.brandMats[0]} spec={L.shipRivet} cast />
-      </group>
+      {/* ship hull + deck cargo + mooring lines are drawn by the Shipping module (berths.ts BERTHS.docks) */}
 
       {/* sheds */}
       {SHEDS.map((s, i) => (

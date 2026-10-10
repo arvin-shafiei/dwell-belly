@@ -4,7 +4,8 @@ import { z } from "zod";
 export interface CaseBundle {
   id: string;
   title: string;
-  documents: { name: string; text: string }[];
+  /** `chars` stands in for the text when a saved result is re-rendered without the case files. */
+  documents: { name: string; text: string; chars?: number }[];
   /** PDFs and images go to Claude as native blocks; no OCR step of our own. */
   media: { name: string; mediaType: string; base64: string }[];
   unreadable: string[];

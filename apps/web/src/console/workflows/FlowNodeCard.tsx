@@ -13,6 +13,10 @@ export type CardData = {
   run: NodeRun | null;
   /** An execution is overlaid and this node did not run in it. */
   dimmed: boolean;
+  /** Validation problems that name this node. */
+  problems?: string[];
+  /** Just placed by the Architect reveal: play the appear animation. */
+  appear?: boolean;
 };
 export type CardNode = Node<CardData, "card">;
 
@@ -38,12 +42,13 @@ function StatusMark({ run }: { run: NodeRun }) {
 }
 
 function FlowNodeCardImpl({ data, selected }: NodeProps<CardNode>) {
-  const { node, run, dimmed } = data;
+  const { node, run, dimmed, problems, appear } = data;
+  const bad = !!problems?.length;
   const meta = metaFor(node.type);
   const outs = meta.outputs;
   const tall = !!outs && outs.length > 1;
   const border =
-    run?.status === "error" ? "#ef4444"
+    bad || run?.status === "error" ? "#ef4444"
       : run?.status === "running" ? "#ff6a1a"
       : run?.status === "ok" ? "#22c55e"
       : selected ? "#ff6a1a" : "#3a3a42";
@@ -51,7 +56,7 @@ function FlowNodeCardImpl({ data, selected }: NodeProps<CardNode>) {
 
   return (
     <div
-      className={`relative rounded-xl bg-[#2a2a30] text-white shadow-[0_6px_20px_rgba(0,0,0,0.35)] transition-opacity ${dimmed ? "opacity-35" : ""} ${run?.status === "running" ? "wf-pulse" : ""}`}
+      className={`relative rounded-xl bg-[#2a2a30] text-white shadow-[0_6px_20px_rgba(0,0,0,0.35)] transition-opacity ${dimmed ? "opacity-35" : ""} ${run?.status === "running" ? "wf-pulse" : ""} ${appear ? "wf-appear" : ""}`}
       style={{
         width: CARD_W,
         height: tall ? 104 : 76,
@@ -77,13 +82,27 @@ function FlowNodeCardImpl({ data, selected }: NodeProps<CardNode>) {
         </div>
       </div>
 
+      {bad && (
+        <div
+          className="absolute -left-2 -top-2 grid h-5 min-w-5 place-items-center rounded-full bg-[#ef4444] px-1 text-[11px] font-bold text-white"
+          title={problems!.join("\n")}
+        >
+          !
+        </div>
+      )}
+      {bad && (
+        <div className="absolute left-1 right-1 top-full mt-1.5 line-clamp-2 text-[10px] leading-tight text-[#fca5a5]" title={problems!.join("\n")}>
+          {problems![0]}
+        </div>
+      )}
+
       {run && (
         <div className="absolute -right-2 -top-2">
           <StatusMark run={run} />
         </div>
       )}
 
-      {run && run.status !== "running" && (
+      {run && run.status !== "running" && !bad && (
         <div className="absolute left-1 top-full mt-1.5 flex gap-1 whitespace-nowrap text-[10px] tabular-nums text-white/60">
           <span className="rounded bg-black/40 px-1.5 py-0.5">{fmtMs(run.latencyMs)}</span>
           {run.costUsd > 0 && <span className="rounded bg-black/40 px-1.5 py-0.5">{fmtUsd(run.costUsd)}</span>}

@@ -7,10 +7,14 @@ import {
   Background, BackgroundVariant, Controls, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow,
   type Connection, type Edge, type NodeChange,
 } from "@xyflow/react";
-import type { ExecutionRecord, FlowNode, NodeType, WorkflowRecord } from "../types";
+import type { ExecutionRecord, Flow, FlowNode, NodeType, WorkflowRecord } from "../types";
 import {
-  executeCase, getExecution, listExecutions, loadWorkflows, saveWorkflow, type ExecutionSummary,
+  architectValidate, deleteWorkflow, executeCase, getExecution, listExecutions, loadWorkflows, saveWorkflow,
+  type ExecutionSummary,
 } from "./api";
+import { ArchitectPanel, Sparkle } from "./ArchitectPanel";
+import { nameFrom, problemsByNode, revealFrame, revealOrder, slugify, type ArchitectUsage } from "./architect";
+import { WorkflowMenu } from "./WorkflowMenu";
 import { Badge, Btn } from "./bits";
 import { ConsoleContext, HeaderActions } from "../ui";
 import {
@@ -71,9 +75,23 @@ function EditorInner() {
   const [runError, setRunError] = useState<string | null>(null);
   const [dialog, setDialog] = useState(false);
 
+  // Architect (AI builder) + validation
+  const [aiOpen, setAiOpen] = useState(false);
+  const [draft, setDraft] = useState<{ record: WorkflowRecord; description: string; prevId: string | null } | null>(null);
+  const [reveal, setReveal] = useState<{ order: string[]; count: number } | null>(null);
+  const [accepting, setAccepting] = useState(false);
+  const [check, setCheck] = useState<{ sig: string; problems: string[]; state: "ok" | "problems" | "unavailable"; msg?: string } | null>(null);
+  const [validating, setValidating] = useState(false);
+
   const doc = hist?.present ?? null;
-  const current = records?.find((r) => r.id === currentId) ?? null;
-  const dirty = !!doc && docSignature(doc) !== savedSig;
+  const current = draft?.record ?? records?.find((r) => r.id === currentId) ?? null;
+  const docSig = useMemo(() => (doc ? docSignature(doc) : ""), [doc]);
+  const dirty = !!doc && docSig !== savedSig;
+  const liveCheck = check && check.sig === docSig ? check : null;
+  const nodeProblems = useMemo(
+    () => (liveCheck?.problems.length && doc ? problemsByNode(liveCheck.problems, doc.flow) : null),
+    [liveCheck, doc],
+  );
 
   const open = useCallback((w: WorkflowRecord) => {
     const d = docOf(w);
@@ -81,6 +99,9 @@ function EditorInner() {
     setHist(initHistory(d));
     setSavedSig(docSignature(d));
     setSel(null);
+    setDraft(null);
+    setReveal(null);
+    setCheck(null);
     requestAnimationFrame(() => rf.fitView({ padding: 0.2, duration: 0 }));
   }, [rf]);
 
@@ -209,14 +230,48 @@ function EditorInner() {
     requestAnimationFrame(() => rf.fitView({ padding: 0.2, duration: 300 }));
   }, [commit, rf]);
 
-  const doSave = useCallback(async () => {
+  /** Ask the Architect to check the flow. Never blocks on a missing agent API. */
+  const runValidate = useCallback(async (): Promise<"ok" | "problems" | "unavailable"> => {
+    if (!doc) return "unavailable";
+    const sig = docSignature(doc);
+    setValidating(true);
+    const r = await architectValidate({ flow: doc.flow });
+    setValidating(false);
+    if (r.ok && Array.isArray(r.data?.problems)) {
+      const problems = r.data.problems;
+      setCheck({ sig, problems, state: problems.length ? "problems" : "ok" });
+      return problems.length ? "problems" : "ok";
+    }
+    setCheck({ sig, problems: [], state: "unavailable", msg: r.ok ? r.data?.error ?? "no answer" : r.error });
+    return "unavailable";
+  }, [doc]);
+
+  const doSave = useCallback(async (force = false) => {
     if (!doc || !current) return;
     setSave({ state: "saving" });
-    const rec: WorkflowRecord = { ...current, flow: doc.flow, positions: doc.positions, updatedAt: new Date().toISOString() };
+    if (!force && (await runValidate()) === "problems") {
+      setSave({ state: "error", msg: "The safety check found problems" });
+      return;
+    }
+    const isDraft = !!draft;
+    if (isDraft) setAccepting(true);
+    const rec: WorkflowRecord = {
+      ...current, flow: { ...doc.flow, id: current.id }, positions: doc.positions, updatedAt: new Date().toISOString(),
+      ...(isDraft ? { source: "db" as const, active: false } : {}),
+    };
     const r = await saveWorkflow(rec);
+    setAccepting(false);
     if (r.ok) {
       const saved = r.data?.workflow ?? rec;
-      setRecords((rs) => (rs ?? []).map((x) => (x.id === current.id ? saved : x)));
+      setRecords((rs) => {
+        const list = rs ?? [];
+        return list.some((x) => x.id === saved.id) ? list.map((x) => (x.id === saved.id ? saved : x)) : [...list, saved];
+      });
+      if (isDraft) {
+        setDraft(null);
+        setCurrentId(saved.id);
+        setParamsRef.current?.({ workflow: saved.id });
+      }
       setSavedSig(docSignature(doc));
       setFallback(null);
       setSave({ state: "saved" });
@@ -224,7 +279,90 @@ function EditorInner() {
     } else {
       setSave({ state: "error", msg: r.status === 404 ? "Save endpoint not available yet (404)" : `Save failed: ${r.error}` });
     }
-  }, [doc, current]);
+  }, [doc, current, draft, runValidate]);
+
+  // ---------- Architect drafts ----------
+  const startDraft = useCallback((d: { flow: Flow; description: string; problems: string[]; usage?: ArchitectUsage[] }) => {
+    const brief = d.description.split("\n\nChanges:")[0];
+    const name = draft?.record.name ?? nameFrom(brief);
+    const id = draft?.record.id ?? slugify(name, (records ?? []).map((r) => r.id));
+    const flow: Flow = { ...d.flow, id, name };
+    const next: FlowDoc = { flow, positions: layoutFlow(flow) };
+    const record: WorkflowRecord = { id, name, flow, positions: next.positions, active: false, updatedAt: new Date().toISOString(), source: "db" };
+    lastEdit.current = null;
+    setDraft({ record, description: d.description, prevId: draft ? draft.prevId : currentId });
+    setHist(initHistory(next));
+    setSavedSig("");
+    setSel(null);
+    setDims({});
+    setExecId(null);
+    setCursor(null);
+    setSave({ state: "idle" });
+    setCheck(d.problems.length ? { sig: docSignature(next), problems: d.problems, state: "problems" } : null);
+    setReveal({ order: revealOrder(flow), count: 0 });
+  }, [draft, records, currentId]);
+
+  const discardDraft = useCallback(() => {
+    if (!draft) return;
+    const prev = records?.find((r) => r.id === draft.prevId) ?? records?.[0];
+    if (prev) open(prev);
+    else { setDraft(null); setReveal(null); }
+  }, [draft, records, open]);
+
+  // Reveal the draft node by node, following the camera.
+  useEffect(() => {
+    if (!reveal) return;
+    if (reveal.count >= reveal.order.length) {
+      const t = setTimeout(() => { setReveal(null); rf.fitView({ padding: 0.2, duration: 450 }); }, 350);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setReveal((r) => (r ? { ...r, count: r.count + 1 } : r)), reveal.count === 0 ? 120 : 260);
+    return () => clearTimeout(t);
+  }, [reveal, rf]);
+  const revealCount = reveal?.count ?? null;
+  useEffect(() => {
+    if (!revealCount) return;
+    const t = setTimeout(() => rf.fitView({ padding: 0.35, duration: 220, maxZoom: 1.1 }), 40);
+    return () => clearTimeout(t);
+  }, [revealCount, rf]);
+
+  // ---------- workflow list actions ----------
+  const switchTo = useCallback((w: WorkflowRecord) => { open(w); setParamsRef.current?.({ workflow: w.id }); }, [open]);
+
+  const duplicate = useCallback(async () => {
+    if (!current || !doc || draft) return;
+    const id = slugify(`${current.name} copy`, (records ?? []).map((r) => r.id));
+    const rec: WorkflowRecord = {
+      ...current, id, name: `${current.name} (copy)`, flow: { ...doc.flow, id }, positions: doc.positions,
+      active: false, source: "db", updatedAt: new Date().toISOString(),
+    };
+    const r = await saveWorkflow(rec);
+    if (!r.ok) { setSave({ state: "error", msg: `Duplicate failed: ${r.error}` }); return; }
+    const saved = r.data?.workflow ?? rec;
+    setRecords((rs) => [...(rs ?? []), saved]);
+    switchTo(saved);
+  }, [current, doc, draft, records, switchTo]);
+
+  const rename = useCallback(async (name: string) => {
+    if (!current) return;
+    if (draft) { setDraft({ ...draft, record: { ...draft.record, name, flow: { ...draft.record.flow, name } } }); return; }
+    // Rename the saved version only; unsaved canvas edits stay unsaved.
+    const rec: WorkflowRecord = { ...current, name, flow: { ...current.flow, name }, updatedAt: new Date().toISOString() };
+    const r = await saveWorkflow(rec);
+    if (!r.ok) { setSave({ state: "error", msg: `Rename failed: ${r.error}` }); return; }
+    const saved = r.data?.workflow ?? rec;
+    setRecords((rs) => (rs ?? []).map((x) => (x.id === saved.id ? saved : x)));
+  }, [current, draft]);
+
+  const remove = useCallback(async () => {
+    if (!current || draft || current.source !== "db") return;
+    const r = await deleteWorkflow(current.id);
+    if (!r.ok) { setSave({ state: "error", msg: `Delete failed: ${r.error}` }); return; }
+    const rest = (records ?? []).filter((x) => x.id !== current.id);
+    setRecords(rest);
+    const next = rest.find((w) => w.active) ?? rest[0];
+    if (next) switchTo(next);
+  }, [current, draft, records, switchTo]);
 
   useEffect(() => { saveRef.current = () => { if (dirty) void doSave(); }; }, [dirty, doSave]);
 
@@ -263,7 +401,8 @@ function EditorInner() {
   // ---------- canvas model ----------
   const rfNodes: CardNode[] = useMemo(() => {
     if (!doc) return [];
-    return doc.flow.nodes.map((n) => {
+    const visible = reveal ? revealFrame(doc.flow, reveal.order, reveal.count).nodes : null;
+    return doc.flow.nodes.filter((n) => !visible || visible.has(n.id)).map((n) => {
       const run = overlay?.nodes[n.id] ?? null;
       return {
         id: n.id,
@@ -271,16 +410,17 @@ function EditorInner() {
         position: doc.positions[n.id] ?? { x: 0, y: 0 },
         selected: sel?.kind === "node" && sel.id === n.id,
         measured: dims[n.id],
-        data: { node: n, run, dimmed: !!overlay && !run },
+        data: { node: n, run, dimmed: !!overlay && !run, problems: nodeProblems?.byNode[n.id], appear: !!reveal },
       };
     });
-  }, [doc, overlay, sel, dims]);
+  }, [doc, overlay, sel, dims, reveal, nodeProblems]);
 
   const rfEdges: Edge[] = useMemo(() => {
     if (!doc) return [];
     const ids = new Set(doc.flow.nodes.map((n) => n.id));
     const flowPairs = new Set(doc.flow.edges.map((e) => pairKey(e.from, e.to)));
-    const res: Edge[] = doc.flow.edges.map((e) => {
+    const shown = reveal ? revealFrame(doc.flow, reveal.order, reveal.count).edges : doc.flow.edges;
+    const res: Edge[] = shown.map((e) => {
       const key = edgeKey(e);
       const taken = !!overlay?.taken.has(pairKey(e.from, e.to));
       const live = taken && cursor !== null;
@@ -313,7 +453,7 @@ function EditorInner() {
       });
     }
     return res;
-  }, [doc, overlay, sel, cursor]);
+  }, [doc, overlay, sel, cursor, reveal]);
 
   const selNode: FlowNode | null = sel?.kind === "node" ? doc?.flow.nodes.find((n) => n.id === sel.id) ?? null : null;
   const selEdge = sel?.kind === "edge" ? doc?.flow.edges.find((e) => edgeKey(e) === sel.key) ?? null : null;
@@ -324,11 +464,18 @@ function EditorInner() {
 
   const primaryActions = (
     <>
-      <Btn variant="outline" onClick={() => setDialog(true)} disabled={!!running} title="Run the agent on a case">
+      <button
+        type="button" onClick={() => { setAiOpen((o) => !o); setSel(null); }}
+        className={`wf-ai-btn inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-[12px] font-semibold text-white ${aiOpen ? "ring-2 ring-white/30" : ""}`}
+        title="Let the Architect design a workflow from a description"
+      >
+        <Sparkle size={14} /> Build with AI
+      </button>
+      <Btn variant="outline" onClick={() => setDialog(true)} disabled={!!running || !!draft} title={draft ? "Accept the draft before running it" : "Run the agent on a case"}>
         <Icon name="play" size={13} /> Execute workflow
       </Btn>
-      <Btn variant="primary" onClick={doSave} disabled={!dirty || save.state === "saving"} title="Save (⌘S)">
-        <Icon name="save" size={14} /> {save.state === "saving" ? "Saving…" : "Save"}
+      <Btn variant="primary" onClick={() => void doSave()} disabled={!dirty || save.state === "saving" || !!reveal} title="Validate, then save (⌘S)">
+        <Icon name="save" size={14} /> {save.state === "saving" ? (validating ? "Checking…" : "Saving…") : draft ? "Accept & save" : "Save"}
       </Btn>
     </>
   );
@@ -345,21 +492,13 @@ function EditorInner() {
           <Btn onClick={() => setPaletteOpen(true)} title="Show nodes panel"><Icon name="plus" size={14} /> Nodes</Btn>
         )}
         <div className="flex min-w-0 items-center gap-2">
-          {records.length > 1 ? (
-            <select
-              value={currentId ?? ""}
-              onChange={(e) => {
-                const w = records.find((r) => r.id === e.target.value);
-                if (w && (!dirty || window.confirm("Discard unsaved changes?"))) { open(w); setParamsRef.current?.({ workflow: w.id }); }
-              }}
-              className="h-8 max-w-[220px] truncate rounded-md border border-white/10 bg-[#222227] px-2 text-[13px] font-semibold text-white outline-none"
-            >
-              {records.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-            </select>
-          ) : (
-            <span className="truncate text-[13px] font-semibold">{current?.name ?? doc.flow.name}</span>
-          )}
-          {current?.source === "file" && <Badge title={fallback ?? "Read from apps/api/flows"}>from file</Badge>}
+          <WorkflowMenu
+            records={records} current={current} isDraft={!!draft} dirty={dirty}
+            onOpen={switchTo} onDuplicate={() => void duplicate()} onRename={(n) => void rename(n)}
+            onDelete={() => void remove()} onNew={() => { setAiOpen(true); setSel(null); }}
+          />
+          {draft && <Badge tone="violet" title="Generated by the Architect, not saved yet">AI draft</Badge>}
+          {current?.source === "file" && !draft && <Badge title={fallback ?? "Read from apps/api/flows"}>from file</Badge>}
           {dirty ? (
             <span className="inline-flex items-center gap-1 text-[11px] text-[#ff8a4c]"><span className="h-1.5 w-1.5 rounded-full bg-[#ff6a1a]" />Unsaved</span>
           ) : save.state === "saved" ? (
@@ -371,10 +510,20 @@ function EditorInner() {
           <Btn onClick={doUndo} disabled={!hist?.past.length} title="Undo (⌘Z)"><Icon name="undo" size={15} /></Btn>
           <Btn onClick={doRedo} disabled={!hist?.future.length} title="Redo (⇧⌘Z)"><Icon name="redo" size={15} /></Btn>
           <Btn onClick={autoLayout} title="Auto-layout"><Icon name="layout" size={15} /><span className="hidden xl:inline">Tidy up</span></Btn>
+          <Btn onClick={() => void runValidate()} disabled={validating} title="Run the Architect's safety check on this flow">
+            <Icon name="shield" size={15} /><span className="hidden xl:inline">{validating ? "Checking…" : "Validate"}</span>
+          </Btn>
         </div>
 
         <div className="ml-auto flex min-w-0 items-center gap-2">
-          {save.state === "error" && <span className="truncate text-[11px] text-[#f87171]" title={save.msg}>{save.msg}</span>}
+          {save.state === "error" && (
+            <span className="flex min-w-0 items-center gap-1.5 text-[11px] text-[#f87171]">
+              <span className="truncate" title={save.msg}>{save.msg}</span>
+              {liveCheck?.state === "problems" && (
+                <button type="button" className="shrink-0 underline hover:text-white" onClick={() => void doSave(true)}>Save anyway</button>
+              )}
+            </span>
+          )}
           <ExecutionPicker
             executions={executions} error={execError} selectedId={execId}
             onSelect={selectExecution} onRefresh={refreshExecutions}
@@ -384,6 +533,26 @@ function EditorInner() {
       </div>
 
       {/* Run strip */}
+      {liveCheck && !reveal && (
+        <div className={`flex shrink-0 flex-wrap items-start gap-x-3 gap-y-1 border-b border-white/10 px-3 py-1.5 text-[12px] ${liveCheck.state === "problems" ? "bg-[#ef4444]/[0.07]" : "bg-[#1b1b1f]"}`}>
+          {liveCheck.state === "ok" && (
+            <span className="inline-flex items-center gap-1.5 text-[#4ade80]"><Icon name="shield" size={13} /> Safety check passed: every action is gated, ask goes to a human, no cycles.</span>
+          )}
+          {liveCheck.state === "unavailable" && (
+            <span className="text-[#fbbf24]">Could not run the safety check: {liveCheck.msg}</span>
+          )}
+          {liveCheck.state === "problems" && (
+            <div className="min-w-0 flex-1 text-[#fca5a5]">
+              <span className="font-semibold">{liveCheck.problems.length} problem{liveCheck.problems.length === 1 ? "" : "s"} found by the safety check</span>
+              {nodeProblems?.general.length ? <span>: {nodeProblems.general.join(" · ")}</span> : null}
+              {nodeProblems && Object.keys(nodeProblems.byNode).length > 0 && (
+                <span className="text-white/50"> · marked on {Object.keys(nodeProblems.byNode).length} node(s)</span>
+              )}
+            </div>
+          )}
+          <button type="button" className="ml-auto text-white/40 hover:text-white" onClick={() => setCheck(null)} title="Dismiss"><Icon name="close" size={12} /></button>
+        </div>
+      )}
       {(running || runError || execId || fallback) && (
         <div className="flex min-h-9 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-b border-white/10 bg-[#1b1b1f] px-3 py-1.5 text-[12px]">
           {running && (
@@ -478,6 +647,18 @@ function EditorInner() {
             />
           </ReactFlow>
         </div>
+        {aiOpen && (
+          <div className={selNode || selEdge ? "hidden" : "flex h-full"}>
+            <ArchitectPanel
+              draft={draft ? { description: draft.description, revealing: !!reveal } : null}
+              onDraft={startDraft}
+              onAccept={() => void doSave()}
+              onDiscard={discardDraft}
+              accepting={accepting || save.state === "saving"}
+              onClose={() => setAiOpen(false)}
+            />
+          </div>
+        )}
         {selNode && (
           <NodePanel
             key={selNode.id}

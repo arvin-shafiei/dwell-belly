@@ -79,3 +79,22 @@
 @media (prefers-reduced-motion: reduce) {
   .wf-spin, .wf-pulse { animation: none; }
 }
+
+@keyframes wf-pulse-soft { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.85); } }
+.wf-pulse-soft { display: inline-block; animation: wf-pulse-soft 1.1s ease-in-out infinite; }
+
+@keyframes wf-appear {
+  from { opacity: 0; transform: translateY(8px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+.wf-appear { animation: wf-appear 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+
+.wf-ai-btn {
+  background: linear-gradient(135deg, #ff6a1a 0%, #e8590c 45%, #8b5cf6 100%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 4px 14px rgba(255, 106, 26, 0.25);
+}
+.wf-ai-btn:hover { filter: brightness(1.1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wf-pulse-soft, .wf-appear { animation: none; }
+}

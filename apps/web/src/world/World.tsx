@@ -43,11 +43,14 @@ import Crowds from "./modules/Crowds";
 import Streetscape from "./modules/Streetscape";
 import Construction from "./modules/Construction";
 import Chases from "./modules/Chases";
+import Collisions from "./modules/Collisions";
+import CityRemote from "./modules/CityRemote";
 
 const MODULES = {
   Sky, Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs, Airport,
   Traffic, Transit, TrafficLights, DeliveryFleet, Crashes, Responders, Roadworks, Scenarios, Life, CameraRig, WorkflowDriver,
-  Motorway, River, ContainerTerminal, Industrial, Southbank, OldTown, Shoreditch, Hampstead, Rail, Crowds, Streetscape, Construction, Chases,
+  Motorway, River, ContainerTerminal, Industrial, Southbank, OldTown, Shoreditch, Hampstead, Rail, Crowds, Streetscape, Construction, Chases, Collisions,
+  CityRemote,
 };
 
 export default function World() {

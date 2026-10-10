@@ -24,7 +24,8 @@ import {
   type Material,
 } from "three";
 import { on } from "../../bus";
-import { allVehicles, nextId, registerVehicle, type VehicleEntry, type VehicleKind } from "../../registry";
+import { forgetSeparation, nearby, obstacleAhead, separation } from "../../physics";
+import { allVehicles, getVehicle, nextId, registerVehicle, type VehicleEntry, type VehicleKind } from "../../registry";
 import { ROAD_EDGES, edgeKey, getNode, type RoadEdge } from "../../roads";
 import { hasSignal, signalFor } from "../../signals";
 import { blockedSet, useWorld, type Incident } from "../../store";
@@ -39,10 +40,13 @@ import {
   idmAccel,
   isJunction,
   laneObstacle,
+  lateralOf,
   needsReroute,
+  pathPointAhead,
   pickDestination,
   poseAt,
   replanPath,
+  shouldYield,
   signalDecision,
   smoothPose,
   turnSide,
@@ -78,6 +82,13 @@ const CLEAR_RADIUS = 25; // incident:cleared removes crashed cars within this di
 const VIS_DIST = 1500; // beyond this the camera can't make out a car anyway
 const HIDDEN_POSE_EVERY = 8; // frames between registry position refreshes for hidden vehicles
 const PATH_BUDGET = 8; // new-destination path searches per frame (closures are never deferred)
+const ROAD_RANK: Record<string, number> = { highway: 2, street: 1, country: 0 };
+const GIVE_WAY_MAX = 6; // s: after this long giving way, a driver edges out anyway
+const IMPATIENT_SPEED = 4; // m/s cap through the junction after giving up on giving way
+const GHOST_SPEED = 1.5; // m/s cap while creeping out of a deadlock (below the 3.5 m/s crash threshold)
+const BEAM_EXTRA = 6; // look-ahead beam range = comfortable stopping distance + this
+const BEAM_HIDDEN_EVERY = 4; // frames between beam casts for vehicles out of view
+const JBOX = 11; // metres around a junction node that count as "in the junction"
 
 type Mode = "drive" | "uturn" | "crashed";
 
@@ -121,6 +132,18 @@ interface Driver {
   crashYaw: number;
   crashRoll: number;
   crashedAt: number;
+  crashVx: number; // slide velocity after a crash (own velocity + collision impulse)
+  crashVz: number;
+  beamGap: number; // bumper gap to whatever the look-ahead beam last hit (Infinity = clear)
+  beamSpeed: number; // its speed along our heading
+  beamIn: number; // frames until the next cast
+  giveWay: boolean; // waiting at the line of the junction ahead for traffic with priority
+  uHold: number; // seconds a U-turn has waited for something in front of it
+  beamWhy: number; // debug: what the beam last braked for (see why())
+  beamHit: string; // id of what the beam braked for (deadlock detection)
+  stuckFor: number; // seconds stopped nose-to-tail behind another stopped car
+  ghostFor: number; // > 0: breaking a deadlock, creeping past other traffic cars
+  waitFor: number; // seconds spent giving way at this junction (impatience after GIVE_WAY_MAX)
 }
 
 const rand = Math.random;
@@ -138,6 +161,8 @@ const frustum = new Frustum();
 const projScreen = new Matrix4();
 const camPos = new Vector3();
 const sphere = new Sphere();
+const beamA: Pose = { x: 0, z: 0, h: 0 };
+const beamB: Pose = { x: 0, z: 0, h: 0 };
 
 const C_TAIL_OFF = new Color(0.35, 0.03, 0.03);
 const C_TAIL_RUN = new Color(0.9, 0.06, 0.05);
@@ -146,6 +171,19 @@ const C_IND_OFF = new Color(0.45, 0.25, 0.05);
 const C_IND_ON = new Color(2.4, 1.2, 0.1);
 const C_HEAD_DAY = new Color(0.92, 0.92, 0.86);
 const C_HEAD_NIGHT = new Color(2.6, 2.4, 1.8);
+
+/** Debug reasons for d.beamWhy: 1 stopped thing, 2 following, 3 oncoming in path, 4 junction yield, 5 waiting for the box, 6 crossing. */
+function why(d: Driver, code: number, gap: number) {
+  d.beamWhy = code;
+  return gap;
+}
+
+/** Continue a path-end pose straight ahead by `extra` metres (the beam outruns a path that ends). */
+function extendPose(p: Pose, extra: number) {
+  if (extra <= 0) return;
+  p.x += Math.sin(p.h) * extra;
+  p.z += Math.cos(p.h) * extra;
+}
 
 // --- Spawn pools: edges weighted by length x district density x high-street bonus ---------
 
@@ -222,6 +260,7 @@ export class TrafficSim {
   private headMat: MeshBasicMaterial;
   private drivers: Driver[] = [];
   private bySlot = new Map<Archetype, Driver[]>();
+  private byId = new Map<string, Driver>();
   private lanes = new Map<string, Map<string, VehicleEntry[]>>();
   private usedLanes: VehicleEntry[][] = [];
   private blocked: Set<string> = new Set();
@@ -232,6 +271,8 @@ export class TrafficSim {
   private night = -1;
   private sweepIn = 2;
   private selfId = "";
+  /** Look-ahead beam on/off (tests compare against the lane-only model). */
+  beam = true;
   /** Last frame's counts, for profiling. */
   readonly stats = { visible: 0, hidden: 0, crashed: 0 };
 
@@ -312,6 +353,7 @@ export class TrafficSim {
     this.cleanup = [];
     for (const d of this.drivers) d.unregister();
     this.drivers = [];
+    this.byId.clear();
     this.bySlot.clear();
   }
 
@@ -335,6 +377,7 @@ export class TrafficSim {
       committed: false, stillFor: 0, blockedStill: 0, patience: 1, retryIn: 0, checkIn: 0,
       pose: p(), target: p(), off: { x: 0, z: 0, h: 0 }, pitch: 0, roll: 0, braking: false, signal: 0,
       uA: p(), uB: p(), uU: 0, uDur: 2.5, crashT: 0, crashFrom: p(), crashV: 0, crashYaw: 0, crashRoll: 0, crashedAt: 0,
+      crashVx: 0, crashVz: 0, beamGap: Infinity, beamSpeed: 0, beamIn: ord % BEAM_HIDDEN_EVERY, giveWay: false, uHold: 0, beamWhy: 0, beamHit: "", stuckFor: 0, ghostFor: 0, waitFor: 0,
     };
     entry.crash = () => this.crash(d);
     return d;
@@ -343,6 +386,13 @@ export class TrafficSim {
   /** (Re)spawn a driver on a free random lane, optionally at least 80 m from `avoid`. */
   private spawn(d: Driver, avoid: { x: number; z: number } | null) {
     d.unregister();
+    if (d.entry.id) {
+      forgetSeparation(d.entry.id);
+      this.byId.delete(d.entry.id);
+    }
+    d.stuckFor = d.ghostFor = 0;
+    d.beamGap = Infinity;
+    d.beamSpeed = 0;
     let a = "";
     let b = "";
     let t = 0.5;
@@ -380,6 +430,7 @@ export class TrafficSim {
     paint.instanceColor!.needsUpdate = true;
 
     d.entry.id = nextId(ID_PREFIX[d.arche]);
+    this.byId.set(d.entry.id, d);
     d.entry.stopped = false;
     d.entry.from = null;
     this.syncEntry(d, true);
@@ -425,14 +476,36 @@ export class TrafficSim {
 
   private crash(d: Driver): boolean {
     if (d.mode === "crashed") return false;
+    // A physics crash (Collisions sets an impulse hint) is refused off screen: hidden cars only
+    // refresh their pose every few frames, so their overlaps aren't trustworthy, and nobody sees it.
+    const imp = d.entry.object.userData.impulse as { x: number; z: number } | undefined;
+    if (imp && !d.visible) return false;
     d.mode = "crashed";
     d.crashFrom.x = d.pose.x;
     d.crashFrom.z = d.pose.z;
     d.crashFrom.h = d.pose.h;
-    d.crashV = Math.max(d.speed, 5);
-    const sign = rand() < 0.5 ? -1 : 1;
+    const fx = Math.sin(d.pose.h);
+    const fz = Math.cos(d.pose.h);
     const big = d.arche === "hgv";
-    d.crashYaw = sign * between(40, big ? 60 : 120) * (Math.PI / 180);
+    let sign = rand() < 0.5 ? -1 : 1;
+    let spinK = 1;
+    if (imp) {
+      // momentum: keep our own velocity plus the impulse from the other vehicle
+      d.crashVx = fx * d.speed + imp.x;
+      d.crashVz = fz * d.speed + imp.z;
+      d.crashV = Math.hypot(d.crashVx, d.crashVz);
+      // a hit from the side spins us away from it; a straight shunt barely spins
+      const side = imp.x * fz - imp.z * fx; // > 0 = pushed to the right
+      const along = Math.abs(imp.x * fx + imp.z * fz);
+      sign = side >= 0 ? -1 : 1;
+      spinK = Math.min(1, 0.35 + Math.abs(side) / (Math.abs(side) + along + 0.01));
+    } else {
+      d.crashV = Math.max(d.speed, 5);
+      const lat = sign > 0 ? -0.25 : 0.25; // slide out the way the car spins
+      d.crashVx = (fx + fz * lat) * d.crashV;
+      d.crashVz = (fz - fx * lat) * d.crashV;
+    }
+    d.crashYaw = sign * spinK * between(40, big ? 60 : 120) * (Math.PI / 180);
     const rollSign = rand() < 0.5 ? -1 : 1;
     d.crashRoll = rollSign * (d.arche === "moto" ? between(1.3, 1.45) : big ? between(0.03, 0.06) : between(0.07, 0.15));
     d.crashT = 0;
@@ -482,6 +555,7 @@ export class TrafficSim {
     d.speed = 0;
     d.committed = false;
     d.stillFor = d.blockedStill = 0;
+    d.uHold = 0;
     if (animate) {
       d.mode = "uturn";
       d.uU = 0;
@@ -613,9 +687,39 @@ export class TrafficSim {
       if (vTurn < v0) v0 = Math.min(v0, vTurn + Math.max(0, distToNode - TURN_R) * 0.4);
     }
 
+    if (d.ghostFor > 0) {
+      d.ghostFor -= dt;
+      v0 = Math.min(v0, GHOST_SPEED);
+    }
+    if (d.waitFor >= GIVE_WAY_MAX) v0 = Math.min(v0, IMPATIENT_SPEED); // edging out after a long wait
     const lead = laneObstacle(d.path, d.idx, d.t, d.half, this.lookup, full ? 60 : 0);
     let gap = lead.gap;
     let closing = v - lead.speed;
+    // Look-ahead beam: anything physically in front (other modules' vehicles, crossing traffic, wrecks)
+    if (this.beam && (full || --d.beamIn <= 0)) {
+      d.beamIn = BEAM_HIDDEN_EVERY;
+      this.castBeam(d, v, a, b, len, distToNode, hasNext, full);
+      // give way at the junction ahead (hidden cars ignore lights, so they always use the gap rule)
+      d.giveWay = false;
+      if (hasNext && isJunction(b) && d.waitFor < GIVE_WAY_MAX) {
+        const toLine = distToNode - STOP_LINE - d.half;
+        if (toLine > -0.5 && toLine < (v * v) / (2 * IDM.bComf) + 4)
+          d.giveWay = this.mustGiveWay(d, a, b, c, edge, distToNode, v, full && hasSignal(b));
+      }
+    }
+    if (d.beamGap < gap) {
+      gap = d.beamGap;
+      closing = v - d.beamSpeed;
+    }
+    // deadlock: a ring of cars each stopped for the next (acute junctions, U-turn tangles). The lowest
+    // id in the ring creeps through (a slow overlap: Collisions nudges, no crash).
+    if (v < 0.3 && d.beamWhy === 1 && d.beamGap < 3 && d.ghostFor <= 0) {
+      d.stuckFor += dt;
+      if (d.stuckFor > 2.5 && this.deadlockLeader(d)) {
+        d.ghostFor = 4;
+        d.stuckFor = 0;
+      }
+    } else d.stuckFor = 0;
     let atSignal = false;
     const consider = (g: number) => {
       if (g < gap) {
@@ -633,6 +737,10 @@ export class TrafficSim {
         atSignal = gap === distToLine + IDM.s0;
       }
     }
+    // waited long enough: edge out (the beam still stops us for anything actually in the way)
+    if (d.giveWay) d.waitFor += dt;
+    else if (d.waitFor < GIVE_WAY_MAX) d.waitFor = 0; // (once impatient, stays so until the next edge)
+    if (d.giveWay && hasNext) consider(Math.max(0, distToNode - STOP_LINE - d.half) + IDM.s0);
     if (!hasNext) consider(distToNode - d.half - 1 + IDM.s0);
     else if (this.blocked.size && this.blocked.has(edgeOf(b, c)?.key ?? edgeKey(b, c))) consider(distToNode - STOP_LINE - d.half + IDM.s0);
 
@@ -663,9 +771,11 @@ export class TrafficSim {
     }
     d.accel = (nv - v) / dt;
     d.speed = nv;
+    if (d.beamGap !== Infinity) d.beamGap -= ds; // between casts, assume the obstacle stood still
     const entered = advance(d, ds);
     if (entered) {
       d.committed = false;
+      d.waitFor = 0;
       if (needsReroute(d.path, d.idx, this.blocked)) this.reroute(d);
       if (d.idx > 4) {
         d.path.splice(0, d.idx - 1);
@@ -677,14 +787,14 @@ export class TrafficSim {
     if (nv < 0.3) {
       if (closureAhead) {
         d.blockedStill += dt;
-        if (d.blockedStill > d.patience) {
+        if (d.blockedStill > d.patience && this.uturnClear(d)) {
           this.startUturn(d, full);
           if (full) this.uturn(d, 0);
           return;
         }
       } else if (!atSignal) {
         d.stillFor += dt;
-        if (d.stillFor > (hasNext ? 18 : 3) + d.patience * 4) {
+        if (d.stillFor > (hasNext ? 18 : 3) + d.patience * 4 && this.uturnClear(d)) {
           this.startUturn(d, full);
           if (full) this.uturn(d, 0);
           return;
@@ -725,6 +835,14 @@ export class TrafficSim {
       d.pose.h = d.target.h;
       d.off.x = d.off.z = d.off.h = 0;
     } else smoothPose(d.pose, d.target, d.off, dt, nv * dt * 1.6 + 0.12, d.pose);
+    // slow overlap with something (Collisions): nudge out of it; the offset decays back onto the lane
+    const sep = separation(d.entry.id);
+    if (sep) {
+      d.pose.x += sep.x;
+      d.pose.z += sep.z;
+      d.off.x += sep.x;
+      d.off.z += sep.z;
+    }
 
     // lean: motorbikes into the corner, cars a touch outwards
     const yawRate = Math.atan2(Math.sin(d.pose.h - prevH), Math.cos(d.pose.h - prevH)) / dt;
@@ -733,7 +851,185 @@ export class TrafficSim {
     this.syncEntry(d, true);
   }
 
+  private near: VehicleEntry[] = [];
+
+  /**
+   * Gap acceptance at the junction b we're approaching (path a -> b -> c). Give way to anything moving
+   * in the junction box, and (unsignalled) to crossing traffic that gets there first: a major road
+   * (highway) has priority over minor ones, equal roads go by time to the junction (ties by id).
+   * Oncoming traffic only matters when we turn right across it (UK).
+   */
+  private mustGiveWay(d: Driver, a: string, b: string, c: string, edge: RoadEdge, distToNode: number, v: number, signalled: boolean): boolean {
+    const jn = getNode(b);
+    const myRank = ROAD_RANK[edge.kind] ?? 1;
+    const myTTJ = distToNode / Math.max(v, 1);
+    const turningRight = turnSide(a, b, c) === -1;
+    const hx = Math.sin(d.pose.h);
+    const hz = Math.cos(d.pose.h);
+    for (const o of nearby(jn.x, jn.z, JBOX + 35, this.near)) {
+      if (o === d.entry || o.stopped || o.speed < 1) continue;
+      const oh = o.object.rotation.y;
+      const ofx = Math.sin(oh);
+      const ofz = Math.cos(oh);
+      const dot = hx * ofx + hz * ofz;
+      if (dot > 0.7) continue; // same direction: lane following handles it
+      const oncoming = dot < -0.7;
+      if (oncoming && !turningRight) continue;
+      const dx = jn.x - o.object.position.x;
+      const dz = jn.z - o.object.position.z;
+      const dist = Math.hypot(dx, dz);
+      const toward = dx * ofx + dz * ofz;
+      if (dist < JBOX) {
+        if (toward > 0 || dist < 5) return true; // in the junction and not leaving it
+        continue;
+      }
+      if (signalled || toward <= 0.3 * dist) continue; // lights decide / not heading for this junction
+      const ttj = (dist - JBOX * 0.5) / o.speed;
+      const e = o.edgeKey ? ROAD_EDGES.get(o.edgeKey) : undefined;
+      const oRank = e ? (ROAD_RANK[e.kind] ?? 1) : myRank;
+      if (oRank > myRank) {
+        if (ttj < 3.5) return true;
+      } else if (oRank === myRank && ttj < 2.5 && (ttj < myTTJ || (Math.abs(ttj - myTTJ) < 0.05 && o.id < d.entry.id))) return true;
+    }
+    return false;
+  }
+
+  /** Is `d` in a ring of cars each beam-blocked by the next, and the lowest id in it? */
+  private deadlockLeader(d: Driver): boolean {
+    let cur = d;
+    let minId = d.entry.id;
+    for (let k = 0; k < 10; k++) {
+      const nx = this.byId.get(cur.beamHit);
+      if (!nx || nx.mode !== "drive" || nx.speed >= 0.3 || nx.beamGap > 3 || nx.beamWhy === 0) return false;
+      if (nx === d) return minId === d.entry.id;
+      if (nx.entry.id < minId) minId = nx.entry.id;
+      cur = nx;
+    }
+    return false;
+  }
+
+  /** Room to swing round into the other lane: nothing moving where the U-turn ends up. */
+  private uturnClear(d: Driver): boolean {
+    const P = d.pose;
+    const fx = Math.sin(P.h);
+    const fz = Math.cos(P.h);
+    // UK: the other lane is to our right, 2 x LANE_OFFSET over
+    const tx = P.x + fz * 4 + fx * 2;
+    const tz = P.z - fx * 4 + fz * 2;
+    for (const o of nearby(tx, tz, 9, this.near)) if (o !== d.entry && !o.stopped && o.speed > 0.5) return false;
+    return true;
+  }
+
+  /**
+   * Cast the look-ahead beam along the path (two chords: nose -> half range -> full range, so it
+   * follows bends) and decide what the nearest hit means: follow it, stop for it, or (in a junction)
+   * give way / ignore it by the yield rule. Sets d.beamGap / d.beamSpeed.
+   */
+  private castBeam(d: Driver, v: number, a: string, b: string, len: number, distToNode: number, hasNext: boolean, full: boolean) {
+    d.beamGap = Infinity;
+    d.beamSpeed = 0;
+    d.beamWhy = 0;
+    if (!full) {
+      // hidden vehicles keep a stale pose: refresh it (and the registry) for an honest cast
+      poseAt(d.path, d.idx, d.t, d.pose);
+      d.entry.object.position.set(d.pose.x, 0, d.pose.z);
+      d.entry.object.rotation.set(0, d.pose.h, 0, "YXZ");
+    }
+    const P = d.pose;
+    const range = (v * v) / (2 * IDM.bComf) + BEAM_EXTRA;
+    const halfW = Math.max(0.6, WIDTH[d.arche] / 2 + 0.15);
+    const ox = P.x + Math.sin(P.h) * d.half;
+    const oz = P.z + Math.cos(P.h) * d.half;
+    extendPose(beamA, pathPointAhead(d.path, d.idx, d.t, d.half + range * 0.5, beamA));
+    extendPose(beamB, pathPointAhead(d.path, d.idx, d.t, d.half + range, beamB));
+
+    // the junction we're in or approaching
+    let J = "";
+    if (hasNext && distToNode < JBOX + range && isJunction(b)) J = b;
+    else if (d.t * len < JBOX && isJunction(a)) J = a;
+    const jn = J ? getNode(J) : null;
+    const selfIn = !!jn && Math.hypot(P.x - jn.x, P.z - jn.z) < JBOX;
+
+    let sx = ox;
+    let sz = oz;
+    let offset = 0;
+    for (let seg = 0; seg < 2; seg++) {
+      const tx = seg === 0 ? beamA.x : beamB.x;
+      const tz = seg === 0 ? beamA.z : beamB.z;
+      const segLen = Math.hypot(tx - sx, tz - sz);
+      if (segLen > 0.3) {
+        const h = Math.atan2(tx - sx, tz - sz);
+        let from = 0;
+        for (let tries = 0; tries < 3 && from < segLen; tries++) {
+          const hit = obstacleAhead(d.entry.id, sx + Math.sin(h) * from, sz + Math.cos(h) * from, h, segLen - from, halfW);
+          if (!hit) break;
+          const dist = from + hit.dist;
+          const gap = this.judge(d, hit.id, hit.stopped, offset + dist, h, sx, sz, jn, selfIn, distToNode, J === b);
+          if (gap !== null) {
+            d.beamGap = Math.max(0, gap);
+            d.beamHit = hit.id;
+            return;
+          }
+          // ignored (oncoming in its own lane, or it must give way to us): look past it
+          from = dist + 0.5;
+        }
+      }
+      offset += segLen;
+      sx = tx;
+      sz = tz;
+    }
+  }
+
+  /** What a beam hit means. Returns the gap to brake for (and sets beamSpeed), or null to ignore it. */
+  private judge(
+    d: Driver, id: string, stopped: boolean, gap: number, h: number, sx: number, sz: number,
+    jn: { x: number; z: number } | null, selfIn: boolean, distToNode: number, jAhead: boolean,
+  ): number | null {
+    const o = getVehicle(id);
+    if (!o) return null;
+    if (d.ghostFor > 0) {
+      const od = this.byId.get(id);
+      if (od && od.mode !== "crashed") return null; // breaking a deadlock: creep past other cars
+    }
+    const ox = o.object.position.x;
+    const oz = o.object.position.z;
+    const oh = o.object.rotation.y;
+    if (stopped || o.speed < 0.5) return why(d, 1, gap); // wreck, queue, parked responder: stop behind it
+    const dot = Math.cos(oh - h);
+    if (dot > 0.5) {
+      d.beamSpeed = o.speed * dot; // going our way: follow it
+      return why(d, 2, gap);
+    }
+    // oncoming traffic whose centre is well off our line is in its own lane: the beam clipped it on a bend
+    if (dot < -0.5 && Math.abs(lateralOf(sx, sz, h, ox, oz)) > 2.4) return null;
+    if (jn) {
+      const otherIn = Math.hypot(ox - jn.x, oz - jn.z) < JBOX;
+      if (selfIn && otherIn) {
+        // both in the junction: exactly one gives way
+        return shouldYield(d.pose.x, d.pose.z, d.pose.h, d.entry.id, ox, oz, oh, id) ? why(d, 4, gap) : null;
+      }
+      if (!selfIn && otherIn && jAhead) {
+        // something crossing the junction ahead: wait at the line rather than nose in behind it
+        const toLine = distToNode - STOP_LINE - d.half;
+        return why(d, 5, toLine > 0 ? Math.min(gap, toLine) : gap);
+      }
+    }
+    return why(d, dot < -0.5 ? 3 : 6, gap); // crossing or wrong-way in our path: stop for it
+  }
+
   private uturn(d: Driver, dt: number) {
+    // swinging across the other lane: hold (up to a few seconds) while something is right in front
+    if (this.beam && dt > 0 && d.uU > 0 && d.uHold < 4) {
+      const nx = d.pose.x + Math.sin(d.pose.h) * d.half;
+      const nz = d.pose.z + Math.cos(d.pose.h) * d.half;
+      if (obstacleAhead(d.entry.id, nx, nz, d.pose.h, 2.5, Math.max(0.6, WIDTH[d.arche] / 2 + 0.1))) {
+        d.uHold += dt;
+        d.speed = 0;
+        d.braking = true;
+        this.syncEntry(d, true);
+        return;
+      }
+    }
     d.uU = Math.min(1, d.uU + dt / d.uDur);
     const u = d.uU * d.uU * (3 - 2 * d.uU);
     uturnPose(d.uA, d.uB, u, d.pose);
@@ -757,12 +1053,9 @@ export class TrafficSim {
     d.crashT += dt;
     const u = Math.min(1, d.crashT / DUR);
     const eased = 1 - (1 - u) * (1 - u);
-    const dist = d.crashV * DUR * 0.5 * eased;
-    const fx = Math.sin(d.crashFrom.h);
-    const fz = Math.cos(d.crashFrom.h);
-    const side = d.crashYaw > 0 ? -0.25 : 0.25;
-    d.pose.x = d.crashFrom.x + fx * dist + fz * side * dist;
-    d.pose.z = d.crashFrom.z + fz * dist - fx * side * dist;
+    const k = DUR * 0.5 * eased; // decelerating slide
+    d.pose.x = d.crashFrom.x + d.crashVx * k;
+    d.pose.z = d.crashFrom.z + d.crashVz * k;
     d.pose.h = d.crashFrom.h + d.crashYaw * eased;
     d.roll = d.crashRoll * eased;
     d.pitch = 0.03 * Math.sin(u * Math.PI);

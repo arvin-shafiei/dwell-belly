@@ -11,7 +11,9 @@ import { DEFAULT_BUFFER, Lookahead, type ObstacleFn } from "../DeliveryFleet/loo
 import { ROAD_EDGES, ROAD_NODES, edgeKey, findPath, getEdge, getNode, neighbours } from "../../roads";
 import { hasSignal, signalFor } from "../../signals";
 import { useWorld } from "../../store";
+import { BERTHS, type BerthState } from "../../berths";
 import { RmgSim, type RmgEvent } from "./cranes";
+import { Quay, type QuayEvent } from "./quay";
 import {
   STYLES,
   YARD_SPEED,
@@ -33,8 +35,8 @@ import { Yard, mulberry32, type Box } from "./yard";
 
 export const CAB_COLORS = ["#e63946", "#ffb703", "#2a9df4", "#06d6a0", "#ff6a1a", "#8338ec", "#f15bb5", "#3a86ff", "#fb5607", "#80ed99", "#ffd166", "#ef476f", "#118ab2", "#9ef01a"];
 
-export type Leg = "toGate" | "toCustoms" | "toBay" | "outbound";
-export type Phase = "wait" | "driving" | "checkin" | "inspect" | "atBay" | "drop" | "wrecked" | "clearing" | "gone";
+export type Leg = "toGate" | "toCustoms" | "toBay" | "toQuay" | "outbound";
+export type Phase = "wait" | "driving" | "checkin" | "inspect" | "atBay" | "atQuay" | "drop" | "wrecked" | "clearing" | "gone";
 
 export interface Truck {
   id: string;
@@ -50,6 +52,8 @@ export interface Truck {
   gate: number;
   rmg: number;
   dest: string;
+  quayCrane: number; // STS crane serving this lorry directly on the quay road (-1 = none)
+  quayNode: string;
   at: string; // node the current leg started from
   route: Route | null;
   s: number;
@@ -160,6 +164,8 @@ export interface SimOptions {
   firstTipAfter?: number;
   /** Seconds between self-inflicted rollovers (min, max). */
   tipGap?: [number, number];
+  /** Berth to work (defaults to BERTHS.terminal); injectable for tests. */
+  berth?: BerthState;
   /** Look-ahead raycast (defaults to physics.obstacleAhead); injectable for tests. */
   obstacleFn?: ObstacleFn;
 }
@@ -176,6 +182,8 @@ const _a: Pose = { x: 0, z: 0, h: 0 };
 export class TruckSim {
   readonly yard: Yard;
   readonly rmgs: RmgSim[];
+  /** Ship-to-shore cranes + straddle carriers working the berthed ship (BERTHS.terminal). */
+  readonly quay: Quay;
   readonly trucks: Truck[] = [];
   readonly dropped: DroppedBox[] = [];
   readonly rand: () => number;
@@ -197,6 +205,8 @@ export class TruckSim {
     this.obstacleFn = opts.obstacleFn;
     this.yard = new Yard(yardSpecs(), makeYardBox);
     this.rmgs = Array.from({ length: RMG_COUNT }, (_, k) => new RmgSim(k, k, this.yard));
+    this.quay = new Quay(opts.berth ?? BERTHS.terminal, this.yard, { rmgTouches: (st) => this.rmgs.some((m) => m.touches(st)) }, this.rand);
+    this.rmgs.forEach((m, k) => (m.idleHook = () => this.quay.rmgIdleJob(k)));
     this.pools = destinationPools();
     this.nextTipAt = opts.firstTipAfter ?? 40;
     this.tipGap = opts.tipGap ?? [80, 140];
@@ -224,7 +234,7 @@ export class TruckSim {
     const t: Truck = {
       id, index, color: index % CAB_COLORS.length, style, obj,
       entry: null as unknown as VehicleEntry, unregister: () => {}, look,
-      phase: "driving", leg: "toGate", gate: index % 4, rmg: index % RMG_COUNT, dest: "", at: "", route: null, s: 0, v: 0, edge: 0,
+      phase: "driving", leg: "toGate", gate: index % 4, rmg: index % RMG_COUNT, dest: "", quayCrane: -1, quayNode: "", at: "", route: null, s: 0, v: 0, edge: 0,
       retryAt: 0, timer: 0, box: null, boxLock: 1, lat: 0, latTarget: 0, overtake: null, overtakeCooldown: 0,
       lightEdge: -1, lightRoll: 0, lightCall: "go", latAcc: 0, sway: 0, requested: false, loaded: false,
       cab: { x: 0, z: 0, h: 0 }, trailer: { x: 0, z: 0, h: 0 }, boxPose: { x: 0, z: 0, h: 0 },
@@ -310,6 +320,7 @@ export class TruckSim {
       return p ? [...p, gm] : findPath(from, gm, B);
     }
     if (t.leg === "toCustoms") return findPath(from, CT_PLACES.customs, B);
+    if (t.leg === "toQuay") return findPath(from, t.quayNode, union(B, new Set([...GATE_SIDE].filter((k) => !k.includes(from))))) ?? findPath(from, t.quayNode, B);
     if (t.leg === "toBay") return findPath(from, CT_PLACES.bays[t.rmg], union(B, new Set([...GATE_SIDE].filter((k) => !k.includes(from))))) ?? findPath(from, CT_PLACES.bays[t.rmg], B);
     // outbound: out through the south gate, then over the public network
     const exit = CT_PLACES.exit;
@@ -373,6 +384,7 @@ export class TruckSim {
     this.now = nowMs;
     this.blocked = blocked;
     for (let i = 0; i < this.rmgs.length; i++) for (const e of this.rmgs[i].update(dt, this.rand)) this.onRmg(e);
+    for (const e of this.quay.update(dt)) this.onQuay(e);
     for (const t of this.trucks) if (t) this.tick(t, dt);
     for (let i = this.dropped.length - 1; i >= 0; i--)
       if (this.dropped[i].until < this.t) {
@@ -395,8 +407,17 @@ export class TruckSim {
         t.timer -= dt;
         this.settle(t, dt);
         if (t.timer <= 0) {
-          t.leg = this.rand() < 0.12 ? "toCustoms" : "toBay";
-          t.rmg = this.pickRmg();
+          const crane = t.box ? null : this.quay.craneWantingTruck();
+          const taken = crane !== null && this.trucks.some((o) => o && o !== t && o.quayCrane === crane && (o.leg === "toQuay" || o.phase === "atQuay"));
+          if (crane !== null && !taken && this.rand() < 0.5) {
+            // straight to the quay road: the ship-to-shore crane puts a box right onto the trailer
+            t.leg = "toQuay";
+            t.quayCrane = crane;
+            t.quayNode = this.quayNodeFor(this.quay.cranes[crane].z);
+          } else {
+            t.leg = this.rand() < 0.12 ? "toCustoms" : "toBay";
+            t.rmg = this.pickRmg();
+          }
           this.planLeg(t, CT_PLACES.gateIn[t.gate]);
         }
         break;
@@ -411,6 +432,10 @@ export class TruckSim {
       case "atBay":
         this.settle(t, dt);
         this.atBay(t, dt);
+        break;
+      case "atQuay":
+        this.settle(t, dt);
+        this.atQuay(t, dt);
         break;
       case "drop":
         this.settle(t, dt);
@@ -620,6 +645,15 @@ export class TruckSim {
       }
       t.phase = "checkin";
       t.timer = 2.4 + this.rand() * 2.2;
+    } else if (t.leg === "toQuay") {
+      if (end !== t.quayNode) {
+        this.planLeg(t, end);
+        return;
+      }
+      t.phase = "atQuay";
+      t.loaded = false;
+      t.timer = 0;
+      this.quay.requestDirect(t.quayCrane, t.id, t.boxPose.x, t.boxPose.z);
     } else if (t.leg === "toCustoms") {
       t.phase = "inspect";
       t.timer = 6 + this.rand() * 3;
@@ -661,6 +695,51 @@ export class TruckSim {
       t.dest = this.pickDest();
       this.planLeg(t, CT_PLACES.bays[t.rmg]);
     }
+  }
+
+  /** Quay-road node whose stopped lorry puts its trailer centre closest to quay z. */
+  private quayNodeFor(z: number) {
+    const back = TRUCK.kingpin + TRUCK.trailerLen / 2 - 0.9;
+    let best = "ct_q_209";
+    let bd = Infinity;
+    for (const n of ROAD_NODES.values()) {
+      if (!n.id.startsWith("ct_q_") || n.z < 160) continue;
+      const d = Math.abs(n.z - back - z);
+      if (d < bd) {
+        bd = d;
+        best = n.id;
+      }
+    }
+    return best;
+  }
+
+  private atQuay(t: Truck, dt: number) {
+    t.timer += dt;
+    const c = this.quay.cranes[t.quayCrane];
+    if (t.loaded) {
+      if (t.timer > 1.1) {
+        t.quayCrane = -1;
+        t.leg = "outbound";
+        t.dest = this.pickDest();
+        this.planLeg(t, t.quayNode);
+      }
+    } else if (t.timer > 90 || !c || (c.mode !== "discharge" && !c.job)) {
+      // the crane moved on: get a box from an RMG instead
+      this.quay.cancelDirect(t.id);
+      t.quayCrane = -1;
+      t.leg = "toBay";
+      t.rmg = this.pickRmg();
+      this.planLeg(t, t.quayNode);
+    }
+  }
+
+  private onQuay(e: QuayEvent) {
+    const t = this.trucks.find((x) => x && x.id === e.truckId);
+    if (!t || t.phase !== "atQuay") return;
+    t.box = e.box;
+    t.boxLock = 0;
+    t.loaded = true;
+    t.timer = 0;
   }
 
   private onRmg(e: RmgEvent) {
@@ -769,6 +848,7 @@ export class TruckSim {
   }
 
   private tip(t: Truck, own: boolean) {
+    this.quay.cancelDirect(t.id);
     const side: 1 | -1 = t.latAcc >= 0 ? 1 : -1;
     t.wreck = startWreck(t.cab.x, t.cab.z, t.cab.h, Math.max(t.v, 7), side, t.boxPose, TRAILER_BED_Y);
     for (const m of this.rmgs) m.cancel(t.id);

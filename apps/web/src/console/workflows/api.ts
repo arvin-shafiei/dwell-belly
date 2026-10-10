@@ -1,6 +1,7 @@
 // Client calls for the workflow editor. Every call resolves (never throws) so the UI can show
 // a clear state when the console API is missing (404) or down.
 import type { ConsoleApi, ExecutionRecord, Flow, WorkflowRecord } from "../types";
+import type { ArchitectResult } from "./architect";
 import fileFlow from "../../../../api/flows/default-incident.json";
 
 export type Result<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
@@ -66,3 +67,14 @@ export const executeCase = (body: { caseId: string; dataset?: string; workflowId
   call<ConsoleApi["POST /api/console/execute"]>("/api/console/execute", { method: "POST", body: JSON.stringify(body) });
 
 export type { ExecutionRecord };
+
+// ---------- Architect (proxied by app/api/console/architect/route.ts) ----------
+
+export const architectBuild = (body: { description: string }) =>
+  call<ArchitectResult>("/api/console/architect", { method: "POST", body: JSON.stringify(body) });
+
+export const architectValidate = (body: { flow: Flow }) =>
+  call<{ problems?: string[]; error?: string }>("/api/console/architect", { method: "POST", body: JSON.stringify(body) });
+
+export const deleteWorkflow = (id: string) =>
+  call<{ deleted: string }>(`/api/console/architect?id=${encodeURIComponent(id)}`, { method: "DELETE" });

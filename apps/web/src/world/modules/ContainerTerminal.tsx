@@ -17,14 +17,9 @@ import { allVehicles } from "../registry";
 import { useWorld } from "../store";
 import {
   REACH,
-  newPairState,
   newReachState,
-  pairAt,
   reachAt,
   reachDefs,
-  slotPoint,
-  straddleTrack,
-  type PairState,
   type ReachState,
 } from "./ContainerTerminal/cranes";
 import {
@@ -41,6 +36,10 @@ import {
   siteGeometry,
   spreaderXGeometry,
   straddleGeometry,
+  stsBoomGeometry,
+  spreaderLampGeometry,
+  STS_HINGE_X,
+  STS_BOOM_LEN,
   stsFrameGeometry,
   stsTrolleyGeometry,
   superstructureGeometry,
@@ -81,6 +80,7 @@ import {
   withBrandAttribute,
 } from "./ContainerTerminal/textures";
 import { CAB_COLORS, TruckSim, rigRoll } from "./ContainerTerminal/trucks";
+import { STRADDLE_COUNT, STS_COUNT } from "./ContainerTerminal/quay";
 import { ViewCheck } from "./DeliveryFleet/lookahead";
 import { CARGO_PER_WRECK, rollPivotOffset } from "./ContainerTerminal/wreck";
 import { MAX_TIER, instanceIndex, mulberry32 } from "./ContainerTerminal/yard";
@@ -88,12 +88,16 @@ import { MAX_TIER, instanceIndex, mulberry32 } from "./ContainerTerminal/yard";
 const H = CONTAINER.h;
 const TRUCKS = 12;
 const MAX_WRECKS = 3;
-const MOVERS = 64; // RMG 3 + STS boxes 4 + reach 2 + trucks + dropped 16
+const MOVERS = 72; // RMG 3 + STS 3 + reach 2 + straddles + apron + trucks + dropped 16
 const M_RMG = 0;
 const M_STS = 3;
-const M_REACH = 7;
-const M_TRUCK = 9;
+const M_REACH = M_STS + STS_COUNT;
+const M_STRAD = M_REACH + 2;
+const M_PAD = M_STRAD + STRADDLE_COUNT;
+const N_PAD = 12;
+const M_TRUCK = M_PAD + N_PAD;
 const M_DROP = M_TRUCK + TRUCKS + 2;
+const BOOM_UP = 1.32; // radians the outreach boom swings up when the berth is idle
 const CARGO_COLORS = ["#b98a56", "#a87943", "#c99b62", "#ff6a1a", "#e9e4d8", "#8d6a43"];
 const GATES = CT_GATE_X.length;
 
@@ -206,6 +210,8 @@ export default function ContainerTerminal() {
       stsFrame: stsFrameGeometry(),
       stsTrolley: stsTrolleyGeometry(),
       straddle: straddleGeometry(),
+      stsBoom: stsBoomGeometry(),
+      spreaderLamp: spreaderLampGeometry(),
       reachBody: reachBodyGeometry(),
       reachBoom: reachBoomGeometry(),
       cab: cabGeometry(),
@@ -298,15 +304,11 @@ export default function ContainerTerminal() {
     };
   }, []);
 
-  const tracks = useMemo(
-    () => STS_CRANES.map((d, i) => ({ track: straddleTrack(d, i === 0 ? "straddleA" : "straddleB"), slot: slotPoint(i === 0 ? "straddleA" : "straddleB") })),
-    [],
-  );
   const reach = useMemo(() => reachDefs(), []);
   const S = useRef({
     t: 0,
     night: -1,
-    pairs: STS_CRANES.map(() => newPairState()) as PairState[],
+    colors: new Map<string, THREE.Color>(),
     reaches: reach.map(() => newReachState()) as ReachState[],
     barriers: new Array(GATES + 1).fill(0) as number[],
     angles: new Array(GATES + 1).fill(0) as number[],
@@ -324,6 +326,10 @@ export default function ContainerTerminal() {
   const rmgFrames = useRef<THREE.InstancedMesh>(null);
   const rmgTrolleys = useRef<THREE.InstancedMesh>(null);
   const stsTrolleys = useRef<THREE.InstancedMesh>(null);
+  const stsFrames = useRef<THREE.InstancedMesh>(null);
+  const stsBooms = useRef<THREE.InstancedMesh>(null);
+  const spreaderLamps = useRef<THREE.InstancedMesh>(null);
+  const spreaderPools = useRef<THREE.InstancedMesh>(null);
   const spreaders = useRef<THREE.InstancedMesh>(null);
   const cables = useRef<THREE.InstancedMesh>(null);
   const straddles = useRef<THREE.InstancedMesh>(null);
@@ -336,9 +342,10 @@ export default function ContainerTerminal() {
   const barriers = useRef<THREE.InstancedMesh>(null);
   const ship = useRef<THREE.Group>(null);
 
-  const N_SPREAD = RMG_COUNT + STS_CRANES.length + reach.length;
-  const N_CABLE = (RMG_COUNT + STS_CRANES.length) * 4;
-  const N_BEACON = RMG_COUNT + STS_CRANES.length * 2;
+  const N_SPREAD = RMG_COUNT + STS_COUNT + reach.length;
+  const N_CABLE = (RMG_COUNT + STS_COUNT) * 4;
+  const N_BEACON = RMG_COUNT + STS_COUNT * 2;
+  const N_LAMP = RMG_COUNT + STS_COUNT;
 
   const mats = useRef(R); // materials are tweaked per frame (time, night) through the ref
   useFrame(({ camera }, rawDt) => {
@@ -371,6 +378,13 @@ export default function ContainerTerminal() {
     }
     if (!w.paused) sim.update(dt, nowMs, st.blocked);
 
+    const boxColor = (brand: number, tint: number, color?: string) => {
+      if (brand) return st.white;
+      if (!color) return st.tint[tint % st.tint.length];
+      let c = st.colors.get(color);
+      if (!c) st.colors.set(color, (c = new THREE.Color(color)));
+      return c;
+    };
     // ---- yard stacks (only the stacks that changed)
     const ym = yard.current;
     if (ym) {
@@ -387,7 +401,7 @@ export default function ContainerTerminal() {
             continue;
           }
           ym.setMatrixAt(k, compose(s.x, APRON_Y + tier * H + H / 2, s.z, Math.PI / 2));
-          ym.setColorAt(k, b.brand ? st.white : st.tint[b.tint % st.tint.length]);
+          ym.setColorAt(k, boxColor(b.brand, b.tint, b.color));
           brandAttr.setX(k, b.brand);
         }
         any = true;
@@ -403,10 +417,12 @@ export default function ContainerTerminal() {
 
     const mv = movers.current;
     const moverBrand = G.moverBox.getAttribute("aBrand") as THREE.InstancedBufferAttribute;
-    const setBox = (i: number, x: number, y: number, z: number, yaw: number, brand: number, tint: number, roll = 0, pitch = 0, scale = 1) => {
+    const setBox = (
+      i: number, x: number, y: number, z: number, yaw: number, brand: number, tint: number, roll = 0, pitch = 0, scale = 1, color?: string,
+    ) => {
       if (!mv) return;
       mv.setMatrixAt(i, compose(x, y, z, yaw, pitch, roll, scale, scale, scale));
-      mv.setColorAt(i, brand ? st.white : st.tint[tint % st.tint.length]);
+      mv.setColorAt(i, boxColor(brand, tint, color));
       moverBrand.setX(i, brand);
     };
     const hideBox = (i: number) => mv?.setMatrixAt(i, ZERO);
@@ -435,24 +451,53 @@ export default function ContainerTerminal() {
       else hideBox(M_RMG + k);
       const [za] = rmgLegs(k);
       bc?.setMatrixAt(k, compose(p.gx, RMG.girderY + 5, za - 0.5));
+      spreaderLamps.current?.setMatrixAt(k, compose(sx, p.sy, p.tz));
+      spreaderPools.current?.setMatrixAt(k, compose(sx, 0.12, p.tz, 0, 0, 0, 0.45, 1, 0.45));
     }
 
-    // ---- STS cranes + straddle carriers
+    // ---- STS cranes working the berthed ship, straddle carriers, apron boxes
+    const q = sim.quay;
     const sts = stsTrolleys.current;
+    const sf = stsFrames.current;
+    const sb = stsBooms.current;
     const sd = straddles.current;
-    STS_CRANES.forEach((def, i) => {
-      const o = pairAt(t, def, tracks[i].track, tracks[i].slot, st.pairs[i]);
-      sts?.setMatrixAt(i, compose(o.sts.trolleyX, 0, def.z));
+    const sl = spreaderLamps.current;
+    const spool = spreaderPools.current;
+    const by = STS.boomY + 1.1;
+    q.cranes.forEach((c, i) => {
+      sf?.setMatrixAt(i, compose(0, 0, c.z));
+      const ang = BOOM_UP * (c.boom * c.boom * (3 - 2 * c.boom));
+      sb?.setMatrixAt(i, compose(STS_HINGE_X, by, c.z, 0, 0, ang));
+      sts?.setMatrixAt(i, compose(c.trolleyX, 0, c.z));
       const si = RMG_COUNT + i;
-      sp?.setMatrixAt(si, compose(o.sts.trolleyX, o.sts.spreaderY, def.z, Math.PI / 2));
-      const len = Math.max(0.1, STS.boomY - 2.4 - o.sts.spreaderY);
-      let c = 0;
+      const hang = STS.boomY - 1.6 - c.spreaderY;
+      const sx = c.trolleyX + Math.sin(c.sway) * hang;
+      sp?.setMatrixAt(si, compose(sx, c.spreaderY, c.z, Math.PI / 2, 0, c.sway));
+      const len = Math.max(0.1, STS.boomY - 2.4 - c.spreaderY);
+      let k = 0;
       for (const ox of [-0.8, 0.8])
-        for (const oz of [-1.2, 1.2]) cb?.setMatrixAt(si * 4 + c++, compose(o.sts.trolleyX + ox, o.sts.spreaderY + 1.2, def.z + oz, 0, 0, 0, 1, len, 1));
-      setBox(M_STS + i, o.boxA.x, o.boxA.y + H / 2, o.boxA.z, o.boxA.h, i === 0 ? 1 : 3, 0);
-      setBox(M_STS + 2 + i, o.boxB.x, o.boxB.y + H / 2, o.boxB.z, 0, 0, 4 + i * 3);
-      sd?.setMatrixAt(i, compose(o.straddle.x, APRON_Y, o.straddle.z, o.straddle.h));
+        for (const oz of [-1.2, 1.2]) cb?.setMatrixAt(si * 4 + k++, compose(sx + ox, c.spreaderY + 1.2, c.z + oz, 0, 0, c.sway, 1, len, 1));
+      sl?.setMatrixAt(si, compose(sx, c.spreaderY, c.z, Math.PI / 2));
+      spool?.setMatrixAt(si, compose(sx, 0.12, c.z, 0, 0, 0, 0.45, 1, 0.45));
+      const box = q.carried(c);
+      if (box) setBox(M_STS + i, sx, c.spreaderY - H / 2, c.z, 0, box.brand, box.tint, c.sway, 0, 1, box.color);
+      else hideBox(M_STS + i);
+      // beacons: boom tip (follows the boom) and the A-frame apex
+      const tipX = STS_HINGE_X + Math.cos(ang) * STS_BOOM_LEN;
+      const tipY = by + Math.sin(ang) * STS_BOOM_LEN + 2.4;
+      bc?.setMatrixAt(RMG_COUNT + i * 2, compose(tipX, tipY, c.z));
+      bc?.setMatrixAt(RMG_COUNT + i * 2 + 1, compose((STS.legX[0] + STS.legX[1]) / 2, 51.5, c.z));
     });
+    q.straddles.forEach((u, i) => {
+      sd?.setMatrixAt(i, compose(u.x, APRON_Y, u.z, u.h));
+      if (u.box) setBox(M_STRAD + i, u.x, u.lift + H / 2, u.z, u.h, u.box.brand, u.box.tint, 0, 0, 1, u.box.color);
+      else hideBox(M_STRAD + i);
+    });
+    for (let k = 0; k < N_PAD; k++) {
+      const p = q.pads[k];
+      if (p) setBox(M_PAD + k, p.x, 0.03 + p.tier * H + H / 2, p.z, 0, p.box.brand, p.box.tint, 0, 0, 1, p.box.color);
+      else hideBox(M_PAD + k);
+    }
 
     // ---- reach stackers
     const rb = reachBodies.current;
@@ -556,12 +601,8 @@ export default function ContainerTerminal() {
       ship.current.position.y = shipBob(t);
       ship.current.rotation.z = shipRoll(t);
     }
-    STS_CRANES.forEach((c, i) => {
-      bc?.setMatrixAt(RMG_COUNT + i * 2, compose(394, STS.boomY + 4, c.z));
-      bc?.setMatrixAt(RMG_COUNT + i * 2 + 1, compose((STS.legX[0] + STS.legX[1]) / 2, 51.5, c.z));
-    });
 
-    for (const m of [fr, tr, sts, sp, cb, sd, rb, rm, cm, tm, bc]) if (m) m.instanceMatrix.needsUpdate = true;
+    for (const m of [fr, tr, sts, sf, sb, sl, spool, sp, cb, sd, rb, rm, cm, tm, bc]) if (m) m.instanceMatrix.needsUpdate = true;
     if (cm?.instanceColor) cm.instanceColor.needsUpdate = true;
     if (mv) {
       mv.instanceMatrix.needsUpdate = true;
@@ -588,6 +629,7 @@ export default function ContainerTerminal() {
     hideAll(cargo.current, white);
     hideAll(trailers.current);
     hideAll(barriers.current);
+    for (const m of [stsFrames.current, stsBooms.current, stsTrolleys.current, straddles.current, spreaderLamps.current, spreaderPools.current]) hideAll(m);
     // these meshes move anywhere in the zone; give them a zone-sized bound and let culling work
     const zoneSphere = new THREE.Sphere(new THREE.Vector3(290, 10, 220), 160);
     for (const m of [yard.current, rmgFrames.current, rmgTrolleys.current, stsTrolleys.current, straddles.current, reachBodies.current, reachBooms.current, barriers.current, beacons.current])
@@ -619,9 +661,12 @@ export default function ContainerTerminal() {
       <instancedMesh ref={beacons} args={[G.beacon, R.beaconRed, N_BEACON]} />
 
       {/* STS cranes, straddle carriers, reach stackers */}
-      <Static geometry={G.stsFrame} material={R.vc} matrices={L.stsFrames} cast />
-      <instancedMesh ref={stsTrolleys} args={[G.stsTrolley, R.vc, STS_CRANES.length]} />
-      <instancedMesh ref={straddles} args={[G.straddle, R.vc, STS_CRANES.length]} castShadow />
+      <instancedMesh ref={stsFrames} args={[G.stsFrame, R.vc, STS_COUNT]} frustumCulled={false} castShadow />
+      <instancedMesh ref={stsBooms} args={[G.stsBoom, R.vc, STS_COUNT]} frustumCulled={false} castShadow />
+      <instancedMesh ref={stsTrolleys} args={[G.stsTrolley, R.vc, STS_COUNT]} frustumCulled={false} />
+      <instancedMesh ref={straddles} args={[G.straddle, R.vc, STRADDLE_COUNT]} frustumCulled={false} castShadow />
+      <instancedMesh ref={spreaderLamps} args={[G.spreaderLamp, R.lamp, N_LAMP]} frustumCulled={false} />
+      <instancedMesh ref={spreaderPools} args={[G.pool, R.pool, N_LAMP]} frustumCulled={false} />
       <instancedMesh ref={reachBodies} args={[G.reachBody, R.vc, reach.length]} castShadow />
       <instancedMesh ref={reachBooms} args={[G.reachBoom, R.vc, reach.length]} />
 
@@ -635,17 +680,7 @@ export default function ContainerTerminal() {
       <Static geometry={G.lampHead} material={R.lamp} matrices={L.masts} />
       <Static geometry={G.pool} material={R.pool} matrices={L.pools} />
 
-      {/* the second ship, pivoting on its centre line so it rolls in place */}
-      <group ref={ship} position={[SHIP.x, 0, 0]}>
-        <mesh geometry={G.hullLow} material={R.hullLow} />
-        <mesh geometry={G.hullBoot} material={R.hullBoot} />
-        <mesh geometry={G.hullTop} material={[R.deck, R.hullTop]} castShadow receiveShadow />
-        <mesh geometry={G.hullNameL} material={R.hullName} />
-        <mesh geometry={G.hullNameR} material={R.hullName} />
-        <mesh geometry={G.superstructure} material={R.vc} castShadow />
-        <mesh geometry={G.shipWindows} material={R.windows} />
-        <Static geometry={G.shipBox} material={R.boxMat} matrices={L.ship.m} colors={L.ship.c} cast />
-      </group>
+      {/* ship hull + deck cargo are drawn by the Shipping module (berths.ts BERTHS.terminal) */}
     </group>
   );
 }
