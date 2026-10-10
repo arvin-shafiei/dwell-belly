@@ -156,8 +156,8 @@ const CityShot: React.FC<{ clip?: string; stillName?: string; cap: string; d: nu
         </AbsoluteFill>
       ) : null}
       <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.65) 100%)" }} />
-      <div style={{ position: "absolute", left: 90, bottom: 100 }}>
-        <Kinetic text={cap} at={4} size={46} />
+      <div style={{ position: "absolute", left: 90, bottom: 100, opacity: interpolate(frame, [d - 16, d - 8], [1, 0], clamp) }}>
+        <Kinetic text={cap} at={6} size={46} />
       </div>
     </AbsoluteFill>
   );

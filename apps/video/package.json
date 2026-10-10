@@ -9,8 +9,9 @@
     "render:demo": "node remotion/render.mjs demo",
     "render:gifs": "node remotion/render.mjs gifs",
     "render:all": "node remotion/render.mjs all",
-    "render:v2": "node remotion/render.mjs v2",
-    "render:hero": "node remotion/render.mjs hero-v2"
+    "render:v2": "node remotion/render.mjs demo",
+    "render:hero": "node remotion/render.mjs hero-v2",
+    "render:v1": "node remotion/render.mjs v1"
   },
   "dependencies": {
     "@fontsource/instrument-sans": "^5.3.0",
