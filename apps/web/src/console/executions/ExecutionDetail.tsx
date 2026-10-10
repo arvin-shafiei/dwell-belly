@@ -194,9 +194,9 @@ export default function ExecutionDetail({
 
         {e.status !== "running" && (
           <section>
-            <h3 className="mb-1 text-sm font-semibold text-white/60">Voice</h3>
+            <h3 className="mb-1 text-sm font-semibold text-white/60">Voice: talk to this case</h3>
             <p className="mb-3 text-[13px] text-white/45">
-              Speak as the driver, take the call the agent wants to make, or decide by voice. The case runs again with what was said.
+              Drivers can&apos;t type at the wheel and customers ring in. Anything said here becomes a new message, and the agent runs this case again through the same safety check.
             </p>
             <VoiceSlot.Mounts execution={e} />
           </section>

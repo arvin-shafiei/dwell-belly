@@ -63,7 +63,7 @@ export function describeThresholds(t: Thresholds): { send: string; ask: string; 
   const pct = (n: number) => Math.round(n * 100);
   return {
     send: `Sends on its own when risk is under ${pct(t.allow_below)} in 100`,
-    ask: `Asks a person when risk is ${fromRisk(t.allow_below)}`,
+    ask: `Asks a person when risk is ${pct(t.allow_below)} to ${pct(t.block_above) - 1} in 100`,
     stop: `Stops when risk is ${fromRisk(t.block_above)} (${pct(t.block_above)}+ in 100)`,
   };
 }

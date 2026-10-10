@@ -59,7 +59,7 @@ export function Happening({ t, send }: { t: CityTelemetry | null; send: (c: City
 
       <Section title="Cases">
         {cases.length === 0 ? (
-          <p className="text-[14px] text-white/45">No cases yet.</p>
+          <p className="text-[14px] text-white/45">No cases from the city yet.</p>
         ) : (
           <ul className="divide-y divide-white/[0.06]">
             {cases.map((c) => (

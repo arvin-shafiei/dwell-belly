@@ -21,6 +21,8 @@ export function caseName(caseId: string, title?: string | null): string {
     if (kind === "fixture" || kind === "fx") return `Hard case ${n}`;
     return `${kind[0].toUpperCase()}${kind.slice(1)} case ${n}`;
   }
+  // One-off cases typed into New case get a random hex id: never show it.
+  if (/^[0-9a-f]{12,}$/i.test(caseId.replace(/-/g, ""))) return "A case you added";
   return caseId.replace(/[_-]+/g, " ");
 }
 

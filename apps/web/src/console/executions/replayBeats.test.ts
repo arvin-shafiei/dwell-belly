@@ -68,7 +68,7 @@ describe("watch it think: replay timeline", () => {
     if (messages.kind !== "messages") throw new Error();
     // A size-only excerpt says nothing, so it is dropped; a real excerpt is kept.
     expect(messages.inputs).toEqual([
-      { from: "context", how: "", note: null },
+      { from: "Background notes", how: "", note: null },
       { from: "Calla Mossop", how: "Email", note: "My father died on 21 Feb." },
     ]);
     const clash = b.find((x) => x.kind === "clash");

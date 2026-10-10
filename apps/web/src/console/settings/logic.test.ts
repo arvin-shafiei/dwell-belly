@@ -91,13 +91,15 @@ describe("threshold dial wiring", () => {
 describe("describeThresholds", () => {
   it("says the default in plain words", () => {
     const d = describeThresholds({ allow_below: 0.3, block_above: 0.8 });
-    expect(d.ask).toBe("Asks a person when risk is medium or higher");
+    expect(d.ask).toBe("Asks a person when risk is 30 to 79 in 100");
     expect(d.stop).toBe("Stops when risk is high (80+ in 100)");
     expect(d.send).toBe("Sends on its own when risk is under 30 in 100");
   });
 
   it("strict asks for a person even at low risk", () => {
-    expect(describeThresholds(carefulToThresholds(1)).ask).toBe("Asks a person when risk is low or higher");
+    const t = carefulToThresholds(1);
+    expect(describeThresholds(t).ask).toBe(`Asks a person when risk is ${Math.round(t.allow_below * 100)} to ${Math.round(t.block_above * 100) - 1} in 100`);
+    expect(t.allow_below).toBeLessThan(0.3);
   });
 
   it("never leaks config keys", () => {

@@ -374,15 +374,12 @@ export default function EvidenceGrid() {
                     >
                       <td className="px-4 py-2.5">
                         <div className="truncate text-white/90" title={r.title ?? undefined}>{caseName(r.caseId, r.title)}</div>
-                        <div className="flex items-center gap-2 truncate text-[11px] text-white/35">
-                          {r.caseId}
-                          {r.dataset === "city" && <SimulatedBadge />}
-                        </div>
+                        {r.dataset === "city" && <div className="mt-0.5 flex items-center"><SimulatedBadge /></div>}
                       </td>
                       <td className="px-4 py-2.5">
                         {run ? (
                           <>
-                            <div className="text-white/85">{r.decision ? plainOutcome(r.decision) : "Ran"}</div>
+                            {r.decision ? <div className="text-white/85">{plainOutcome(r.decision)}</div> : <div className="text-rv-red">Didn&apos;t finish</div>}
                             {r.nextAction && <div className="truncate text-[12px] text-white/45" title={scrubLeaks(r.nextAction)}>{scrubLeaks(r.nextAction)}</div>}
                           </>
                         ) : (
@@ -404,7 +401,7 @@ export default function EvidenceGrid() {
                       </td>
                       <td className="px-3 py-2 text-right">
                         {r.executionId ? (
-                          <span className="text-[13px] text-white/25 group-hover:text-rv-orange">Open →</span>
+                          <span className="text-[13px] text-white/45 group-hover:text-rv-orange">Open →</span>
                         ) : (
                           <Button size="sm" disabled={executing !== null} onClick={(e) => { e.stopPropagation(); void runOne(r); }}>
                             {executing === key ? "Starting…" : "Run"}

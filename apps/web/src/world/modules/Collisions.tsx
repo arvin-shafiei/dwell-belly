@@ -4,12 +4,16 @@
 // turns fast overlaps into real crashes (owner crash() with an impulse hint, car_crash / truck_crash
 // incident, road closure, events); slow overlaps get a separation hint (physics.separation).
 // Rate-limited to one new crash per 20 s and at most 3 active. Draws a burst of debris at impacts.
+// Cyclists: a car/van/truck overlapping a cyclist while closing > 2 m/s knocks them off (cyclist_hit
+// incident, at most one a minute; request:cyclist_hit stages one with a van). See ./Collisions/cyclist.ts.
 // Debug: window.__cityPhysics = { overlaps, crashes, queriesPerFrame, ... }.
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
 import { BoxGeometry, Color, DynamicDrawUsage, InstancedMesh, Matrix4, MeshStandardMaterial, Quaternion, Vector3, Euler } from "three";
+import { on } from "../bus";
 import { useWorld } from "../store";
 import { CollisionEngine, type CollisionStats } from "./Collisions/engine";
+import HitFx from "./Collisions/HitFx";
 
 const N = 96; // debris pieces in the pool
 const LIFE = 2.4; // s
@@ -134,6 +138,10 @@ export default function Collisions() {
     };
   }, [engine, debris]);
 
+  useEffect(() => on((e) => {
+    if (e.type === "request:cyclist_hit") engine.requestCyclistHit();
+  }), [engine]);
+
   // Negative priority: runs before every other module's useFrame (priority 0), so the spatial index
   // holds last frame's final positions when Traffic & co. query it. (Positive would take over rendering.)
   useFrame((_, delta) => {
@@ -142,5 +150,10 @@ export default function Collisions() {
     if (!paused) debris.step(Math.min(delta, 0.1));
   }, -10);
 
-  return <primitive object={debris.mesh} />;
+  return (
+    <>
+      <primitive object={debris.mesh} />
+      <HitFx />
+    </>
+  );
 }

@@ -67,6 +67,7 @@ describe("case run in plain words", () => {
     expect(caseName("delivery-024", "Case 024: Parcel missing")).toBe("Parcel missing");
     expect(caseName("gen-007")).toBe("Practice case 7");
     expect(caseName("delivery-024")).toBe("Delivery case 24");
+    expect(caseName("2197cdad9601425fb099673adff479d4")).toBe("A case you added");
     expect(plainChannel("sms")).toBe("Text message");
   });
 });
