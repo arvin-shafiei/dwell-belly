@@ -35,12 +35,17 @@ export interface RunOptions {
 /** Internal: the case's abort signal travels with the options so every await can be cut off. */
 type WorkOptions = RunOptions & { signal: AbortSignal };
 
+/** One planner's seat: a name for the views and the angle it argues from. Set in the planner node's config. */
+export interface Stance { id: string; name: string; brief: string }
+
 export interface RunResult {
   bundle: CaseBundle;
   trace: Trace;
   outcome: Outcome;
   understanding?: Understanding;
   decision?: Decision;
+  /** The drafts from each planner seat, when the flow runs more than one. */
+  candidates?: { stance: string; decision: Decision }[];
   panel?: PanelResult;
   gated: GatedAction[];
   outbox: OutboxEntry[];
@@ -63,6 +68,10 @@ export function savedResult(r: RunResult): RunResult {
       media: r.bundle.media.map((m) => ({ name: m.name, mediaType: m.mediaType, base64: "" })),
     },
   };
+}
+
+function summariseCandidates(r: RunResult) {
+  return (r.candidates ?? []).map((c) => ({ seat: c.stance, decision: c.decision.decision_type, why: c.decision.why, to: c.decision.actions.map((a) => a.recipient) }));
 }
 
 class Recorder {
@@ -96,6 +105,17 @@ class Recorder {
   view(nodeId: string, nodeType: string, summary: string, output?: NodeOutput) {
     this.begin(nodeId, nodeType);
     this.end(summary, output);
+  }
+  /** A node that ran at the same time as others: recorded whole once it is done, with its own timing. */
+  done(nodeId: string, nodeType: string, r: { calls: { runner: "claude" | "jev"; usage: ModelUsage }[]; latencyMs: number; summary: string; output?: NodeOutput; status?: "ok" | "error" | "skipped" }) {
+    const cost = r.calls.reduce((sum, c) => sum + c.usage.costUsd, 0);
+    this.totalCost += cost;
+    this.events.push({ t: this.t(), kind: "node_start", nodeId, nodeType: nodeType as never });
+    for (const c of r.calls) {
+      this.events.push({ t: this.t(), kind: "model_call", nodeId, runner: c.runner, model: c.usage.model, latencyMs: c.usage.latencyMs,
+        tokensIn: c.usage.tokensIn, tokensOut: c.usage.tokensOut, costUsd: c.usage.costUsd, ok: true });
+    }
+    this.events.push({ t: this.t(), kind: "node_end", nodeId, status: r.status ?? "ok", summary: r.summary.slice(0, 80), output: r.output, latencyMs: r.latencyMs, costUsd: cost });
   }
   edge(from: string, to: string, when?: string) {
     this.events.push({ t: this.t(), kind: "edge", from, to, when });
@@ -141,37 +161,48 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
   rec.end(`${bundle.documents.length} files, ${bundle.media.length} attachments read`);
 
   rec.view("history", "history_lookup", `${u.commitments.length} open commitments, ${u.deadlines.length} deadlines`);
-  rec.begin("triage", "triage");
-  const fast = await quick(opts.judge?.triage?.(bundleText(bundle)));
-  if (fast) rec.call("jev", fast.usage);
-  rec.end(`${fast?.caseType ?? u.case_type} · ${fast?.urgency ?? u.urgency}`, { type: "triage", caseType: fast?.caseType ?? u.case_type, urgency: fast?.urgency ?? u.urgency, p: 1 });
-
+  // Triage, the perspectives panel and the clash check do not depend on each other, so they run at
+  // the same time. Each is optional: a failure in one is recorded as skipped and the others stand.
   const rules = nodeConfig<{ rules: Record<string, PanelRule> }>(flow, "perspectives")?.rules;
-  rec.begin("perspectives", "perspectives");
-  if (opts.panel && rules) {
-    // The panel is optional: whatever goes wrong inside it, the case carries on without its notes.
-    const panel = await opts.panel({ summary: u.summary, case: bundleText(bundle) }, rules)
-      .catch((err): PanelResult => ({ ok: false, error: err instanceof Error ? err.message : String(err), seats: [], forceHuman: false, notes: [], model: "", latencyMs: 0, tokensIn: 0, costUsd: 0 }));
-    signal.throwIfAborted();
-    result.panel = panel;
-    if (panel.ok) {
-      rec.call("jev", { model: panel.model, latencyMs: panel.latencyMs, tokensIn: panel.tokensIn, tokensOut: 0, costUsd: panel.costUsd });
-      rec.end(`${panel.notes.length} flags raised${panel.forceHuman ? " · needs a human" : ""}`, { type: "perspectives", seats: panel.seats });
-    } else {
-      rec.end(`skipped: ${panel.error}`, undefined, "skipped");
-    }
+  const clashAt = nodeConfig<{ clash_at?: number }>(flow, "clash_check")?.clash_at ?? 0.5;
+  const timed = async <T>(work: Promise<T>): Promise<{ value: T; ms: number }> => {
+    const from = Date.now();
+    const value = await work;
+    return { value, ms: Date.now() - from };
+  };
+  for (const to of ["triage", "perspectives", "clash"]) rec.edge("history", to);
+  const [triaged, panelled, clashScored] = await Promise.all([
+    timed(quick(opts.judge?.triage?.(bundleText(bundle)))),
+    timed(opts.panel && rules
+      ? opts.panel({ summary: u.summary, case: bundleText(bundle) }, rules)
+        .catch((err): PanelResult => ({ ok: false, error: err instanceof Error ? err.message : String(err), seats: [], forceHuman: false, notes: [], model: "", latencyMs: 0, tokensIn: 0, costUsd: 0 }))
+      : Promise.resolve(null)),
+    timed(quick(opts.judge?.clash?.(u.claims.map((c) => ({ who: c.who, says: c.says }))))),
+  ]);
+  signal.throwIfAborted();
+
+  const fast = triaged.value;
+  rec.done("triage", "triage", { calls: fast ? [{ runner: "jev", usage: fast.usage }] : [], latencyMs: triaged.ms,
+    summary: `${fast?.caseType ?? u.case_type} · ${fast?.urgency ?? u.urgency}`,
+    output: { type: "triage", caseType: fast?.caseType ?? u.case_type, urgency: fast?.urgency ?? u.urgency, p: 1 } });
+
+  const panel = panelled.value;
+  if (panel) result.panel = panel;
+  if (panel?.ok) {
+    rec.done("perspectives", "perspectives", { latencyMs: panelled.ms,
+      calls: [{ runner: "jev", usage: { model: panel.model, latencyMs: panel.latencyMs, tokensIn: panel.tokensIn, tokensOut: 0, costUsd: panel.costUsd } }],
+      summary: `${panel.notes.length} flags raised${panel.forceHuman ? " · needs a human" : ""}`, output: { type: "perspectives", seats: panel.seats } });
   } else {
-    rec.end("skipped: no Jev key", undefined, "skipped");
+    rec.done("perspectives", "perspectives", { calls: [], latencyMs: panelled.ms, summary: panel ? `skipped: ${panel.error}` : "skipped: no Jev key", status: "skipped" });
   }
 
-  rec.begin("clash", "clash_check");
-  const clashAt = nodeConfig<{ clash_at?: number }>(flow, "clash_check")?.clash_at ?? 0.5;
-  const scored = await quick(opts.judge?.clash?.(u.claims.map((c) => ({ who: c.who, says: c.says }))));
-  if (scored) rec.call("jev", scored.usage);
+  const scored = clashScored.value;
   // The analysis's own conflicts always count; Jev's score can add a clash, never remove one.
   const clashed = u.conflicts.length > 0 || (scored ? scored.p >= clashAt : false);
-  rec.end(u.conflicts.length ? `${u.conflicts.length} conflict: ${u.conflicts[0].about}` : clashed ? "sources may conflict" : "no conflict",
-    { type: "clash_check", clash: clashed, p: scored?.p ?? 1, claims: u.claims.slice(0, 6).map((c) => ({ who: c.who, says: c.says })) });
+  rec.done("clash", "clash_check", { calls: scored ? [{ runner: "jev", usage: scored.usage }] : [], latencyMs: clashScored.ms,
+    summary: u.conflicts.length ? `${u.conflicts.length} conflict: ${u.conflicts[0].about}` : clashed ? "sources may conflict" : "no conflict",
+    output: { type: "clash_check", clash: clashed, p: scored?.p ?? 1, claims: u.claims.slice(0, 6).map((c) => ({ who: c.who, says: c.says })) } });
+  for (const from of ["triage", "perspectives", "clash"]) rec.edge(from, "planner");
 
   // Dates are compared in code and handed over as text; models get this arithmetic wrong.
   let clock = "";
@@ -191,7 +222,25 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
   ].filter(Boolean).join("\n\n");
 
   rec.begin("planner", "planner");
-  let decided = await models.structured({ system: DECIDE_SYSTEM, user: brief, schema: Decision, media: bundle.media, tier: "strong" });
+  // With stances in the planner's config, several planners draft at once, each arguing from a
+  // different seat, and the strong model then chooses between them or combines them. Without
+  // stances there is one planner. A draft that fails is dropped; the rest still count.
+  const stances = nodeConfig<{ stances?: Stance[] }>(flow, "planner")?.stances ?? [];
+  let proposals = "";
+  if (stances.length > 1) {
+    const drafts = await Promise.all(stances.map((stance) =>
+      models.structured({ system: `${DECIDE_SYSTEM}\n\nYour seat on this case: ${stance.brief}`, user: brief, schema: Decision, media: bundle.media, tier: "fast" })
+        .then((res) => ({ stance, res }), () => null)));
+    signal.throwIfAborted();
+    const usable = drafts.filter((x) => x !== null);
+    for (const { res } of usable) rec.call("claude", res.usage);
+    result.candidates = usable.map(({ stance, res }) => ({ stance: stance.name, decision: res.output }));
+    if (usable.length) {
+      proposals = `\n\n<proposals>\nColleagues each drafted a response from a different seat. Weigh them against the principles: choose the strongest, or combine parts of several. Being more cautious is not in itself better, and neither is doing more. The decision you return is the desk's final one.\n${
+        usable.map(({ stance, res }) => `\n<proposal seat="${stance.name}">\n${JSON.stringify(res.output, null, 1)}\n</proposal>`).join("")}\n</proposals>`;
+    }
+  }
+  let decided = await models.structured({ system: DECIDE_SYSTEM, user: brief + proposals, schema: Decision, media: bundle.media, tier: "strong" });
   rec.call("claude", decided.usage);
   let d = decided.output;
 
@@ -215,8 +264,8 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
 
   const planned = () => (d.decision_type === "wait_no_action" ? [] : d.actions);
   rec.end(`${d.decision_type}: ${d.why}`, planned()[0]
-    ? { type: "planner", nextAction: toNext(planned()[0]), wontDo: d.wont_do.map((w) => w.item) }
-    : { type: "planner", wontDo: d.wont_do.map((w) => w.item) });
+    ? { type: "planner", nextAction: toNext(planned()[0]), wontDo: d.wont_do.map((w) => w.item), candidates: summariseCandidates(result) }
+    : { type: "planner", wontDo: d.wont_do.map((w) => w.item), candidates: summariseCandidates(result) });
 
   rec.begin("gate", "safety_gate");
   let gated = gate(planned(), u, await critique(planned()), gateConfig, block);

@@ -56,7 +56,7 @@ export async function execute(input: { caseId: string; dataset?: string | null; 
       headers: { "content-type": "application/json" },
       // A workflow edited in the console runs as edited: the agent API validates the flow and
       // refuses an unsound one. An untouched workflow is left to the API's own flow file.
-      body: JSON.stringify(edited ? { ...built.view, flow: edited.flow } : built.view),
+      body: JSON.stringify(edited ? { ...built.view, flow: edited.flow } : { ...built.view, flowId: base.workflowId }),
       signal: AbortSignal.timeout(RUN_TIMEOUT_MS),
     });
     const text = await res.text();
