@@ -53,7 +53,9 @@ export interface HumanDecision {
 export function decisionKind(d: HumanDecision): "approve" | "reject" | "fallback" {
   const id = d.optionId.trim().toLowerCase();
   if (id === "fallback" || /^\s*(use the )?(safe )?fallback\b/i.test(d.label)) return "fallback";
-  if (id === "reject" || /\b(send nothing|nothing (is )?sent|reject|decline|do not|don't|discard|hold|no action|cancel)\b/i.test(d.label)) return "reject";
+  // A label is a rejection only when it LEADS with a reject word ("Hold for now", "Send nothing"), so an
+  // approving option that merely mentions holding ("Sign off redirect or hold") still approves.
+  if (id === "reject" || /^\s*(send nothing|nothing (is )?sent|reject|decline|do not|don't|discard|hold|no action|cancel|keep (it )?on hold|wait)\b/i.test(d.label)) return "reject";
   return "approve";
 }
 

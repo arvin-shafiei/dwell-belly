@@ -192,3 +192,11 @@ test("the API body's humanDecision is checked for shape and read for its meaning
   assert.equal(decisionKind({ ...approve, label: "Keep legal hold" }), "reject");
   assert.equal(decisionKind({ ...approve, optionId: "fallback", label: "Use the safe fallback" }), "fallback");
 });
+
+test("an approving label that only mentions holding still approves; a label that leads with hold rejects", () => {
+  const base = { by: "tap" as const, who: "Arvin" };
+  assert.equal(decisionKind({ ...base, optionId: "option-1", label: "Sign off redirect or hold" }), "approve");
+  assert.equal(decisionKind({ ...base, optionId: "option-2", label: "Hold for now" }), "reject");
+  assert.equal(decisionKind({ ...base, optionId: "option-3", label: "Send nothing yet" }), "reject");
+  assert.equal(decisionKind({ ...base, optionId: "fallback", label: "Anything" }), "fallback");
+});
