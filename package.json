@@ -9,14 +9,15 @@
     "build": "npm run build -w api && npm run build -w web",
     "lint": "npm run lint -w api && npm run lint -w web",
     "data": "node scripts/build-data.mjs",
-    "gen:cases": "node --env-file-if-exists=apps/api/.env.local scripts/eval/gen-cases.mjs",
-    "eval": "node --env-file-if-exists=apps/api/.env.local scripts/eval/run-eval.mjs",
+    "gen:cases": "node --env-file-if-exists=.env.local --env-file-if-exists=apps/api/.env.local scripts/eval/gen-cases.mjs",
+    "eval": "node --env-file-if-exists=.env.local --env-file-if-exists=apps/api/.env.local scripts/eval/run-eval.mjs",
     "test:eval": "node --test scripts/eval/eval.test.mjs",
     "index:cases": "node scripts/eval/index-cases.mjs",
     "validate:cases": "node scripts/eval/validate-cases.mjs",
     "render:adversarial": "node scripts/eval/render-raw.mjs",
-    "answer": "node --env-file-if-exists=apps/api/.env.local apps/api/src/agent/cli.ts",
-    "test:agent": "node --test apps/api/src/agent/*.test.ts"
+    "answer": "node --env-file-if-exists=.env.local --env-file-if-exists=apps/api/.env.local apps/api/src/agent/cli.ts",
+    "test:agent": "node --test apps/api/src/agent/*.test.ts",
+    "replay": "node apps/api/src/agent/replay.ts"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

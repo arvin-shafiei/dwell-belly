@@ -8,7 +8,11 @@ import { failingTransport } from "./outbox.ts";
 import { fromView, loadFolder } from "./load.ts";
 import type { Models } from "./models.ts";
 import { renderAnswer, renderReasoning } from "./report.ts";
-import { runCase } from "./run.ts";
+import { mkdtemp, mkdir, readdir, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { validateFlow } from "./architect.ts";
+import { replay } from "./replay.ts";
+import { runCase, savedResult } from "./run.ts";
 import { Decision, Understanding } from "./types.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
@@ -99,7 +103,11 @@ test("a mid-risk message is held for a human and a decision card is written", as
   const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision, decision], critic: [{ actions: [scores(0.5)] }, { actions: [scores(0.5)] }] })));
   assert.equal(r.outcome, "escalated");
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
-  assert.ok(r.card);
+  assert.equal(r.card?.whyStopped?.reason, "message_too_risky");
+  assert.match(r.card?.whyStopped?.line ?? "", /safety check stopped the message to Delivery investigations/);
+  assert.deepEqual(r.card?.options.map((o) => [o.label, o.undoable]), [[`Approve the message to ${action.recipient}`, false], ["Send nothing", true]]);
+  // With no handover from the planner, the evidence is the two sides of the conflict the analysis found.
+  assert.equal(r.card?.evidence?.[0].who, "Sorin Vaal, recipient");
   assert.match(renderAnswer(r), /No person was available during this run/);
 });
 
@@ -111,11 +119,23 @@ test("wait_no_action sends nothing even if the model drafted a message", async (
 });
 
 test("escalating can still send a safe alert alongside the handover", async () => {
-  const handover = { route_to: "desk supervisor", summary: "Legal threat", clash: "", options: ["Reply", "Hold"], would_change_my_mind: "A solicitor's letter", safe_fallback: "Hold" };
+  const handover = {
+    route_to: "desk supervisor", why_a_person: "A solicitor has written to the desk.", summary: "Legal threat", clash: "",
+    key_evidence: [{ who: "Sorin Vaal, recipient", says: "Will sue", basis: "unverified_claim" as const }],
+    options: [{ label: "Reply", effect: "Sends a holding reply to the recipient by portal", undoable: false }, { label: "Hold", effect: "Nothing is sent", undoable: true }],
+    would_change_my_mind: "A solicitor's letter", safe_fallback: "Hold",
+  };
   const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [{ ...decision, decision_type: "escalate_to_human", handover }], critic: [{ actions: [scores(0)] }] })));
   assert.equal(r.outcome, "escalated");
   assert.deepEqual(r.outbox.map((o) => o.status), ["recorded"]);
   assert.equal(r.card?.routeTo, "desk supervisor");
+  assert.deepEqual(r.card?.whyStopped, { reason: "agent_judged_unsafe", line: "A solicitor has written to the desk." });
+  assert.equal(r.card?.evidence?.length, 1);
+  assert.deepEqual(r.card?.alreadyDone, [`Message recorded for ${action.recipient} via Email: Open an investigation`]);
+  const answer = renderAnswer(r);
+  assert.match(answer, /\*\*Why a person is needed:\*\* A solicitor has written to the desk\./);
+  assert.match(answer, /\*\*Reply\*\*: Sends a holding reply to the recipient by portal \(cannot be undone\)/);
+  assert.match(answer, /Already done safely:/);
 });
 
 test("a model failure becomes an error outcome with an honest answer, not a throw", async () => {
@@ -130,8 +150,8 @@ test("a model failure becomes an error outcome with an honest answer, not a thro
   assert.equal(r.trace.events.at(-1)?.kind, "run_end");
 });
 
-test("a failed critic call leaves the message unchecked, so it is held, not sent", async () => {
-  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [] }] })));
+test("a critic that twice returns no usable scores leaves the message unchecked, so it is held, not sent", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [] }, { actions: [] }] })));
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
 });
 
@@ -176,10 +196,11 @@ test("a case that times out stays a failure even when its model call returns lat
 });
 
 test("a force_human panel rule holds every message, whatever the planner chose", async () => {
-  const panel = async () => ({ ok: true, seats: [], forceHuman: true, notes: ["Legal threat"], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
+  const panel = async () => ({ ok: true, seats: [{ id: "rule_keeper", name: "Rule keeper", answers: { legal_or_public: 0.95 }, raised: ["legal_or_public"] }], forceHuman: true, notes: ["Legal threat"], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
   const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), panel });
   assert.equal(r.outcome, "escalated");
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
+  assert.deepEqual(r.card?.whyStopped, { reason: "rule_requires_person", line: "Legal, regulator, police or press involvement. A person at the desk decides before anything is sent." });
   const end = r.trace.events.at(-1);
   assert.equal(end?.kind === "run_end" ? end.nextAction : "not a run_end", undefined);
 });
@@ -191,9 +212,15 @@ test("a panel that throws is skipped and the case still completes", async () => 
   assert.equal(r.panel?.ok, false);
 });
 
-test("critic scores with the wrong index are not trusted: the message is held", async () => {
-  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [{ ...scores(0), index: 3 }] }] })));
-  assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
+test("critic scores numbered from 1 are matched by order, and the wrong number of scores is not trusted", async () => {
+  const oneBased = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [{ ...scores(0), index: 1 }] }] })));
+  assert.deepEqual(oneBased.outbox.map((o) => o.status), ["recorded"]);
+  const two = { actions: [scores(0), { ...scores(0), index: 1 }] };
+  const tooMany = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [two, two] })));
+  assert.deepEqual(tooMany.outbox.map((o) => o.status), ["held_for_human"]);
+  const recovered = fake({ understand: [understanding], decide: [decision], critic: [two, { actions: [scores(0)] }] });
+  assert.deepEqual((await runCase(bundle, opts(recovered))).outbox.map((o) => o.status), ["recorded"]);
+  assert.deepEqual(recovered.calls, ["understand", "decide", "critic", "critic"]);
 });
 
 test("deciding to act with nothing to send goes to a human, not 'no action needed'", async () => {
@@ -277,4 +304,104 @@ test("events voiced by a simulated persona never reach the evidence unless asked
   assert.match(scored.documents[0].text, /voice: live human/);
   assert.match(scored.unreadable.join(), /1 event\(s\) voiced by a simulated persona/);
   assert.equal(fromView(view, { allowSimulated: true }).documents[0].text.includes("porch"), true);
+});
+
+test("the flow file the batch runner uses is itself valid", () => {
+  assert.deepEqual(validateFlow(flow), []);
+});
+
+test("a saved result holds no case text and re-renders to the same answer files", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })));
+  const saved = savedResult(r);
+  assert.equal(JSON.stringify(saved.bundle).includes("No parcel here"), false);
+  const reread = JSON.parse(JSON.stringify(saved));
+  assert.equal(renderAnswer(reread), renderAnswer(r));
+  assert.equal(renderReasoning(reread), renderReasoning(r));
+});
+
+test("replay reports answer files that no longer match their recorded run", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })));
+  const out = await mkdtemp(path.join(tmpdir(), "replay-"));
+  for (const name of ["1", "2", "3"]) await mkdir(path.join(out, name));
+  for (const name of ["1", "2"]) {
+    await writeFile(path.join(out, name, "result.json"), JSON.stringify(savedResult(r)));
+    await writeFile(path.join(out, name, "ANSWER.md"), renderAnswer(r));
+    await writeFile(path.join(out, name, "REASONING.md"), renderReasoning(r));
+  }
+  await writeFile(path.join(out, "2", "ANSWER.md"), renderAnswer(r).replace("ACT", "edited by hand"));
+  assert.deepEqual(await replay(out, false), { same: ["1"], different: ["2"], unreadable: ["3"] });
+});
+
+test("the loader reads every practice folder in all four tracks without failing", async () => {
+  const raw = path.join(ROOT, "data/raw");
+  let folders = 0;
+  const dirs = async (dir: string) => (await readdir(dir, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name);
+  for (const track of await dirs(raw)) {
+    for (const name of await dirs(path.join(raw, track))) {
+      const b = await loadFolder(path.join(raw, track, name));
+      folders += 1;
+      assert.ok(b.documents.length >= 2, `${track}/${name} gave ${b.documents.length} documents`);
+      assert.deepEqual(b.unreadable, [], `${track}/${name}`);
+    }
+  }
+  assert.equal(folders, 200);
+});
+
+test("triage, the panel and the clash check start together, not one after another", async () => {
+  const started: string[] = [];
+  let release: () => void = () => {};
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  const jevUsage = { model: "jev", latencyMs: 1, tokensIn: 5, tokensOut: 0, costUsd: 0 };
+  const hold = async <T>(name: string, value: T) => { started.push(name); if (started.length === 3) release(); await gate; return value; };
+  const judge = {
+    triage: () => hold("triage", { caseType: "damage" as const, urgency: "low" as const, urgencyScore: 0.1, usage: jevUsage }),
+    clash: () => hold("clash", { p: 0.1, usage: jevUsage }),
+  };
+  const panel = () => hold("panel", { ok: true, seats: [], forceHuman: false, notes: [], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
+  // If the three ran in sequence, the first would wait forever for the other two to start.
+  const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), judge, panel, timeoutMs: 2000 });
+  assert.equal(r.outcome, "acted");
+  assert.deepEqual(started.sort(), ["clash", "panel", "triage"]);
+  const edges = r.trace.events.filter((e) => e.kind === "edge").map((e) => (e.kind === "edge" ? `${e.from}>${e.to}` : ""));
+  for (const edge of ["history>triage", "history>perspectives", "history>clash", "triage>planner", "perspectives>planner", "clash>planner"]) assert.ok(edges.includes(edge), edge);
+});
+
+const panelFlow: Flow = JSON.parse(await readFile(path.join(ROOT, "apps/api/flows/panel-incident.json"), "utf8"));
+
+test("the panel flow is valid and its planner seats draft in parallel before one final decision", async () => {
+  assert.deepEqual(validateFlow(panelFlow), []);
+  const seen: { tier: string | undefined; proposals: boolean }[] = [];
+  const escalate = { ...decision, decision_type: "escalate_to_human" as const, why: "devil's advocate view", actions: [], handover: null };
+  const drafts = [decision, { ...decision, why: "customer view" }, escalate];
+  const models: Models = {
+    async structured(call) {
+      const s = call.schema as unknown;
+      if (s === Understanding) return { output: understanding as never, usage };
+      if (s !== Decision) return { output: { actions: [scores(0)] } as never, usage };
+      seen.push({ tier: call.tier, proposals: call.user.includes("<proposals>") });
+      return { output: (call.tier === "strong" ? decision : drafts.shift()) as never, usage };
+    },
+  };
+  const r = await runCase(bundle, { ...opts(models), flow: panelFlow });
+  assert.equal(r.outcome, "acted");
+  assert.deepEqual(seen.map((x) => x.tier), ["fast", "fast", "fast", "strong"]);
+  assert.deepEqual(seen.map((x) => x.proposals), [false, false, false, true]);
+  assert.deepEqual(r.candidates?.map((c) => c.stance), ["Owner first", "Customer first", "Devil's advocate"]);
+  assert.match(renderReasoning(r), /Drafts weighed before deciding:/);
+});
+
+test("a planner seat that fails is dropped and the decision is still made", async () => {
+  let n = 0;
+  const models: Models = {
+    async structured(call) {
+      const s = call.schema as unknown;
+      if (s === Understanding) return { output: understanding as never, usage };
+      if (s !== Decision) return { output: { actions: [scores(0)] } as never, usage };
+      if (call.tier === "fast" && n++ === 0) throw new Error("overloaded");
+      return { output: decision as never, usage };
+    },
+  };
+  const r = await runCase(bundle, { ...opts(models), flow: panelFlow });
+  assert.equal(r.outcome, "acted");
+  assert.equal(r.candidates?.length, 2);
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WorkflowEvent } from "../../store";
-import { chosenAction, formatExpected, matchExpected, scenarioIdOf, groupScenarios, filterScenarios } from "./scenarioMatch";
+import { chosenAction, formatExpected, hasRealTrace, matchExpected, scenarioIdOf, groupScenarios, filterScenarios } from "./scenarioMatch";
 import type { CaseScenario } from "../../scenarios";
 
 const ev = (caseId: string, nodeId: string, summary: string, status: WorkflowEvent["status"] = "ok"): WorkflowEvent => ({
@@ -61,5 +61,17 @@ describe("groupScenarios / filterScenarios", () => {
     expect(filterScenarios(list, "GATE").map((x) => x.id)).toEqual(["delivery-003"]);
     expect(filterScenarios(list, "002").map((x) => x.id)).toEqual(["delivery-002"]);
     expect(filterScenarios(list, "  ")).toHaveLength(3);
+  });
+});
+
+describe("hasRealTrace", () => {
+  it("is true only when the case has an event replayed from the real agent", () => {
+    const mock = ev("CASE-delivery-024-r1", "action", "Email Plover Arc");
+    const untagged = { ...ev("CASE-delivery-024-r1", "planner", "plan"), source: "mock" as const };
+    const real = { ...ev("AGT-delivery-024-1", "action", "Email Plover Arc"), source: "agent" as const };
+    expect(hasRealTrace([mock, untagged], "CASE-delivery-024-r1")).toBe(false);
+    expect(hasRealTrace([mock, untagged, real], "CASE-delivery-024-r1")).toBe(false);
+    expect(hasRealTrace([mock, real], "AGT-delivery-024-1")).toBe(true);
+    expect(hasRealTrace([], "AGT-delivery-024-1")).toBe(false);
   });
 });

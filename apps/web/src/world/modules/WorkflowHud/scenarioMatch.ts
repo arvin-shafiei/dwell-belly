@@ -62,3 +62,13 @@ export function filterScenarios(list: readonly CaseScenario[], q: string): CaseS
   if (!n) return [...list];
   return list.filter((s) => s.id.includes(n) || s.title.toLowerCase().includes(n));
 }
+
+/**
+ * True when the case has at least one event replayed from the real agent's trace (`source: "agent"`).
+ * PRD J4: the "Expected" check and any match chip appear only for such cases, because the mock planner
+ * copies the answer key and would always "match".
+ */
+export function hasRealTrace(events: readonly WorkflowEvent[], caseId: string): boolean {
+  for (const e of events) if (e.caseId === caseId && e.source === "agent") return true;
+  return false;
+}

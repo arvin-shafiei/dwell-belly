@@ -3,6 +3,7 @@ import { on, type WorldEvent } from "../../bus";
 import { CT_PLACES } from "../../districts/containerTerminal";
 import { allVehicles } from "../../registry";
 import { blockedSet, useWorld } from "../../store";
+import { deckIndex, type BerthState } from "../../berths";
 import { TruckSim, destinationPools, isInternalEdge, roadName } from "./trucks";
 
 let sim: TruckSim | null = null;
@@ -126,5 +127,22 @@ describe("container lorry loop", () => {
     const p = destinationPools();
     expect(p.far.length + p.ind.length).toBeGreaterThan(5);
     expect(roadName("h_0|h_1")).toBe("the Ring Road");
+  });
+
+  it("with a ship working the berth, some lorries take a box straight off the ship on the quay road", () => {
+    const deck = Array.from({ length: 9 * 10 * 4 }, () => ({ color: null as string | null }));
+    const berth: BerthState = {
+      id: "terminal", quayX: 354, zMin: 146, zMax: 304, phase: "working", phaseStartedAt: 0, shipName: "T", rows: 9, bays: 10, tiers: 4,
+      deck, x: 354, z: 225, heading: 0, bob: 0, craneDone: false, discharged: 0, loaded: 0,
+    };
+    for (let bay = 0; bay < 10; bay++) for (let row = 0; row < 9; row++) for (let t = 0; t < 3; t++) deck[deckIndex(berth, bay, row, t)].color = "#2e6fb7";
+    sim = new TruckSim({ count: 12, firstTipAfter: 1e9, seed: 6, berth });
+    const s = sim;
+    let direct = false;
+    run(s, 600, 0.1, () => {
+      for (const t of s.trucks) if (t.phase === "atQuay" && t.loaded && t.box) direct = true;
+    });
+    expect(berth.discharged).toBeGreaterThan(20);
+    expect(direct).toBe(true);
   });
 });

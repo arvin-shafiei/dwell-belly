@@ -4,7 +4,8 @@ import { z } from "zod";
 export interface CaseBundle {
   id: string;
   title: string;
-  documents: { name: string; text: string }[];
+  /** `chars` stands in for the text when a saved result is re-rendered without the case files. */
+  documents: { name: string; text: string; chars?: number }[];
   /** PDFs and images go to Claude as native blocks; no OCR step of our own. */
   media: { name: string; mediaType: string; base64: string }[];
   unreadable: string[];
@@ -61,10 +62,20 @@ export const Decision = z.object({
   waiting_for: z.array(z.object({ what: z.string(), from: z.string(), by: z.string() })),
   handover: z.object({
     route_to: z.string().describe("The human role that should decide."),
-    summary: z.string(),
+    why_a_person: z.string().describe("One plain sentence: what makes this a decision the desk's agent must not take alone. This is the first thing the person reads."),
+    summary: z.string().describe("Two or three sentences a person can act on without opening the case."),
+    key_evidence: z.array(z.object({
+      who: z.string(),
+      says: z.string().describe("The statement, in your own words, short."),
+      basis: z.enum(["system_record", "owning_team_statement", "unverified_claim"]),
+    })).describe("The two or three statements the decision turns on, and no others."),
     clash: z.string().describe("The conflict found, or empty."),
-    options: z.array(z.string()).describe("Two or three options the human can pick."),
-    would_change_my_mind: z.string(),
+    options: z.array(z.object({
+      label: z.string().describe("A few words, as on a button."),
+      effect: z.string().describe("Exactly what happens if chosen: who is told what, on which channel."),
+      undoable: z.boolean().describe("False if choosing it sends something or commits the desk in a way that cannot be taken back."),
+    })).describe("Two or three options the human can pick."),
+    would_change_my_mind: z.string().describe("The one fact that would settle it."),
     safe_fallback: z.string().describe("What is done meanwhile if nobody answers. Must be undoable."),
   }).nullable().describe("Required when decision_type is escalate_to_human, otherwise null."),
   confidence: z.enum(["high", "medium", "low"]),

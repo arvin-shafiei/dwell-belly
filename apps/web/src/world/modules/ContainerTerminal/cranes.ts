@@ -79,6 +79,8 @@ export class RmgSim {
   job: RmgJob | null = null;
   private idle = 0;
   private readonly events: RmgEvent[] = [];
+  /** Priority work when no truck is waiting (quay transfer moves): a stack-to-stack move, or null. */
+  idleHook: (() => { from: number; to: number } | null) | null = null;
 
   constructor(
     readonly index: number,
@@ -103,6 +105,13 @@ export class RmgSim {
     return this.queue.length + (this.job?.truckId ? 1 : 0);
   }
 
+  /** True while the job in flight takes from or puts onto this stack. */
+  touches(stack: number) {
+    const j = this.job;
+    if (!j) return false;
+    return (j.fromRef.kind === "stack" && j.fromRef.stack === stack) || (j.toRef.kind === "stack" && j.toRef.stack === stack);
+  }
+
   busyWith(truckId: string) {
     return this.job?.truckId === truckId || this.queue.some((q) => q.truckId === truckId);
   }
@@ -111,8 +120,13 @@ export class RmgSim {
     this.events.length = 0;
     if (!this.job) {
       const req = this.queue.shift();
+      const hook = req ? null : this.idleHook?.() ?? null;
       if (req) this.job = this.plan(req);
-      else {
+      else if (hook && this.yard.height(hook.from) > 0 && this.yard.height(hook.to) < MAX_TIER) {
+        const from = this.stackPoint(hook.from, this.yard.height(hook.from) - 1);
+        const to = this.stackPoint(hook.to, this.yard.height(hook.to));
+        this.job = this.makeJob("shuffle", null, from, to, { kind: "stack", stack: hook.from }, { kind: "stack", stack: hook.to }, null);
+      } else {
         this.idle += dt;
         if (this.idle > IDLE_BEFORE_SHUFFLE) {
           this.idle = 0;

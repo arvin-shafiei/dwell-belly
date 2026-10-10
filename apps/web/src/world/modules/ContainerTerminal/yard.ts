@@ -8,6 +8,7 @@ export interface Box {
   brand: number; // atlas row (0 = plain, tinted per instance)
   tint: number; // index into the tint palette (used when brand = 0)
   short?: boolean; // 20 ft box
+  color?: string; // explicit CSS colour (boxes that came off a ship), overrides the tint
 }
 
 export interface StackSpec {
@@ -30,6 +31,8 @@ export class Yard {
   readonly stacks: Stack[];
   /** Stack ids whose contents changed since the renderer last looked. */
   readonly dirty = new Set<number>();
+  /** Stacks the generic pick/place/housekeeping helpers leave alone (quay transfer points). */
+  readonly reserved = new Set<number>();
   private readonly byBlock = new Map<number, Stack[]>();
 
   constructor(specs: StackSpec[], makeBox: (s: StackSpec, tier: number) => Box) {
@@ -90,7 +93,7 @@ export class Yard {
     let best: Stack | null = null;
     let bestScore = Infinity;
     for (const s of this.block(b)) {
-      if (!s.tiers.length || s.id === exclude) continue;
+      if (!s.tiers.length || s.id === exclude || this.reserved.has(s.id)) continue;
       const score = Math.abs(s.x - x) + s.row * 0.4 - s.tiers.length * 0.9;
       if (score < bestScore) {
         bestScore = score;
@@ -105,7 +108,7 @@ export class Yard {
     let best: Stack | null = null;
     let bestScore = Infinity;
     for (const s of this.block(b)) {
-      if (s.tiers.length >= MAX_TIER || s.id === exclude) continue;
+      if (s.tiers.length >= MAX_TIER || s.id === exclude || this.reserved.has(s.id)) continue;
       const score = Math.abs(s.x - x) + s.row * 0.4 + s.tiers.length * 0.9;
       if (score < bestScore) {
         bestScore = score;
@@ -117,7 +120,7 @@ export class Yard {
 
   /** A housekeeping move inside a block: from a tall stack to a low one. Null if the block is level. */
   housekeep(b: number, rand: () => number): { from: number; to: number } | null {
-    const list = this.block(b);
+    const list = this.block(b).filter((s) => !this.reserved.has(s.id));
     if (list.length < 2) return null;
     // Sample a few random candidates so cranes wander around the block instead of repeating one move.
     let from: Stack | null = null;

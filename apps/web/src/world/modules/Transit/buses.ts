@@ -2,6 +2,7 @@
 // Imperative engine: build once, tick per frame. All buses share one set of instanced meshes.
 import * as THREE from "three";
 import { registerVehicle, vehiclesAhead, type VehicleEntry } from "../../registry";
+import { Lookahead, type ObstacleFn } from "../DeliveryFleet/lookahead";
 import { edgeKey, getEdge, getNode, lanePosition } from "../../roads";
 import { hasSignal, signalFor } from "../../signals";
 import { blockedSet, useWorld } from "../../store";
@@ -17,6 +18,9 @@ const ACCEL = 1.5;
 const BRAKE = 3.2;
 const STOP_LINE = 7; // metres before a signalled junction
 const GAP = 11.5; // centre-to-centre spacing to the vehicle ahead
+const BUS_HALF_LEN = 5.2;
+const BUS_HALF_W = 1.25;
+const JUNCTION_R = 10; // a vehicle this close to the node we're heading for is "in the junction"
 const TURN_R = 6;
 const PULL_IN = 0.9; // extra metres toward the kerb at a stop
 const DOOR_LAT = PULL_IN + 1.35; // lane-relative lateral of the bus's nearside doors
@@ -69,6 +73,12 @@ interface Bus {
   shown: Pose; // displayed (smoothed)
   obj: THREE.Object3D;
   entry: VehicleEntry;
+  look: Lookahead;
+}
+
+export interface BusOptions {
+  /** Look-ahead raycast (defaults to physics.obstacleAhead); injectable for tests. */
+  obstacleFn?: ObstacleFn;
 }
 
 /** World point at (along, lateral) in a frame; lateral + is to the left of travel. */
@@ -94,7 +104,7 @@ function wrapAngle(a: number) {
   return a;
 }
 
-export function createBuses(pool: PassengerPool, seed = 2025) {
+export function createBuses(pool: PassengerPool, seed = 2025, opts: BusOptions = {}) {
   const rand = mulberry32(seed);
   const pt = { x: 0, z: 0 };
   const m4 = new THREE.Matrix4();
@@ -234,6 +244,7 @@ export function createBuses(pool: PassengerPool, seed = 2025) {
         onboard: 6 + Math.floor(rand() * 18), crashed: false, crashT: 0, stuckT: 0, stopAt: null,
         pose: { x: 0, z: 0, h: 0 }, shown: { x: 0, z: 0, h: 0 }, obj,
         entry: null as unknown as VehicleEntry,
+        look: new Lookahead({ halfLength: BUS_HALF_LEN, halfWidth: BUS_HALF_W, decel: BRAKE }, opts.obstacleFn, slot),
       };
       b.entry = {
         id, kind: "bus", object: obj, edgeKey: to ? edgeKey(b.from, to) : null, from: b.from, to, t: b.t, speed: 0, stopped: true,
@@ -337,7 +348,7 @@ export function createBuses(pool: PassengerPool, seed = 2025) {
     b.servedKey = "";
   }
 
-  function stepDrive(b: Bus, dt: number, now: number, blocked: Record<string, string>) {
+  function stepDrive(b: Bus, dt: number, now: number, blocked: Record<string, string>, sees: (x: number, z: number) => boolean) {
     if (!b.to) {
       b.v = 0;
       b.to = b.nav.chooseNext(blockedSet());
@@ -365,6 +376,19 @@ export function createBuses(pool: PassengerPool, seed = 2025) {
 
     const ahead = vehiclesAhead(b.from, b.to, b.t, b.id);
     if (ahead.length) D = Math.min(D, Math.max(0, (ahead[0].t - b.t) * len - GAP));
+
+    // look-ahead raycast: brake for anything in front, and give way to a vehicle sitting in the junction
+    const look = b.look;
+    look.scan(b.id, b.pose.x, b.pose.z, b.pose.h, b.v, dt, sees(b.pose.x, b.pose.z));
+    if (look.hitId) {
+      let d = look.room;
+      const toLine = len - STOP_LINE - s;
+      if (toLine > 0) {
+        const n = getNode(b.to);
+        if (look.hitInJunction(n.x, n.z, JUNCTION_R)) d = Math.min(d, toLine);
+      }
+      D = Math.min(D, d);
+    }
 
     if (blocked[key]) {
       const si = incidentS(b.from, b.to, key);
@@ -432,7 +456,7 @@ export function createBuses(pool: PassengerPool, seed = 2025) {
 
   // --- per-frame ------------------------------------------------------------------------------
   const busM = new THREE.Matrix4();
-  function tick(dt: number, now: number, simulate: boolean, night: number) {
+  function tick(dt: number, now: number, simulate: boolean, night: number, sees: (x: number, z: number) => boolean = () => true) {
     glass.emissiveIntensity = night * 0.9;
     const blink = Math.floor(now / 400) % 2 === 0;
     if (simulate) {
@@ -445,7 +469,7 @@ export function createBuses(pool: PassengerPool, seed = 2025) {
           const k = b.to ? edgeKey(b.from, b.to) : "";
           if (b.crashT > 30 && !blocked[k]) b.crashed = false;
         } else if (b.mode === MODE.DWELL) stepDwell(b, dt);
-        else stepDrive(b, dt, now, blocked);
+        else stepDrive(b, dt, now, blocked, sees);
 
         if (b.to) {
           lanePose(b.prev, b.from, b.to, b.nav.peekAfterTarget(), b.t, TURN_R, b.pose);
@@ -488,6 +512,9 @@ export function createBuses(pool: PassengerPool, seed = 2025) {
   return {
     meshes,
     tick,
+    /** Read-only view for tests and debugging. */
+    state: () => buses.map((b) => ({ id: b.id, x: b.pose.x, z: b.pose.z, h: b.pose.h, v: b.v, mode: b.mode, from: b.from, to: b.to, t: b.t, crashed: b.crashed,
+      stopAhead: !!b.to && routeStopKeys.get(b.route)!.has(`${b.from}>${b.to}`) && b.servedKey !== `${b.from}>${b.to}` })),
     /** Put the buses in the shared vehicle registry; returns the undo. Call from an effect. */
     register() {
       const offs = buses.map((b) => registerVehicle(b.entry));

@@ -1,12 +1,15 @@
 "use client";
 // Module: Chases. The city goes a bit wild:
 // - Police pursuits every 90-150 s: a getaway (black saloon, or a stolen Rivet van) bolts at 1.7x the
-//   limit, weaving through traffic, mounting kerbs and running reds; 2-3 Battenburg police cars chase it
-//   (re-pathing at each junction), with a helicopter overhead (searchlight at night). It ends in a PIT
-//   and arrest, a crash (car_crash incident + closed road for Responders), or an escape onto the motorway.
+//   limit, weaving through traffic (look-ahead ray via physics.obstacleAhead: wrong side of the road, up
+//   on the kerb, or hard braking), running reds. 2-3 Battenburg police cars chase its real position and
+//   cut it off at its predicted next node; sometimes two more park across a junction ahead (roadblock).
+//   Endings: a physical PIT (rear-quarter contact -> rigid-body spin -> boxed in -> arrest), a real
+//   collision (momentum transfer, the other car crash()es, car_crash incident + closed road for
+//   Responders), or an escape onto the motorway. A helicopter follows (searchlight at night).
 // - Street racers at night: two tuned cars with neon underglow launch from a red light down an avenue.
 // - Speed cameras: 6 posts on main roads flash at anything doing over 1.3x the limit.
-// Logic: ./Chases/logic.ts (pure, tested), ./Chases/sim.ts (per-frame driver), ./Chases/meshes.ts.
+// Logic: ./Chases/logic.ts + dynamics.ts (pure, tested), ./Chases/sim.ts (per-frame driver), ./Chases/meshes.ts.
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { ChaseSim } from "./Chases/sim";

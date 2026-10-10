@@ -13,7 +13,7 @@ export default function Transit() {
   useEffect(() => engine.register(), [engine]);
   useEffect(() => () => engine.dispose(), [engine]);
 
-  useFrame((_, delta) => engine.tick(delta));
+  useFrame(({ camera }, delta) => engine.tick(delta, camera));
 
   return (
     <group name="Transit">

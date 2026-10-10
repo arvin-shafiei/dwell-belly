@@ -1,0 +1,88 @@
+import { describe, expect, it } from "vitest";
+import type { Flow } from "../types";
+import flowJson from "../../../../api/flows/default-incident.json";
+import {
+  architectDescription, buildRequest, explainFlow, nameFrom, problemsByNode, revealFrame, revealOrder,
+  slugify, usageTotals, validateRequest,
+} from "./architect";
+
+const flow = flowJson as Flow;
+
+describe("architect requests", () => {
+  it("sends the description, trimmed", () => {
+    expect(buildRequest("  Frozen food, cold-chain vans ")).toEqual({ description: "Frozen food, cold-chain vans" });
+  });
+  it("refines by appending Changes:", () => {
+    expect(buildRequest("Pharmacy courier", "add a missing-info step")).toEqual({
+      description: "Pharmacy courier\n\nChanges: add a missing-info step",
+    });
+    expect(architectDescription("A", "   ")).toBe("A");
+  });
+  it("validates by sending the flow", () => {
+    expect(validateRequest(flow)).toEqual({ flow });
+  });
+});
+
+describe("draft reveal", () => {
+  it("starts at ingest and follows edges breadth-first", () => {
+    const order = revealOrder(flow);
+    expect(order[0]).toBe("ingest");
+    expect(order.slice(0, 7)).toEqual(["ingest", "history", "triage", "perspectives", "clash", "planner", "gate"]);
+    // gate exits in declared order: allow (action), ask (human), block (log)
+    expect(order.slice(7, 10)).toEqual(["action", "human", "log"]);
+    expect(order).toHaveLength(flow.nodes.length);
+    expect(new Set(order).size).toBe(flow.nodes.length);
+  });
+  it("every node appears after at least one predecessor", () => {
+    const order = revealOrder(flow);
+    for (const id of order.slice(1)) {
+      const preds = flow.edges.filter((e) => e.to === id).map((e) => order.indexOf(e.from));
+      expect(Math.min(...preds)).toBeLessThan(order.indexOf(id));
+    }
+  });
+  it("appends unreachable nodes and handles no ingest", () => {
+    const f = { nodes: [{ id: "x", type: "triage" as const, runs_on: [] }, { id: "y", type: "verify" as const, runs_on: [] }, { id: "z", type: "planner" as const, runs_on: [] }], edges: [{ from: "x", to: "y" }, { from: "y", to: "x" }] };
+    expect(revealOrder(f)).toEqual(["z", "x", "y"]);
+  });
+  it("frames show only edges between visible nodes", () => {
+    const order = revealOrder(flow);
+    const f = revealFrame(flow, order, 3);
+    expect([...f.nodes]).toEqual(["ingest", "history", "triage"]);
+    expect(f.edges).toEqual([{ from: "ingest", to: "history" }, { from: "history", to: "triage" }]);
+    expect(revealFrame(flow, order, 0).nodes.size).toBe(0);
+    expect(revealFrame(flow, order, 99).edges).toHaveLength(flow.edges.length);
+  });
+});
+
+describe("explanation and problems", () => {
+  it("explains steps with gate branches", () => {
+    const steps = explainFlow(flow);
+    const gate = steps.find((s) => s.id === "gate")!;
+    expect(gate.label).toBe("Safety gate");
+    expect(gate.branches).toEqual(["allow → Action", "ask → Human decision", "block → Case log"]);
+    expect(steps[0].role).toMatch(/Entry point/);
+  });
+  it("maps problems to nodes", () => {
+    const { byNode, general } = problemsByNode([
+      'safety_gate "gate" needs numeric config allow_below < block_above, both between 0 and 1',
+      "unreachable from the start: verify, log",
+      "cycle: action -> verify -> action",
+      "no human_decision node",
+    ], flow);
+    expect(Object.keys(byNode).sort()).toEqual(["action", "gate", "log", "verify"]);
+    expect(byNode.verify).toHaveLength(2);
+    expect(general).toEqual(["no human_decision node"]);
+  });
+  it("totals usage", () => {
+    expect(usageTotals(undefined)).toBeNull();
+    expect(usageTotals([{ model: "m", latencyMs: 1000, tokensIn: 1, tokensOut: 1, costUsd: 0.01 }, { model: "m2", latencyMs: 500, tokensIn: 1, tokensOut: 1, costUsd: 0.02 }]))
+      .toEqual({ costUsd: 0.03, latencyMs: 1500, calls: 2, model: "m2" });
+  });
+  it("names and ids", () => {
+    expect(slugify("Pharmacy courier, 40 drivers, controlled meds")).toBe("pharmacy-courier-40-drivers-controlled");
+    expect(slugify("Frozen food", ["frozen-food"])).toBe("frozen-food-2");
+    expect(slugify("!!!")).toBe("flow");
+    expect(nameFrom("frozen food, cold-chain vans")).toBe("Frozen food, cold-chain vans");
+    expect(nameFrom("x".repeat(80)).length).toBeLessThanOrEqual(49);
+  });
+});

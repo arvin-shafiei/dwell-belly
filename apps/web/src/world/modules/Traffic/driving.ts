@@ -422,3 +422,54 @@ export function pickDestination(kind: Archetype, current: string, rand: () => nu
   }
   return fallback || TOWN.ids.find((id) => id !== current) || current;
 }
+
+// --- Look-ahead beam helpers ----------------------------------------------------------------
+
+/**
+ * Pose `ds` metres further along the path from (idx, t), without mutating anything. Returns the
+ * distance that didn't fit (the path ended); the pose is then the path end.
+ */
+export function pathPointAhead(path: readonly string[], idx: number, t: number, ds: number, out: Pose): number {
+  let i = idx;
+  let tt = t;
+  let rem = ds;
+  while (rem > 0) {
+    const len = edgeLen(path[i], path[i + 1]);
+    const left = (1 - tt) * len;
+    if (rem < left) {
+      tt += rem / len;
+      rem = 0;
+      break;
+    }
+    if (i + 2 >= path.length) {
+      tt = 1;
+      rem -= left;
+      break;
+    }
+    rem -= left;
+    i += 1;
+    tt = 0;
+  }
+  poseAt(path, i, tt, out);
+  return rem;
+}
+
+/** Signed lateral offset of point (px, pz) from a vehicle at (x, z) heading h (> 0 = to its left). */
+export function lateralOf(x: number, z: number, h: number, px: number, pz: number) {
+  return (pz - z) * Math.sin(h) - (px - x) * Math.cos(h);
+}
+
+/**
+ * Two vehicles in conflict inside a junction: exactly one of them yields. Give way to the vehicle on
+ * your right (UK rule); when that's ambiguous (head-on, or each is on the other's right) the lower id
+ * yields. Symmetric: shouldYield(a, b) !== shouldYield(b, a).
+ */
+export function shouldYield(
+  x: number, z: number, h: number, id: string,
+  ox: number, oz: number, oh: number, oid: string,
+): boolean {
+  const otherOnMyRight = lateralOf(x, z, h, ox, oz) < 0;
+  const meOnItsRight = lateralOf(ox, oz, oh, x, z) < 0;
+  if (otherOnMyRight !== meOnItsRight) return otherOnMyRight;
+  return id < oid;
+}

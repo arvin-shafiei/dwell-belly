@@ -39,7 +39,9 @@ npm run answer -- <casesDir> ANSWERS        # every subfolder is one case
 npm run answer -- <casesDir> ANSWERS --resume   # rerun only the cases that failed
 ```
 
-Each case gets `ANSWERS/<case>/ANSWER.md`, `REASONING.md` and `trace.json`, and the batch writes `ANSWERS/RUNLOG.md`. All four are generated; none is edited by hand. The agent lives in `apps/api/src/agent/` as a plain module (no Next.js needed to run it):
+Each case gets `ANSWERS/<case>/ANSWER.md`, `REASONING.md`, `trace.json` and `result.json`, and the batch writes `ANSWERS/RUNLOG.md`. All are generated; none is edited by hand. `npm run replay -- ANSWERS` re-renders the two markdown files from `result.json` with no model call and no key, and reports any that differ from what is on disk.
+
+Before a batch starts the flow file is validated (`--flow <file>` runs a different one), and a refused key or an empty credit balance stops the batch early with the reason, leaving the rest for `--resume`. `GET /api/health` reports whether the agent has its keys (`agent.ready`), never their values. The agent lives in `apps/api/src/agent/` as a plain module (no Next.js needed to run it):
 
 | Step | File | What it does |
 |---|---|---|
@@ -64,6 +66,8 @@ Also in `apps/api/src/agent/`:
 | `history.ts` | Case store, grouping of related cases, open promises, the learner's threshold suggestions | The runner records every run to `<outDir>/case-history.jsonl`. Nothing reads it back during a batch, so cases stay independent |
 | `architect.ts`, `selftest.ts` | Builds a flow from a business description and validates it; runs generated cases through a flow | `POST /api/architect` |
 | `watch.ts`, `replan.ts` | Order-event checks and greedy drop reassignment, on events the caller supplies (the practice data has no order stream) | `POST /api/watch`. Replan is a greedy heuristic, not an optimiser |
+
+Models: the deciding step runs on `claude-opus-5-5`; reading the case and checking the drafts run on `claude-sonnet-5-5` at half the price. Override with `AGENT_MODEL` and `AGENT_FAST_MODEL`. Keys are read from `.env.local` at the repo root or `apps/api/.env.local`.
 
 Voice: an event may carry `source` (`live_human`, `simulated_persona`, `audio_attachment`). Events voiced by a simulated persona are dropped from the evidence unless a request sets `mode: "demo"`, so they cannot enter a scored run.
 

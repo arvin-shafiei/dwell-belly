@@ -1,6 +1,7 @@
 // Docks: CanvasTextures (no network assets). Client only.
 import * as THREE from "three";
-import { CRANES, CRANE_HOME_X, CRANE_LEG_X, CONTAINER, STRADDLE, STRADDLE_SPOTS, yardSlots } from "./layout";
+import { CRANE_LEG_X, CONTAINER, STRADDLE, STRADDLE_SPOTS, yardSlots } from "./layout";
+import { BLOCK_COLS, BLOCK_Z, LANE_X } from "./portOps";
 import { ZONES, WATER_X } from "../../config";
 
 function canvas(w: number, h: number) {
@@ -183,24 +184,15 @@ export function apronTexture() {
     g.fillRect(px(x - 0.5), 0, 3, H);
     g.fillRect(px(x + 0.5) - 3, 0, 3, H);
   }
-  // crane landing pads: yellow hatching
-  for (const cr of CRANES) {
-    const x0 = px(CRANE_HOME_X - 2), y0 = pz(cr.z - 7);
-    g.fillStyle = "rgba(245,196,40,0.85)";
-    g.save();
-    g.beginPath();
-    g.rect(x0, y0, 4 * S, 14 * S);
-    g.clip();
-    for (let k = -20; k < 30; k++) {
-      g.beginPath();
-      g.moveTo(x0 + k * 14, y0);
-      g.lineTo(x0 + k * 14 + 140, y0 + 140);
-      g.lineTo(x0 + k * 14 + 147, y0 + 140);
-      g.lineTo(x0 + k * 14 + 7, y0);
-      g.fill();
-    }
-    g.restore();
-  }
+  // quay carrier lane (between the crane rails) + buffer block bays at both ends
+  g.strokeStyle = "rgba(245,196,40,0.85)";
+  g.lineWidth = 4;
+  g.setLineDash([40, 26]);
+  for (const x of [LANE_X - 3, LANE_X + 3]) line(g, px(x), pz(-66), px(x), pz(66));
+  g.setLineDash([]);
+  g.strokeStyle = "rgba(255,255,255,0.75)";
+  for (const side of [-1, 1])
+    for (const x of BLOCK_COLS) g.strokeRect(px(x - 1.5), pz(side * BLOCK_Z - 6.5), 3 * S, 13 * S);
   // quay edge safety line + painted text
   g.fillStyle = "#f5c428";
   g.fillRect(px(WATER_X - 1.4), 0, 0.5 * S, H);

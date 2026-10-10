@@ -58,9 +58,18 @@ export function renderAnswer(r: RunResult): string {
 
   lines.push("", "## Escalated");
   if (card) {
-    lines.push(`To: ${card.routeTo}`, "", card.summary, "");
+    lines.push(`To: ${card.routeTo}`, "");
+    if (card.whyStopped) lines.push(`**Why a person is needed:** ${card.whyStopped.line}`, "");
+    lines.push(card.summary, "");
+    if (card.evidence?.length) {
+      lines.push("What the decision turns on:", ...card.evidence.map((e) => `- ${e.who} (${e.basis.replaceAll("_", " ")}): ${e.says}`), "");
+    }
     if (card.clash) lines.push(`Conflict: ${card.clash}`, "");
-    if (card.options.length) lines.push("Options for the person deciding:", ...card.options.map((o) => `- ${o.label}`), "");
+    if (card.alreadyDone?.length) lines.push("Already done safely:", ...card.alreadyDone.map((x) => `- ${x}`), "");
+    if (card.options.length) {
+      lines.push("Options for the person deciding:",
+        ...card.options.map((o) => `- **${o.label}**${o.effect ? `: ${o.effect}` : ""}${o.undoable ? "" : " (cannot be undone)"}`), "");
+    }
     if (card.wouldChangeMyMind) lines.push(`What would settle it: ${card.wouldChangeMyMind}`, "");
     lines.push(`No person was available during this run. Safe fallback logged: ${card.fallback}`);
   } else {
@@ -87,7 +96,7 @@ export function renderReasoning(r: RunResult): string {
   const { bundle, understanding: u, decision: d } = r;
   const lines: string[] = [`# Reasoning: ${bundle.title}`, "", "## 1. What we received",
     list([
-      ...bundle.documents.map((x) => `${x.name} (${x.text.length} characters)`),
+      ...bundle.documents.map((x) => `${x.name} (${x.chars ?? x.text.length} characters)`),
       ...bundle.media.map((m) => `${m.name} (${m.mediaType}, read by the model directly)`),
       ...bundle.unreadable.map((f) => `Not read: ${f}`),
     ], "Nothing readable.")];
@@ -119,6 +128,10 @@ export function renderReasoning(r: RunResult): string {
   if (d) {
     lines.push("", "## 7. Decision", `${d.decision_type.replaceAll("_", " ")}: ${d.why}`,
       r.revised ? "\nThe first draft was stopped by the safety check and rewritten once." : "");
+    if (r.candidates?.length) {
+      lines.push("", "Drafts weighed before deciding:", "| Seat | Proposed | To | Why |", "|---|---|---|---|",
+        ...r.candidates.map((c) => `| ${cell(c.stance)} | ${c.decision.decision_type.replaceAll("_", " ")} | ${cell(c.decision.actions.map((a) => a.recipient).join("; ")) || "nobody"} | ${cell(c.decision.why)} |`));
+    }
     lines.push("", "## 8. Safety check, per message", r.gated.length
       ? ["| To | Risk | Verdict | Reason |", "|---|---|---|---|", ...r.gated.map((g) => `| ${cell(g.action.recipient)} | ${g.risk.toFixed(2)} | ${g.verdict} | ${cell(g.reasons.join("; ")) || "within the desk's role"} |`)].join("\n")
       : "No outgoing message to check.");
