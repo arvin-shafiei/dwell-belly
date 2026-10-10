@@ -108,7 +108,7 @@ Voice is a channel the agent chooses, not a separate app. Everything said by voi
 1. Put `ELEVENLABS_API_KEY` in `apps/api/.env.local`.
 2. Run `node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs` and add the printed `ELEVENLABS_AGENT_ID` to the same file.
 3. Check it with `node --env-file=apps/api/.env.local scripts/voice/smoke.mjs`, and measure accuracy with `scripts/voice/accuracy.mjs`.
-4. Try everything at `http://localhost:3000/voice-bench` (unlinked dev page).
+4. Run `npm run dev`, open the console at `http://localhost:3000`, run any delivery case and use the Voice strip on its execution: a voice note from the driver, a call to whoever the agent chose to phone, and approve by voice when the case stops for a person. Each one re-runs the case.
 
 Code: `apps/api/src/voice/`, `apps/api/src/app/api/voice/` and `apps/web/src/voice/`. Tests: `npm run test:voice`, `npm run test:agent` and `npm test -w web`.
 
