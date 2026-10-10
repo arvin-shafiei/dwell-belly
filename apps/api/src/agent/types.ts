@@ -14,7 +14,7 @@ export interface CaseBundle {
 }
 
 export const Understanding = z.object({
-  summary: z.string().describe("Two or three sentences: what happened and what is being asked of the desk now."),
+  summary: z.string().describe("At most two short sentences: what happened and what is being asked of the desk now. Written so someone who has not seen the case understands it."),
   case_type: z.string(),
   urgency: z.enum(["low", "medium", "high"]),
   our_role: z.string().describe("Who 'we' are in this case and what we do and do not control, from the case itself."),
@@ -50,16 +50,17 @@ export const ACTION_KINDS = ["request_to_owner", "question", "status_update", "s
 
 export const Decision = z.object({
   decision_type: z.enum(["act", "ask_for_info", "escalate_to_human", "wait_no_action"]),
-  why: z.string().describe("One line: the owner and the key fact."),
+  headline: z.string().describe("What the desk does now, as one plain sentence of at most 20 words. Example shape: 'Ask the carrier to open an investigation; tell the recipient nothing is decided yet.'"),
+  why: z.string().describe("One sentence of at most 25 words: who owns the decision and the fact that makes this the right step."),
   actions: z.array(z.object({
     recipient: z.string().describe("Exactly as named in the case."),
     channel: z.string(),
     kind: z.enum(ACTION_KINDS),
     purpose: z.string(),
-    message: z.string().describe("The full message, ready to send."),
+    message: z.string().describe("The full message, ready to send. Two to four sentences, normally under 70 words."),
   })).describe("Messages to send now, most important first. Empty when nothing should be sent."),
-  wont_do: z.array(z.object({ item: z.string(), reason: z.string() })),
-  waiting_for: z.array(z.object({ what: z.string(), from: z.string(), by: z.string() })),
+  wont_do: z.array(z.object({ item: z.string(), reason: z.string() })).describe("At most three: the things a hasty agent would actually be tempted to do in this case. A few words each."),
+  waiting_for: z.array(z.object({ what: z.string(), from: z.string(), by: z.string().describe("The time it is due, or an empty string when none was given.") })),
   handover: z.object({
     route_to: z.string().describe("The human role that should decide."),
     why_a_person: z.string().describe("One plain sentence: what makes this a decision the desk's agent must not take alone. This is the first thing the person reads."),

@@ -40,7 +40,7 @@ const toCustomer = {
   purpose: "Tell the customer what happens next", message: "We have asked the carrier to investigate DL-024 and will update you when they reply.",
 };
 const decision = (actions: Decision["actions"] = [toCarrier]): Decision => ({
-  decision_type: "act", why: "The carrier owns the investigation.", actions,
+  decision_type: "act", headline: "Ask the carrier to open an investigation.", why: "The carrier owns the investigation.", actions,
   wont_do: [], waiting_for: [], handover: null, confidence: "high",
 });
 const scores = (risk: number, index = 0) => ({

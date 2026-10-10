@@ -35,7 +35,7 @@ const action = {
   purpose: "Open an investigation", message: "Please open a delivery investigation for DL-024. The scan shows delivered; the recipient reports no parcel.",
 };
 const decision: Decision = {
-  decision_type: "act", why: "The carrier owns the investigation.", actions: [action],
+  decision_type: "act", headline: "Ask the carrier to open an investigation.", why: "The carrier owns the investigation.", actions: [action],
   wont_do: [{ item: "Tell the recipient it is lost", reason: "not established" }],
   waiting_for: [{ what: "Investigation reference", from: "Delivery investigations", by: "none stated" }],
   handover: null, confidence: "high",

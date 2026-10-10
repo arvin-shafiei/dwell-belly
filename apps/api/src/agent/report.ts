@@ -37,14 +37,16 @@ export function renderAnswer(r: RunResult): string {
     return lines.join("\n") + "\n";
   }
 
-  lines.push(`**Why in one line:** ${d.why}`);
+  // The label says what kind of outcome it was; the sentence after it says what the desk actually does.
+  lines[2] = `**Decision:** ${DECISION_LABEL[r.outcome]}. ${d.headline}`;
+  lines.push(`**Why:** ${d.why}`, "", `**Situation:** ${u.summary}`);
   if (outbox.length && outbox.every((o) => o.status !== "recorded")) lines.push("", "No message has gone out for this case. Everything below is a proposal waiting for a person.");
   lines.push("", "## Actions");
   if (outbox.length === 0) {
     lines.push("None. No message is sent for this case.");
   } else {
-    lines.push("| # | To | Channel | Purpose | Status |", "|---|---|---|---|---|");
-    outbox.forEach((o, i) => lines.push(`| ${i + 1} | ${cell(o.action.recipient)} | ${cell(o.action.channel)} | ${cell(o.action.purpose)} | ${STATUS_LABEL[o.status]} |`));
+    lines.push("| # | To | Channel | Status |", "|---|---|---|---|");
+    outbox.forEach((o, i) => lines.push(`| ${i + 1} | ${cell(o.action.recipient)} | ${cell(o.action.channel)} | ${STATUS_LABEL[o.status]} |`));
     lines.push("", "## Messages");
     outbox.forEach((o, i) => {
       // A blocked draft is unsafe by the gate's own verdict, so its text is not published here.
@@ -87,7 +89,8 @@ export function renderAnswer(r: RunResult): string {
   const unsent = outbox.filter((o) => o.status !== "recorded").length;
   lines.push("", "## Waiting for");
   if (unsent && d.waiting_for.length) lines.push(`${unsent} message(s) above did not go out, so replies to them are not yet expected. Planned once a person has decided:`);
-  lines.push(list(d.waiting_for.map((w) => `${w.what}, from ${w.from}, by ${w.by}`), "Nothing."));
+  const due = (by: string) => (by.trim() && !/^(none|no deadline|n\/a|open)\b/i.test(by.trim()) ? `, by ${by.trim()}` : "");
+  lines.push(list(d.waiting_for.map((w) => `${w.what}, from ${w.from}${due(w.by)}`), "Nothing."));
   lines.push("", `**Confidence:** ${d.confidence}`);
   return lines.join("\n") + "\n";
 }
