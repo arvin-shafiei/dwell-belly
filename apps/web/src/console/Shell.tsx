@@ -32,6 +32,9 @@ import WorkflowsTab from "./tabs/Workflows";
 import ExecutionsTab from "./tabs/Executions";
 import EvidenceTab from "./tabs/Evidence";
 import CityTab from "./tabs/City";
+import IntakeTab from "./tabs/Intake";
+import RealityTab from "./tabs/Reality";
+import SettingsTab from "./tabs/Settings";
 import ReviewEntry from "../review/ReviewEntry";
 import ReviewDrawer from "../review/ReviewDrawer";
 
@@ -41,6 +44,9 @@ const TAB_COMPONENT: Record<TabId, ComponentType> = {
   executions: ExecutionsTab,
   evidence: EvidenceTab,
   city: CityTab,
+  intake: IntakeTab,
+  reality: RealityTab,
+  settings: SettingsTab,
 };
 
 const TAB_ICON: Record<TabId, ComponentType<IconProps>> = {
@@ -49,6 +55,9 @@ const TAB_ICON: Record<TabId, ComponentType<IconProps>> = {
   executions: IconExecutions,
   evidence: IconEvidence,
   city: IconCity,
+  intake: IconExecutions,
+  reality: IconEvidence,
+  settings: IconOverview,
 };
 
 /** Params that survive a tab switch. */
