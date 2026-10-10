@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-10T13:12:48.848Z",
+  "generatedAt": "2026-10-10T13:36:28.729545Z",
   "generator": "apps/video/scripts/capture.mjs",
   "baseUrl": "http://localhost:3000",
   "browser": {
@@ -23,15 +23,15 @@
   "files": [
     {
       "file": "case-run-detail.png",
-      "caption": "A case run the agent sent: the decision, the voice strip and each step it took (\"Recipient disputes a recorded failed delivery attempt\").",
-      "bytes": 572860,
-      "capturedAt": "2026-10-10T13:04:13.561Z"
+      "caption": "A case run the agent sent: the decision, the voice strip and each step it took (\"Caller claiming to be protection police tells a driver to hand over a parcel at a lay-by\").",
+      "bytes": 695871,
+      "capturedAt": "2026-10-10T13:24:58.429Z"
     },
     {
       "file": "case-run-voice.png",
       "caption": "The voice strip on a case run: record a voice note as the driver, take the agent's call, or approve by voice.",
-      "bytes": 584648,
-      "capturedAt": "2026-10-10T13:04:28.908Z"
+      "bytes": 624672,
+      "capturedAt": "2026-10-10T13:25:15.700Z"
     },
     {
       "file": "city-aerial.png",
@@ -42,8 +42,8 @@
     {
       "file": "city-control.png",
       "caption": "City tab: control the live 3D city (weather, time, incidents) next to what is happening and the cases it raised.",
-      "bytes": 4971745,
-      "capturedAt": "2026-10-10T13:05:30.742Z"
+      "bytes": 4674410,
+      "capturedAt": "2026-10-10T13:25:55.921Z"
     },
     {
       "file": "city-crash.png",
@@ -70,34 +70,248 @@
       "capturedAt": "2026-10-10T13:06:01.933Z"
     },
     {
+      "file": "clips/case-run.webm",
+      "caption": "Opening a case run the agent sent and scrolling through its decision, voice strip and steps.",
+      "bytes": 3405671,
+      "capturedAt": "2026-10-10T13:22:11.803Z",
+      "seconds": 13.7
+    },
+    {
+      "file": "clips/city-crash.webm",
+      "caption": "A truck crash injected from the console: the camera flies in, the road closes and responders arrive.",
+      "bytes": 11142201,
+      "capturedAt": "2026-10-10T13:24:21.796Z",
+      "seconds": 14
+    },
+    {
+      "file": "clips/city-flyover.webm",
+      "caption": "Cinematic camera tour of the 3D city (the \"c\" key).",
+      "bytes": 17450846,
+      "capturedAt": "2026-10-10T13:18:29.564Z",
+      "seconds": 14
+    },
+    {
+      "file": "clips/playbook-build.webm",
+      "caption": "The AI builder: type a business, press Make it, and watch the playbook tree being placed (the model wait is cut).",
+      "bytes": 1632533,
+      "capturedAt": "2026-10-10T13:14:23.357Z",
+      "seconds": 14.9
+    },
+    {
+      "file": "clips/v2/city-motorcade.mp4",
+      "caption": "3D city: the President's motorcade under a rolling road closure, roads striped closed while traffic waits.",
+      "duration": 16.33,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 10772707,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/decisions.mp4",
+      "caption": "Decisions drawer: a case waiting on a person, the countdown, why the agent stopped, and the option cards (hovered, never chosen).",
+      "duration": 16.17,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 1170077,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/home.mp4",
+      "caption": "Home: the headline numbers, the case that needs a person now, and live activity.",
+      "duration": 12.83,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 450379,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/how-it-works.mp4",
+      "caption": "How it works page, scrolled slowly from top to bottom.",
+      "duration": 16.1,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 5318394,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/new-case.mp4",
+      "caption": "New case: pick an example and see the messages split out, ready to run (not run).",
+      "duration": 15.2,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 838170,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/palette.mp4",
+      "caption": "Command palette: Cmd+K, type \"res\", jump to Results.",
+      "duration": 8.03,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 652199,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/playbooks.mp4",
+      "caption": "Playbooks: the default incident flow canvas. Show all, click a step to highlight its path and settings, back to Start.",
+      "duration": 15.2,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 1229157,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/results.mp4",
+      "caption": "Results scorecard: click a case set to filter, then scroll the table of cases and verdicts.",
+      "duration": 14.47,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 1089031,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "clips/v2/watch-it-think.mp4",
+      "caption": "Case runs: pick a finished run (caller posing as protection police; clash check says the stories don't match) and press \"Watch it think\" to replay its saved trace step by step through to the message sent.",
+      "duration": 22.27,
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fps": 30,
+      "codec": "h264",
+      "bytes": 2571043,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
       "file": "console-home.png",
       "caption": "Console home: live status and the latest delivery cases waiting on the desk.",
-      "bytes": 331706,
-      "capturedAt": "2026-10-10T13:01:30.466Z"
+      "bytes": 556840,
+      "capturedAt": "2026-10-10T13:24:38.899Z"
     },
     {
       "file": "decisions.png",
       "caption": "Decisions: cases the agent handed to a person, with what it proposes and why.",
-      "bytes": 182568,
-      "capturedAt": "2026-10-10T13:01:58.809Z"
+      "bytes": 389146,
+      "capturedAt": "2026-10-10T13:25:40.570Z"
+    },
+    {
+      "file": "playbooks-ai-builder.png",
+      "caption": "AI playbook builder: \"Frozen food, cold-chain vans\" turned into a checked playbook tree in one call.",
+      "bytes": 645695,
+      "capturedAt": "2026-10-10T13:14:02.560Z"
     },
     {
       "file": "playbooks-practice.png",
       "caption": "Practice: run the playbook against stored cases and watch the score per version (\"Getting better?\").",
-      "bytes": 361371,
-      "capturedAt": "2026-10-10T13:05:11.131Z"
+      "bytes": 432149,
+      "capturedAt": "2026-10-10T13:24:54.344Z"
     },
     {
       "file": "playbooks-tree.png",
       "caption": "Playbook editor: the default incident flow, from reading the messages through the safety check to send, ask a person or stop.",
-      "bytes": 229221,
-      "capturedAt": "2026-10-10T13:05:01.700Z"
+      "bytes": 282010,
+      "capturedAt": "2026-10-10T13:24:44.761Z"
     },
     {
       "file": "results.png",
       "caption": "Results: every stored case, what the agent did and whether it was right.",
-      "bytes": 402244,
-      "capturedAt": "2026-10-10T13:02:02.200Z"
+      "bytes": 397152,
+      "capturedAt": "2026-10-10T13:25:42.667Z"
+    },
+    {
+      "file": "v2/city-motorcade.png",
+      "caption": "3D city: the President's motorcade under a rolling road closure, roads striped closed while traffic waits.",
+      "deviceScaleFactor": 1,
+      "bytes": 1275711,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/decisions.png",
+      "caption": "Decisions drawer: a case waiting on a person, the countdown, why the agent stopped, and the option cards (hovered, never chosen).",
+      "deviceScaleFactor": 1,
+      "bytes": 183801,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/home.png",
+      "caption": "Home: the headline numbers, the case that needs a person now, and live activity.",
+      "deviceScaleFactor": 1,
+      "bytes": 235123,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/how-it-works.png",
+      "caption": "How it works page, scrolled slowly from top to bottom.",
+      "deviceScaleFactor": 1,
+      "bytes": 249155,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/new-case.png",
+      "caption": "New case: pick an example and see the messages split out, ready to run (not run).",
+      "deviceScaleFactor": 1,
+      "bytes": 200259,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/palette.png",
+      "caption": "Command palette: Cmd+K, type \"res\", jump to Results.",
+      "deviceScaleFactor": 1,
+      "bytes": 230461,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/playbooks.png",
+      "caption": "Playbooks: the default incident flow canvas. Show all, click a step to highlight its path and settings, back to Start.",
+      "deviceScaleFactor": 1,
+      "bytes": 136529,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/results.png",
+      "caption": "Results scorecard: click a case set to filter, then scroll the table of cases and verdicts.",
+      "deviceScaleFactor": 1,
+      "bytes": 166268,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
+    },
+    {
+      "file": "v2/watch-it-think.png",
+      "caption": "Case runs: pick a finished run (caller posing as protection police; clash check says the stories don't match) and press \"Watch it think\" to replay its saved trace step by step through to the message sent.",
+      "deviceScaleFactor": 1,
+      "bytes": 248133,
+      "capturedAt": "2026-10-10T13:36:28.729545Z"
     }
   ],
   "failed": []
