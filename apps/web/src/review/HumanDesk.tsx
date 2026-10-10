@@ -87,7 +87,6 @@ function CaseDetail({ task, now, onDecide }: {
   const [who, setWho] = useState(() => {
     try { return localStorage.getItem("rivet-reviewer") ?? ""; } catch { return ""; }
   });
-  const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -99,7 +98,8 @@ function CaseDetail({ task, now, onDecide }: {
   const canDecide = task.status === "pending" && !readonly;
   const late = countdown(task, now).tone === "late";
   const owner = plainOwner(task.routeTo);
-  const why = shortLine(task.mustDecide, 24) || "Choose what happens next.";
+  const why = shortLine(task.mustDecide, 40) || "Choose what happens next.";
+  const situation = shortLine(task.summary, 45);
   const done = task.tried.map(doneLine).filter((d) => d.main);
   const unknown = unknowns(task);
   const fallback = shortLine(task.fallback, 20);
@@ -128,7 +128,7 @@ function CaseDetail({ task, now, onDecide }: {
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!option || !who.trim() || saving) return;
-    await save(option.id, who.trim(), note.trim());
+    await save(option.id, who.trim(), "");
   }
   return (
     <article className="review-detail" aria-label="A person needs to decide">
@@ -145,20 +145,13 @@ function CaseDetail({ task, now, onDecide }: {
       </header>
 
       <section className="review-handover" aria-label="Handover">
-        <div className="review-why">
-          <div className="review-label">Why it stopped</div>
+        {situation && <div className="review-why">
+          <div className="review-label">What happened</div>
+          <p>{situation}</p>
+        </div>}
+        <div className="review-why" style={situation ? { marginTop: 18 } : undefined}>
+          <div className="review-label">Why it needs you</div>
           <p>{why}</p>
-        </div>
-        <div className="review-columns">
-          <div className="review-col">
-            <h4>What we already did</h4>
-            {done.length ? <ul className="review-done-list">{done.map((d, i) => <li key={i}><span className="review-tick" aria-hidden="true">✓</span><span>{d.main}{d.why && <small>{d.why}</small>}</span></li>)}</ul>
-              : <p className="review-muted">Nothing sent yet. All on hold.</p>}
-          </div>
-          {unknown.length > 0 && <div className="review-col">
-            <h4>What we don&apos;t know</h4>
-            <ul className="review-unknown-list">{unknown.map((u, i) => <li key={i}><span className="review-q" aria-hidden="true">?</span><span>{u}</span></li>)}</ul>
-          </div>}
         </div>
         {task.status === "pending" && fallback && <p className={`review-fallback ${late ? "late" : ""}`}><strong>{late ? "This is late." : "If nobody decides:"}</strong> {late && "If nobody decides: "}{fallback}</p>}
       </section>
@@ -216,7 +209,6 @@ function CaseDetail({ task, now, onDecide }: {
           {canDecide && task.options.length > 0 && !success && <>
             <div className="review-inputs">
               <label>Your name<input value={who} onChange={(e) => setWho(e.target.value)} maxLength={120} autoComplete="name" placeholder="Your name" required disabled={saving} /></label>
-              <label>Note <span>(optional)</span><textarea value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} rows={1} placeholder="Anything the next person should know" disabled={saving} /></label>
             </div>
             <button className="review-primary" disabled={!option || !who.trim() || saving} type="submit">{saving ? "Saving…" : !option ? "Pick one above" : !who.trim() ? "Add your name" : task.origin === "city" ? `Do it in the city: ${option.label}` : `Go with: ${option.label}`}</button>
           </>}
@@ -229,7 +221,13 @@ function CaseDetail({ task, now, onDecide }: {
       <details className="review-more">
         <summary>Details</summary>
         <div className="review-more-body">
-          {shortLine(task.summary, 40) && <section><h4>What happened</h4><p>{shortLine(task.summary, 40)}</p></section>}
+          <section><h4>What we already did</h4>
+            {done.length ? <ul className="review-done-list">{done.map((d, i) => <li key={i}><span className="review-tick" aria-hidden="true">✓</span><span>{d.main}{d.why && <small>{d.why}</small>}</span></li>)}</ul>
+              : <p className="review-muted">Nothing sent yet. All on hold.</p>}
+          </section>
+          {unknown.length > 0 && <section><h4>What we don&apos;t know</h4>
+            <ul className="review-unknown-list">{unknown.map((u, i) => <li key={i}><span className="review-q" aria-hidden="true">?</span><span>{u}</span></li>)}</ul>
+          </section>}
           {task.evidence.length > 0 && <section><h4>What people said</h4><ul>{task.evidence.map((e, i) => <li key={i}><strong>{scrubLeaks(e.who)}:</strong> {scrubLeaks(e.says)}</li>)}</ul></section>}
           {task.clash && <section><h4>The stories don&apos;t match</h4><p>{scrubLeaks(task.clash)}</p></section>}
           {scrubLeaks(task.wouldChangeMyMind) && <section><h4>What would settle it</h4><p>{scrubLeaks(task.wouldChangeMyMind)}</p></section>}
@@ -260,19 +258,17 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
   const { tasks, warnings, loading, error, now, refresh, decide } = useReviewQueue();
   const [source, setSource] = useState<Source>(initialSource);
   const [filter, setFilter] = useState<Filter>("pending");
-  const [team, setTeam] = useState("");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState(initialTaskId);
   const detailRef = useRef<HTMLDivElement>(null);
   const sourceTasks = sortTasks(tasks.filter((t) => source === "simulation" ? t.simulated : !t.simulated));
   const pending = sourceTasks.filter((t) => t.status === "pending");
   const overdue = pending.filter((t) => now > Date.parse(t.deadlineAt)).length;
-  const teams = [...new Set(sourceTasks.map((t) => t.routeTo))].sort();
   const shown = sourceTasks.filter((t) =>
     (filter === "all" || (filter === "pending" ? t.status === "pending" : t.status !== "pending")) &&
-    (!team || t.routeTo === team) && `${t.title} ${t.caseId} ${t.summary} ${t.routeTo} ${plainOwner(t.routeTo)}`.toLowerCase().includes(search.toLowerCase()));
+    `${t.title} ${t.caseId} ${t.summary} ${t.routeTo} ${plainOwner(t.routeTo)}`.toLowerCase().includes(search.toLowerCase()));
   const selected = shown.find((t) => t.id === selectedId || t.caseId === selectedId) ?? shown[0];
-  const allClear = filter === "pending" && !search && !team && !pending.length;
+  const allClear = filter === "pending" && !search && !pending.length;
   function selectTask(task: ReviewTask) {
     setSelectedId(task.id);
     if (window.matchMedia("(max-width: 760px)").matches) requestAnimationFrame(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
@@ -301,7 +297,7 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
           <p>{pending.length ? <><strong>{pending.length}</strong> {pending.length === 1 ? "case needs" : "cases need"} a person{overdue > 0 && <span className="review-late-count"> · {overdue} late</span>}</> : "Nothing is waiting for a person."}</p>
         </div>
         <div className="review-heading-actions">
-          <div className="review-source-switch" aria-label="Which cases">{(["agent", "simulation"] as const).map((value) => <button key={value} className={source === value ? "active" : ""} aria-pressed={source === value} onClick={() => { setSource(value); setTeam(""); setSelectedId(""); }}>{value === "agent" ? "Live" : "Practice cases"}</button>)}</div>
+          <div className="review-source-switch" aria-label="Which cases">{(["agent", "simulation"] as const).map((value) => <button key={value} className={source === value ? "active" : ""} aria-pressed={source === value} onClick={() => { setSource(value); setSelectedId(""); }}>{value === "agent" ? "Live" : "Practice cases"}</button>)}</div>
           {embedded && onClose && <button onClick={onClose} className="review-close" aria-label="Close decisions">×</button>}
         </div>
       </div>
@@ -314,8 +310,7 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
             {(["pending", "decisions", "all"] as const).map((value) => <button key={value} onClick={() => { setFilter(value); setSelectedId(""); }} aria-pressed={filter === value} className={filter === value ? "active" : ""}>{value === "pending" ? <>Waiting{pending.length > 0 && <span className="review-count">{pending.length}</span>}</> : value === "decisions" ? "Decided" : "All"}</button>)}
             <button className="review-refresh" onClick={() => void refresh()} aria-label="Refresh" title="Refresh">↻</button>
           </div>
-          <label className="review-search"><span className="sr-only">Search cases</span><input type="search" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} /></label>
-          {teams.length > 1 && <div className="review-team-filters" aria-label="Who decides"><button aria-pressed={!team} onClick={() => setTeam("")}>Everyone</button>{teams.map((name) => <button key={name} aria-pressed={team === name} onClick={() => setTeam(name)}>{plainOwner(name)}</button>)}</div>}
+          {sourceTasks.length > 8 && <label className="review-search"><span className="sr-only">Search cases</span><input type="search" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} /></label>}
           <div className="review-case-list">
             {loading && !tasks.length ? <div className="review-empty" role="status">Loading…</div> : shown.length ? shown.map((task) => {
               const urgent = task.status === "pending" ? task.urgency : "done";
@@ -323,13 +318,13 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
                 <div className="review-row-top"><h3>{headline(task)}</h3>{task.urgency === "high" && task.status === "pending" && <span className="review-priority">Urgent</span>}</div>
                 <div className="review-row-footer"><span>Needs {plainOwner(task.routeTo)}</span><Clock task={task} now={now} /></div>
               </button>;
-            }) : <div className="review-empty"><h3>{search || team ? "No matches" : filter === "pending" ? "Nothing needs you right now" : "No decisions yet"}</h3>{allClear && source === "simulation" && <Link href="/city" target="_blank">Open the city</Link>}</div>}
+            }) : <div className="review-empty"><h3>{search ? "No matches" : filter === "pending" ? "Nothing needs you right now" : "No decisions yet"}</h3>{allClear && source === "simulation" && <Link href="/city" target="_blank">Open the city</Link>}</div>}
           </div>
         </aside>
         <div className="review-detail-wrap" ref={detailRef}>{selected ? <CaseDetail key={selected.id} task={selected} now={now} onDecide={apply} />
           : loading && !tasks.length ? <div className="review-detail-empty" role="status">Loading…</div>
           : !pending.length ? <AllClear decided={sourceTasks.length - pending.length} onShowDecided={filter === "pending" ? showDecided : undefined} />
-          : <div className="review-detail-empty"><h2>{search || team ? "No matches" : "No decisions yet"}</h2><p>Pick a case on the left.</p></div>}</div>
+          : <div className="review-detail-empty"><h2>{search ? "No matches" : "No decisions yet"}</h2><p>Pick a case on the left.</p></div>}</div>
       </div>
     </div>
   );
