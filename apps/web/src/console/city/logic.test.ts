@@ -1,48 +1,87 @@
 import { describe, expect, it } from "vitest";
-import { deliveryBars, filterScenarios, formatHour, isTelemetry, linkState, sourceTag, vehicleRows, INJECTORS, STALE_MS } from "./logic";
+import {
+  caseRows, filterScenarios, incidentSentence, isTelemetry, linkState, placeFrom, speedBucket, timeBucket, weatherBucket,
+  HAPPENINGS, STALE_MS, TWISTS,
+} from "./logic";
+import { MODIFIERS } from "../../world/scenarios";
 import type { CityTelemetry } from "../../world/controlChannel";
 
 const tel = (at: number) => ({ type: "telemetry", at }) as CityTelemetry;
+type Ev = CityTelemetry["workflow"][number];
+const ev = (caseId: string, nodeId: string, status: string, source?: string): Ev => ({ caseId, nodeId, status, summary: "x", source });
 
-describe("console city logic", () => {
+describe("controls", () => {
+  it("buckets weather, time and speed", () => {
+    expect(weatherBucket("drizzle")).toBe("rain");
+    expect(weatherBucket("storm")).toBe("storm");
+    expect(weatherBucket(undefined)).toBe(null);
+    expect(timeBucket(12)).toBe("day");
+    expect(timeBucket(18.5)).toBe("evening");
+    expect(timeBucket(23)).toBe("night");
+    expect(timeBucket(3)).toBe("night");
+    expect(speedBucket(1)).toBe("normal");
+    expect(speedBucket(30)).toBe("fast");
+  });
+  it("offers the five happenings", () => {
+    expect(HAPPENINGS.map((h) => h.label)).toEqual(["Car crash", "Truck crash", "Roadworks", "Van breaks down", "Plane emergency"]);
+  });
+  it("has a plain twist for every modifier", () => {
+    expect(Object.keys(TWISTS).sort()).toEqual(Object.keys(MODIFIERS).sort());
+  });
   it("link state", () => {
     expect(linkState(null, 0)).toBe("waiting");
     expect(linkState(tel(1000), 1000 + STALE_MS)).toBe("live");
     expect(linkState(tel(1000), 1001 + STALE_MS)).toBe("stale");
   });
-  it("formats hours", () => {
-    expect(formatHour(17.5)).toBe("17:30");
-    expect(formatHour(6)).toBe("06:00");
-    expect(formatHour(23.999)).toBe("00:00");
-    expect(formatHour(-1)).toBe("23:00");
+});
+
+describe("what's happening", () => {
+  it("finds place names", () => {
+    expect(placeFrom("Car ran a red on King St and T-boned another")).toBe("King St");
+    expect(placeFrom("Van stalled on the Strand, hazards on")).toBe("Strand");
+    expect(placeFrom("no place here")).toBe(null);
   });
-  it("tags sources", () => {
-    expect(sourceTag("agent")).toBe("REAL");
-    expect(sourceTag("mock")).toBe("SIMULATED");
-    expect(sourceTag(undefined)).toBe("SIMULATED");
+  it("writes plain sentences", () => {
+    expect(incidentSentence({ kind: "truck_crash", status: "responding", note: "Truck jackknifed on King St" })).toBe(
+      "Truck crash on King St, police on the way",
+    );
+    expect(incidentSentence({ kind: "emergency_landing", status: "active", note: "Emergency landing: RV880 engine fire" })).toBe(
+      "Plane emergency at the airport, crews on the way",
+    );
+    expect(incidentSentence({ kind: "roadworks", status: "active", note: "" })).toBe("Roadworks, road closed");
   });
-  it("filters scenarios", () => {
-    const list = [
-      { id: "delivery-001", title: "Door slot change", scene: "door_slot_change", where: "suburbs" },
-      { id: "delivery-002", title: "Customs invoice", scene: "customs_invoice", where: "docks" },
-    ];
+});
+
+describe("cases", () => {
+  it("shows the latest plain status per case, newest first, without raw ids", () => {
+    const rows = caseRows([
+      ev("CASE-0001", "ingest", "start"),
+      ev("CASE-0002", "triage", "start", "agent"),
+      ev("CASE-0001", "safety_gate", "ask"),
+      ev("CASE-0003", "case_log", "ok"),
+      ev("CASE-0002", "planner", "start", "agent"),
+    ]);
+    expect(rows.map((r) => [r.title, r.status, r.live])).toEqual([
+      ["Case 2", "Plan the reply…", true],
+      ["Case 3", "Done", false],
+      ["Case 1", "Needs a person", false],
+    ]);
+  });
+  it("maps blocked and errors", () => {
+    expect(caseRows([ev("CASE-9", "safety_gate", "block")])[0].status).toBe("Stopped");
+    expect(caseRows([ev("CASE-9", "action", "error")])[0].status).toBe("Something went wrong");
+    expect(caseRows([ev("CASE-9", "triage", "start")])[0].status).toBe("What kind of problem…");
+  });
+});
+
+describe("misc", () => {
+  it("filters practice cases", () => {
+    const list = [{ id: "delivery-001", title: "Door slot change" }, { id: "delivery-002", title: "Customs invoice" }];
     expect(filterScenarios(list, "")).toHaveLength(2);
-    expect(filterScenarios(list, "DOCKS").map((s) => s.id)).toEqual(["delivery-002"]);
-    expect(filterScenarios(list, "001")).toHaveLength(1);
-  });
-  it("delivery bars share", () => {
-    const bars = deliveryBars({ en_route: 2, delayed: 1, delivered: 1, loading: 0, failed: 0 });
-    expect(bars.find((b) => b.key === "en_route")?.share).toBe(0.5);
-    expect(deliveryBars({ en_route: 0, delayed: 0, delivered: 0, loading: 0, failed: 0 }).every((b) => b.share === 0)).toBe(true);
-  });
-  it("sorts vehicles", () => {
-    expect(vehicleRows({ van: 2, car: 9, bus: 2 })).toEqual([["car", 9], ["bus", 2], ["van", 2]]);
+    expect(filterScenarios(list, "CUSTOMS").map((s) => s.id)).toEqual(["delivery-002"]);
   });
   it("narrows telemetry", () => {
     expect(isTelemetry(tel(1))).toBe(true);
     expect(isTelemetry({ type: "ping" })).toBe(false);
-  });
-  it("has all eight injectors", () => {
-    expect(INJECTORS.map((i) => i.event)).toHaveLength(8);
   });
 });
