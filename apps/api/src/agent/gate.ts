@@ -5,24 +5,29 @@ import { BOUNDARIES, type Boundary, type Critique, type GatedAction, type Planne
 
 export interface GateConfig { allow_below: number; block_above: number }
 
-const SECRET = /(gate|door|entry|access|alarm|key ?safe|lock ?box|security)\s*code|\bPIN\b|password|passcode|card number|\bCVV\b/i;
-const ASKING = /\b(send|share|provide|give|tell|confirm|supply|let (me|us) (have|know)|what is|what's|reply with|need)\b/i;
+const SECRET = "(?:(?:gate|door|entry|access|alarm|key ?safe|lock ?box|security)\\s*code|password|passcode|(?<!calling )card number|CVV)";
+const ASKING = "(?:send|share|provide|give|tell|confirm|supply|let (?:me|us) (?:have|know)|what is|what's|reply with|need)";
+// The asking verb has to come before the secret inside one clause; a sentence that merely mentions a code is fine.
+const REQUEST = new RegExp(`\\b${ASKING}\\b[^.;:?!]{0,60}?${SECRET}`, "i");
+// "PIN" counts only in capitals, so a map pin or a pinned note does not trip the rule.
+const PIN_REQUEST = new RegExp(`\\b${ASKING}\\b[^.;:?!]{0,60}?\\b(pin)\\b`, "i");
+const NEGATED = /\b(not|don't|never|no need to|without)\b/i;
+const FILLER = new Set(["mr", "mrs", "ms", "miss", "dr", "the", "team", "dept", "department", "of", "and", "at"]);
+const words = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 1 && !FILLER.has(w));
 
 /** Deterministic checks. A hit blocks the message whatever the critic says. */
 export function hardRules(action: PlannedAction, understanding: Understanding, caseText: string): string[] {
   const hits: string[] = [];
   if (!action.message.trim()) hits.push("message is empty");
   if (!action.recipient.trim()) hits.push("no recipient");
-  const known = understanding.parties.map((p) => p.name.toLowerCase());
-  const recipient = action.recipient.toLowerCase();
-  const inParties = known.some((name) => name.includes(recipient) || recipient.includes(name));
-  // The analysis may not list every team; a name that appears anywhere in the case is real.
-  const inCase = caseText.toLowerCase().includes(recipient.split(",")[0].trim());
-  if (recipient && !inParties && !inCase) {
+  // Word overlap, so punctuation, titles and word order do not block a real recipient.
+  const known = new Set(words(`${understanding.parties.map((p) => p.name).join(" ")} ${caseText}`));
+  const named = words(action.recipient.split(",")[0]);
+  if (action.recipient.trim() && (named.length === 0 || !named.every((w) => known.has(w)))) {
     hits.push(`recipient "${action.recipient}" does not appear in the case`);
   }
-  for (const sentence of action.message.split(/(?<=[.?!])\s+/)) {
-    if (SECRET.test(sentence) && ASKING.test(sentence) && !/\b(do not|don't|never|no need to|without)\b/i.test(sentence)) {
+  for (const clause of action.message.split(/(?<=[.?!;])\s+/)) {
+    if ((REQUEST.test(clause) || clause.match(PIN_REQUEST)?.[1] === "PIN") && !NEGATED.test(clause)) {
       hits.push("asks for a reusable security credential");
       break;
     }
@@ -37,11 +42,14 @@ export function gate(
   config: GateConfig,
   caseText: string,
 ): GatedAction[] {
+  // Scores are matched by the critic's own index. If those are not exactly one per message, none are trusted.
+  const aligned = !!critique && critique.actions.length === actions.length
+    && actions.every((_, i) => critique.actions.filter((a) => a.index === i).length === 1);
   return actions.map((action, index) => {
     const reasons = hardRules(action, understanding, caseText);
     if (reasons.length) return { action, risk: 1, worst: "rule", reasons, verdict: "block" };
 
-    const scores = critique?.actions.find((a) => a.index === index);
+    const scores = aligned ? critique.actions.find((a) => a.index === index) : undefined;
     // No critic verdict means the message was not checked, so a person must look at it.
     if (!scores) return { action, risk: config.allow_below, worst: null, reasons: ["not checked by the critic"], verdict: "ask" };
 

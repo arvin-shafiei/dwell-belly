@@ -21,7 +21,12 @@ export interface RunOptions {
   runId: string;
   /** Jev panel. Left out, or failing, the flow carries on without its notes. */
   panel?: typeof runPanel;
+  /** Whole-case limit. A case past it becomes a failure answer and its model calls are aborted. */
+  timeoutMs?: number;
 }
+
+/** Internal: the case's abort signal travels with the options so every await can be cut off. */
+type WorkOptions = RunOptions & { signal: AbortSignal };
 
 export interface RunResult {
   bundle: CaseBundle;
@@ -87,8 +92,16 @@ function caseBlock(bundle: CaseBundle): string {
   return `<case id="${bundle.id}">\n${bundleText(bundle)}\n</case>${unread}`;
 }
 
-async function work(bundle: CaseBundle, opts: RunOptions, rec: Recorder, result: RunResult): Promise<void> {
-  const { flow, models } = opts;
+async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result: RunResult): Promise<void> {
+  const { flow, signal } = opts;
+  // Once the case has timed out, nothing below may touch the result that was already reported.
+  const models: Models = {
+    async structured(call) {
+      const res = await opts.models.structured({ ...call, signal });
+      signal.throwIfAborted();
+      return res;
+    },
+  };
   const gateConfig = { ...DEFAULT_GATE, ...nodeConfig<Partial<GateConfig>>(flow, "safety_gate") };
   const block = caseBlock(bundle);
 
@@ -104,7 +117,11 @@ async function work(bundle: CaseBundle, opts: RunOptions, rec: Recorder, result:
   const rules = nodeConfig<{ rules: Record<string, PanelRule> }>(flow, "perspectives")?.rules;
   rec.begin("perspectives", "perspectives");
   if (opts.panel && rules) {
-    const panel = result.panel = await opts.panel({ summary: u.summary, case: bundleText(bundle) }, rules);
+    // The panel is optional: whatever goes wrong inside it, the case carries on without its notes.
+    const panel = await opts.panel({ summary: u.summary, case: bundleText(bundle) }, rules)
+      .catch((err): PanelResult => ({ ok: false, error: err instanceof Error ? err.message : String(err), seats: [], forceHuman: false, notes: [], model: "", latencyMs: 0, tokensIn: 0, costUsd: 0 }));
+    signal.throwIfAborted();
+    result.panel = panel;
     if (panel.ok) {
       rec.call("jev", { model: panel.model, latencyMs: panel.latencyMs, tokensIn: panel.tokensIn, tokensOut: 0, costUsd: panel.costUsd });
       rec.end(`${panel.notes.length} flags raised${panel.forceHuman ? " · needs a human" : ""}`, { type: "perspectives", seats: panel.seats });
@@ -135,7 +152,7 @@ async function work(bundle: CaseBundle, opts: RunOptions, rec: Recorder, result:
     if (actions.length === 0) return null;
     const user = `${block}\n\n<analysis_instruction_like_text>\n${JSON.stringify(u.instruction_like_text)}\n</analysis_instruction_like_text>\n\n` +
       `<outgoing_messages>\n${JSON.stringify(actions.map((a, index) => ({ index, to: a.recipient, channel: a.channel, message: a.message })), null, 1)}\n</outgoing_messages>`;
-    const res = await models.structured({ system: CRITIC_SYSTEM, user, schema: Critique, effort: "low" });
+    const res = await models.structured({ system: CRITIC_SYSTEM, user, schema: Critique, media: bundle.media, effort: "low" });
     rec.call("claude", res.usage);
     return res.output;
   };
@@ -169,23 +186,32 @@ async function work(bundle: CaseBundle, opts: RunOptions, rec: Recorder, result:
   rec.end(gated.length ? `${gated.filter((g) => g.verdict === "allow").length} of ${gated.length} messages cleared` : "nothing to send",
     { type: "safety_gate", risk: top?.risk ?? 0, decision: overall, allowBelow: gateConfig.allow_below, blockAbove: gateConfig.block_above });
 
-  const sent = gated.filter((g) => g.verdict === "allow");
-  const held = gated.filter((g) => g.verdict === "ask");
-  const needsHuman = d.decision_type === "escalate_to_human" || held.length > 0;
+  // A panel rule with effect force_human is enforced here, in code: nothing goes out until a person decides.
+  const forced = result.panel?.ok === true && result.panel.forceHuman;
+  const sent = forced ? [] : gated.filter((g) => g.verdict === "allow");
+  const held = gated.filter((g) => g.verdict === "ask" || (forced && g.verdict === "allow"));
+  const blocked = gated.filter((g) => g.verdict === "block");
+  const waiting = d.decision_type === "wait_no_action" && !forced;
+  // Wanting to act but having nothing to send is not "no action needed": a person has to pick it up.
+  const nothingPlanned = !waiting && gated.length === 0;
+  const needsHuman = forced || d.decision_type === "escalate_to_human" || held.length > 0 || blocked.length > 0 || nothingPlanned;
 
   if (needsHuman) {
     rec.edge("gate", "human", "ask");
     const h = d.handover;
+    const stopped = [...held, ...blocked];
+    const stoppedLine = stopped.map((g) => `to ${g.action.recipient}: ${g.reasons.join("; ") || "held until a person decides"}`).join(" | ");
     const card: DecisionCard = result.card = {
       routeTo: h?.route_to ?? "desk supervisor",
-      summary: h?.summary ?? `${held.length} message(s) held by the safety check: ${held.map((g) => g.reasons.join("; ")).join(" | ")}`,
+      summary: h?.summary ?? (stopped.length ? `${stopped.length} message(s) stopped before sending (${stoppedLine})` : d.why),
       clash: h?.clash || u.conflicts[0]?.about,
       tried: u.commitments.map((c) => `${c.what} (${c.status})`).slice(0, 5),
+      // A blocked message is never offered for approval; only held ones are.
       options: (h?.options ?? held.map((g) => `Approve the message to ${g.action.recipient}`)).slice(0, 3)
         .map((label, i) => ({ id: `option-${i + 1}`, label, undoable: true })),
       wouldChangeMyMind: h?.would_change_my_mind ?? "",
       deadlineMins: u.urgency === "high" ? 15 : 60,
-      fallback: h?.safe_fallback ?? "Hold the unapproved messages; send nothing further.",
+      fallback: h?.safe_fallback ?? (stopped.length ? "Hold the stopped messages; send nothing further." : "Take no further action until a person at the desk has decided."),
     };
     rec.view("human", "human_decision", `Card for ${card.routeTo}; no human available, fallback logged`, { type: "human_decision", card });
   }
@@ -196,17 +222,20 @@ async function work(bundle: CaseBundle, opts: RunOptions, rec: Recorder, result:
     for (const g of sent) result.outbox.push({ action: g.action, status: "recorded", note: "Recorded in the sandbox outbox. No live system is connected, so nothing has been confirmed by the recipient." });
     rec.end(`${sent.length} message(s) recorded in the sandbox outbox`, { type: "action", done: toNext(sent[0].action), ok: true });
     rec.edge("action", "verify");
-    rec.view("verify", "verify", "outbox accepted; awaiting replies", { type: "verify", ok: true, p: 1, note: d.waiting_for.map((w) => `${w.what} from ${w.from} by ${w.by}`).join("; ") });
+    // "ok" here means only that the outbox took the message. Nothing downstream has been checked.
+    const awaiting = d.waiting_for.map((w) => `${w.what} from ${w.from} by ${w.by}`).join("; ");
+    rec.view("verify", "verify", "recorded, unverified: no live system connected",
+      { type: "verify", ok: true, p: 1, note: `Outbox accepted the message. Delivery and reply are unverified.${awaiting ? ` Waiting for: ${awaiting}` : ""}` });
     rec.edge("verify", "log");
   } else {
-    rec.edge(needsHuman ? "human" : "gate", "log", gated.length && !needsHuman ? "block" : undefined);
+    rec.edge(needsHuman ? "human" : "gate", "log", blocked.length && !held.length ? "block" : undefined);
   }
-  for (const g of held) result.outbox.push({ action: g.action, status: "held_for_human", note: g.reasons.join("; ") });
-  for (const g of gated.filter((x) => x.verdict === "block")) result.outbox.push({ action: g.action, status: "blocked", note: g.reasons.join("; ") });
+  for (const g of held) result.outbox.push({ action: g.action, status: "held_for_human", note: g.reasons.join("; ") || "A reviewer rule requires a person to decide before anything is sent." });
+  for (const g of blocked) result.outbox.push({ action: g.action, status: "blocked", note: g.reasons.join("; ") });
 
-  if (d.decision_type === "wait_no_action") result.outcome = "no_action";
+  if (waiting) result.outcome = "no_action";
+  else if (sent.length === 0 && held.length === 0 && blocked.length > 0 && d.decision_type !== "escalate_to_human" && !forced) result.outcome = "blocked";
   else if (needsHuman) result.outcome = "escalated";
-  else if (sent.length === 0) result.outcome = gated.length ? "blocked" : "no_action";
   else result.outcome = d.decision_type === "ask_for_info" ? "asked_for_info" : "acted";
 }
 
@@ -217,15 +246,22 @@ export async function runCase(bundle: CaseBundle, opts: RunOptions): Promise<Run
     trace: { version: 1, runId: opts.runId, caseId: bundle.id, flowId: opts.flow.id, mode: opts.mode, events: rec.events },
   };
   rec.events.push({ t: 0, kind: "run_start", title: bundle.title,
-    inputs: bundle.documents.map((d, i) => ({ n: i + 1, channel: "file", from: d.name, excerpt: d.text.slice(0, 120) })) });
+    // No case text in the trace: an excerpt could carry instruction-like text into a judged output.
+    inputs: bundle.documents.map((d, i) => ({ n: i + 1, channel: "file", from: d.name, excerpt: `${d.text.length} characters` })) });
 
+  const abort = new AbortController();
+  const limit = opts.timeoutMs ?? CASE_TIMEOUT_MS;
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
+    const running = work(bundle, { ...opts, signal: abort.signal }, rec, result);
+    // If the timer wins, the abandoned work rejects later; that rejection is expected.
+    running.catch(() => {});
     await Promise.race([
-      work(bundle, opts, rec, result),
-      new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(`case exceeded ${CASE_TIMEOUT_MS / 1000}s`)), CASE_TIMEOUT_MS); }),
+      running,
+      new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(`case exceeded ${limit / 1000}s`)), limit); }),
     ]);
   } catch (err) {
+    abort.abort();
     result.outcome = "error";
     result.failedAt = rec.current;
     result.error = err instanceof Error ? err.message : String(err);

@@ -153,3 +153,80 @@ test("the loader reads a raw case folder, passes images to the model and skips t
 test("the loader reports a missing folder as an error for the runner to catch", async () => {
   await assert.rejects(loadFolder(path.join(ROOT, "data/raw/no-such-case")));
 });
+
+test("a case that times out stays a failure even when its model call returns later", async () => {
+  let release: (v: unknown) => void = () => {};
+  const slow: Models = {
+    async structured({ schema }) {
+      if ((schema as unknown) === Understanding) return { output: understanding as never, usage };
+      await new Promise((resolve) => { release = resolve; });
+      return { output: decision as never, usage };
+    },
+  };
+  const r = await runCase(bundle, { ...opts(slow), timeoutMs: 20 });
+  assert.equal(r.outcome, "error");
+  const events = r.trace.events.length;
+  release(null);
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.equal(r.outcome, "error");
+  assert.equal(r.outbox.length, 0);
+  assert.equal(r.trace.events.length, events);
+  assert.equal(r.trace.events.at(-1)?.kind, "run_end");
+});
+
+test("a force_human panel rule holds every message, whatever the planner chose", async () => {
+  const panel = async () => ({ ok: true, seats: [], forceHuman: true, notes: ["Legal threat"], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
+  const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), panel });
+  assert.equal(r.outcome, "escalated");
+  assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
+  const end = r.trace.events.at(-1);
+  assert.equal(end?.kind === "run_end" ? end.nextAction : "not a run_end", undefined);
+});
+
+test("a panel that throws is skipped and the case still completes", async () => {
+  const panel = async () => { throw new Error("jev exploded"); };
+  const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), panel });
+  assert.equal(r.outcome, "acted");
+  assert.equal(r.panel?.ok, false);
+});
+
+test("critic scores with the wrong index are not trusted: the message is held", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [{ ...scores(0), index: 3 }] }] })));
+  assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
+});
+
+test("deciding to act with nothing to send goes to a human, not 'no action needed'", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [{ ...decision, actions: [] }] })));
+  assert.equal(r.outcome, "escalated");
+  assert.equal(r.card?.summary, decision.why);
+});
+
+test("a blocked message is not quoted in the answer and gets a card with no approve option", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision, decision], critic: [{ actions: [scores(0.95)] }, { actions: [scores(0.95)] }] })));
+  const answer = renderAnswer(r);
+  assert.equal(answer.includes(action.message), false);
+  assert.match(answer, /Message text withheld/);
+  assert.match(answer, /No message has gone out for this case/);
+  assert.deepEqual(r.card?.options, []);
+});
+
+test("the credential rule ignores mentions and negations but catches a real request", () => {
+  const text = "Sorin Vaal, recipient. Delivery investigations, Plover Arc Logistics.";
+  const rule = (message: string) => hardRules({ ...action, message }, understanding, text).join();
+  assert.equal(rule("The recipient mentioned a gate code in the notes; please confirm the driver's contact process."), "");
+  assert.equal(rule("Please tell the driver the map pin is on the north entrance."), "");
+  assert.equal(rule("Please do not send the door code to anyone."), "");
+  assert.match(rule("Can you confirm the access code for the side door?"), /credential/);
+  assert.match(rule("Reply with your PIN so we can release it."), /credential/);
+});
+
+test("a recipient written with different punctuation still matches the case", () => {
+  const text = "From: Delivery investigations, Plover Arc Logistics";
+  assert.deepEqual(hardRules({ ...action, recipient: "Delivery Investigations (Plover Arc Logistics)" }, understanding, text), []);
+});
+
+test("the trace carries no text from the case files", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })));
+  const start = r.trace.events[0];
+  assert.equal(start.kind === "run_start" && JSON.stringify(start.inputs).includes("No parcel here"), false);
+});

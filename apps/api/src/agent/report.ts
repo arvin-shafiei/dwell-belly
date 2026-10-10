@@ -36,7 +36,9 @@ export function renderAnswer(r: RunResult): string {
     return lines.join("\n") + "\n";
   }
 
-  lines.push(`**Why in one line:** ${d.why}`, "", "## Actions");
+  lines.push(`**Why in one line:** ${d.why}`);
+  if (outbox.length && outbox.every((o) => o.status !== "recorded")) lines.push("", "No message has gone out for this case. Everything below is a proposal waiting for a person.");
+  lines.push("", "## Actions");
   if (outbox.length === 0) {
     lines.push("None. No message is sent for this case.");
   } else {
@@ -44,7 +46,9 @@ export function renderAnswer(r: RunResult): string {
     outbox.forEach((o, i) => lines.push(`| ${i + 1} | ${cell(o.action.recipient)} | ${cell(o.action.channel)} | ${cell(o.action.purpose)} | ${STATUS_LABEL[o.status]} |`));
     lines.push("", "## Messages");
     outbox.forEach((o, i) => {
-      lines.push(`**${i + 1}. To ${o.action.recipient} via ${o.action.channel}** (${STATUS_LABEL[o.status].toLowerCase()})`, "", quote(o.action.message), "");
+      // A blocked draft is unsafe by the gate's own verdict, so its text is not published here.
+      lines.push(`**${i + 1}. To ${o.action.recipient} via ${o.action.channel}** (${STATUS_LABEL[o.status].toLowerCase()})`, "",
+        o.status === "blocked" ? "> Message text withheld: it was stopped by the safety check." : quote(o.action.message), "");
       if (o.status !== "recorded") lines.push(`Reason: ${o.note}`, "");
     });
   }
@@ -68,7 +72,10 @@ export function renderAnswer(r: RunResult): string {
     ...(r.panel && !r.panel.ok ? [`The perspectives check did not run (${r.panel.error}); the flow continued without it.`] : []),
   ], "Nothing."));
 
-  lines.push("", "## Waiting for", list(d.waiting_for.map((w) => `${w.what}, from ${w.from}, by ${w.by}`), "Nothing."));
+  const unsent = outbox.filter((o) => o.status !== "recorded").length;
+  lines.push("", "## Waiting for");
+  if (unsent && d.waiting_for.length) lines.push(`${unsent} message(s) above did not go out, so replies to them are not yet expected. Planned once a person has decided:`);
+  lines.push(list(d.waiting_for.map((w) => `${w.what}, from ${w.from}, by ${w.by}`), "Nothing."));
   lines.push("", `**Confidence:** ${d.confidence}`);
   return lines.join("\n") + "\n";
 }

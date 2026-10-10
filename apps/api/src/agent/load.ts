@@ -11,7 +11,11 @@ const MEDIA: Record<string, string> = {
   ".gif": "image/gif", ".webp": "image/webp",
 };
 const MAX_TEXT_CHARS = 400_000;
-const MAX_MEDIA_BYTES = 8_000_000;
+const MAX_CASE_CHARS = 600_000;
+const MAX_PDF_BYTES = 8_000_000;
+// Base64 adds a third; this keeps one image under the API's 5 MB limit and a request under 32 MB.
+const MAX_IMAGE_BYTES = 3_700_000;
+const MAX_MEDIA_TOTAL_BYTES = 20_000_000;
 
 async function walk(dir: string): Promise<string[]> {
   const out: string[] = [];
@@ -27,22 +31,32 @@ async function walk(dir: string): Promise<string[]> {
 export async function loadFolder(dir: string): Promise<CaseBundle> {
   const bundle: CaseBundle = { id: path.basename(dir), title: path.basename(dir), documents: [], media: [], unreadable: [] };
   const files = await walk(dir);
-  const names = new Set(files.map((f) => path.relative(dir, f)));
+  let textBudget = MAX_CASE_CHARS;
+  let mediaBytes = 0;
   for (const file of files) {
     const name = path.relative(dir, file);
     const ext = path.extname(file).toLowerCase();
     try {
       if (MEDIA[ext]) {
         const size = (await stat(file)).size;
-        if (size > MAX_MEDIA_BYTES) bundle.unreadable.push(`${name} (too large: ${size} bytes)`);
-        else bundle.media.push({ name, mediaType: MEDIA[ext], base64: (await readFile(file)).toString("base64") });
+        if (size === 0) bundle.unreadable.push(`${name} (empty file)`);
+        else if (size > (ext === ".pdf" ? MAX_PDF_BYTES : MAX_IMAGE_BYTES)) bundle.unreadable.push(`${name} (too large: ${size} bytes)`);
+        else if (mediaBytes + size > MAX_MEDIA_TOTAL_BYTES) bundle.unreadable.push(`${name} (left out: attachments exceed the size the model accepts in one request)`);
+        else {
+          mediaBytes += size;
+          bundle.media.push({ name, mediaType: MEDIA[ext], base64: (await readFile(file)).toString("base64") });
+        }
       } else if (TEXT.has(ext)) {
-        // A text sidecar next to a PDF or image repeats what the model will read from the original.
+        // A text sidecar next to a PDF or image repeats what the model reads from the original,
+        // so it is skipped, but only when the original was actually taken (files arrive sorted).
         const original = name.replace(/\.(txt|ocr\.txt|desc\.md)$/i, "");
-        if (original !== name && names.has(original) && MEDIA[path.extname(original).toLowerCase()]) continue;
+        if (original !== name && bundle.media.some((m) => m.name === original)) continue;
         const text = await readFile(file, "utf8");
-        bundle.documents.push({ name, text: text.length > MAX_TEXT_CHARS ? text.slice(0, MAX_TEXT_CHARS) : text });
-        if (text.length > MAX_TEXT_CHARS) bundle.unreadable.push(`${name} (read the first ${MAX_TEXT_CHARS} characters of ${text.length})`);
+        if (text.includes("\u0000")) { bundle.unreadable.push(`${name} (binary file)`); continue; }
+        const take = Math.min(text.length, MAX_TEXT_CHARS, textBudget);
+        textBudget -= take;
+        if (take > 0) bundle.documents.push({ name, text: text.slice(0, take) });
+        if (take < text.length) bundle.unreadable.push(`${name} (read the first ${take} of ${text.length} characters)`);
       } else {
         bundle.unreadable.push(`${name} (unsupported file type)`);
       }
@@ -50,7 +64,8 @@ export async function loadFolder(dir: string): Promise<CaseBundle> {
       bundle.unreadable.push(`${name} (${err instanceof Error ? err.message : String(err)})`);
     }
   }
-  const heading = bundle.documents.map((d) => d.text.match(/^#\s+(.+)$/m)?.[1]).find(Boolean);
+  // Only the case label is taken from the files; the rest of a heading is case content and stays out of our titles.
+  const heading = bundle.documents.map((d) => d.text.match(/^#\s+(Case\s+[\w-]+)\b/m)?.[1]).find(Boolean);
   if (heading) bundle.title = heading.trim();
   return bundle;
 }

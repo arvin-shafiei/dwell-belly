@@ -5,7 +5,8 @@ import type { CaseBundle } from "./types.ts";
 
 export const CLAUDE_MODEL = "claude-opus-5-5";
 const USD_PER_MTOK = { input: 4, cacheRead: 0.2, cacheWrite: 5, output: 20 };
-const CALL_TIMEOUT_MS = 90_000;
+// One attempt must be able to finish a long reply; the case-level timeout in run.ts bounds the total.
+const CALL_TIMEOUT_MS = 150_000;
 
 export interface ModelUsage {
   model: string;
@@ -21,6 +22,7 @@ export interface StructuredCall<S extends z.ZodType> {
   schema: S;
   media?: CaseBundle["media"];
   effort?: "low" | "medium" | "high";
+  signal?: AbortSignal;
 }
 
 /** The only door to a writing model. Tests pass a fake; the runner passes claude(). */
@@ -38,15 +40,20 @@ function mediaBlock(m: CaseBundle["media"][number]): Anthropic.ContentBlockParam
 
 export function claude(client: Anthropic = new Anthropic({ timeout: CALL_TIMEOUT_MS, maxRetries: 2 })): Models {
   return {
-    async structured({ system, user, schema, media = [], effort = "medium" }) {
+    async structured({ system, user, schema, media = [], effort = "medium", signal }) {
       const started = Date.now();
-      const res = await client.messages.parse({
+      const request = (content: Anthropic.ContentBlockParam[]) => client.messages.parse({
         model: CLAUDE_MODEL,
         max_tokens: 12000,
         // The system prompt is identical for every case in a batch, so it is cached.
         system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-        messages: [{ role: "user", content: [...media.map(mediaBlock), { type: "text", text: user }] }],
+        messages: [{ role: "user", content }],
         output_config: { effort, format: zodOutputFormat(schema) },
+      }, { signal });
+      const res = await request([...media.map(mediaBlock), { type: "text", text: user }]).catch((err) => {
+        // An attachment the API will not take (corrupt, too many pages) must not cost the whole case.
+        if (!(err instanceof Anthropic.BadRequestError) || media.length === 0) throw err;
+        return request([{ type: "text", text: `${user}\n\nAttachments that could not be read and were left out: ${media.map((m) => m.name).join("; ")}` }]);
       });
       const u = res.usage;
       const costUsd = (u.input_tokens * USD_PER_MTOK.input

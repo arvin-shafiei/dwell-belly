@@ -9,9 +9,17 @@ import { runPanel } from "../lib/panel.ts";
 import { loadFolder } from "./load.ts";
 import { claude } from "./models.ts";
 import { renderAnswer, renderReasoning } from "./report.ts";
-import { runCase, type RunResult } from "./run.ts";
+import { runCase } from "./run.ts";
 
 const FLOW_FILE = path.resolve(import.meta.dirname, "..", "..", "flows", "default-incident.json");
+const RETRY_PAUSE_MS = 20_000;
+const RETRY_CONCURRENCY = 2;
+
+async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>): Promise<void> {
+  let next = 0;
+  const worker = async () => { while (next < items.length) await fn(items[next++]); };
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, worker));
+}
 
 async function main() {
   const { values, positionals } = parseArgs({
@@ -24,10 +32,10 @@ async function main() {
   });
   const [casesDir, outDir = "ANSWERS"] = positionals;
   if (!casesDir) throw new Error("Usage: npm run answer -- <casesDir> [outDir] [--mode reality|practice] [--concurrency 8] [--resume]");
-
   if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
     throw new Error("No ANTHROPIC_API_KEY. Put it in apps/api/.env.local; without it every case would only get a failure answer.");
   }
+
   const flow: Flow = JSON.parse(await readFile(FLOW_FILE, "utf8"));
   const models = claude();
   const panel = process.env.TYPESAFE_API_KEY ? runPanel : undefined;
@@ -40,48 +48,60 @@ async function main() {
   await mkdir(outDir, { recursive: true });
   console.log(`${names.length} cases, ${values.concurrency} at a time, mode ${mode}, Jev panel ${panel ? "on" : "off (no key)"}`);
 
-  const log: string[] = [];
-  let next = 0;
-  async function worker() {
-    while (next < names.length) {
-      const name = names[next++];
-      const dir = path.join(outDir, name);
-      if (values.resume) {
-        const prior = await readFile(path.join(dir, "trace.json"), "utf8").then(JSON.parse, () => null);
-        const ended = prior?.events?.findLast((e: { kind: string }) => e.kind === "run_end");
-        if (ended && ended.outcome !== "error") { log.push(`| ${name} | kept | ${ended.outcome} | | |`); continue; }
-      }
-      const started = Date.now();
-      let line: string;
-      try {
-        const result: RunResult = await runCase(await loadFolder(path.join(casesDir, name)), { flow, models, panel, mode, runId });
-        await mkdir(dir, { recursive: true });
-        await writeFile(path.join(dir, "ANSWER.md"), renderAnswer(result));
-        await writeFile(path.join(dir, "REASONING.md"), renderReasoning(result));
-        await writeFile(path.join(dir, "trace.json"), JSON.stringify(result.trace, null, 1));
-        const end = result.trace.events.findLast((e) => e.kind === "run_end");
-        const cost = end?.kind === "run_end" ? end.totalCostUsd : 0;
-        line = `| ${name} | ${result.error ? `failed at ${result.failedAt}: ${result.error.replace(/\|/g, "/")}` : "ok"} | ${result.outcome} | ${((Date.now() - started) / 1000).toFixed(1)} s | $${cost.toFixed(3)} |`;
-      } catch (err) {
-        // runCase does not throw, so this is the loader or the disk. Still leave an answer behind.
-        const message = err instanceof Error ? err.message : String(err);
-        await mkdir(dir, { recursive: true }).catch(() => {});
-        await writeFile(path.join(dir, "ANSWER.md"),
-          `# ${name}\n\n**Decision:** SYSTEM FAILURE: HANDED TO A HUMAN\n\nThe case could not be loaded or its answer could not be written (${message}). No action was taken. A person needs to handle this case from the original files.\n`).catch(() => {});
-        await writeFile(path.join(dir, "REASONING.md"), `# Reasoning: ${name}\n\nThe run failed before any analysis: ${message}\n`).catch(() => {});
-        line = `| ${name} | failed outside the flow: ${message.replace(/\|/g, "/")} | error | | |`;
-      }
-      log.push(line);
-      console.log(line);
-    }
-  }
-  await Promise.all(Array.from({ length: Math.min(Number(values.concurrency) || 1, names.length) }, worker));
+  const lines = new Map<string, string>();
+  const failed = new Set<string>();
 
-  log.sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
+  // Never throws: whatever happens, the case ends with a line in the log and an ANSWER.md on disk.
+  async function answer(name: string, attempt: number): Promise<void> {
+    const dir = path.join(outDir, name);
+    const started = Date.now();
+    const note = attempt > 1 ? ` (attempt ${attempt})` : "";
+    try {
+      if (values.resume && attempt === 1) {
+        // A trace cut off by a killed run must read as "not done", never crash the resume.
+        const prior = await readFile(path.join(dir, "trace.json"), "utf8").then(JSON.parse).catch(() => null);
+        const ended = Array.isArray(prior?.events) ? prior.events.findLast((e: { kind?: string } | null) => e?.kind === "run_end") : undefined;
+        if (ended && ended.outcome !== "error") { lines.set(name, `| ${name} | kept from an earlier run | ${ended.outcome} | | |`); return; }
+      }
+      const result = await runCase(await loadFolder(path.join(casesDir, name)), { flow, models, panel, mode, runId });
+      // Render everything first, so the three files describe one and the same state.
+      const files = { "ANSWER.md": renderAnswer(result), "REASONING.md": renderReasoning(result), "trace.json": JSON.stringify(result.trace, null, 1) };
+      await mkdir(dir, { recursive: true });
+      for (const [file, text] of Object.entries(files)) await writeFile(path.join(dir, file), text);
+      const end = result.trace.events.findLast((e) => e.kind === "run_end");
+      const cost = end?.kind === "run_end" ? end.totalCostUsd : 0;
+      if (result.outcome === "error") failed.add(name); else failed.delete(name);
+      const status = result.error ? `failed at ${result.failedAt}: ${result.error.replace(/\|/g, "/").slice(0, 200)}` : "ok";
+      lines.set(name, `| ${name} | ${status}${note} | ${result.outcome} | ${((Date.now() - started) / 1000).toFixed(1)} s | $${cost.toFixed(3)} |`);
+    } catch (err) {
+      // runCase does not throw, so this is the loader or the disk. Still leave an answer behind.
+      const message = err instanceof Error ? err.message : String(err);
+      failed.add(name);
+      await mkdir(dir, { recursive: true }).catch(() => {});
+      await writeFile(path.join(dir, "ANSWER.md"),
+        `# ${name}\n\n**Decision:** SYSTEM FAILURE: HANDED TO A HUMAN\n\nThe case could not be loaded or its answer could not be written (${message}). No action was taken. A person needs to handle this case from the original files.\n`).catch(() => {});
+      await writeFile(path.join(dir, "REASONING.md"), `# Reasoning: ${name}\n\nThe run failed before any analysis: ${message}\n`).catch(() => {});
+      lines.set(name, `| ${name} | failed outside the flow: ${message.replace(/\|/g, "/").slice(0, 200)}${note} | error | | |`);
+    }
+    console.log(lines.get(name));
+  }
+
+  await pool(names, Number(values.concurrency) || 1, (name) => answer(name, 1));
+
+  // Rate limits and overloads fail many cases at once. One slower second pass recovers them
+  // without anyone touching the outputs.
+  if (failed.size) {
+    console.log(`${failed.size} failed. Waiting ${RETRY_PAUSE_MS / 1000}s, then retrying them ${RETRY_CONCURRENCY} at a time.`);
+    await new Promise((resolve) => setTimeout(resolve, RETRY_PAUSE_MS));
+    await pool([...failed], RETRY_CONCURRENCY, (name) => answer(name, 2));
+  }
+
+  const table = names.map((n) => lines.get(n) ?? `| ${n} | not run | error | | |`).join("\n");
   await writeFile(path.join(outDir, "RUNLOG.md"),
-    `# Run log\n\nRun ${runId}. Generated by \`npm run answer\`; not edited by hand.\n\n| Case | Result | Outcome | Time | Cost |\n|---|---|---|---|---|\n${log.join("\n")}\n`);
-  const failed = log.filter((l) => l.includes("| error |")).length;
-  console.log(`Done. ${names.length - failed} answered, ${failed} failed (each still has an ANSWER.md). Log: ${path.join(outDir, "RUNLOG.md")}`);
+    `# Run log\n\nRun ${runId}. Generated by \`npm run answer\`; not edited by hand.\n\n| Case | Result | Outcome | Time | Cost |\n|---|---|---|---|---|\n${table}\n`);
+  console.log(`Done. ${names.length - failed.size} answered, ${failed.size} failed (each still has an ANSWER.md). Log: ${path.join(outDir, "RUNLOG.md")}`);
 }
 
 await main();
+// In-flight requests from a timed-out case must not keep the process alive after the log is written.
+process.exit(0);

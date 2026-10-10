@@ -182,22 +182,28 @@ export async function runPanel(
     return failed(`Jev call failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
-  const { forceHuman, notes, raisedBy } = applyRules(flatten(body.answers), rules);
-  return {
-    ok: true,
-    seats: seats.map((seat) => ({
-      id: seat.id,
-      name: seat.name,
-      answers: Object.fromEntries(Object.keys(seat.questions).map((q) => [q, flatten(body.answers)[`${seat.id}.${q}`]])),
-      raised: raisedBy[seat.id] ?? [],
-    })),
-    forceHuman,
-    notes,
-    model: body.model,
-    latencyMs: Date.now() - started,
-    tokensIn: body.usage.input_tokens,
-    costUsd: body.usage.input_tokens * JEV_USD_PER_INPUT_TOKEN,
-  };
+  // A 200 with an unexpected shape is still a failure of the panel, not of the case.
+  try {
+    const flat = flatten(body.answers);
+    const { forceHuman, notes, raisedBy } = applyRules(flat, rules);
+    return {
+      ok: true,
+      seats: seats.map((seat) => ({
+        id: seat.id,
+        name: seat.name,
+        answers: Object.fromEntries(Object.keys(seat.questions).map((q) => [q, flat[`${seat.id}.${q}`]])),
+        raised: raisedBy[seat.id] ?? [],
+      })),
+      forceHuman,
+      notes,
+      model: body.model,
+      latencyMs: Date.now() - started,
+      tokensIn: body.usage.input_tokens,
+      costUsd: body.usage.input_tokens * JEV_USD_PER_INPUT_TOKEN,
+    };
+  } catch (err) {
+    return failed(`Jev reply had an unexpected shape: ${err instanceof Error ? err.message : String(err)}`);
+  }
 }
 
 function flatten(answers: JevResponse["answers"]): Record<string, number> {
