@@ -36,7 +36,7 @@ const action = {
   purpose: "Open an investigation", message: "Please open a delivery investigation for DL-024. The scan shows delivered; the recipient reports no parcel.",
 };
 const decision: Decision = {
-  decision_type: "act", why: "The carrier owns the investigation.", actions: [action],
+  decision_type: "act", headline: "Ask the carrier to open an investigation.", why: "The carrier owns the investigation.", actions: [action],
   wont_do: [{ item: "Tell the recipient it is lost", reason: "not established" }],
   waiting_for: [{ what: "Investigation reference", from: "Delivery investigations", by: "none stated" }],
   handover: null, confidence: "high",
@@ -80,7 +80,9 @@ test("a safe message is recorded and the trace ends in acted with a next action"
   const end = r.trace.events.at(-1);
   assert.equal(end?.kind === "run_end" && end.nextAction?.recipient, action.recipient);
   assert.equal(r.trace.events.filter((e) => e.kind === "model_call").length, 3);
-  assert.match(renderAnswer(r), /\*\*Decision:\*\* ACT/);
+  assert.match(renderAnswer(r), /\*\*Decision:\*\* ACT\. Ask the carrier to open an investigation\./);
+  assert.match(renderAnswer(r), /\*\*Situation:\*\* Tracker says delivered; recipient has no parcel\./);
+  assert.match(renderAnswer(r), /- Investigation reference, from Delivery investigations\n/);
   assert.match(renderAnswer(r), /Recorded in sandbox outbox, awaiting reply/);
 });
 
