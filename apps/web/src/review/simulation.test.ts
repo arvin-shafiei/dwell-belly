@@ -9,6 +9,25 @@ function waitingEngine() {
   return engine;
 }
 describe("city human decisions", () => {
+  it("shows the actual reason and specialist for a necessary review", () => {
+    const engine = new WorkflowEngine({ background: false, emit: () => {}, humanTimeoutMs: 15 * 60_000 });
+    engine.customerMessage("legal_notice");
+    for (let i = 0; i < 800 && engine.cases()[0].state !== "awaiting_human"; i++) engine.advance(50);
+    const task = simulationTasks(engine, "city-session", 100_000)[0];
+    expect(task.mustDecide).toMatch(/formal solicitor/);
+    expect(task.routeTo).toBe("Legal lead");
+  });
+
+  it("uses the configured desk supervisor for legal escalation even when the case title is routine", () => {
+    const engine = new WorkflowEngine({ background: false, emit: () => {}, humanTimeoutMs: 15 * 60_000 });
+    engine.scenario({ scenarioId: "delivery-024", runId: "legal-case", modifiers: ["needs_human"] });
+    for (let i = 0; i < 800 && engine.cases()[0].state !== "awaiting_human"; i++) engine.advance(50);
+    const task = simulationTasks(engine, "city-session", 100_000)[0];
+    expect(task.title).toMatch(/recipient has no parcel/);
+    expect(task.routeTo).toBe("Desk supervisor");
+    expect(task.mustDecide).toMatch(/legal action/);
+  });
+
   it("shares the engine deadline and applies the exact chosen option once", () => {
     const engine = waitingEngine();
     const task = simulationTasks(engine, "city-session", 100_000)[0];

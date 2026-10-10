@@ -8,6 +8,10 @@ Each card shows its owning team, deadline, reason for stopping, conflicting evid
 
 ## Decisions
 
+Review is for a decision that requires a person's authority or judgment. Routine questions, evidence sent to a known owner, delivery investigations, attributed status updates and safety alerts proceed through the normal message gate. A deadline raises priority rather than requiring approval of a safe request. Conflicting claims are sent to the team that can settle them without choosing a side.
+
+The simulation now keeps those actions below the review band for every random seed. Its legal holds, explicit legal/high-value scenario modifier, possible driver injury and major-incident suspension still require a person, with the actual reason and owning reviewer on the card and the reason in the queue preview. For a legal threat, the safe owner request goes out before review; the card asks about the remaining complaint, not permission to send that request. A formal legal hold sends no messages, including on timeout. The agent's optional perspectives panel applies holds per action: it cannot stop a checked owner request simply because it flagged the case. Critic checks, unchecked-message holds and hard blocks remain in place.
+
 - Choose one of the card's options, enter your name, optionally add a handover note, then record the decision.
 - Real-case choices are stored atomically under `runs/human-review/decisions/`. A competing or duplicate choice returns 409. Recorded means **awaiting execution**, not an action completed by the carrier. The current runtime has no `resumeCase` endpoint or option-to-action mapping, so the desk does not infer an action from an option's wording.
 - Reality Test cards are read-only.

@@ -174,7 +174,7 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
           <div className="review-case-list">
             {loading && !tasks.length ? <div className="review-empty" role="status">Loading decision cards…</div> : shown.length ? shown.map((task) => <button key={task.id} className={`review-case-row ${selected?.id === task.id ? "selected" : ""}`} onClick={() => selectTask(task)} aria-pressed={selected?.id === task.id}>
               <div className="review-row-top"><span className="review-case-id">{task.caseId}</span><span className={`review-priority ${task.urgency}`}>{task.urgency === "high" ? "Urgent" : task.urgency === "low" ? "Low" : "Review"}</span></div>
-              <h3>{task.title}</h3><p>{task.summary}</p>
+              <h3>{task.title}</h3><p>{task.mustDecide || task.summary}</p>
               <div className="review-row-footer"><span>{task.routeTo.replaceAll("_", " ")}</span><Status task={task} now={now} /></div>
               {task.clash && <div className="review-clash-tag">Conflicting evidence</div>}
             </button>) : <div className="review-empty"><span className="review-empty-mark" aria-hidden="true">✓</span><h3>{search || team ? "No matching cases" : filter === "pending" ? "No decisions waiting" : "No recorded decisions"}</h3><p>{search || team ? "Try another search or team." : source === "simulation" ? "Open the city and run a scenario. Cases held at the human decision step appear here." : "Held cases appear here when the agent or batch runner saves a decision card."}</p>{source === "simulation" && <Link href="/city" target="_blank">Open city simulation ↗</Link>}</div>}

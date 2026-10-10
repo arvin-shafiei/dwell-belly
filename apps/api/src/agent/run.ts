@@ -186,7 +186,7 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
     notes.length ? `<reviewer_notes>\n${notes.map((n) => `- ${n}`).join("\n")}\n</reviewer_notes>` : "",
     clashed && u.conflicts.length === 0 ? "A quick check suggests two sources in this case may contradict each other. Look for it before deciding." : "",
     clock ? `<clock>\n${clock}\n</clock>` : "",
-    result.panel?.forceHuman ? "A reviewer has determined that a person at the desk must decide this case: use escalate_to_human." : "",
+    result.panel?.forceHuman ? "A reviewer flagged a possible decision beyond the desk's authority. Check the evidence: promises or commitments need a person; safe requests to owners, questions, factual updates and safety alerts can still go out. The flag alone is not a reason to escalate the whole case." : "",
     block,
   ].filter(Boolean).join("\n\n");
 
@@ -236,6 +236,16 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
     result.revised = true;
     gated = gate(planned(), u, await critique(planned()), gateConfig, block);
   }
+  // PRD D2.16: panel flags apply to commitments, never to an entire case. A message's kind
+  // does not bypass the critic or hard rules; only already-cleared coordination can go out.
+  const coordination = new Set(["request_to_owner", "question", "status_update", "safety_alert"]);
+  const panelHolds = (g: GatedAction) => result.panel?.ok === true && result.panel.forceHuman &&
+    g.verdict === "allow" && !coordination.has(g.action.kind);
+  const forced = gated.some(panelHolds);
+  gated = gated.map((g) => panelHolds(g) ? {
+    ...g, verdict: "ask" as const, risk: Math.max(g.risk, gateConfig.allow_below),
+    reasons: ["A configured reviewer rule requires a person to approve this commitment."],
+  } : g);
   result.decision = d;
   result.gated = gated;
   const top = gated.reduce<GatedAction | null>((a, g) => (!a || g.risk > a.risk ? g : a), null);
@@ -243,10 +253,8 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
   rec.end(gated.length ? `${gated.filter((g) => g.verdict === "allow").length} of ${gated.length} messages cleared` : "nothing to send",
     { type: "safety_gate", risk: top?.risk ?? 0, decision: overall, allowBelow: gateConfig.allow_below, blockAbove: gateConfig.block_above });
 
-  // A panel rule with effect force_human is enforced here, in code: nothing goes out until a person decides.
-  const forced = result.panel?.ok === true && result.panel.forceHuman;
-  const cleared = forced ? [] : gated.filter((g) => g.verdict === "allow");
-  const held = gated.filter((g) => g.verdict === "ask" || (forced && g.verdict === "allow"));
+  const cleared = gated.filter((g) => g.verdict === "allow");
+  const held = gated.filter((g) => g.verdict === "ask");
   const blocked = gated.filter((g) => g.verdict === "block");
   const waiting = d.decision_type === "wait_no_action" && !forced;
 

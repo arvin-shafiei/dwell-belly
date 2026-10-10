@@ -14,7 +14,7 @@
           "advocate.vulnerable": { "at_least": 0.5, "effect": "brief", "note": "A vulnerable person may be affected. Tell the owning team so, mark it time-sensitive, and do not leave the person without a next step." },
           "advocate.repeat_failure": { "at_least": 0.6, "effect": "brief", "note": "An earlier fix already failed. Do not repeat the same route; say what is different this time." },
           "rule_keeper.beyond_desk": { "at_least": 0.5, "effect": "brief", "note": "Something is being asked that the desk does not control. Route the decision to its owner; promise nothing." },
-          "rule_keeper.legal_or_public": { "at_least": 0.8, "effect": "force_human", "note": "Legal, regulator, police or press involvement. A person at the desk decides before anything is sent." },
+          "rule_keeper.legal_or_public": { "at_least": 0.8, "effect": "force_human", "note": "Legal, regulator, police or press involvement. A person decides commitments; safe coordination can proceed unless a formal legal hold prohibits all messages." },
           "safety.person_at_risk": { "at_least": 0.5, "effect": "brief", "note": "Possible physical hazard. Alert the safety or food-safety owner on their incident channel first." },
           "safety.asks_advice": { "at_least": 0.5, "effect": "brief", "note": "Someone is asking for safety advice. Give none: no handling, cleanup, consumption or lifting guidance." },
           "sceptic.contradiction": { "at_least": 0.5, "effect": "brief", "note": "Sources contradict each other. Neither is proven; send the conflict to the team that can settle it." },

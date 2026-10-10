@@ -12,13 +12,14 @@ export function simulationTasks(engine: WorkflowEngine, sessionId: string, now: 
     const deadlineAt = new Date(now + Math.max(0, (card.deadlineAt ?? engine.now) - engine.now)).toISOString();
     const options = card.options.map((label, i) => ({ id: `option-${i + 1}`, label, undoable: label === card.safe }));
     const chosen = options.find((o) => o.label === card.chosen);
-    const routeTo = /hazard|medical|injur|plane|cold|temperature/i.test(`${c.title} ${priority}`) ? "On-call lead"
+    const inferredOwner = /solicitor|legal/i.test(`${c.title} ${priority}`) ? "Legal lead"
+      : /hazard|medical|injur|plane|cold|temperature|major_incident|vehicle_collision/i.test(`${c.title} ${priority}`) ? "On-call lead"
       : /damag|refund|claim|replacement/i.test(`${c.title} ${priority}`) ? "Claims team" : "Depot manager";
     return [{
       id: `simulation:${sessionId}:${c.id}`, caseId: c.id, runId: sessionId, cardId: `simulation:${sessionId}:${c.id}`,
-      title: c.title, summary: step("planner") || c.title, mustDecide: "The simulated agent paused at its safety gate. Choose what it should do next.", evidence: [],
-      routeTo, clash: c.clash ? step("clash") : null,
-      tried: [step("history"), step("group"), step("missing_info")].filter(Boolean),
+      title: c.title, summary: step("planner") || c.title, mustDecide: card.reason ?? "The simulated agent paused at its safety gate. Choose what it should do next.", evidence: [],
+      routeTo: card.routeTo ?? inferredOwner, clash: c.clash ? step("clash") : null,
+      tried: [step("history"), step("group"), step("missing_info"), step("action")].filter(Boolean),
       wouldChangeMyMind: step("missing_info") || "Confirmation from the owning delivery team.",
       options, fallback: card.safe,
       receivedAt: new Date(now - (engine.now - c.createdAt)).toISOString(), deadlineAt,
