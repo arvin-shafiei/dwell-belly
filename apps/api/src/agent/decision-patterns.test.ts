@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { DECISION_GROUP_IDS, decisionGroupNames, decisionGuidance } from "./decision-patterns.ts";
 import { Understanding } from "./types.ts";
-import { UNDERSTAND_SYSTEM } from "./prompts.ts";
+import { DECIDE_SYSTEM, UNDERSTAND_SYSTEM } from "./prompts.ts";
 
 test("missing, duplicate or unknown group labels keep general reasoning and do not invent guidance", () => {
   const base = decisionGuidance();
@@ -25,6 +25,18 @@ test("the structured intake format supports multiple valid groups while old anal
   const format = zodOutputFormat(Understanding);
   const properties = format.schema.properties;
   assert.ok(typeof properties === "object" && properties !== null && "decision_groups" in properties);
+  assert.ok("constraints" in properties);
+  const constraint = { surface: "site_access", requirement: "Receiving only 10:00–12:00", owner: "Receiving", scope: "shipment A", kind: "feasibility", state: "active", evidence: "Receiving's latest message" };
+  assert.equal(Understanding.shape.constraints.safeParse([constraint]).success, true);
+  assert.equal(Understanding.shape.constraints.safeParse([{ ...constraint, state: "booked" }]).success, false);
+  assert.equal(Understanding.shape.constraints.safeParse(undefined).success, true);
+});
+
+test("chaining guidance combines current requirements without granting one actor universal authority", () => {
+  assert.match(DECIDE_SYSTEM, /intersect confirmed operational feasibility/);
+  assert.match(DECIDE_SYSTEM, /not a carrier's capacity statement/);
+  assert.match(DECIDE_SYSTEM, /do not re-ask the customer/i);
+  assert.match(DECIDE_SYSTEM, /complete accumulated history/);
 });
 
 test("intake learns decision boundaries without case keys, names or mutation labels", () => {

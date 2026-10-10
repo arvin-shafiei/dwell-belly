@@ -4,6 +4,7 @@ import path from "node:path";
 import type { DecisionCard, EvalVerdict, ExecutionRecord, ExecutionVoice, Flow, OutboxEntry, Trace, WorkflowRecord } from "../types";
 import { getDb, repoRoot, type SqlValue } from "./db";
 import { layeredLayout } from "./mapping";
+import type { CaseView } from "./caseViews";
 
 /** ExecutionRecord plus the server-side extras (requested as contract additions). */
 export type StoredExecution = ExecutionRecord & { error: string | null; title: string | null; nextAction: string | null; gate: string | null };
@@ -121,6 +122,16 @@ export function recordVerdict(executionId: string, v: { pass: boolean; score: nu
 export function getExecution(id: string): StoredExecution | null {
   const row = getDb().prepare("SELECT * FROM executions WHERE id = ?").get(id);
   return row ? toRecord(row) : null;
+}
+
+/** Kept server-side: list/detail responses need not carry the entire input history. */
+export function getExecutionInput(id: string): CaseView | null {
+  const row = getDb().prepare("SELECT input_view FROM executions WHERE id = ?").get(id);
+  return row ? parseJson<CaseView>(row.input_view) : null;
+}
+
+export function recordExecutionInput(id: string, view: CaseView): void {
+  getDb().prepare("UPDATE executions SET input_view = ? WHERE id = ?").run(JSON.stringify(view), id);
 }
 
 export interface ExecutionWrite {

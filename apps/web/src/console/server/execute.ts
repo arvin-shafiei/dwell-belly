@@ -8,7 +8,7 @@ import type { CaseViewEvent, DecisionCard, ExecutionVoice, Flow, HumanDecision, 
 import { buildView } from "./catalogue";
 import { summariseTrace, isTrace } from "./mapping";
 import { buildRerun } from "./rerun";
-import { getExecution, getWorkflow, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
+import { getExecution, getExecutionInput, recordExecutionInput, getWorkflow, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
 
 export const RUN_TIMEOUT_MS = 5 * 60_000;
 
@@ -64,13 +64,18 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
   const caseId = input.caseId || parent?.caseId;
   if (!caseId) throw new ExecuteError("caseId or parentExecutionId is required", 400);
   const dataset = input.dataset ?? (parent && parent.caseId === caseId ? parent.dataset : null);
+  if (parent && (parent.caseId !== caseId || parent.dataset !== dataset)) {
+    throw new ExecuteError("A follow-up must use the parent's case and dataset", 400);
+  }
   const built = await buildView(caseId, dataset);
   if (!built) {
     throw new ExecuteError(`Unknown case "${caseId}"${dataset ? ` in dataset "${dataset}"` : ""}`, 404);
   }
   const elapsedMs = input.elapsedMs ?? (parent ? Math.max(0, Date.now() - Date.parse(parent.startedAt)) || 0 : 0);
   const request = agentRequestBody({
-    view: built.view,
+    // The parent's exact input already contains every earlier reply and desk request.
+    // Older imported executions have no saved input and fall back to the source case.
+    view: (parent ? getExecutionInput(parent.id) : null) ?? built.view,
     parentOutbox: parent?.outbox,
     extraEvents: input.extraEvents,
     humanDecision: input.humanDecision,
@@ -111,6 +116,9 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
   const flow = input.flow ?? (saved?.source === "db" ? saved.flow : null);
 
   try {
+    // Persist evidence, never the control fields: a previous human approval must not
+    // authorise a different action in a later follow-up.
+    recordExecutionInput(base.id, { ...built.view, events: request.body.events });
     const res = await fetch(`${agentUrl()}/api/cases`, {
       method: "POST",
       headers: { "content-type": "application/json" },

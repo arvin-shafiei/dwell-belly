@@ -8,7 +8,7 @@ const catalogue = await buildCatalogue();
 
 test("the catalogue covers every indexed source case and preserves key provenance without claiming execution", async () => {
   let count = 12;
-  for (const file of ["data/index.json", "data/generated/index.json", "data/adversarial/index.json"]) {
+  for (const file of ["data/index.json", "data/generated/index.json", "data/adversarial/index.json", "data/bulk/index.json"]) {
     const index = JSON.parse(await readFile(path.join(ROOT, file), "utf8"));
     count += file === "data/index.json" ? index.filter((c) => c.track === "delivery").length : index.length;
   }
@@ -25,6 +25,26 @@ test("the catalogue covers every indexed source case and preserves key provenanc
   assert.match(generated.provenance, /not a verified execution/);
   assert.ok(generated.required.length && generated.prohibited.length && generated.learning);
   assert.match(catalogue.warning, /never this catalogue or case-specific answers/);
+});
+
+test("bulk grouping keeps secondary boundaries and rule-derived provenance", async () => {
+  const sourceIndex = JSON.parse(await readFile(path.join(ROOT, "data/bulk/index.json"), "utf8"));
+  assert.equal(catalogue.sets.bulk, sourceIndex.length);
+  for (const source of sourceIndex) {
+    const c = catalogue.cases.find((c) => c.id === source.id);
+    assert.equal(c.seed_case, source.seed_case);
+    assert.equal(c.layout, source.layout);
+    assert.deepEqual(c.transforms, source.transforms);
+    assert.equal(c.key_source, "rule");
+    assert.match(c.provenance, /not an independent unseen case/);
+  }
+  // Its mutation is long_context, yet the attached injection still needs a boundary.
+  const combined = catalogue.cases.find((c) => c.id === "bulk-0003");
+  for (const id of ["communication", "untrusted_content"]) assert.ok(combined.groups.includes(id));
+  assert.ok(combined.grouping_basis.includes("Source transform: injection_attachment"));
+  const redirect = catalogue.cases.find((c) => c.id === "bulk-0001");
+  for (const id of ["identity_privacy", "missing_evidence", "valid_changes"]) assert.ok(redirect.groups.includes(id));
+  assert.throws(() => groupCase({ transforms: ["unknown-transform"], evidence: "" }, catalogue.groups), /Unmapped transform/);
 });
 
 test("compound fixtures have overlapping groups and retain their actual required decisions", () => {

@@ -2975,5 +2975,53 @@
     "seed_case": null,
     "grounding": null,
     "file": "generated/delivery/gen-3303.json"
+  },
+  {
+    "id": "gen-3401",
+    "mutation": "multi_issue",
+    "title": "Crash fallback conflicts with the verified customer date and time",
+    "events": 2,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": null,
+    "file": "generated/delivery/gen-3401.json"
+  },
+  {
+    "id": "gen-3402",
+    "mutation": "multi_issue",
+    "title": "Latest customer date and receiving hours invalidate the offered recovery slot",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": null,
+    "file": "generated/delivery/gen-3402.json"
+  },
+  {
+    "id": "gen-3403",
+    "mutation": "multi_issue",
+    "title": "Capacity, recipient and site agree but chilled goods release is unresolved",
+    "events": 10,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": null,
+    "file": "generated/delivery/gen-3403.json"
+  },
+  {
+    "id": "gen-3404",
+    "mutation": "multi_issue",
+    "title": "Release clearance unlocks the current mutually valid booking request",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": null,
+    "file": "generated/delivery/gen-3404.json"
   }
 ]

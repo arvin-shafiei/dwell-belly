@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.11, 10 Oct 2026, 14:25 BST. **Owner of this doc:** Oriol.
+**Version:** 1.12, 10 Oct 2026. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -1042,6 +1042,8 @@ This table is the reallocation.
 ---
 
 ## Changelog
+
+- **1.12:** intake records the evidence, owner, scope and current state of constraints across fleet/route, recipient, site access, goods, commercial, identity/authority, tools/channels and shared incidents. Planning intersects current verified customer requirements with confirmed feasibility under safety and authority restrictions, instead of ranking one actor above every other owner. Console follow-ups persist the cumulative evidence input, retain earlier replies and recorded requests, and reject parent histories from another case/dataset; trusted human approvals are not carried into later actions. Older imported runs without saved inputs still fall back to the source case and cannot recover missing historical replies. Four additional unreviewed calibration states and `npm run eval:chain` exercise sequential changes, access restrictions and goods clearance. This adds continuity on an explicit follow-up, not an automatic reply listener, scheduler or proof of real delivery completion.
 
 - **1.9:** add reproducible case-learning catalogue, overlapping decision groups for intake and planning, shared guidance for the Architect and validation requiring unfamiliar-case, missing-evidence and conflict branches to reach a planner. The worked example now plans safe requests for those cases and reviewer flags; compact broad paths avoid multiplying every issue combination into a separate subtree. Malformed or truncated Architect output gets one compact retry with safety checks retained. Three synthetic chained-disruption cases test failed recovery, invalidated rescheduling and outstanding safety clearance. Source-key coverage remains separate from execution results; conditional plans are not a persistent dependency scheduler.
 

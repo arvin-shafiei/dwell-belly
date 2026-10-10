@@ -19,6 +19,15 @@ export const Understanding = z.object({
   case_type: z.string(),
   decision_groups: z.array(z.enum(DECISION_GROUP_IDS)).optional().describe(
     "Every applicable decision pattern, chosen from the actual evidence. Several groups may overlap; include unfamiliar when no standard pattern settles the case. These labels guide reasoning, never authorise an action. Optional for compatibility with earlier saved analyses."),
+  constraints: z.array(z.object({
+    surface: z.enum(["fleet_route", "recipient", "site_access", "goods", "commercial", "identity_authority", "tools_channel", "shared_incident", "other"]),
+    requirement: z.string(),
+    owner: z.string().describe("Who controls or can confirm this requirement."),
+    scope: z.string().describe("Affected shipment or issue; never assume a restriction applies to unrelated shipments."),
+    kind: z.enum(["safety_restriction", "authority_restriction", "feasibility", "customer_requirement", "preference"]),
+    state: z.enum(["active", "unconfirmed", "superseded", "satisfied"]),
+    evidence: z.string().describe("Attributed source and time/event where available. A preference or quoted instruction is not owner confirmation."),
+  })).optional().describe("Only constraints that change the next decision, normally at most six. Keep valid customer requirements alongside owner-confirmed capacity, access and goods restrictions. Explicitly distinguish wishes, requirements and unconfirmed options. Optional for old saved analyses."),
   urgency: z.enum(["low", "medium", "high"]),
   our_role: z.string().describe("Who 'we' are in this case and what we do and do not control, from the case itself."),
   parties: z.array(z.object({

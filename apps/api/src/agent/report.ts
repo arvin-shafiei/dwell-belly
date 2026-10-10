@@ -109,6 +109,9 @@ export function renderReasoning(r: RunResult): string {
     lines.push("", u.summary, "", `Our role: ${u.our_role}`, `Case type: ${u.case_type}. Urgency: ${u.urgency}.`);
     const groups = decisionGroupNames(u.decision_groups);
     if (groups.length) lines.push(`Decision patterns identified: ${groups.join("; ")}.`);
+    if (u.constraints?.length) lines.push("", "Constraints on the current plan:",
+      "| Surface | Requirement | Owner | Scope | Kind | State | Evidence |", "|---|---|---|---|---|---|---|",
+      ...u.constraints.map((c) => `| ${cell(c.surface)} | ${cell(c.requirement)} | ${cell(c.owner)} | ${cell(c.scope)} | ${cell(c.kind)} | ${cell(c.state)} | ${cell(c.evidence)} |`));
     lines.push("", "## 2. Facts and claims", "| Source | Statement | Basis |", "|---|---|---|",
       ...u.claims.map((c) => `| ${cell(c.who)} | ${cell(c.says)} | ${c.basis.replaceAll("_", " ")} |`));
     lines.push("", "## 3. Commitments so far", u.commitments.length

@@ -276,7 +276,7 @@ export async function ingestStep(s: CaseState, nodeId: string): Promise<void> {
   rec.call("claude", res.usage);
   s.u = s.result.understanding = res.output;
   rec.end(`${bundle.documents.length} files, ${bundle.media.length} attachments read`,
-    { type: "ingest", decisionGroups: res.output.decision_groups ?? [] });
+    { type: "ingest", decisionGroups: res.output.decision_groups ?? [], constraints: res.output.constraints ?? [] });
   const u = res.output;
   const onRecord = u.claims.filter((c) => c.basis !== "unverified_claim").length;
   rec.explain([

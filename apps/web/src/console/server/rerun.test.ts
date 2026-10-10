@@ -17,6 +17,9 @@ describe("caseTime", () => {
   it("returns empty when no event has a parsable time", () => {
     expect(caseTime({ events: [ev(1, "")] }, 1000)).toBe("");
   });
+  it("uses the latest timestamp even when a history is newest first", () => {
+    expect(caseTime({ events: [ev(1, "2026-02-01T11:00:00Z"), ev(2, "2026-02-01T10:00:00Z")] }, 60_000)).toBe("2026-02-01T11:01:00.000Z");
+  });
 });
 
 describe("priorDeskEvents", () => {

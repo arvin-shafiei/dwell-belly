@@ -11,7 +11,7 @@ import example from "../../flows/default-incident.json" with { type: "json" };
 import type { Flow, FlowEdge, FlowNode, NodeType, Runner } from "../lib/flow.ts";
 import { SORTING_SEATS } from "../lib/panel.ts";
 import type { Models, ModelUsage } from "./models.ts";
-import { decisionGuidance } from "./decision-patterns.ts";
+import { CHAINING_GUIDANCE, decisionGuidance } from "./decision-patterns.ts";
 
 // One line per type, because the model can only arrange nodes it understands. Typed as a full
 // Record so adding a NodeType without describing it here fails the type check.
@@ -243,6 +243,7 @@ Design a decision tree, not a straight line. Real cases go wrong in different wa
 
 <decision_patterns>
 ${decisionGuidance(["capacity_disruption", "dependencies", "missing_evidence", "conflicting_evidence", "failed_action", "identity_privacy", "hazard", "multi_issue", "wait_duplicate", "network_disruption"])}
+${CHAINING_GUIDANCE}
 </decision_patterns>
 These patterns overlap. A triage branch is only a starting point: its planner still reads the whole case and addresses every live issue. More topic branches are not a substitute for reasoning. Never send a case to a human merely because its topic is unfamiliar or several patterns apply. Every triage needs an "other" path to a general planner, safety gate, action/verification and case log.
 

@@ -30,6 +30,20 @@ const FIXTURE_GROUPS = {
   "110": ["conflicting_evidence", "deadline_math"], "111": ["human_authority", "identity_privacy"],
   "112": ["wait_duplicate", "communication"],
 };
+// Bulk cases can apply several transforms but store only one mutation label.
+// Keep every tested boundary, including the secondary layer, in this offline index.
+const TRANSFORM_GROUPS = {
+  surface_swap: [], noise: ["communication"], long_thread: ["communication"],
+  duplicate_request: ["wait_duplicate"], channel_swap: ["communication"],
+  injection_quoted: ["untrusted_content"], injection_attachment: ["untrusted_content"],
+  unrelated_attachment: ["missing_evidence", "conflicting_evidence"],
+  missing_attachment: ["missing_evidence", "truthful_status"],
+  unverified_claim: ["conflicting_evidence", "identity_privacy", "truthful_status"],
+  false_alarm: ["hazard"], fyi_no_action: ["wait_duplicate"],
+  legal_threat: ["human_authority"],
+  vulnerable_person: ["human_authority", "identity_privacy", "communication"],
+  unverified_redirect: ["identity_privacy", "missing_evidence", "valid_changes"],
+};
 // Suggestions from rubrics, not a live keyword classifier. A match identifies a decision boundary
 // tested by this case, including prohibitions; it never asserts that an incident actually occurred.
 const RUBRIC_SIGNALS = [
@@ -52,7 +66,7 @@ const RUBRIC_SIGNALS = [
 const json = async (file) => JSON.parse(await readFile(file, "utf8"));
 const sortedFiles = async (dir) => (await readdir(dir)).filter((f) => f.endsWith(".json")).sort();
 
-export function groupCase({ mutation, fixture, evidence, patterns = [] }, groups) {
+export function groupCase({ mutation, fixture, evidence, patterns = [], transforms = [] }, groups) {
   if (mutation && !Object.hasOwn(MUTATION_GROUPS, mutation)) throw new Error(`Unmapped mutation: ${mutation}`);
   if (fixture && !Object.hasOwn(FIXTURE_GROUPS, fixture)) throw new Error(`Unmapped fixture: ${fixture}`);
   const selected = new Set(["owner_coordination", "truthful_status", "unfamiliar"]);
@@ -60,6 +74,11 @@ export function groupCase({ mutation, fixture, evidence, patterns = [] }, groups
   for (const id of mutation ? MUTATION_GROUPS[mutation] : fixture ? FIXTURE_GROUPS[fixture] : []) selected.add(id);
   if (mutation) basis.push(`Source difficulty label: ${mutation}`);
   if (fixture) basis.push(`Fixture rubric mapping: ${fixture}`);
+  for (const transform of transforms) {
+    if (!Object.hasOwn(TRANSFORM_GROUPS, transform)) throw new Error(`Unmapped transform: ${transform}`);
+    for (const id of TRANSFORM_GROUPS[transform]) selected.add(id);
+    basis.push(`Source transform: ${transform}`);
+  }
   for (const id of patterns) {
     if (!groups.some((g) => g.id === id)) throw new Error(`Unmapped decision pattern: ${id}`);
     selected.add(id);
@@ -75,7 +94,7 @@ export function groupCase({ mutation, fixture, evidence, patterns = [] }, groups
 export async function buildCatalogue(root = ROOT) {
   const policy = await json(path.join(root, "apps/api/src/agent/decision-patterns.json"));
   const cases = [];
-  for (const [set, directory] of [["public", "data/cases/delivery"], ["generated", "data/generated/delivery"], ["adversarial", "data/adversarial/delivery"], ["city", "data/city/delivery"]]) {
+  for (const [set, directory] of [["public", "data/cases/delivery"], ["generated", "data/generated/delivery"], ["adversarial", "data/adversarial/delivery"], ["city", "data/city/delivery"], ["bulk", "data/bulk/delivery"]]) {
     for (const file of await sortedFiles(path.join(root, directory))) {
       const source = `${directory}/${file}`;
       const c = await json(path.join(root, source));
@@ -84,12 +103,15 @@ export async function buildCatalogue(root = ROOT) {
       const required = isPublic ? [c.next_action.summary] : c.expected.must;
       const prohibited = isPublic ? [c.boundaries].filter(Boolean) : c.expected.must_not;
       const learning = isPublic ? `${c.context} ${c.outcome}` : c.rationale;
-      const evidence = [...required, ...prohibited, learning].join("\n");
+      const evidence = [...decisions, ...required, ...prohibited, learning].join("\n");
       cases.push({
         id: c.id, set, title: c.title, source,
-        provenance: isPublic ? "Organiser's disclosed calibration answer; not runtime evidence" : "Synthetic answer key; not a verified execution or authoritative policy",
+        provenance: isPublic ? "Organiser's disclosed calibration answer; not runtime evidence"
+          : c.keySource === "rule" ? "Rule-derived synthetic answer key; coarse load/regression material, not an independent unseen case, verified execution or authoritative policy"
+            : "Synthetic answer key; not a verified execution or authoritative policy",
+        ...(set === "bulk" ? { seed_case: c.seed_case, key_source: c.keySource, transforms: c.transforms, layout: c.layout } : {}),
         review: c.review ?? null,
-        ...groupCase({ mutation: isPublic ? undefined : c.mutation, evidence, patterns: c.decision_patterns }, policy.groups),
+        ...groupCase({ mutation: isPublic ? undefined : c.mutation, evidence, patterns: c.decision_patterns, transforms: c.transforms }, policy.groups),
         acceptable_decisions: isPublic ? ["contact"] : c.expected.acceptable_dispositions,
         decision: decisions.length ? decisions : c.expected.acceptable_dispositions.map((d) => d === "no_action" ? "Log why nothing is owed now; send nothing." : "Hand the specific unresolved decision to an authorised person."),
         learning, required, prohibited,

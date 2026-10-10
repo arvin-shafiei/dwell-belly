@@ -116,6 +116,7 @@ const ADDED_COLUMNS: { table: string; column: string; type: string }[] = [
   { table: "executions", column: "outbox", type: "TEXT" },
   { table: "executions", column: "card", type: "TEXT" },
   { table: "executions", column: "voice", type: "TEXT" },
+  { table: "executions", column: "input_view", type: "TEXT" }, // Exact cumulative case input for follow-ups.
   // Evidence v2: the judge's verdict in parts. eval_critical 1 = a must_not rule was broken (score forced to 0).
   { table: "executions", column: "eval_critical", type: "INTEGER" },
   { table: "executions", column: "eval_verdict", type: "TEXT" },
