@@ -4,9 +4,9 @@
 Arvin. 3D city view for the demo video (30%). Own `apps/web/src/world/**` and page `/city` (`apps/web/src/app/city`). Not touching `apps/api` or the agent.
 
 ### Built so far
-**Pushed (origin/main):** three.js city (r3f + drei): roads with left-hand driving and `findPath` around blocked roads, buildings/skyline, suburbs, depot, airport, traffic + lights, crashes (fire/smoke), responders, roadworks closing roads, ambient life, minimap, `WorkflowHud` overlay (mini flow graph, scenario picker). `scenarios.ts` + generated `scenarios.data.ts` map all 50 public delivery cases to a city scene, plus 12 Reality Test modifiers (clash, tool fail, injection, do_nothing…).
+**Pushed (origin/main, incl. 7c44ece):** three.js city (r3f + drei): roads with left-hand driving and `findPath` around blocked roads, buildings/skyline, suburbs, depot, airport, traffic + lights, crashes (fire/smoke), responders, roadworks closing roads, ambient life, countryside, delivery fleet, responder dispatch for pileups, `WorkflowDriver/engine.ts` (mock agent: walks a case through ingest → … → log with fake risk/gate/cost and a decision card, driven by scenarios), minimap, `WorkflowHud` overlay (mini flow graph, scenario picker). `scenarios.ts` + generated `scenarios.data.ts` map all 50 public delivery cases to a city scene, plus 12 Reality Test modifiers (clash, tool fail, injection, do_nothing…).
 
-**Local only (not pushed, ~1.5k lines):** `WorkflowDriver/engine.ts` (mock agent: walks a case through ingest → … → log with fake risk/gate/cost and a decision card), `Scenarios/` (acts a case out in the city), `DeliveryFleet/`, `Docks/`, `Countryside/`, `Transit/`, `Landmarks/`, responder dispatch changes. 395 vitest tests pass locally. On main these modules are still stubs.
+**Local only (not pushed):** `Scenarios/` (acts a case out in the city; `Scenarios.tsx` on main is a stub), `Docks/`, `Transit/`, `Landmarks/` helpers. 395 vitest tests pass locally.
 
 **Mocked:** the whole workflow. Nothing reads real traces or calls the API yet.
 
@@ -28,7 +28,7 @@ Bus (`bus.ts`):
 | { type: "scenario:staged"; runId: string; scenarioId: string; modifiers: Modifier[]; x: number; z: number; vehicleId?: string }
 | { type: "scenario:resolved"; runId: string; scenarioId: string; outcome: "acted" | "asked_for_info" | "escalated" | "blocked" | "no_action" };
 ```
-Mock engine (`WorkflowDriver/engine.ts`, local):
+Mock engine (`WorkflowDriver/engine.ts`, pushed):
 ```ts
 export type NodeId =
   | "ingest" | "history" | "triage" | "clash" | "group" | "missing_info"
@@ -52,7 +52,7 @@ Show voice, never produce it. Need trace/bus events:
 Need from voice: those events on the bus or in the trace, plus optional audio URL to play in the demo.
 
 ### Next 2 hours
-- 11:00–11:30 commit + push local modules (DeliveryFleet, Docks, Scenarios, WorkflowDriver engine).
+- 11:00–11:30 commit + push remaining local modules (Scenarios, Docks, Transit, Landmarks).
 - 11:30–12:30 trace → `WorkflowEvent` adapter; replay one real practice-case trace in `/city`. Blocked on trace schema.
 - 12:30–13:00 voice HUD states (ringing, transcript, voice approval) driven by the mock.
 - Abort rule stands: if core isn't end to end by 14:30, I move to helping the core.
