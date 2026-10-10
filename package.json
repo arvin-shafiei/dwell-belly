@@ -8,9 +8,14 @@
     "dev": "concurrently -n api,web -c blue,green \"npm run dev -w api\" \"npm run dev -w web\"",
     "build": "npm run build -w api && npm run build -w web",
     "lint": "npm run lint -w api && npm run lint -w web",
-    "data": "node scripts/build-data.mjs"
+    "data": "node scripts/build-data.mjs",
+    "gen:cases": "node --env-file-if-exists=apps/api/.env.local scripts/eval/gen-cases.mjs",
+    "eval": "node --env-file-if-exists=apps/api/.env.local scripts/eval/run-eval.mjs",
+    "test:eval": "node --test scripts/eval/eval.test.mjs"
   },
   "devDependencies": {
-    "concurrently": "^9"
+    "@anthropic-ai/sdk": "^0.133.0",
+    "concurrently": "^9",
+    "zod": "^4.6.5"
   }
 }
