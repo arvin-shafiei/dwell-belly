@@ -23,12 +23,15 @@ export function footprint(kind: VehicleEntry["kind"]): { halfLength: number; hal
     case "truck": case "roadworks": case "fire": case "tow": return FP_BIG;
     case "bus": return FP_BIG;
     case "van": case "ambulance": return FP_VAN;
+    case "cyclist": return FP_BIKE;
     default: return FP_CAR;
   }
 }
 const FP_BIG = { halfLength: 5.5, halfWidth: 1.3 };
 const FP_VAN = { halfLength: 2.8, halfWidth: 1.05 };
 const FP_CAR = { halfLength: 2.2, halfWidth: 0.95 };
+/** A bike + rider: about 1.8 m long, 0.7 m wide. Rides in the gutter (LANE_OFFSET + 1.2 from the centre line). */
+const FP_BIKE = { halfLength: 0.9, halfWidth: 0.35 };
 
 // --- Spatial index -------------------------------------------------------------------------------
 

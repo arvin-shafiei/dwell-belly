@@ -20,6 +20,8 @@ export interface LifeInput {
   anyArrived: boolean; // at least one unit is parked at the scene
   towsArrived: number; // tow trucks parked at the scene right now
   externallyCleared: boolean; // someone else cleared/removed the incident
+  /** Scene work that must finish before clearing (cyclist hit: the ambulance has left with the rider). Default true. */
+  workDone?: boolean;
 }
 
 export const TIMING = {
@@ -40,7 +42,7 @@ export function newLife(now: number, opts: { towsRequired?: number; towWorkS?: n
     clearingAt: null,
     clearedAt: null,
     towReleased: false,
-    towsRequired: Math.max(1, opts.towsRequired ?? 1),
+    towsRequired: Math.max(0, opts.towsRequired ?? 1), // 0: no tow (a cyclist hit), clearing waits for workDone
     towWorkS: opts.towWorkS ?? TIMING.towWorkS,
   };
 }
@@ -60,8 +62,8 @@ export function stepLife(life: Life, input: LifeInput, now: number): LifeAction[
     out.push("set_responding");
   }
 
-  // the clock starts once ALL required tows are on scene
-  if (input.towsArrived >= life.towsRequired && life.towArrivedAt === null) life.towArrivedAt = now;
+  // the clock starts once ALL required tows are on scene (and any other scene work is done)
+  if (input.towsArrived >= life.towsRequired && (input.workDone ?? true) && life.towArrivedAt === null) life.towArrivedAt = now;
 
   if (life.phase === "enroute" || life.phase === "responding") {
     // Stage times are scheduled from when the previous stage was due, so a long frame catches up.
