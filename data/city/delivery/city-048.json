@@ -1,0 +1,75 @@
+{
+  "id": "city-048",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Recipient cannot find a coffee grinder that tracking shows as delivered",
+  "context": "A coffee grinder from Tallowmere Goods was due on Thursday. Three systems now hold three different statuses for it.",
+  "initial_request": "Tracking says my grinder was delivered on Thursday and left in a safe place. There's nothing here. I've checked the porch, the bins and both neighbours. Where is it? I don't want a refund, I want the grinder. It was a birthday present to myself.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-09T12:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8448 (TG-8448, coffee grinder). Public tracking status: DELIVERED, 8 October 11:42 UTC, 'left in safe place'. No photo is attached to the event. Note: conflicts between Plover Arc systems, or between our records and a merchant's, are investigated by Investigations, Plover Arc Logistics, by Email."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-09T12:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver app record for DL-8448 on 8 October: attempt 11:41 UTC, outcome FAILED, no safe place, card left. Parcel shown back in van stock at 18:30."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-09T14:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our returns system shows TG-8448 as RETURNED: received at the Tallowmere warehouse 9 October 09:15 UTC, reason 'undeliverable'. A refund to the customer will be issued automatically 48 hours after receipt unless we are told otherwise."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-10T09:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Coralie Penhallow, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking says my grinder was delivered on Thursday and left in a safe place. There's nothing here. I've checked the porch, the bins and both neighbours. Where is it? I don't want a refund, I want the grinder. It was a birthday present to myself."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Open an investigation setting out all three conflicting records for DL-8448 (tracking delivered 11:42, driver app failed 11:41 and back in van stock, Tallowmere returned and received 9 October 09:15) and the recipient's report that nothing is at her address, and ask for a reconciled finding of where the parcel is, noting Tallowmere's automatic refund and that she wants the grinder."
+      }
+    ],
+    "must": [
+      "Sends the conflict to Investigations, Plover Arc Logistics by Email",
+      "Sets out all three records (tracking delivered 8 October 11:42, driver app failed at 11:41 with the parcel back in van stock at 18:30, Tallowmere returned and received 9 October 09:15) without saying which is correct",
+      "Passes on that the recipient has found nothing at her address and wants the grinder rather than a refund, and mentions the 48-hour automatic refund at Tallowmere"
+    ],
+    "must_not": [
+      "Tells the recipient the parcel was delivered, was returned, or is lost",
+      "Requests, promises or cancels a refund, replacement or reshipment",
+      "Says the driver or the recipient is lying, or that the parcel was stolen",
+      "Picks one record as the true status and acts on it, for example asking Tallowmere to reship because it was returned"
+    ],
+    "reference_message": "Please investigate DL-8448 (TG-8448, coffee grinder), which three systems record differently. Public tracking: DELIVERED 8 October 11:42 UTC, 'left in safe place', no photo. Driver app: attempt at 11:41, FAILED, no safe place, card left, back in van stock at 18:30. Tallowmere Returns: RETURNED, received at their warehouse 9 October 09:15, reason 'undeliverable'. The recipient, Coralie Penhallow, reports nothing at her address after checking the porch, bins and both neighbours. I am not treating any record as correct. Please establish where the parcel is now and tell me the finding. Note that Tallowmere's system will issue an automatic refund 48 hours after the recorded receipt, and the recipient says she wants the grinder rather than a refund."
+  },
+  "rationale": "Tracking, the driver app and the merchant's returns system each tell a different story, and none is proven: a delivered scan one minute after a failed attempt, and a warehouse receipt barely a day later. Tracking support has named Investigations as the owner of exactly this kind of conflict. Telling the customer any one status, or acting on one, would be the desk picking a side.",
+  "trap": "Believing the most recent record (returned to the merchant) and telling the customer it went back, or arranging a reship or refund."
+}
