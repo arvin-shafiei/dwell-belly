@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { traceToResult } from "./agents.mjs";
 import { loadCases } from "./cases.mjs";
-import { problems } from "./gen-cases.mjs";
+import { problems } from "./checks.mjs";
 import { scoreCase } from "./score.mjs";
 
 const contactKey = {
