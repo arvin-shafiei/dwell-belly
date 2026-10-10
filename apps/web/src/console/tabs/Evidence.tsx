@@ -1,6 +1,12 @@
 "use client";
-// Console tab: Evidence. Owned by one agent.
+// Console tab: Evidence grid (PRD J0): every tested case across every dataset. Grid lives in ../evidence/.
+import { Suspense } from "react";
+import EvidenceGrid from "../evidence/EvidenceGrid";
 
 export default function EvidenceTab() {
-  return <div className="p-6 text-sm text-white/60">Evidence (coming soon)</div>;
+  return (
+    <Suspense fallback={<div className="p-6 text-sm text-white/50">Loading evidence…</div>}>
+      <EvidenceGrid />
+    </Suspense>
+  );
 }
