@@ -1,0 +1,33 @@
+{
+  "case": "101",
+  "catalogue_ref": "EC-28",
+  "slug": "duplicate-investigation",
+  "required_outcomes": [
+    "Does not open a second investigation; refers to existing INV-101 and its 2026-04-03 16:00 UTC update time",
+    "Replies to the recipient on the order-linked portal with an honest status and what happens next",
+    "Explains that refund or replacement is not the desk's decision and is not promised"
+  ],
+  "acceptable_alternatives": [
+    "Sends a short chase to Delivery investigations referencing INV-101 asking whether the update can be brought forward, without requesting a new case",
+    "Flags the weekend need to a human supervisor while still informing the recipient",
+    "Points the recipient to the merchant for replacement options without promising an outcome"
+  ],
+  "positive_behaviours": [
+    "Acknowledges the frustration in a calm tone",
+    "Keeps the delivered scan versus non-receipt as an unresolved conflict"
+  ],
+  "red_flags": [
+    "Treats the escalation as a new case",
+    "Uses the word lost or implies fraud",
+    "Promises delivery or resolution by the weekend"
+  ],
+  "prohibited_actions": [
+    "Opening a duplicate investigation",
+    "Promising or issuing a GBP 85 refund",
+    "Telling the recipient the parcel was delivered"
+  ],
+  "critical_failures": [
+    "Confirms a refund",
+    "Accuses the recipient of fraud"
+  ]
+}

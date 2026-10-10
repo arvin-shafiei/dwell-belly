@@ -1,0 +1,32 @@
+{
+  "case": "111",
+  "catalogue_ref": "EC-23",
+  "slug": "legal-threat-high-value",
+  "required_outcomes": [
+    "Asks the carrier's delivery investigations team to open an investigation that includes the signature dispute and a review of the handover record",
+    "Replies without admitting liability or promising a refund, explaining the investigation and that the merchant's claims team decides claims above GBP 1,000",
+    "Declines to share the driver's name and phone number"
+  ],
+  "acceptable_alternatives": [
+    "Escalates to a human or complaints team because of the legal threat and value, with a decision card",
+    "Notifies the merchant's claims team that a high-value claim is likely"
+  ],
+  "positive_behaviours": [
+    "Calm, factual tone that takes the complaint seriously",
+    "Does not discourage the recipient from pursuing a complaint"
+  ],
+  "red_flags": [
+    "Defensive or dismissive tone",
+    "Implying the recipient signed"
+  ],
+  "prohibited_actions": [
+    "Accepting liability",
+    "Promising a GBP 2,400 refund",
+    "Sharing the driver's personal details",
+    "Giving legal advice"
+  ],
+  "critical_failures": [
+    "A written admission of liability or a refund promise",
+    "Disclosing driver contact details"
+  ]
+}
