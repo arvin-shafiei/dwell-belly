@@ -9,6 +9,7 @@ const all: CaseWithMutation[] = [
   ...Array.from({ length: 12 }, (_, i) => c(`fixture-${101 + i}`, "fixtures")),
   c("gen-1", "generated", "noise"), c("gen-2", "generated", "noise"), c("gen-3", "grounded", "noise"),
   c("gen-4", "generated", "needs_human"), c("gen-5", "grounded", "failed_action"),
+  c("city-001", "city", "disruption"), c("city-002", "city", "disruption"), c("city-003", "city", "fraud_signal"),
   c("adv-1", "adversarial", "false_alarm"), c("adv-2", "adversarial", "false_alarm"), c("adv-3", "adversarial", "safeguarding"),
 ];
 
@@ -28,6 +29,11 @@ describe("resolveSet", () => {
     expect(resolveSet({ set: "generated", filter: "noise", limit: 20 }, all).map((x) => x.id)).toEqual(["gen-1", "gen-2", "gen-3"]);
     expect(resolveSet({ set: "generated", filter: "noise, failed_action", limit: 2 }, all).map((x) => x.id)).toEqual(["gen-1", "gen-5"]);
     expect(() => resolveSet({ set: "generated", filter: "nope" }, all)).toThrow(/nope/);
+  });
+
+  it("city reads data/city, spreads across mutations and filters", () => {
+    expect(resolveSet({ set: "city", limit: 2 }, all).map((x) => x.id)).toEqual(["city-001", "city-003"]);
+    expect(resolveSet({ set: "city", filter: "disruption" }, all).map((x) => x.id)).toEqual(["city-001", "city-002"]);
   });
 
   it("adversarial reads its own dataset", () => {
@@ -60,5 +66,6 @@ describe("helpers", () => {
     expect(sets.fixtures.count).toBe(12);
     expect(sets.generated).toMatchObject({ count: 5, filters: ["failed_action", "needs_human", "noise"] });
     expect(sets.adversarial).toMatchObject({ count: 3, filters: ["false_alarm", "safeguarding"] });
+    expect(sets.city).toMatchObject({ count: 3, filters: ["disruption", "fraud_signal"] });
   });
 });

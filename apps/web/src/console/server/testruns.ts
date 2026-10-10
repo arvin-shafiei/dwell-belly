@@ -9,7 +9,7 @@ import { buildView, listCasesWithMutation, type CaseWithMutation } from "./catal
 import { getDb, repoRoot, type SqlValue } from "./db";
 import { evalModules, ensureJudgeKey, type AgentResult, type EvalCase, type Expected, type Judgement, type Verdict } from "./evalModules";
 import { agentHealthy, agentUrl, execute } from "./execute";
-import { resolveSet, SET_LABELS } from "./scenarios";
+import { resolveSet, SET_LABELS, type SetId } from "./scenarios";
 import { fixtureExpected, scoreFixture, summarise, toTestCase, withMessages, type FixtureRubric } from "./scoring";
 import { getVersion } from "./versions";
 
@@ -173,7 +173,7 @@ async function validateWithAgent(flow: unknown): Promise<string[]> {
 export async function startTestRun(body: StartBody): Promise<TestRun> {
   const workflowId = typeof body.workflowId === "string" && body.workflowId ? body.workflowId : null;
   if (!workflowId) throw new TestRunError("workflowId is required", 400);
-  const set = body.set as ScenarioSetId;
+  const set = body.set as SetId;
   if (typeof set !== "string" || !(set in SET_LABELS)) throw new TestRunError(`set must be one of ${Object.keys(SET_LABELS).join(", ")}`, 400);
   const version = await getVersion(workflowId, body.version === undefined || body.version === null ? null : Number(body.version));
   if (!version) throw new TestRunError(`no version ${String(body.version ?? "")} of ${workflowId}`, 404);
@@ -197,7 +197,7 @@ export async function startTestRun(body: StartBody): Promise<TestRun> {
     id: randomUUID(),
     workflowId,
     version: version.version,
-    set,
+    set: set as ScenarioSetId, // may be "city" until the contract lists it
     filter: set === "custom" ? picked.map((c) => c.id).join(",") : filter,
     status: "running",
     startedAt: new Date().toISOString(),

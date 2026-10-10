@@ -2,17 +2,21 @@
 import type { ScenarioSetId } from "../types";
 import type { CaseWithMutation } from "./catalogue";
 
+/** The contract's set ids plus "city" (data/city, 50 hand-written city cases). Contract change requested. */
+export type SetId = ScenarioSetId | "city";
+
 /** Five public cases from different scenes: slot change, disputed failed attempt, damage, returns, customs. */
 export const QUICK_CASES = ["delivery-001", "delivery-013", "delivery-022", "delivery-031", "delivery-045"];
 
 export const DEFAULT_LIMIT = 5;
 export const MAX_LIMIT = 20;
 
-export const SET_LABELS: Record<ScenarioSetId, string> = {
+export const SET_LABELS: Record<SetId, string> = {
   quick: "Quick: 5 public cases, one per scene",
   fixtures: "Fixtures: 12 hand-written edge cases",
   adversarial: "Adversarial: cases written to break the agent",
   generated: "Generated hard cases",
+  city: "City cases: closures, road incidents, events, secure deliveries",
   custom: "Custom case ids",
 };
 
@@ -23,7 +27,7 @@ export function clampLimit(limit: unknown): number {
 }
 
 /** The cases in a set before any filter or limit. Generated includes the grounded ones (same folder). */
-export function setMembers(set: ScenarioSetId, all: CaseWithMutation[], caseIds: string[] = []): CaseWithMutation[] {
+export function setMembers(set: SetId, all: CaseWithMutation[], caseIds: string[] = []): CaseWithMutation[] {
   switch (set) {
     case "quick":
       return QUICK_CASES.map((id) => all.find((c) => c.id === id && c.dataset === "public")).filter((c): c is CaseWithMutation => Boolean(c));
@@ -31,6 +35,8 @@ export function setMembers(set: ScenarioSetId, all: CaseWithMutation[], caseIds:
       return all.filter((c) => c.dataset === "fixtures");
     case "adversarial":
       return all.filter((c) => c.dataset === "adversarial");
+    case "city":
+      return all.filter((c) => c.dataset === "city");
     case "generated":
       return all.filter((c) => c.dataset === "generated" || c.dataset === "grounded");
     case "custom": {
@@ -74,7 +80,7 @@ export class SetError extends Error {
  * adversarial). Unknown custom ids are an error, not silently dropped.
  */
 export function resolveSet(
-  input: { set: ScenarioSetId; filter?: string | null; caseIds?: string[] | null; limit?: unknown },
+  input: { set: SetId; filter?: string | null; caseIds?: string[] | null; limit?: unknown },
   all: CaseWithMutation[],
 ): CaseWithMutation[] {
   if (!(input.set in SET_LABELS)) throw new SetError(`unknown scenario set "${input.set}"`);
@@ -99,9 +105,9 @@ export function resolveSet(
 }
 
 export function listSets(all: CaseWithMutation[]) {
-  return (["quick", "fixtures", "adversarial", "generated", "custom"] as const).map((id) => {
+  return (["quick", "fixtures", "adversarial", "generated", "city", "custom"] as const).map((id) => {
     const members = id === "custom" ? all : setMembers(id, all);
-    const filters = id === "generated" || id === "adversarial" ? mutationsOf(members) : undefined;
+    const filters = id === "generated" || id === "adversarial" || id === "city" ? mutationsOf(members) : undefined;
     return { id, label: SET_LABELS[id], count: members.length, ...(filters ? { filters } : {}) };
   });
 }

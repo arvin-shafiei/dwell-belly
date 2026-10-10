@@ -137,3 +137,20 @@ test("a rule broken in any message still zeroes the case", () => {
   const result = { ...sent("Email"), messages: [sent("Email").nextAction, { recipient: "Sorin Vaal, recipient", channel: "Customer portal", message: "It will arrive at 09:00." }] };
   assert.equal(scoreCase(contactKey, result, verdict({ violations: [{ rule: "Do not promise an arrival time", evidence: "It will arrive at 09:00." }] })).score, 0);
 });
+
+test("the city set loads its 50 cases with answer keys and the same view cut as generated cases", async () => {
+  const city = await loadCases("city");
+  assert.equal(city.length, 50);
+  assert.ok(city.every((c) => /^city-\d{3}$/.test(c.id) && c.set === "city" && c.expected?.acceptable_dispositions?.length));
+  assert.ok(city.every((c) => !("expected" in c.view) && c.view.attachments.every((a) => !("missing" in a))));
+});
+
+test("every city case passes validate-cases.mjs", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const { readdirSync } = await import("node:fs");
+  const path = await import("node:path");
+  const dir = path.resolve(import.meta.dirname, "..", "..", "data", "city", "delivery");
+  const files = readdirSync(dir).filter((n) => n.endsWith(".json")).map((n) => path.join(dir, n));
+  const out = execFileSync(process.execPath, [path.join(import.meta.dirname, "validate-cases.mjs"), ...files], { encoding: "utf8" });
+  assert.match(out, /^50 ok, 0 failed$/m);
+});

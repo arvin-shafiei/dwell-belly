@@ -1,15 +1,15 @@
-// Checks generated and adversarial case files against the schema and the structural rules.
-// Usage: node scripts/eval/validate-cases.mjs [file ...]   (no args: every file in data/generated/delivery and data/adversarial/delivery)
+// Checks generated, adversarial and city case files against the schema and the structural rules.
+// Usage: node scripts/eval/validate-cases.mjs [file ...]   (no args: every file in data/generated/delivery, data/adversarial/delivery and data/city/delivery)
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
-import { ADVERSARIAL_DIR, GENERATED_DIR } from "./cases.mjs";
+import { ADVERSARIAL_DIR, CITY_DIR, GENERATED_DIR } from "./cases.mjs";
 import { problems } from "./checks.mjs";
 import { MUTATIONS } from "./mutations.mjs";
 import { Event, FORMATS, GeneratedCaseDraft } from "./schema.mjs";
 
 const CaseFile = GeneratedCaseDraft.extend({
-  id: z.string().regex(/^(gen|adv)-\d{3,4}$/),
+  id: z.string().regex(/^(gen|adv|city)-\d{3,4}$/),
   track: z.literal("delivery"),
   generated: z.literal(true),
   mutation: z.enum(Object.keys(MUTATIONS)),
@@ -30,7 +30,7 @@ const CaseFile = GeneratedCaseDraft.extend({
 
 const args = process.argv.slice(2);
 const jsonIn = async (dir) => (await readdir(dir).catch(() => [])).filter((n) => n.endsWith(".json")).map((n) => path.join(dir, n));
-const files = args.length ? args : [...await jsonIn(GENERATED_DIR), ...await jsonIn(ADVERSARIAL_DIR)];
+const files = args.length ? args : [...await jsonIn(GENERATED_DIR), ...await jsonIn(ADVERSARIAL_DIR), ...await jsonIn(CITY_DIR)];
 
 let bad = 0;
 for (const file of files) {

@@ -3,6 +3,7 @@
 //   generated data/generated/delivery without a grounding seed
 //   grounded  data/generated/delivery with a grounding seed (data/scraped)
 //   adversarial data/adversarial/delivery (Oriol's adversarial cases, PR #12)
+//   city      data/city/delivery (hand-written city scenarios; no index.json, read from the folder)
 //   fixtures  docs/stress-test/fixtures/NNN (index.md + history.md), id "fixture-NNN"
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
@@ -23,7 +24,7 @@ interface Located extends CaseEntry {
 /** A case with its difficulty pattern, for scenario sets. */
 export interface CaseWithMutation extends CaseEntry { mutation: string | null }
 
-export const DATASETS = ["public", "generated", "grounded", "adversarial", "fixtures"] as const;
+export const DATASETS = ["public", "generated", "grounded", "adversarial", "city", "fixtures"] as const;
 
 async function readJson<T>(file: string): Promise<T | null> {
   try {
@@ -44,8 +45,8 @@ async function scan(): Promise<Located[]> {
   }
 
   type Indexed = { id: string; title?: string; grounding?: string | null; mutation?: string; file: string };
-  for (const set of ["generated", "adversarial"] as const) {
-    const dataset = (c: { grounding?: string | null }) => (set === "adversarial" ? "adversarial" : c.grounding ? "grounded" : "generated");
+  for (const set of ["generated", "adversarial", "city"] as const) {
+    const dataset = (c: { grounding?: string | null }) => (set !== "generated" ? set : c.grounding ? "grounded" : "generated");
     const listed = (await readJson<Indexed[]>(path.join(data, set, "index.json"))) ?? [];
     const indexed = new Set(listed.map((c) => c.id));
     for (const c of listed) {

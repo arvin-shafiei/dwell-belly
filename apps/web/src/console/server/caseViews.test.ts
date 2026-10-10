@@ -32,6 +32,13 @@ describe("publicView", () => {
     }
     const gen = JSON.parse(await readFile(path.join(DATA, "generated", "delivery", "gen-101.json"), "utf8"));
     expect(generatedView(gen)).toEqual(evalCases.find((c) => c.id === "gen-101")!.view);
+    const { readdir } = await import("node:fs/promises");
+    const cityFiles = (await readdir(path.join(DATA, "city", "delivery"))).filter((n) => n.endsWith(".json")).sort();
+    expect(cityFiles).toHaveLength(50);
+    for (const name of cityFiles) {
+      const city = JSON.parse(await readFile(path.join(DATA, "city", "delivery", name), "utf8"));
+      expect(generatedView(city)).toEqual(evalCases.find((c) => c.id === city.id && c.set === "city")!.view);
+    }
     for (const id of ["adv-001", "adv-073", "adv-074"]) {
       const adv = JSON.parse(await readFile(path.join(DATA, "adversarial", "delivery", `${id}.json`), "utf8"));
       expect(generatedView(adv)).toEqual(evalCases.find((c) => c.id === id)!.view);

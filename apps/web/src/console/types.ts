@@ -156,6 +156,7 @@ export type ScenarioSetId =
   | "fixtures" // the 12 hand-written edge-case fixtures
   | "adversarial" // Oriol's adversarial cases
   | "generated" // generated hard cases (optionally filtered by mutation)
+  | "city" // the 50 hand-written city cases (data/city)
   | "custom"; // explicit case ids
 
 export interface TestRunCase {

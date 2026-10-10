@@ -6,6 +6,7 @@ import path from "node:path";
 export const DATA = path.resolve(import.meta.dirname, "..", "..", "data");
 export const GENERATED_DIR = path.join(DATA, "generated", "delivery");
 export const ADVERSARIAL_DIR = path.join(DATA, "adversarial", "delivery");
+export const CITY_DIR = path.join(DATA, "city", "delivery");
 const PUBLIC_DIR = path.join(DATA, "cases", "delivery");
 
 async function readJsonDir(dir) {
@@ -78,11 +79,12 @@ function generatedCase(c, set = "generated") {
   };
 }
 
-// set: all | public | generated | adversarial
+// set: all | public | generated | adversarial | city
 export async function loadCases(set, { withContext = false } = {}) {
   const want = (name) => set === "all" || set === name;
   const pub = want("public") ? (await loadPublicRaw()).map((c) => publicCase(c, withContext)) : [];
   const gen = want("generated") ? (await readJsonDir(GENERATED_DIR)).map((c) => generatedCase(c)) : [];
   const adv = want("adversarial") ? (await readJsonDir(ADVERSARIAL_DIR)).map((c) => generatedCase(c, "adversarial")) : [];
-  return [...pub, ...gen, ...adv];
+  const city = want("city") ? (await readJsonDir(CITY_DIR)).map((c) => generatedCase(c, "city")) : [];
+  return [...pub, ...gen, ...adv, ...city];
 }

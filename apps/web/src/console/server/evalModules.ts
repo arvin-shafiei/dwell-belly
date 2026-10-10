@@ -1,7 +1,7 @@
 // Loads the team's eval code (scripts/eval/*.mjs) at runtime, outside the bundler, so the console
 // scores with exactly the judge and answer keys `npm run eval` uses. Also makes the judge's
 // ANTHROPIC_API_KEY available from apps/api/.env(.local) when the web server was started without it.
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { repoRoot } from "./db";
@@ -46,16 +46,36 @@ export interface EvalModules {
   MUTATIONS: Record<string, { brief: string; dispositions: string[] }>;
 }
 
-async function load(rel: string): Promise<Record<string, unknown>> {
-  const url = pathToFileURL(path.join(repoRoot(), "scripts", "eval", rel)).href;
+const FILES = ["score.mjs", "agents.mjs", "cases.mjs", "mutations.mjs"];
+const fileOf = (rel: string) => path.join(repoRoot(), "scripts", "eval", rel);
+
+// Node caches an ES module per URL for the life of the process. The query string carries the
+// files' mtimes so an edited eval script (a new case set, a scoring change) is picked up without a restart.
+async function load(rel: string, version: string): Promise<Record<string, unknown>> {
+  const url = `${pathToFileURL(fileOf(rel)).href}?v=${version}`;
   return import(/* turbopackIgnore: true */ /* webpackIgnore: true */ url);
 }
 
-const g = globalThis as unknown as { __consoleEval?: Promise<EvalModules> };
+function versionOf(): string {
+  return FILES.map((f) => {
+    try {
+      return String(Math.floor(statSync(fileOf(f)).mtimeMs));
+    } catch {
+      return "0";
+    }
+  }).join("-");
+}
+
+const g = globalThis as unknown as { __consoleEval?: Promise<EvalModules>; __consoleEvalVersion?: string };
 
 export function evalModules(): Promise<EvalModules> {
+  const version = versionOf();
+  if (g.__consoleEvalVersion !== version) {
+    g.__consoleEval = undefined;
+    g.__consoleEvalVersion = version;
+  }
   g.__consoleEval ??= (async () => {
-    const [score, agents, cases, mutations] = await Promise.all([load("score.mjs"), load("agents.mjs"), load("cases.mjs"), load("mutations.mjs")]);
+    const [score, agents, cases, mutations] = await Promise.all(FILES.map((f) => load(f, version)));
     return {
       judge: score.judge as EvalModules["judge"],
       scoreCase: score.scoreCase as EvalModules["scoreCase"],
