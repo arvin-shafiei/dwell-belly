@@ -578,7 +578,8 @@ export async function actionStep(s: CaseState, nodeId: string, toSend: GatedActi
   rec.end(`${now.length} of ${toSend.length} message(s) accepted by the outbox`,
     now[0] ? { type: "action", done: toNext(now[0].g.action), ok: true } : undefined, now.length ? "ok" : "error");
   rec.explain([
-    ...now.slice(0, 4).map(({ g }) => `Recorded for ${g.action.recipient} by ${g.action.channel}: ${g.action.purpose}`),
+    // The message itself is the output of the run, so it is shown, not only described.
+    ...now.slice(0, 2).flatMap(({ g }) => [`Recorded for ${g.action.recipient} by ${g.action.channel}: ${g.action.purpose}`, `It says: "${g.action.message}"`]),
     ...s.undelivered.slice(0, 2).map(({ g }) => `Could not be delivered to ${g.action.recipient} on any channel.`),
     "No live system is connected, so nothing has reached a recipient yet.",
   ]);

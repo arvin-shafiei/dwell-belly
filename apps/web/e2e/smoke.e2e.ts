@@ -11,7 +11,7 @@ type Target = { name: string; url: string; heavy?: boolean; consoleShell?: boole
 const TABS = ["overview", "intake", "executions", "workflows", "evidence", "reality", "city", "settings"];
 const TARGETS: Target[] = [
   // The city tab embeds the 3D world, so like /city it only gets the canvas check plus errors.
-  ...TABS.map((t) => ({ name: `tab:${t}`, url: t === "overview" ? "/" : `/?tab=${t}`, consoleShell: true, heavy: t === "city" })),
+  ...TABS.map((t) => ({ name: `tab:${t}`, url: `/?tab=${t}`, consoleShell: true, heavy: t === "city" })),
   { name: "route:/review", url: "/review" },
   { name: "route:/city", url: "/city", heavy: true },
 ];
