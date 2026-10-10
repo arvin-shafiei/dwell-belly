@@ -1,8 +1,8 @@
 /**
- * Rivet console UI kit. Import everything from "@/console/ui" (or "../ui" inside console/).
+ * Hamyway console UI kit. Import everything from "@/console/ui" (or "../ui" inside console/).
  *
  * LOOK (docs/plans/ui-simplify-brief.md): calm, flat, one dark theme, system font. No gradients,
- * glows, glass or sparkles. Rivet orange (rv-orange #ff6a1a) is the ONE accent: the page's one
+ * glows, glass or sparkles. Hamyway orange (rv-orange #ff6a1a) is the ONE accent: the page's one
  * primary button, the selected tab, focus rings. Everything else is greys + status colours.
  *
  * SURFACES (darkest -> lightest): bg-rv-sidebar #19191d, bg-rv-canvas #1f1f23 (page),

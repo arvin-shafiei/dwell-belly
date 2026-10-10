@@ -136,7 +136,7 @@ describe("rate limit", () => {
 });
 
 describe("request:cyclist_hit (staged)", () => {
-  it("picks a Rivet van near a cyclist and stages the hit", () => {
+  it("picks a Hamyway van near a cyclist and stages the hit", () => {
     const events: WorldEvent[] = [];
     offs.push(on((e) => events.push(e)));
     const key = edgeKey("g_0_0", "g_1_0");

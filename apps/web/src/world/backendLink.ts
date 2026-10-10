@@ -106,7 +106,7 @@ export function buildIncidentCase(
     `Live incident reported by the city operations feed at ${hhmm(opts.now)} UTC (${incident.kind.replace("_", " ")}).`,
     `Incident: ${incident.note || KIND_PHRASE[incident.kind]}`,
     `Road affected: ${incident.edgeKey}.`,
-    affected.length ? `Rivet deliveries on routes near the incident:\n${lines.join("\n")}` : "No Rivet delivery is confirmed on the affected road yet.",
+    affected.length ? `Hamyway deliveries on routes near the incident:\n${lines.join("\n")}` : "No Hamyway delivery is confirmed on the affected road yet.",
   ].join("\n");
 
   const lead = affected[0];
@@ -114,7 +114,7 @@ export function buildIncidentCase(
   const events: ViewEvent[] = [
     {
       n: 1, timestamp: iso(4 * 60_000), stage: "Context", channel: "Driver app",
-      from: lead ? `Driver, vehicle ${lead.truckId}` : "Driver, Rivet van", to: "Rivet Delivery Desk",
+      from: lead ? `Driver, vehicle ${lead.truckId}` : "Driver, Hamyway van", to: "Rivet Delivery Desk",
       body: driverReport(incident.kind, affected), source: "simulated_persona",
     },
     {

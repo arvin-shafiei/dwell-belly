@@ -1,5 +1,5 @@
 "use client";
-// Console tab: How it works. A plain, static explainer of the Rivet flow for judges and visitors.
+// Console tab: How it works. A plain, static explainer of the Hamyway flow for judges and visitors.
 // Content is hardcoded from docs/framework-map.md (see ../howitworks/content.ts).
 import type { ReactNode } from "react";
 import { Badge, BigNumber, IconArrowRight, KeyValue, SectionCard, StatusPill, Table, Td, Th, Tr, cx, type Tone } from "../ui";

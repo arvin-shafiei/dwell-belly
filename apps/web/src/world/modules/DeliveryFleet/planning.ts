@@ -1,4 +1,4 @@
-// Pure planning helpers for the Rivet fleet: stop selection, depot bays, ids, road names, victim picking.
+// Pure planning helpers for the Hamyway fleet: stop selection, depot bays, ids, road names, victim picking.
 import { DELIVERY_STOPS, PLACES, ROAD_EDGES, getNode } from "../../roads";
 import type { Pose } from "./route";
 

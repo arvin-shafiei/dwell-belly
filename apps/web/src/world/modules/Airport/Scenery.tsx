@@ -52,8 +52,8 @@ export default function Scenery() {
     rwGeo.translate(RWY.x0 - 4 + RUNWAY_TEX_W / 2, 0.03, RWY.z);
     const rwMat = new THREE.MeshStandardMaterial({ map: rwTex, roughness: 0.9, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 });
 
-    const termTex = signTexture("RIVET CITY AIRPORT", { fg: "#ffffff", bg: "#13233f", accent: "#ff6a1a" });
-    const cargoTex = signTexture("RIVET AIR CARGO", { fg: "#ffffff", bg: "#ff6a1a", accent: "#13233f" });
+    const termTex = signTexture("HAMYWAY CITY AIRPORT", { fg: "#ffffff", bg: "#13233f", accent: "#ff6a1a" });
+    const cargoTex = signTexture("HAMYWAY AIR CARGO", { fg: "#ffffff", bg: "#ff6a1a", accent: "#13233f" });
     const signMat = (map: THREE.Texture) =>
       new THREE.MeshStandardMaterial({ map, emissiveMap: map, emissive: new THREE.Color("#ffffff"), emissiveIntensity: 0.15, roughness: 0.6 });
     const termMat = signMat(termTex);

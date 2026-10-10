@@ -180,7 +180,7 @@ export default function ContainerTerminal() {
     hazardMap.repeat.set(4, 1);
     const hazard = std("#ffffff", { map: hazardMap });
     const signMaps = [
-      signTexture("RIVET CONTAINER TERMINAL", "#1f2e4a", "#ffffff", 2048, 128, "GATE IN  ·  LANES 1–4  ·  HAVE YOUR BOOKING REF READY"),
+      signTexture("HAMYWAY CONTAINER TERMINAL", "#1f2e4a", "#ffffff", 2048, 128, "GATE IN  ·  LANES 1–4  ·  HAVE YOUR BOOKING REF READY"),
       signTexture("HM CUSTOMS · X-RAY", "#24427f", "#ffffff", 1024, 128),
       signTexture("OUT-GATE", "#ff6a1a", "#ffffff", 512, 128),
     ];

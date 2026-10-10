@@ -1,4 +1,4 @@
-// Rivet fleet simulation: vans and HGVs loading at the depot, driving delivery rounds, rerouting
+// Hamyway fleet simulation: vans and HGVs loading at the depot, driving delivery rounds, rerouting
 // around closures, breaking down and crashing. Per-frame state lives here (mutable, no React),
 // the store only hears about status changes.
 import { Group } from "three";

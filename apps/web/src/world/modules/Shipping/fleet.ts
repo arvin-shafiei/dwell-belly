@@ -67,7 +67,7 @@ export interface VesselSpec {
 /** Container brands: base colour + text. The first entry is "no brand" (plain leased boxes). */
 export const BRANDS = [
   { name: "", color: "#8a9199" },
-  { name: "RIVET", color: "#ff6a1a" },
+  { name: "HAMYWAY", color: "#ff6a1a" },
   { name: "MAERLIN", color: "#1f5fa8" },
   { name: "EVERGLOW", color: "#2f8a4a" },
   { name: "KOSKA", color: "#e3b62a" },
@@ -86,7 +86,7 @@ export function brandIndex(name: string | undefined): number {
 
 const navy = { antifoul: "#a3302a", house: "#f2f0ea", deck: "#4a5a52", text: "#ffffff" };
 export const FLEET: VesselSpec[] = [
-  { name: "RIVET STAR", cls: "panamax", homeBrand: "RIVET", livery: { ...navy, hull: "#1f2e4a", funnel: "#ff6a1a", stripe: "#ffffff", hatch: "#3d5163", brand: "RIVET" } },
+  { name: "HAMYWAY STAR", cls: "panamax", homeBrand: "HAMYWAY", livery: { ...navy, hull: "#1f2e4a", funnel: "#ff6a1a", stripe: "#ffffff", hatch: "#3d5163", brand: "HAMYWAY" } },
   { name: "MAERLIN ENDURANCE", cls: "neo", homeBrand: "MAERLIN", livery: { ...navy, hull: "#24427f", funnel: "#24427f", stripe: "#7fc4ff", hatch: "#4b6178", brand: "MAERLIN" } },
   { name: "EVERGLOW HARMONY", cls: "panamax", homeBrand: "EVERGLOW", livery: { ...navy, hull: "#2d6b3f", funnel: "#2d6b3f", stripe: "#f2f0ea", hatch: "#55705c", brand: "EVERGLOW" } },
   { name: "KOSKA PIONEER", cls: "feeder", homeBrand: "KOSKA", livery: { ...navy, hull: "#3a4a5a", funnel: "#e3b62a", stripe: "#1f2e4a", hatch: "#6b6f74", brand: "KOSKA" } },

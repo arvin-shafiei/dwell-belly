@@ -141,7 +141,7 @@ export function solidGeometry() {
   const g: THREE.BufferGeometry[] = [];
   const rand = mulberry(42);
 
-  // --- terminal: wavy white roof with Rivet-orange ribs and fascia
+  // --- terminal: wavy white roof with Hamyway-orange ribs and fascia
   const roof = extrudeUp(terminalShape(2.2), 0.7, TERMINAL.height);
   const rp = roof.getAttribute("position") as THREE.BufferAttribute;
   for (let i = 0; i < rp.count; i++) if (rp.getY(i) > TERMINAL.height + 0.35) rp.setY(i, rp.getY(i) + roofWave(rp.getX(i)));
@@ -249,7 +249,7 @@ export function solidGeometry() {
   g.push(paint(barrel, "#d8dde3"));
   for (let k = 0; k < 3; k++) g.push(box(cs.minX - 0.06, 2.9, cs.minZ + 5 + k * 9, 0.12, 5.6, 6, "#ff6a1a"));
   g.push(box(ccx, cs.height - 0.6, cs.maxZ + 0.08, cw, 1.2, 0.12, "#ff6a1a"));
-  // ULD containers on dollies (silver, a few in Rivet orange)
+  // ULD containers on dollies (silver, a few in Hamyway orange)
   for (let i = 0; i < 16; i++) {
     const col = i % 4;
     const row = Math.floor(i / 4);

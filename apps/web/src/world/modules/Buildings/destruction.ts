@@ -59,7 +59,7 @@ function scaffoldTexture() {
   g.fillRect(8, 0, 3, S);
   g.fillRect(40, 0, 3, S);
   g.fillRect(0, 20, S, 3);
-  g.fillStyle = "#ff6a1a"; // Rivet-orange toe boards
+  g.fillStyle = "#ff6a1a"; // Hamyway-orange toe boards
   g.fillRect(0, 50, S, 3);
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;

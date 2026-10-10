@@ -1,5 +1,5 @@
 "use client";
-// Module: DeliveryFleet. The Rivet Delivery fleet: 10 liveried vans + 4 HGVs that load at the depot,
+// Module: DeliveryFleet. The Hamyway Delivery fleet: 10 liveried vans + 4 HGVs that load at the depot,
 // run delivery rounds (parcel pops onto the kerb with a tick), reroute around closures, break down
 // (request:breakdown) and can be crashed by the Crashes module through registry crash().
 // Simulation lives in DeliveryFleet/sim.ts; this file only renders it (instanced, ~10 draw calls).

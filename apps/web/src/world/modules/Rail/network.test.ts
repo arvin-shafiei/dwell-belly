@@ -35,7 +35,7 @@ describe("railway network", () => {
 
   it("serves 3-4 suburban stations besides the terminus", () => {
     const names = new Set(LINES.filter((l) => !l.spec.freight).flatMap((l) => l.stations.map((s) => s.name)));
-    names.delete("King's Rivet");
+    names.delete("King's Hamyway");
     expect(names.size).toBeGreaterThanOrEqual(3);
     expect(names.size).toBeLessThanOrEqual(4);
   });

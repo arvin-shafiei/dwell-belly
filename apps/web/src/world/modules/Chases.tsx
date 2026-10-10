@@ -1,6 +1,6 @@
 "use client";
 // Module: Chases. The city goes a bit wild:
-// - Police pursuits every 90-150 s: a getaway (black saloon, or a stolen Rivet van) bolts at 1.7x the
+// - Police pursuits every 90-150 s: a getaway (black saloon, or a stolen Hamyway van) bolts at 1.7x the
 //   limit, weaving through traffic (look-ahead ray via physics.obstacleAhead: wrong side of the road, up
 //   on the kerb, or hard braking), running reds. 2-3 Battenburg police cars chase its real position and
 //   cut it off at its predicted next node; sometimes two more park across a junction ahead (roadblock).

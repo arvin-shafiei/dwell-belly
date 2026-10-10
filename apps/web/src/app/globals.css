@@ -29,8 +29,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ---- Rivet desk console ("/") — additive; the /city page does not use these. ----
-   Look: calm, flat, one dark theme, one accent (Rivet orange, used sparingly). No gradients, glows
+/* ---- Hamyway desk console ("/") — additive; the /city page does not use these. ----
+   Look: calm, flat, one dark theme, one accent (Hamyway orange, used sparingly). No gradients, glows
    or glass. Surfaces step up in lightness: sidebar < canvas < panel < card < raised.
    Spacing scale (Tailwind steps): 1=4px 2=8px 3=12px 4=16px 6=24px 8=32px 12=48px. Use gap-2/3
    inside a control, gap-4 between controls, gap-6 between cards, gap-8+ between page sections.

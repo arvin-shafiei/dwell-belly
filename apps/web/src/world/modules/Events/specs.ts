@@ -182,7 +182,7 @@ export function redBus(): VehicleSpec {
 }
 
 const FLOAT_THEMES = [
-  { base: "#ff6a1a", deco: ["#ffd60a", "#ffffff"], label: "Rivet" },
+  { base: "#ff6a1a", deco: ["#ffd60a", "#ffffff"], label: "Hamyway" },
   { base: "#3a86ff", deco: ["#ff006e", "#ffd60a"], label: "Samba" },
   { base: "#06d6a0", deco: ["#f72585", "#ffffff"], label: "Steel band" },
   { base: "#8338ec", deco: ["#ffbe0b", "#3a86ff"], label: "Dragon" },

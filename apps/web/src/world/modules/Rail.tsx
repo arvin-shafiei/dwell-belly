@@ -1,5 +1,5 @@
 "use client";
-// Module: Rail (Layer 2). A mainline railway on its own track: the King's Rivet terminus (St Pancras style:
+// Module: Rail (Layer 2). A mainline railway on its own track: the King's Hamyway terminus (St Pancras style:
 // red-brick gothic hotel and clock tower, a glazed barrel-vault trainshed over 8 platforms on a brick
 // undercroft), lines west to Airport Parkway and Old Town, north over the river on a steel truss to
 // Hampstead Heath, east onto the Shoreditch viaduct, and a freight line round the ring to the container

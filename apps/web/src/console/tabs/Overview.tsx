@@ -1,7 +1,7 @@
 "use client";
 // Console tab: Overview, shown as "Home". The opening shot of the demo: in a few seconds a viewer
 // sees an AI desk handling delivery problems, safely.
-//   1. one plain line on what Rivet does
+//   1. one plain line on what Hamyway does
 //   2. big numbers from real results (GET /api/console/evidence; city-made cases never count)
 //   3. "Needs you now": live decisions from the review queue, one click to decide
 //   4. live activity: the latest case runs in plain sentences, every 3 s

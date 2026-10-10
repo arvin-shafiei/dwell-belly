@@ -45,7 +45,7 @@ export function buildStatic(k: Kits) {
   for (const x of [-6.2, 6.2]) s.slab(x - 0.06, x + 0.06, py, py + 1.1, 2.0, 6.4, "#30363b");
   s.slab(-6.5, 6.5, py + 1.0, py + 1.08, 6.34, 6.42, "#30363b");
   for (let i = 0; i < 4; i++) s.slab(-2, 2, 0, 0.18 * (i + 1), 6.4 + i * 0.5, 6.9 + i * 0.5, "#c8ccd0");
-  // canopy over the pier, Rivet orange
+  // canopy over the pier, Hamyway orange
   for (const x of [-6, 6]) for (const z of [2.4, 6.0]) s.cyl(0.1, 0.1, 3.2, 6, [x, py + 1.6, z], "#30363b");
   s.slab(-6.6, 6.6, py + 3.2, py + 3.45, 1.8, 6.6, ORANGE);
   s.slab(-6.6, 6.6, py + 3.0, py + 4.1, 6.6, 6.7, ORANGE);
@@ -63,7 +63,7 @@ export function buildStatic(k: Kits) {
   for (const [x, z] of [[-8, 12.2], [0, 12.2], [8, 12.2], [-12.4, 10], [12.4, 0]]) lamp(k, x, z, 0.14, 4);
 }
 
-/** Rotating parts: rims, truss, spokes and the Rivet-orange light ring. */
+/** Rotating parts: rims, truss, spokes and the Hamyway-orange light ring. */
 export function buildWheel(k: Kits) {
   const s = k.solid;
   const PI2 = Math.PI * 2;

@@ -1,5 +1,5 @@
 // Procedural canvas textures: road sign atlas, neon sign atlas, billboard ads and the animated LED wall.
-// All brands are fictional (plus our own Rivet Delivery). No network fonts: system sans-serif only.
+// All brands are fictional (plus our own Hamyway Delivery). No network fonts: system sans-serif only.
 import { CanvasTexture, SRGBColorSpace } from "three";
 
 const FONT = "system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif";
@@ -220,7 +220,7 @@ function speedLines(ctx: CanvasRenderingContext2D, x: number, y: number, color: 
 }
 
 const ADS: Ad[] = [
-  // Rivet Delivery (hero)
+  // Hamyway Delivery (hero)
   (ctx, w, h) => {
     ctx.fillStyle = "#ff6a1a";
     ctx.fillRect(0, 0, w, h);
@@ -231,7 +231,7 @@ const ADS: Ad[] = [
     ctx.fillStyle = "#ffffff";
     ctx.font = `900 120px ${FONT}`;
     ctx.textBaseline = "alphabetic";
-    ctx.fillText("RIVET", 48, 150);
+    ctx.fillText("HAMYWAY", 48, 150);
     ctx.font = `bold 44px ${FONT}`;
     ctx.fillText("Delivered before", 52, 238);
     ctx.fillText("you missed it.", 52, 290);
@@ -355,14 +355,14 @@ const ADS: Ad[] = [
       y += hh + 4;
     }
   },
-  // Rivet Express (dark)
+  // Hamyway Express (dark)
   (ctx, w, h) => {
     ctx.fillStyle = "#14161c";
     ctx.fillRect(0, 0, w, h);
     ctx.fillStyle = "#ff6a1a";
     ctx.fillRect(0, h - 26, w, 26);
     ctx.font = `900 84px ${FONT}`;
-    ctx.fillText("RIVET EXPRESS", 48, 130);
+    ctx.fillText("HAMYWAY EXPRESS", 48, 130);
     ctx.fillStyle = "#ffffff";
     ctx.font = `bold 42px ${FONT}`;
     ctx.fillText("Ordered at 9. On your desk by 12.", 52, 210);
@@ -429,18 +429,18 @@ interface Slide {
 }
 
 const SLIDES: Slide[] = [
-  { bg: ["#ff6a1a", "#ff2e63"], title: "RIVET", sub: "Delivered before you missed it", fg: "#ffffff", shape: "van" },
+  { bg: ["#ff6a1a", "#ff2e63"], title: "HAMYWAY", sub: "Delivered before you missed it", fg: "#ffffff", shape: "van" },
   { bg: ["#00c6ff", "#0072ff"], title: "GLOWMILK", sub: "Mornings, but brighter", fg: "#ffffff", shape: "dots" },
   { bg: ["#f7971e", "#ffd200"], title: "BANGER", sub: "Burgers that slap", fg: "#3a0d0d", shape: "stripes" },
   { bg: ["#8e2de2", "#4a00e0"], title: "zephyr 9", sub: "It just thinks", fg: "#ffffff", shape: "rings" },
   { bg: ["#11998e", "#38ef7d"], title: "NIMBUS AIR", sub: "Fly above it all", fg: "#ffffff", shape: "wave" },
   { bg: ["#fc466b", "#3f5efb"], title: "NEON NIGHTS", sub: "Now showing · West End", fg: "#ffffff", shape: "rings" },
-  { bg: ["#232526", "#414345"], title: "RIVET EXPRESS", sub: "AI-routed. Always on time.", fg: "#ff6a1a", shape: "van" },
+  { bg: ["#232526", "#414345"], title: "HAMYWAY EXPRESS", sub: "AI-routed. Always on time.", fg: "#ff6a1a", shape: "van" },
   { bg: ["#ee0979", "#ff6a00"], title: "FIZZ!", sub: "Taste the static", fg: "#ffffff", shape: "dots" },
 ];
 
 const TICKERS = [
-  "RIVET DELIVERY  ★  98.7% ON TIME TODAY  ★  1,204 PARCELS OUT FOR DELIVERY  ★  ",
+  "HAMYWAY DELIVERY  ★  98.7% ON TIME TODAY  ★  1,204 PARCELS OUT FOR DELIVERY  ★  ",
   "BREAKING: TRAFFIC REROUTED AROUND A-RING  ★  GLOWMILK  ★  NIMBUS AIR: LONDON → EVERYWHERE  ★  ",
 ];
 

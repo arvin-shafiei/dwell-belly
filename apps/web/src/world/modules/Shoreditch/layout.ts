@@ -232,8 +232,8 @@ export function buildLayout(seed = 2026): Layout {
   for (let zz = -353; zz <= -337; zz += 5.3) P("cyl", 275.5, 0, zz, 0.35, 9, 0.35, 0, "#6c7a86");
   P("box", 276, 9, -345, 3.4, 0.35, 18, 0, "#8fa3b3");
   for (let i = 0; i < 6; i++) P("box", 276, 9.35, -353 + i * 3.2, 3.4, 0.25, 0.2, 0, "#55626e");
-  signs.push({ text: "RIVET LABS", color: "#ff6a1a", x: 262, y: 41, z: -345 + 8.5 + 0.12, w: 16, h: 3, ry: 0, flicker: false });
-  signs.push({ text: "RIVET LABS", color: "#ff6a1a", x: 262, y: 41, z: -345 - 8.5 - 0.12, w: 16, h: 3, ry: Math.PI, flicker: false });
+  signs.push({ text: "HAMYWAY LABS", color: "#ff6a1a", x: 262, y: 41, z: -345 + 8.5 + 0.12, w: 16, h: 3, ry: 0, flicker: false });
+  signs.push({ text: "HAMYWAY LABS", color: "#ff6a1a", x: 262, y: 41, z: -345 - 8.5 - 0.12, w: 16, h: 3, ry: Math.PI, flicker: false });
   for (let i = 0; i < 26; i++) {
     const x = range(rng, 236, 282);
     const z = range(rng, -366, -322);

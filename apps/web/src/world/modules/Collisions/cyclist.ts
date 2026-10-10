@@ -49,14 +49,14 @@ export class CyclistGate {
 
 const NAMES: Partial<Record<VehicleKind, string>> = { car: "car", taxi: "black cab", van: "van", truck: "lorry", bus: "bus" };
 
-/** Rivet's own fleet: DeliveryFleet ids "V-07" (vans) and "T-03" (trucks). */
+/** Hamyway's own fleet: DeliveryFleet ids "V-07" (vans) and "T-03" (trucks). */
 export function isRivet(id: string) {
   return /^[VT]-\d+/.test(id);
 }
 
 /**
- * One plain HUD line. Rivet vehicles are named ("Van V-07 hit a cyclist on Fleet St"), so the case
- * the agent gets is clearly about a Rivet driver; anyone else is "A black cab hit a cyclist on ...".
+ * One plain HUD line. Hamyway vehicles are named ("Van V-07 hit a cyclist on Fleet St"), so the case
+ * the agent gets is clearly about a Hamyway driver; anyone else is "A black cab hit a cyclist on ...".
  */
 export function cyclistHitNote(kind: VehicleKind, id: string, road: string): string {
   if (isRivet(id)) return `${kind === "truck" ? "Truck" : "Van"} ${id} hit a cyclist on ${road}`;

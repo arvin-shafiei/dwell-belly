@@ -27,7 +27,7 @@ export const METRO_LINES: readonly MetroLine[] = [
     radius: 20,
     points: [[-158, -40], [207, -40]],
     stations: [
-      { name: "Rivet Cross", x: -140, z: -40 },
+      { name: "Hamyway Cross", x: -140, z: -40 },
       { name: "Bank", x: -20, z: -40 },
       { name: "Canary Wharf", x: 100, z: -40 },
       { name: "Docklands", x: 188, z: -40 },

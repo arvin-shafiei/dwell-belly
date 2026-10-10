@@ -81,7 +81,7 @@ describe("incident cases", () => {
 
   it("keeps every summary at 90 characters or fewer", () => {
     const { engine, events } = setup({ background: true });
-    engine.incident({ id: "INC-1", kind: "truck_crash", edgeKey: "a|b", note: "A Rivet truck hit a bus on the Embankment near the very long named junction", affected: 9 });
+    engine.incident({ id: "INC-1", kind: "truck_crash", edgeKey: "a|b", note: "A Hamyway truck hit a bus on the Embankment near the very long named junction", affected: 9 });
     engine.incident({ id: "INC-2", kind: "breakdown", edgeKey: "c|d", note: "", affected: 4 });
     run(engine, 180_000);
     expect(events.length).toBeGreaterThan(50);

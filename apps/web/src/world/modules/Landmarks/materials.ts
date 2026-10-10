@@ -111,7 +111,7 @@ export function makeMaterials() {
     ae: signTex("A&E", "#d0202a", "#ffffff", { w: 512, h: 160 }),
     hospital: signTex("HOSPITAL", "#0b5fb3", "#ffffff"),
     depot: signTex("HIGHWAYS DEPOT", "#ff7a1a", "#1b1b1b", { border: "#1b1b1b", size: 120 }),
-    eye: signTex("RIVET EYE", "#ff6a1a", "#ffffff", { size: 150 }),
+    eye: signTex("HAMYWAY EYE", "#ff6a1a", "#ffffff", { size: 150 }),
     clock: clockTex(),
   };
   const signs = {

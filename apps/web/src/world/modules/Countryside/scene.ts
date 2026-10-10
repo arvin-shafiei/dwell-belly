@@ -246,7 +246,7 @@ function addTurbineTowers(b: GeoBuilder, t: T, turbines: readonly Turbine[]) {
     b.add(t.cyl8, "#c9c6bd", 0, -0.5, 0, 2.2 * s, 0.7, 2.2 * s);
     b.add(t.tower, "#f3f5f6", 0, 0, 0, 1.0 * s, TURBINE_HEIGHT * s, 1.0 * s);
     b.add(t.box, "#e9ecee", 0, TURBINE_HEIGHT * s - 0.6, 0.5 * s, 1.7 * s, 1.8 * s, 4.6 * s);
-    b.add(t.box, "#ff6a1a", 0, TURBINE_HEIGHT * s + 1.15, 0.5 * s, 1.72 * s, 0.12, 2.0 * s); // Rivet orange stripe
+    b.add(t.box, "#ff6a1a", 0, TURBINE_HEIGHT * s + 1.15, 0.5 * s, 1.72 * s, 0.12, 2.0 * s); // Hamyway orange stripe
     b.setFrame();
   }
 }

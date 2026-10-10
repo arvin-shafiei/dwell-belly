@@ -177,7 +177,7 @@ export class Harbour {
 
   private setupInitial(nowMs: number) {
     const [rivet, maerlin, everglow, koska, titan, sudwind] = this.vessels;
-    // RIVET STAR alongside at the docks, already being worked
+    // HAMYWAY STAR alongside at the docks, already being worked
     this.fill(rivet);
     this.placeMoored(rivet, "docks");
     this.takeBerth(rivet, "docks", nowMs);

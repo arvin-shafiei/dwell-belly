@@ -1,5 +1,5 @@
 "use client";
-// Overlay module: WorkflowHud. "Rivet Ops — live" control-room HUD over the city canvas.
+// Overlay module: WorkflowHud. "Hamyway Ops — live" control-room HUD over the city canvas.
 // The root is pointer-events-none so the canvas stays draggable; only panels take the mouse.
 // Placement comes from WorkflowHud/layout.ts (one source of truth, unit-tested for overlaps):
 //   top bar (full width, may wrap; its height is measured) > ops panel (right) / scenario panel (left,

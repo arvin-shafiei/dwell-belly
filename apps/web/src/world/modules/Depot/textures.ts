@@ -19,7 +19,7 @@ function finish(c: HTMLCanvasElement) {
   return t;
 }
 
-/** Rivet logo mark: an orange disc with a white rivet head and motion lines. */
+/** Hamyway logo mark: an orange disc with a white rivet head and motion lines. */
 function drawMark(g: CanvasRenderingContext2D, cx: number, cy: number, r: number, bg: string, fg: string) {
   g.fillStyle = bg;
   g.beginPath();
@@ -35,7 +35,7 @@ function drawMark(g: CanvasRenderingContext2D, cx: number, cy: number, r: number
   g.fill();
 }
 
-/** Big "RIVET DELIVERY" fascia / billboard sign. */
+/** Big "HAMYWAY DELIVERY" fascia / billboard sign. */
 export function makeSignTexture(sub = "LONDON DEPOT") {
   const [c, g] = canvas(2048, 320);
   g.fillStyle = RIVET_ORANGE;
@@ -55,8 +55,8 @@ export function makeSignTexture(sub = "LONDON DEPOT") {
   g.fillStyle = "#ffffff";
   g.textBaseline = "middle";
   g.font = `900 190px ${FONT}`;
-  g.fillText("RIVET", 320, 150);
-  const rw = g.measureText("RIVET ").width;
+  g.fillText("HAMYWAY", 320, 150);
+  const rw = g.measureText("HAMYWAY ").width;
   g.font = `300 190px ${FONT}`;
   g.fillText("DELIVERY", 320 + rw, 150);
   g.font = `700 44px ${FONT}`;
@@ -89,7 +89,7 @@ export function makeRoofTexture() {
   g.fillStyle = "#ffffff";
   g.textBaseline = "middle";
   g.font = `900 170px ${FONT}`;
-  g.fillText("RIVET", 810, 150);
+  g.fillText("HAMYWAY", 810, 150);
   return finish(c);
 }
 
@@ -109,7 +109,7 @@ export function makeTrailerTexture() {
   g.fillStyle = "#1d1f24";
   g.textBaseline = "middle";
   g.font = `900 110px ${FONT}`;
-  g.fillText("RIVET", 200, 96);
+  g.fillText("HAMYWAY", 200, 96);
   g.font = `600 34px ${FONT}`;
   g.fillStyle = "#ffffff";
   g.fillText("next-day, every day", 600, 210);

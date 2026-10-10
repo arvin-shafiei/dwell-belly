@@ -1,4 +1,4 @@
-// Shared contract for the Rivet desk console (the n8n-style control panel at "/").
+// Shared contract for the Hamyway desk console (the n8n-style control panel at "/").
 // Server side: apps/web/src/console/server/* + apps/web/src/app/api/console/** (SQLite via node:sqlite).
 // Client side: apps/web/src/console/** tabs. Data rule (PRD J0): real outputs only, never mock data
 // presented as real. Anything simulated carries `simulated: true` and must be labelled in the UI.

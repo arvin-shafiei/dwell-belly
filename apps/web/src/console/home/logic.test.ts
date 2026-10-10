@@ -92,7 +92,7 @@ describe("openDecisions", () => {
 
 describe("activityLine", () => {
   const base = { id: "r1", caseId: "gen-1", status: "success" as const, outcome: "acted", startedAt: "2026-10-10T12:00:00Z", simulated: false };
-  it("says what Rivet did in plain words", () => {
+  it("says what Hamyway did in plain words", () => {
     expect(activityLine({ ...base, nextAction: "Customer portal → Calla Mossop" }).sentence).toBe("Sent a message to Calla Mossop");
     expect(activityLine({ ...base, outcome: "escalated" }).sentence).toBe("Asked a person to decide");
     expect(activityLine({ ...base, outcome: "asked_for_info", nextAction: "Email → Ann" }).sentence).toBe("Asked Ann a question");

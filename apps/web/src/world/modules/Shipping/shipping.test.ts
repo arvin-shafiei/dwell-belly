@@ -255,7 +255,7 @@ describe("harbour cycle", () => {
   it("forceDeparture / forceArrival drive the berth", () => {
     const berths = freshBerths();
     const h = new Harbour(3, 0, berths);
-    expect(h.forceDeparture("docks", 0)).toContain("RIVET STAR");
+    expect(h.forceDeparture("docks", 0)).toContain("HAMYWAY STAR");
     let t = 0;
     while (berths.docks.phase !== "empty" && berths.docks.phase !== "approaching" && t < 300) {
       h.step(0.1, t * 1000);

@@ -86,7 +86,7 @@ export interface IncidentInput {
   kind: IncidentKind;
   edgeKey: string;
   note?: string;
-  /** Rivet deliveries on affected routes; random 3..8 when omitted/0. */
+  /** Hamyway deliveries on affected routes; random 3..8 when omitted/0. */
   affected?: number;
 }
 

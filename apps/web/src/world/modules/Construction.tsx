@@ -2,7 +2,7 @@
 // Module: Construction (Layer 2). A booming skyline: 5-7 construction sites in the open land around
 // downtown and between the districts, each with a half-built concrete tower (slabs, columns, core,
 // glazed lower floors, scaffold + netting), 1-2 tower cranes hoisting beams and concrete skips on
-// loops, an excavator digging, a dump truck shuttling, hoardings with Rivet ads, cabins, rebar piles,
+// loops, an excavator digging, a dump truck shuttling, hoardings with Hamyway ads, cabins, rebar piles,
 // hammering workers (GPU-animated) and blinking aviation lights. Plus 7 concrete mixer trucks that
 // drive the public roads between the sites (registered as "truck", crashable).
 // Logic lives in ./Construction/ (sites.ts + crane.ts + machines.ts are pure and tested).

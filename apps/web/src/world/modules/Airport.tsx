@@ -1,5 +1,5 @@
 "use client";
-// Module: Airport. "London Rivet City Airport" in the north-west zone: runway 09/27 with sequenced approach
+// Module: Airport. "London Hamyway City Airport" in the north-west zone: runway 09/27 with sequenced approach
 // lights, terminal, tower, cargo sheds, fire station; 5 airliners flying a land -> gate -> depart loop on one
 // runway lock; emergency landings and plane crashes with a full incident lifecycle (we own it end to end).
 // Logic lives in ./Airport/*.ts (tested); this file wires it to the store, bus and the renderers.

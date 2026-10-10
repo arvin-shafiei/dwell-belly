@@ -129,7 +129,7 @@ function createResources() {
     hazard: hazardTexture(),
     belt: beltTexture(),
     grit: gritTexture(),
-    sign: signTexture("RIVET POWER", "#2a1a14", "#f1e6cf", 1024, 128),
+    sign: signTexture("HAMYWAY POWER", "#2a1a14", "#f1e6cf", 1024, 128),
   };
   const M = {
     solid: std({ vertexColors: true, flatShading: true }),
