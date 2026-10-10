@@ -151,7 +151,6 @@ export function createMetro(pool: PassengerPool, seed = 77) {
 
   // --- stations ---------------------------------------------------------------------------------
   const platforms: Platform[] = [];
-  const stationGroups: THREE.InstancedMesh[] = [];
   const undergroundTex = roundelTexture("UNDERGROUND", "#e1251b");
   texs.push(undergroundTex);
   const smallRoundel = new THREE.MeshStandardMaterial({ map: undergroundTex, alphaTest: 0.5, roughness: 0.7 });
@@ -203,7 +202,6 @@ export function createMetro(pool: PassengerPool, seed = 77) {
         });
       });
       statics.push(sign);
-      stationGroups.push(sign);
     });
     rig.commit();
     for (const m of rig.meshes) statics.push(m);

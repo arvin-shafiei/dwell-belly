@@ -27,3 +27,7 @@ Layer 1 built a working city: a 9×9 downtown grid inside a highway ring, docks,
 - **InstancedMesh:** call `computeBoundingSphere()` after filling so frustum culling works. Large static sets per district should be merged into a few meshes.
 - **Draw calls:** your module ≤ 150. Shadows: `castShadow` only on tall buildings.
 - No per-frame allocations, and no zustand writes per frame.
+
+## Never break the build
+
+A TypeScript or import error in ANY module breaks the whole page for everyone, and error boundaries can't catch build errors. Keep your module importable at every save: change exports and imports together, and add new exports before removing old ones. After each significant edit, run `curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/city` (must be 200). Never kill processes you didn't start (no `pkill`), since the dev server is shared.

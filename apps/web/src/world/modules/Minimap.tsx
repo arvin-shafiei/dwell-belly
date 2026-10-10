@@ -9,8 +9,8 @@ import { ROAD_EDGES, ROAD_NODES, type RoadKind } from "../roads";
 import { useWorld } from "../store";
 
 const SIZE = 240; // CSS px
-const WORLD_MIN = -460; // metres, map covers WORLD_MIN..WORLD_MAX on both axes
-const WORLD_MAX = 460;
+const WORLD_MIN = -1100; // metres, map covers WORLD_MIN..WORLD_MAX on both axes
+const WORLD_MAX = 1100;
 const SCALE = SIZE / (WORLD_MAX - WORLD_MIN);
 const FRAME_MS = 1000 / 30;
 

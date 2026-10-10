@@ -15,7 +15,9 @@ import Suburbs from "./modules/Suburbs";
 import Traffic from "./modules/Traffic";
 import TrafficLights from "./modules/TrafficLights";
 import DeliveryFleet from "./modules/DeliveryFleet";
-import Crashes from "./modules/Crashes";
+// TEMP: Crashes is mid-rewrite (pileups) and doesn't build; re-enable when its agent finishes.
+// import Crashes from "./modules/Crashes";
+const Crashes = () => null;
 import Responders from "./modules/Responders";
 import Roadworks from "./modules/Roadworks";
 import Sky from "./modules/Sky";
@@ -25,10 +27,25 @@ import Life from "./modules/Life";
 import Transit from "./modules/Transit";
 import Scenarios from "./modules/Scenarios";
 import Airport from "./modules/Airport";
+// Layer 2
+import Motorway from "./modules/Motorway";
+import River from "./modules/River";
+import ContainerTerminal from "./modules/ContainerTerminal";
+import Industrial from "./modules/Industrial";
+import Southbank from "./modules/Southbank";
+import OldTown from "./modules/OldTown";
+import Shoreditch from "./modules/Shoreditch";
+import Hampstead from "./modules/Hampstead";
+import Rail from "./modules/Rail";
+import Crowds from "./modules/Crowds";
+import Streetscape from "./modules/Streetscape";
+import Construction from "./modules/Construction";
+import Chases from "./modules/Chases";
 
 const MODULES = {
   Sky, Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs, Airport,
   Traffic, Transit, TrafficLights, DeliveryFleet, Crashes, Responders, Roadworks, Scenarios, Life, CameraRig, WorkflowDriver,
+  Motorway, River, ContainerTerminal, Industrial, Southbank, OldTown, Shoreditch, Hampstead, Rail, Crowds, Streetscape, Construction, Chases,
 };
 
 export default function World() {
