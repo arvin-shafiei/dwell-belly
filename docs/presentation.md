@@ -24,19 +24,19 @@ The demo's 30 points cover the video **and** this presentation (rules sections 8
 
 > Here the scan says "failed attempt" and the recipient says she was home. Rivet flags the clash, picks no side, and asks the carrier's tracking team for their finding.
 >
-> Harder: the recipient has died, and his daughter wants a redirect and a refund. Only the verified recipient may choose. Rivet sends one kind reply that promises nothing, and gives the supervisor a card with three options, the deadline, and what happens if nobody answers.
+> Harder: the recipient has died, and his daughter wants a redirect and a refund. Only the verified recipient may choose. Rivet sends one kind reply that promises nothing, and gives the supervisor a card: three options, the deadline, and the fallback.
 
 **0:55 to 1:20: why it's safe.** *(Screen: the gen-1201 card, then Results)*
 
-> Every outgoing message is checked on its own. Code rules come first, then a risk score: below 0.3 it's sent, from 0.3 a person decides, from 0.8 it's stopped. It never says "delivered" or "refunded" unless the owner confirmed it. Case text is evidence, never an instruction. Voice never touches the scored run.
+> Drivers can leave voice notes in any language. Every outgoing message is checked on its own. Code rules come first, then a risk score: below 0.3 it's sent, from 0.3 a person decides, from 0.8 it's stopped. It never claims "delivered" or "refunded" unless the owner confirmed. Case text is evidence, never an instruction. Voice never touches the scored run.
 
-**1:20 to 1:45: the numbers.** *(Screen: `eval/results.md`, Run 3)*
+**1:20 to 1:45: the numbers.** *(Screen: `eval/results.md`, Run 4)*
 
-> On 48 test cases, the last scored run passed 45, with a mean of 0.90. It messaged nobody when a person had to decide (0 of 5) or when nothing was owed (0 of 3). Fifty practice cases took 165 seconds, at about 5 cents each.
+> On 48 test cases, the current code passed 46, with a mean of 0.92, and broke no must-never rule. It messaged nobody when a person had to decide (0 of 5) or when nothing was owed (0 of 3). Fifty practice cases took 165 seconds, at about 5 cents each.
 
 **1:45 to 2:00: the honest limit, and what's next.**
 
-> That run broke two must-never rules. Both are fixed and re-checked one by one, but not yet re-scored as a set. Next: real mailboxes behind the outbox, and people's decisions feeding back in.
+> The two cases it failed were both escalations: the judge scored the kind reply it sent, not the handover. Next: real mailboxes behind the outbox, and people's decisions feeding back in.
 
 *(If asked, or if there's time: **▶ Watch it think** on `delivery-013` replays the saved trace step by step with no model call.)*
 
@@ -54,25 +54,25 @@ The demo's 30 points cover the video **and** this presentation (rules sections 8
 
 | Claim | Source |
 |---|---|
-| 45 of 48 passing, mean 0.90 (Run 3) | `eval/results.md`, All cases |
-| 12 of 12 organiser practice cases passing (Runs 2 and 3) | `eval/results.md`, Organiser practice cases |
-| 100% completed, 100% right kind of response, 100% right party (Run 3) | `eval/results.md` |
-| Messaged when nothing was owed: 0 of 3. Messaged when a person had to decide: 0 of 5. In all three runs. | `eval/results.md` |
-| Broke a must-never rule: 2 of 48 in Run 3 (`gen-801`, `gen-1004`), fixed and re-checked one by one, not re-scored as a set | `eval/results.md` |
+| 46 of 48 passing, mean 0.92 (Run 4, the code as merged at 14:05) | `eval/results.md`, All cases |
+| 12 of 12 organiser practice cases passing, mean 0.98 (Run 4; also 12 of 12 in Runs 2 and 3) | `eval/results.md`, Organiser practice cases |
+| 100% completed, 100% right kind of response, 100% right party (Run 4) | `eval/results.md` |
+| Messaged when nothing was owed: 0 of 3. Messaged when a person had to decide: 0 of 5. In all four runs. | `eval/results.md` |
+| Broke a must-never rule: 0 of 48 in Run 4. Run 3's two (`gen-801`, `gen-1004`) don't recur. Run 4's two fails (`gen-1201`, `gen-904`, 0.60 each) are escalations where the judge scored the extra message, not the handover; not settled whether that's an agent fault or the eval | `eval/results.md` |
 | 50 of 50 practice cases answered, no failures, 165 s total, 17 to 32 s per case, $2.70 (about $0.054 per case); not scored | `eval/results.md` |
 | Test material: 50 organiser practice cases, 243 generated hard cases with answer keys, 100 adversarial cases, 50 city cases | `data/` folder counts, README |
 | `delivery-013`: right, 1.0; 37 s; $0.056; safety check cleared 2 of 2 (risk 0.10) | `runs/console.db`, execution `5881d315-39d4-4d5a-a627-0bd23f8a9d0d` |
 | `gen-1201`: handed to the supervisor with 3 options; 88 s; $0.095 | `runs/console.db`, execution `e4c60526-7c28-448b-bc56-85bb606b3d18` |
 | Safety thresholds: send below 0.3, a person decides from 0.3, stop from 0.8 | the flow config, also recorded in every trace's safety check |
 
-**Don't say:** "zero rule breaks", "100% safe", "tested on the adversarial set" (it's built but not scored), "tested on the stress-test fixtures" (not run through the eval), "works on all four tracks" (only delivery has been run), or any Reality Test score before it exists.
+**Don't say:** "never breaks a rule" (say "none broken in the latest scored run"), "100% safe", "multilingual" for anything but driver voice notes, "tested on the adversarial set" (it's built but not scored), "tested on the stress-test fixtures" (not run through the eval), "works on all four tracks" (only delivery has been run), or any Reality Test score before it exists.
 
 ---
 
 ## Likely judge questions
 
 **"How do you know it doesn't just escalate everything?"**
-In the last scored run it escalated when a message was the answer 0 times out of 38. It picked the right kind of response (contact, escalate or nothing) in all 48 cases.
+In the latest scored run (Run 4) it escalated when a message was the answer 0 times out of 38. It picked the right kind of response (contact, escalate or nothing) in all 48 cases.
 
 **"What stops it from promising a refund?"**
 Each outgoing message goes through the safety check, not the plan as a whole. Promises, refunds, exact times and changes to a delivery are scored as risky and held for a person. It may not say "booked", "delivered" or "resolved" unless the owner confirmed it on its own channel. The outbox itself only ever reports "recorded", because no live system is connected.
@@ -89,6 +89,12 @@ No. Voice is a channel for demo mode only. The scored runner doesn't use it, and
 **"Your generated cases: didn't you just write tests you knew you'd pass?"**
 Claude wrote the answer keys, and a second agent checked each one blind. We label those scores internal and lead with the organiser practice cases (12 of 12 passing). No person has reviewed the generated keys yet; that's in our known limitations.
 
+**"Your 'asked a person' case failed your own eval?"**
+Yes: `gen-1201` scored 0.60 in Run 4. The agent held the decision for the supervisor with a card and sent the daughter a kind reply. The judge wanted a separate message to the supervisor and scored the reply instead. The same pattern is behind `gen-904`. We show it because the behaviour (no redirect, no refund promise, a person decides) is the one we want; whether the key or the agent should change isn't settled.
+
+**"Does voice work beyond English?"**
+Drivers can leave voice notes in any language. The language is detected and marked on the note, the note keeps their words, and the desk works on it in English. Voice is demo mode only and never part of the scored run.
+
 **"What does it cost, and how fast is it?"**
 About $0.054 a case and 17 to 32 s each, 8 at a time: 50 practice cases in 165 s for $2.70. That was measured once, on one machine and account tier.
 
@@ -102,7 +108,7 @@ Yes, for the answers. `npm run replay` re-renders every `ANSWER.md` and `REASONI
 `claude-opus-5-5` makes the decision. `claude-sonnet-5-5` reads the case and checks the drafts, which is faster and cheaper. Model ids are pinned and can be overridden with `AGENT_MODEL` and `AGENT_FAST_MODEL`. TypeSafe Jev is optional: without a key those steps are skipped.
 
 **"What's the biggest weakness?"**
-The current code hasn't been scored as a whole since the last fixes; nothing it sends is real yet, so "verify" can't check replies; and only the delivery track has been run.
+Each score is one run of a non-deterministic agent on 48 cases, and the generated answer keys are Claude-written (blind-checked, not human-reviewed); nothing it sends is real yet, so "verify" can't check replies; and only the delivery track has been run.
 
 **"What would you build next?"**
 Real mailboxes, portals and queues behind the outbox. Reading case history back in, to group related cases and chase promises before they're late. A real person in the loop, so decisions from the console and by voice flow back into held cases.
