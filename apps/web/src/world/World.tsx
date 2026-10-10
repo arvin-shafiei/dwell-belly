@@ -24,9 +24,10 @@ import WorkflowDriver from "./modules/WorkflowDriver";
 import Life from "./modules/Life";
 import Transit from "./modules/Transit";
 import Scenarios from "./modules/Scenarios";
+import Airport from "./modules/Airport";
 
 const MODULES = {
-  Sky, Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs,
+  Sky, Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs, Airport,
   Traffic, Transit, TrafficLights, DeliveryFleet, Crashes, Responders, Roadworks, Scenarios, Life, CameraRig, WorkflowDriver,
 };
 

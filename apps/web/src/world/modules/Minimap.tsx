@@ -9,8 +9,8 @@ import { ROAD_EDGES, ROAD_NODES, type RoadKind } from "../roads";
 import { useWorld } from "../store";
 
 const SIZE = 240; // CSS px
-const WORLD_MIN = -380; // metres, map covers WORLD_MIN..WORLD_MAX on both axes
-const WORLD_MAX = 380;
+const WORLD_MIN = -460; // metres, map covers WORLD_MIN..WORLD_MAX on both axes
+const WORLD_MAX = 460;
 const SCALE = SIZE / (WORLD_MAX - WORLD_MIN);
 const FRAME_MS = 1000 / 30;
 
@@ -23,6 +23,7 @@ const ZONE_TINT: Record<ZoneName, string> = {
   countryside: "rgba(110, 190, 90, 0.25)",
   depot: "rgba(255, 106, 26, 0.22)",
   suburbs: "rgba(230, 190, 120, 0.22)",
+  airport: "rgba(200, 200, 210, 0.25)",
 };
 
 const ZONE_LABEL: Partial<Record<ZoneName, string>> = {
@@ -30,6 +31,7 @@ const ZONE_LABEL: Partial<Record<ZoneName, string>> = {
   depot: "DEPOT",
   countryside: "FARMS",
   suburbs: "SUBURBS",
+  airport: "AIRPORT",
 };
 
 const ROAD_STYLE: Record<RoadKind, { w: number; c: string }> = {

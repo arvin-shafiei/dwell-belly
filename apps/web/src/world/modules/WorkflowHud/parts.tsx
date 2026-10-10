@@ -71,6 +71,9 @@ export function SectionTitle({ children, right }: { children: ReactNode; right?:
 const DEMO: { label: string; event: WorldEvent; kind: IncidentKind }[] = [
   { label: "Car crash", event: { type: "request:crash", kind: "car_crash" }, kind: "car_crash" },
   { label: "Truck crash", event: { type: "request:crash", kind: "truck_crash" }, kind: "truck_crash" },
+  { label: "Pileup", event: { type: "request:crash", kind: "pileup" }, kind: "pileup" },
+  { label: "Emergency landing", event: { type: "request:plane", kind: "emergency_landing" }, kind: "emergency_landing" },
+  { label: "Plane crash", event: { type: "request:plane", kind: "plane_crash" }, kind: "plane_crash" },
   { label: "Roadworks", event: { type: "request:roadworks" }, kind: "roadworks" },
   { label: "Van breakdown", event: { type: "request:breakdown" }, kind: "breakdown" },
 ];

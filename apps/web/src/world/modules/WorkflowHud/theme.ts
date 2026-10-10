@@ -34,6 +34,9 @@ export const INCIDENT_LABEL: Record<IncidentKind, string> = {
   truck_crash: "Truck crash",
   roadworks: "Roadworks",
   breakdown: "Breakdown",
+  pileup: "Pileup",
+  emergency_landing: "Emergency landing",
+  plane_crash: "Plane crash",
 };
 
 export const INCIDENT_COLOR: Record<IncidentKind, string> = {
@@ -41,4 +44,7 @@ export const INCIDENT_COLOR: Record<IncidentKind, string> = {
   truck_crash: "#fb7185",
   roadworks: "#fbbf24",
   breakdown: ORANGE,
+  pileup: "#e11d48",
+  emergency_landing: "#38bdf8",
+  plane_crash: "#dc2626",
 };
