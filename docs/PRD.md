@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.7, 10 Oct 2026, 13:05 BST. **Owner of this doc:** Oriol.
+**Version:** 1.8, 10 Oct 2026, 13:30 BST. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -1042,6 +1042,7 @@ This table is the reallocation.
 ## Changelog
 
 - **1.7 (13:05):** voice accuracy. Measured on 14 real case messages in 3 accents, reference-heavy messages had 22% word errors and wrong reference digits (`DL-6010` heard as `DL6210`). Fixes: case-aware transcription (the case's references as Scribe keyterms, English for live notes, audio events off), a mis-hearing flag for references the case does not contain, word-level confidence for `[unclear transcription]`, and the Desk Caller reads references back. Result: reference-heavy word errors 5.1%, critical details kept 97.2%, mis-heard references 0 (`scripts/voice/accuracy.mjs`).
+- **1.8 (13:30):** voice lives in the console only. The `/voice-bench` dev page is removed; the Executions Voice strip has the note, call and approve-by-voice buttons. A "callback" channel now counts as a phone channel, so the agent's callback-route messages get a call button.
 - **1.6 (12:35):** voice built on branch `oriol/voice` (see the tracker): voice notes, audio files in cases transcribed as claims, the Desk Caller agent, calls with in-call promise checks through the gate and Jev, approve by voice, and the `/voice-bench` dev page. The Twilio phone call is dropped (cost, not a sponsor).
 - **1.5 (12:20):** Part I rewritten to the final voice design after three stress tests (pipeline, ElevenLabs and browser, console fit). Voice is a channel the agent chooses. Changes: case-time stamps; earlier desk messages on re-run; in-call promise checks through `gate()` plus Jev; approval through a trusted `humanDecision` in `run.ts`; no updates during calls; the call transport dropped; personas and the Twilio phone call as stretch goals. The plan is in `docs/superpowers/plans/2026-10-10-voice-layer.md`.
 - **1.4 (11:50):** the UI decision.

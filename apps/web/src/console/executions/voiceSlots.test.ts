@@ -11,6 +11,10 @@ describe("voice slots", () => {
     expect(callableRows([row("Email"), row("Phone call"), row("Call"), row("SMS")]).map((r) => r.action.channel)).toEqual(["Phone call", "Call"]);
     expect(callableRows(null)).toEqual([]);
   });
+  it("treats a callback route as a phone channel", () => {
+    expect(callableRows([row("Verified order callback route"), row("Callback"), row("Email")]).map((r) => r.action.channel))
+      .toEqual(["Verified order callback route", "Callback"]);
+  });
   it("only an undecided card with options is open", () => {
     expect(cardOpen(card)).toBe(true);
     expect(cardOpen({ ...card, chosen: "option-1" })).toBe(false);

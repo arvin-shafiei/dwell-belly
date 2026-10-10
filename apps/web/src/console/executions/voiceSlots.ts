@@ -33,9 +33,9 @@ export interface CallStateSeed {
   at: string;
 }
 
-/** Outbox rows a person could ring instead of writing: the planner chose a call or phone channel. */
+/** Outbox rows a person could ring instead of writing: the planner chose a call, callback or phone channel. */
 export function callableRows(outbox: OutboxEntry[] | null | undefined): OutboxEntry[] {
-  return (outbox ?? []).filter((o) => /\b(call|phone|telephone|ring)\b/i.test(o.action.channel));
+  return (outbox ?? []).filter((o) => /\b(call|callback|phone|telephone|ring)\b/i.test(o.action.channel));
 }
 
 /** A card can be approved while it is still open. */

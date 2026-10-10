@@ -223,7 +223,7 @@ A real phone call for approval (Twilio) is a stretch goal after a 15:00 checkpoi
   - `apps/web/src/voice/VoiceNoteButton.tsx`
   - `apps/web/src/voice/CallDrawer.tsx`
   - `apps/web/src/voice/ApproveByVoice.tsx`
-  - `apps/web/src/app/voice-bench/page.tsx` (an unlinked dev bench)
+  - `apps/web/src/app/voice-bench/page.tsx` (an unlinked dev bench, later removed: voice lives in the console)
 - Test: `apps/web/src/voice/transcript.test.ts`
 
 **Interfaces (produces), for Arvin's mount slots:**
@@ -243,16 +243,16 @@ A real phone call for approval (Twilio) is a stretch goal after a 15:00 checkpoi
 - [ ] **Step 2:** Run `npm test -w web -- src/voice`. Expected: FAIL.
 - [ ] **Step 3:** Implement. Read `node_modules/next/dist/docs/` for the Suspense rule. The bench page is `"use client"` inside `<Suspense>`.
 - [ ] **Step 4:** Run `npm test -w web -- src/voice` (expected: PASS) and `npm run build -w web` (expected: success).
-- [ ] **Step 5:** Commit `Add voice note, call and approve-by-voice components for the desk console, with a dev bench.`
+- [ ] **Step 5:** Commit `Add voice note, call and approve-by-voice components for the desk console, mounted in the console.`
 
 ### Task 7: Real-key check, rehearsal, docs
 
-- [ ] **Step 1:** Write `scripts/voice/smoke.mjs`: transcribe a short recording made on the bench, and fetch a conversation token. It prints PASS or FAIL per check.
+- [ ] **Step 1:** Write `scripts/voice/smoke.mjs`: transcribe a short spoken sample, and fetch a conversation token. It prints PASS or FAIL per check.
 - [ ] **Step 2:** Run `node --env-file=apps/api/.env.local scripts/voice/smoke.mjs`. Expected: two PASS lines.
-- [ ] **Step 3: Rehearse case 003 on the bench**
+- [ ] **Step 3: Try it in the console on a delivery case**
   1. Driver note, then re-run: the claim shows in the trace.
-  2. Call the recipient. The agent refuses the gate code and denies "compensation?" with the exact wording.
-  3. Approve a card by voice, with the read-back. The decision goes to a re-run through `humanDecision` (once Anson's change lands).
+  2. Call the person the agent chose to phone. A promise asked for on the call is denied with the exact wording.
+  3. Approve a card by voice, with the read-back. The decision goes to a re-run through `humanDecision`.
 - [ ] **Step 4:** Update the README voice section, `.env.example` (`ELEVENLABS_API_KEY`, `ELEVENLABS_AGENT_ID`), the tracker rows and the PRD changelog.
 - [ ] **Step 5:** Run `npm run test:voice`, `npm run test:agent` and `npm test -w web`. Expected: all pass. Commit `Document the voice layer and add a smoke test against the real ElevenLabs API.`
 
