@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { scoreCase, PASS_AT } from "../../../../../scripts/eval/score.mjs";
 import type { AgentResult, Expected, Judgement } from "./evalModules";
 import { dotenvValue } from "./evalModules";
-import { fixtureExpected, scoreFixture, shortExpected, shortGot, summarise, toTestCase } from "./scoring";
+import type { OutboxEntry } from "../types";
+import { fixtureExpected, messagesFromOutbox, scoreFixture, shortExpected, shortGot, summarise, toTestCase, withMessages } from "./scoring";
 
 const expected: Expected = {
   acceptable_dispositions: ["contact"],
@@ -70,6 +71,42 @@ describe("toTestCase with the real scoreCase", () => {
 
   it("uses the eval's pass mark", () => {
     expect(PASS_AT).toBe(0.7);
+  });
+});
+
+describe("every sent message is scored (PR #14)", () => {
+  const entry = (recipient: string, channel: string, message: string, status: OutboxEntry["status"]): OutboxEntry =>
+    ({ action: { recipient, channel, kind: "message", purpose: "p", message }, status, note: "" });
+  const outbox = [
+    entry("Vessa Lorne, recipient", "Customer portal", "We have asked the carrier.", "recorded"),
+    entry("Safety lead, Plover Arc Logistics", "Safety incident queue", "held one", "held_for_human"),
+    entry("Delivery investigations, Plover Arc Logistics", "Email", "Please investigate DL-024", "recorded"),
+  ];
+  const first: AgentResult = { ...acted, nextAction: { recipient: "Vessa Lorne, recipient", channel: "Customer portal", message: "We have asked the carrier." } };
+
+  it("builds messages from recorded outbox entries, in order, as agents.mjs does", () => {
+    expect(messagesFromOutbox(outbox)).toEqual([
+      { recipient: "Vessa Lorne, recipient", channel: "Customer portal", message: "We have asked the carrier." },
+      { recipient: "Delivery investigations, Plover Arc Logistics", channel: "Email", message: "Please investigate DL-024" },
+    ]);
+    expect(messagesFromOutbox(null)).toBeUndefined();
+    expect(withMessages(first, null)).toEqual(first);
+  });
+
+  it("a two-message result gets channel credit from the second message and shows both", () => {
+    const two = withMessages(first, outbox);
+    const verdict = scoreCase(expected, two, good);
+    expect(verdict.parts).toMatchObject({ channel: 1 });
+    // With only the first message, the key's Email channel is not matched.
+    expect(scoreCase(expected, first, good).parts).toMatchObject({ channel: 0 });
+    const t = toTestCase(base, { result: two, agentError: null, judgement: good, judgeError: null, verdict, expected, costUsd: null, durationMs: null });
+    expect(t).toMatchObject({ status: "passed", score: 1, got: "acted: Customer portal → Vessa Lorne, recipient (+1 more message)" });
+  });
+
+  it("a rule broken in the second message still zeroes the case", () => {
+    const two = withMessages(first, outbox);
+    const broke: Judgement = { ...good, violations: [{ rule: "Never promise a refund", evidence: "refund" }] };
+    expect(scoreCase(expected, two, broke).score).toBe(0);
   });
 });
 

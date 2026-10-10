@@ -18,6 +18,8 @@ export interface AgentResult {
   nextAction: { recipient: string; channel: string; message: string } | null;
   handoff: string | null;
   wontDo: string[];
+  /** Every message that went out, the first included (schema.mjs AgentResult.messages). */
+  messages?: { recipient: string; channel: string; message: string }[];
 }
 export interface Judgement {
   recipient_match: boolean;

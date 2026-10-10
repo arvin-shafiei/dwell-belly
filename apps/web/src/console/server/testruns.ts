@@ -10,7 +10,7 @@ import { getDb, repoRoot, type SqlValue } from "./db";
 import { evalModules, ensureJudgeKey, type AgentResult, type EvalCase, type Expected, type Judgement, type Verdict } from "./evalModules";
 import { agentHealthy, agentUrl, execute } from "./execute";
 import { resolveSet, SET_LABELS } from "./scenarios";
-import { fixtureExpected, scoreFixture, summarise, toTestCase, type FixtureRubric } from "./scoring";
+import { fixtureExpected, scoreFixture, summarise, toTestCase, withMessages, type FixtureRubric } from "./scoring";
 import { getVersion } from "./versions";
 
 export const CONCURRENCY = 3;
@@ -218,7 +218,8 @@ export async function startTestRun(body: StartBody): Promise<TestRun> {
     let agentError: string | null = null;
     if (exec.trace) {
       try {
-        result = ev.traceToResult(exec.trace);
+        // Every recorded message is judged, as in the eval (agents.mjs): a second message can break a rule too.
+        result = withMessages(ev.traceToResult(exec.trace), exec.outbox);
       } catch (err) {
         agentError = err instanceof Error ? err.message : String(err);
       }

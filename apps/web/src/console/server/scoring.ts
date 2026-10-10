@@ -1,5 +1,5 @@
 // Pure mapping from the eval's judgement and verdict (scripts/eval/score.mjs) to a TestRunCase.
-import type { TestRunCase } from "../types";
+import type { OutboxEntry, TestRunCase } from "../types";
 import type { AgentResult, Expected, Judgement, Verdict } from "./evalModules";
 
 const clip = (s: string, n = 160) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
@@ -14,10 +14,30 @@ export function shortExpected(e: Expected): string {
   return clip(`${disp}: ${target}${more}`);
 }
 
-/** "acted: Email → Dispatch, Plover Arc Logistics" or "escalated: <handoff>". */
+/**
+ * Every message the run actually sent, in order: the outbox entries with status "recorded", exactly
+ * as scripts/eval/agents.mjs flow() builds `messages`. Undefined when the API returned no outbox, so
+ * scoreCase falls back to nextAction as the eval does for a trace-only result.
+ */
+export function messagesFromOutbox(outbox: OutboxEntry[] | null | undefined): AgentResult["messages"] {
+  if (!Array.isArray(outbox)) return undefined;
+  return outbox.filter((o) => o.status === "recorded").map((o) => ({ recipient: o.action.recipient, channel: o.action.channel, message: o.action.message }));
+}
+
+/** The eval's AgentResult for a run: the trace's reading plus every sent message. */
+export function withMessages(fromTrace: AgentResult, outbox: OutboxEntry[] | null | undefined): AgentResult {
+  const messages = messagesFromOutbox(outbox);
+  return messages ? { ...fromTrace, messages } : fromTrace;
+}
+
+/** "acted: Email → Dispatch, Plover Arc Logistics (+1 more message)" or "escalated: <handoff>". */
 export function shortGot(r: AgentResult | null): string | null {
   if (!r) return null;
-  if (r.nextAction) return clip(`${r.outcome}: ${r.nextAction.channel} → ${r.nextAction.recipient}`);
+  const sent = r.messages?.length ? r.messages : r.nextAction ? [r.nextAction] : [];
+  if (sent.length) {
+    const more = sent.length > 1 ? ` (+${sent.length - 1} more message${sent.length > 2 ? "s" : ""})` : "";
+    return clip(`${r.outcome}: ${sent[0].channel} → ${sent[0].recipient}${more}`);
+  }
   return clip(r.handoff ? `${r.outcome}: ${r.handoff}` : r.outcome);
 }
 
