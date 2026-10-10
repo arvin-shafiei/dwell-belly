@@ -135,3 +135,74 @@ export interface ConsoleApi {
   "GET /api/console/cases?dataset&q": { cases: { id: string; dataset: string; title: string | null }[] };
   "GET /api/console/status": { agentApi: boolean; agentUrl: string; dbPath: string; counts: Record<string, number> };
 }
+
+// ---------------------------------------------------------------------------------------------
+// Test & improve loop (Workflows tab): run a workflow version over a set of scenarios, score each
+// case with the team's eval judge (scripts/eval/score.mjs), then ask the Architect to improve the
+// flow from the failures, save it as a new version and re-test. Stored in SQLite.
+
+export interface WorkflowVersion {
+  workflowId: string;
+  version: number; // 1, 2, 3...
+  flow: Flow;
+  createdAt: string;
+  createdBy: "user" | "architect" | "improve";
+  note: string | null; // what changed and why (from the improve step)
+  parentVersion: number | null;
+}
+
+export type ScenarioSetId =
+  | "quick" // 5 public cases spread across case types
+  | "fixtures" // the 12 hand-written edge-case fixtures
+  | "adversarial" // Oriol's adversarial cases
+  | "generated" // generated hard cases (optionally filtered by mutation)
+  | "custom"; // explicit case ids
+
+export interface TestRunCase {
+  caseId: string;
+  dataset: string;
+  executionId: string | null;
+  status: "queued" | "running" | "passed" | "failed" | "error";
+  score: number | null; // 0..1 from scoreCase
+  breakdown: { disposition?: number; recipient?: number; channel?: number; content?: number } | null;
+  mustNotBroken: string[]; // rules broken (score forced to 0)
+  verdict: string | null; // judge's short reason
+  expected: string | null; // short form of the answer key
+  got: string | null; // short form of the agent's decision / next action
+  costUsd: number | null;
+  durationMs: number | null;
+}
+
+export interface TestRun {
+  id: string;
+  workflowId: string;
+  version: number;
+  set: ScenarioSetId;
+  filter: string | null; // e.g. a mutation name for "generated"
+  status: "running" | "done" | "error" | "cancelled";
+  startedAt: string;
+  finishedAt: string | null;
+  cases: TestRunCase[];
+  summary: { total: number; passed: number; failed: number; errors: number; meanScore: number | null; costUsd: number };
+}
+
+export interface ImproveProposal {
+  workflowId: string;
+  fromVersion: number;
+  testRunId: string;
+  flow: Flow; // proposed revised flow (validated)
+  problems: string[]; // validation problems, if any
+  changes: string[]; // human-readable change list (nodes added/removed, thresholds moved, branches added)
+  rationale: string; // why, tied to the failures
+}
+
+export interface ConsoleTestApi {
+  "GET /api/console/scenario-sets": { sets: { id: ScenarioSetId; label: string; count: number; filters?: string[] }[] };
+  "POST /api/console/testruns": { testRun: TestRun }; // body: { workflowId, version?, set, filter?, caseIds?, limit? (default 5, max 20) }
+  "GET /api/console/testruns?workflowId": { testRuns: Omit<TestRun, "cases">[] };
+  "GET /api/console/testruns/:id": { testRun: TestRun };
+  "POST /api/console/testruns/:id/cancel": { ok: true };
+  "GET /api/console/workflows/:id/versions": { versions: WorkflowVersion[] };
+  "POST /api/console/improve": { proposal: ImproveProposal }; // body: { workflowId, testRunId }
+  "POST /api/console/workflows/:id/versions": { version: WorkflowVersion }; // body: { flow, createdBy, note, parentVersion }
+}
