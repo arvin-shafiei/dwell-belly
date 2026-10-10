@@ -1,8 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 
-export const MODEL = "claude-opus-5-5";
-const USD_PER_MTOK = { input: 4, output: 20 };
+// The judge and the case generator do reading and comparison, which the cheaper model handles.
+export const MODEL = "claude-sonnet-5-5";
+const USD_PER_MTOK = { input: 2, output: 10 };
 
 let client;
 export const spend = { calls: 0, usd: 0, ms: 0 };

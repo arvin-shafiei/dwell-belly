@@ -24,6 +24,13 @@ function publicCase(c, withContext) {
   const recorded = c.events.find((e) => e.n === c.next_action?.recorded_event);
   const events = last ? c.events.filter((e) => e.n <= last) : c.events;
   const seen = events.map((e) => e.body).join("\n");
+  // Some organiser keys name a team that appears nowhere in what the agent is shown. The agent
+  // cannot know that name, so a request to the organisation's visible team to route it is accepted.
+  const visible = events.map((e) => `${e.from} ${e.to} ${e.body}`).join("\n").toLowerCase();
+  const [team, organisation] = c.next_action.recipient.split(",").map((part) => part.trim());
+  const routed = organisation && !visible.includes(team.toLowerCase())
+    ? [{ recipient: `Any team at ${organisation} that appears in the history`, channel: c.next_action.channel, summary: `${c.next_action.summary} (asking that team to act or to route it to the team that owns it)` }]
+    : [];
   return {
     id: c.id,
     set: "public",
@@ -43,7 +50,7 @@ function publicCase(c, withContext) {
         recipient: c.next_action.recipient,
         channel: c.next_action.channel,
         summary: c.next_action.summary,
-      }],
+      }, ...routed],
       must: [],
       must_not: c.boundaries ? [c.boundaries] : [],
       reference_message: recorded?.body ?? null,

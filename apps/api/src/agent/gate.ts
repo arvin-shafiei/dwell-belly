@@ -42,14 +42,16 @@ export function gate(
   config: GateConfig,
   caseText: string,
 ): GatedAction[] {
-  // Scores are matched by the critic's own index. If those are not exactly one per message, none are trusted.
-  const aligned = !!critique && critique.actions.length === actions.length
-    && actions.every((_, i) => critique.actions.filter((a) => a.index === i).length === 1);
+  // The critic numbers its own scores, and models differ on where they start counting. With one
+  // score per message, order is what matters, so scores are matched by position. Any other count is not trusted.
+  const ordered = critique && critique.actions.length === actions.length
+    ? [...critique.actions].sort((x, y) => x.index - y.index)
+    : null;
   return actions.map((action, index) => {
     const reasons = hardRules(action, understanding, caseText);
     if (reasons.length) return { action, risk: 1, worst: "rule", reasons, verdict: "block" };
 
-    const scores = aligned ? critique.actions.find((a) => a.index === index) : undefined;
+    const scores = ordered?.[index];
     // No critic verdict means the message was not checked, so a person must look at it.
     if (!scores) return { action, risk: config.allow_below, worst: null, reasons: ["not checked by the critic"], verdict: "ask" };
 
