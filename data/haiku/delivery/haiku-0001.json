@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0001",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "weather",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-004",
+  "grounding": null,
+  "title": "Case: Conflicting reports on parcel condition after weather delay",
+  "context": "A fragile goods parcel was delayed overnight due to flooding. The recipient reports water damage visible on arrival. Delivery investigations and Damage intake teams have conflicting scan records about when the damage occurred. The desk does not control damage liability decisions.",
+  "initial_request": "Recipient reports water damage on a parcel. Dispatch scan and warehouse intake record disagree on condition state. The desk must route the conflict to the right investigator.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-05T08:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942 delayed overnight due to regional flooding. Parcel rescanned at destination depot 2026-02-05 06:15 UTC. Scan shows no visible damage. Delivered to recipient 2026-02-05 08:20 UTC."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-05T08:45:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942 flagged as water-damaged on dispatch from warehouse 2026-02-04 19:00 UTC. Photo attached shows wet cardboard on left edge. Item is ceramic tableware set."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-05T09:12:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Keiran Voss, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your driver just left. The box arrived soaked on the bottom. Ceramic plates inside are ruined. I need this investigated. Can you help?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Request investigation into conflicting damage scans: warehouse pre-dispatch damage flag vs depot arrival scan showing no damage. Recipient confirms damage on delivery."
+      },
+      {
+        "recipient": "Damage intake, Tallowmere Goods",
+        "channel": "Warehouse work queue",
+        "summary": "Alert to investigate discrepancy: warehouse damage log pre-dispatch vs Plover Arc depot scan clean. Recipient-confirmed damage suggests damage timing is unclear. Request reconciliation."
+      }
+    ],
+    "must": [
+      "Send the conflicting scan records (warehouse damaged, depot clean) to an investigator who can settle the timeline",
+      "Do not assume which scan or team is correct",
+      "Acknowledge to the recipient that the report is being investigated",
+      "Route to Delivery investigations or Damage intake team, not to Refunds or Replacement authorisations"
+    ],
+    "must_not": [
+      "Contact the recipient to blame either Plover Arc or Tallowmere Goods",
+      "Promise a refund or replacement without investigation",
+      "Accept either the warehouse or depot scan as proven without asking the conflicting team to explain",
+      "Escalate to a human supervisor (contact is the right disposition)"
+    ],
+    "reference_message": "Hi Keiran. We see conflicting records: warehouse marked this parcel as water-damaged before dispatch, but our destination depot scan showed it clean on arrival. Your report of damage on delivery needs investigation. I'm asking our delivery team and merchant to reconcile these records. You'll hear the outcome within one working day."
+  },
+  "rationale": "The warehouse and depot scans contradict each other on a key fact: when the damage occurred. Neither scan is self-evidently wrong. The desk's role is to flag this conflict to the team (Delivery investigations or Damage intake) that can review both scans and settle whether damage happened in transit or at the warehouse. Picking sides or promising redress would prejudge an investigation the desk cannot conduct."
+}

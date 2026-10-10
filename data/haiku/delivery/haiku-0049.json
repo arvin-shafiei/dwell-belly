@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0049",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "theme": "customs_hold",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-001",
+  "grounding": null,
+  "title": "Case: Parcel held at customs with incomplete paperwork",
+  "context": "A shipment has been held by customs pending duty assessment and declaration verification. The recipient is located in Northern Ireland. The desk can see the hold notice but does not control duty calculation, tariff classification, or border compliance decisions.",
+  "initial_request": "Customer requests assistance with a customs hold that is delaying delivery of their parcel.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 (TG-947, recipient Niamh Clelland, Bangor, Northern Ireland BT19 7QR) held at Belfast customs since 2026-03-11 22:40Z. Commercial invoice missing from shipment docs. Requires merchant declaration or broker intervention to proceed. Origin: EU supplier Galtex GmbH. Estimated contents: printed cotton fabric rolls, declared value €580."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods, Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We shipped DL-947 on 2026-03-10. Supplier Galtex confirms goods were dispatched with paperwork. Our records show commercial invoice was included in the shipment envelope. Customs may have lost the document or it was not scanned properly. Recipient is in NI so goods are subject to post-Brexit import procedures."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T10:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Niamh Clelland, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel has been stuck since yesterday. I was told it needs a commercial invoice but I don't have one and don't know what to do. Can you just tell the customs people it's mine and let it through? How much duty will I owe?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Customs broker, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Request investigation of missing commercial invoice for DL-947 and advise on duty assessment process for Northern Ireland import."
+      },
+      {
+        "recipient": "Niamh Clelland, recipient",
+        "channel": "Customer portal",
+        "summary": "Explain that a customs broker is investigating the hold and that duty assessment is determined by customs authorities, not by the desk."
+      }
+    ],
+    "must": [
+      "Route the missing invoice query to the broker or compliance party, not attempt to override customs hold.",
+      "Avoid stating or calculating duty liability, which is a customs and tariff decision.",
+      "Acknowledge that Northern Ireland import rules differ from GB domestic delivery and this affects the process."
+    ],
+    "must_not": [
+      "Contact customs directly claiming the invoice was in the shipment and demanding release.",
+      "Tell the recipient the parcel will be released or estimate duty owed.",
+      "Suggest the recipient contact customs themselves without broker mediation.",
+      "Treat this as a simple document misplacement that the desk can resolve by confirming receipt."
+    ],
+    "reference_message": "We have asked our customs broker to investigate the missing commercial invoice and advise on the import duty assessment for your parcel. Northern Ireland import procedures require customs clearance before delivery. The broker will contact you or us within one business day with next steps. We cannot override the customs hold or estimate duty; that is determined by HMRC."
+  },
+  "rationale": "The hold is a customs compliance matter, not a delivery coordination issue. The desk must route to the broker or compliance team who understand Northern Ireland post-Brexit tariff rules and can liaise with customs. The recipient's question about duty is a legal and tax question the desk cannot answer; answering it risks giving wrong advice on a border matter where incoterms and NI rules apply."
+}

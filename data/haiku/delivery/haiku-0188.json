@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0188",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "theme": "b2b_pallets",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-036",
+  "grounding": null,
+  "title": "Case: Pallet weight discrepancy on goods-in receipt",
+  "context": "A B2B freight delivery has arrived at the recipient's goods-in dock. The weight on the bill of lading does not match the weight recorded in the warehouse system at pickup. The recipient has flagged the discrepancy and the desk must decide whether to hold or release the pallet.",
+  "initial_request": "Determine whether the pallet should be held pending clarification or released to the recipient.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-11T08:30:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Goods-in coordinator Priya Menon, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pallet DL-927 arrived this morning. BOL shows 240kg net, but our warehouse dispatch logged it as 240 pounds at pickup yesterday. Driver says weight looks right. What do we do?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-11T08:45:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner Kai Nash, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 weighs 109kg. That is what we measured on the tail-lift scale at Brineleaf warehouse. Signature confirmed 11 Feb 07:30 UTC."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-11T09:15:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Logistics manager Stefan Kowalski, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Desk: our goods-in staff say the pallet weight is 109kg on their dock scale. BOL says 240kg. Before we accept, you must confirm which weight is correct or we hold the shipment and flag it as short-shipped goods. We need clarity NOW."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner Kai Nash, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Request clarification: confirm whether BOL weight of 240kg is in pounds or kilograms, and verify against tail-lift measurement of 109kg."
+      },
+      {
+        "recipient": "Warehouse dispatch, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Request original pickup weight entry in system: was the 240 pounds figure the actual measured weight or a preset estimate?"
+      }
+    ],
+    "must": [
+      "Identify that 240 pounds converts to approximately 109kg (the reconciliation point).",
+      "Confirm the unit discrepancy (pounds vs kilograms) before endorsing release.",
+      "Contact the party who recorded the original weight to verify the unit used."
+    ],
+    "must_not": [
+      "Tell the recipient to release the pallet based on the BOL weight of 240kg without checking the unit.",
+      "Assume the two measurements are genuinely different without considering unit conversion.",
+      "Release the pallet without resolving which weight is authoritative.",
+      "Escalate to Plover Arc Safety without first confirming this is a unit error and not a loss-in-transit issue."
+    ],
+    "reference_message": "Kai: the BOL shows 240kg but our recipient's dock scale reads 109kg. That converts to roughly 240 pounds. Was the BOL weight recorded in pounds by mistake, or should we investigate a potential shortage? Please confirm the unit on the original pickup record."
+  },
+  "rationale": "The case hinges on recognising that 240 pounds ≈ 109kg. The recipient and Plover Arc are reporting measurements that appear to conflict but actually match when the unit error is caught. A hasty coordinator might treat this as a genuine discrepancy and escalate to loss investigation, or tell the recipient to accept 240kg when they are holding 109kg. The right move is to confirm the unit with the party who recorded the original weight, resolving the arithmetic before anyone acts on incorrect numbers."
+}

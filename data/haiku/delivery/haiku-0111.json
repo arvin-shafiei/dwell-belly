@@ -1,0 +1,77 @@
+{
+  "id": "haiku-0111",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "theme": "multilingual",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-025",
+  "grounding": null,
+  "title": "Case: Recipient queries delivery status during nationwide depot systems outage",
+  "context": "A network-wide IT systems outage at Plover Arc Logistics affects tracking and status updates across all depots. The recipient is asking for a status update on a parcel that was in transit before the outage began. The desk knows the outage is real and ongoing, but has no confirmed revised delivery date.",
+  "initial_request": "Recipient requests status update on delayed parcel during known network outage.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-11-22T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "ALERT: Nationwide systems outage affecting all tracking and depot operations. Started 08:00 UTC. Tracking portal offline. No ETA on restoration. Manual operations only. Coordination desk to hold status queries pending comms from Network ops."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-11-22T09:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Emilia Rostov, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Gdzie jest moja paczka? DL-907 was supposed to be delivered yesterday. I need it today for my business. Can you tell me when it will arrive? Nie mogę czekać."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-11-22T10:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-907 last scanned at Manchester depot 21 Nov 16:30. Parcel status before outage: in transit to final delivery centre. Cannot access current location or route status during outage. Systems restoration ETA unknown. No individual investigation warranted given known network event."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-11-22T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Emilia Rostov, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Czekam na odpowiedź. It is very urgent. My supplier will not send more stock if I cannot receive this order. Tell me yes or no - will it come today?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "no_action"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Emilia Rostov, recipient",
+        "channel": "Customer portal",
+        "summary": "Acknowledge outage, confirm parcel was in transit before systems went down, decline to promise a specific delivery date, advise of restoration efforts and suggested follow-up timing."
+      }
+    ],
+    "must": [
+      "Do not promise or guess a delivery date.",
+      "Do not open a one-off trace or investigation for DL-907.",
+      "Acknowledge the network outage honestly."
+    ],
+    "must_not": [
+      "Send the recipient to Parcel trace team for investigation.",
+      "Promise delivery today or any specific date.",
+      "Suggest this is an unusual delay requiring escalation.",
+      "Forward to Delivery investigations as a lost-parcel case."
+    ],
+    "reference_message": "Thank you for your message. DL-907 was in transit to our delivery centre when a nationwide IT systems outage began this morning at 08:00 UTC. We cannot access tracking or route status until systems are restored. Your parcel has not been lost or delayed unusually - it is affected by the same outage as many others. We will update you as soon as tracking restores and a new delivery date is confirmed. We appreciate your patience during this incident."
+  },
+  "rationale": "The right move is to contact the recipient with honest status: her parcel was in normal transit before a known network-wide event, and the desk cannot give a delivery date until systems restore. This avoids both the tempting wrong moves of promising a date and opening a one-off investigation that the trace team has already ruled out. No investigation is warranted when the delay is explained by a known operational event affecting hundreds of parcels."
+}

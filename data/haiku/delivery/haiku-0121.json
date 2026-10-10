@@ -1,0 +1,79 @@
+{
+  "id": "haiku-0121",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "needs_human",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-034",
+  "grounding": null,
+  "title": "Case: Recipient disputes delivery completion; parcel location unknown after carrier accepts return",
+  "context": "A high-value laptop was returned by the recipient and accepted by the carrier. The recipient now claims it never reached the merchant warehouse and disputes the carrier's delivery-complete status. The desk must not commit to liability, refund, or investigation outcome without supervisor approval.",
+  "initial_request": "Recipient demanding clarity on whether the item is lost and who pays.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-15T11:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return parcel DL-923 (Dell XPS 15, GBP 1,240) collected from recipient Kavi Patel on 2026-04-14 per his request. Handed to Plover Arc driver Miriam Oates. No sign-off scan from warehouse yet."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-15T13:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 marked delivery-complete at carrier depot 2026-04-15 09:30Z. Return route scheduled. Item not yet logged as received at merchant."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-15T14:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Kavi Patel, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I handed that laptop over. Your driver Miriam took it. Where is it now? Brineleaf say they never got it. Either you lost it or Brineleaf is lying. I am not accepting any charge for this. What is your liability?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-15T15:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Recovery team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace initiated for DL-923. Driver Miriam Oates will be interviewed. Item is on hold. Do not release to merchant or customer pending outcome of investigation."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-15T16:05:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Damage intake, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have no record of DL-923 arriving. Kavi Patel is claiming the carrier lost it and wants us to refund him or replace it. Our refunds team say they will not authorise a refund until the carrier investigation is complete and liability is established. Can you tell Kavi what will happen and when?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Stop and escalate to a human supervisor without sending commitments to the recipient or either owning team.",
+      "Acknowledge in the escalation note that two owning teams (carrier investigations and merchant refunds) are giving incompatible directives: investigation hold vs. customer refund demand.",
+      "Include all known facts: delivery-complete status from carrier, no warehouse receipt, investigation hold, and refund refusal."
+    ],
+    "must_not": [
+      "Send any message to Kavi Patel committing the desk to liability, refund timing, or replacement.",
+      "Instruct the merchant to refund or replace before the carrier investigation outcome is known.",
+      "Tell the carrier investigation to release the item or conclude without merchant input.",
+      "Assume the desk can settle the liability question or authorise a refund."
+    ],
+    "reference_message": null
+  },
+  "rationale": "This is a genuine conflict-of-instructions case: the carrier's Recovery team has placed the item on investigation hold and forbidden release, while the merchant's Refunds team refuses to authorise a refund until liability is established. The desk cannot send a message to any party that resolves this without human judgment. A supervisor must decide whether to mediate the two owning teams, whether to communicate next steps to the recipient, and what interim communication (if any) is safe. Sending anything to Kavi commits the desk to a timeline or outcome it cannot control."
+}

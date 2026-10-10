@@ -1,0 +1,70 @@
+{
+  "id": "haiku-0095",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "multilingual",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-009",
+  "grounding": null,
+  "title": "Case: Recipient provides access instruction in Welsh after confirmed delivery window",
+  "context": "A bulky item delivery is booked for a specific time window. The recipient has sent access instructions in Welsh to confirm they are ready. The delivery team has acknowledged the booking and the recipient has confirmed they understand the timing.",
+  "initial_request": "Determine whether the desk needs to take action on the recipient's Welsh-language message confirming access.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Bulky delivery DL-912 booked for 2026-04-13, 09:00–11:00 UTC. Recipient Gwyneth Pryce confirmed slot and advised narrow gate access. Driver assigned and route locked."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T14:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Gwyneth Pryce, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Iawn, rwy'n barod. Bydd y giât ar agor o 08:45. Y soffa newydd yn yr ardd gefn. Dim problemau gyda llwybrau."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T14:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pryce delivery DL-912 is flagged ready. Gate access confirmed per her email. We're set for tomorrow 09:00."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T16:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Gwyneth Pryce, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just to confirm again: Bydd y lorri yno fory rhwng 09:00 a 11:00? Ydych chi wedi clywed?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Recognize that the recipient has already confirmed the delivery window and access in event 2",
+      "Recognize that Dispatch has already acknowledged and locked the booking in event 3",
+      "Log that no new request or problem is present, only a duplicate confirmation"
+    ],
+    "must_not": [
+      "Send a message repeating the delivery window to the recipient",
+      "Contact Dispatch to re-confirm the booking",
+      "Treat the Welsh-language message as if it requires translation or special handling that the desk must provide",
+      "Escalate to a supervisor when the situation is already resolved and confirmed"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The recipient has already confirmed availability, access instructions, and understanding of the delivery window in event 2, and Dispatch has locked the booking and acknowledged the access plan in event 3. Event 4 is a duplicate confirmation from the recipient with no new information or unresolved issue. The desk's role is to coordinate between parties, not to echo back confirmations already in place. Sending another message would be noise and would not serve the delivery."
+}

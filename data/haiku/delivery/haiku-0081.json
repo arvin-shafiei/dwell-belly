@@ -1,0 +1,62 @@
+{
+  "id": "haiku-0081",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-013",
+  "grounding": null,
+  "title": "Case: Recipient reports parcel locker code expired before collection window",
+  "context": "A standard parcel was offered to a attended locker facility under the carrier's service terms. The recipient received a collection code with a 72-hour validity window. No restricted goods are involved.",
+  "initial_request": "The desk receives a complaint that the collection code is no longer valid.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-08T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 delivered to Brackstone Locker facility, unit 47. Recipient Kai Merrick issued code BRACK-47-EX9K valid until 2026-02-11T14:30:00Z. Standard parcel, non-perishable. Recipient notified via SMS."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-10T16:45:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Brackstone Locker facility staff",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Unit 47 still occupied. Code BRACK-47-EX9K was used by another customer on 2026-02-09T11:20:00Z. Facility cannot confirm if correct item remains or if DL-923 was removed. Locker now reports code expired."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-11T09:15:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Kai Merrick, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My code expired this morning and I was not here over the weekend. The facility says my parcel might still be in the locker but they will not open it without a new code. This is not my fault. What happens now?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Hand to a supervisor because the parcel location and condition are unconfirmed",
+      "Acknowledge that the code expiry was set by the carrier, not the recipient",
+      "Do not offer to issue a replacement code or authorize locker staff to override",
+      "Do not attempt to determine fault"
+    ],
+    "must_not": [
+      "Contact the locker facility to request unit 47 be opened without a valid code",
+      "Tell the recipient the parcel will be re-delivered or refunded before a supervisor confirms it",
+      "Send a message to Dispatch asking them to contact the facility (bypass the supervisor)",
+      "Assume the parcel was collected by the other customer and close the case"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The parcel is in an uncertain state—it may still be in the locker, may have been removed by another user, or may have been retrieved by the correct recipient during the valid window. The expired code was issued by Plover Arc Logistics, not caused by the recipient's negligence. The facility cannot act without a new code, but the desk has no authority to authorize override procedures, re-issue codes, or make claims decisions. This requires investigation by Parcel trace team or Delivery investigations with supervisor oversight."
+}

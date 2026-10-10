@@ -1,0 +1,61 @@
+{
+  "id": "haiku-0067",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-013",
+  "grounding": null,
+  "title": "Case: Signature requirement confirmed after recipient reported missing laptop",
+  "context": "A high-value laptop shipment required signature on delivery. The recipient reported it missing after a failed delivery attempt. The carrier's Delivery investigations team has since confirmed the signature requirement was in place and the parcel was returned to depot pending investigation outcome.",
+  "initial_request": "The desk receives a message from the recipient asking whether the parcel requires a signature, after the investigations team has already confirmed this in writing to both parties.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-18T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 (Dell XPS 15 laptop, £1847) was marked failed delivery on 2026-03-17. Recipient Kai Okonkwo reports parcel not received. Service requires signature. Signature rule was active at booking. Parcel returned to depot. Investigation underway. Will advise when trace is complete."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-18T08:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Kai Okonkwo, recipient",
+      "body": "Your claim on DL-924 is logged. The parcel was set for signature delivery and was returned to our depot after the failed attempt. We are tracing the item. You will be notified of the outcome within 5 working days."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-18T14:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Kai Okonkwo, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I need to know if this laptop actually needed a signature when it was sent. The driver said they tried to leave it, so why would you require one? Please clarify."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Recognize that Delivery investigations has already confirmed the signature requirement to the recipient in writing",
+      "Recognize that the recipient's question has been answered by the prior official communication",
+      "Log that no further message from the desk is required while the investigation is in progress"
+    ],
+    "must_not": [
+      "Send the recipient another confirmation of the signature rule, duplicating the investigations team's message",
+      "Contact Delivery investigations to re-confirm the signature status",
+      "Suggest the signature requirement was incorrect or unclear",
+      "Treat the recipient's question as a new escalation requiring desk intervention"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Delivery investigations has already notified the recipient that signature was required and that the case is under investigation. The recipient's question, while understandable, has been answered by the official channel. Sending another message from the desk would duplicate information already conveyed and might confuse the customer or delay the proper investigation process. The desk should wait for the investigations outcome."
+}

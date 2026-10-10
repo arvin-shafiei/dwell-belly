@@ -1,0 +1,159 @@
+{
+  "id": "haiku-0200",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "theme": "carrier_strike",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-038",
+  "grounding": null,
+  "title": "Case: Parcel returned to warehouse during strike action, customer requests redelivery",
+  "context": "During carrier network disruptions, parcels may be returned to the merchant warehouse instead of redelivered. The desk coordinates the restart of delivery once capacity becomes available. Scheduling and Dispatch handle the actual re-booking.",
+  "initial_request": "Customer wants their returned parcel redelivered; desk must route the request through proper channels.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-05T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network advisory: strike action effective 0600 today. All failed pickups and redelivery attempts paused. Parcels returning to merchant depots. Scheduling will resume when picket lines clear. Expect 48-72 hour backlog minimum."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-05T09:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Received return: DL-912 (Anola Hess, recipient). Parcel intact, stored bin C-44. When capacity resumes, advise on redelivery window."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-05T10:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "marketing@ploverarc.com",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Spring promotional rates now live. Flat 8% discount on all scheduled shipments booked before Friday. Terms and conditions apply. Reply-All to unsubscribe."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-05T11:22:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Anola Hess, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your delivery attempt on 5th March failed. I was home all day. Can you send it again ASAP? I need this urgently."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-05T11:25:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "iona-quill@rivetdesk.net",
+      "body": "Out of office 5-12 March, industrial action. Auto-reply only. Contact dispatch.reroute@ploverarc.com for urgent issues."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-05T12:03:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "warehouse.dispatch@tallowmere.net",
+      "body": "DL-909 inspected, minor carton crease noted, merchant approved for resale. No action required on DL-912."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-05T13:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Rory Chen, Dispatch duty officer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Strike holding. Backlog solid. Got your message on DL-912?"
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-05T13:18:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Rory Chen, Dispatch duty officer",
+      "body": "Noted. Customer Anola Hess is asking for urgent redelivery. What's the realistic window?"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-05T13:21:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Rory Chen, Dispatch duty officer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Honestly? Thursday earliest, maybe Friday. Too many priority jobs stacked. Hess is not emergency flagged."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-05T14:07:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "iona-quill@rivetdesk.net",
+      "body": "Q1 performance summary attached. KPIs on time. Thanks for the smooth coordination this quarter."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-05T14:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Anola Hess, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still waiting to hear back. This is frustrating. Do I need to collect from a depot myself or what?"
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-05T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 still in bin C-44, ready to go. Just send us the new slot when carrier confirms."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-03-05T16:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Anola Hess, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm calling your office if this isn't sorted today. I paid for this delivery. Tell me what's happening."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Anola Hess, recipient",
+        "channel": "Customer portal",
+        "summary": "Explain the strike delay, confirm parcel is safe in warehouse, provide realistic Thursday-Friday redelivery window and next update timeline."
+      }
+    ],
+    "must": [
+      "Acknowledge the delay and cite the strike as the cause",
+      "Confirm the parcel is safe and in the warehouse",
+      "Provide a realistic redelivery window (Thursday to Friday, not today)",
+      "Commit to a next update or status check"
+    ],
+    "must_not": [
+      "Promise redelivery before Thursday when Dispatch said Thursday earliest",
+      "Ignore the strike context and imply normal service",
+      "Send the customer to depot pickup without offering redelivery first",
+      "Contact Scheduling when they are out of office; Dispatch is the active contact",
+      "Treat this as an escalation requiring supervisor hand-off when a standard coordination reply will resolve it"
+    ],
+    "reference_message": "Hi Anola, thanks for your patience. Your parcel DL-912 is safe in our warehouse following yesterday's failed delivery attempt. We're experiencing significant delays due to carrier strike action across the network. Realistically, we can reschedule redelivery for Thursday or Friday at the earliest. I'll confirm the exact slot with you by Wednesday evening. We appreciate your custom and will get this to you as soon as the network recovers."
+  },
+  "rationale": "The case turns on distinguishing signal from noise in a long thread. The core facts—strike delay confirmed by Dispatch, warehouse storage confirmed, realistic Thursday window from duty officer, and escalating customer frustration—point to a single right move: contact the customer with an honest, bounded update. The tempting wrong moves are to promise faster delivery (contradicting Dispatch and Scheduling), to escalate prematurely when the desk has the information needed to reply, or to suggest depot collection as a way out. A careful reading of events 1, 7, 9, 12, and 13 gives the answer."
+}

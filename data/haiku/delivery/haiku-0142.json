@@ -1,0 +1,92 @@
+{
+  "id": "haiku-0142",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": "pets_perishables",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-033",
+  "grounding": null,
+  "title": "Case: Temperature-sensitive shipment routed to wrong depot queue",
+  "context": "A perishable food item was booked for next-day delivery with temperature control requirement. The initial desk action to alert the carrier's cold-chain team failed. The shipment is in the system but the temperature-sensitive flag may not have reached the handler.",
+  "initial_request": "Coordinate safe routing of a time-sensitive food delivery that requires active cooling.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-22T14:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Shona Keppel, Brineleaf Pantry operations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 booked next-day to recipient in Bolton. Contents: 18 kg fresh cheese curd, requires 2-8°C throughout. Standard courier service selected but our notes flagged temperature-critical. Recipient is food business not domestic. Delivery window 06:00-09:00 tomorrow."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-22T14:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 logged. Sorted to standard parcel flow, Bolton depot, vehicle 47. No temp flag visible in our intake. Pickup scheduled for today 15:30."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T15:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Safety lead, Plover Arc Logistics",
+      "body": "DL-923 contains temperature-sensitive food requiring 2-8°C. Please alert cold-chain handler to intercept before vehicle 47 departs."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-22T16:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Mailbox does not process operational routing changes. Your request was rejected. Contact Dispatch directly or use Depot work queue."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-22T17:45:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just checked—DL-923 still in Bolton standard queue, no temp label. Pickup driver arrives in 40 min. If this needs cold handling we have a problem. Whose job is this?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Routing control, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Immediately flag DL-923 as temperature-critical and move to cold-chain vehicle before pickup departs."
+      },
+      {
+        "recipient": "Plover Arc Logistics Dispatch",
+        "channel": "Dispatch chat",
+        "summary": "Confirm DL-923 must move to cold-chain handling now, provide consignee temp requirement, ask for immediate action before standard pickup."
+      }
+    ],
+    "must": [
+      "Send message to a team that can actually intercept and reroute the parcel before pickup",
+      "Use a channel (Depot work queue or Dispatch chat) that the correct operational owner monitors",
+      "Include the specific reference DL-923 and the temperature requirement 2-8°C",
+      "Do not treat the Safety lead rejection as success or close the issue"
+    ],
+    "must_not": [
+      "Escalate to a human supervisor when a working operational route is available",
+      "Send another message to Safety lead or retry Email channel",
+      "Report the earlier failed Email action to Safety lead as if it succeeded",
+      "Contact the merchant or recipient at this stage instead of the carrier handler",
+      "Wait or treat the dispatch team's question as resolved without a firm directive"
+    ],
+    "reference_message": "DL-923 is temperature-critical: 18 kg fresh cheese curd, must stay 2-8°C. Currently routed to standard vehicle 47. Please move to cold-chain vehicle immediately before pickup at 15:30. This is food safety."
+  },
+  "rationale": "The desk's first action failed because it reached the wrong team (Safety lead handles incidents, not operational rerouting). The carrier's Dispatch team has now signalled the problem directly and are waiting for instruction. The desk must use a working channel—Depot work queue or Dispatch chat—to reach the actual routing owner in time to intercept before the parcel leaves the facility. Escalating now wastes critical time; a direct, clear instruction to the right team is the only move that prevents spoilage."
+}

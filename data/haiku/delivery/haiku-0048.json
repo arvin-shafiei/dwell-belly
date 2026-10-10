@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0048",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-042",
+  "grounding": null,
+  "title": "Case: High-value electronics pallet delivery—weight discrepancy blocks warehouse acceptance",
+  "context": "A pallet of laptops is booked for delivery to a business receiving point, but the warehouse has flagged a weight mismatch between the freight manifest and the actual gross weight recorded at the carrier depot. The discrepancy is large enough to affect forklift safety rating and slot availability. The desk must establish whether the figures are unit-conversion errors, recording mistakes, or a genuine shortage that requires investigation.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk receives conflicting weight data and must decide whether to query the numbers before the delivery attempt proceeds.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-15T08:20:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Katya Shen, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 booked for today 2026-10-15 delivery to Ashford business point. Manifest says gross weight 850kg. Our scales at receiving show 1870lbs when pallet weighed in this morning. We cannot accept under our forklift cert unless we confirm the actual weight. Please reconcile before driver arrives."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-15T08:35:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Plover Arc Logistics Freight planner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 manifest gross 850kg locked in system. Depot weigh-in at 07:15 UTC this morning recorded 1870kg. No unit error in our log—operator entered kilograms. Driver is assigned and en route to Ashford. ETA 11:00."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-15T08:50:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Davide Marquez, receiving coordinator at Ashford point",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The pallet came through our receiving scan at 08:12 BST this morning—we use platform scales. Reading was 847kg. That matches the manifest. But Katya says her scales show 1870. We are confused. Is there a second pallet or is one scale wrong?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-15T09:05:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Oleg Volkov, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 driver Miriam is 90 mins out. Warehouse is saying no unload slot if weight is over 900kg. I need a decision now so I can redirect or hold her. What is the real weight?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Katya Shen, Brineleaf Pantry Warehouse dispatch",
+        "channel": "Warehouse work queue",
+        "summary": "Ask Katya to confirm the units she entered into her receiving scale (kilograms or pounds) because her 1870 reading and the depot's 1870kg are both showing the same number but may be different units."
+      },
+      {
+        "recipient": "Plover Arc Logistics Freight planner",
+        "channel": "Freight portal",
+        "summary": "Request immediate clarification on whether the depot scale reading of 1870 was entered as kilograms or pounds, given the mismatch with manifest and receiving point readings."
+      }
+    ],
+    "must": [
+      "Identify that 1870lbs is approximately 847kg, which matches both the manifest and Davide's receiving scale reading",
+      "Recognize that Katya's 1870 and the depot's 1870 are likely the same weight expressed in different units, not two separate measurements",
+      "Confirm the units with the source before directing dispatch or accepting or rejecting the delivery"
+    ],
+    "must_not": [
+      "Direct dispatch to refuse the delivery based on the unreconciled numbers",
+      "Accept the delivery without clarifying which unit (kg or lbs) each party actually recorded",
+      "Treat the depot reading of 1870kg as correct without checking whether it was a data-entry unit error",
+      "Assume Katya's scale must be wrong just because she is the warehouse receiver"
+    ],
+    "reference_message": "Katya, the depot recorded 1870 at 07:15 UTC this morning. Your scale shows 1870. The manifest is 850kg and Davide's scales at receiving show 847kg. Did your system accept the weight as pounds rather than kilograms? 1870lbs is 847kg. Please confirm your scale unit setting so we can clear this before the driver arrives."
+  },
+  "rationale": "The core issue is unit conversion, not a missing pallet or genuine weight variance. Katya's reading of 1870 and the depot's reading of 1870 are numerically identical but likely in different units—if Katya's scale recorded pounds, 1870lbs converts to approximately 847kg, which matches both the manifest and the business point's independent measurement. The desk must confirm units before allowing dispatch to stand down or before the warehouse rejects the load, because redirecting or refusing a legitimate delivery wastes hours and costs."
+}

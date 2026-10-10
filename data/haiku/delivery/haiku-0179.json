@@ -1,0 +1,79 @@
+{
+  "id": "haiku-0179",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "weather",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-026",
+  "grounding": null,
+  "title": "Case: Recipient confirms item recovered after storm disruption",
+  "context": "A parcel was misdelivered during severe flooding. The carrier's recovery team located and confirmed recovery with the recipient. The desk observes follow-up communication confirming the fix is complete.",
+  "initial_request": "None; this is a status update following prior coordination.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-14T08:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marko Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-937 parcels delayed. Storm surge flooded access road to Saltspur. Rerouting delivery attempt for tomorrow."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-14T16:45:00Z",
+      "stage": "Context",
+      "channel": "Safety incident queue",
+      "from": "Jen Morag, Plover Arc Logistics Delivery investigations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-937: driver reported parcel left at 42 Breaker Lane instead of 42 Seawall Terrace due to road closure. Recipient at correct address not yet located. Flagged to Recovery team."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-15T11:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dale Pritchard, recipient at 42 Seawall Terrace",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I found my package at my neighbour's place (42 Breaker Lane). They kept it safe during the flooding. I have it now. Thanks."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-15T12:05:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jen Morag, Plover Arc Logistics Delivery investigations",
+      "body": "DL-937 confirmed recovered by recipient. Closed as misdelivery resolved."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-15T14:30:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Jen Morag, Plover Arc Logistics Delivery investigations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirming DL-937 recovery complete as per recipient contact. No further action needed from our side."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Recognize that the recovery investigation is closed and confirmed by both recipient and investigations team",
+      "Log the case outcome without sending additional contact messages",
+      "Do not duplicate or restate the already-confirmed resolution"
+    ],
+    "must_not": [
+      "Send another message to the recipient asking for confirmation (already given)",
+      "Contact Recovery team with a new action request (investigation confirmed complete)",
+      "Escalate to supervisor (this is routine closure, not a problem)",
+      "Re-request status from Delivery investigations (status already provided in event 5)"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The recipient has confirmed receipt of the parcel, Delivery investigations has explicitly closed the case and confirmed no further action is required from the carrier, and the desk has already notified investigations of the resolution. A third message would be noise. The right move is to log the closure and take no action."
+}

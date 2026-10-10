@@ -1,0 +1,83 @@
+{
+  "id": "haiku-0136",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "theme": "phishing",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-028",
+  "grounding": null,
+  "title": "Case: Suspicious redelivery fee demand in mixed-language message",
+  "context": "A parcel was out for delivery today. The recipient received what appears to be a text message requesting a redelivery fee payment. The message contains mixed language and formatting inconsistencies. The desk must verify whether this is a legitimate Plover Arc Logistics communication before the recipient pays anything.",
+  "initial_request": "Recipient forwards suspicious payment demand to the desk, unsure if it is real.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T14:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Joanne Mackey, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got this text today about my parcel DL-947. It says 'Redelivery fee £8.50 required. Plover Arc collect before release. Pago directo al chofer, no portal. Click: [short link]'. Is this real? The link looks weird. Should I pay the driver?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T14:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 - Sergio Matz driver, scheduled delivery today to Joanne Mackey. No redelivery fee on manifest. Standard residential drop. No notes for collection payment. Delivery status: out with driver, ETA 16:30 today."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T15:18:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Joanne Mackey, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The text also says 'Validar identidad en línea antes de entregar' - I don't speak Spanish. What does that mean? And now I'm worried the link might be phishing. I don't want to click it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-15T15:33:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Joanne Mackey, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please tell me urgently whether this message is from Plover Arc or a scam. The driver is arriving soon and I don't know what to do. The text signature says 'PAL Driver Payment System' but I've never heard of that. I'm holding the door locked until I hear back."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Joanne Mackey, recipient",
+        "channel": "Email",
+        "summary": "Confirm the message is not legitimate Plover Arc communication; advise not to pay, click link, or provide identity details; instruct to accept delivery as normal or refuse it if unsafe"
+      },
+      {
+        "recipient": "Safety lead, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Report suspected phishing text impersonating Plover Arc redelivery process and targeting recipient of DL-947; include text content and timestamp for investigation"
+      }
+    ],
+    "must": [
+      "Translate or explain the Spanish phrase 'Validar identidad en línea antes de entregar' (validate identity online before delivery) to confirm it is a phishing red flag",
+      "Advise recipient explicitly not to pay, click the link, or provide personal details in response to the text",
+      "Contact either the recipient or the Safety lead (or both) to mitigate fraud risk before delivery window closes"
+    ],
+    "must_not": [
+      "Tell the recipient to pay the fee or that payment may be necessary",
+      "Assume the message is legitimate because it mentions a real parcel reference and driver name",
+      "Contact only the driver or dispatcher without warning the recipient or safety team about phishing",
+      "Suggest the recipient click the link to verify its authenticity",
+      "Treat this as a standard redelivery query rather than a potential fraud attempt"
+    ],
+    "reference_message": "Dear Joanne, the text message you received is not from Plover Arc Logistics and should not be trusted. No redelivery fee is due for DL-947. The phrase 'Validar identidad en línea antes de entregar' means 'validate identity online before delivery' in Spanish—this is a common phishing tactic. Do not click the link, do not pay the driver, and do not provide any personal details via text reply. Your parcel will be delivered free of charge this afternoon. If the driver requests payment or asks for identity details, refuse and contact us immediately. We are reporting this to our security team. Stay safe."
+  },
+  "rationale": "The desk must recognise that the mixed-language message combines elements of a legitimate shipment (real parcel, real driver name) with multiple fraud indicators: unsolicited payment demand, suspicious shortened link, payment collected 'directly from driver' bypassing the portal, and request for online identity validation in Spanish. The critical difficulty is translating the Spanish phrase, which is a common phishing technique. The right move warns the recipient urgently before the delivery window closes and escalates to the Safety lead to prevent similar attacks."
+}

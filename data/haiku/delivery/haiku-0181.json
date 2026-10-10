@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0181",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "false_alarm",
+  "theme": "carrier_strike",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-004",
+  "grounding": null,
+  "title": "Case: Food delivery delayed by network disruption, sender mentions solicitor",
+  "context": "A food merchant's warehouse coordinator mentions consulting a solicitor about a delayed shipment. Network congestion from carrier industrial action has slowed many routes. The mention is procedural, not a legal threat. Routine coordination suffices.",
+  "initial_request": "Assess whether this case needs escalation or a standard coordination message.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-24T08:15:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Derek Wain, Brineleaf Pantry warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 (12 units pecan shortbread, chilled) was scheduled for delivery to Harwell Food Services today by 14:00. It left our facility at 06:30. Plover Arc Dispatch confirmed collection at 07:02. No update since then. Are we tracking a delay?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-24T10:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Derek Wain, Brineleaf Pantry warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still no delivery confirmation on DL-924. I've copied in my solicitor cousin who handles commercial contracts, just so we have advice on our options if this slips further. Harwell is getting anxious. Can you check with Dispatch what's holding this up?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-24T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Kai Tran, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 is currently in a queue at our Northampton hub. Industrial action this week has slowed inbound processing significantly. Vehicle is scheduled for onward dispatch at 15:30 today. New ETA to Harwell is 18:15, approximately four hours late. No damage to shipment, just network congestion."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Derek Wain, Brineleaf Pantry warehouse dispatch",
+        "channel": "Email",
+        "summary": "Inform that DL-924 is delayed due to carrier network congestion from industrial action; new ETA 18:15; advise notifying recipient of revised arrival window."
+      },
+      {
+        "recipient": "Derek Wain, Brineleaf Pantry warehouse dispatch",
+        "channel": "Warehouse work queue",
+        "summary": "Inform that DL-924 is delayed due to carrier network congestion from industrial action; new ETA 18:15; advise notifying recipient of revised arrival window."
+      }
+    ],
+    "must": [
+      "confirm the new ETA to the merchant without treating the solicitor mention as a legal escalation",
+      "acknowledge that the delay is due to carrier network disruption, not the desk's responsibility",
+      "advise the merchant to notify the recipient of the revised arrival window"
+    ],
+    "must_not": [
+      "escalate to a human supervisor based on the solicitor mention",
+      "flag this as a legal or safety matter requiring Safety lead involvement",
+      "treat the cousin's involvement as a threat or escalation trigger",
+      "contact the solicitor directly"
+    ],
+    "reference_message": "Derek, DL-924 is currently delayed at our Northampton hub due to network congestion from industrial action this week. Kai from Plover Arc Dispatch confirms the shipment is intact and rescheduled for onward dispatch at 15:30 today, with revised ETA to Harwell of 18:15 (approximately four hours late). Please notify Harwell Food Services of this revised window. We will monitor for any further updates."
+  },
+  "rationale": "The solicitor mention is a standard precaution by the merchant, not a legal demand or safety concern. The delay is a known carrier network issue, not a failure by the desk. A routine coordination message informing the merchant of the revised ETA and advising them to notify their recipient is the appropriate response; escalation would waste a supervisor's time on a non-critical logistics update."
+}

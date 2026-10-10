@@ -1,0 +1,80 @@
+{
+  "id": "haiku-0219",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "theme": "multilingual",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-049",
+  "grounding": null,
+  "title": "Case: Business invoice shows duplicate service charge; recipient reports item received but wants confirmation",
+  "context": "A business customer received their delivery and is querying a duplicate service charge on the invoice. The merchant's billing team and the carrier's business billing team need to coordinate, but the recipient also needs acknowledgment of successful delivery. Messages are partly in Welsh and English.",
+  "initial_request": "Resolve the duplicate charge issue and confirm delivery status for the business customer.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-04T08:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Carwyn Pritchard, receiving coordinator, Pen-y-Dreflan Ltd",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 arrived yesterday at our receiving dock. The invoice shows two service charges (handling fee £18.50 + handling fee £18.50). Dim yn iawn. Can you confirm the delivery was recorded and which charge is the error?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-04T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have flagged DL-947 for a double-entry review. It looks like our scheduling system issued two handling fees on 2026-03-03. Merchant (Tallowmere Goods) may also have charged. Need confirmation from Tallowmere before we can reverse."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-04T09:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Carwyn forwarded the invoice. Our side shows one handling fee only. The duplicate is on Plover's billing. We can issue a customer credit letter once Plover confirms the reversal amount."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-04T10:05:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Carwyn Pritchard, receiving coordinator, Pen-y-Dreflan Ltd",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Cofiwch - we need the delivery confirmed in writing for our records, and we need to know when the duplicate charge will be reversed. Our finance team is waiting. Pls advise both today if possible."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Business billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Confirm the duplicate £18.50 charge is a system error, reverse it, and advise Carwyn of the correction date."
+      },
+      {
+        "recipient": "Carwyn Pritchard, receiving coordinator, Pen-y-Dreflan Ltd",
+        "channel": "Business portal",
+        "summary": "Confirm DL-947 delivery received and logged; explain the duplicate charge is being reversed by carrier and Tallowmere will issue credit."
+      }
+    ],
+    "must": [
+      "Send a message to Carwyn confirming delivery receipt and status.",
+      "Instruct Plover Arc's Business billing team to reverse the identified duplicate charge.",
+      "Do not attempt to resolve or reverse the charge directly; route the correction to the carrier's billing team."
+    ],
+    "must_not": [
+      "Escalate without first contacting Carwyn to confirm delivery and the carrier to reverse the charge.",
+      "Ask Tallowmere Goods to reverse or credit the charge; it is a Plover Arc billing error.",
+      "Tell Carwyn the issue is resolved before the carrier has confirmed the reversal."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The case contains two issues: (1) delivery receipt confirmation needed immediately for Pen-y-Dreflan's records, and (2) a duplicate charge that is Plover Arc's system error. The desk can address both in one contact cycle by confirming delivery to the recipient and directing the carrier's billing team to reverse the duplicate charge. This is safe because the facts are clear (Tallowmere shows one charge, Plover shows two), the responsibility is clear (Plover's entry error), and the recipient's operational need (written confirmation) can be met now while the charge reversal proceeds in parallel. No escalation is needed; this is coordination work within the desk's remit."
+}

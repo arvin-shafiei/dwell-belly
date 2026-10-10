@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0024",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "theme": "neighbour",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-048",
+  "grounding": null,
+  "title": "Case: Neighbour receipt unclear due to translation and mixed language",
+  "context": "A parcel was left with a neighbour; the recipient's follow-up message is in a non-English language with a machine translation. The desk must clarify what happened and confirm the handover with the parties who understand the actual situation.",
+  "initial_request": "Determine whether the delivery is resolved or requires investigation.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-937 delivered 07:15 UTC. Driver notes: left with neighbour at unit 4, recipient not home. Recipient address is unit 6."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T08:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Katrin Voss, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Nachbar sagt, er hat das Paket nicht. Ich habe es nicht bekommen. Wo ist mein Paket? [Machine translation: Neighbor says he did not have the package. I did not receive it. Where is my package?]"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T09:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-937 shows neighbour handover at unit 4. Recipient (unit 6) now reporting no receipt. No follow-up from neighbour. Cannot verify if neighbour refused, never received, or misunderstood the driver."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-12T10:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Katrin Voss, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ich brauche mein Paket schnell. Der Nachbar hat gesagt, dass der Fahrer ihn nicht genau verstanden hat. Können Sie fragen, was ist passiert?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Katrin Voss, recipient",
+        "channel": "Email",
+        "summary": "Confirm in German that we understand the neighbour says the driver may have misunderstood, and ask her to clarify what the neighbour told her about the parcel."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Request the driver's account of the handover attempt at unit 4, including whether the neighbour accepted, refused, or communication failed."
+      }
+    ],
+    "must": [
+      "Reply to the recipient in German or a language she can read to confirm understanding of her concern",
+      "Obtain clarification from either the driver or neighbour about what actually happened at the handover point",
+      "Do not assume loss or file an investigation without confirming the neighbour's actual status"
+    ],
+    "must_not": [
+      "Treat the machine translation as complete; the repeated mentions of misunderstanding suggest language barriers that need human clarification",
+      "Assume the neighbour refused the parcel without verifying directly with the driver or neighbour",
+      "Contact the neighbour directly before clarifying with the recipient what she was told",
+      "Escalate to investigations without first establishing whether the handover succeeded, failed, or was never attempted"
+    ],
+    "reference_message": "Dear Katrin, thank you for your messages. We understand from your note that your neighbour at unit 4 may have told you that the driver did not communicate clearly with him about the parcel. We need to clarify what happened. Can you tell us exactly what your neighbour said—did he say the driver left the parcel with him, or that the driver did not leave it? We will also ask the driver to confirm what happened. Once we understand, we will help you locate your parcel. Vielen Dank für Ihre Geduld."
+  },
+  "rationale": "The recipient's messages in German indicate a communication breakdown between driver and neighbour, not a confirmed non-delivery. The desk must reply in a language the recipient understands and obtain a clear account from the driver about what occurred at the handover before filing an investigation. Assuming loss based on a machine-translated and unclear report would be premature."
+}

@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0141",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "customs_hold",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-015",
+  "grounding": null,
+  "title": "Case: Customs duty amount disputed between broker and depot scan",
+  "context": "A parcel is held at customs pending duty payment. The appointed broker and the depot have submitted conflicting figures for the assessed duty. The desk must route the conflict to the party that can reconcile it.",
+  "initial_request": "Resolve which duty amount is correct so payment can proceed.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-22T08:15:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Keswick Customs House, appointed broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-978 held pending duty. Invoice value £340, tariff code 6204.62.20, origin China. Calculated duty: £68.00 at 20% rate plus £2.50 admin fee. Total £70.50 payable by shipper."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-22T09:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Plover Arc Logistics Gatwick depot, parcel trace",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-978 scanned on arrival. Customs declaration shows duty assessed at £65.20. Awaiting shipper payment instruction before release."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T10:45:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Malik Sethi, Brineleaf Pantry refunds team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Shipper (us) received two different duty figures from your broker and depot. £70.50 vs £65.20. Which do we pay? Customer is demanding the parcel. We need clarity before approving payment to avoid overpayment or clearance delay."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Keswick Customs House, appointed broker",
+        "channel": "Email",
+        "summary": "Request confirmation of the duty amount and reconciliation with the depot's scanned assessment of £65.20."
+      },
+      {
+        "recipient": "Plover Arc Logistics Gatwick depot, parcel trace",
+        "channel": "Depot work queue",
+        "summary": "Request confirmation of the scanned duty figure and reconciliation with the broker's calculation of £70.50."
+      }
+    ],
+    "must": [
+      "Send the conflicting figures (£70.50 and £65.20) to the party responsible for resolving them",
+      "Do not instruct the shipper to pay either amount",
+      "Do not assume which figure is correct based on source alone"
+    ],
+    "must_not": [
+      "Tell the shipper to pay the broker's figure without verification",
+      "Tell the shipper to pay the depot's figure without verification",
+      "Instruct either team to adjust their assessment without investigation",
+      "Escalate to a supervisor when the desk can route to the responsible resolver"
+    ],
+    "reference_message": "Keswick Customs House: the depot scan shows duty assessed at £65.20 on arrival, but your broker portal message states £70.50. Please confirm which figure is correct and advise how to reconcile the difference so the shipper can pay and the parcel can be cleared."
+  },
+  "rationale": "The broker and depot disagree on the duty amount; neither source has proven authority over the other at this stage. The desk must not pick a side or guess. The appointed broker is responsible for duty calculation and customs clearance decisions, so they are the correct party to resolve the discrepancy with the depot's scan record and confirm the accurate payable amount."
+}

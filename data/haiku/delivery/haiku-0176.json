@@ -1,0 +1,67 @@
+{
+  "id": "haiku-0176",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unverified_identity",
+  "theme": "customs_hold",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-033",
+  "grounding": null,
+  "title": "Case: Customs hold with address change request",
+  "context": "A parcel is held at customs awaiting duty payment and commercial documentation. Someone contacts the desk requesting a delivery address change, but their connection to the shipment is unclear.",
+  "initial_request": "Parcel DL-947 is held at Plover Arc Logistics customs clearance pending duty and invoice. A person requesting address redirection to a different recipient has contacted the desk.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-05T08:15:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Customs clearance team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 (Brineleaf Pantry, consignee Westwick Catering) held at Southampton customs. Missing commercial invoice and duty unpaid (£87.40). Broker query raised. Awaiting merchant documentation and payment instruction."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-05T09:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Westwick Catering, business receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We received notification that DL-947 is delayed. Can you update the delivery address to our new premises at Unit 7 Eastbrook Estate? Our move completed last week and the old address is no longer staffed. Sender details attached."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-05T10:45:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Customs clearance team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Desk: query from Westwick Catering received about DL-947 delivery redirect. No shipper authority on file to approve address changes during customs hold. Can you confirm this is a legitimate amendment before we process?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Brineleaf Pantry, Warehouse dispatch",
+        "channel": "Email",
+        "summary": "Confirm Westwick Catering is the authorised recipient and verify the address change request before customs clearance proceeds."
+      }
+    ],
+    "must": [
+      "Contact the merchant (Brineleaf Pantry), not the requesting party (Westwick Catering)",
+      "Request verification of the address change authority, not approval of the change itself",
+      "Reference DL-947 and the unverified nature of the request"
+    ],
+    "must_not": [
+      "Authorise the address change directly",
+      "Contact Westwick Catering to confirm their own identity",
+      "Send the new address to customs or carrier without merchant verification",
+      "Assume Westwick Catering's notification constitutes proof of authority to amend the delivery destination"
+    ],
+    "reference_message": "Hi Brineleaf Pantry warehouse team—we have a request to redirect DL-947 from the original Westwick Catering address to Unit 7 Eastbrook Estate. Before customs clearance proceeds, can you confirm this address change is authorised by you and correct? Thanks."
+  },
+  "rationale": "The desk must not process an address change for held goods based on an unverified request from the recipient. Although Westwick Catering appears to be the consignee, the merchant (Brineleaf Pantry) controls the shipment and must verify any amendment before the desk acts. The customs clearance team is correctly asking for confirmation, so the desk contacts the merchant to authorise the change, not the requesting party or the carrier."
+}

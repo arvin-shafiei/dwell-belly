@@ -1,0 +1,127 @@
+{
+  "id": "haiku-0033",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "theme": "customs_hold",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-046",
+  "grounding": null,
+  "title": "Case: Customs broker awaiting consignee appointment instructions",
+  "context": "A parcel is held at the port pending customs clearance. The importer initially asked the desk to contact the broker to proceed, but later clarified that the consignee must formally appoint the broker first. The desk must follow the latest instruction and not act on the superseded request.",
+  "initial_request": "Coordinate the customs clearance for DL-912 by ensuring the correct party takes the next step.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T08:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 arrived at port this morning. Customs holds it; missing commercial invoice and duty declaration. Broker Novale Trade Services is already listed on the airway bill. Awaiting your instruction to have them process the clearance."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T08:45:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Novale Trade Services",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We received DL-912 in system. Cannot proceed without formal written appointment from consignee. Does consignee Farthig Ltd intend to use us? Need that confirmation before we lodge customs docs."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T09:00:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Jarek Molnar, Farthig Ltd",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 is our import. We need this cleared today if possible. Contact Novale and tell them to get it through customs now."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-14T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Novale Trade Services",
+      "body": "Consignee Farthig Ltd has authorised you to process DL-912. Please lodge the customs declaration."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-14T10:00:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Novale Trade Services",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We need formal consignee appointment letter, not desk relay. We cannot file customs on verbal say-so. Have Farthig send us the letter direct or we are stalled."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-14T11:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Port is asking status. Can we clear this today or not?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-14T11:45:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Novale Trade Services",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still waiting for Farthig's written appointment. We will not file without it. That is our requirement."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-14T12:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Jarek Molnar, Farthig Ltd",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We sent the appointment letter to Novale direct 30 minutes ago. Can you confirm they got it and will lodge the declaration now?"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-14T12:50:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Desk review: DL-912 status check needed. Consignee says letter sent. Broker silent on receipt. Port deadline approaching. What is next step?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Novale Trade Services",
+        "channel": "Broker portal",
+        "summary": "Confirm receipt of Farthig Ltd's appointment letter and confirm whether customs declaration will be lodged today."
+      },
+      {
+        "recipient": "Jarek Molnar, Farthig Ltd",
+        "channel": "Email",
+        "summary": "Confirm that the appointment letter was received by Novale and request immediate confirmation once Novale begins clearance processing."
+      }
+    ],
+    "must": [
+      "Do not relay or re-transmit the consignee's appointment; direct the consignee to contact the broker directly.",
+      "Recognise that the consignee must appoint the broker in writing, not through the desk.",
+      "Follow the broker's latest stated requirement (written appointment from consignee) and not the initial request to have the desk authorise them.",
+      "Confirm status with both parties on receipt and next steps, not assume the letter arrived."
+    ],
+    "must_not": [
+      "Contact the broker to 'process the clearance' or file customs on the desk's authority; this supersedes event 3 and violates broker policy.",
+      "Relay Farthig's instruction as desk authorisation; the broker has made clear it needs the consignee's own letter.",
+      "Assume the appointment letter was received just because the consignee says it was sent.",
+      "Send a message that appears to give the broker permission to proceed without the written appointment."
+    ],
+    "reference_message": "To Novale Trade Services, Broker portal: Has Farthig Ltd's appointment letter for DL-912 been received? Once confirmed, please advise timeframe for customs lodgement given port deadline today."
+  },
+  "rationale": "The consignee Farthig Ltd has the authority to appoint the broker and must do so in writing. The broker has clearly stated it will not proceed without that letter. The desk's role is to coordinate the parties, not to substitute for the consignee's appointment. The latest valid instruction (from events 5 and 7) is that Novale needs the written letter direct from Farthig, which supersedes the initial request to have the desk tell Novale to proceed. The desk must confirm receipt and status, not assume or force the process."
+}

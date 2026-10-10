@@ -1,0 +1,71 @@
+{
+  "id": "haiku-0143",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "theme": "wrong_address",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-005",
+  "grounding": null,
+  "title": "Case: Recipient requests redelivery but depot has no address on file",
+  "context": "A parcel has failed delivery twice to an unconfirmed address. The recipient now asks for redelivery but the depot work queue shows no verified address record. The desk must obtain the correct address from the right party before authorising another attempt.",
+  "initial_request": "Recipient Kieran Phipps contacts the desk asking for immediate redelivery of a stalled parcel, but the depot has no validated address linked to the shipment.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T08:45:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 failed attempt 2 at 18 Ridley Lane, Ashford. Driver notes: gate locked, no response to phone. Parcel returned to depot. No address validation on file for this shipment."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T10:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923: order shows delivery address as customer-provided. We have no record of address verification. Sender address is warehouse."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T11:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Kieran Phipps, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel keeps bouncing back. I live at 18 Ridley Lane and I am home today. Please send it again now."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Kieran Phipps, recipient",
+        "channel": "Customer portal",
+        "summary": "Confirm the delivery address and request details to prevent another failed attempt."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Request verified address details and confirmation that 18 Ridley Lane is the correct delivery location before reauthorising."
+      }
+    ],
+    "must": [
+      "Obtain a verified or confirmed address before authorising redelivery.",
+      "Do not assume the twice-failed address is correct without explicit recipient confirmation.",
+      "Contact either the recipient or Dispatch to close the missing address validation gap."
+    ],
+    "must_not": [
+      "Send a redelivery instruction to Dispatch without address verification.",
+      "Ask Tallowmere Goods or Warehouse dispatch to verify the address (that is the recipient's or Dispatch's responsibility).",
+      "Assume the two failed attempts prove the address is wrong rather than delivery access was blocked."
+    ],
+    "reference_message": "Kieran, thank you for confirming you are home. Can you please reply with the full delivery address including postcode and any access instructions (gate code, intercom number, etc.)? We will then send the parcel immediately."
+  },
+  "rationale": "The desk cannot authorise redelivery without knowing whether the address itself is wrong, inaccessible, or simply unverified. The recipient has confirmed they are at 18 Ridley Lane but the depot has no validation. A direct confirmation from Kieran, or a request to Dispatch to verify the address before retry, removes the risk of a third failed attempt."
+}

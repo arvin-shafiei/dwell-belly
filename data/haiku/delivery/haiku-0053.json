@@ -1,0 +1,67 @@
+{
+  "id": "haiku-0053",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "theme": "medication",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-041",
+  "grounding": null,
+  "title": "Case: Medication shipment held at depot pending receiver confirmation",
+  "context": "A pallet of prescription medications is in transit and has arrived at the final depot. The carrier is waiting for confirmation that the receiving site can accept it, but the desk has received conflicting information about whether this confirmation was already provided.",
+  "initial_request": "Determine whether the desk should contact the receiver, contact the carrier, escalate, or take no action.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Shipment DL-947 (Brineleaf Pantry medications for Graystone Medical Clinic) arrived at depot at 06:15 UTC. Receiver has not confirmed dock availability. Holding pending confirmation to avoid spoilage risk."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Dr. Martin Kelsey, Graystone Medical Clinic receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We sent confirmation to Plover on 2026-04-11 at 16:45 that dock is ready. Don't know why they're saying we didn't confirm. Can you check their system?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T08:22:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 still waiting. Our system shows no dock-ready message received. If confirmation doesn't come in next 2 hours, we're returning to sender per safety protocol for temperature-controlled goods."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Confirm that receiver sent dock-ready notice on 2026-04-11 at 16:45 UTC and request they check their message log or escalate to Dispatch for clarification before initiating return."
+      }
+    ],
+    "must": [
+      "Ask the carrier to verify receipt of the receiver's prior confirmation rather than assume it was not sent",
+      "Include the specific date and time (2026-04-11 16:45 UTC) that the receiver claims confirmation was sent",
+      "Request the carrier check their own systems or escalate internally rather than asking the desk to mediate between parties or reverify the receiver's information"
+    ],
+    "must_not": [
+      "Contact the receiver to re-send or re-confirm dock availability, as they have already done so and the issue is a carrier-side communication gap",
+      "Escalate to a human supervisor when a clear contact action can resolve the situation",
+      "Assume the receiver's confirmation was not sent and act as if the receiver must provide it again",
+      "Send a message that treats the carrier's system state as ground truth without asking them to investigate their logs"
+    ],
+    "reference_message": "Our records show Dr. Kelsey at Graystone Medical Clinic sent dock-ready confirmation for DL-947 on 2026-04-11 at 16:45 UTC. Please check your message intake log for that timestamp and confirm receipt, or escalate to Dispatch if there's a system issue. The receiver is standing by."
+  },
+  "rationale": "The difficulty is that a rushed reader might contact the receiver to re-confirm, treating the carrier's system failure as the receiver's fault. The right move is to inform the carrier of the receiver's prior confirmation and ask them to investigate their own logs before initiating a costly return of temperature-controlled goods. The desk's job is to connect the parties, not to reverify facts already provided."
+}

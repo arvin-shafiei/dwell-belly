@@ -1,0 +1,120 @@
+{
+  "id": "haiku-0173",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-023",
+  "grounding": null,
+  "title": "Case: Parcel locker full, recipient changes instruction mid-thread",
+  "context": "A recipient's parcel was diverted to a locker due to delivery failure, but the locker was full. Over several messages, the recipient first asks for redelivery to the locker, then changes their mind and requests collection from the depot instead. The desk must follow the latest valid instruction.",
+  "initial_request": "Coordinate the final delivery or collection of DL-947 after locker diversion failed.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T08:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 delivery attempt failed - recipient not home. Parcel diverted to SafeBox locker ID 42, Makin Street. But locker was full, so we're holding at our depot pending new instructions."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T09:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Thorne, intended recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Why is my parcel not in the locker? Please try again tomorrow morning, I'll clear a space for it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T09:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Recipient requests redelivery to SafeBox locker 42, Makin Street, for tomorrow morning slot."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-14T10:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirmed - scheduled locker delivery DL-947 for 2026-03-15 06:00-08:00 window."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-14T14:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Thorne, intended recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Actually I've changed my mind. I'm working from home tomorrow so I don't need the locker. Can you cancel that and let me pick it up from your depot instead? It's closer anyway."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-14T15:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Locker slot already locked in for 06:00-08:00 tomorrow. We can switch to depot collection if the desk confirms."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-14T15:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Thorne, intended recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Yes please cancel locker, I'm definitely doing depot pickup. You can hold it there for me anytime after 09:00 tomorrow."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-14T16:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Thorne, intended recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just to be clear - do NOT attempt locker delivery. Confirm depot collection availability for DL-947 after 09:00 on 2026-03-15."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-14T16:40:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Need confirmation urgently. Locker slot is set for 06:00 tomorrow. Proceed with locker or switch to depot hold?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Cancel the locker delivery slot and confirm parcel will be held for depot collection after 09:00 tomorrow."
+      }
+    ],
+    "must": [
+      "Cancel the locker delivery scheduled for 06:00-08:00 on 2026-03-15",
+      "Confirm depot collection is available for Marcus Thorne from 09:00 onwards on 2026-03-15",
+      "Act on the latest valid instruction (depot pickup) not the superseded one (locker delivery)"
+    ],
+    "must_not": [
+      "Send the parcel to the locker as originally requested in event 2",
+      "Proceed with the 06:00-08:00 locker slot that was scheduled in event 4",
+      "Treat event 2 or event 3 as the final instruction when events 5, 7 and 8 clearly supersede them"
+    ],
+    "reference_message": "Cancel the scheduled locker delivery for DL-947 tomorrow 06:00 slot. Recipient has changed to depot collection - confirm parcel will be held for Marcus Thorne pickup from 09:00 onwards on 2026-03-15."
+  },
+  "rationale": "Marcus Thorne issued a clear, repeated and emphatic change of instruction in events 5, 7 and 8, explicitly cancelling the locker request and asking for depot collection instead. The desk must follow the latest valid instruction, not the earlier superseded one. Dispatch needs immediate confirmation to cancel the locker slot and arrange the hold."
+}

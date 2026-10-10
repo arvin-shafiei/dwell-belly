@@ -1,0 +1,148 @@
+{
+  "id": "haiku-0116",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "theme": "neighbour",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-015",
+  "grounding": null,
+  "title": "Case: Parcel left with neighbour, unclear if recipient was offered choice",
+  "context": "A parcel was left with a neighbour instead of the recipient. The delivery record mentions the neighbour but does not clarify whether the recipient was offered the choice first. Multiple messages in the thread discuss other shipments and contain auto-replies. The desk must extract the relevant facts and coordinate the next step.",
+  "initial_request": "Determine whether to contact anyone and, if so, whom, to ensure the recipient can retrieve their parcel.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Auto-reply",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thank you for your email. I am out of the office until 2026-03-16 and will respond upon my return. For urgent matters, contact my manager."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T08:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Driver comm, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Completed route 4A. Three parcels safe. One redirected customer request. Usual Thursday stuff."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T09:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Customer query on DL-947 (books, Tallowmere Goods): proof of delivery shows parcel left with neighbour Kaveh Otoole at 2026-03-13 14:22 UTC. Neighbour address confirmed as 42 Ashford Lane, Neighbour's property. Driver note: left safe place, neighbour home."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-14T09:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marketing footer",
+      "to": "Recipient",
+      "body": "Unsubscribe from promotional updates | Visit our shop | Track your order now"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-14T09:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Following up on DL-814 (food item). Customer reports item arrived damaged. Initiating damage intake with Brineleaf Pantry. Will update when warehouse assessment complete."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-14T10:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Driver comm, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Question: does route 4B go to postal code PO7 or PO8 tomorrow? Need clarification before 11:00 UTC."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-14T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Additional note on DL-947: customer (Sienna Trawley) has not yet confirmed receipt. No acknowledgment on portal. Neighbour contact details not held by dispatch."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-14T10:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Shipment TG-4421 ready for pickup tomorrow 06:00 UTC. Confirm slot or we flag for re-plan."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-14T10:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route 4A completed on time. No exceptions flagged by depot. Three safe deliveries, one customer request redirect handled. Clear for sign-off."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-14T11:00:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Sienna Trawley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, I got a notification my parcel DL-947 was delivered but I don't have it. Delivery note says left with Kaveh Otoole next door but nobody told me I had a choice. Can you help me get it?"
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-14T11:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 update: neighbour contact details now held by local depot as Kaveh Otoole, 42 Ashford Lane. Marked for outbound contact if needed."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-14T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Flagging DL-947 for coordination: recipient reports no prior offer of neighbour option. Parcel is with neighbour Kaveh Otoole at 42 Ashford Lane. What is the next step?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Sienna Trawley, recipient",
+        "channel": "Customer portal",
+        "summary": "Confirm parcel location with neighbour and provide neighbour's address so recipient can collect"
+      }
+    ],
+    "must": [
+      "Contact the recipient (Sienna Trawley) to confirm the neighbour's address and facilitate collection",
+      "Do not contact the neighbour directly",
+      "Do not escalate to a supervisor"
+    ],
+    "must_not": [
+      "Escalate the case to a human supervisor without attempting contact",
+      "Contact Kaveh Otoole directly (the neighbour) instead of the recipient",
+      "Send instructions to Delivery investigations or Safety team",
+      "Assume the driver acted correctly without the recipient confirming receipt"
+    ],
+    "reference_message": "Hi Sienna, thank you for reporting this. Your parcel DL-947 has been left with your neighbour Kaveh Otoole at 42 Ashford Lane. Please contact them to arrange collection at your convenience. Let us know if you have any further issues."
+  },
+  "rationale": "The facts show the parcel was safely left with a neighbour who was home, but the recipient was not offered a choice and has requested help. The desk's role is to confirm the location and enable collection. A single, coordinating message to the recipient closes the loop without escalation. The case contains noise (auto-replies, unrelated shipments, other queries) that must be filtered to identify the one actionable fact: the recipient's direct request for help retrieving a parcel with a known neighbour."
+}

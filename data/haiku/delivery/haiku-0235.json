@@ -1,0 +1,59 @@
+{
+  "id": "haiku-0235",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "carrier_strike",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-023",
+  "grounding": null,
+  "title": "Case: Depot reports water damage during carrier action slowdown",
+  "context": "During Plover Arc Logistics industrial action, a parcel at the depot has suffered water damage. Delivery investigations has been notified and is assessing. The desk should not duplicate notifications or send premature updates to the merchant while the carrier team investigates.",
+  "initial_request": "A warehouse coordinator at Tallowmere Goods sees a message from depot staff about water damage to a shipment and asks the desk for an update on next steps.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T11:20:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Kai Urbano, Plover Arc Logistics depot staff",
+      "to": "Delivery investigations, Plover Arc Logistics",
+      "body": "DL-943 arrived wet at zone 4 this morning. Box is soft, label running. Contents appear to be winter bedding. Holding for your inspection before any further move."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T11:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Noted DL-943 water damage report from depot. We are under industrial action and staff are stretched, but damage assessment is queued. Will update you when inspection is complete. Do not contact merchant yet."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T13:50:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Marta Cielak, Tallowmere Goods warehouse coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, we just saw a note that DL-943 has water damage at your depot. What is the status and what happens next? Do we need to authorise a replacement?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Take no action and document that Delivery investigations has already been engaged and explicitly requested no merchant contact yet",
+      "Recognise that the carrier team is actively investigating and will report findings before any decision on replacement is needed"
+    ],
+    "must_not": [
+      "Send a message to Tallowmere Goods before the carrier investigation report is ready, as this duplicates the carrier's own notification duty and risks premature replacement commitment",
+      "Contact Delivery investigations again to ask for an update, as they have committed to report when the assessment is complete",
+      "Forward the warehouse coordinator's question to Delivery investigations, turning the desk into a message relay rather than a coordinator"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Delivery investigations has already been told of the damage and has explicitly instructed the desk not to contact the merchant yet. The warehouse coordinator's question is reasonable but premature; the carrier team must complete their inspection before any replacement or refund decision can be made. Sending another message would be noise during an already-stressed industrial action and would risk confusing the timeline or committing the merchant to steps that depend on the damage assessment outcome."
+}

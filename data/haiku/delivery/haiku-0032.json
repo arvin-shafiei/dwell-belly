@@ -1,0 +1,157 @@
+{
+  "id": "haiku-0032",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-042",
+  "grounding": null,
+  "title": "Case: Signature requirement lost in multi-shipment thread",
+  "context": "A high-value camera shipment requires signature on delivery but the requirement has been buried in a long thread about multiple unrelated parcels, auto-replies, and system messages. The desk must identify the relevant fact and contact the correct party to ensure the signature protocol is enforced.",
+  "initial_request": "Coordinate delivery of DL-9847, a high-value camera, ensuring signature is collected.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-10T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Batch shipment notification: DL-9844 (frozen vegetables, cold chain), DL-9845 (tinned goods, standard), DL-9846 (herb oils, standard), DL-9847 (Canon EOS R6 camera, high-value, signature required on delivery), DL-9848 (kitchen utensils, standard). All five parcels dispatched 2026-04-10 06:30 UTC to postcodes in the Manchester area. See attached manifest."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-10T10:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, automated system",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Auto-reply: Your email has been received. Standard processing time for dispatch coordination is 2-4 hours. If urgent, contact Dispatch chat. Thank you for using Plover Arc Logistics."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-10T11:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Webb, recipient for DL-9844",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "When will my frozen order arrive? I need it before 14:00 today for catering prep. It's marked cold chain. Please confirm ETA."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-10T12:03:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Marcus Webb",
+      "body": "DL-9844 is on vehicle 7, ETA 13:15-13:45 Manchester zone. Driver will ring doorbell. Have freezer space ready."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-10T12:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods, Returns authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Unrelated: authorisation granted for return of damaged desk lamp from order TG-567. Not your shipment."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-10T13:02:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9845 and DL-9846 delivered to Spindle Trading Ltd, signatures obtained. DL-9844 in progress, on time. DL-9848 has postcode ambiguity, hold on that one."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-10T13:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Customer services, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Generic footer message: We value your partnership. For urgent warehouse issues contact warehouse.dispatch@brineleaf.co.uk. For customer complaints escalate to safety-lead@brineleaf.co.uk."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-10T14:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9844 delivered 14:08. Customer happy. Cold chain maintained. Now prepping vehicle 12 for Manchester zone round 2. Will include DL-9847 and DL-9848 once ambiguity resolved."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-04-10T14:33:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Business billing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Invoice query: DL-9844, DL-9845, DL-9846 on manifest batch show cold-chain and standard rates. Are all three billed correctly? Please confirm."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-04-10T15:10:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9848 postcode now resolved. Vehicle 12 departing 15:35 with DL-9847 and DL-9848, ETA recipient zone 16:30-17:15."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-04-10T15:28:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Webb, recipient for DL-9844",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Delivery arrived on time and perfect condition. Thank you for coordinating. I will use Brineleaf again."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-04-10T15:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Vehicle 12 on route. Driver Kenan is assigned. Standard process for both parcels."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-04-10T16:20:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hold: DL-9847 recipient address has no safe place note and no signature instruction in current job. Vehicle is 8 mins away. Do we proceed standard or abort and re-route? Need instruction now."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Plover Arc Logistics Dispatch",
+        "channel": "Dispatch chat",
+        "summary": "Confirm that DL-9847 requires signature collection and proceed with delivery instruction to driver Kenan."
+      }
+    ],
+    "must": [
+      "Identify that event 1 states DL-9847 requires signature on delivery",
+      "Confirm signature requirement to Dispatch immediately to prevent re-route or failed delivery",
+      "Reference the correct shipment DL-9847 (not the others in the batch)"
+    ],
+    "must_not": [
+      "Ask Dispatch to confirm the requirement instead of stating it clearly",
+      "Contact Warehouse dispatch or Brineleaf to re-verify signature requirement (already in event 1)",
+      "Suggest re-routing or aborting without first confirming the signature protocol",
+      "Treat DL-9844 delivery or DL-9848 ambiguity as relevant to this decision"
+    ],
+    "reference_message": "DL-9847 requires signature on delivery per warehouse dispatch manifest. Please instruct driver Kenan to obtain recipient signature and confirm once complete."
+  },
+  "rationale": "Event 1 clearly states DL-9847 is high-value and requires signature on delivery. The long thread of other shipments, auto-replies, and unrelated messages obscures this fact, but it is definitive. Dispatch has now asked for instruction with 8 minutes to go. The desk must contact Dispatch immediately to confirm the signature requirement so the driver proceeds correctly. No escalation or re-verification is needed; the original instruction is in writing."
+}

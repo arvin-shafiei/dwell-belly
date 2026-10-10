@@ -1,0 +1,171 @@
+{
+  "id": "haiku-0004",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-012",
+  "grounding": null,
+  "title": "Case: Vehicle breakdown delays promised delivery, recipient waiting",
+  "context": "A shipment promised for today is delayed due to carrier vehicle breakdown. The desk coordinates between recipient and carrier teams to communicate status and next steps. The desk does not control routing, scheduling, or compensation decisions.",
+  "initial_request": "Determine whether the desk should contact any party, and if so, whom and what to communicate.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T06:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 was on Route 4 today. Vehicle 47 broke down at 06:30 UTC near Westbrook junction. Route 4 is now reassigned to spare vehicle 52. ETA recalculation in progress."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T07:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marketing, Plover Arc Logistics",
+      "to": "All staff",
+      "body": "New loyalty scheme launches next month. Refer customers to the campaign portal for details."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T07:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We are receiving a shipment today (DL-911). Has it left the depot? Also our warehouse dispatcher reports a repeat issue with Depot B inventory coding. Can the Plover team fix that?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-12T07:25:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route 4 spare vehicle ETA is now 12:45 UTC. All stops rescheduled. DL-912 recipient: Valeria Kosk, business receiving coordinator, Highgrove Trading."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-12T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Automatic reply",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Out of office until 14 March. Contact support@palovertec.com for urgent issues."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-12T07:35:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-911 scheduled delivery window is 09:00-12:00 UTC. Our warehouse says it shipped at 06:00 UTC."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-12T08:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correction: Route 4 vehicle 52 has a fuel issue now. Waiting for fuel tanker. New ETA TBC. We are now looking at afternoon delivery for DL-912."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-12T08:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our customer Highgrove Trading called us. They say no one told them DL-912 will be late. They have staff waiting. Please advise them of the new time."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "All staff",
+      "body": "All outstanding account queries due by 17:00 UTC today. See the shared folder for the template."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-12T08:20:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Valeria Kosk, Highgrove Trading",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 was promised 08:00-11:00 UTC. I see the truck is late. No one from your carrier has called. What is the status?"
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-12T08:25:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Vehicle 52 fuel now resolved. New Route 4 ETA is 14:30 UTC for all stops including DL-912."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-12T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Desk coordinators",
+      "body": "Reminder: do not alter promised delivery windows without dispatch approval. Confirm all changes with the merchant contact."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-03-12T08:35:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Highgrove is asking if they need to reschedule their receiving staff. Please give us a new window so we can tell them."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-03-12T08:45:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Valeria Kosk, Highgrove Trading",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This is unacceptable. I need to know now whether DL-912 is arriving today and when. I cannot keep my team standing by. Either give me a time or tell me it is not coming."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Valeria Kosk, Highgrove Trading",
+        "channel": "Business portal",
+        "summary": "Confirm the new delivery window (approximately 14:30 UTC) due to carrier vehicle breakdown and fuel delay, and apologise for the late notice."
+      },
+      {
+        "recipient": "Tallowmere Goods",
+        "channel": "Customer portal",
+        "summary": "Advise that DL-912 is now scheduled for approximately 14:30 UTC delivery due to carrier vehicle and fuel issues, for communication to Highgrove."
+      }
+    ],
+    "must": [
+      "Inform the recipient or their merchant of the revised ETA from Dispatch without delay.",
+      "Include the specific reason for the delay (vehicle breakdown and fuel issue).",
+      "Do not create a new promised window; use the updated ETA the carrier provided."
+    ],
+    "must_not": [
+      "Contact the carrier to ask for another ETA or to apologise on their behalf.",
+      "Escalate to a supervisor when the coordination message suffices.",
+      "Ignore Valeria Kosk's direct question by sending only to Tallowmere Goods.",
+      "Invent a time window different from the 14:30 UTC that Dispatch confirmed."
+    ],
+    "reference_message": "To Valeria Kosk via Business portal: DL-912 has been delayed due to vehicle breakdown on the planned route and a subsequent fuel issue. The replacement vehicle is now en route with a revised ETA of approximately 14:30 UTC today. We apologise for the late notification and the impact on your team. Thank you for your patience."
+  },
+  "rationale": "The desk receives a direct, urgent inquiry from the verified recipient coordinator who needs to make a staffing decision. Dispatch has provided a confirmed new ETA. The desk must relay this information immediately to both the recipient and their merchant contact so they can plan accordingly. This is a straightforward coordination task, not an escalation or investigation matter."
+}

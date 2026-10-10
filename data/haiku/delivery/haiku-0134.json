@@ -1,0 +1,62 @@
+{
+  "id": "haiku-0134",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "attachment_evidence",
+  "theme": "b2b_pallets",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-025",
+  "grounding": null,
+  "title": "Case: Pallet freight goods-in discrepancy with conflicting delivery note",
+  "context": "A B2B pallet delivery was completed but the goods-in count does not match the delivery documentation. An attachment was provided that may clarify the short-ship, but the attachment's content is critical to the next step.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk receives conflicting reports about pallet DL-947 delivered to Fenwick Components.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T14:25:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Goods-in team, Fenwick Components",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 received at our dock today. Our intake shows 8 pallets of aluminium extrusions (order FEN-4406). Delivery note says 9. Driver did not stay for count verification. One pallet missing from our goods-in. Attached is our receiving log."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T14:52:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Alec Nott, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver Haresh closed DL-947 at 14:10. Tail-lift was used. Driver notes say 9 pallets loaded and 9 delivered. No issue reported. I am attaching the driver's load sheet from the depot."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T15:18:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Markus Webb, Fenwick Components receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have a production line waiting on those extrusions. We need to know if one pallet is lost in transit, held at your depot, or if Tallowmere Goods short-shipped us. The discrepancy has to be resolved today or we stop the job. Both attachments are with you now."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Read both attachments before responding",
+      "Explicitly state what each attachment shows or whether it could not be read",
+      "Do not assume which party is at fault until the attachment evidence is reviewed",
+      "Escalate to a human supervisor because the attachments decide whether this is a depot hold, a transit loss, or a merchant short-ship, and the desk cannot access the depot or merchant systems"
+    ],
+    "must_not": [
+      "Contact Dispatch or the merchant without reading the attachments first",
+      "Assume the driver's note is correct just because it was filed promptly",
+      "Guess at what the attachments contain or invent their contents",
+      "Send a contact message that asks the merchant to recount when the attachments may already explain the discrepancy"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The case hinges entirely on what the two attachments show: the depot load sheet and the goods-in log. Without reading them, the desk cannot determine if the missing pallet was never loaded, was lost in transit, or was short-shipped by Tallowmere. The desk does not control the depot, merchant warehouse, or driver investigations, so it must escalate to a supervisor who can access those systems and direct the right investigation team."
+}

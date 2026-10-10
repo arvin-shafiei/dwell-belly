@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0224",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unexpected",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-020",
+  "grounding": null,
+  "title": "Case: Oversized parcel directed to customer locker after merchant authorised direct delivery",
+  "context": "A parcel addressed to a pickup point locker cannot be delivered there due to size. The merchant authorised direct delivery to the customer's home, but the customer has not confirmed access. The desk must coordinate with the correct party without making assumptions about what is acceptable to either party.",
+  "initial_request": "Coordinate delivery of an oversized parcel that cannot fit the locker it was routed to.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Parcel DL-924 is a case of 48 specialty wine bottles (15 kg, 62 cm x 45 cm x 38 cm). Customer Marta Sorenson requested locker delivery to Quickstop, Oak Street, but it will not fit the standard units there. We have authorised direct delivery to her home address on file: 14 Ashton Rise, Flat 7. Can you coordinate?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-15T09:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 is in our Westside depot. Locker slot is not viable. We can run home delivery today or tomorrow. Need confirmation from customer or merchant before we route it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-15T10:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marta Sorenson, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I asked for locker delivery because I work long hours and am not usually home. What is happening with my order? I need the wine for a family event on 2026-04-17."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Marta Sorenson, customer",
+        "channel": "Customer portal",
+        "summary": "Confirm whether she accepts direct delivery to her home address, or ask the merchant for alternative collection options."
+      },
+      {
+        "recipient": "Warehouse dispatch, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Ask the merchant to contact the customer directly to confirm the change from locker to home delivery, or arrange collection from a different pickup point."
+      }
+    ],
+    "must": [
+      "Do not instruct Plover Arc to deliver to the home without the customer's explicit agreement.",
+      "Acknowledge the customer's stated preference for locker delivery and the reason why it cannot be used.",
+      "Contact either the customer or the merchant to resolve the mismatch, not both unilaterally."
+    ],
+    "must_not": [
+      "Send the parcel to the home address without confirming the customer accepts this change.",
+      "Assume the merchant's authorisation to use the home address overrides the customer's original locker preference without checking.",
+      "Reply only to the merchant and ignore the customer's direct request for status.",
+      "Escalate without first attempting to contact the customer or merchant for consent."
+    ],
+    "reference_message": "Marta, your parcel DL-924 is too large for the locker at Quickstop. Brineleaf Pantry has offered to deliver it to 14 Ashton Rise, Flat 7 instead. Can you confirm you're able to receive it there, or should we arrange an alternative? Please reply by end of today so we can schedule it for your event."
+  },
+  "rationale": "The customer explicitly chose locker delivery for practical reasons and has not agreed to the home delivery change. Although the merchant has authorised it, the desk must confirm the customer accepts this before routing. Contacting the customer directly respects her stated preference and need, and prevents a failed delivery or parcel being held at the depot. If she cannot accept home delivery, the merchant must arrange a valid alternative."
+}

@@ -1,0 +1,70 @@
+{
+  "id": "haiku-0068",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "theme": "customs_hold",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-024",
+  "grounding": null,
+  "title": "Case: Parcel held in customs pending documentation and duty assessment",
+  "context": "A shipment of imported goods is held at the border. The receiving business has contacted the desk about delays. Customs has flagged missing documentation and unpaid duty. The situation does not fit the standard release or re-route workflow because the merchant's importer status and liability for duty are unclear, and the parcel may need to be refused or held pending investigation.",
+  "initial_request": "A business coordinator wants to know why their order has not arrived and what happens next.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T08:20:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Customs clearance agent, Sandthorn Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-847 held at Port Authority warehouse pending duty assessment. Sender declared value £420, but commercial invoice is missing from file. Importer of record (Brineleaf Pantry) has not yet applied for release or appointed representative. We cannot proceed without invoice or importer instruction. Hold expires in 48 hours unless action is taken."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T10:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Natasha Covell, receiving coordinator, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Where is DL-847? It shows in transit on your tracking but it arrived 18 hours ago. We need this tea order urgently - it was due for shelf stocking today."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Heads up: DL-847 is stuck at customs. Broker says missing invoice and importer hasn't responded. This might be on Brineleaf's end - could be a supplier issue or their import paperwork wasn't set up right. Not our call to sort the import docs."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-15T14:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Natasha Covell, receiving coordinator, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This is urgent. Can you release the parcel or route it back to the shipper? The shelf space is empty and we're losing sales. What do we do?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "route the case to a supervisor or the importer-responsible team",
+      "acknowledge that duty assessment and customs release are outside the desk's authority",
+      "not offer to contact the broker or attempt to authorize release without merchant instruction"
+    ],
+    "must_not": [
+      "contact the broker directly to request release or waive duty",
+      "advise the recipient to refuse the parcel or authorize return without importer input",
+      "treat this as a standard re-route or re-delivery scenario",
+      "promise the parcel will be released or delivered by a specific time"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Customs duty and import documentation are legal and commercial matters outside the desk's remit. The parcel is held pending the importer's action, not due to carrier error or logistics failure. The right move is to escalate to a supervisor or the merchant's import team, who must decide whether to provide the missing invoice, pay duty, appoint a broker representative, or refuse the shipment. The desk must not improvise a release or treat this as a delivery problem."
+}

@@ -1,0 +1,86 @@
+{
+  "id": "haiku-0030",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-003",
+  "grounding": null,
+  "title": "Case: Parcel locker full, access code expires before customer can collect",
+  "context": "A delivery to a public parcel locker was attempted but the locker reached capacity. An access code was issued with a three-day expiry. The desk sent a message to the wrong queue; it bounced back. The customer is now locked out and the window is closing.",
+  "initial_request": "Recover the delivery through the correct channel without repeating the failed action.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-05T14:22:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-943 delivery to Ashford Point locker (unit 7B) failed. Locker was full at 14:18. Driver left a card with access code KGVM77, valid until 2026-03-08 23:59. Recipient is Marcus Venn."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-05T15:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Venn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I got the card but the locker is still showing full. Tried twice. I'm traveling after Friday. What do I do?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-05T16:05:00Z",
+      "stage": "Agent action",
+      "channel": "Warehouse work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Tallowmere Goods warehouse dispatch",
+      "body": "DL-943 locker delivery failed, recipient can't access. Please arrange redelivery to Marcus Venn at Ashford Point."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-05T17:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse work queue auto-response",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your message to warehouse dispatch could not be processed. This queue handles outbound shipments only. Delivery recovery requests must go to Recovery team."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-05T17:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Venn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still nothing. Code expires in 2 days. Please sort this urgently."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Recovery team, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Request urgent redelivery or locker collection assistance for DL-943 before code expires 2026-03-08."
+      }
+    ],
+    "must": [
+      "Send to Recovery team, not Warehouse dispatch",
+      "Use Dispatch chat channel",
+      "Reference the code expiry date (2026-03-08 23:59) to signal urgency",
+      "Do not repeat or reference the failed warehouse queue attempt"
+    ],
+    "must_not": [
+      "Send another message to Warehouse work queue",
+      "Tell Marcus to wait or contact the locker operator directly without desk recovery action",
+      "Escalate to supervisor instead of contacting the correct team",
+      "Mention the bounced email or previous failed action in the message to Recovery team"
+    ],
+    "reference_message": "DL-943 urgent: locker full, access code KGVM77 expires 2026-03-08 23:59. Recipient Marcus Venn cannot collect. Please arrange immediate redelivery or assisted collection. Recipient traveling after Friday."
+  },
+  "rationale": "The desk's first attempt to recover the delivery went to the wrong queue and was rejected. The customer's deadline is now tight. The right move contacts the correct owner (Recovery team) through a direct working channel (Dispatch chat) with the facts needed to act, without referencing the failed action or wasting time escalating to a supervisor when the desk can route correctly."
+}

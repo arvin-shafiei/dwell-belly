@@ -1,0 +1,78 @@
+{
+  "id": "haiku-0039",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-001",
+  "grounding": null,
+  "title": "Case: Recipient confirms rescheduled delivery after desk coordination complete",
+  "context": "A delivery was originally scheduled but the recipient could not attend. The carrier offered a new slot, the recipient confirmed acceptance, and the receiving coordinator has acknowledged the rescheduled time to the carrier. The desk has no pending action.",
+  "initial_request": "Determine whether Iona Quill, Rivet Delivery Desk should contact any party or escalate.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-16T08:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 (Brineleaf Pantry frozen goods) was scheduled for Ashburn Catering on 2026-03-16 morning. Recipient says their dock staff called in sick, cannot receive today."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-16T08:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We offered 2026-03-17 at 14:00 UTC. Waiting on consignee confirmation."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-16T10:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Devi Patel, Ashburn Catering receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirmed. We will receive DL-924 on 2026-03-17 at 14:00. Dock entrance B, reference AC-DL924-MAR17."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-16T11:20:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Recipient confirms 2026-03-17 14:00 UTC, entrance B, reference AC-DL924-MAR17."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-16T11:35:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Noted. DL-924 rescheduled to 2026-03-17 14:00. Routing control has updated the manifest. Consignee is aware?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Recognize that the consignee has already confirmed the new slot to both the desk and the carrier",
+      "Recognize that Dispatch has already updated its manifest and the rescheduling is locked in",
+      "Not send a duplicate confirmation to the recipient or the carrier"
+    ],
+    "must_not": [
+      "Send another message to Devi Patel or Ashburn Catering re-confirming the 2026-03-17 slot",
+      "Send a message to Dispatch repeating information already conveyed in event 4",
+      "Treat the Dispatch question 'Consignee is aware?' as a request requiring a new action; it is rhetorical acknowledgment"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The desk has already coordinated the reschedule by relaying the consignee's confirmed slot to Dispatch in event 4. Dispatch has acted on this and updated the manifest. Both the carrier and the recipient are now aligned and have no open questions. A second message would be redundant coordination noise. The correct move is to log the case as resolved and take no action."
+}

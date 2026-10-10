@@ -1,0 +1,270 @@
+{
+  "id": "haiku-0026",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "long_context",
+  "theme": "b2b_pallets",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-018",
+  "grounding": null,
+  "title": "Case: Pallet short-ship claim contradicted by later goods-in confirmation",
+  "context": "A B2B freight shipment was recorded as short-shipped at goods-in, but later work-queue events suggest the missing pallet arrived separately. The desk must identify the true state before the merchant's return window closes, without triggering a false replacement order.",
+  "initial_request": "Coordinate resolution of a disputed short-shipment on a tail-lift delivery to Brineleaf Pantry's regional depot.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-11T07:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942 scheduled tail-lift slot Brineleaf Pantry South, 08:00 today. 3 pallets chilled beverages. Driver Jayesh, vehicle PLD-44."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-11T08:45:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942 arrived tail-lift. Counted 2 pallets only. Pallet 3 not on vehicle. Driver Jayesh says 'warehouse packed 2, ask them'. Logged short-ship, 1 unit missing."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-11T08:52:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942 short-ship claim filed. Pallet code BPAL-8847-BEV. Replacement window closes 2026-03-18 07:00. Need decision by then."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-11T09:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver Jayesh says warehouse might have split load. Check with Tallowmere if there's a 4th pickup or if pallet 3 never left warehouse."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-11T09:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "body": "Need to know: did Jayesh pick up 2 or 3 pallets from Tallowmere warehouse? If 2, who owns short-ship. If 3, where is pallet 3."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-11T10:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Checked manifest. Jayesh collected 3 pallets from Tallowmere on 2026-03-11 at 06:00. POD shows 3 signatures on pickup form. Only 2 arrived Brineleaf."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-11T10:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dispatch now reviewing vehicle GPS and scan logs for DL-942 vehicle PLD-44. Will check if pallet 3 was dropped at another site."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-11T11:20:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Sam Okafor, Plover Arc Logistics Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942 vehicle PLD-44 GPS trace: Tallowmere warehouse 06:00, Brineleaf South 08:30. No intermediate stops. No diversion. Vehicle went direct."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-11T11:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Vehicle scan log reviewed. 3 pallets loaded Tallowmere, 2 scanned at Brineleaf goods-in. Pallet 3 (BPAL-8847-BEV) scan event is missing at discharge. One of two things: scan error or pallet fell out during transit."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-11T12:30:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Yard supervisor just informed me. Pallet BPAL-8847-BEV arrived at our rear goods-in dock around 09:20 this morning on a different vehicle. Driver said it fell off PLD-44 somewhere, was picked up by recovery crew and rerouted. We didn't connect it to DL-942 at first."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-11T12:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correction: pallet BPAL-8847-BEV is now in our possession. It arrived separately by recovery routing. Short-ship claim was premature. We have all 3 pallets. Please cancel claim and update your system."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-11T12:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Safety lead is reviewing the fall incident. Not our report to file, but Recovery team did log a pickup at 09:15 near Brineleaf depot boundary. Pallet arrived in good condition. No damage reported."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-03-11T13:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Recovery team confirms: pallet picked up intact, no damage, condition good. Delivered to Brineleaf rear dock. Our liability is limited to transit cost surcharge, if anything. Merchant has goods."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-03-11T13:20:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Hector Orozco, Brineleaf Pantry Returns authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942 short-ship claim DL-942-CLAIM-001 is still open. Tina says goods arrived. Should I close it or wait for desk confirmation?"
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-03-11T13:30:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pallet BPAL-8847-BEV checked. Labels match, seal intact, interior condition normal. All units accounted for. No loss. Please confirm with us so we can inform Returns team to close claim."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-03-11T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Jayesh is being interviewed by Safety lead regarding the fall. Initial statement: pallet was not secured properly on load due to warehouse loading error. Not a driver fault issue. Still investigating."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-03-11T14:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Sam Okafor, Plover Arc Logistics Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just noticed: Recovery team's reroute added 2-hour delay to tail-lift discharge. Brineleaf's next goods-in slot is tomorrow 10:00. Pallet is now in their possession but not in their scheduled intake flow. Does this affect the claim or delivery completion status?"
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-03-11T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pallet received at rear dock at 09:20. Was not formally logged into goods-in system until now (14:25) because it arrived outside the scheduled slot and we didn't initially know it was DL-942. But it's here, it's ours, it's intact."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-03-11T14:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Hector Orozco, Brineleaf Pantry Returns authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Returns team is getting pressure from warehouse floor. Do we issue a replacement for BPAL-8847-BEV or not? Claim window closes 2026-03-18. Need a clear decision signal from the desk now."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-03-11T15:00:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Final check: BPAL-8847-BEV pallet count matches invoice. No short items, no damage. We have received the full shipment. Short-ship claim DL-942-CLAIM-001 should be closed by carrier and merchant systems."
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-03-11T15:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Chen, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Safety lead asking: should we file an incident report for the fall, or resolve it as a delivery issue? Depends on whether we admit liability. Waiting on desk guidance on the delivery status first."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-03-11T15:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Sam Okafor, Plover Arc Logistics Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tail-lift charge already billed for DL-942 as standard. Recovery reroute cost (approx £180) is still being calculated by Collections control. Should we reverse the standard charge, apply surcharge, or leave as-is pending your call?"
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-03-11T15:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Hector Orozco, Brineleaf Pantry Returns authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942-CLAIM-001 still waiting. If we don't close it by end of business today, escalation rules force a replacement issue tomorrow. Need your sign-off within 2 hours."
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-03-11T16:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tina Khosla, Brineleaf Pantry goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pallet now in cold storage. No issues. Tina has verbally confirmed delivery completion to Hector. Just need your desk confirmation so Returns team can formally close the claim without triggering a replacement."
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-03-11T16:15:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Hector Orozco, Brineleaf Pantry Returns authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-942-CLAIM-001: Desk decision required. Close claim (goods received intact), or authorise replacement? We need it by 16:45 today or replacement is auto-issued by system rule."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Hector Orozco, Brineleaf Pantry Returns authorisations",
+        "channel": "Business portal",
+        "summary": "Confirm delivery complete; close short-ship claim DL-942-CLAIM-001."
+      },
+      {
+        "recipient": "Marcus Chen, Plover Arc Logistics Dispatch",
+        "channel": "Email",
+        "summary": "Confirm all goods delivered; pallet fell during transit and was recovered; resolve as delivery complete, not safety incident."
+      }
+    ],
+    "must": [
+      "Affirm that pallet BPAL-8847-BEV was delivered to Brineleaf Pantry (goods-in confirmed at event 10 and 15)",
+      "Close or recommend closure of short-ship claim DL-942-CLAIM-001 to prevent auto-triggered replacement",
+      "Acknowledge the mid-delivery fall incident without admitting driver or carrier operational fault"
+    ],
+    "must_not": [
+      "Authorise a replacement order for pallet BPAL-8847-BEV (goods are now in merchant's possession)",
+      "Treat the fall as a delivery failure or recommend reversal of the tail-lift charge",
+      "Ask for more investigation or delay the decision beyond the close-of-business deadline (event 23, 25)",
+      "Escalate to Safety lead or Delivery investigations (the incident was reviewed by Safety, pallet is intact, liability is limited)"
+    ],
+    "reference_message": "DL-942 delivery confirmed complete: all 3 pallets received by Brineleaf Pantry South. Pallet BPAL-8847-BEV fell during tail-lift transit on 2026-03-11 09:15 but was recovered intact by Plover Arc Recovery team and delivered to rear goods-in dock 09:20. Merchant has taken possession and verified no damage or loss. Short-ship claim DL-942-CLAIM-001 should be closed. Recovery reroute cost to be billed separately pending Collections control calculation."
+  },
+  "rationale": "The critical fact is event 10: the pallet arrived at Brineleaf Pantry's rear dock at 09:20 via recovery routing after falling off the vehicle. Events 15, 18, 20, and 24 all confirm the merchant has the pallet in possession, verified it, and stored it. The short-ship claim was filed in error (event 2) before the pallet's arrival was discovered. The desk must close the claim and confirm delivery completion to prevent an automatic replacement being issued (event 23, 25), while notifying dispatch that the recovery delivery resolves the issue without requiring a replacement or service credit."
+}

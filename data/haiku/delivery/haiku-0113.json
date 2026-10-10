@@ -1,0 +1,58 @@
+{
+  "id": "haiku-0113",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "age_restricted",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-028",
+  "grounding": null,
+  "title": "Case: ID check dispute on age-restricted delivery",
+  "context": "Age-restricted goods require identity verification at the door. The driver's note and recipient's account differ on whether ID was presented. The desk coordinates; Delivery investigations settles factual disputes about what happened at handover.",
+  "initial_request": "Recipient claims ID was shown; driver's record says it was not. Determine the right next step without assuming either account.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 is a bottle of Ashworth single malt (700ml, age-restricted). Driver scan at 14:12 UTC today shows 'ID not presented, parcel held at depot pending merchant instruction'. Recipient account is Keira Brace."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T14:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Keira Brace, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The driver came by this afternoon. I showed my driving licence through the door window like always. He took a photo of it and left the parcel. Now your system says ID was not presented. This is wrong. I need the parcel released to me immediately."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Open investigation into conflicting accounts of ID verification at handover for DL-947; do not assume loss or fraud."
+      }
+    ],
+    "must": [
+      "Send the conflict to Delivery investigations",
+      "Name both the driver's recorded reason (ID not presented) and the recipient's claim (ID was shown)",
+      "Request investigation without picking a side or releasing the parcel prematurely"
+    ],
+    "must_not": [
+      "Contact the recipient to resolve the dispute (only Delivery investigations can confirm what happened)",
+      "Instruct the depot to release the parcel based on recipient's account alone",
+      "Assume the driver's scan is correct and deny the recipient",
+      "Ask the merchant to replace or refund before the handover fact is established"
+    ],
+    "reference_message": "Please open a delivery investigation for DL-947: the driver record states ID was not presented and the parcel is held at depot. The verified recipient claims ID was shown and photographed. Review the driver handover notes, photo record if available, and route documentation to establish what occurred. Do not make a release or loss decision pending your findings."
+  },
+  "rationale": "The driver's system entry and recipient's report directly contradict on a fact that determines whether the parcel can be released. Neither account is proven. Delivery investigations has the tools and authority to review handover records and supporting evidence; the desk must not guess which side is right. Sending the conflict to the investigating team is the only safe path."
+}

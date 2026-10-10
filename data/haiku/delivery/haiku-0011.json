@@ -1,0 +1,62 @@
+{
+  "id": "haiku-0011",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-044",
+  "grounding": null,
+  "title": "Case: Parcel locker unavailable, recipient notified and reroute pending",
+  "context": "A delivery attempt to a parcel locker has failed because the unit is temporarily out of service. The recipient has already been notified and the carrier's scheduling team is arranging an alternative. The desk must recognize when a fix is already in motion and avoid redundant contact.",
+  "initial_request": "Determine whether the desk should contact anyone about DL-922.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-15T10:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Driver dispatch log, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 (Brineleaf Pantry, frozen goods) could not be delivered to Meridian Court parcel locker (unit 4B) at 10:15 UTC. Locker reported offline since 09:00 UTC by facilities team. Recipient was notified of the outage by our system alert."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-15T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 assigned to next available same-zone route. Reroute to recipient's registered address (74 Hartley Street) is confirmed for 2026-02-15 afternoon delivery window. Locker 4B repair request filed with site management; ETA 48 hours."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-15T11:40:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Thorne, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got the locker alert. Your dispatcher already told me delivery is going to my address this afternoon. Just confirming that's still on track."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "recognize that the recipient has been notified and has received confirmation of the reroute",
+      "acknowledge that Scheduling control has already arranged the alternative delivery",
+      "log the case as acknowledged and pending the afternoon delivery attempt",
+      "not contact Scheduling control or the recipient again"
+    ],
+    "must_not": [
+      "send a message to Scheduling control asking for an update or reroute",
+      "contact the recipient with information about the locker outage or the reroute",
+      "escalate to a human supervisor as if the situation were unresolved",
+      "request that facilities repair the locker immediately"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Marcus Thorne has already been notified of both the locker failure and the alternative delivery arrangement, and he is confirming receipt of that information rather than asking for help. Scheduling control has already confirmed the reroute to his address for this afternoon. No action by the desk is required; sending another message would be redundant and would add noise to an already-managed situation."
+}

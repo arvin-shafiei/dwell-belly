@@ -1,0 +1,130 @@
+{
+  "id": "haiku-0089",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "theme": "wrong_address",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-027",
+  "grounding": null,
+  "title": "Case: Recipient reports wrong address after multiple failed delivery attempts",
+  "context": "A parcel has been to the wrong address twice. The recipient initially asked for redelivery to their correct address, but later clarified they want to collect it from the depot instead. The desk must follow the latest instruction, not the first one.",
+  "initial_request": "Recipient reports parcel at wrong address and requests action.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-934 was delivered to 47 Ashford Lane but I'm at 74 Ashford Lane. Please redeliver to my correct address ASAP. This is urgent."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T08:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver confirms parcel left at 47. We'll attempt redelivery to 74 this afternoon."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T15:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Second attempt failed. Recipient not at home. Parcel returned to depot."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-12T16:00:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I was out. Can you try again tomorrow morning? I'll be home."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-12T16:30:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Plover Arc Logistics Dispatch",
+      "body": "Schedule redelivery to 74 Ashford Lane for tomorrow 08:00-10:00 window."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-13T07:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver en route to 74 Ashford Lane now."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-13T09:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Third attempt failed. No answer at 74 Ashford Lane. Address appears to be commercial unit, not residential. Parcel back at depot."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-13T09:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I was definitely home. Driver may have gone to wrong building. This is getting ridiculous. Forget redelivery. I'll pick it up from your Midtown Depot myself tomorrow after 10:00. Just hold it there."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-13T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods Replacement authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Customer DL-934 flagged in our system for repeated failed delivery. Standing instruction: offer full replacement or refund to prevent escalation."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-13T10:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Do not attempt another delivery. I have told you I will collect from Midtown Depot tomorrow. Stop wasting everyone's time and just confirm the parcel will be held there for me."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Plover Arc Logistics Dispatch",
+        "channel": "Dispatch chat",
+        "summary": "Confirm parcel DL-934 will be held at Midtown Depot for customer collection after 10:00 tomorrow."
+      }
+    ],
+    "must": [
+      "Follow the recipient's latest instruction (depot collection) not the earlier one (redelivery)",
+      "Do not offer replacement or refund, which contradicts the customer's clear current request",
+      "Confirm with Dispatch that the parcel is held and collection is available as stated"
+    ],
+    "must_not": [
+      "Contact Dispatch to schedule another redelivery attempt",
+      "Send a replacement or refund offer to the customer or merchant",
+      "Escalate to a supervisor when the customer's instruction is clear and actionable",
+      "Treat the merchant's standing instruction as overriding the customer's explicit latest request"
+    ],
+    "reference_message": "Confirm parcel DL-934 will be held at Midtown Depot pending collection by Marcus Webb after 10:00 on 2026-03-14. No further delivery attempts."
+  },
+  "rationale": "The customer has clearly and repeatedly superseded their initial redelivery request with a direct instruction to collect from the depot. The merchant's standing replacement offer, while well-intentioned, must not override an explicit customer instruction that solves the problem. The desk confirms the customer's chosen solution with the carrier and does not reintroduce failed options."
+}

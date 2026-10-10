@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0163",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-044",
+  "grounding": null,
+  "title": "Case: Mixed pallet damage and missing item from business consignment",
+  "context": "A business received a two-item pallet shipment. One item arrived with visible damage to packaging. The second item is not present. The consignee has reported both issues but damage and loss have different investigation and authorisation paths within the carrier and merchant.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk receives notification of damage and absence on DL-957.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-22T07:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Marlene Soames, Brockton Mill receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-957 arrived this morning. Pallet had two items: 140 cartons of hex bolt assortment (Tallowmere Goods SKU BR-4421) and one bulk roll of industrial gasket stock (Tallowmere Goods SKU BR-8876). The bolt cartons show crushed corner damage on four boxes. The gasket roll is completely absent. We need both flagged immediately. Our authorisation tier allows replacement up to GBP 75.00 total."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-22T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We received damage notice for DL-957. Driver report shows pallet secured correctly at depot. No damage noted during loading. We will photograph the consignee's damaged cartons and obtain their signed damage statement within two hours."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T08:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-957 SKU BR-8876 (gasket roll) scanned as delivered to Brockton Mill at 07:22. Consignee says not received. We are checking van internal records and reviewing cctv from depot. Will report back within 24 hours."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-22T09:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marlene Soames, Brockton Mill receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have already waited. The gasket roll is essential for our production line. It costs GBP 140.00 to replace and we are stopped. The bolt damage is less urgent. Can you please authorise an emergency replacement for the gasket now and sort the damage separately? We do not want our whole order to stall."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Replacement authorisations, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Request emergency replacement of gasket roll SKU BR-8876 under consignee's GBP 75.00 tier; escalate GBP 65.00 overage to human for approval authority."
+      },
+      {
+        "recipient": "Marlene Soames, Brockton Mill receiving coordinator",
+        "channel": "Business portal",
+        "summary": "Confirm damage and loss both reported; advise gasket replacement request sent to merchant with note of urgency and cost overage; confirm bolt damage investigation proceeding with carrier in parallel."
+      }
+    ],
+    "must": [
+      "Send replacement request for the gasket roll to the merchant immediately, noting the cost overage and consignee urgency.",
+      "Do not block the gasket replacement authorization on completion of the damage investigation.",
+      "Acknowledge both issues to the consignee and confirm parallel handling of damage and loss."
+    ],
+    "must_not": [
+      "Contact only the carrier about damage and leave the gasket loss unaddressed to the merchant.",
+      "Wait for the carrier's 24-hour trace completion before initiating replacement for the gasket.",
+      "Contact the consignee alone without engaging the merchant replacement authorisations team.",
+      "Authorise the full GBP 140.00 gasket replacement cost without flagging the GBP 65.00 overage."
+    ],
+    "reference_message": "Email to Replacement authorisations, Tallowmere Goods: DL-957 to Brockton Mill. Gasket roll SKU BR-8876 not received by consignee. Consignee tier authorises GBP 75.00 replacement cost; actual replacement cost GBP 140.00. Request emergency authorisation with GBP 65.00 overage flagged for approval. Production line impact. Bolt damage on SKU BR-4421 being investigated separately by Plover Arc Logistics Delivery investigations."
+  },
+  "rationale": "The gasket loss and bolt damage are separate issues with different owners (carrier damage investigation; merchant replacement authorisation) and different urgencies (production-critical gasket versus non-essential bolt damage). The consignee's stated need and cost overage require immediate contact with the merchant replacement team to unblock production, while the damage investigation proceeds in parallel with the carrier. Escalating or waiting for the trace result would delay essential replacement; contacting only the carrier leaves the critical item unreplaced."
+}

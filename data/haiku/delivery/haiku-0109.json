@@ -1,0 +1,71 @@
+{
+  "id": "haiku-0109",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-032",
+  "grounding": null,
+  "title": "Case: Return label printer failure at a convenience pickup point",
+  "context": "A customer cannot print their return label at an unmanned pickup point. The return is merchant-authorised but cannot proceed without the label. The desk must identify whether the issue is temporary equipment failure, customer error, or a missing return authorisation in the system.",
+  "initial_request": "What should the desk do when a customer reports they cannot print a return label at a pickup point kiosk?",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-15T14:22:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Yasmin Ochoa, pickup-point staff at Keswick convenience store",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Customer Ravi Patel tried to print return label for item code 8847-NK (coffee grinder, Tallowmere Goods). Kiosk screen shows 'Return not found'. He has the merchandise and order confirmation. Printer was working fine for other customers today."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-15T14:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Ravi Patel, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I bought a coffee grinder from Tallowmere Goods on 2026-04-12 (order DL-912). It doesn't work. I requested a return on the Tallowmere portal this morning at 10:47. The pickup point says the system has no record of it. I need to return this today if possible."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-15T14:51:00Z",
+      "stage": "Escalation",
+      "channel": "Pickup-point portal",
+      "from": "Yasmin Ochoa, pickup-point staff at Keswick convenience store",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Customer is still here. He tried the kiosk three times. I checked our equipment log - no faults recorded. Is there a delay in the system, or should I tell him to go somewhere else?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Replacement authorisations, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Check whether return DL-912 for item 8847-NK was authorised, and if the label is in the merchant system yet."
+      },
+      {
+        "recipient": "Ravi Patel, customer",
+        "channel": "Pickup-point portal",
+        "summary": "Advise customer that the desk is checking the return status with the merchant and will confirm next steps within two hours."
+      }
+    ],
+    "must": [
+      "Contact the merchant to verify the return authorisation is in their system and has propagated to the label service",
+      "Do not instruct the pickup-point staff to issue a manual label or bypass the system",
+      "Inform the customer of the expected resolution timeframe"
+    ],
+    "must_not": [
+      "Assume the kiosk is faulty and request equipment replacement or technical escalation to the carrier",
+      "Tell the customer to try a different pickup point without first checking whether the return is actually authorised in the merchant system",
+      "Contact Plover Arc Logistics Dispatch or Routing control before confirming the merchant's return status"
+    ],
+    "reference_message": "Recipient: Replacement authorisations, Tallowmere Goods\nChannel: Email\nMessage: Order DL-912 (item 8847-NK): customer Ravi Patel reports he submitted a return request this morning at 10:47 UTC via the Tallowmere portal but the return label will not print at Keswick convenience store kiosk (system shows 'Return not found'). Kiosk equipment is functioning. Can you confirm the return was authorised and check if the label instruction has reached the print service? Customer is on-site and waiting."
+  },
+  "rationale": "The root cause is almost certainly a delay or failure in the merchant system propagating the authorisation, not carrier equipment failure or customer error. The desk must verify the return exists in the merchant's system before advising the customer or asking the pickup point to improvise. Contacting the merchant's authorisations team directly, and keeping the customer informed of progress, is the only safe move that respects the boundaries of each party's role."
+}

@@ -1,0 +1,59 @@
+{
+  "id": "haiku-0195",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "theme": "weather",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-032",
+  "grounding": null,
+  "title": "Case: Recipient inquires about delivery during network weather disruption",
+  "context": "Heavy snow has affected Plover Arc's entire regional network. Dispatch issued a service notice two hours ago. This shipment is in-transit and caught in the disruption along with hundreds of others. No targeted investigations have been opened for weather-affected parcels.",
+  "initial_request": "Customer asks for an update on their parcel and wants to know when it will arrive.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T06:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network-wide snow event across region. All scheduled deliveries for 2026-03-14 and 2026-03-15 are suspended pending road clearance. Approximately 890 parcels affected. We will resume routing when conditions permit. No ETAs at this time."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T08:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I ordered a food mixer for my cafe. Tracking says DL-947 is out for delivery today but I haven't heard anything. Is it coming or not? I need it by tomorrow for a catering event."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "no_action"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Marcus Webb, recipient",
+        "channel": "Customer portal",
+        "summary": "Acknowledge the network-wide snow delay, confirm DL-947 is in-network, and explain that Dispatch will resume when road conditions allow. Do not confirm a delivery date."
+      }
+    ],
+    "must": [
+      "acknowledge the weather disruption by name",
+      "avoid promising any specific delivery date or window",
+      "state that the parcel is secure in-network"
+    ],
+    "must_not": [
+      "open an investigation into DL-947 as if it were individually delayed",
+      "contact Dispatch or Routing for a one-off status check on this parcel",
+      "suggest the recipient collect it from a pickup point without Routing approval",
+      "tell the recipient to contact Dispatch directly"
+    ],
+    "reference_message": "Marcus, DL-947 is held safely in our network following the regional snow event declared this morning. Plover Arc Dispatch has suspended all deliveries while roads are cleared. We will pass on the earliest update from them once routes resume. We know this affects your event plans and appreciate your patience."
+  },
+  "rationale": "The parcel is caught in a known network-wide disruption, not a unique failure. The desk must inform the customer honestly without inventing recovery dates that Dispatch has not confirmed, and must not trigger a separate investigation that would waste resources on one of 890 identical cases. Contact is appropriate because the customer is asking; no_action is also defensible if the desk judges the service notice sufficient, but a direct reassurance respects the business impact on the recipient."
+}

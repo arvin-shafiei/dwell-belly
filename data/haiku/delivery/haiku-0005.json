@@ -1,0 +1,122 @@
+{
+  "id": "haiku-0005",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "theme": "age_restricted",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-037",
+  "grounding": null,
+  "title": "Case: ID verification request for age-restricted delivery, instruction superseded",
+  "context": "A wine delivery requires proof of age at the door. The recipient initially requested a specific time slot, then contacted the carrier to change the arrangement twice more. The desk must act on the current valid instruction, not the earlier requests.",
+  "initial_request": "Coordinate delivery of age-restricted goods with correct ID verification protocol.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Shipment DL-947 dispatched: 6x mixed premium wines, recipient Marcus Venn, 14 Ashford Lane, Colne. Requires valid photo ID at door. Scheduled delivery window 2026-04-13 14:00-16:00."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T10:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Venn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I need the wine earlier. Can you move the delivery to tomorrow morning 10:00-12:00 instead? I'll be there with my passport."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T11:20:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Request to reschedule DL-947 to 2026-04-13 10:00-12:00 morning slot. Recipient has confirmed passport availability."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T12:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirmed. DL-947 rescheduled to morning window 10:00-12:00 on 2026-04-13. Driver alerted."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-12T14:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Venn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Actually, I need to change this again. Can you push it to Friday 2026-04-15 afternoon instead? I have a work call tomorrow morning that I can't move. Same ID check applies, I'll have my passport."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-12T15:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 is already out with driver for morning delivery tomorrow. Cannot reschedule now. If recipient cannot accept, we'll need to return to sender or hold at depot."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-12T16:00:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Venn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "No wait, tomorrow morning is actually fine. Please keep it at 10:00-12:00 on 2026-04-13. I've rearranged my call. My passport will be ready at the door."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-12T16:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 confirmed morning delivery 2026-04-13 10:00-12:00. Driver briefed on ID requirement."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-04-12T17:30:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Standard safety check on age-restricted shipments. Please confirm DL-947 has correct ID protocol instructions sent to the recipient. We need written confirmation the recipient understands passport is required at door."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Marcus Venn, recipient",
+        "channel": "Customer portal",
+        "summary": "Confirm that he must have valid photo ID (passport) ready at the door for the 2026-04-13 10:00-12:00 delivery window."
+      }
+    ],
+    "must": [
+      "Send the message to Marcus Venn, not to the carrier or merchant",
+      "Confirm the current valid delivery time (10:00-12:00 on 2026-04-13), which supersedes his earlier Friday request",
+      "Include the ID requirement (passport or valid photo ID at door)",
+      "Do not reference or attempt to honour the superseded Friday afternoon request"
+    ],
+    "must_not": [
+      "Contact Dispatch to reschedule to Friday 2026-04-15 (the superseded instruction)",
+      "Send the confirmation to the Safety lead, Dispatch or Brineleaf Pantry instead of the recipient",
+      "Escalate the case instead of sending direct confirmation to Marcus",
+      "Suggest alternative identification methods or flexible ID policies"
+    ],
+    "reference_message": "Marcus, please confirm you're ready for delivery of DL-947 tomorrow 2026-04-13 between 10:00 and 12:00. You must have a valid photo ID (such as your passport) ready to show at the door. The driver will not leave the parcel without ID verification for age-restricted items."
+  },
+  "rationale": "Marcus Venn's latest valid instruction (event 7) clearly supersedes his Friday request (event 5). The carrier has already confirmed the morning slot cannot be changed again (event 6), and the Safety lead requires written confirmation the recipient understands the ID requirement. The desk must confirm to Marcus the current delivery arrangement with explicit ID protocol before attempted delivery, which closes the safety loop without re-escalating a delivery that has already been committed and dispatched."
+}

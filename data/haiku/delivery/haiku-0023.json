@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0023",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "theme": "returns_dispute",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-022",
+  "grounding": null,
+  "title": "Case: Return disputed across multiple claims",
+  "context": "A return shipment has created two separate problems: the merchant claims non-receipt of the item, while the recipient disputes that the wrong item was returned to them. Both parties have valid claims requiring different investigation paths. The desk must act on what can be resolved now and flag what needs deeper investigation without letting one party's issue block the other.",
+  "initial_request": "Recipient and merchant disagree on what was actually returned. The desk must identify which issue to act on first and which to escalate.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return DL-947 was logged as received at our warehouse on 2026-03-12 at 14:15. Contents declared as one blue Aldrin ceramic mixing bowl. However, the item in the box was a clear glass pitcher, not the bowl. We have no record of receiving the bowl. Recipient Kai Messina is disputing the return. Awaiting your coordination."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T08:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Kai Messina, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I returned the blue bowl to Tallowmere on 2026-03-11 via the return label. I packed it myself and dropped it at the pickup point. Now they say they got a glass pitcher instead. That's not what I sent. Either your driver lost it or Tallowmere is lying. I want proof of what was actually in the box when it arrived."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T09:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We cannot process Kai Messina's refund until this is resolved. Our damage intake confirms the pitcher, not the bowl. We need either the original bowl or we deny the return claim. Coordinate with logistics to trace what happened. This is holding up a customer credit."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Parcel trace team, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Request scan records and any in-transit observations for return shipment DL-947 to establish what was handed over at pickup point and whether there is handling evidence."
+      },
+      {
+        "recipient": "Kai Messina, recipient",
+        "channel": "Customer portal",
+        "summary": "Confirm we are investigating the discrepancy between what she reports packing and what arrived at the merchant warehouse, and provide a timeline for resolution."
+      }
+    ],
+    "must": [
+      "Initiate a trace of the return shipment DL-947 with logistics to establish the facts of what was in the package at handover and delivery.",
+      "Contact the recipient to acknowledge her dispute and set expectations, without making a liability admission to either party.",
+      "Record that the merchant's refund hold and the recipient's claim are linked but require separate investigation paths."
+    ],
+    "must_not": [
+      "Promise the recipient that the bowl will be found or refunded before the trace is complete.",
+      "Tell Tallowmere to deny the return claim based solely on their intake observation without logistics investigation.",
+      "Suggest to either party that the other is definitely lying, even though one of them must be mistaken.",
+      "Escalate to a human without first requesting the trace evidence that logistics can provide quickly."
+    ],
+    "reference_message": null
+  },
+  "rationale": "Two separate investigations are needed but neither can be closed in parallel: logistics must trace whether the bowl left the pickup point (Kai's claim) or whether it was swapped in transit (Tallowmere's liability scenario). The desk should contact the trace team to gather evidence and inform the recipient that an investigation is underway, but should not escalate yet because the trace request itself is a safe, appropriate next action that will likely answer the core question. Escalation is only needed if the trace finds no evidence of tampering or loss, leaving an unresolvable dispute."
+}

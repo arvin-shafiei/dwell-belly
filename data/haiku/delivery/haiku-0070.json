@@ -1,0 +1,78 @@
+{
+  "id": "haiku-0070",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "regulated_goods",
+  "theme": "wrong_address",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-002",
+  "grounding": null,
+  "title": "Case: Lithium battery parcel cycling back to depot after failed address match",
+  "context": "A parcel containing a power bank has been attempted twice at an incorrect address. The recipient now asks for it to be held at a pickup point, but carrier rules restrict where lithium batteries may be stored. The desk must decide what to do without making a safety commitment.",
+  "initial_request": "The recipient wants the parcel moved to a pickup point after two failed delivery attempts to a wrong address.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-11T07:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 power bank (5000 mAh lithium) attempted twice at 34 Blackthorn Lane, Apt 7. Card left both times. Recipient tracking shows address is wrong; should be 34 Blackthorn Lane, Apt 71. Parcel now back at Ashford depot."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-11T08:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Recipient called our line. Says do not attempt again, too much disruption to the neighbours. Asks for parcel to be held at Ashford pickup point instead."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-11T09:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Teo, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I live at 34 Blackthorn Lane Apt 71 not Apt 7. Your driver tried the wrong flat twice. Can you just leave it at Ashford pickup point on Station Road? I will collect it after work."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Plover Arc Logistics Routing control",
+        "channel": "Dispatch chat",
+        "summary": "Confirm corrected address and escalate lithium battery storage request to Safety lead due to pickup-point restrictions."
+      },
+      {
+        "recipient": "Plover Arc Logistics Safety lead",
+        "channel": "Safety incident queue",
+        "summary": "Recipient requests lithium battery parcel held at pickup point; route decision to Routing control with corrected address Apt 71."
+      },
+      {
+        "recipient": "Marcus Teo, recipient",
+        "channel": "Customer portal",
+        "summary": "Confirm we have the correct address (Apt 71) and that the storage request is being reviewed by our safety team; do not promise pickup point hold."
+      }
+    ],
+    "must": [
+      "Route the lithium battery storage request to the carrier's Safety lead or Routing control, not agree to it at the desk",
+      "Confirm the correct address (Apt 71) is now on file",
+      "Do not give handling advice or commit to pickup-point storage without carrier approval"
+    ],
+    "must_not": [
+      "Promise to hold the lithium battery at the pickup point without consulting Plover Arc safety rules",
+      "Retry delivery to the original wrong address (Apt 7)",
+      "Treat this as a simple address correction without flagging the regulated goods constraint",
+      "Contact only the recipient without routing to the carrier team"
+    ],
+    "reference_message": "Marcus, thank you for the correct address. We have updated it to 34 Blackthorn Lane Apt 71. Your request to hold the parcel at Ashford pickup point is being reviewed by our Routing and Safety teams because lithium batteries have storage restrictions. We will confirm the next step within 2 hours."
+  },
+  "rationale": "Lithium battery parcels cannot be held at all pickup points under carrier safety rules. The desk must not promise the recipient's requested option. The right move confirms the corrected address (to stop the wrong-address loop) and escalates the storage request to the teams that control both routing decisions and lithium battery constraints, while assuring the recipient we are working on it without overcommitting."
+}

@@ -1,0 +1,69 @@
+{
+  "id": "haiku-0197",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "wrong_address",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-034",
+  "grounding": null,
+  "title": "Case: Conflicting records on where a parcel was last scanned",
+  "context": "A parcel is caught in a wrong-address loop. Two teams report different locations for the last confirmed scan, which determines whether it needs re-routing or is already in the correct recovery flow. The desk must send the conflict to the team that can reconcile the records, not guess.",
+  "initial_request": "A parcel has failed delivery twice to an incorrect address and is now at risk of a third attempt unless the desk clarifies its current location.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-11T08:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Depot receiver, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 (Brineleaf Pantry food order, 6kg) arrived back at our depot this morning. Scan shows it was last confirmed at Heston depot on 2026-03-10 at 14:22. Customer address on label is 14 Maple Drive, Hounslow. We are holding it pending your instruction."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-11T09:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch coordinator, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, re DL-947 — driver reports the parcel was last scanned at the Feltham sub-depot on 2026-03-09 at 19:50, not Heston. Driver notes say it was mis-sorted there and flagged for return. Feltham says they logged it for collection yesterday afternoon. No record of it reaching Heston at all."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-11T10:30:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch coordinator, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Iona, we need to know where this parcel actually is right now. Heston depot says it's with them, Feltham says it left them yesterday. If it's still in the recovery queue at Feltham we can stop the third delivery attempt. If it reached Heston we need to reroute it. Which depot should I tell the driver to collect from on the next run?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Parcel trace team, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Request urgent scan trace and physical location confirmation for DL-947 between Feltham and Heston depots to resolve conflicting scan records."
+      }
+    ],
+    "must": [
+      "Send the conflict to the team equipped to query scan records and confirm physical location (Parcel trace team)",
+      "Request a definitive scan trace or physical audit, not a guess at which depot is correct",
+      "Do not tell Dispatch which depot to collect from until location is confirmed",
+      "Acknowledge the time-sensitive nature (third delivery attempt risk)"
+    ],
+    "must_not": [
+      "Pick a side between Heston and Feltham based on which team sounds more confident",
+      "Tell Dispatch to collect from either depot without trace confirmation",
+      "Send this to Dispatch as their own problem to resolve",
+      "Contact the merchant or customer about the location conflict",
+      "Assume the driver's note is correct and the depot scan is wrong"
+    ],
+    "reference_message": "Parcel trace team: urgent request. DL-947 has conflicting location records: Heston depot reports final scan at their site 2026-03-10 14:22, but Dispatch and Feltham sub-depot report last confirmed scan at Feltham 2026-03-09 19:50 with recovery flag. Parcel is now at risk of a third failed delivery attempt. Please run a full scan trace between Feltham and Heston and confirm current physical location so Dispatch can collect from the correct depot today. Thank you."
+  },
+  "rationale": "The desk cannot resolve this by trusting either source. Heston and Feltham give incompatible accounts of where the parcel has been. Only the Parcel trace team has access to the full scan history and can perform a physical audit. Sending the conflict to them, with the time pressure noted, is the only way to break the deadlock without risking a third failed delivery or sending a driver to the wrong depot."
+}

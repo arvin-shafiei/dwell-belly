@@ -1,0 +1,60 @@
+{
+  "id": "haiku-0115",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "theme": "returns_dispute",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-008",
+  "grounding": null,
+  "title": "Case: Return dispute claim lacks shipment reference for verification",
+  "context": "A merchant claims a return shipment was not received, but the desk message does not specify which return or original order is in question. The returns process requires precise identification before any investigation or replacement action can proceed.",
+  "initial_request": "Merchant dispute over returned item; desk must identify the specific shipment before engaging Plover Arc's Recovery team or Brineleaf's Returns authorisations.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-14T10:20:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Mercy Kale, Brineleaf Pantry warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We sent a return label to a customer on 2026-04-12. Customer says they sent it back but our receiving team has no scan. We need to know if the carrier lost it or the customer never actually posted it. Can you check?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-14T10:45:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Mercy Kale, Brineleaf Pantry warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Chasing the above. Customer is now claiming we sent the wrong replacement last month and this return is for that. We need Rivet to confirm whether our outbound replacement was logged correctly and whether the return shipment ever reached our facility. No tracking ref provided by customer yet."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Mercy Kale, Brineleaf Pantry warehouse dispatch",
+        "channel": "Email",
+        "summary": "Request the original order reference, the date of the outbound replacement, and the return label tracking reference to identify which shipment(s) are in dispute."
+      }
+    ],
+    "must": [
+      "Ask for the original order or shipment reference number",
+      "Ask for the return label tracking reference or tracking number",
+      "Do not contact Plover Arc Recovery team until the specific shipment is identified",
+      "Direct the question only to the merchant, not to the carrier"
+    ],
+    "must_not": [
+      "Assume the return and the replacement are the same shipment",
+      "Contact Plover Arc Dispatch or Recovery team without a tracking reference",
+      "Ask the customer to investigate themselves or resubmit information",
+      "Proceed to a replacement authorization without knowing which original item is in dispute",
+      "Contact Brineleaf Damage intake or Refunds team before Returns authorisations clarifies the scope"
+    ],
+    "reference_message": "Please provide the original order reference, the outbound replacement tracking number (if available), and the return label tracking reference so we can trace both shipments. Without these, we cannot check whether the replacement reached the customer or whether the return was ever scanned by the carrier."
+  },
+  "rationale": "The desk cannot safely act without knowing which shipment or return is in question. Mercy's messages mention a return, a replacement, and a customer complaint, but provide no tracking references or order numbers. Asking the merchant for the specific identifiers (original order, replacement tracking, return label tracking) is the only safe first step. Contacting the carrier or authorizing further action without these details risks investigating the wrong shipment or authorizing a duplicate replacement."
+}

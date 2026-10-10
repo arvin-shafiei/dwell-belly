@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0189",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-011",
+  "grounding": null,
+  "title": "Case: Oversized item cannot fit parcel locker; recipient address is Channel Islands",
+  "context": "A parcel intended for a parcel locker collection point is too large to fit. The recipient's address is in the Channel Islands, which may have different import duties and customs rules than mainland UK. The desk must decide whether to treat this as a logistics problem or route it to the appropriate authority.",
+  "initial_request": "A package has arrived at a parcel locker depot and cannot be stored in any available unit due to size. The recipient's address is in Guernsey. The desk needs guidance on next steps.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel locker operations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-941-K arrived at Vazon Bay locker depot. Item is a commercial-grade espresso machine, 65cm x 50cm x 40cm, weight 28kg. No locker unit can accommodate. Recipient address is St Peter Port, Guernsey GY1 2NR. Standard redelivery options are vehicle delivery or hold for collection at the depot customer service desk."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-15T09:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel is stuck at the locker. I chose locker delivery because I work away. Can you leave it at the depot desk instead? I'll collect it Saturday. Also just realised I need to check if there are import duties—this was sent from a UK warehouse but I'm not sure about Guernsey rules."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-15T10:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Re DL-941-K: the espresso machine shipped to Marcus Webb in Guernsey. We do not hold a duty-paid Guernsey import licence and have not confirmed incoterms with the customer. Delivery coordination should confirm whether the recipient or shipper pays import charges before final handover."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-15T11:40:00Z",
+      "stage": "Escalation",
+      "channel": "Pickup-point portal",
+      "from": "Vazon Bay locker depot customer service",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Unit cannot be stored. Recipient will collect from desk on Saturday but we need your decision now: is depot hold-for-collection authorised, or must we return the parcel to sender pending customs/duty confirmation?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Collections control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Authorise depot hold-for-collection pending written confirmation of import duty responsibility from merchant and recipient."
+      },
+      {
+        "recipient": "Brineleaf Pantry refunds team",
+        "channel": "Email",
+        "summary": "Confirm whether recipient or merchant pays Guernsey import duties; provide evidence before depot releases parcel."
+      }
+    ],
+    "must": [
+      "Recognise that Channel Islands import duty and incoterms responsibility must be resolved before delivery is finalised.",
+      "Route the duty/incoterms decision to the parties who own it (merchant billing and recipient), not to the desk.",
+      "Permit interim depot hold-for-collection only as a temporary measure pending written confirmation from both merchant and recipient about duty liability."
+    ],
+    "must_not": [
+      "Assume UK domestic parcel-locker rules apply to a Channel Islands address.",
+      "Instruct the depot to proceed with delivery without resolving who pays import duty.",
+      "Give customs or duty advice; treat this as a coordination routing issue.",
+      "Return the parcel to sender without first asking the merchant and recipient to clarify incoterms."
+    ],
+    "reference_message": "Contact Collections control and Brineleaf Pantry refunds team. Message to Collections control: 'DL-941-K is held at Vazon Bay depot for Saturday collection. Authorise depot hold-for-collection pending written confirmation from merchant (Brineleaf Pantry) and recipient (Marcus Webb) of who pays Guernsey import duty. Do not release parcel until we have received signed confirmation of duty liability from both parties.' Message to Brineleaf Pantry refunds team: 'Please confirm immediately whether recipient or merchant pays import duties on DL-941-K to Guernsey, and provide evidence of incoterms agreed with Marcus Webb. Confirm in writing to the desk and to recipient so depot can release Saturday.'"
+  },
+  "rationale": "Channel Islands have separate customs and duty regimes from mainland UK. The desk does not set import policy or advise on duty liability—that is owned by the merchant's billing team and must be agreed with the recipient before delivery. A depot hold-for-collection is safe as a temporary measure, but only if both parties confirm in writing who pays the duty. Releasing the parcel without that confirmation could trap the recipient with an unexpected charge or cause a return loop."
+}

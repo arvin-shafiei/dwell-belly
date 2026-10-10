@@ -1,0 +1,67 @@
+{
+  "id": "haiku-0057",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "carrier_strike",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-020",
+  "grounding": null,
+  "title": "Case: Conflicting parcel scan records during carrier slowdown",
+  "context": "During industrial action at Plover Arc Logistics, parcels from a multi-parcel order are being held at depots. The Parcel trace team reported one parcel scanned as delivered, but the recipient has no record of receiving it and the driver's notes appear to contradict the scan.",
+  "initial_request": "The desk must resolve whether parcel DL-912 has been delivered or is still in transit.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 (lampshade, order ref OD-4477) scanned as delivered 2026-03-14 at 16:42 to front gate. Recipient has now requested trace. Last three parcels from same order held at depot due to action. Recommend close as delivered."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T09:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver notes for DL-912 route say 'unable to access, returned to depot 2026-03-14 16:40'. This was a strike day, so we had reduced crew. Scan time is 16:42 which doesn't match notes."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T10:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Threlfall, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I have been home all day. The lampshade did not arrive. The other three parcels from my order are supposed to come later. Please tell me where this one is."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Request urgent clarification on whether DL-912 was delivered or returned to depot, citing conflict between scan timestamp and driver notes."
+      }
+    ],
+    "must": [
+      "Acknowledge the conflict between the scan record and driver notes without choosing a side",
+      "Send the conflict to the team that can investigate it (Delivery investigations, not the recipient)",
+      "Do not close the case as delivered or ask the recipient to search for the parcel"
+    ],
+    "must_not": [
+      "Assume the scan is correct and tell the recipient the parcel was delivered",
+      "Assume the driver notes are correct and tell the recipient it will be re-attempted",
+      "Contact the recipient before the internal conflict is resolved",
+      "Recommend the parcel trace team close the case"
+    ],
+    "reference_message": "Dispatch, the trace team reports DL-912 scanned delivered at 16:42 on 2026-03-14, but driver notes say it was returned to depot at 16:40 same day. These timestamps conflict. Can Delivery investigations confirm the actual status and whether the parcel is still at the depot or has a subsequent delivery booking? Recipient is waiting."
+  },
+  "rationale": "The parcel trace team and dispatch driver notes directly contradict each other on a fact that decides the recipient's answer. Strike conditions may have caused data entry errors or system delays. The desk cannot pick a side; it must ask the team with access to depot records and driver communication (Delivery investigations) to resolve the conflict and establish the true status before informing the recipient."
+}
