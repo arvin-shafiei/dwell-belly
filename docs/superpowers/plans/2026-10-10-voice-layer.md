@@ -256,7 +256,7 @@ A real phone call for approval (Twilio) is a stretch goal after a 15:00 checkpoi
 - [ ] **Step 4:** Update the README voice section, `.env.example` (`ELEVENLABS_API_KEY`, `ELEVENLABS_AGENT_ID`), the tracker rows and the PRD changelog.
 - [ ] **Step 5:** Run `npm run test:voice`, `npm run test:agent` and `npm test -w web`. Expected: all pass. Commit `Document the voice layer and add a smoke test against the real ElevenLabs API.`
 
-### Task 8 (stretch, only if Tasks 1 to 7 are green by 15:00): ring the manager's phone
+### Task 8 (dropped on 10 Oct: costs money, Twilio is not a sponsor): ring the manager's phone
 
 Twilio number imported into ElevenLabs, then `POST /v1/convai/twilio/outbound-call` with `conversation_initiation_client_data.dynamic_variables`. After hang-up, fetch the transcript from ElevenLabs. Jev answers one typed `choice` question: "Which option did the manager confirm?" Below the threshold, or with no read-back confirmation, nothing is approved. No tunnel is needed. Planned in detail only if the checkpoint passes.
 
