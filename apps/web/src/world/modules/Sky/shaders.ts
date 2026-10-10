@@ -1,14 +1,18 @@
 // GLSL for the Sky module: the dome (gradient, sun, moon, stars, smog haze, lightning) and GPU rain streaks.
 
 export const domeVertex = /* glsl */ `
+#include <common>
+#include <logdepthbuf_pars_vertex>
 varying vec3 vDir;
 void main() {
   vDir = position;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  #include <logdepthbuf_vertex>
 }
 `;
 
 export const domeFragment = /* glsl */ `
+#include <logdepthbuf_pars_fragment>
 uniform vec3 uZenith;
 uniform vec3 uHorizon;
 uniform vec3 uSunDir;
@@ -28,6 +32,7 @@ float hash13(vec3 p) {
 }
 
 void main() {
+  #include <logdepthbuf_fragment>
   vec3 d = normalize(vDir);
   float y = d.y;
   float clearSky = 1.0 - smoothstep(0.35, 0.95, uCover);
@@ -84,6 +89,8 @@ void main() {
 // Rain: each drop is a 2-vertex line segment. position = random seed in [0,1)^3, aEnd = 0 head / 1 tail,
 // aIdx in [0,1) used to thin the drops out with intensity. Everything moves in the vertex shader.
 export const rainVertex = /* glsl */ `
+#include <common>
+#include <logdepthbuf_pars_vertex>
 uniform vec3 uCenter;
 uniform vec3 uBox;
 uniform vec3 uOffset;   // accumulated fall (wrapped in JS)
@@ -99,14 +106,17 @@ void main() {
   p -= uDir * uLen * (0.7 + 0.6 * fract(position.x * 97.3)) * aEnd;
   vAlpha = (1.0 - 0.85 * aEnd) * step(aIdx, uRain) * step(0.0, p.y);
   gl_Position = projectionMatrix * viewMatrix * vec4(p, 1.0);
+  #include <logdepthbuf_vertex>
 }
 `;
 
 export const rainFragment = /* glsl */ `
+#include <logdepthbuf_pars_fragment>
 uniform vec3 uColor;
 uniform float uOpacity;
 varying float vAlpha;
 void main() {
+  #include <logdepthbuf_fragment>
   if (vAlpha <= 0.001) discard;
   gl_FragColor = vec4(uColor, vAlpha * uOpacity);
   #include <colorspace_fragment>

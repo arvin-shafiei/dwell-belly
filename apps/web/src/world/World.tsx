@@ -57,7 +57,7 @@ export default function World() {
       shadows
       dpr={dpr}
       camera={{ position: [0, 260, 320], fov: 45, near: 1, far: 4000 }}
-      gl={{ antialias: true, powerPreference: "high-performance", stencil: false }}
+      gl={{ antialias: true, powerPreference: "high-performance", stencil: false, logarithmicDepthBuffer: true }}
     >
       <PerformanceMonitor onIncline={() => setDpr(Math.min(2, window.devicePixelRatio))} onDecline={() => setDpr(1)} />
       <AdaptiveDpr pixelated />
