@@ -3,7 +3,8 @@
 // files match their saved results, and write the index. It never commits or pushes; it prints what
 // is left to do.
 // Usage: npm run reality -- <casesDir> [outDir=ANSWERS] [--concurrency 24] [--deadline HH:MM]
-//   [--budget-usd 18] [--profile cheap]   (or REALITY_DEADLINE, REALITY_BUDGET_USD, REALITY_PROFILE)
+//   [--budget-usd 18] [--profile cheap] [--resume]   (or REALITY_DEADLINE, REALITY_BUDGET_USD, REALITY_PROFILE)
+//   --resume keeps every case already answered and runs only the rest.
 import { spawn } from "node:child_process";
 import { readFile, rm } from "node:fs/promises";
 import path from "node:path";
@@ -35,6 +36,7 @@ async function main() {
       deadline: { type: "string" },
       "budget-usd": { type: "string" },
       profile: { type: "string" },
+      resume: { type: "boolean", default: false },
     },
   });
   const [casesDir, outDir = "ANSWERS"] = positionals;
@@ -47,7 +49,7 @@ async function main() {
   const common = ["--concurrency", values.concurrency, ...(deadlineText ? ["--deadline", deadlineText] : []), ...(profile ? ["--profile", profile] : [])];
   const withBudget = (usd: number) => ["--budget-usd", Number.isFinite(usd) ? usd.toFixed(2) : "none"];
 
-  let code = await answer(casesDir, outDir, [...common, ...withBudget(budget)], false);
+  let code = await answer(casesDir, outDir, [...common, ...withBudget(budget)], values.resume);
   let gaps = await incomplete(casesDir, outDir);
   // Cases that ended in a system failure (a rate-limit storm, a timeout) are worth one more try
   // while there is time and money left. Cases handed over for time or budget are left alone.
@@ -75,7 +77,7 @@ async function main() {
   console.log(`Answer files matching their saved result: ${checked.same.length}. Different: ${checked.different.length}. No saved result: ${checked.unreadable.length}.`);
   if (gaps.length) {
     console.log(`STILL INCOMPLETE (${gaps.length}): ${gaps.map((g) => `${g.name} lacks ${g.missing.join(", ")}`).join("; ")}`);
-    console.log("Each of these still has a failure ANSWER.md if the runner reached it. Check the key and credit, then run this command again: it only reruns failed cases.");
+    console.log("Each of these still has a failure ANSWER.md if the runner reached it. Check the key and credit, then run this command again with --resume, which keeps every case already answered.");
   }
   if (checked.different.length) console.log(`Answer files that do not match their saved result: ${checked.different.join(", ")}. Run npm run replay -- ${outDir} --write to regenerate them.`);
   console.log(`\nNext, by hand:\n  git add ${outDir}\n  git commit -m "Reality Test results"\n  git push\nThen put that commit's hash in SUBMISSION.md.`);

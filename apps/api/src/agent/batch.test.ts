@@ -201,6 +201,21 @@ test("a batch started after its deadline writes four files per case, a run log a
   assert.deepEqual(errored, [], "cases handed over for time are not rerun");
 });
 
+test("a run started after the deadline keeps an answer an earlier run produced", async () => {
+  const cases = await caseFolders(2);
+  const out = await mkdtemp(path.join(tmpdir(), "answers-"));
+  await mkdir(path.join(out, "1"));
+  await writeFile(path.join(out, "1", "ANSWER.md"), "# 1\n\nAn analysed answer.\n");
+  await writeFile(path.join(out, "1", "trace.json"), JSON.stringify({ events: [{ kind: "run_end", outcome: "acted", totalCostUsd: 0.05 }] }));
+  const { code, out: log } = await runCli([cases, out, "--deadline", new Date(Date.now() - 60_000).toISOString()]);
+  assert.equal(code, 0, log);
+  assert.equal(await readFile(path.join(out, "1", "ANSWER.md"), "utf8"), "# 1\n\nAn analysed answer.\n");
+  assert.match(await readFile(path.join(out, "2", "ANSWER.md"), "utf8"), /Time ran out before this case could be analysed/);
+  const runlog = await readFile(path.join(out, "RUNLOG.md"), "utf8");
+  assert.match(runlog, /\| 1 \| kept from an earlier run \(deadline reached\) \| acted \|/);
+  assert.match(runlog, /Deadline reached: 1 case\(s\)/);
+});
+
 test("a batch with no budget left hands every case to a person and notes the budget in the run log", async () => {
   const cases = await caseFolders(2);
   const out = await mkdtemp(path.join(tmpdir(), "answers-"));

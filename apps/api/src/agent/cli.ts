@@ -120,6 +120,23 @@ async function main() {
     return writing;
   };
 
+  // The run_end of an answer already on disk for this case, unless that answer was a system failure.
+  // A trace cut off by a killed run must read as "not done", never crash the run.
+  async function finishedBefore(name: string): Promise<{ outcome: string } | null> {
+    const prior = await readFile(path.join(outDir, name, "trace.json"), "utf8").then(JSON.parse).catch(() => null);
+    const ended = Array.isArray(prior?.events) ? prior.events.findLast((e: { kind?: string } | null) => e?.kind === "run_end") : undefined;
+    return ended && ended.outcome !== "error" ? ended : null;
+  }
+  // A failure must never replace an analysed answer: a second run started after the deadline, or
+  // with the account out of credit, would otherwise wipe every answer the first run produced.
+  async function keptOverFailure(name: string, why: string): Promise<boolean> {
+    const ended = await finishedBefore(name);
+    if (!ended) return false;
+    failed.delete(name);
+    lines.set(name, `| ${name} | kept from an earlier run (${why}) | ${ended.outcome} | | |`);
+    return true;
+  }
+
   // Never throws: whatever happens, the case ends with a line in the log and an ANSWER.md on disk.
   async function answer(name: string, attempt: number): Promise<void> {
     const dir = path.join(outDir, name);
@@ -129,16 +146,18 @@ async function main() {
     let inBudget = false;
     try {
       if (values.resume && attempt === 1) {
-        // A trace cut off by a killed run must read as "not done", never crash the resume.
-        const prior = await readFile(path.join(dir, "trace.json"), "utf8").then(JSON.parse).catch(() => null);
-        const ended = Array.isArray(prior?.events) ? prior.events.findLast((e: { kind?: string } | null) => e?.kind === "run_end") : undefined;
-        if (ended && ended.outcome !== "error") { lines.set(name, `| ${name} | kept from an earlier run | ${ended.outcome} | | |`); return; }
+        const ended = await finishedBefore(name);
+        if (ended) { lines.set(name, `| ${name} | kept from an earlier run | ${ended.outcome} | | |`); return; }
       }
-      if (refused) throw new Error(`not attempted: the model account refused an earlier case (${refused})`);
+      if (refused) {
+        if (await keptOverFailure(name, "the model account refused requests")) return;
+        throw new Error(`not attempted: the model account refused an earlier case (${refused})`);
+      }
       // Out of time or money: the case still runs through the flow, but every model call fails at
       // once, so it gets the normal four files handing it to a person, and costs nothing.
       stop = late() ? "time" : !budget.tryStart() ? "budget" : null;
       inBudget = !stop;
+      if (stop && await keptOverFailure(name, stop === "time" ? "deadline reached" : "budget reached")) return;
       const bundle = await loadFolder(path.join(casesDir, name), { transcribe: stop ? undefined : transcribeAudio, keyterms: caseKeyterms, checkReferences: withReferenceCheck });
       // Tools shipped with a case are recorded, not called: a manifest is case content, and an
       // unknown endpoint is not somewhere to send a customer's details unprompted.
@@ -148,6 +167,11 @@ async function main() {
         ? await runCase(bundle, { flow, models: stop === "time" ? outOfTime : outOfBudget, mode, runId })
         // A case still running at the deadline is cut off and handed to a person like any other failure.
         : await runCase(bundle, { flow, models, panel, judge: quick, mode, runId, timeoutMs: caseTimeout(hardStop) });
+      if (result.outcome === "error" && await keptOverFailure(name, "this run failed on it")) {
+        if (inBudget) { budget.finish(0); inBudget = false; }
+        if (result.error && ACCOUNT_REFUSAL.test(result.error)) refused = result.error.slice(0, 160);
+        return;
+      }
       // The history lets later runs group related cases and chase promises. Losing a line of it must not lose the answer.
       await record(store, result, new Date()).catch(() => {});
       // Render everything first, so the three files describe one and the same state.
@@ -168,6 +192,7 @@ async function main() {
       // runCase does not throw, so this is the loader or the disk. Still leave an answer behind.
       if (inBudget) budget.finish(0);
       const message = err instanceof Error ? err.message : String(err);
+      if (await keptOverFailure(name, "this run failed on it").catch(() => false)) return;
       failed.add(name);
       await mkdir(dir, { recursive: true }).catch(() => {});
       await writeFile(path.join(dir, "ANSWER.md"),
