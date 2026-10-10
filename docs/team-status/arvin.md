@@ -1,27 +1,32 @@
-# Arvin: status for the team plan (10 Oct, 11:05)
+# Arvin: status for the team plan (10 Oct, 11:50)
 
 ### Who and what
-Arvin. Frontend 3D city for the demo video (30%). I own `apps/web/src/world/**` and the `/city` page (`apps/web/src/app/city`). I'm not touching `apps/api` or the agent. Built with Claude Code subagents (about 35 so far), one module each.
+Arvin: frontend, the 3D city for the demo video (30% of the score). I own `apps/web/src/world/**` and the `/city` page. Per `docs/submission-tracker.md` I also own the README rewrite, `demo/` (the video) and the SIMULATED label on the mock HUD. I don't touch `apps/api`.
 
 ### Built so far
-**Pushed to origin/main (latest 8f98484):**
-- **Contracts:**
-  - `config.ts` (zones; Layer 2 world ±1100, `RIVER`, `WIND`, `MOTORWAY`)
-  - `roads.ts` (graph, `findPath` avoiding blocked edges, left-hand lanes, `districts/*.ts` merged at load)
-  - `store.ts`, `registry.ts`, `bus.ts`, `signals.ts`
-  - `scenarios.ts` plus the generated `scenarios.data.ts`: all 50 delivery cases mapped to a city scene, plus 12 Reality Test modifiers
-- **Layer 1 modules (`world/modules/`), all working:** Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs, Airport (stub until its agent lands), Traffic, TrafficLights, Transit (buses and metro with boarding), DeliveryFleet, Responders, Roadworks, Scenarios (acts any case out), Life, Sky, CameraRig (follow, cinematic tour), WorkflowDriver, WorkflowHud, Minimap.
-- 26 commits, about 460 vitest tests.
+**Pushed to origin/main (latest `4c7360c`), working in Chrome:**
+- **City:** a three.js city spanning about ±1100 m, built from 34 modules in `apps/web/src/world/modules/`.
+- **Layer 1:** roads, buildings, landmarks, docks, depot, suburbs, countryside, traffic and lights, transit (buses and metro with passengers boarding), the Rivet delivery fleet, crashes and pileups, responders, roadworks, scenarios, sky, camera, HUD, minimap.
+- **Layer 2:**
+  - motorway
+  - river with 7 bridges (Tower Bridge lifts)
+  - container terminal (flatbeds that overturn)
+  - industrial area (smoke drifting over the city)
+  - Old Town, Southbank, Shoreditch, Hampstead
+  - construction, police chases, GPU crowds, streetscape
+  - weather
+  - airport (plane crash into the city: buildings collapse, then rebuild)
+- **Tools:** `?stats=1` shows FPS, `?skip=`/`?only=` turn modules on and off, and `window.__city.bench()` times rendering. Warm render is about 3.9 ms/frame (770 draw calls, 3.7M triangles). First load is 10–20 s while shaders compile.
+- **Scenarios:** all 50 practice cases and 12 edge-case modifiers can be acted out in the city (`scenarios.ts`, generated from `data/`).
 
-**Mocked:** `WorkflowDriver/engine.ts` fakes the agent: node walk, risk, gate, cost, decision card. Nothing reads real traces yet.
+**Mocked:** `modules/WorkflowDriver/engine.ts` fakes the agent: node walk, gate, decision card, cost. It's **not yet labelled SIMULATED** (tracker item, a blocker for video takes).
 
-**Local or in flight, not pushed:**
-- 17 Layer 2 agents are running: motorway, river and Tower Bridge, container terminal (flatbeds), industrial (smoke over the city), Old Town, Southbank, Shoreditch, Hampstead, rail, GPU crowds, streetscape, construction, police chases, plus upgrades to Traffic, Ground, Countryside and Sky (weather).
-- Crashes is temporarily unmounted in `World.tsx` mid-rewrite (pileups).
-- 7 tests fail locally because of that work in flight.
+**Local only:** Rail (last agent still building). Also 2–3 module layout tests fail because of road overlaps; they're cosmetic, not runtime errors.
 
 ### Interfaces
-Consumed by the HUD (`store.ts`):
+**Consumes (from origin/main `apps/api/src/lib/trace.ts`, provided by Anson's runtime):** `Trace { version, runId, caseId, flowId, mode, synthetic?, events: TraceEvent[] }` with `run_start | node_start | model_call | node_end | edge | run_end`. Endpoint: `POST /api/cases` → `{ trace, outcome, outbox, card }`.
+
+**Produces and consumes (`world/store.ts`):**
 ```ts
 export interface WorkflowEvent {
   id: string;
@@ -32,43 +37,44 @@ export interface WorkflowEvent {
   summary: string;
 }
 ```
-Produced and consumed (`bus.ts`):
+**Bus events (`world/bus.ts`):**
 ```ts
   | { type: "request:scenario"; scenarioId: string; modifiers: import("./scenarios").Modifier[] }
   | { type: "scenario:staged"; runId: string; scenarioId: string; modifiers: import("./scenarios").Modifier[]; x: number; z: number; vehicleId?: string }
   | { type: "scenario:resolved"; runId: string; scenarioId: string; outcome: "acted" | "asked_for_info" | "escalated" | "blocked" | "no_action" };
 ```
-**Assumed from the backend, which doesn't exist yet:** one trace per case, with entries `{nodeId, status, summary, costUsd, latencyMs}` and a final `{decisionType, actions[{recipient, channel, message, status}]}`. A `GET` for the list and one `GET` per trace (the shape in `docs/plans/2026-10-10-3d-workflow-viz-design.md` §4). I'll map it 1:1 onto `WorkflowEvent` and replace the mock.
 
 ### Assumptions about other parts
-- The backend writes traces for practice runs that I can replay, so the demo shows real decisions rather than mock ones.
-- Node ids stay `ingest, history, triage, clash, missing_info, group, planner, gate, human, action, verify, log`, or someone tells me the new ones. The stress-test 3-call design still maps onto them.
+- Practice-run traces (`ANSWERS/<n>/trace.json` or `examples/practice-run/`) get committed, so the city can replay **real** traces offline during recording, without keys.
+- `POST /api/cases` with `mode: "demo"` is safe to call from the browser for a live case.
 
 ### Voice in my area
-Voice isn't built in my area yet. It would show up as events on `bus.ts` (proposed):
+Not built yet. I propose these bus events:
 ```ts
 | { type: "voice:call"; callId: string; caseId: string; from: string; to: string; source: "live_human" | "simulated_persona" | "audio_attachment"; state: "ringing" | "live" | "ended" }
 | { type: "voice:transcript"; callId: string; speaker: string; text: string; final: boolean }
 | { type: "voice:note"; caseId: string; vehicleId?: string; text: string; source: "live_human" | "simulated_persona" | "audio_attachment" }
 | { type: "decision:voice"; caseId: string; optionId: string }
 ```
-What the city would show:
-- a phone ringing over the van or house;
-- a speech bubble on the speaking character;
-- a live transcript in the HUD;
-- a voice-note envelope flying from a driver to the depot;
-- the manager desk lighting up when someone says "option 2";
-- a "SIMULATED" tag on persona voices.
+**What the city would show:**
+- a phone ringing above the van or house
+- a speech bubble on the person speaking
+- a live transcript in the HUD
+- a voice-note envelope flying to the depot
+- the decision card confirming "option 2" when it's approved by voice
+- a SIMULATED tag on persona voices
 
-From the voice layer I need these events, ideally through a small browser bridge (an `EventSource` from the API).
+**What I need:** an `EventSource` stream from the voice layer.
 
 ### Next 2 hours
-- **11:05–12:00:** merge Layer 2 agents as they land, re-enable Crashes, run a perf pass in Chrome (target 50+ fps on M4).
-- **12:00–13:00:** swap the mock workflow for real traces once the backend publishes them (needs the trace shape agreed). Add voice events if the voice owner agrees the shape.
-- **13:00–14:00:** set up camera tour shots and record a first demo take. Blocked on: trace format and endpoint.
+- **11:50–12:20:** SIMULATED label on the mock HUD; merge origin/main; finish Rail.
+- **12:20–13:20:** swap the mock for real traces (the shapes match): replay a trace file per scenario and fall back to mock with the label.
+- **13:20–14:00:** rewrite the README (8 sections, honest labels for demo-only parts).
+- **14:00–15:30:** camera tour shots and the first demo video takes; final take by 16:10.
+
+**Blocked on:** committed real traces (needs someone to run the first real run with a key).
 
 ### Risks
-- **Builds:** parallel agents can break the build mid-edit. This happened once and was fixed in minutes; each agent now checks the page still builds.
-- **Performance:** the bigger world may run too slowly. Fallback: drop districts from `World.tsx`.
-- **Mock data:** if real traces don't land, the demo shows the mock engine. It must be labelled simulated, so judges never see fabricated results.
-- **Reality Test:** my code is frontend only and can't affect the scored run.
+- **Real traces:** if none land, the video shows the mock, which is allowed only if clearly labelled.
+- **Machine load:** heavy scenes and parallel agents. I'll freeze 3D features at 15:00.
+- **Reality Test:** my code is frontend only and can't touch the scored run.
