@@ -124,7 +124,16 @@ function CallInner({ request, state, simulated = false, label = "Start call", on
         {simulated && <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-amber-300">Simulated</span>}
         <span className="ml-auto">
           {live ? (
-            <button onClick={() => conversation.endSession()} className="rounded bg-red-600 px-3 py-1">End call</button>
+            <span className="flex items-center gap-2">
+              <button
+                onClick={() => conversation.setMuted(!conversation.isMuted)}
+                className={`rounded px-3 py-1 ${conversation.isMuted ? "bg-amber-500/25 text-amber-200" : "border border-white/20"}`}
+                title="Mute your microphone, for example in a noisy room. The agent keeps talking; it cannot hear you until you unmute."
+              >
+                {conversation.isMuted ? "🔇 Unmute" : "🎙 Mute"}
+              </button>
+              <button onClick={() => conversation.endSession()} className="rounded bg-red-600 px-3 py-1">End call</button>
+            </span>
           ) : (
             <button onClick={start} disabled={finishing} className="rounded bg-[#ff6a1a] px-3 py-1 font-medium disabled:opacity-50">{finishing ? "Saving the call…" : `📞 ${label}`}</button>
           )}

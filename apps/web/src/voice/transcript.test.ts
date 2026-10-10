@@ -27,4 +27,8 @@ describe("micErrorMessage", () => {
     expect(micErrorMessage(new DOMException("none", "NotFoundError"))).toBe("No microphone found: type the note instead");
     expect(micErrorMessage(new Error("other"))).toBe("Recording failed: type the note instead");
   });
+  it("drops the voice model's expression tags from what the agent said", () => {
+    expect(transcriptReducer([], { role: "agent", message: "That's [happy] wonderful, thank you. [laughs]" })).toEqual([{ role: "agent", message: "That's wonderful, thank you." }]);
+    expect(transcriptReducer([], { role: "user", message: "Gate [B] is shut." })).toEqual([{ role: "user", message: "Gate [B] is shut." }]);
+  });
 });

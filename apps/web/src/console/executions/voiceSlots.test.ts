@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ExecutionRecord, OutboxEntry } from "../types";
-import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noCallLine, noteCaseText, noteRerun, partyRole } from "./voiceSlots";
+import { approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noCallLine, noteCaseText, noteRerun, partyRole } from "./voiceSlots";
 
 const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
 const ex = { id: "e1", caseId: "delivery-003", dataset: "public", workflowId: "default-incident", title: "Case 003" } as ExecutionRecord & { title: string };
@@ -36,6 +36,18 @@ describe("voice slots", () => {
     ] } } as unknown as ExecutionRecord;
     expect(partyRole("Elva Kesh", pasted)).toBe("recipient");
     expect(partyRole("Fen Orlo", pasted)).toBe("route driver");
+  });
+  it("gives a call on a pasted case the names it needs, so the safety check knows who is on the line", () => {
+    const pasted = { ...ex, outbox: [{ ...row("Phone call"), action: { ...row("Phone call").action, recipient: "Elva Kesh", message: "Hello Elva, about DL-003 at 7 Sedgeglass Mews." } }],
+      trace: { events: [
+        { kind: "run_start", title: "Please contact recipient Elva Kesh on the verified order callback route.", inputs: [{ n: 1, channel: "Document", from: "history", excerpt: "573 characters" }] },
+        { kind: "node_end", output: { type: "clash_check", clash: false, p: 0.1, claims: [{ who: "Fen Orlo", says: "Pedestrian gate shut at 7 Sedgeglass Mews." }] } },
+      ] } } as unknown as ExecutionRecord;
+    const text = callStateSeed(pasted, "Elva Kesh", false).caseText;
+    expect(text).toContain("recipient Elva Kesh");
+    expect(text).toContain("Fen Orlo: Pedestrian gate shut");
+    expect(text).toContain("To Elva Kesh (Phone call): Hello Elva, about DL-003");
+    expect(text).not.toContain("573 characters");
   });
   it("says plainly why there is no call", () => {
     expect(noCallLine([{ ...row("Dispatch chat"), action: { ...row("Dispatch chat").action, recipient: "Dispatch, Plover Arc Logistics" } }]))
