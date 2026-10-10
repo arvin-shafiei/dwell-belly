@@ -1,6 +1,531 @@
 "use client";
-// Module: Responders. Owned by one agent. Rendered inside the <Canvas> by World.tsx.
+// Module: Responders. Emergency services react to incidents: police, ambulance, fire engine and a
+// recovery truck drive from their bases, secure the scene, clear it, reopen the road and go home.
+// Pure planning/lifecycle logic lives in ./Responders/ (tested); this file is the per-frame driver.
+import { useFrame } from "@react-three/fiber";
+import { useCallback, useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { emit } from "../bus";
+import { getEdge, getNode, edgeKey as makeEdgeKey, lanePosition, ROAD_EDGES } from "../roads";
+import { registerVehicle, type VehicleEntry } from "../registry";
+import { blockedSet, useWorld, type Incident, type IncidentKind } from "../store";
+import {
+  BASE,
+  LEAVE_DELAY_S,
+  planApproach,
+  planDispatch,
+  planReturn,
+  shouldHandle,
+  type Route,
+  type Side,
+  type UnitRole,
+} from "./Responders/dispatch";
+import { newLife, stepLife, type Life } from "./Responders/lifecycle";
+import { advance, remainingMetres, type Cursor } from "./Responders/motion";
+import { getShared, UnitMesh, type UnitParts } from "./Responders/meshes";
+
+const RESPONSE_SPEED = 1.4; // x speed limit with blues on
+const RETRY_S = 2;
+const MAX_CONES = 48;
+const CONES_PER_SCENE = 4;
+const LIGHT_POOL = 3;
+
+type Mode = "waiting" | "enroute" | "parked" | "returning" | "gone";
+
+interface Unit {
+  id: string;
+  role: UnitRole;
+  incidentId: string;
+  base: string;
+  mode: Mode;
+  returning: boolean; // waiting/returning towards base
+  departed: boolean; // has left base at least once (visible)
+  route: Route | null;
+  cur: Cursor;
+  side: Side | null;
+  anchor: string; // node to plan from while waiting
+  retryAt: number;
+  departAt: number; // returning units start moving at this sim time
+  speed: number;
+  park: number; // 0..1 police "fend-off" diagonal blend
+  placed: boolean;
+  x: number;
+  z: number;
+  heading: number;
+  flash: number; // per-unit flash phase offset
+  // scene dressing (police)
+  officer: number; // 0..1 walked out
+  coneLevel: number; // 0..CONES_PER_SCENE cones deployed
+  cones: Float32Array; // [x, z] * CONES_PER_SCENE
+  door: [number, number];
+  post: [number, number];
+}
+
+interface Scene {
+  id: string;
+  kind: IncidentKind;
+  edgeKey: string;
+  x: number;
+  z: number;
+  life: Life;
+  units: Unit[];
+}
+
+const edgeLen = (a: string, b: string) => getEdge(a, b)?.length ?? 1;
+
+function shortestAngle(from: number, to: number) {
+  let d = (to - from) % (Math.PI * 2);
+  if (d > Math.PI) d -= Math.PI * 2;
+  if (d < -Math.PI) d += Math.PI * 2;
+  return d;
+}
+
+let unitSeq = 0;
 
 export default function Responders() {
-  return null;
+  const [units, setUnits] = useState<Unit[]>([]);
+  const scenes = useRef(new Map<string, Scene>());
+  const handled = useRef(new Set<string>());
+  const parts = useRef(new Map<string, UnitParts>());
+  const entries = useRef(new Map<string, { entry: VehicleEntry; off: () => void }>());
+  const sim = useRef(0);
+  const conesRef = useRef<THREE.InstancedMesh>(null);
+  const lightsRef = useRef<(THREE.PointLight | null)[]>([]);
+  const tmp = useRef(new THREE.Object3D());
+  const warned = useRef(false);
+
+  const refreshList = useCallback(() => {
+    const list: Unit[] = [];
+    for (const s of scenes.current.values()) for (const u of s.units) if (u.mode !== "gone") list.push(u);
+    setUnits(list);
+  }, []);
+
+  // --- dispatch: handle each crash/breakdown incident exactly once --------------------------------
+  const dispatch = useCallback(
+    (inc: Incident) => {
+      if (handled.current.has(inc.id) || !shouldHandle(inc.kind) || inc.status === "cleared") return;
+      if (!ROAD_EDGES.has(inc.edgeKey)) return;
+      handled.current.add(inc.id);
+      const now = sim.current;
+      const scene: Scene = { id: inc.id, kind: inc.kind, edgeKey: inc.edgeKey, x: inc.x, z: inc.z, life: newLife(now), units: [] };
+      for (const role of planDispatch(inc.kind)) {
+        unitSeq += 1;
+        scene.units.push({
+          id: `${role.toUpperCase()}-${unitSeq}`,
+          role,
+          incidentId: inc.id,
+          base: BASE[role],
+          mode: "waiting",
+          returning: false,
+          departed: false,
+          route: null,
+          cur: { seg: 0, t: 0 },
+          side: null,
+          anchor: BASE[role],
+          retryAt: now + LEAVE_DELAY_S[role],
+          departAt: 0,
+          speed: 0,
+          park: 0,
+          placed: false,
+          x: 0,
+          z: 0,
+          heading: 0,
+          flash: Math.random() * Math.PI * 2,
+          officer: 0,
+          coneLevel: 0,
+          cones: new Float32Array(CONES_PER_SCENE * 2),
+          door: [0, 0],
+          post: [0, 0],
+        });
+      }
+      scenes.current.set(inc.id, scene);
+      refreshList();
+    },
+    [refreshList],
+  );
+
+  useEffect(() => {
+    const scan = (list: Incident[]) => {
+      for (const i of list) {
+        try {
+          dispatch(i);
+        } catch (err) {
+          console.warn("[Responders] dispatch failed", err);
+        }
+      }
+    };
+    scan(useWorld.getState().incidents);
+    const unsub = useWorld.subscribe((s, p) => {
+      if (s.incidents !== p.incidents) scan(s.incidents);
+    });
+    return unsub;
+  }, [dispatch]);
+
+  // --- registry: register each unit once its meshes exist -----------------------------------------
+  const onBind = useCallback((id: string, p: UnitParts | null) => {
+    const prev = entries.current.get(id);
+    if (prev) {
+      prev.off();
+      entries.current.delete(id);
+    }
+    if (!p) {
+      parts.current.delete(id);
+      return;
+    }
+    parts.current.set(id, p);
+    const role = id.split("-")[0].toLowerCase() as UnitRole;
+    const entry: VehicleEntry = {
+      id,
+      kind: role,
+      object: p.car,
+      edgeKey: null,
+      from: null,
+      to: null,
+      t: 0,
+      speed: 0,
+      stopped: true,
+      crash: () => false, // emergency vehicles don't crash
+    };
+    entries.current.set(id, { entry, off: registerVehicle(entry) });
+  }, []);
+
+  useEffect(() => {
+    const ents = entries.current;
+    return () => {
+      for (const e of ents.values()) e.off();
+      ents.clear();
+    };
+  }, []);
+
+  // --- per-frame simulation ---------------------------------------------------------------------
+  useFrame((_, rawDelta) => {
+    try {
+      step(Math.min(rawDelta, 0.1));
+    } catch (err) {
+      if (!warned.current) {
+        warned.current = true;
+        console.warn("[Responders] frame step failed", err);
+      }
+    }
+  });
+
+  function startReturn(u: Unit, now: number, delay: number) {
+    if (u.returning || u.mode === "gone") return;
+    u.returning = true;
+    u.departAt = now + delay;
+    if (!u.departed || !u.route) {
+      u.mode = "gone";
+      return;
+    }
+    planHome(u, now);
+  }
+
+  /** (Re)plan the trip home from the unit's current leg. On failure wait and retry. */
+  function planHome(u: Unit, now: number) {
+    const r = u.route;
+    if (!r || r.nodes.length < 2) {
+      u.mode = "gone";
+      return;
+    }
+    const seg = Math.min(u.cur.seg, r.nodes.length - 2);
+    const from = r.nodes[seg];
+    const to = r.nodes[seg + 1];
+    const home = planReturn(from, to, u.base, blockedSet());
+    if (home) {
+      u.route = home;
+      u.cur = { seg: 0, t: u.cur.t };
+      u.mode = "returning";
+    } else {
+      u.mode = "waiting";
+      u.retryAt = now + RETRY_S;
+    }
+  }
+
+  function planOut(u: Unit, scene: Scene, now: number) {
+    const police = scene.units.find((o) => o.role === "police");
+    const avoid = u.role === "tow" && police?.side ? police.side : undefined;
+    const ap = planApproach(u.anchor, scene, u.role, blockedSet(), avoid);
+    if (ap) {
+      u.route = ap.route;
+      u.side = ap.side;
+      u.cur = { seg: 0, t: 0 };
+      u.mode = "enroute";
+      u.departed = true;
+    } else {
+      u.mode = "waiting";
+      u.retryAt = now + RETRY_S;
+    }
+  }
+
+  function onArrive(u: Unit) {
+    u.mode = "parked";
+    u.speed = 0;
+    if (u.role !== "police" || !u.route) return;
+    // Lay out a cone taper behind the car, from the kerb back upstream to the centre line near the car.
+    const n = u.route.nodes;
+    const a = getNode(n[n.length - 2]);
+    const b = getNode(n[n.length - 1]);
+    const len = Math.hypot(b.x - a.x, b.z - a.z) || 1;
+    const fx = (b.x - a.x) / len;
+    const fz = (b.z - a.z) / len;
+    const rx = -fz; // right-hand vector (towards the centre line when driving on the left)
+    const rz = fx;
+    const cx = a.x + fx * len * u.cur.t;
+    const cz = a.z + fz * len * u.cur.t;
+    for (let i = 0; i < CONES_PER_SCENE; i++) {
+      const back = 3.8 + i * 2.6;
+      const lat = 0.4 + i * 1.1; // to the left of the centre line
+      u.cones[i * 2] = cx - fx * back - rx * lat;
+      u.cones[i * 2 + 1] = cz - fz * back - rz * lat;
+    }
+    u.door = [cx - rx * 2.9, cz - rz * 2.9];
+    u.post = [cx - fx * 3 - rx * 4.8, cz - fz * 3 - rz * 4.8];
+  }
+
+  function step(dt: number) {
+    const world = useWorld.getState();
+    const paused = world.paused;
+    if (!paused) sim.current += dt;
+    const now = sim.current;
+    const blocked = world.blocked;
+    let listChanged = false;
+
+    if (!paused) {
+      for (const scene of scenes.current.values()) {
+        // lifecycle
+        const stored = world.incidents.find((i) => i.id === scene.id);
+        const anyArrived = scene.units.some((u) => u.mode === "parked");
+        const towArrived = scene.units.some((u) => u.role === "tow" && u.mode === "parked");
+        const externallyCleared = !stored || (stored.status === "cleared" && scene.life.phase !== "cleared" && scene.life.phase !== "done");
+        for (const act of stepLife(scene.life, { anyArrived, towArrived, externallyCleared }, now)) {
+          try {
+            if (act === "set_responding") world.updateIncident(scene.id, { status: "responding" });
+            else if (act === "set_clearing") world.updateIncident(scene.id, { status: "clearing" });
+            else if (act === "release_tow") {
+              for (const u of scene.units) if (u.role === "tow") startReturn(u, now, 0);
+              listChanged = true;
+            } else if (act === "set_cleared") {
+              world.updateIncident(scene.id, { status: "cleared" });
+              world.unblockEdge(scene.edgeKey);
+              emit({ type: "incident:cleared", incidentId: scene.id });
+              emit({ type: "road:reopened", edgeKey: scene.edgeKey });
+            } else if (act === "release_units") {
+              for (const u of scene.units) startReturn(u, now, u.role === "police" ? 1.6 : u.role === "ambulance" ? 0.4 : 0.9);
+              listChanged = true;
+            }
+          } catch (err) {
+            console.warn("[Responders] lifecycle action failed", act, err);
+          }
+        }
+
+        // units
+        for (const u of scene.units) {
+          if (u.mode === "gone") continue;
+          if (u.mode === "waiting") {
+            if (now < u.retryAt) continue;
+            if (u.returning) planHome(u, now);
+            else planOut(u, scene, now);
+            if ((u.mode as Mode) === "gone") listChanged = true;
+            continue;
+          }
+          if (u.mode === "parked" || !u.route) continue;
+          if (u.mode === "returning" && now < u.departAt) continue;
+
+          const r = u.route;
+          const seg = Math.min(u.cur.seg, r.nodes.length - 2);
+          const e = seg >= 0 ? getEdge(r.nodes[seg], r.nodes[seg + 1]) : undefined;
+          const limit = e?.speedLimit ?? 11;
+          let target = u.returning ? limit : limit * RESPONSE_SPEED;
+          target = Math.min(target, 2 + remainingMetres(r, u.cur, edgeLen) * 1.1);
+          u.speed += Math.max(-14 * dt, Math.min(6 * dt, target - u.speed));
+          const res = advance(r, u.cur, u.speed * dt, edgeLen, (a, b) => {
+            const k = makeEdgeKey(a, b);
+            if (!u.returning && k === scene.edgeKey) return true;
+            return !(k in blocked);
+          });
+          if (res.arrived) {
+            if (u.returning) {
+              u.mode = "gone";
+              listChanged = true;
+            } else onArrive(u);
+          } else if (res.blockedAt !== null) {
+            u.speed = 0;
+            const node = r.nodes[res.blockedAt];
+            if (u.returning) planHome(u, now);
+            else {
+              u.anchor = node;
+              planOut(u, scene, now);
+            }
+          }
+        }
+        if (scene.life.phase === "done" && scene.units.every((u) => u.mode === "gone")) {
+          scenes.current.delete(scene.id);
+          listChanged = true;
+        }
+      }
+    }
+
+    render(dt, now);
+    if (listChanged) refreshList();
+  }
+
+  function render(dt: number, now: number) {
+    const kPos = 1 - Math.exp(-10 * dt);
+    const kRot = 1 - Math.exp(-8 * dt);
+    let cone = 0;
+    let light = 0;
+    const cones = conesRef.current;
+    const o = tmp.current;
+
+    for (const scene of scenes.current.values()) {
+      for (const u of scene.units) {
+        const p = parts.current.get(u.id);
+        const reg = entries.current.get(u.id)?.entry;
+        const visible = u.departed && u.mode !== "gone";
+
+        // target pose
+        let tx = u.x;
+        let tz = u.z;
+        let th = u.heading;
+        let from: string | null = null;
+        let to: string | null = null;
+        if (u.route && u.route.nodes.length >= 2) {
+          const seg = Math.min(u.cur.seg, u.route.nodes.length - 2);
+          from = u.route.nodes[seg];
+          to = u.route.nodes[seg + 1];
+          [tx, tz, th] = lanePosition(from, to, u.cur.t);
+        } else {
+          const n = getNode(u.anchor);
+          tx = n.x;
+          tz = n.z;
+        }
+        // police fend-off: angle across the lane towards the centre line
+        if (u.role === "police") {
+          const want = u.mode === "parked" && !u.returning ? 1 : 0;
+          u.park += Math.max(-dt, Math.min(dt, want - u.park));
+          if (u.park > 0) {
+            const e = u.park * u.park * (3 - 2 * u.park);
+            tx += -Math.cos(th) * 1.4 * e;
+            tz += Math.sin(th) * 1.4 * e;
+            th -= 0.6 * e;
+          }
+        }
+        if (!u.placed && visible) {
+          u.x = tx;
+          u.z = tz;
+          u.heading = th;
+          u.placed = true;
+        } else {
+          u.x += (tx - u.x) * kPos;
+          u.z += (tz - u.z) * kPos;
+          u.heading += shortestAngle(u.heading, th) * kRot;
+        }
+
+        // registry (queueing traffic reads from/to/t)
+        if (reg) {
+          const moving = u.mode === "enroute" || u.mode === "returning" || u.mode === "parked";
+          reg.from = visible && moving ? from : null;
+          reg.to = visible && moving ? to : null;
+          reg.edgeKey = reg.from && reg.to ? makeEdgeKey(reg.from, reg.to) : null;
+          reg.t = u.cur.t;
+          reg.speed = u.mode === "parked" ? 0 : u.speed;
+          reg.stopped = u.mode !== "enroute" && u.mode !== "returning";
+        }
+
+        const blues = visible && !u.returning && (u.mode === "enroute" || u.mode === "parked" || u.mode === "waiting");
+        if (p) {
+          p.car.visible = visible;
+          p.car.position.set(u.x, 0, u.z);
+          p.car.rotation.y = u.heading;
+          // light bars: alternate left/right with a quick double strobe
+          const f = now * (u.role === "tow" ? 3 : 4.5) + u.flash;
+          const sideL = Math.sin(f * Math.PI) > 0;
+          const strobe = Math.sin(f * Math.PI * 6) > -0.2 ? 1 : 0.35;
+          p.lightL.emissiveIntensity = blues ? (sideL ? 5 * strobe : 0.25) : 0.15;
+          p.lightR.emissiveIntensity = blues ? (sideL ? 0.25 : 5 * strobe) : 0.15;
+          // siren ring decal
+          if (blues) {
+            const ph = (now * 1.2 + u.flash) % 1;
+            p.ring.visible = true;
+            p.ring.scale.setScalar(1 + ph * 2.6);
+            p.ringMat.opacity = (1 - ph) * 0.55;
+          } else p.ring.visible = false;
+          // one cheap point light per emergency vehicle (pooled, fixed count: no shader recompiles)
+          if (blues && u.role !== "tow" && light < LIGHT_POOL) {
+            const L = lightsRef.current[light++];
+            if (L) {
+              L.position.set(u.x, 3, u.z);
+              L.intensity = 40 + 40 * Math.max(0, Math.sin(f * Math.PI * 2));
+            }
+          }
+        }
+
+        // police officer and cones
+        if (u.role === "police") {
+          const deployed = u.mode === "parked" && !u.returning;
+          const packing = u.returning && now < u.departAt;
+          const wantOfficer = deployed ? 1 : 0;
+          u.officer += Math.max(-dt / 1.2, Math.min(dt / 1.6, wantOfficer - u.officer));
+          if (deployed && u.officer > 0.6) u.coneLevel = Math.min(CONES_PER_SCENE, u.coneLevel + dt * 1.8);
+          else if (!deployed) u.coneLevel = Math.max(0, u.coneLevel - dt * (packing ? 3 : 8));
+          if (p?.officer) {
+            const ow = u.officer > 0.01 && visible;
+            p.officer.visible = ow;
+            if (ow) {
+              const w = u.officer;
+              p.officer.position.set(u.door[0] + (u.post[0] - u.door[0]) * w, Math.abs(Math.sin(now * 9)) * 0.08 * (w < 0.99 ? 1 : 0), u.door[1] + (u.post[1] - u.door[1]) * w);
+              p.officer.rotation.y = u.heading + Math.PI * 0.5;
+            }
+          }
+          if (cones) {
+            for (let i = 0; i < CONES_PER_SCENE && cone < MAX_CONES; i++) {
+              const sc = Math.min(1, Math.max(0, u.coneLevel - i));
+              if (sc <= 0) continue;
+              const pop = sc < 1 ? sc * (1.25 - 0.25 * sc) : 1;
+              o.position.set(u.cones[i * 2], 0.03, u.cones[i * 2 + 1]);
+              o.rotation.set(0, 0, 0);
+              o.scale.setScalar(pop);
+              o.updateMatrix();
+              cones.setMatrixAt(cone++, o.matrix);
+            }
+          }
+        }
+      }
+    }
+    if (cones) {
+      cones.count = cone;
+      cones.instanceMatrix.needsUpdate = true;
+    }
+    for (let i = light; i < LIGHT_POOL; i++) {
+      const L = lightsRef.current[i];
+      if (L) L.intensity = 0;
+    }
+  }
+
+  const shared = getShared();
+  return (
+    <group name="responders">
+      {units.map((u) => (
+        <UnitMesh key={u.id} id={u.id} role={u.role} onBind={onBind} />
+      ))}
+      <instancedMesh
+        ref={conesRef}
+        args={[shared.cone, shared.mats.cone as THREE.Material, MAX_CONES]}
+        frustumCulled={false}
+        castShadow={false}
+      />
+      {Array.from({ length: LIGHT_POOL }, (_, i) => (
+        <pointLight
+          key={i}
+          ref={(l) => {
+            lightsRef.current[i] = l;
+          }}
+          color="#3d6bff"
+          intensity={0}
+          distance={26}
+          decay={2}
+        />
+      ))}
+    </group>
+  );
 }
