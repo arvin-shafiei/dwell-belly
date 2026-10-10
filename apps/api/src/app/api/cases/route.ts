@@ -36,6 +36,8 @@ export async function POST(req: Request) {
     mode: demo ? "demo" : "practice",
     runId: `api-${new Date().toISOString()}`,
   });
+  // A run that heard a simulated persona is labelled, so no view can present it as a real case.
+  if (demo && view.events.some((e) => e.source === "simulated_persona")) result.trace.synthetic = true;
   return json({ trace: result.trace, outcome: result.outcome, outbox: result.outbox, card: result.card ?? null });
 }
 

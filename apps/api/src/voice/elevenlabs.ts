@@ -36,7 +36,8 @@ export async function transcribe(
   const timeoutMs = opts.timeoutMs ?? 30_000;
   const form = new FormData();
   form.append("model_id", "scribe_v2");
-  form.append("file", new Blob([audio]), opts.filename);
+  // Copied into an ArrayBuffer-backed array: the DOM Blob type rejects views over a SharedArrayBuffer.
+  form.append("file", new Blob([new Uint8Array(audio)]), opts.filename);
   try {
     const res = await (opts.fetchImpl ?? fetch)(`${API}/v1/speech-to-text`, {
       method: "POST",
