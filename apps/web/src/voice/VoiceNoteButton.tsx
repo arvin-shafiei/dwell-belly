@@ -12,8 +12,10 @@ const extensionFor = (mime: string) => (mime.includes("ogg") ? "ogg" : mime.incl
 
 // The console's slot passes { caseId, from, onEvent }: number and time are optional, because the
 // re-run builder renumbers new events and stamps them on the case's own timeline.
-export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n = 0, at = "", source = "live_human", onEvent }: {
+export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n = 0, at = "", source = "live_human", recordLabel = "🎙 Record voice note", onEvent }: {
   from: string;
+  /** The record button's text, for example "🎙 Record as the driver". */
+  recordLabel?: string;
   caseId?: string;
   /** The case so far, when known; otherwise the server looks it up by caseId. */
   caseText?: string;
@@ -101,7 +103,7 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
         <button onClick={() => recorder.current?.stop()} className="rounded bg-red-600 px-3 py-1.5 font-medium">● Stop and send</button>
       ) : (
         <button onClick={start} disabled={state === "sending"} className="rounded bg-[#ff6a1a] px-3 py-1.5 font-medium disabled:opacity-50">
-          {state === "sending" ? "Transcribing…" : "🎙 Record voice note"}
+          {state === "sending" ? "Transcribing…" : recordLabel}
         </button>
       )}
       {heard && (
