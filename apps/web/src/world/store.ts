@@ -59,6 +59,7 @@ interface WorldState {
   selectedVehicle: string | null; // camera follows this vehicle id
   focus: { x: number; z: number } | null; // camera flies here (e.g. an incident)
   timeOfDay: number; // 0..24 hours
+  timeScale: number; // clock speed multiplier (HUD fast-forward): 1, 3, 10, 30
   paused: boolean;
 
   blockEdge: (key: string, reason: string) => void;
@@ -73,6 +74,7 @@ interface WorldState {
   select: (vehicleId: string | null) => void;
   setFocus: (f: { x: number; z: number } | null) => void;
   setTimeOfDay: (h: number) => void;
+  setTimeScale: (x: number) => void;
   setPaused: (p: boolean) => void;
 }
 
@@ -85,6 +87,7 @@ export const useWorld = create<WorldState>((set) => ({
   selectedVehicle: null,
   focus: null,
   timeOfDay: 17.5,
+  timeScale: 1,
   paused: false,
 
   blockEdge: (key, reason) => set((s) => ({ blocked: { ...s.blocked, [key]: reason } })),
@@ -105,6 +108,7 @@ export const useWorld = create<WorldState>((set) => ({
   select: (selectedVehicle) => set({ selectedVehicle }),
   setFocus: (focus) => set({ focus }),
   setTimeOfDay: (timeOfDay) => set({ timeOfDay }),
+  setTimeScale: (timeScale) => set({ timeScale }),
   setPaused: (paused) => set({ paused }),
 }));
 
