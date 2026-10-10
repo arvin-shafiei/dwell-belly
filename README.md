@@ -16,7 +16,7 @@ Rivet reads a delivery problem the way a coordinator would, works out who owns t
 
 <img src="docs/media/hero.gif" alt="Rivet: a case comes in, the agent decides, the safety check clears the message, and the decision appears in the console" width="900">
 
-**[▶ Watch the 60-second demo](demo/rivet-demo.mp4)** · [Quickstart](#quickstart) · [Architecture](#architecture) · [Evidence](#evidence) · [Limitations](#known-limitations)
+**[▶ Watch the 60-second demo](demo/rivet-demo.mp4)** · [full 2-minute cut](demo/rivet-demo-full.mp4) · [Quickstart](#quickstart) · [Architecture](#architecture) · [Evidence](#evidence) · [Limitations](#known-limitations)
 
 <sub>Built for the Real-World Agents Hackathon, 10 October 2026 · Delivery & Logistics track</sub>
 
@@ -34,7 +34,7 @@ Rivet reads a delivery problem the way a coordinator would (emails, portal messa
 | **Timed batch** | **50 of 50** practice cases answered in **165 s** for **$2.70** (about 5¢ per case) |
 | **Console runs** | $0.049 to $0.095 per case across 5 real (non-simulated) runs recorded in the console database |
 | **Wrong kind of action** | 0 messages sent when nothing was owed (0 of 3), 0 messages sent when a person had to decide (0 of 5), in run 4 |
-| **Test cases** | 50 public · 243 generated with answer keys (120 by difficulty pattern + 123 grounded in real complaints) · 100 adversarial · 50 city · 12 stress-test fixtures |
+| **Test cases** | 50 public · 243 generated with answer keys (120 by difficulty pattern + 123 grounded in real complaints) · 100 adversarial · 50 city · 12 stress-test fixtures · 2,500 rule-made bulk |
 | **Offline tests** | 288 agent · 19 eval · 44 voice, all passing with no key (`node --test`, 10 Oct) |
 | **Voice accuracy** | Reference-heavy word errors **22.0% → 5.1%**, mis-heard reference codes **3 → 0** |
 
@@ -107,11 +107,15 @@ The flow the agent runs is a graph you can see and edit (React Flow). Thresholds
 <tr>
 <td width="33%"><img src="docs/media/playbooks-tree.png" alt="Playbook editor"><br><sub><b>Edit.</b> Steps, branches and gate thresholds as nodes and edges, with versions.</sub></td>
 <td width="33%"><img src="docs/media/playbooks-ai-builder.png" alt="Make a playbook"><br><sub><b>Make a playbook.</b> Describe the business in plain words (here: frozen food, cold-chain vans) and the Architect lays out a branching decision tree, safety-checked before you choose to use it.</sub></td>
-<td width="33%"><img src="docs/media/playbooks-practice.png" alt="Practice and learning curve"><br><sub><b>Practice, then Improve.</b> Run the playbook on real test cases with the real agent and real scoring ("4 of 5 right"), see the learning curve, and let <b>Improve</b> propose a revised flow from the misses. You see the diff and accept it as a new version.</sub></td>
+<td width="33%"><img src="docs/media/playbooks-practice.png" alt="Practice and learning curve"><br><sub><b>Practice, then Improve.</b> Run the playbook on real test cases with the real agent and real scoring ("4 of 5 right"), see the learning curve, and let <b>Improve</b> propose a revised flow from the misses. You see the diff and accept it as a new version. A case already run and judged on the exact same playbook is reused (0¢, instant); <b>Run fresh</b> bypasses that.</sub></td>
 </tr>
 </table>
 
 <img src="docs/media/feature-playbook.gif" alt="Making and practising a playbook" width="100%">
+
+- **Run overlay.** "Show a run" picks one of this playbook's recent case runs and lights up the path it took on the canvas, with how many recent runs passed through each step.
+- **Step inspector.** Click a step to see what it does, its settings and what it did in the last run, in plain words.
+- **Show on playbook.** From Case runs or Decisions, one click opens the run on its playbook and replays its path.
 
 > Playbooks other than the default, the Architect and Improve are console tools for building and trying flows. The scored run uses `apps/api/flows/default-incident.json` only.
 
@@ -420,6 +424,7 @@ REALITY_DEADLINE=16:54 npm run reality -- <cases> ANSWERS --budget-usd 18 --prof
 
 - `--deadline HH:MM` (or `REALITY_DEADLINE`, local time): from 75 s before it, no case starts a model call; each remaining case still gets its four files, with an ANSWER.md handing it to a person, at no cost. Cases still running at the deadline are cut off the same way. No retries after it.
 - `--budget-usd N` (or `REALITY_BUDGET_USD`, default 18, `none` for no cap): spend is tracked from every response; a case starts only if spend plus the running cases at the average cost stays under N. The rest are handed to a person at no cost, and `RUNLOG.md` says when the budget was reached.
+- `--profile cheap` (or `REALITY_PROFILE=cheap`): Sonnet decides, Haiku reads and checks. Much cheaper per case, and not evaluated on the practice cases.
 - `--concurrency N` (default 24): cases at a time. Model calls in flight are throttled separately: 16 at first, growing on success, cut by 30% on a 429/529, never below 4.
 - `RUNLOG.md` and `INDEX.md` are rewritten as the run goes and at the deadline, so a run stopped by hand still has them. A progress line with done/total, rate, ETA and spend prints every 25 cases.
 
@@ -458,7 +463,7 @@ Before a batch starts the flow file is validated (`--flow <file>` runs a differe
 
 <br>
 
-`npm run build`, `npm run lint`, `npm run data` (rebuild parsed cases), `npm run eval` (run and score a case set), `npm run validate:cases`, `npm run render:adversarial`.
+`npm run build`, `npm run lint`, `npm run data` (rebuild parsed cases), `npm run eval` (run and score a case set), `npm run validate:cases`, `npm run render:adversarial`, `npm run gen:bulk` and `npm run test:bulk` (the bulk generator), `npm run load:check` (loader check, no key).
 
 </details>
 
@@ -525,6 +530,9 @@ Run 4 in detail: practice cases 0.98 (12 of 12), generated cases 0.90; right kin
 | Adversarial | 100 | `data/adversarial/` | Injection, regulated goods, safeguarding, calendar traps; also as raw folders |
 | City | 50 | `data/city/delivery/` | Motorcade closures, road incidents with vans and cyclists, big events, secure deliveries, cascades and adversarial cases |
 | Stress-test fixtures | 12 | `docs/stress-test/fixtures/` | With rubrics; not yet run through the eval |
+| Bulk (rule-made) | 2,500 | `data/bulk/` | Seeded from the sets above, with renamed parties, shifted dates and transforms (noise, long threads, duplicates, injections, missing attachments, legal threats, welfare remarks). Raw folders in eleven layouts. Keys derived by rule, so for load and regression, not the score |
+
+**Loader check, no key:** `npm run load:check` runs every raw case folder (50 practice, 100 adversarial, 2,500 bulk: 2,650 in all) through the same loading steps the Reality runner takes before its first model call, plus 16 deliberately broken folders (empty, unreadable, symlink loops, binary text, odd names). Last run: none of the 2,650 folders made the loader throw, and none of the broken probes threw.
 
 The test set is in `data/generated/delivery/`: 243 hard cases with answer keys (120 across twelve difficulty patterns, 123 built from anonymised real complaints in `data/scraped/`). Every answer key was checked by an independent solver that could not see it.
 
