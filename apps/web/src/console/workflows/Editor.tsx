@@ -13,7 +13,7 @@ import {
   type ExecutionSummary,
 } from "./api";
 import { ArchitectPanel } from "./ArchitectPanel";
-import { cents, plainOutcome } from "../../ui/plain";
+import { cents, plainFailure, plainOutcome } from "../../ui/plain";
 import { nameFrom, problemsByNode, revealFrame, revealOrder, slugify, type ArchitectUsage } from "./architect";
 import { WorkflowMenu } from "./WorkflowMenu";
 import { TestPanel } from "./TestPanel";
@@ -737,7 +737,8 @@ function EditorInner() {
                       To {overlay.end.nextAction.recipient}, by {overlay.end.nextAction.channel}
                     </span>
                   )}
-                  {!shownExec.trace && <span className="text-white/45">No steps recorded</span>}
+                  {shownExec.status === "error" && <span className="min-w-0 truncate text-[#f87171]">{plainFailure(shownExec.error)}</span>}
+                  {!shownExec.trace && shownExec.status !== "error" && <span className="text-white/45">No steps recorded</span>}
                   <span className="text-[11px] text-white/30">{shownExec.caseId}{shownExec.costUsd ? ` · ${cents(shownExec.costUsd)}` : ""}</span>
                   <span className="ml-auto flex items-center gap-1">
                     {shownExec.trace && <Btn onClick={() => setCursor(0)} title="Play it again"><Icon name="play" size={12} /> Play again</Btn>}

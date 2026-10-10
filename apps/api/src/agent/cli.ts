@@ -71,7 +71,7 @@ async function main() {
   // Set when the account itself is refused (bad key, no credit). Retrying or carrying on cannot help,
   // so the remaining cases get their failure answer at once and the operator is told why.
   let refused: string | null = null;
-  const ACCOUNT_REFUSAL = /\b40[13]\b|authentication|invalid x-api-key|credit balance|billing|permission/i;
+  const ACCOUNT_REFUSAL = /\b40[13]\b|authentication|invalid x-api-key|credit balance|usage limit|billing|permission/i;
   const failed = new Set<string>();
 
   // Never throws: whatever happens, the case ends with a line in the log and an ANSWER.md on disk.
