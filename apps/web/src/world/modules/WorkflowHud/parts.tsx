@@ -4,7 +4,9 @@ import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "reac
 import { useShallow } from "zustand/react/shallow";
 import { emit, type WorldEvent } from "../../bus";
 import { useWorld, type Delivery, type Incident, type IncidentKind, type WorkflowEvent } from "../../store";
+import { getScenario } from "../../scenarios";
 import { formatAge, formatClock, formatCost, newAsks, RUNNER_OF, summariseCases } from "./flow";
+import { chosenAction, formatExpected, matchExpected, scenarioIdOf } from "./scenarioMatch";
 import {
   INCIDENT_COLOR,
   INCIDENT_LABEL,
@@ -133,7 +135,7 @@ function Counters() {
   );
 }
 
-export const TopBar = memo(function TopBar() {
+export const TopBar = memo(function TopBar({ badge, extra }: { badge?: ReactNode; extra?: ReactNode }) {
   const paused = useWorld((s) => s.paused);
   return (
     <div className={`${GLASS} flex items-center gap-4 px-3 py-2`}>
@@ -152,6 +154,7 @@ export const TopBar = memo(function TopBar() {
               <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${paused ? "bg-white/40" : "bg-[#ff6a1a]"}`} />
             </span>
             <span className={paused ? "text-white/40" : "text-[#ff8a4a]"}>{paused ? "paused" : "live"}</span>
+            {badge}
           </div>
         </div>
       </div>
@@ -179,6 +182,8 @@ export const TopBar = memo(function TopBar() {
           </button>
         ))}
       </div>
+
+      {extra}
 
       <Counters />
     </div>
@@ -249,6 +254,7 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
                   <span className="ml-auto font-mono text-[10px] tabular-nums text-white/55">{formatCost(c.cost)}</span>
                 </div>
                 <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-white/70">{c.last.summary}</p>
+                <ExpectedLine caseId={c.caseId} events={events} />
                 <div className="mt-1 flex items-center gap-1.5 font-mono text-[9px] text-white/40">
                   <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: RUNNER_COLOR[runner] }} />
                   <span style={{ color: STATUS_COLOR[c.last.status] }}>{c.last.nodeId}</span>
@@ -266,6 +272,33 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
     </section>
   );
 });
+
+/** For scenario cases: the case's expected next action and whether the mock agent's choice matches it. */
+function ExpectedLine({ caseId, events }: { caseId: string; events: readonly WorkflowEvent[] }) {
+  const sid = scenarioIdOf(caseId);
+  const expected = sid ? getScenario(sid)?.expected : null;
+  if (!expected) return null;
+  const chosen = chosenAction(events, caseId);
+  const ok = chosen ? matchExpected(chosen.summary, expected) : null;
+  return (
+    <div className="mt-1 flex items-center gap-1.5 rounded-md bg-black/25 px-1.5 py-1 text-[10px] leading-tight">
+      <span className="shrink-0 font-semibold uppercase tracking-wider text-white/40">Expected</span>
+      <span className="min-w-0 flex-1 truncate text-white/75" title={expected.summary}>
+        {formatExpected(expected)}
+      </span>
+      {ok === null ? (
+        <span className="shrink-0 rounded px-1 font-mono text-[9px] text-white/35">…</span>
+      ) : (
+        <span
+          title={chosen?.summary}
+          className={`shrink-0 rounded px-1 font-mono text-[9px] font-semibold ${ok ? "bg-emerald-400/15 text-emerald-300" : "bg-rose-500/15 text-rose-300"}`}
+        >
+          {ok ? "✓ match" : "✗ differs"}
+        </span>
+      )}
+    </div>
+  );
+}
 
 function Empty({ children }: { children: ReactNode }) {
   return <div className="rounded-lg border border-dashed border-white/10 px-3 py-3 text-center text-[11px] text-white/40">{children}</div>;

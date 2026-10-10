@@ -4,6 +4,10 @@
 import { memo, useState } from "react";
 import { MiniFlow } from "./WorkflowHud/MiniFlow";
 import { CaseFeed, DecisionToast, Deliveries, GLASS, HotkeysFooter, IncidentList, TopBar, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
+
+// The Minimap sits at bottom-4 left-4 (240px); bottom overlays start right of it.
+const MINIMAP_CLEAR = 268;
 
 const STYLES = `
 @keyframes hud-toast-in { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: none; } }
@@ -64,26 +68,37 @@ function CollapsedTab({ onOpen }: { onOpen: () => void }) {
 
 export default function WorkflowHud() {
   const [open, setOpen] = useState(true);
+  const [scenOpen, setScenOpen] = useState(false);
+  const cov = useScenarioCoverage();
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none font-sans text-white antialiased">
       <style>{STYLES}</style>
 
       <div className="absolute left-3 right-3 top-3">
-        <TopBar />
+        <TopBar
+          badge={<TourBadge />}
+          extra={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
+        />
       </div>
 
       <div className="absolute bottom-14 right-3 top-[72px] flex flex-col items-end">
         {open ? <OpsPanel onCollapse={() => setOpen(false)} /> : <CollapsedTab onOpen={() => setOpen(true)} />}
       </div>
 
+      {scenOpen && (
+        <div className="absolute left-3 top-[72px] flex flex-col" style={{ bottom: MINIMAP_CLEAR }}>
+          <ScenarioPanel onClose={() => setScenOpen(false)} />
+        </div>
+      )}
+
       <div
-        className="absolute bottom-16 left-3 flex justify-center"
-        style={{ right: open ? 404 : 12 }}
+        className="absolute bottom-16 flex justify-center"
+        style={{ left: MINIMAP_CLEAR, right: open ? 404 : 12 }}
       >
         <DecisionToast />
       </div>
 
-      <div className="absolute bottom-3 left-3 flex justify-center" style={{ right: open ? 404 : 12 }}>
+      <div className="absolute bottom-3 flex justify-center" style={{ left: MINIMAP_CLEAR, right: open ? 404 : 12 }}>
         <HotkeysFooter />
       </div>
     </div>
