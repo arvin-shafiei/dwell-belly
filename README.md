@@ -14,7 +14,7 @@ Hamyway City reads a delivery problem the way a coordinator would, works out who
 [![three.js](https://img.shields.io/badge/three.js-3D%20city-049EF4?logo=threedotjs&logoColor=white)](https://threejs.org)
 [![Node 22.18+](https://img.shields.io/badge/node-%E2%89%A522.18-339933?logo=nodedotjs&logoColor=white)](#quickstart)
 
-<img src="docs/media/hero.gif" alt="Hamyway City: a case comes in, the agent decides, the safety check clears the message, and the decision appears in the console" width="900">
+<video src="https://github.com/arvin-shafiei/hamyway-city/raw/main/demo/demo.mp4" controls muted playsinline width="900"></video>
 
 **[▶ Watch the demo](demo/demo.mp4)** · [Quickstart](#quickstart) · [Architecture](#architecture) · [Evidence](#evidence) · [Limitations](#known-limitations)
 
