@@ -1,0 +1,853 @@
+{
+ "bundle": {
+  "id": "008",
+  "title": "008",
+  "documents": [
+   {
+    "name": "history.md",
+    "text": "",
+    "chars": 1898
+   },
+   {
+    "name": "index.md",
+    "text": "",
+    "chars": 594
+   }
+  ],
+  "media": [
+   {
+    "name": "attachments/return-label.pdf",
+    "mediaType": "application/pdf",
+    "base64": ""
+   }
+  ],
+  "unreadable": []
+ },
+ "outcome": "asked_for_info",
+ "gated": [
+  {
+   "action": {
+    "recipient": "Riven Shaw",
+    "channel": "dispatch message (reply to E06)",
+    "kind": "question",
+    "purpose": "Give an accurate status and get the one missing fact: whether and when the parcel was handed to the carrier.",
+    "message": "For RMA-808 (order VEL-008-26), 'return created' means the label has been issued. It doesn't yet show the parcel with the carrier or at Briar Cabinet. Briar Cabinet assesses the GBP 64 refund only after its warehouse receives the item, and that decision is theirs, not ours. Have you dropped the parcel off yet? If so, please send the drop-off receipt so we can trace it."
+   },
+   "risk": 0.04,
+   "worst": null,
+   "reasons": [],
+   "verdict": "allow"
+  }
+ ],
+ "outbox": [
+  {
+   "action": {
+    "recipient": "Riven Shaw",
+    "channel": "dispatch message (reply to E06)",
+    "kind": "question",
+    "purpose": "Give an accurate status and get the one missing fact: whether and when the parcel was handed to the carrier.",
+    "message": "For RMA-808 (order VEL-008-26), 'return created' means the label has been issued. It doesn't yet show the parcel with the carrier or at Briar Cabinet. Briar Cabinet assesses the GBP 64 refund only after its warehouse receives the item, and that decision is theirs, not ours. Have you dropped the parcel off yet? If so, please send the drop-off receipt so we can trace it."
+   },
+   "status": "recorded",
+   "note": "Recorded in the sandbox outbox for dispatch message (reply to E06) (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+  }
+ ],
+ "revised": false,
+ "trace": {
+  "version": 1,
+  "runId": "2026-10-10T15:35:07.372Z-reality",
+  "caseId": "008",
+  "flowId": "default-incident",
+  "mode": "reality",
+  "events": [
+   {
+    "t": 0,
+    "kind": "run_start",
+    "title": "008",
+    "inputs": [
+     {
+      "n": 1,
+      "channel": "file",
+      "from": "history.md",
+      "excerpt": "1898 characters"
+     },
+     {
+      "n": 2,
+      "channel": "file",
+      "from": "index.md",
+      "excerpt": "594 characters"
+     }
+    ]
+   },
+   {
+    "t": 0,
+    "kind": "node_start",
+    "nodeId": "ingest",
+    "nodeType": "ingest"
+   },
+   {
+    "t": 12235,
+    "kind": "model_call",
+    "nodeId": "ingest",
+    "runner": "claude",
+    "model": "claude-sonnet-5-5",
+    "latencyMs": 12235,
+    "tokensIn": 7119,
+    "tokensOut": 1757,
+    "costUsd": 0.0241922,
+    "ok": true
+   },
+   {
+    "t": 12235,
+    "kind": "node_end",
+    "nodeId": "ingest",
+    "status": "ok",
+    "summary": "2 files, 1 attachments read",
+    "output": {
+     "type": "ingest",
+     "decisionGroups": [
+      "owner_coordination",
+      "dependencies",
+      "missing_evidence",
+      "truthful_status",
+      "deadline_math"
+     ],
+     "constraints": [
+      {
+       "surface": "commercial",
+       "requirement": "Receipt-dependent refund assessment starts only after merchant warehouse receipt (intake scan).",
+       "owner": "Briar Cabinet merchant (terms RT8)",
+       "scope": "VEL-008-26 / RMA-808 refund of GBP 64",
+       "kind": "authority_restriction",
+       "state": "active",
+       "evidence": "Inline merchant terms RT8 in procedure excerpt E02, 08:10; portal shows received=null at 08:20."
+      },
+      {
+       "surface": "goods",
+       "requirement": "Evidence the parcel is in carrier or merchant possession (carrier accepted scan or drop-off receipt) before any status is treated as accepted or received.",
+       "owner": "Carrier / returns-trace channel and merchant intake",
+       "scope": "RMA-808",
+       "kind": "feasibility",
+       "state": "unconfirmed",
+       "evidence": "Portal excerpt E03: accepted=null, received=null; E05: no drop-off receipt in the packet."
+      },
+      {
+       "surface": "commercial",
+       "requirement": "Customer wants the return marked received and the refund of GBP 64 approved now.",
+       "owner": "Riven Shaw (request); decision belongs to the merchant",
+       "scope": "VEL-008-26 / RMA-808",
+       "kind": "preference",
+       "state": "unconfirmed",
+       "evidence": "Call note E04 at 08:30 and message E06 at 08:50; a customer request, not owner confirmation."
+      }
+     ]
+    },
+    "latencyMs": 12235,
+    "costUsd": 0.0241922,
+    "detail": [
+     "Riven Shaw has a return label for order VEL-008-26 (RMA-808) and asks us to mark it received and approve a GBP 64 refund. The records show only that the label was created; there is no carrier scan and no merchant intake record.",
+     "4 statements found: 3 from a record or an owning team, 1 unverified.",
+     "Who decides: Briar Cabinet merchant (refund assessment after warehouse receipt)."
+    ]
+   },
+   {
+    "t": 12235,
+    "kind": "node_start",
+    "nodeId": "history",
+    "nodeType": "history_lookup"
+   },
+   {
+    "t": 12235,
+    "kind": "node_end",
+    "nodeId": "history",
+    "status": "ok",
+    "summary": "2 open commitments, 1 deadlines",
+    "latencyMs": 0,
+    "costUsd": 0,
+    "detail": [
+     "Already asked: Mark the return received (rejected or failed, owed by Vellora (requested by customer)).",
+     "Already asked: Approve the GBP 64 refund (requested, owed by Briar Cabinet merchant (customer asked us)).",
+     "Deadline: No deadline stated; decision time is 2026-10-14T08:50:00+01:00."
+    ]
+   },
+   {
+    "t": 12235,
+    "kind": "edge",
+    "from": "history",
+    "to": "triage"
+   },
+   {
+    "t": 12235,
+    "kind": "edge",
+    "from": "history",
+    "to": "perspectives"
+   },
+   {
+    "t": 12235,
+    "kind": "edge",
+    "from": "history",
+    "to": "clash"
+   },
+   {
+    "t": 12512,
+    "kind": "node_start",
+    "nodeId": "triage",
+    "nodeType": "triage"
+   },
+   {
+    "t": 12512,
+    "kind": "model_call",
+    "nodeId": "triage",
+    "runner": "jev",
+    "model": "jev-1.13.0",
+    "latencyMs": 277,
+    "tokensIn": 1747,
+    "tokensOut": 0,
+    "costUsd": 0.00007337399999999999,
+    "ok": true
+   },
+   {
+    "t": 12512,
+    "kind": "node_end",
+    "nodeId": "triage",
+    "status": "ok",
+    "summary": "returns · medium",
+    "output": {
+     "type": "triage",
+     "caseType": "returns",
+     "urgency": "medium",
+     "p": 1
+    },
+    "latencyMs": 276,
+    "costUsd": 0.00007337399999999999,
+    "detail": [
+     "Kind of problem: returns. Urgency: medium."
+    ]
+   },
+   {
+    "t": 12512,
+    "kind": "node_start",
+    "nodeId": "perspectives",
+    "nodeType": "perspectives"
+   },
+   {
+    "t": 12512,
+    "kind": "model_call",
+    "nodeId": "perspectives",
+    "runner": "jev",
+    "model": "jev-1.13.0",
+    "latencyMs": 276,
+    "tokensIn": 1880,
+    "tokensOut": 0,
+    "costUsd": 0.00007896,
+    "ok": true
+   },
+   {
+    "t": 12512,
+    "kind": "node_end",
+    "nodeId": "perspectives",
+    "status": "ok",
+    "summary": "2 flags raised",
+    "output": {
+     "type": "perspectives",
+     "seats": [
+      {
+       "id": "advocate",
+       "name": "Customer advocate",
+       "answers": {
+        "distress": 0.65,
+        "vulnerable": 0.03,
+        "repeat_failure": 0.09
+       },
+       "raised": []
+      },
+      {
+       "id": "rule_keeper",
+       "name": "Rule keeper",
+       "answers": {
+        "beyond_desk": 0.97,
+        "legal_or_public": 0.02
+       },
+       "raised": [
+        "beyond_desk"
+       ]
+      },
+      {
+       "id": "safety",
+       "name": "Safety officer",
+       "answers": {
+        "person_at_risk": 0.02,
+        "asks_advice": 0.12
+       },
+       "raised": []
+      },
+      {
+       "id": "sceptic",
+       "name": "Sceptic",
+       "answers": {
+        "contradiction": 0.09,
+        "embedded_instructions": 0.55,
+        "identity_doubt": 0.19
+       },
+       "raised": [
+        "embedded_instructions"
+       ]
+      },
+      {
+       "id": "ops",
+       "name": "Ops pragmatist",
+       "answers": {
+        "time_critical": 0.23,
+        "nothing_owed": 0.05
+       },
+       "raised": []
+      }
+     ]
+    },
+    "latencyMs": 276,
+    "costUsd": 0.00007896,
+    "detail": [
+     "Rule keeper spoke up (beyond desk).",
+     "Sceptic spoke up (embedded instructions)."
+    ]
+   },
+   {
+    "t": 12512,
+    "kind": "node_start",
+    "nodeId": "clash",
+    "nodeType": "clash_check"
+   },
+   {
+    "t": 12512,
+    "kind": "model_call",
+    "nodeId": "clash",
+    "runner": "jev",
+    "model": "jev-1.13.0",
+    "latencyMs": 276,
+    "tokensIn": 533,
+    "tokensOut": 0,
+    "costUsd": 0.000022386,
+    "ok": true
+   },
+   {
+    "t": 12512,
+    "kind": "node_end",
+    "nodeId": "clash",
+    "status": "ok",
+    "summary": "1 conflict: Whether the return counts as received",
+    "output": {
+     "type": "clash_check",
+     "clash": true,
+     "p": 0.27,
+     "claims": [
+      {
+       "who": "Riven Shaw",
+       "says": "Printed the label; the portal says return created; asks for the return to be marked received and GBP 64 refunded."
+      },
+      {
+       "who": "Vellora operations (portal excerpt)",
+       "says": "RMA-808 return_created at 07:50; accepted=null; received=null."
+      },
+      {
+       "who": "Briar Cabinet merchant desk (via service coordinator)",
+       "says": "No intake record for RMA-808 at 08:40."
+      },
+      {
+       "who": "Vellora procedure desk",
+       "says": "Terms RT8 start receipt-dependent refund assessment after warehouse receipt; return_created means label allocated, not carrier possession or receipt."
+      }
+     ]
+    },
+    "latencyMs": 276,
+    "costUsd": 0.000022386,
+    "detail": [
+     "Disagreement between Riven Shaw's request to mark the return received: Whether the return counts as received. What would settle it: A merchant intake scan, or at least a carrier accepted scan or drop-off receipt showing the parcel has been ",
+     "Neither side is treated as proven.",
+     "Missing: Drop-off receipt or carrier accepted scan for RMA-808 (held by Riven Shaw / carrier via returns-trace@vellora.example).",
+     "Missing: Merchant intake scan (received) (held by Briar Cabinet merchant)."
+    ]
+   },
+   {
+    "t": 12512,
+    "kind": "edge",
+    "from": "triage",
+    "to": "planner"
+   },
+   {
+    "t": 12512,
+    "kind": "edge",
+    "from": "perspectives",
+    "to": "planner"
+   },
+   {
+    "t": 12512,
+    "kind": "edge",
+    "from": "clash",
+    "to": "planner"
+   },
+   {
+    "t": 12513,
+    "kind": "node_start",
+    "nodeId": "planner",
+    "nodeType": "planner"
+   },
+   {
+    "t": 24180,
+    "kind": "model_call",
+    "nodeId": "planner",
+    "runner": "claude",
+    "model": "claude-opus-5-5",
+    "latencyMs": 11667,
+    "tokensIn": 11271,
+    "tokensOut": 1072,
+    "costUsd": 0.0462624,
+    "ok": true
+   },
+   {
+    "t": 24180,
+    "kind": "node_end",
+    "nodeId": "planner",
+    "status": "ok",
+    "summary": "ask_for_info: Briar Cabinet decides refunds only after its warehouse receives th",
+    "output": {
+     "type": "planner",
+     "nextAction": {
+      "recipient": "Riven Shaw",
+      "channel": "dispatch message (reply to E06)",
+      "message": "For RMA-808 (order VEL-008-26), 'return created' means the label has been issued. It doesn't yet show the parcel with the carrier or at Briar Cabinet. Briar Cabinet assesses the GBP 64 refund only after its warehouse receives the item, and that decision is theirs, not ours. Have you dropped the parcel off yet? If so, please send the drop-off receipt so we can trace it.",
+      "undoable": true
+     },
+     "wontDo": [
+      "Mark the return received or approve the refund",
+      "Ask Briar Cabinet to refund on the label alone",
+      "Open a carrier trace now"
+     ],
+     "waitingFor": [
+      {
+       "what": "Whether the parcel was dropped off, when, and any drop-off receipt",
+       "from": "Riven Shaw",
+       "by": ""
+      },
+      {
+       "what": "If a receipt is supplied: confirmation of the carrier accepted scan for RET-808",
+       "from": "returns-trace@vellora.example",
+       "by": ""
+      },
+      {
+       "what": "After receipt: intake scan and refund assessment for RMA-808",
+       "from": "returns@briarcabinet.example",
+       "by": ""
+      }
+     ],
+     "candidates": []
+    },
+    "latencyMs": 11667,
+    "costUsd": 0.0462624,
+    "detail": [
+     "Tell Riven Shaw the return isn't received yet and ask whether the parcel has been dropped off.",
+     "Why: Briar Cabinet decides refunds only after its warehouse receives the item; records show only the label exists and no hand-over.",
+     "Will not: Mark the return received or approve the refund (Receipt is Briar Cabinet's intake scan and the refund is their decision. Their desk reported no intake record at 08:40.)",
+     "Will not: Ask Briar Cabinet to refund on the label alone (Under terms RT8, assessment starts only after warehouse receipt, and a label only means one was allocated.)",
+     "Will not: Open a carrier trace now (Nothing shows the parcel was handed over. Without a drop-off receipt or date, there is nothing for returns-trace to check yet.)"
+    ]
+   },
+   {
+    "t": 24180,
+    "kind": "node_start",
+    "nodeId": "gate",
+    "nodeType": "safety_gate"
+   },
+   {
+    "t": 26500,
+    "kind": "model_call",
+    "nodeId": "gate",
+    "runner": "claude",
+    "model": "claude-sonnet-5-5",
+    "latencyMs": 2320,
+    "tokensIn": 4276,
+    "tokensOut": 144,
+    "costUsd": 0.0079364,
+    "ok": true
+   },
+   {
+    "t": 26500,
+    "kind": "node_end",
+    "nodeId": "gate",
+    "status": "ok",
+    "summary": "1 of 1 messages cleared",
+    "output": {
+     "type": "safety_gate",
+     "risk": 0.04,
+     "decision": "allow",
+     "allowBelow": 0.3,
+     "blockAbove": 0.8
+    },
+    "latencyMs": 2320,
+    "costUsd": 0.0079364,
+    "detail": [
+     "Message to Riven Shaw: clear to send (risk 0.04, below 0.3)."
+    ]
+   },
+   {
+    "t": 26500,
+    "kind": "edge",
+    "from": "gate",
+    "to": "action",
+    "when": "allow"
+   },
+   {
+    "t": 26500,
+    "kind": "node_start",
+    "nodeId": "action",
+    "nodeType": "action"
+   },
+   {
+    "t": 26500,
+    "kind": "node_end",
+    "nodeId": "action",
+    "status": "ok",
+    "summary": "1 of 1 message(s) accepted by the outbox",
+    "output": {
+     "type": "action",
+     "done": {
+      "recipient": "Riven Shaw",
+      "channel": "dispatch message (reply to E06)",
+      "message": "For RMA-808 (order VEL-008-26), 'return created' means the label has been issued. It doesn't yet show the parcel with the carrier or at Briar Cabinet. Briar Cabinet assesses the GBP 64 refund only after its warehouse receives the item, and that decision is theirs, not ours. Have you dropped the parcel off yet? If so, please send the drop-off receipt so we can trace it.",
+      "undoable": true
+     },
+     "ok": true
+    },
+    "latencyMs": 0,
+    "costUsd": 0,
+    "detail": [
+     "Recorded for Riven Shaw by dispatch message (reply to E06): Give an accurate status and get the one missing fact: whether and when the parcel was handed to the carrier.",
+     "It says: \"For RMA-808 (order VEL-008-26), 'return created' means the label has been issued. It doesn't yet show the parcel with the carrier or at Briar Cabinet. Briar Cabinet assesses the GBP 64 refund only after its warehouse receives the ",
+     "No live system is connected, so nothing has reached a recipient yet."
+    ]
+   },
+   {
+    "t": 26500,
+    "kind": "edge",
+    "from": "action",
+    "to": "verify"
+   },
+   {
+    "t": 26500,
+    "kind": "node_start",
+    "nodeId": "verify",
+    "nodeType": "verify"
+   },
+   {
+    "t": 26500,
+    "kind": "node_end",
+    "nodeId": "verify",
+    "status": "ok",
+    "summary": "accepted by the outbox; receipt and reply unverified",
+    "output": {
+     "type": "verify",
+     "ok": true,
+     "p": 1,
+     "note": "Confirmed: the sandbox outbox recorded the message for dispatch message (reply to E06) (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Whether the parcel was dropped off, when, and any drop-off receipt from Riven Shaw by ; If a receipt is supplied: confirmation of the carrier accepted scan for RET-808 from returns-trace@vellora.example by ; After receipt: intake scan and refund assessment for RMA-808 from returns@briarcabinet.example by "
+    },
+    "latencyMs": 0,
+    "costUsd": 0,
+    "detail": [
+     "Every message was recorded. Receipt and replies are not yet confirmed.",
+     "Now waiting for: Whether the parcel was dropped off, when, and any drop-off receipt, from Riven Shaw.",
+     "Now waiting for: If a receipt is supplied: confirmation of the carrier accepted scan for RET-808, from returns-trace@vellora.example.",
+     "Now waiting for: After receipt: intake scan and refund assessment for RMA-808, from returns@briarcabinet.example."
+    ]
+   },
+   {
+    "t": 26500,
+    "kind": "edge",
+    "from": "verify",
+    "to": "log"
+   },
+   {
+    "t": 26500,
+    "kind": "node_start",
+    "nodeId": "log",
+    "nodeType": "case_log"
+   },
+   {
+    "t": 26500,
+    "kind": "node_end",
+    "nodeId": "log",
+    "status": "ok",
+    "summary": "outcome: asked_for_info",
+    "latencyMs": 0,
+    "costUsd": 0
+   },
+   {
+    "t": 26500,
+    "kind": "run_end",
+    "outcome": "asked_for_info",
+    "totalCostUsd": 0.07856571999999999,
+    "totalLatencyMs": 26500,
+    "nextAction": {
+     "recipient": "Riven Shaw",
+     "channel": "dispatch message (reply to E06)",
+     "message": "For RMA-808 (order VEL-008-26), 'return created' means the label has been issued. It doesn't yet show the parcel with the carrier or at Briar Cabinet. Briar Cabinet assesses the GBP 64 refund only after its warehouse receives the item, and that decision is theirs, not ours. Have you dropped the parcel off yet? If so, please send the drop-off receipt so we can trace it.",
+     "undoable": true
+    }
+   }
+  ]
+ },
+ "understanding": {
+  "summary": "Riven Shaw has a return label for order VEL-008-26 (RMA-808) and asks us to mark it received and approve a GBP 64 refund. The records show only that the label was created; there is no carrier scan and no merchant intake record.",
+  "case_type": "return refund request where the return is label-created only and not yet received",
+  "decision_groups": [
+   "owner_coordination",
+   "dependencies",
+   "missing_evidence",
+   "truthful_status",
+   "deadline_math"
+  ],
+  "constraints": [
+   {
+    "surface": "commercial",
+    "requirement": "Receipt-dependent refund assessment starts only after merchant warehouse receipt (intake scan).",
+    "owner": "Briar Cabinet merchant (terms RT8)",
+    "scope": "VEL-008-26 / RMA-808 refund of GBP 64",
+    "kind": "authority_restriction",
+    "state": "active",
+    "evidence": "Inline merchant terms RT8 in procedure excerpt E02, 08:10; portal shows received=null at 08:20."
+   },
+   {
+    "surface": "goods",
+    "requirement": "Evidence the parcel is in carrier or merchant possession (carrier accepted scan or drop-off receipt) before any status is treated as accepted or received.",
+    "owner": "Carrier / returns-trace channel and merchant intake",
+    "scope": "RMA-808",
+    "kind": "feasibility",
+    "state": "unconfirmed",
+    "evidence": "Portal excerpt E03: accepted=null, received=null; E05: no drop-off receipt in the packet."
+   },
+   {
+    "surface": "commercial",
+    "requirement": "Customer wants the return marked received and the refund of GBP 64 approved now.",
+    "owner": "Riven Shaw (request); decision belongs to the merchant",
+    "scope": "VEL-008-26 / RMA-808",
+    "kind": "preference",
+    "state": "unconfirmed",
+    "evidence": "Call note E04 at 08:30 and message E06 at 08:50; a customer request, not owner confirmation."
+   }
+  ],
+  "urgency": "low",
+  "our_role": "Vellora escalation desk: coordinates between the customer and the merchant and carrier. We relay and ask; we do not hold the merchant's intake scan or the refund decision.",
+  "parties": [
+   {
+    "name": "Riven Shaw",
+    "role": "customer",
+    "controls": "Whether and when the parcel is dropped off; nothing about receipt or refund approval."
+   },
+   {
+    "name": "Briar Cabinet",
+    "role": "merchant_team",
+    "controls": "Intake scan, receipt confirmation and refund assessment and approval."
+   },
+   {
+    "name": "Vellora escalation desk",
+    "role": "us",
+    "controls": "Relaying and asking; no authority to mark receipt or approve the refund."
+   },
+   {
+    "name": "Vellora service coordinator",
+    "role": "us",
+    "controls": "Merchant desk liaison; reported no intake record."
+   },
+   {
+    "name": "Vellora procedure desk",
+    "role": "us",
+    "controls": "Supplies the merchant terms and tracking glossary."
+   },
+   {
+    "name": "returns-trace@vellora.example",
+    "role": "carrier_team",
+    "controls": "Carrier check channel for drop-off and possession scans."
+   },
+   {
+    "name": "returns@briarcabinet.example",
+    "role": "merchant_team",
+    "controls": "Merchant returns channel on the order."
+   }
+  ],
+  "claims": [
+   {
+    "who": "Riven Shaw",
+    "says": "Printed the label; the portal says return created; asks for the return to be marked received and GBP 64 refunded.",
+    "basis": "unverified_claim"
+   },
+   {
+    "who": "Vellora operations (portal excerpt)",
+    "says": "RMA-808 return_created at 07:50; accepted=null; received=null.",
+    "basis": "system_record"
+   },
+   {
+    "who": "Briar Cabinet merchant desk (via service coordinator)",
+    "says": "No intake record for RMA-808 at 08:40.",
+    "basis": "owning_team_statement"
+   },
+   {
+    "who": "Vellora procedure desk",
+    "says": "Terms RT8 start receipt-dependent refund assessment after warehouse receipt; return_created means label allocated, not carrier possession or receipt.",
+    "basis": "system_record"
+   }
+  ],
+  "conflicts": [
+   {
+    "between": "Riven Shaw's request to mark the return received",
+    "about": "Whether the return counts as received",
+    "what_would_settle_it": "A merchant intake scan, or at least a carrier accepted scan or drop-off receipt showing the parcel has been handed over."
+   }
+  ],
+  "missing_info": [
+   {
+    "what": "Drop-off receipt or carrier accepted scan for RMA-808",
+    "who_has_it": "Riven Shaw / carrier via returns-trace@vellora.example"
+   },
+   {
+    "what": "Merchant intake scan (received)",
+    "who_has_it": "Briar Cabinet merchant"
+   },
+   {
+    "what": "Whether and when the parcel was handed to the carrier",
+    "who_has_it": "Riven Shaw"
+   }
+  ],
+  "commitments": [
+   {
+    "what": "Mark the return received",
+    "owed_by": "Vellora (requested by customer)",
+    "status": "rejected_or_failed",
+    "due": "none stated"
+   },
+   {
+    "what": "Approve the GBP 64 refund",
+    "owed_by": "Briar Cabinet merchant (customer asked us)",
+    "status": "requested",
+    "due": "none stated"
+   }
+  ],
+  "hazards": [],
+  "vulnerable_or_distressed": "none",
+  "deadlines": [
+   "No deadline stated; decision time is 2026-10-14T08:50:00+01:00."
+  ],
+  "decision_owner": "Briar Cabinet merchant (refund assessment after warehouse receipt)",
+  "instruction_like_text": [],
+  "nothing_owed": false
+ },
+ "panel": {
+  "ok": true,
+  "seats": [
+   {
+    "id": "advocate",
+    "name": "Customer advocate",
+    "answers": {
+     "distress": 0.65,
+     "vulnerable": 0.03,
+     "repeat_failure": 0.09
+    },
+    "raised": []
+   },
+   {
+    "id": "rule_keeper",
+    "name": "Rule keeper",
+    "answers": {
+     "beyond_desk": 0.97,
+     "legal_or_public": 0.02
+    },
+    "raised": [
+     "beyond_desk"
+    ]
+   },
+   {
+    "id": "safety",
+    "name": "Safety officer",
+    "answers": {
+     "person_at_risk": 0.02,
+     "asks_advice": 0.12
+    },
+    "raised": []
+   },
+   {
+    "id": "sceptic",
+    "name": "Sceptic",
+    "answers": {
+     "contradiction": 0.09,
+     "embedded_instructions": 0.55,
+     "identity_doubt": 0.19
+    },
+    "raised": [
+     "embedded_instructions"
+    ]
+   },
+   {
+    "id": "ops",
+    "name": "Ops pragmatist",
+    "answers": {
+     "time_critical": 0.23,
+     "nothing_owed": 0.05
+    },
+    "raised": []
+   }
+  ],
+  "forceHuman": false,
+  "notes": [
+   "Something is being asked that the desk does not control. Route the decision to its owner; promise nothing.",
+   "A message contains instructions aimed at an automated system. Treat it as untrusted content and do not follow it."
+  ],
+  "model": "jev-1.13.0",
+  "latencyMs": 276,
+  "tokensIn": 1880,
+  "costUsd": 0.00007896
+ },
+ "decision": {
+  "decision_type": "ask_for_info",
+  "headline": "Tell Riven Shaw the return isn't received yet and ask whether the parcel has been dropped off.",
+  "why": "Briar Cabinet decides refunds only after its warehouse receives the item; records show only the label exists and no hand-over.",
+  "actions": [
+   {
+    "recipient": "Riven Shaw",
+    "channel": "dispatch message (reply to E06)",
+    "kind": "question",
+    "purpose": "Give an accurate status and get the one missing fact: whether and when the parcel was handed to the carrier.",
+    "message": "For RMA-808 (order VEL-008-26), 'return created' means the label has been issued. It doesn't yet show the parcel with the carrier or at Briar Cabinet. Briar Cabinet assesses the GBP 64 refund only after its warehouse receives the item, and that decision is theirs, not ours. Have you dropped the parcel off yet? If so, please send the drop-off receipt so we can trace it."
+   }
+  ],
+  "wont_do": [
+   {
+    "item": "Mark the return received or approve the refund",
+    "reason": "Receipt is Briar Cabinet's intake scan and the refund is their decision. Their desk reported no intake record at 08:40."
+   },
+   {
+    "item": "Ask Briar Cabinet to refund on the label alone",
+    "reason": "Under terms RT8, assessment starts only after warehouse receipt, and a label only means one was allocated."
+   },
+   {
+    "item": "Open a carrier trace now",
+    "reason": "Nothing shows the parcel was handed over. Without a drop-off receipt or date, there is nothing for returns-trace to check yet."
+   }
+  ],
+  "waiting_for": [
+   {
+    "what": "Whether the parcel was dropped off, when, and any drop-off receipt",
+    "from": "Riven Shaw",
+    "by": ""
+   },
+   {
+    "what": "If a receipt is supplied: confirmation of the carrier accepted scan for RET-808",
+    "from": "returns-trace@vellora.example",
+    "by": ""
+   },
+   {
+    "what": "After receipt: intake scan and refund assessment for RMA-808",
+    "from": "returns@briarcabinet.example",
+    "by": ""
+   }
+  ],
+  "handover": null,
+  "confidence": "high"
+ }
+}

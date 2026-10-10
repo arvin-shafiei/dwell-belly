@@ -1,0 +1,528 @@
+{
+ "version": 1,
+ "runId": "2026-10-10T15:35:07.372Z-reality",
+ "caseId": "014",
+ "flowId": "default-incident",
+ "mode": "reality",
+ "events": [
+  {
+   "t": 0,
+   "kind": "run_start",
+   "title": "014",
+   "inputs": [
+    {
+     "n": 1,
+     "channel": "file",
+     "from": "history.md",
+     "excerpt": "1743 characters"
+    },
+    {
+     "n": 2,
+     "channel": "file",
+     "from": "index.md",
+     "excerpt": "564 characters"
+    }
+   ]
+  },
+  {
+   "t": 0,
+   "kind": "node_start",
+   "nodeId": "ingest",
+   "nodeType": "ingest"
+  },
+  {
+   "t": 9769,
+   "kind": "model_call",
+   "nodeId": "ingest",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 9769,
+   "tokensIn": 7073,
+   "tokensOut": 1528,
+   "costUsd": 0.021810200000000002,
+   "ok": true
+  },
+  {
+   "t": 9769,
+   "kind": "node_end",
+   "nodeId": "ingest",
+   "status": "ok",
+   "summary": "2 files, 1 attachments read",
+   "output": {
+    "type": "ingest",
+    "decisionGroups": [
+     "owner_coordination",
+     "conflicting_evidence",
+     "dependencies",
+     "deadline_math",
+     "truthful_status"
+    ],
+    "constraints": [
+     {
+      "surface": "commercial",
+      "requirement": "Any invoice adjustment or reversal needs billing approval; similar descriptions alone do not establish duplicate billing.",
+      "owner": "Vellora billing",
+      "scope": "INV-014 / VEL-014-26, lines OUT-141 and RET-142",
+      "kind": "authority_restriction",
+      "state": "active",
+      "evidence": "Billing guide B14 (E02, 08:10)"
+     },
+     {
+      "surface": "commercial",
+      "requirement": "Customer wants the second line removed before paying.",
+      "owner": "Sian Rook (Alder Atelier)",
+      "scope": "INV-014",
+      "kind": "preference",
+      "state": "unconfirmed",
+      "evidence": "Call note E04 08:30 and message E05 08:40; customer claim, not owner confirmation"
+     },
+     {
+      "surface": "commercial",
+      "requirement": "Reconcile lines by service identifier, date and direction before any decision.",
+      "owner": "Vellora billing / account desk",
+      "scope": "OUT-141 and RET-142",
+      "kind": "feasibility",
+      "state": "active",
+      "evidence": "E02; E03 shows distinct IDs, dates (2026-10-10, 2026-10-13) and directions, each with a collection scan"
+     }
+    ]
+   },
+   "latencyMs": 9769,
+   "costUsd": 0.021810200000000002,
+   "detail": [
+    "Sian Rook of Alder Atelier asks to reverse one of two GBP 32 'Parcel transport' lines on invoice INV-014, calling the second a duplicate. Records show two distinct services (outbound OUT-141, return RET-142), so the desk must not treat this",
+    "4 statements found: 3 from a record or an owning team, 1 unverified.",
+    "Who decides: Vellora billing."
+   ]
+  },
+  {
+   "t": 9769,
+   "kind": "node_start",
+   "nodeId": "history",
+   "nodeType": "history_lookup"
+  },
+  {
+   "t": 9769,
+   "kind": "node_end",
+   "nodeId": "history",
+   "status": "ok",
+   "summary": "1 open commitments, 1 deadlines",
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Already asked: Reverse one invoice line before payment (requested, owed by Vellora billing (approval required)).",
+    "Deadline: No payment deadline stated; customer wishes to resolve before paying INV-014 (issued 2026-10-14)."
+   ]
+  },
+  {
+   "t": 9769,
+   "kind": "edge",
+   "from": "history",
+   "to": "triage"
+  },
+  {
+   "t": 9769,
+   "kind": "edge",
+   "from": "history",
+   "to": "perspectives"
+  },
+  {
+   "t": 9769,
+   "kind": "edge",
+   "from": "history",
+   "to": "clash"
+  },
+  {
+   "t": 9981,
+   "kind": "node_start",
+   "nodeId": "triage",
+   "nodeType": "triage"
+  },
+  {
+   "t": 9981,
+   "kind": "model_call",
+   "nodeId": "triage",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 189,
+   "tokensIn": 1659,
+   "tokensOut": 0,
+   "costUsd": 0.00006967799999999999,
+   "ok": true
+  },
+  {
+   "t": 9981,
+   "kind": "node_end",
+   "nodeId": "triage",
+   "status": "ok",
+   "summary": "billing · medium",
+   "output": {
+    "type": "triage",
+    "caseType": "billing",
+    "urgency": "medium",
+    "p": 1
+   },
+   "latencyMs": 188,
+   "costUsd": 0.00006967799999999999,
+   "detail": [
+    "Kind of problem: billing. Urgency: medium."
+   ]
+  },
+  {
+   "t": 9981,
+   "kind": "node_start",
+   "nodeId": "perspectives",
+   "nodeType": "perspectives"
+  },
+  {
+   "t": 9981,
+   "kind": "model_call",
+   "nodeId": "perspectives",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 208,
+   "tokensIn": 1806,
+   "tokensOut": 0,
+   "costUsd": 0.00007585199999999999,
+   "ok": true
+  },
+  {
+   "t": 9981,
+   "kind": "node_end",
+   "nodeId": "perspectives",
+   "status": "ok",
+   "summary": "1 flags raised",
+   "output": {
+    "type": "perspectives",
+    "seats": [
+     {
+      "id": "advocate",
+      "name": "Customer advocate",
+      "answers": {
+       "distress": 0.44,
+       "vulnerable": 0.03,
+       "repeat_failure": 0.05
+      },
+      "raised": []
+     },
+     {
+      "id": "rule_keeper",
+      "name": "Rule keeper",
+      "answers": {
+       "beyond_desk": 0.91,
+       "legal_or_public": 0.02
+      },
+      "raised": [
+       "beyond_desk"
+      ]
+     },
+     {
+      "id": "safety",
+      "name": "Safety officer",
+      "answers": {
+       "person_at_risk": 0.03,
+       "asks_advice": 0.15
+      },
+      "raised": []
+     },
+     {
+      "id": "sceptic",
+      "name": "Sceptic",
+      "answers": {
+       "contradiction": 0.25,
+       "embedded_instructions": 0.19,
+       "identity_doubt": 0.07
+      },
+      "raised": []
+     },
+     {
+      "id": "ops",
+      "name": "Ops pragmatist",
+      "answers": {
+       "time_critical": 0.25,
+       "nothing_owed": 0.06
+      },
+      "raised": []
+     }
+    ]
+   },
+   "latencyMs": 208,
+   "costUsd": 0.00007585199999999999,
+   "detail": [
+    "Rule keeper spoke up (beyond desk)."
+   ]
+  },
+  {
+   "t": 9981,
+   "kind": "node_start",
+   "nodeId": "clash",
+   "nodeType": "clash_check"
+  },
+  {
+   "t": 9981,
+   "kind": "model_call",
+   "nodeId": "clash",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 211,
+   "tokensIn": 537,
+   "tokensOut": 0,
+   "costUsd": 0.000022553999999999998,
+   "ok": true
+  },
+  {
+   "t": 9981,
+   "kind": "node_end",
+   "nodeId": "clash",
+   "status": "ok",
+   "summary": "1 conflict: Whether the second line is a duplicate charge",
+   "output": {
+    "type": "clash_check",
+    "clash": true,
+    "p": 0.27,
+    "claims": [
+     {
+      "who": "Sian Rook",
+      "says": "The two parcel transport lines are a duplicate at the same price; remove the second."
+     },
+     {
+      "who": "Vellora operations",
+      "says": "OUT-141 outbound 2026-10-10 and RET-142 return 2026-10-13 in reverse direction, each GBP 32."
+     },
+     {
+      "who": "Account desk",
+      "says": "Both OUT-141 and RET-142 have collection scans on their dates; no tax or extra fees; payment pending."
+     },
+     {
+      "who": "Vellora billing",
+      "says": "INV-014 total GBP 64, unpaid, two lines."
+     }
+    ]
+   },
+   "latencyMs": 211,
+   "costUsd": 0.000022553999999999998,
+   "detail": [
+    "Disagreement between Sian Rook vs Vellora booking and scan records: Whether the second line is a duplicate charge. What would settle it: Billing reconciling lines by identifier, date and direction; records indicate two separate legs, so con",
+    "Neither side is treated as proven.",
+    "Missing: Whether the customer knows of or disputes the return leg RET-142 (not recognised as a separate service) (held by Sian Rook).",
+    "Missing: Billing's decision on whether any adjustment applies (held by Vellora billing)."
+   ]
+  },
+  {
+   "t": 9981,
+   "kind": "edge",
+   "from": "triage",
+   "to": "planner"
+  },
+  {
+   "t": 9981,
+   "kind": "edge",
+   "from": "perspectives",
+   "to": "planner"
+  },
+  {
+   "t": 9981,
+   "kind": "edge",
+   "from": "clash",
+   "to": "planner"
+  },
+  {
+   "t": 9981,
+   "kind": "node_start",
+   "nodeId": "planner",
+   "nodeType": "planner"
+  },
+  {
+   "t": 22957,
+   "kind": "model_call",
+   "nodeId": "planner",
+   "runner": "claude",
+   "model": "claude-opus-5-5",
+   "latencyMs": 12976,
+   "tokensIn": 10914,
+   "tokensOut": 1197,
+   "costUsd": 0.0473344,
+   "ok": true
+  },
+  {
+   "t": 22957,
+   "kind": "node_end",
+   "nodeId": "planner",
+   "status": "ok",
+   "summary": "act: Vellora billing owns invoice adjustments under B14; the records show two di",
+   "output": {
+    "type": "planner",
+    "nextAction": {
+     "recipient": "Vellora billing",
+     "channel": "billing@vellora.example",
+     "message": "Please review and decide on Sian Rook's (Alder Atelier) request to reverse one GBP 32 line on INV-014 (VEL-014-26), which she says is a duplicate. Operations records show the lines as OUT-141 (outbound, 2026-10-10) and RET-142 (return, 2026-10-13), and the account desk reports a collection scan for each. She wants this settled before paying.",
+     "undoable": true
+    },
+    "wontDo": [
+     "Reverse or promise removal of the second line",
+     "Tell the customer the charge is valid",
+     "Treat the lines as duplicates"
+    ],
+    "waitingFor": [
+     {
+      "what": "Decision on whether any adjustment to INV-014 applies",
+      "from": "Vellora billing",
+      "by": ""
+     }
+    ],
+    "candidates": []
+   },
+   "latencyMs": 12976,
+   "costUsd": 0.0473344,
+   "detail": [
+    "Ask Vellora billing to rule on Sian Rook's INV-014 line dispute; tell her billing decides, nothing promised.",
+    "Why: Vellora billing owns invoice adjustments under B14; the records show two distinct references (OUT-141, RET-142), so the desk cannot treat this as a duplicate.",
+    "Will not: Reverse or promise removal of the second line (Adjustments need billing approval; the desk has no authority to change the invoice.)",
+    "Will not: Tell the customer the charge is valid (The conflict goes to billing to settle; the desk does not rule on which account is right.)",
+    "Will not: Treat the lines as duplicates (B14: similar descriptions alone do not establish duplication; references, dates and directions differ.)"
+   ]
+  },
+  {
+   "t": 22957,
+   "kind": "node_start",
+   "nodeId": "gate",
+   "nodeType": "safety_gate"
+  },
+  {
+   "t": 25292,
+   "kind": "model_call",
+   "nodeId": "gate",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 2335,
+   "tokensIn": 4366,
+   "tokensOut": 252,
+   "costUsd": 0.0091964,
+   "ok": true
+  },
+  {
+   "t": 25293,
+   "kind": "node_end",
+   "nodeId": "gate",
+   "status": "ok",
+   "summary": "2 of 2 messages cleared",
+   "output": {
+    "type": "safety_gate",
+    "risk": 0.08,
+    "decision": "allow",
+    "allowBelow": 0.3,
+    "blockAbove": 0.8
+   },
+   "latencyMs": 2336,
+   "costUsd": 0.0091964,
+   "detail": [
+    "Message to Vellora billing: clear to send (risk 0.04, below 0.3).",
+    "Message to Sian Rook: clear to send (risk 0.08, below 0.3)."
+   ]
+  },
+  {
+   "t": 25293,
+   "kind": "edge",
+   "from": "gate",
+   "to": "action",
+   "when": "allow"
+  },
+  {
+   "t": 25293,
+   "kind": "node_start",
+   "nodeId": "action",
+   "nodeType": "action"
+  },
+  {
+   "t": 25293,
+   "kind": "node_end",
+   "nodeId": "action",
+   "status": "ok",
+   "summary": "2 of 2 message(s) accepted by the outbox",
+   "output": {
+    "type": "action",
+    "done": {
+     "recipient": "Vellora billing",
+     "channel": "billing@vellora.example",
+     "message": "Please review and decide on Sian Rook's (Alder Atelier) request to reverse one GBP 32 line on INV-014 (VEL-014-26), which she says is a duplicate. Operations records show the lines as OUT-141 (outbound, 2026-10-10) and RET-142 (return, 2026-10-13), and the account desk reports a collection scan for each. She wants this settled before paying.",
+     "undoable": true
+    },
+    "ok": true
+   },
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Recorded for Vellora billing by billing@vellora.example: Get billing's decision on whether any adjustment to INV-014 applies.",
+    "It says: \"Please review and decide on Sian Rook's (Alder Atelier) request to reverse one GBP 32 line on INV-014 (VEL-014-26), which she says is a duplicate. Operations records show the lines as OUT-141 (outbound, 2026-10-10) and RET-142 (re",
+    "Recorded for Sian Rook by dispatch message: Tell the verified contact who decides and what happens next, without promising an outcome.",
+    "It says: \"I've passed your request about INV-014 to Vellora billing, who decide any invoice adjustment; the desk can't reverse a line itself. For reference, the two lines carry different service references, OUT-141 (10 Oct) and RET-142 (13 ",
+    "No live system is connected, so nothing has reached a recipient yet."
+   ]
+  },
+  {
+   "t": 25293,
+   "kind": "edge",
+   "from": "action",
+   "to": "verify"
+  },
+  {
+   "t": 25293,
+   "kind": "node_start",
+   "nodeId": "verify",
+   "nodeType": "verify"
+  },
+  {
+   "t": 25293,
+   "kind": "node_end",
+   "nodeId": "verify",
+   "status": "ok",
+   "summary": "accepted by the outbox; receipt and reply unverified",
+   "output": {
+    "type": "verify",
+    "ok": true,
+    "p": 1,
+    "note": "Confirmed: the sandbox outbox recorded the message for billing@vellora.example (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for dispatch message (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Decision on whether any adjustment to INV-014 applies from Vellora billing by "
+   },
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Every message was recorded. Receipt and replies are not yet confirmed.",
+    "Now waiting for: Decision on whether any adjustment to INV-014 applies, from Vellora billing."
+   ]
+  },
+  {
+   "t": 25293,
+   "kind": "edge",
+   "from": "verify",
+   "to": "log"
+  },
+  {
+   "t": 25293,
+   "kind": "node_start",
+   "nodeId": "log",
+   "nodeType": "case_log"
+  },
+  {
+   "t": 25293,
+   "kind": "node_end",
+   "nodeId": "log",
+   "status": "ok",
+   "summary": "outcome: acted",
+   "latencyMs": 0,
+   "costUsd": 0
+  },
+  {
+   "t": 25293,
+   "kind": "run_end",
+   "outcome": "acted",
+   "totalCostUsd": 0.078509084,
+   "totalLatencyMs": 25293,
+   "nextAction": {
+    "recipient": "Vellora billing",
+    "channel": "billing@vellora.example",
+    "message": "Please review and decide on Sian Rook's (Alder Atelier) request to reverse one GBP 32 line on INV-014 (VEL-014-26), which she says is a duplicate. Operations records show the lines as OUT-141 (outbound, 2026-10-10) and RET-142 (return, 2026-10-13), and the account desk reports a collection scan for each. She wants this settled before paying.",
+    "undoable": true
+   }
+  }
+ ]
+}

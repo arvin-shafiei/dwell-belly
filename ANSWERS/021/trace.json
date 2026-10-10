@@ -1,0 +1,536 @@
+{
+ "version": 1,
+ "runId": "2026-10-10T15:35:07.372Z-reality",
+ "caseId": "021",
+ "flowId": "default-incident",
+ "mode": "reality",
+ "events": [
+  {
+   "t": 0,
+   "kind": "run_start",
+   "title": "021",
+   "inputs": [
+    {
+     "n": 1,
+     "channel": "file",
+     "from": "history.md",
+     "excerpt": "1939 characters"
+    },
+    {
+     "n": 2,
+     "channel": "file",
+     "from": "index.md",
+     "excerpt": "616 characters"
+    }
+   ]
+  },
+  {
+   "t": 0,
+   "kind": "node_start",
+   "nodeId": "ingest",
+   "nodeType": "ingest"
+  },
+  {
+   "t": 10521,
+   "kind": "model_call",
+   "nodeId": "ingest",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 10521,
+   "tokensIn": 5357,
+   "tokensOut": 1637,
+   "costUsd": 0.0194682,
+   "ok": true
+  },
+  {
+   "t": 10521,
+   "kind": "node_end",
+   "nodeId": "ingest",
+   "status": "ok",
+   "summary": "2 files, 0 attachments read",
+   "output": {
+    "type": "ingest",
+    "decisionGroups": [
+     "owner_coordination",
+     "truthful_status",
+     "dependencies",
+     "missing_evidence",
+     "deadline_math"
+    ],
+    "constraints": [
+     {
+      "surface": "commercial",
+      "requirement": "Refund is assessed by merchant care using the actual carrier result or a documented discretionary decision; escalation staff cannot promise payment.",
+      "owner": "Marigold Books merchant care (care@marigold.example)",
+      "scope": "VEL-021-26 refund of GBP 39",
+      "kind": "authority_restriction",
+      "state": "active",
+      "evidence": "Procedure excerpt RM21, E02 (08:10); reconciliation E05 confirms no refund decision or payment authorisation"
+     },
+     {
+      "surface": "shared_incident",
+      "requirement": "Investigation registration is not a loss finding; no loss can be stated until the carrier finding is issued.",
+      "owner": "Vellora operations / carrier trace",
+      "scope": "VEL-021-26, trace TR-021",
+      "kind": "authority_restriction",
+      "state": "active",
+      "evidence": "E02 and E03: status open, finding=null, next review 2026-10-15T12:00+01:00"
+     },
+     {
+      "surface": "commercial",
+      "requirement": "Customer wants refund of GBP 39 today and confirmation of loss.",
+      "owner": "Iona Fen (customer)",
+      "scope": "VEL-021-26",
+      "kind": "preference",
+      "state": "unconfirmed",
+      "evidence": "Emails E04 (08:30) and E06 (08:50); a request, not owner confirmation"
+     }
+    ]
+   },
+   "latencyMs": 10521,
+   "costUsd": 0.0194682,
+   "detail": [
+    "Customer Iona Fen wants the desk to confirm shipment VEL-021-26 is lost and refund GBP 39 today, citing the open carrier investigation. The investigation has no finding and no refund decision exists, so the desk can only relay and cannot co",
+    "4 statements found: 3 from a record or an owning team, 1 unverified.",
+    "Who decides: Marigold Books merchant care for the refund; Vellora operations for the loss finding."
+   ]
+  },
+  {
+   "t": 10521,
+   "kind": "node_start",
+   "nodeId": "history",
+   "nodeType": "history_lookup"
+  },
+  {
+   "t": 10521,
+   "kind": "node_end",
+   "nodeId": "history",
+   "status": "ok",
+   "summary": "2 open commitments, 2 deadlines",
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Already asked: Carrier investigation TR-021 review (confirmed, owed by Vellora operations).",
+    "Already asked: Refund of GBP 39 today (requested, owed by Marigold Books (not Vellora desk)).",
+    "Deadline: 2026-10-15T12:00:00+01:00 next investigation review",
+    "Deadline: Customer asks for refund by end of 2026-10-14"
+   ]
+  },
+  {
+   "t": 10521,
+   "kind": "edge",
+   "from": "history",
+   "to": "triage"
+  },
+  {
+   "t": 10521,
+   "kind": "edge",
+   "from": "history",
+   "to": "perspectives"
+  },
+  {
+   "t": 10521,
+   "kind": "edge",
+   "from": "history",
+   "to": "clash"
+  },
+  {
+   "t": 10858,
+   "kind": "node_start",
+   "nodeId": "triage",
+   "nodeType": "triage"
+  },
+  {
+   "t": 10858,
+   "kind": "model_call",
+   "nodeId": "triage",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 326,
+   "tokensIn": 1791,
+   "tokensOut": 0,
+   "costUsd": 0.00007522199999999999,
+   "ok": true
+  },
+  {
+   "t": 10858,
+   "kind": "node_end",
+   "nodeId": "triage",
+   "status": "ok",
+   "summary": "lost_or_misdelivered · medium",
+   "output": {
+    "type": "triage",
+    "caseType": "lost_or_misdelivered",
+    "urgency": "medium",
+    "p": 1
+   },
+   "latencyMs": 326,
+   "costUsd": 0.00007522199999999999,
+   "detail": [
+    "Kind of problem: lost or misdelivered. Urgency: medium."
+   ]
+  },
+  {
+   "t": 10858,
+   "kind": "node_start",
+   "nodeId": "perspectives",
+   "nodeType": "perspectives"
+  },
+  {
+   "t": 10858,
+   "kind": "model_call",
+   "nodeId": "perspectives",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 337,
+   "tokensIn": 1921,
+   "tokensOut": 0,
+   "costUsd": 0.000080682,
+   "ok": true
+  },
+  {
+   "t": 10858,
+   "kind": "node_end",
+   "nodeId": "perspectives",
+   "status": "ok",
+   "summary": "1 flags raised",
+   "output": {
+    "type": "perspectives",
+    "seats": [
+     {
+      "id": "advocate",
+      "name": "Customer advocate",
+      "answers": {
+       "distress": 1.05,
+       "vulnerable": 0.03,
+       "repeat_failure": 0.14
+      },
+      "raised": []
+     },
+     {
+      "id": "rule_keeper",
+      "name": "Rule keeper",
+      "answers": {
+       "beyond_desk": 0.98,
+       "legal_or_public": 0.03
+      },
+      "raised": [
+       "beyond_desk"
+      ]
+     },
+     {
+      "id": "safety",
+      "name": "Safety officer",
+      "answers": {
+       "person_at_risk": 0.02,
+       "asks_advice": 0.04
+      },
+      "raised": []
+     },
+     {
+      "id": "sceptic",
+      "name": "Sceptic",
+      "answers": {
+       "contradiction": 0.35,
+       "embedded_instructions": 0.39,
+       "identity_doubt": 0.11
+      },
+      "raised": []
+     },
+     {
+      "id": "ops",
+      "name": "Ops pragmatist",
+      "answers": {
+       "time_critical": 0.3,
+       "nothing_owed": 0.04
+      },
+      "raised": []
+     }
+    ]
+   },
+   "latencyMs": 336,
+   "costUsd": 0.000080682,
+   "detail": [
+    "Rule keeper spoke up (beyond desk)."
+   ]
+  },
+  {
+   "t": 10858,
+   "kind": "node_start",
+   "nodeId": "clash",
+   "nodeType": "clash_check"
+  },
+  {
+   "t": 10858,
+   "kind": "model_call",
+   "nodeId": "clash",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 321,
+   "tokensIn": 568,
+   "tokensOut": 0,
+   "costUsd": 0.000023856,
+   "ok": true
+  },
+  {
+   "t": 10858,
+   "kind": "node_end",
+   "nodeId": "clash",
+   "status": "ok",
+   "summary": "1 conflict: Whether the open investigation means loss is confirmed",
+   "output": {
+    "type": "clash_check",
+    "clash": true,
+    "p": 0.69,
+    "claims": [
+     {
+      "who": "Iona Fen",
+      "says": "The investigation being opened means the carrier confirmed the parcel is lost."
+     },
+     {
+      "who": "Vellora operations",
+      "says": "Trace TR-021 opened 2026-10-14T08:00+01:00, status open, finding null, next review 2026-10-15T12:00+01:00."
+     },
+     {
+      "who": "Vellora reconciliation desk",
+      "says": "No refund decision or payment authorisation exists; last physical scan 2026-10-12T18:20+01:00 at Cress depot."
+     },
+     {
+      "who": "Vellora procedure desk",
+      "says": "Investigation registration is not a loss finding and escalation staff cannot promise payment."
+     }
+    ]
+   },
+   "latencyMs": 321,
+   "costUsd": 0.000023856,
+   "detail": [
+    "Disagreement between Iona Fen vs Vellora operations record: Whether the open investigation means loss is confirmed. What would settle it: Carrier finding on TR-021 (currently null); review due 2026-10-15T12:00+01:00",
+    "Neither side is treated as proven.",
+    "Missing: Carrier investigation result/finding for TR-021 (held by Vellora operations via trace@vellora.example).",
+    "Missing: Merchant refund decision (based on carrier result or documented discretion) (held by Marigold Books care (care@marigold.example))."
+   ]
+  },
+  {
+   "t": 10858,
+   "kind": "edge",
+   "from": "triage",
+   "to": "planner"
+  },
+  {
+   "t": 10858,
+   "kind": "edge",
+   "from": "perspectives",
+   "to": "planner"
+  },
+  {
+   "t": 10858,
+   "kind": "edge",
+   "from": "clash",
+   "to": "planner"
+  },
+  {
+   "t": 10858,
+   "kind": "node_start",
+   "nodeId": "planner",
+   "nodeType": "planner"
+  },
+  {
+   "t": 21785,
+   "kind": "model_call",
+   "nodeId": "planner",
+   "runner": "claude",
+   "model": "claude-opus-5-5",
+   "latencyMs": 10927,
+   "tokensIn": 9384,
+   "tokensOut": 1082,
+   "costUsd": 0.0389144,
+   "ok": true
+  },
+  {
+   "t": 21785,
+   "kind": "node_end",
+   "nodeId": "planner",
+   "status": "ok",
+   "summary": "act: Marigold Books care owns refunds and Vellora operations owns the loss findi",
+   "output": {
+    "type": "planner",
+    "nextAction": {
+     "recipient": "Marigold Books",
+     "channel": "email (care@marigold.example)",
+     "message": "Please assess Iona Fen's request for a GBP 39 refund on VEL-021-26; she has asked for it today. Carrier trace TR-021 is open with no finding yet, next review 2026-10-15 12:00 (+01:00). The last physical scan was at Cress depot on 2026-10-12 18:20. Could you tell us your decision, or when to expect it?",
+     "undoable": true
+    },
+    "wontDo": [
+     "Confirm the parcel is lost",
+     "Promise or issue the GBP 39 refund today",
+     "Chase trace for an earlier finding"
+    ],
+    "waitingFor": [
+     {
+      "what": "Investigation finding on TR-021",
+      "from": "Vellora operations (trace@vellora.example)",
+      "by": "2026-10-15T12:00:00+01:00"
+     },
+     {
+      "what": "Refund decision on GBP 39 for VEL-021-26",
+      "from": "Marigold Books (care@marigold.example)",
+      "by": ""
+     }
+    ],
+    "candidates": []
+   },
+   "latencyMs": 10927,
+   "costUsd": 0.0389144,
+   "detail": [
+    "Pass Iona Fen's GBP 39 refund request to Marigold Books care; tell her loss is not confirmed yet.",
+    "Why: Marigold Books care owns refunds and Vellora operations owns the loss finding; trace TR-021 is open with no finding.",
+    "Will not: Confirm the parcel is lost (TR-021 finding is null; opening an investigation is not a loss finding.)",
+    "Will not: Promise or issue the GBP 39 refund today (Only Marigold Books care can decide; RM21 bars escalation staff promising payment.)",
+    "Will not: Chase trace for an earlier finding (Vellora operations has committed to review by 2026-10-15 12:00, which has not passed.)"
+   ]
+  },
+  {
+   "t": 21785,
+   "kind": "node_start",
+   "nodeId": "gate",
+   "nodeType": "safety_gate"
+  },
+  {
+   "t": 25627,
+   "kind": "model_call",
+   "nodeId": "gate",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 3842,
+   "tokensIn": 2651,
+   "tokensOut": 242,
+   "costUsd": 0.005666399999999999,
+   "ok": true
+  },
+  {
+   "t": 25627,
+   "kind": "node_end",
+   "nodeId": "gate",
+   "status": "ok",
+   "summary": "2 of 2 messages cleared",
+   "output": {
+    "type": "safety_gate",
+    "risk": 0.06,
+    "decision": "allow",
+    "allowBelow": 0.3,
+    "blockAbove": 0.8
+   },
+   "latencyMs": 3842,
+   "costUsd": 0.005666399999999999,
+   "detail": [
+    "Message to Marigold Books: clear to send (risk 0.03, below 0.3).",
+    "Message to Iona Fen: clear to send (risk 0.06, below 0.3)."
+   ]
+  },
+  {
+   "t": 25627,
+   "kind": "edge",
+   "from": "gate",
+   "to": "action",
+   "when": "allow"
+  },
+  {
+   "t": 25627,
+   "kind": "node_start",
+   "nodeId": "action",
+   "nodeType": "action"
+  },
+  {
+   "t": 25627,
+   "kind": "node_end",
+   "nodeId": "action",
+   "status": "ok",
+   "summary": "2 of 2 message(s) accepted by the outbox",
+   "output": {
+    "type": "action",
+    "done": {
+     "recipient": "Marigold Books",
+     "channel": "email (care@marigold.example)",
+     "message": "Please assess Iona Fen's request for a GBP 39 refund on VEL-021-26; she has asked for it today. Carrier trace TR-021 is open with no finding yet, next review 2026-10-15 12:00 (+01:00). The last physical scan was at Cress depot on 2026-10-12 18:20. Could you tell us your decision, or when to expect it?",
+     "undoable": true
+    },
+    "ok": true
+   },
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Recorded for Marigold Books by email (care@marigold.example): Relay the customer's refund request to the refund owner for their decision",
+    "It says: \"Please assess Iona Fen's request for a GBP 39 refund on VEL-021-26; she has asked for it today. Carrier trace TR-021 is open with no finding yet, next review 2026-10-15 12:00 (+01:00). The last physical scan was at Cress depot on ",
+    "Recorded for Iona Fen by email: Correct the assumption that loss is confirmed and say who decides the refund",
+    "It says: \"An investigation (TR-021) is open on VEL-021-26, but it has not reached a finding, so the parcel has not been confirmed lost; the next review is due 15 October at 12:00. We have passed your GBP 39 refund request to Marigold Books,",
+    "No live system is connected, so nothing has reached a recipient yet."
+   ]
+  },
+  {
+   "t": 25627,
+   "kind": "edge",
+   "from": "action",
+   "to": "verify"
+  },
+  {
+   "t": 25627,
+   "kind": "node_start",
+   "nodeId": "verify",
+   "nodeType": "verify"
+  },
+  {
+   "t": 25627,
+   "kind": "node_end",
+   "nodeId": "verify",
+   "status": "ok",
+   "summary": "accepted by the outbox; receipt and reply unverified",
+   "output": {
+    "type": "verify",
+    "ok": true,
+    "p": 1,
+    "note": "Confirmed: the sandbox outbox recorded the message for email (care@marigold.example) (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for email (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Investigation finding on TR-021 from Vellora operations (trace@vellora.example) by 2026-10-15T12:00:00+01:00; Refund decision on GBP 39 for VEL-021-26 from Marigold Books (care@marigold.example) by "
+   },
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Every message was recorded. Receipt and replies are not yet confirmed.",
+    "Now waiting for: Investigation finding on TR-021, from Vellora operations (trace@vellora.example), by 2026-10-15T12:00:00+01:00.",
+    "Now waiting for: Refund decision on GBP 39 for VEL-021-26, from Marigold Books (care@marigold.example)."
+   ]
+  },
+  {
+   "t": 25627,
+   "kind": "edge",
+   "from": "verify",
+   "to": "log"
+  },
+  {
+   "t": 25627,
+   "kind": "node_start",
+   "nodeId": "log",
+   "nodeType": "case_log"
+  },
+  {
+   "t": 25627,
+   "kind": "node_end",
+   "nodeId": "log",
+   "status": "ok",
+   "summary": "outcome: acted",
+   "latencyMs": 0,
+   "costUsd": 0
+  },
+  {
+   "t": 25627,
+   "kind": "run_end",
+   "outcome": "acted",
+   "totalCostUsd": 0.06422876,
+   "totalLatencyMs": 25627,
+   "nextAction": {
+    "recipient": "Marigold Books",
+    "channel": "email (care@marigold.example)",
+    "message": "Please assess Iona Fen's request for a GBP 39 refund on VEL-021-26; she has asked for it today. Carrier trace TR-021 is open with no finding yet, next review 2026-10-15 12:00 (+01:00). The last physical scan was at Cress depot on 2026-10-12 18:20. Could you tell us your decision, or when to expect it?",
+    "undoable": true
+   }
+  }
+ ]
+}
