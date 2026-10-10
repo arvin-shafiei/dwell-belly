@@ -4,6 +4,7 @@ import { caseTextOf } from "@/voice/references";
 import { transcribe } from "@/voice/elevenlabs";
 import { handleNote } from "@/voice/notes";
 import type { VoiceMode, VoiceSource } from "@/voice/policy";
+import { englishTranslator } from "@/voice/translate";
 
 const MODES: VoiceMode[] = ["practice", "reality", "demo"];
 const SOURCES: VoiceSource[] = ["live_human", "simulated_persona", "audio_attachment"];
@@ -52,7 +53,10 @@ export async function POST(req: Request) {
       caseText,
       languageCode: typeof fields.languageCode === "string" && fields.languageCode ? fields.languageCode : "en",
     },
-    { transcribe },
+    // A note in another language gets an English machine translation when Claude is configured.
+    { transcribe, translate: process.env.ANTHROPIC_API_KEY ? englishTranslator() : undefined },
   );
-  return res.ok ? json({ event: res.event, ...(res.language ? { language: res.language } : {}) }) : json({ error: res.error }, { status: res.status });
+  return res.ok
+    ? json({ event: res.event, ...(res.language ? { language: res.language } : {}), ...(res.translation ? { translation: res.translation } : {}) })
+    : json({ error: res.error }, { status: res.status });
 }
