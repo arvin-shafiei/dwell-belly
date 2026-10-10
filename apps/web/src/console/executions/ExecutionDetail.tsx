@@ -1,6 +1,7 @@
 "use client";
 // One case run in plain words: what happened (headline), the message, a person's decision if
-// one is needed, and the steps as a checklist. Timings, costs, step log and the written
+// one is needed, voice (speak as the driver, take the call the agent wants to make, decide by voice),
+// and the steps as a checklist. Timings, costs, step log and the written
 // reports are behind "Details".
 import { useState } from "react";
 import { cents, plainOutcome, scrubLeaks } from "../../ui/plain";
@@ -11,6 +12,7 @@ import { caseName, checklist, decisionCardOf, headline, messageOf, statusTone, s
 import DecideRerun from "./DecideRerun";
 import Timeline, { MessageCard } from "./Timeline";
 import { Badge, Button, cx } from "./ui";
+import VoiceSlot from "./VoiceSlot";
 
 type DetailView = "steps" | "answer" | "reasoning";
 
@@ -145,6 +147,16 @@ export default function ExecutionDetail({
 
         {msg && <MessageCard title={msg.title} to={msg.to} how={msg.how} message={msg.message} />}
         {card && <DecideRerun key={e.id} execution={e} card={card} onOpen={onOpen} />}
+
+        {e.status !== "running" && (
+          <section>
+            <h3 className="mb-1 text-sm font-semibold text-white/60">Voice</h3>
+            <p className="mb-3 text-[13px] text-white/45">
+              Speak as the driver, take the call the agent wants to make, or decide by voice. The case runs again with what was said.
+            </p>
+            <VoiceSlot.Mounts execution={e} />
+          </section>
+        )}
 
         {steps.length > 0 && (
           <section>
