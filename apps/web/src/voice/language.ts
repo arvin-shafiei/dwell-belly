@@ -4,3 +4,8 @@
 export function spokenLanguage(body: string): string | null {
   return /^\[spoken in ([^\]]+)\]/.exec(body)?.[1] ?? null;
 }
+
+/** The English machine translation a note in another language carries, or null. */
+export function machineTranslation(body: string): string | null {
+  return /\[English, machine translation: (.*)\]$/.exec(body)?.[1] ?? null;
+}
