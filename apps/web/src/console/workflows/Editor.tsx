@@ -201,8 +201,8 @@ function EditorInner() {
   }, [cursor, execution, delays]);
 
   // A whole playbook only fits on screen at a zoom too small to read. While a run plays back, the
-  // view moves to each step as it starts; when the playback ends it pulls back to show the path taken.
-  const replaying = cursor !== null;
+  // view moves to each step as it starts, and it stays on the last step when the playback ends, so
+  // what each step found can still be read. "Show all" on the canvas zooms back out.
   useEffect(() => {
     if (cursor === null || !execution?.trace) return;
     const event = execution.trace.events[cursor];
@@ -211,11 +211,6 @@ function EditorInner() {
     if (!node) return;
     rf.setCenter(node.position.x + (node.measured?.width ?? 200) / 2, node.position.y + (node.measured?.height ?? 64) / 2, { zoom: 1, duration: 350 });
   }, [cursor, execution, rf]);
-  const wasReplaying = useRef(false);
-  useEffect(() => {
-    if (wasReplaying.current && !replaying) rf.fitView({ padding: 0.2, duration: 600 });
-    wasReplaying.current = replaying;
-  }, [replaying, rf]);
 
   const overlay = useMemo(() => {
     if (diffView || !execId || !execution?.trace || execution.id !== execId) return null;

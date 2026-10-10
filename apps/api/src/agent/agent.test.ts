@@ -495,7 +495,7 @@ test("every step records how it decided, and REASONING.md prints it", async () =
   const detail = Object.fromEntries(r.trace.events.flatMap((e) => (e.kind === "node_end" && e.detail ? [[e.nodeId, e.detail]] : [])));
   for (const step of ["ingest", "history", "triage", "clash", "planner", "gate", "action", "verify"]) assert.ok(detail[step]?.length, `${step} has no explanation`);
   assert.match(detail.ingest.join(" "), /1 statements found: 0 from a record or an owning team, 1 unverified/);
-  assert.match(detail.clash.join(" "), /scan and recipient disagree about whether DL-024 was delivered/);
+  assert.match(detail.clash.join(" "), /Disagreement between scan and recipient: whether DL-024 was delivered\. What would settle it: carrier investigation/);
   assert.match(detail.planner.join(" "), /Ask the carrier to open an investigation\..*Will not: Tell the recipient it is lost/);
   assert.match(detail.gate.join(" "), /Message to Delivery investigations, Plover Arc Logistics: clear to send \(risk 0\.05, below 0\.3\)/);
   assert.match(renderReasoning(r), /## How each step decided[\s\S]*\*\*gate\*\*\n- Message to Delivery investigations/);
@@ -507,4 +507,16 @@ test("a held message and the hand-over both explain themselves", async () => {
   assert.match(detail.gate.join(" "), /held for a person \(promises outcome \(0\.50\)\)/);
   assert.match(detail.gate.join(" "), /first draft was stopped and rewritten once/);
   assert.match(detail.human.join(" "), /Why a person is needed: The safety check stopped the message/);
+});
+
+test("a case the analysis calls a legal matter is labelled a formal request, whatever the quick check says", async () => {
+  const jevUsage = { model: "jev", latencyMs: 1, tokensIn: 5, tokensOut: 0, costUsd: 0 };
+  const judge = { triage: async () => ({ caseType: "lost_or_misdelivered" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) };
+  const legal = { ...understanding, case_type: "Solicitor's subject access request about a delivery" };
+  const r = await runCase(bundle, { ...opts(fake({ understand: [legal], decide: [decision], critic: [{ actions: [scores(0)] }] })), judge });
+  const triaged = r.trace.events.find((e) => e.kind === "node_end" && e.nodeId === "triage");
+  assert.match(triaged?.kind === "node_end" ? triaged.summary : "", /^formal_request · medium/);
+  const ordinary = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), judge });
+  const plain = ordinary.trace.events.find((e) => e.kind === "node_end" && e.nodeId === "triage");
+  assert.match(plain?.kind === "node_end" ? plain.summary : "", /^lost_or_misdelivered · medium/);
 });
