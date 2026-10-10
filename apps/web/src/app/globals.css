@@ -63,8 +63,10 @@ body {
 }
 
 /* Glass: every console surface blurs what is behind it and carries a hairline of light along its
-   top edge. The workflow canvas is left out: blurring dozens of moving nodes makes panning stutter. */
-.console-root :is(.bg-rv-card, .bg-rv-panel, .bg-rv-sidebar, .bg-rv-raised, .bg-rv-canvas):not(.react-flow *) {
+   top edge. The workflow canvas is left out: blurring dozens of moving nodes makes panning stutter.
+   The header is left out too: a backdrop filter makes it its own layer, the main area paints over
+   that layer, and the "Run a case" picker that drops out of the header ends up hidden under the page. */
+.console-root :is(.bg-rv-card, .bg-rv-panel, .bg-rv-sidebar, .bg-rv-raised, .bg-rv-canvas):not(.react-flow *, header) {
   -webkit-backdrop-filter: blur(22px) saturate(160%);
   backdrop-filter: blur(22px) saturate(160%);
 }

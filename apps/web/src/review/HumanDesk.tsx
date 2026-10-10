@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { decisionRerunBody, type DecisionRerunBody } from "../console/decisionRerun";
@@ -8,7 +9,11 @@ import { deadlineLabel, keyEvidence, shortLine } from "./model";
 import RerunStatus from "./RerunStatus";
 import type { ReviewTask } from "./types";
 import { useReviewQueue } from "./useReviewQueue";
+import { taskCard } from "./voice";
 import "./review.css";
+
+// The voice call uses the microphone and WebRTC, so it only loads in the browser.
+const ApproveByVoice = dynamic(() => import("../voice/ApproveByVoice").then((m) => m.ApproveByVoice), { ssr: false, loading: () => null });
 
 type Source = "agent" | "simulation";
 type Filter = "pending" | "decisions" | "all";
@@ -45,23 +50,28 @@ function CaseDetail({ task, now, onDecide }: {
   const steps = task.timeline.map((s) => plainStep(s.node, s.summary)).filter((s): s is string => Boolean(s));
   const risk = riskWord(task.risk);
   const cost = cents(task.costUsd);
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (!option || !who.trim() || saving) return;
+  async function save(optionId: string, name: string, noteText: string, by: "tap" | "voice" = "tap") {
+    const picked = task.options.find((o) => o.id === optionId);
     setSaving(true); setError(null);
     try {
-      const saved = await onDecide(task, option.id, who.trim(), note.trim());
-      try { localStorage.setItem("rivet-reviewer", who.trim()); } catch { /* approval still succeeds */ }
+      const saved = await onDecide(task, optionId, name, noteText);
+      try { localStorage.setItem("rivet-reviewer", name); } catch { /* approval still succeeds */ }
       setSuccess(true);
       const executionId = saved?.executionId ?? task.executionId;
       if (saved && executionId) {
-        rerunBody.current = decisionRerunBody({ parentExecutionId: executionId, option, person: who });
-        void rerun.run(rerunBody.current, option);
+        const body = decisionRerunBody({ parentExecutionId: executionId, option: picked, person: name });
+        rerunBody.current = { ...body, humanDecision: { ...body.humanDecision, by } };
+        void rerun.run(rerunBody.current, picked);
       }
     } catch (e) { setError(scrubLeaks(e instanceof Error ? e.message : "") || "Your decision wasn't saved. Try again."); }
     finally { setSaving(false); }
   }
   const retry = () => { if (rerunBody.current) void rerun.run(rerunBody.current); };
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!option || !who.trim() || saving) return;
+    await save(option.id, who.trim(), note.trim());
+  }
   return (
     <article className="review-detail" aria-label="A person needs to decide">
       <header className="review-case-heading">
@@ -97,6 +107,20 @@ function CaseDetail({ task, now, onDecide }: {
               );
             })}
           </fieldset>
+          {canDecide && task.options.length > 0 && !success && (
+            <div className="review-voice">
+              <span>Or say it out loud</span>
+              <ApproveByVoice
+                card={taskCard(task, now)}
+                caseId={task.caseId}
+                managerName={who.trim() || "Desk manager"}
+                onDecision={(d: { optionId: string; who: string; confirmation?: string }) => {
+                  setSelected(d.optionId);
+                  void save(d.optionId, who.trim() || d.who, d.confirmation ? `By voice: ${d.confirmation}` : "By voice", "voice");
+                }}
+              />
+            </div>
+          )}
           {!task.options.length && <p className="review-readonly">No choices here. Keep it on hold and ask {owner}.</p>}
           {canDecide && task.options.length > 0 && !success && <>
             <div className="review-inputs">

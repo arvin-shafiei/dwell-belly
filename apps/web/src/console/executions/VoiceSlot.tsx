@@ -161,7 +161,6 @@ function Mounts({ execution }: { execution: ExecutionRecord }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="text-[10px] uppercase tracking-wide text-white/35">Voice</span>
       <NoteButton execution={e} onEvent={(ev) => rerun("voice note", noteRerun(e, ev))} />
       {calls.map((row, i) => (
         <CallDrawer key={`${row.action.recipient}-${i}`} execution={e} row={row} onDone={(r) => rerun("call", callRerun(e, r))} />
@@ -170,7 +169,7 @@ function Mounts({ execution }: { execution: ExecutionRecord }) {
       {e.voice && <Badge tone="info" title={e.voice.callId ? `call ${e.voice.callId}` : undefined}>by voice: {e.voice.trigger}</Badge>}
       {e.parentExecutionId && (
         <button type="button" className="text-[11px] text-white/45 underline-offset-2 hover:text-white/80 hover:underline" onClick={() => go("executions", { id: e.parentExecutionId! }, true)}>
-          re-run of {e.parentExecutionId.slice(0, 8)}
+          the run before this one
         </button>
       )}
       {busy && <span className="text-[11px] text-[#ff6a1a]">Re-running with the {busy}…</span>}

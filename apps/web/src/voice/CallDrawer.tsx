@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { callTool, DENIAL, openSession, type CallStateInput, type HumanDecision, type SessionRequest, type ViewEvent } from "./api";
 import { createInflight } from "./inflight";
 import { micErrorMessage, transcriptReducer, type Line } from "./transcript";
+import { callStatusWord } from "./callStatus";
 
 export interface CallResult { callId: string; events: ViewEvent[]; decision?: HumanDecision }
 
@@ -113,7 +114,7 @@ function CallInner({ request, state, simulated = false, label = "Start call", on
     <div className="flex flex-col gap-3 rounded-lg border border-white/10 bg-[#2a2a30] p-3 text-sm text-white">
       <div className="flex items-center gap-2">
         <span className="font-medium">{request.purpose === "approval" ? "Approval call" : "Call"}: {request.calleeName}</span>
-        <span className="text-white/50">({conversation.status}{live && conversation.isSpeaking ? ", agent speaking" : ""})</span>
+        <span className="text-white/50">({callStatusWord(conversation.status, live && conversation.isSpeaking)})</span>
         {simulated && <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-amber-300">Simulated</span>}
         <span className="ml-auto">
           {live ? (
