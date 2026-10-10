@@ -39,7 +39,7 @@ test("transcribe posts multipart to /v1/speech-to-text with xi-api-key and model
     apiKey: "test-key",
     fetchImpl: fakeFetch(200, { text: "at the gate", language_code: "en", language_probability: 0.97, words: [] }, calls),
   });
-  assert.deepEqual(res, { ok: true, text: "at the gate", language: "en", confidence: 0.97 });
+  assert.deepEqual(res, { ok: true, text: "at the gate", language: "en", confidence: 0.97, unclearWords: [] });
   assert.equal(calls.length, 1);
   assert.equal(calls[0].url, "https://api.elevenlabs.io/v1/speech-to-text");
   assert.equal(calls[0].init.method, "POST");
@@ -47,6 +47,38 @@ test("transcribe posts multipart to /v1/speech-to-text with xi-api-key and model
   const form = calls[0].init.body as FormData;
   assert.equal(form.get("model_id"), "scribe_v2");
   assert.ok(form.get("file"));
+});
+
+test("transcribe sends case keyterms as repeated fields, the language when given, and no audio-event tags", async () => {
+  const calls: FakeCall[] = [];
+  await transcribe(audio, {
+    filename: "n.webm", apiKey: "k", keyterms: ["DL-6010", "Elva Kesh"], languageCode: "en",
+    fetchImpl: fakeFetch(200, { text: "ok", language_code: "en", language_probability: 0.9, words: [] }, calls),
+  });
+  const form = calls[0].init.body as FormData;
+  assert.deepEqual(form.getAll("keyterms"), ["DL-6010", "Elva Kesh"]);
+  assert.equal(form.get("language_code"), "en");
+  assert.equal(form.get("tag_audio_events"), "false");
+});
+
+test("transcribe omits keyterms and language when none are given", async () => {
+  const calls: FakeCall[] = [];
+  await transcribe(audio, { filename: "n.webm", apiKey: "k", fetchImpl: fakeFetch(200, { text: "ok", language_code: "en", language_probability: 0.9, words: [] }, calls) });
+  const form = calls[0].init.body as FormData;
+  assert.deepEqual(form.getAll("keyterms"), []);
+  assert.equal(form.get("language_code"), null);
+});
+
+test("transcribe: confidence is the mean word probability, and doubtful words are listed", async () => {
+  const words = [
+    { text: "Gate", type: "word", logprob: Math.log(0.98) },
+    { text: " ", type: "spacing", logprob: 0 },
+    { text: "DL6210", type: "word", logprob: Math.log(0.3) },
+  ];
+  const res = await transcribe(audio, { filename: "n.webm", apiKey: "k", fetchImpl: fakeFetch(200, { text: "Gate DL6210", language_code: "en", language_probability: 0.99, words }) });
+  assert.ok(res.ok);
+  assert.equal(Number(res.confidence.toFixed(2)), 0.64);
+  assert.deepEqual(res.unclearWords, ["DL6210"]);
 });
 
 test("transcribe: empty text → ok:false nothing heard", async () => {

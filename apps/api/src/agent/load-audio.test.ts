@@ -33,6 +33,24 @@ test("audio is transcribed into a claim document when a transcriber is given", a
   }
 });
 
+test("audio is transcribed with the case's references as keyterms, even when it sorts before the text, and unknown references are flagged", async () => {
+  const dir = await caseFolder({ "a-driver-note.m4a": sound, "history.md": "# Case 010\nFrom: Dispatch, carrier\nDL-6010 booked 10:00 to 14:00." });
+  try {
+    let keyterms: string[] | undefined;
+    const bundle = await loadFolder(dir, {
+      transcribe: async (_audio, _name, opts) => {
+        keyterms = opts?.keyterms;
+        return { ok: true, text: "At the gate with DL6210 now.", language: "en", confidence: 0.9 };
+      },
+    });
+    assert.ok(keyterms?.includes("DL-6010") && keyterms.includes("10:00"), `keyterms: ${keyterms}`);
+    const doc = bundle.documents.find((d) => d.name === "a-driver-note.m4a (audio transcript)");
+    assert.match(doc?.text ?? "", /DL6210 now\. \[possible mis-hearing: DL6210 is not a reference in this case; confirm with the speaker\]$/);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 test("a low-confidence transcript is marked unclear", async () => {
   const dir = await caseFolder({ "note.wav": sound });
   try {

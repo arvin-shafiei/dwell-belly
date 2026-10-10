@@ -27,6 +27,26 @@ test("handleNote: audio is transcribed into the event", async () => {
   assert.equal(res.ok && res.event.body, "Gate's locked.");
 });
 
+test("handleNote: transcribes with the case's references as keyterms and the given language", async () => {
+  let seen: { keyterms?: string[]; languageCode?: string } = {};
+  await handleNote(
+    { mode: "demo", source: "live_human", from: "Driver", n: 3, at: "t", audio: new Uint8Array([1]), filename: "n.webm", languageCode: "en",
+      caseText: "From: Dispatch, carrier\nDL-6010 is booked for 10:00." },
+    { transcribe: async (_a, opts) => { seen = opts; return ok(); } },
+  );
+  assert.ok(seen.keyterms?.includes("DL-6010") && seen.keyterms.includes("10:00"));
+  assert.equal(seen.languageCode, "en");
+});
+
+test("handleNote: a reference the case does not contain is flagged as a possible mis-hearing", async () => {
+  const res = await handleNote(
+    { mode: "demo", source: "live_human", from: "Driver", n: 3, at: "t", audio: new Uint8Array([1]), filename: "n.webm", caseText: "DL-6010 is booked." },
+    { transcribe: async () => ({ ok: true as const, text: "I'm at the gate with DL6210.", language: "en", confidence: 0.9 }) },
+  );
+  assert.ok(res.ok);
+  assert.equal(res.event.body, "I'm at the gate with DL6210. [possible mis-hearing: DL6210 is not a reference in this case; confirm with the speaker]");
+});
+
 test("handleNote: empty transcription → 422", async () => {
   const res = await handleNote(
     { mode: "demo", source: "live_human", from: "Driver", n: 3, at: "t", audio: new Uint8Array([1]), filename: "n.webm" },

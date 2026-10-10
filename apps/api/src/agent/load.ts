@@ -4,6 +4,7 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import type { CaseBundle } from "./types.ts";
+import { caseKeyterms, withReferenceCheck } from "../voice/references.ts";
 
 const TEXT = new Set([".md", ".txt", ".csv", ".json", ".eml", ".html", ".log", ".yaml", ".yml", ".tsv", ""]);
 const MEDIA: Record<string, string> = {
@@ -23,7 +24,7 @@ const MAX_AUDIO_FILES = 3;
 const MAX_AUDIO_BYTES = 25_000_000;
 const UNCLEAR_BELOW = 0.6;
 
-export type TranscribeFn = (audio: Uint8Array, filename: string) =>
+export type TranscribeFn = (audio: Uint8Array, filename: string, opts?: { keyterms?: string[] }) =>
   Promise<{ ok: true; text: string; language: string; confidence: number } | { ok: false; error: string }>;
 
 async function walk(dir: string): Promise<string[]> {
@@ -43,25 +44,14 @@ export async function loadFolder(dir: string, options: { transcribe?: Transcribe
   let textBudget = MAX_CASE_CHARS;
   let mediaBytes = 0;
   let audioFiles = 0;
+  // Audio is transcribed after the text is read, so the case's own references can guide it.
+  const audioQueue: { file: string; name: string }[] = [];
   for (const file of files) {
     const name = path.relative(dir, file);
     const ext = path.extname(file).toLowerCase();
     try {
       if (AUDIO.has(ext)) {
-        if (!options.transcribe) { bundle.unreadable.push(`${name} (audio, not transcribed: no speech-to-text key)`); continue; }
-        if (audioFiles >= MAX_AUDIO_FILES) { bundle.unreadable.push(`${name} (audio, left out: at most ${MAX_AUDIO_FILES} recordings are transcribed per case)`); continue; }
-        const size = (await stat(file)).size;
-        if (size === 0 || size > MAX_AUDIO_BYTES) { bundle.unreadable.push(`${name} (audio, ${size === 0 ? "empty file" : `too large: ${size} bytes`})`); continue; }
-        audioFiles++;
-        const heard = await options.transcribe(new Uint8Array(await readFile(file)), name).catch(() => null);
-        if (!heard || !heard.ok) { bundle.unreadable.push(`${name} (audio, transcription failed)`); continue; }
-        // A recording is the speaker's account of events, never a record, whoever the speaker is.
-        const body = heard.confidence < UNCLEAR_BELOW ? `[unclear transcription] ${heard.text}` : heard.text;
-        const text = `Audio attachment transcribed automatically. What follows is a claim by the speaker, not a record.\n\n${body}`;
-        const take = Math.min(text.length, MAX_TEXT_CHARS, textBudget);
-        textBudget -= take;
-        if (take > 0) bundle.documents.push({ name: `${name} (audio transcript)`, text: text.slice(0, take) });
-        if (take < text.length) bundle.unreadable.push(`${name} (read the first ${take} of ${text.length} characters of its transcript)`);
+        audioQueue.push({ file, name });
       } else if (MEDIA[ext]) {
         const size = (await stat(file)).size;
         if (size === 0) bundle.unreadable.push(`${name} (empty file)`);
@@ -85,6 +75,29 @@ export async function loadFolder(dir: string, options: { transcribe?: Transcribe
       } else {
         bundle.unreadable.push(`${name} (unsupported file type)`);
       }
+    } catch (err) {
+      bundle.unreadable.push(`${name} (${err instanceof Error ? err.message : String(err)})`);
+    }
+  }
+  const caseText = bundle.documents.map((d) => d.text).join("\n");
+  const keyterms = caseKeyterms(caseText);
+  for (const { file, name } of audioQueue) {
+    try {
+      if (!options.transcribe) { bundle.unreadable.push(`${name} (audio, not transcribed: no speech-to-text key)`); continue; }
+      if (audioFiles >= MAX_AUDIO_FILES) { bundle.unreadable.push(`${name} (audio, left out: at most ${MAX_AUDIO_FILES} recordings are transcribed per case)`); continue; }
+      const size = (await stat(file)).size;
+      if (size === 0 || size > MAX_AUDIO_BYTES) { bundle.unreadable.push(`${name} (audio, ${size === 0 ? "empty file" : `too large: ${size} bytes`})`); continue; }
+      audioFiles++;
+      const heard = await options.transcribe(new Uint8Array(await readFile(file)), name, { keyterms }).catch(() => null);
+      if (!heard || !heard.ok) { bundle.unreadable.push(`${name} (audio, transcription failed)`); continue; }
+      // A recording is the speaker's account of events, never a record, whoever the speaker is.
+      const checked = withReferenceCheck(heard.text, caseText);
+      const body = heard.confidence < UNCLEAR_BELOW ? `[unclear transcription] ${checked}` : checked;
+      const text = `Audio attachment transcribed automatically. What follows is a claim by the speaker, not a record.\n\n${body}`;
+      const take = Math.min(text.length, MAX_TEXT_CHARS, textBudget);
+      textBudget -= take;
+      if (take > 0) bundle.documents.push({ name: `${name} (audio transcript)`, text: text.slice(0, take) });
+      if (take < text.length) bundle.unreadable.push(`${name} (read the first ${take} of ${text.length} characters of its transcript)`);
     } catch (err) {
       bundle.unreadable.push(`${name} (${err instanceof Error ? err.message : String(err)})`);
     }

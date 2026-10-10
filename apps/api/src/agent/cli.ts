@@ -52,7 +52,7 @@ async function main() {
   const jev = Boolean(process.env.TYPESAFE_API_KEY);
   // Audio files in a case are transcribed only when a speech-to-text key is set; otherwise they are listed as not transcribed.
   const transcribeAudio = process.env.ELEVENLABS_API_KEY
-    ? (audio: Uint8Array, filename: string) => transcribe(audio, { filename })
+    ? (audio: Uint8Array, filename: string, opts?: { keyterms?: string[] }) => transcribe(audio, { filename, keyterms: opts?.keyterms })
     : undefined;
   const panel = jev ? runPanel : undefined;
   const quick = jev ? judge : undefined;
