@@ -41,8 +41,8 @@ export default function CityTab() {
             >
               {tour ? "Stop camera tour" : "Camera tour"}
             </button>
-            <a href="/city" target="_blank" rel="noreferrer" className="text-white/55 hover:text-white">
-              Open full screen ↗
+            <a href="/city" className="text-white/55 hover:text-white">
+              Open full screen
             </a>
           </span>
         </div>
