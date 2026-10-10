@@ -174,7 +174,7 @@ test("triage asks one choice and one score and maps the score through the thresh
   assert.deepEqual(Object.keys(q), ["case_type", "urgency"]);
   assert.equal(q.case_type.type, "choice");
   assert.deepEqual(Object.keys(q.case_type.criteria ?? {}), Object.keys(CASE_TYPES));
-  assert.equal(Object.keys(CASE_TYPES).length, 13);
+  assert.equal(Object.keys(CASE_TYPES).length, 14);
   assert.equal(q.urgency.type, "score");
   assert.equal(h.sent[0].state, "Chilled order left on the dock overnight.");
 });

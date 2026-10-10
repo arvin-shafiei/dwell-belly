@@ -94,6 +94,7 @@ const CASE_TYPE: Record<string, string> = {
   customs_and_charges: "Customs or charges",
   billing: "Bill or refund",
   safety: "Safety risk",
+  formal_request: "Legal or formal request",
   other: "Something else",
 };
 
