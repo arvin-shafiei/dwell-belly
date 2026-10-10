@@ -1,9 +1,9 @@
 // Budget guard for real-agent cases started by the city (incidents and staged scenarios). Pure.
-// At most `maxPerWindow` real cases may start in any rolling `windowMs`; anything over falls back to the
-// mock engine (tagged SIMULATED). Spend is the sum of each finished trace's run_end.totalCostUsd.
+// At most `maxPerWindow` real cases may start in any rolling `windowMs`; anything over waits in the agent
+// queue (modules/WorkflowDriver/link.ts) until a slot frees up. There is no mock fallback. Spend is the sum of each finished trace's run_end.totalCostUsd.
 
 export const BUDGET_WINDOW_MS = 10 * 60_000;
-export const DEFAULT_MAX_PER_WINDOW = 6;
+export const DEFAULT_MAX_PER_WINDOW = 20;
 
 export interface AgentBudget {
   maxPerWindow: number;
@@ -14,7 +14,7 @@ export interface AgentBudget {
   spentUsd: number;
   /** Real cases started / finished with a cost, since the page opened. */
   runs: number;
-  /** Cases that fell back to the mock because the budget was used up. */
+  /** Unused since the mock fallback was removed; kept at 0 for compatibility. */
   overBudget: number;
 }
 

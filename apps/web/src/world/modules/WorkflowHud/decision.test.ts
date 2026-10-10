@@ -16,7 +16,7 @@ describe("decision toast sources", () => {
     expect(toastFromEvent({ ...base, source: "agent", runId: "r" }, undefined, 0)).toBeNull(); // no card
     const it = toastFromEvent({ ...base, card, source: "agent", runId: "r", synthetic: true, origin: "city_incident" }, "city-inc-1", 0)!;
     expect(it.key).toBe("r|city-inc-1");
-    expect(it.prov).toBe("Real agent · Synthetic case");
+    expect(it.prov).toBe("Practice case");
     expect(it.card.options[0].effect).toBe("Nothing is sent");
   });
 
@@ -29,7 +29,7 @@ describe("decision toast sources", () => {
       status: "pending", decision: null, simulated: false, mode: "demo", origin: "agent", messages: [], timeline: [], costUsd: 0.05, durationMs: 1,
     } satisfies ReviewTask;
     const it = toastFromTask(task, 0)!;
-    expect(it.prov).toBe("Real agent");
+    expect(it.prov).toBe("Live");
     expect(it.card.whyStopped?.line).toBe("A manager must decide.");
     expect(it.card.alreadyDone).toEqual(["Asked the depot"]);
     expect(it.card.deadlineMs).toBe(30 * 60_000);

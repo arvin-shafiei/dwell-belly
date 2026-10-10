@@ -9,6 +9,7 @@ import { useWorld, type WorkflowEvent } from "../../store";
 import type { ReviewTask } from "../../../review/types";
 import { browserFetchJson, provenanceLabel, recordDecision, replayByRun, replayFor, type DecisionOutcome } from "../../backendLink";
 import { isReal, newAsks } from "./flow";
+import { plainOwner, scrubLeaks } from "../../../ui/plain";
 import { GLASS, RealAgentTag } from "./parts";
 
 type HudCard = NonNullable<WorkflowEvent["card"]>;
@@ -34,13 +35,14 @@ export function toastFromEvent(e: WorkflowEvent, traceCaseId: string | undefined
 /** A pending agent card from the review queue -> toast item (null for the city's simulated tasks). */
 export function toastFromTask(t: ReviewTask, at: number): ToastItem | null {
   if (t.origin === "city" || t.status !== "pending") return null;
+  // prov uses the shared plain labels: "Practice case" for city-made cases, "Live" otherwise.
   const fallback = t.options.find((o) => o.label === t.fallback) ?? t.options.find((o) => o.undoable) ?? t.options[0];
   return {
     key: `${t.runId}|${t.caseId}`,
     caseLabel: t.caseId,
     runId: t.runId,
     traceCaseId: t.caseId,
-    prov: t.simulated ? "Real agent · Synthetic case" : "Real agent",
+    prov: t.simulated ? "Practice case" : "Live",
     at,
     card: {
       cardId: t.cardId,
@@ -75,7 +77,7 @@ function pushChoice(item: ToastItem, label: string, result: DecisionOutcome) {
     caseId: item.caseLabel,
     nodeId: "human",
     status: "ok",
-    summary: result.status === "recorded" ? `Chose "${label}" · recorded in the review queue, action pending` : `Chose "${label}" · NOT SENT (${result.reason})`,
+    summary: result.status === "recorded" ? `You chose "${label}". Saved for the team.` : `You chose "${label}". Not sent.`,
     source: "live_human",
     runId: item.runId,
   });
@@ -92,6 +94,8 @@ export function shortLabel(label: string): string {
   const words = label.replace(/\s+/g, " ").trim().split(" ");
   return clip(words.length > 4 ? `${words.slice(0, 4).join(" ")}…` : words.join(" "), 28);
 }
+
+const scrub = (s: string) => scrubLeaks(s);
 
 const BASIS_DOT: Record<string, string> = {
   system_record: "bg-emerald-400",
@@ -174,37 +178,24 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
   const c = cur.card;
   const mins = Math.round(c.deadlineMs / 60_000);
   const picked = choice?.optionId ?? null;
-  const why = c.whyStopped?.line || c.summary;
+  const why = scrub(c.whyStopped?.line || c.summary);
   const status =
-    choice?.state === "sending" ? { text: "Recording…", cls: "text-white/50", title: "" }
+    choice?.state === "sending" ? { text: "Saving…", cls: "text-white/55", title: "" }
     : choice?.state === "done"
       ? choice.result.status === "recorded"
-        ? { text: "Recorded · not re-run", cls: "text-emerald-300", title: choice.result.note }
-        : { text: "NOT SENT", cls: "text-amber-300", title: choice.result.reason }
+        ? { text: "Saved for the team", cls: "text-emerald-300", title: "Your choice is saved. The team carries it out." }
+        : { text: "Not sent", cls: "text-amber-300", title: choice.result.reason }
       : null;
   return (
-    <div key={cur.key} className={`${GLASS} hud-toast w-full max-w-[380px] border-amber-300/30`} role="alertdialog" aria-label="Decision needed" title={cur.caseLabel}>
-      <div className="px-3 pb-2.5 pt-2.5">
-        <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-amber-400" />
-          <span className="min-w-0 truncate rounded bg-amber-400/15 px-1.5 py-px text-[9.5px] font-semibold uppercase tracking-[0.12em] text-amber-200" title={c.routeTo}>
-            {clip(c.routeTo.replaceAll("_", " "), 28)}
-          </span>
+    <div key={cur.key} className={`${GLASS} hud-toast w-full max-w-[380px]`} role="alertdialog" aria-label="A person needs to decide" title={cur.caseLabel}>
+      <div className="p-3">
+        <div className="flex items-center gap-2">
+          <span className="text-[13px] font-semibold text-white">A person needs to decide</span>
           <RealAgentTag label={cur.prov} />
-          {queue.length > 1 && <span className="ml-auto shrink-0 font-mono text-[10px] text-white/45">+{queue.length - 1}</span>}
+          {queue.length > 1 && <span className="ml-auto shrink-0 text-[10px] text-white/45">+{queue.length - 1} more</span>}
         </div>
-        <p className="mt-1.5 truncate text-[12px] font-medium text-white" title={why}>{clip(why, 90)}</p>
-        {c.evidence && c.evidence.length > 0 && (
-          <ul className="mt-1 space-y-0.5">
-            {c.evidence.slice(0, 2).map((ev, i) => (
-              <li key={i} className="flex items-center gap-1.5 text-[10.5px] text-white/60" title={`${ev.who}: ${ev.says} (${ev.basis.replaceAll("_", " ")})`}>
-                <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${BASIS_DOT[ev.basis] ?? "bg-white/40"}`} />
-                <span className="truncate">{clip(`${ev.who}: ${ev.says}`, 70)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="mt-2 flex flex-wrap gap-1">
+        <p className="mt-1 truncate text-[12px] text-white/75" title={why}>{clip(why, 90)}</p>
+        <div className="mt-2.5 flex flex-col gap-1.5">
           {c.options.map((o) => {
             const on = picked === o.id;
             return (
@@ -213,38 +204,44 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
                 type="button"
                 disabled={!!picked}
                 onClick={() => void choose(o.id)}
-                title={[o.label, o.effect, o.safe ? "Undoable" : ""].filter(Boolean).join(" · ")}
-                className={`max-w-full truncate rounded-md border px-2 py-1 text-[11px] font-medium transition ${
+                title={[o.label, o.effect].filter(Boolean).map((t) => scrub(t!)).join(": ")}
+                className={`w-full truncate rounded-lg border px-3 py-2 text-left text-[13px] font-medium transition ${
                   on
                     ? "border-[#ff6a1a] bg-[#ff6a1a] text-black"
                     : picked
                       ? "border-white/5 bg-white/[0.02] text-white/30"
-                      : `${o.safe ? "border-emerald-400/30" : "border-white/12"} bg-white/[0.05] text-white/90 hover:border-[#ff6a1a]/60 hover:bg-[#ff6a1a]/15`
+                      : "border-white/15 bg-white/[0.06] text-white hover:border-[#ff6a1a] hover:bg-[#ff6a1a]/15"
                 }`}
               >
-                {shortLabel(o.label)}
+                {shortLabel(scrub(o.label))}
               </button>
             );
           })}
         </div>
-        <div className="mt-1.5 flex items-center gap-1.5 font-mono text-[10px] text-white/45">
+        <div className="mt-2 flex items-center gap-2 text-[11px] text-white/45">
           <button type="button" onClick={() => setDetails((d) => !d)} className="text-white/55 hover:text-white" aria-expanded={details}>
             Details {details ? "▴" : "▾"}
           </button>
-          {status ? <span className={`min-w-0 truncate ${status.cls}`} title={status.title}>{status.text}</span> : <span>{mins} min</span>}
-          <span className="ml-auto flex shrink-0 gap-1">
-            <button type="button" onClick={onOpenQueue} className="rounded border border-white/15 px-1.5 py-px text-white/70 hover:bg-white/10">Queue</button>
-            <button type="button" onClick={dismiss} className="rounded border border-white/15 px-1.5 py-px text-white/70 hover:bg-white/10">{choice?.state === "done" ? "Close" : "Later"}</button>
+          {status ? <span className={`min-w-0 truncate ${status.cls}`} title={status.title}>{status.text}</span> : <span>{mins} min to decide</span>}
+          <span className="ml-auto flex shrink-0 gap-1.5">
+            <button type="button" onClick={onOpenQueue} className="rounded px-1.5 py-0.5 text-white/60 hover:bg-white/10 hover:text-white">All</button>
+            <button type="button" onClick={dismiss} className="rounded px-1.5 py-0.5 text-white/60 hover:bg-white/10 hover:text-white">{choice?.state === "done" ? "Close" : "Later"}</button>
           </span>
         </div>
         {details && (
-          <div className="hud-scroll mt-1.5 max-h-40 space-y-1 overflow-y-auto border-t border-white/[0.07] pt-1.5 text-[10.5px] leading-snug text-white/60">
-            {c.summary && c.summary !== why && <p>{c.summary}</p>}
-            {c.clash && <p><span className="text-white/40">Clash: </span>{c.clash}</p>}
-            {c.alreadyDone?.length ? <p><span className="text-white/40">Done: </span>{c.alreadyDone.join(" · ")}</p> : null}
-            {c.wouldChangeMyMind && <p><span className="text-white/40">Would settle it: </span>{c.wouldChangeMyMind}</p>}
-            {c.fallback && <p><span className="text-white/40">If nobody answers: </span>{c.fallback}</p>}
-            {status?.title && <p><span className="text-white/40">Status: </span>{status.title}</p>}
+          <div className="hud-scroll mt-2 max-h-40 space-y-1 overflow-y-auto border-t border-white/[0.07] pt-2 text-[11px] leading-snug text-white/60">
+            <p><span className="text-white/40">Who decides: </span>{plainOwner(c.routeTo)}</p>
+            {c.summary && c.summary !== why && <p>{scrub(c.summary)}</p>}
+            {c.evidence?.slice(0, 2).map((ev, i) => (
+              <p key={i} className="flex items-start gap-1.5">
+                <span className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${BASIS_DOT[ev.basis] ?? "bg-white/40"}`} />
+                <span>{clip(`${ev.who}: ${scrub(ev.says)}`, 140)}</span>
+              </p>
+            ))}
+            {c.alreadyDone?.length ? <p><span className="text-white/40">Already done: </span>{c.alreadyDone.map(scrub).join(" · ")}</p> : null}
+            {c.wouldChangeMyMind && <p><span className="text-white/40">What would settle it: </span>{scrub(c.wouldChangeMyMind)}</p>}
+            {c.fallback && <p><span className="text-white/40">If nobody answers: </span>{scrub(c.fallback)}</p>}
+            {status?.title && <p>{status.title}</p>}
           </div>
         )}
       </div>

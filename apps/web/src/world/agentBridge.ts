@@ -1,11 +1,12 @@
 // Bridge from the city to the real agent (apps/api POST /api/cases). A staged scenario (or, via
 // backendLink.ts, a city incident) becomes a case view, the agent runs it and returns its Trace, and the
-// trace is turned into timed WorkflowEvents for the HUD, decision cards included. Used when agentMode is
-// "real" (the default once the agent API answers) and the budget guard allows; otherwise the mock runs.
+// trace is turned into timed WorkflowEvents for the HUD, decision cards included. Every city case goes
+// through here (modules/WorkflowDriver/link.ts queues them within the budget); there is no mock.
 import type { DecisionCard, Trace, TraceEvent } from "../../../api/src/lib/trace";
 import type { CaseScenario, Modifier } from "./scenarios";
 import { MODIFIERS } from "./scenarios";
 import type { WorkflowEvent } from "./store";
+import { plainNode, plainOutcome, plainStep, scrubLeaks } from "../ui/plain";
 
 export const AGENT_API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 const RUN_TIMEOUT_MS = 330_000; // the runner allows 300 s per case
@@ -26,7 +27,7 @@ export interface ViewEvent {
  * What the agent gets: only the messages known at escalation plus each modifier's extra message.
  * No title, context or expected answer (they would leak the answer).
  */
-export function toCaseView(s: CaseScenario, modifiers: readonly Modifier[]) {
+export function toCaseView(s: CaseScenario, modifiers: readonly Modifier[]): { id: string; events: ViewEvent[]; mode: "demo" } {
   const events: ViewEvent[] = s.messages.map((m, i) => ({
     n: i + 1,
     timestamp: "",
@@ -37,7 +38,8 @@ export function toCaseView(s: CaseScenario, modifiers: readonly Modifier[]) {
     body: m.body,
   }));
   for (const mod of modifiers) {
-    events.push({ n: events.length + 1, timestamp: "", stage: "Escalation", channel: "Email", from: "Case update", to: "Rivet Delivery Desk", body: MODIFIERS[mod].extraMessage });
+    // Modifier messages are invented by the city, so they are marked simulated_persona (the trace is then synthetic).
+    events.push({ n: events.length + 1, timestamp: "", stage: "Escalation", channel: "Email", from: "Case update", to: "Rivet Delivery Desk", body: MODIFIERS[mod].extraMessage, source: "simulated_persona" });
   }
   return { id: `city-${s.id}`, events, mode: "demo" as const };
 }
@@ -111,25 +113,27 @@ export function traceToTimedEvents(trace: Trace, caseId: string, meta: ReplayMet
   let at = 0;
   for (const e of trace.events) {
     if (e.kind === "node_start") {
-      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: "start", summary: `${e.nodeId}…`, ...tag } });
+      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: "start", summary: `${plainNode(e.nodeType ?? e.nodeId)}…`, ...tag } });
     } else if (e.kind === "node_end") {
       at += Math.min(MAX_NODE_MS, Math.max(MIN_NODE_MS, e.latencyMs));
       const out0 = e.output as { type?: string; card?: DecisionCard } | undefined;
       if (out0?.type === "human_decision" && out0.card) {
         const card = cardFromTrace(out0.card, `${trace.runId}:${e.nodeId}:${e.t}`);
-        const line = out0.card.whyStopped?.line ?? out0.card.summary;
-        out.push({ atMs: at, event: { caseId, nodeId: "human", status: "ask", summary: `Needs ${out0.card.routeTo}: ${line}`.slice(0, 120), card, decision: "hold_for_human", ...tag } });
+        const line = scrubLeaks(out0.card.whyStopped?.line ?? out0.card.summary);
+        out.push({ atMs: at, event: { caseId, nodeId: "human", status: "ask", summary: `A person needs to decide: ${line}`.slice(0, 120), card, decision: "hold_for_human", ...tag } });
         continue;
       }
-      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: gateStatus(e), summary: e.summary || e.nodeId, ...tag } });
+      // Never the raw step summary: one plain sentence, or the plain step name when it should be hidden.
+      const plain = plainStep(e.nodeId, e.summary, e.output) ?? plainNode(e.nodeId);
+      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: gateStatus(e), summary: plain, ...tag } });
     } else if (e.kind === "run_end") {
       at += 400;
       const a = e.nextAction;
       const summary = a
         ? `${a.channel} → ${a.recipient}: ${a.message}`.slice(0, 140)
-        : `Outcome: ${e.outcome}${e.error ? ` (${e.error})` : ""}`;
+        : plainOutcome(e.outcome);
       out.push({ atMs: at, event: { caseId, nodeId: a ? "action" : "log", status: e.outcome === "error" ? "error" : "ok", summary, ...tag } });
-      out.push({ atMs: at + 300, event: { caseId, nodeId: "log", status: e.outcome === "error" ? "error" : "ok", summary: `Real agent · ${e.outcome} · $${e.totalCostUsd.toFixed(4)} · ${(e.totalLatencyMs / 1000).toFixed(1)} s`, costUsd: e.totalCostUsd, ...tag } });
+      out.push({ atMs: at + 300, event: { caseId, nodeId: "log", status: e.outcome === "error" ? "error" : "ok", summary: `Done: ${plainOutcome(e.outcome)}`, costUsd: e.totalCostUsd, ...tag } });
     }
   }
   return out;

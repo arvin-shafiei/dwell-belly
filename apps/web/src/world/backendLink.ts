@@ -125,6 +125,77 @@ export function buildIncidentCase(
   return { view: { id: `city-inc-${opts.seq}-${incident.id}`, context, events, mode: "demo" }, affected };
 }
 
+/**
+ * One case per delay cause: every delivery the fleet reported late for the same reason, grouped.
+ * Events (all `simulated_persona`, mode "demo"): a dispatch note naming the cause and the deliveries,
+ * and a customer "where's my parcel" for the first one. Context lists the deliveries from the store.
+ */
+export function buildDelayCase(
+  reason: string,
+  ids: readonly string[],
+  deliveries: Record<string, Delivery>,
+  opts: { now: Date; seq: number },
+): { view: IncidentCaseView; ids: string[] } {
+  const now = opts.now.getTime();
+  const known = ids.map((id) => deliveries[id]).filter((d): d is Delivery => !!d);
+  const lines = ids.map((id) => {
+    const d = deliveries[id];
+    return d
+      ? `- ${d.id}: ${d.status.replace("_", " ")}, vehicle ${d.truckId}, stop ${d.stop}, planned arrival ${hhmm(new Date(now + Math.max(0, d.etaS) * 1000))} UTC`
+      : `- ${id}: reported late`;
+  });
+  const cause = reason.trim() || "cause not reported";
+  const context = [
+    `Delay report from the city operations feed at ${hhmm(opts.now)} UTC.`,
+    `${ids.length} deliver${ids.length === 1 ? "y" : "ies"} reported late, cause given by the fleet: ${cause}.`,
+    `Deliveries:\n${lines.join("\n")}`,
+  ].join("\n");
+  const first = ids[0];
+  const lead = known[0];
+  const iso = (msAgo: number) => new Date(now - msAgo).toISOString();
+  const events: ViewEvent[] = [
+    {
+      n: 1, timestamp: iso(3 * 60_000), stage: "Context", channel: "Dispatch chat",
+      from: lead ? `Driver, vehicle ${lead.truckId}` : "Dispatch", to: "Rivet Delivery Desk",
+      body: `Running late on ${ids.join(", ")}. Reason: ${cause}. Can't give a firm new time yet.`, source: "simulated_persona",
+    },
+    {
+      n: 2, timestamp: iso(60_000), stage: "Escalation", channel: "Customer portal",
+      from: `Customer, recipient of ${first}`, to: "Rivet Delivery Desk",
+      body: `Where's my parcel? ${first} was due by now and tracking hasn't moved. Is it still coming today?`, source: "simulated_persona",
+    },
+  ];
+  return { view: { id: `city-delay-${opts.seq}`, context, events, mode: "demo" }, ids: [...ids] };
+}
+
+/**
+ * Groups delivery:delayed events by cause over a short window, so N late deliveries with one cause make one
+ * case. A delivery already waiting in an open group is ignored.
+ */
+export class DelayGrouper {
+  private buckets = new Map<string, { ids: string[]; firstAt: number }>();
+  constructor(private windowMs = 20_000) {}
+
+  add(deliveryId: string, reason: string, now: number) {
+    for (const b of this.buckets.values()) if (b.ids.includes(deliveryId)) return;
+    const key = reason.trim() || "unknown cause";
+    const b = this.buckets.get(key);
+    if (b) b.ids.push(deliveryId);
+    else this.buckets.set(key, { ids: [deliveryId], firstAt: now });
+  }
+
+  /** Groups whose window has closed, removed from the grouper. */
+  due(now: number): { reason: string; ids: string[] }[] {
+    const out: { reason: string; ids: string[] }[] = [];
+    for (const [reason, b] of this.buckets) {
+      if (now - b.firstAt < this.windowMs) continue;
+      this.buckets.delete(reason);
+      out.push({ reason, ids: b.ids });
+    }
+    return out;
+  }
+}
+
 // ---------------------------------------------------------------- 2. console executions
 
 /** A row of GET /api/console/executions (summary, no trace). */
@@ -193,17 +264,14 @@ export function originOf(ex: Pick<ExecutionRow, "origin">): WorkflowEvent["origi
 
 // ---------------------------------------------------------------- provenance labels
 
-/** One label per real case for the HUD. Mock cases are always "SIMULATED". */
+/**
+ * One plain provenance label per case (docs/plans/ui-simplify-brief.md): "Live" for the real agent's
+ * results, "Practice case" for cases built from city events (simulated_persona inputs, synthetic trace).
+ * Anything not from the agent gets no "Live" label.
+ */
 export function provenanceLabel(e: Pick<WorkflowEvent, "source" | "synthetic" | "origin"> | null | undefined): string {
-  if (!e || !e.source || e.source === "mock") return "Simulated";
-  if (e.source !== "agent") return e.source === "simulated_persona" ? "Simulated" : "Real agent";
-  const parts = ["Real agent"];
-  if (e.synthetic) parts.push("Synthetic case");
-  else if (e.origin === "console") parts.push("Console run");
-  else if (e.origin === "voice") parts.push("Voice run");
-  else if (e.origin === "city_scenario") parts.push("Staged case");
-  else if (e.origin === "runs" || e.origin === "answers" || e.origin === "examples") parts.push("Runner file");
-  return parts.join(" · ");
+  if (!e || !e.source || e.source === "mock" || e.source === "simulated_persona") return "Not live";
+  return e.synthetic ? "Practice case" : "Live";
 }
 
 // ---------------------------------------------------------------- 3. decisions -> review queue

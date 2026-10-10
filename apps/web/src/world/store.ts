@@ -189,6 +189,16 @@ export function voiceReduce(s: VoiceSlice, e: WorldEvent, now: number): Partial<
 /** Weather the HUD/console forces on the Sky module; "auto" runs Sky's own looping cycle. */
 export type WeatherOverride = "auto" | "clear" | "overcast" | "drizzle" | "rain" | "storm";
 
+/** A city case waiting for the real agent (modules/WorkflowDriver/link.ts). */
+export interface QueuedCase {
+  id: string;
+  label: string; // "INC-004 · car crash"
+  kind: "incident" | "scenario" | "delay";
+  enqueuedAt: number; // Date.now()
+  /** Built from city events (simulated_persona inputs): the trace will be labelled synthetic. */
+  synthetic: boolean;
+}
+
 export interface Delivery {
   id: string; // "DL-1042"
   truckId: string;
@@ -208,12 +218,19 @@ interface WorldState extends VoiceSlice {
   focus: { x: number; z: number } | null; // camera flies here (e.g. an incident)
   timeOfDay: number; // 0..24 hours
   timeScale: number; // clock speed multiplier (HUD fast-forward): 1, 3, 10, 30
-  /** "real": staged scenarios are sent to the agent API (POST /api/cases) and its trace is replayed. */
+  /**
+   * Always "real": every city case goes to the agent API (POST /api/cases) and its trace is replayed.
+   * The city has no mock mode any more; the field stays for the CityRemote/console telemetry contract.
+   */
   agentMode: "mock" | "real";
   /** Whether the agent API answered its health check (null = not checked yet). */
   agentOnline: boolean | null;
   /** Budget guard for real cases started by the city (modules/WorkflowDriver/budget.ts). */
   agentBudget: AgentBudget;
+  /** Cases waiting for the agent (FIFO): over budget, at the concurrency limit, or agent offline. */
+  agentQueue: QueuedCase[];
+  /** Real cases running on the agent API right now. */
+  agentRunning: number;
   paused: boolean;
   /** Forced weather (Sky eases to it over ~2 s and holds it); "auto" resumes the cycle. */
   weatherOverride: WeatherOverride;
@@ -233,7 +250,8 @@ interface WorldState extends VoiceSlice {
   setTimeScale: (x: number) => void;
   setAgentMode: (m: "mock" | "real") => void;
   setAgentOnline: (v: boolean) => void;
-  /** Claim a real-agent slot now; false when over budget (the caller falls back to the mock). */
+  setAgentQueue: (queue: QueuedCase[], running: number) => void;
+  /** Claim a real-agent slot now; false when over budget (the case waits in the queue). */
   claimAgentRun: (now?: number) => boolean;
   addAgentSpend: (usd: number) => void;
   setAgentBudgetMax: (n: number) => void;
@@ -258,9 +276,11 @@ export const useWorld = create<WorldState>((set) => ({
   focus: null,
   timeOfDay: 17.5,
   timeScale: 1,
-  agentMode: "mock",
+  agentMode: "real",
   agentOnline: null,
   agentBudget: newBudget(),
+  agentQueue: [],
+  agentRunning: 0,
   paused: false,
   weatherOverride: "auto",
   calls: {},
@@ -287,14 +307,15 @@ export const useWorld = create<WorldState>((set) => ({
   setFocus: (focus) => set({ focus }),
   setTimeOfDay: (timeOfDay) => set({ timeOfDay }),
   setTimeScale: (timeScale) => set({ timeScale }),
-  setAgentMode: (agentMode) => set({ agentMode }),
+  // No mock mode: a remote "mock" command is ignored, the city stays on the real agent.
+  setAgentMode: () => set({ agentMode: "real" }),
   setAgentOnline: (agentOnline) => set({ agentOnline }),
   claimAgentRun: (now = Date.now()) => {
     const next = claimRun(useWorld.getState().agentBudget, now);
     if (next) set({ agentBudget: next });
-    else set((s) => ({ agentBudget: { ...s.agentBudget, overBudget: s.agentBudget.overBudget + 1 } }));
     return next !== null;
   },
+  setAgentQueue: (agentQueue, agentRunning) => set({ agentQueue, agentRunning }),
   addAgentSpend: (usd) => set((s) => ({ agentBudget: addSpend(s.agentBudget, usd) })),
   setAgentBudgetMax: (n) => set((s) => ({ agentBudget: { ...s.agentBudget, maxPerWindow: clampMax(n) } })),
   syncAgentBudget: (starts, spentUsd) =>
@@ -329,4 +350,12 @@ export const useWorld = create<WorldState>((set) => ({
 /** Current blocked edges as a Set, for findPath(). Call inside useFrame via useWorld.getState(). */
 export function blockedSet(): Set<string> {
   return new Set(Object.keys(useWorld.getState().blocked));
+}
+
+/** Max real cases running at once per city tab. */
+export const AGENT_MAX_CONCURRENT = 2;
+
+/** True when the agent can take another case right now: online, nothing queued, a slot free. Scenario autoplay waits for this. */
+export function agentIdle(s: Pick<WorldState, "agentOnline" | "agentQueue" | "agentRunning"> = useWorld.getState()): boolean {
+  return s.agentOnline === true && s.agentQueue.length === 0 && s.agentRunning < AGENT_MAX_CONCURRENT;
 }

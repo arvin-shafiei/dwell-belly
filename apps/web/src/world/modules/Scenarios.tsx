@@ -12,7 +12,7 @@ import { emit, on } from "../bus";
 import { allVehicles, getVehicle } from "../registry";
 import { getNode, ROAD_EDGES } from "../roads";
 import { getScenario, SCENARIOS, type Modifier, type Scene } from "../scenarios";
-import { blockedSet, useWorld } from "../store";
+import { agentIdle, blockedSet, useWorld } from "../store";
 import { Director, rng, type DirectorAction, type Outcome } from "./Scenarios/director";
 import { sceneClock } from "./Scenarios/kit";
 import { pickLocation, type SceneLoc } from "./Scenarios/location";
@@ -157,6 +157,8 @@ export default function Scenarios() {
 
     // expose the per-frame hook
     tickRef.current = (dt: number) => {
+      // Pacing: autoplay only stages a new scene when the real agent can take it now (WorkflowDriver queue).
+      d.autoplayOn = autoplay && agentIdle();
       const acts = d.tick(dt);
       sceneClock.now = d.now;
       if (acts.length) apply(acts);

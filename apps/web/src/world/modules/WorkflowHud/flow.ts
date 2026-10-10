@@ -1,4 +1,6 @@
-// Pure helpers for the WorkflowHud: flow layout, per-case node status, case grouping, mock cost.
+// Pure helpers for the WorkflowHud: flow layout, per-case node status, case grouping, plain-words case lines.
+import { plainNode, plainOutcome, scrubLeaks } from "../../../ui/plain";
+import { getScenario } from "../../scenarios";
 import type { WorkflowEvent } from "../../store";
 
 export type Runner = "jev" | "claude" | "code";
@@ -21,19 +23,19 @@ export interface FlowEdge {
 
 // Snake layout: row 0 left→right, row 1 right→left, gate fans out on rows 2–3.
 export const FLOW_NODES: readonly FlowNode[] = [
-  { id: "ingest", label: "Ingest", runner: "code", col: 0, row: 0 },
-  { id: "history", label: "History", runner: "code", col: 1, row: 0 },
-  { id: "triage", label: "Triage", runner: "jev", col: 2, row: 0 },
-  { id: "clash", label: "Clash", runner: "jev", col: 3, row: 0 },
-  { id: "missing_info", label: "Missing info", runner: "claude", col: 3, row: 1 },
-  { id: "group", label: "Group", runner: "code", col: 2, row: 1 },
-  { id: "planner", label: "Planner", runner: "claude", col: 1, row: 1 },
-  { id: "gate", label: "Safety gate", runner: "jev", col: 0, row: 1 },
-  { id: "action", label: "Action", runner: "code", col: 0, row: 2 },
-  { id: "human", label: "Human", runner: "claude", col: 1, row: 2 },
-  { id: "block", label: "Block", runner: "code", col: 3, row: 2 },
-  { id: "verify", label: "Verify", runner: "jev", col: 0, row: 3 },
-  { id: "log", label: "Case log", runner: "code", col: 3, row: 3 },
+  { id: "ingest", label: "Read the messages", runner: "code", col: 0, row: 0 },
+  { id: "history", label: "Check past orders", runner: "code", col: 1, row: 0 },
+  { id: "triage", label: "What kind of problem?", runner: "jev", col: 2, row: 0 },
+  { id: "clash", label: "Do the stories match?", runner: "jev", col: 3, row: 0 },
+  { id: "missing_info", label: "Anything missing?", runner: "claude", col: 3, row: 1 },
+  { id: "group", label: "Same cause as others?", runner: "code", col: 2, row: 1 },
+  { id: "planner", label: "Plan the reply", runner: "claude", col: 1, row: 1 },
+  { id: "gate", label: "Safety check", runner: "jev", col: 0, row: 1 },
+  { id: "action", label: "Send it", runner: "code", col: 0, row: 2 },
+  { id: "human", label: "Ask a person", runner: "claude", col: 1, row: 2 },
+  { id: "block", label: "Stop", runner: "code", col: 3, row: 2 },
+  { id: "verify", label: "Did it work?", runner: "jev", col: 0, row: 3 },
+  { id: "log", label: "Done", runner: "code", col: 3, row: 3 },
 ];
 
 export const FLOW_EDGES: readonly FlowEdge[] = [
@@ -183,4 +185,79 @@ export function formatAge(ms: number): string {
 export function formatCost(usd: number): string {
   if (usd === 0) return "$0";
   return usd < 0.01 ? `$${usd.toFixed(4)}` : `$${usd.toFixed(3)}`;
+}
+
+// ---------------------------------------------------------------- plain words (docs/plans/ui-simplify-brief.md)
+
+/** The city's short step ids, mapped onto the shared glossary's step types. */
+const CITY_STEP: Record<string, string> = {
+  history: "history_lookup", clash: "clash_check", group: "group_check", gate: "safety_gate",
+  human: "human_decision", log: "case_log",
+};
+
+/** Plain name of a step, from a city step id or a playbook step type ("gate" -> "Safety check"). */
+export function stepName(nodeId: string): string {
+  if (nodeId === "block") return "Stop";
+  return plainNode(CITY_STEP[nodeId] ?? nodeId);
+}
+
+/** One word for where a case is. */
+export const STATUS_WORD: Record<CaseState, string> = {
+  running: "Working",
+  awaiting: "Needs a person",
+  blocked: "Stopped",
+  error: "Problem",
+  closed: "Done",
+};
+
+const INCIDENT_WORDS: Record<string, string> = {
+  "car crash": "Car crash", "truck crash": "Truck crash", pileup: "Pile-up", roadworks: "Roadworks",
+  breakdown: "Van breakdown", "plane crash": "Plane crash", "emergency landing": "Emergency landing",
+};
+
+/** Plain title for a feed case id: "INC-001 · car crash" -> "Car crash", "RUN-002 · delivery-013" -> the case title. */
+export function caseTitle(caseId: string): string {
+  const [, rest = caseId] = caseId.split(" · ");
+  if (INCIDENT_WORDS[rest]) return INCIDENT_WORDS[rest];
+  const late = /^(\d+) late$/.exec(rest);
+  if (late) return `${late[1]} late deliver${late[1] === "1" ? "y" : "ies"}`;
+  const sc = getScenario(rest);
+  if (sc) return sc.title;
+  return rest.replace(/[_-]+/g, " ");
+}
+
+/** "Email → Tracking support, Plover Arc: message" -> "Tracking support, Plover Arc". */
+function recipientOf(summary: string): string | null {
+  const m = /→\s*([^:]+):/.exec(summary);
+  return m ? scrubLeaks(m[1]) || null : null;
+}
+
+/** The case's last plain outcome, from the final "Done: <outcome>" line. */
+function outcomeWord(events: readonly WorkflowEvent[], caseId: string): string | null {
+  for (let i = events.length - 1; i >= 0; i--) {
+    const e = events[i];
+    if (e.caseId === caseId && e.nodeId === "log" && /^Done: /.test(e.summary)) return e.summary.slice(6);
+  }
+  return null;
+}
+
+/**
+ * One plain sentence per case, with a status word. No step ids, runner names or costs.
+ * e.g. { title: "Car crash", sentence: "Messaged Driver, vehicle V-14.", status: "Done" }
+ */
+export function caseLine(events: readonly WorkflowEvent[], c: CaseSummary): { title: string; sentence: string; status: string } {
+  const title = caseTitle(c.caseId);
+  const status = STATUS_WORD[c.state];
+  let sentence: string;
+  if (c.state === "awaiting") sentence = "A person needs to decide.";
+  else if (c.state === "error") sentence = "Something went wrong. Nothing was sent.";
+  else if (c.state === "closed") {
+    let sent: string | null = null;
+    for (const e of events) if (e.caseId === c.caseId && e.nodeId === "action" && e.status === "ok") sent = recipientOf(e.summary) ?? sent;
+    const out = outcomeWord(events, c.caseId);
+    sentence = sent ? `Messaged ${sent}.` : out ? `${out}.` : "Finished.";
+    if (out === plainOutcome("escalated")) sentence = sent ? `Messaged ${sent}. A person was asked.` : "A person was asked.";
+  } else if (c.state === "blocked") sentence = "Stopped by the safety check.";
+  else sentence = c.last.nodeId === "ingest" && c.steps === 0 ? "Waiting for the answer…" : `${stepName(c.last.nodeId)}…`;
+  return { title, sentence, status };
 }

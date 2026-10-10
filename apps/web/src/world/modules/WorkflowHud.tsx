@@ -10,7 +10,7 @@ import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useWorld } from "../store";
 import { hudLayout, TOPBAR_FALLBACK_H, type Insets } from "./WorkflowHud/layout";
 import { MiniFlow } from "./WorkflowHud/MiniFlow";
-import { AgentToggle, CaseFeed, Deliveries, GLASS, HotkeysFooter, IncidentList, RealAgentTag, SimulatedTag, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { AgentQueueList, AgentToggle, CaseFeed, Deliveries, GLASS, HotkeysFooter, IncidentList, useThrottledWorkflow } from "./WorkflowHud/parts";
 import { useReviewQueue } from "../../review/useReviewQueue";
 import { RealDecisionToast } from "./WorkflowHud/decision";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
@@ -29,15 +29,11 @@ const STYLES = `
 `;
 
 function AgentNote() {
-  const real = useWorld((st) => st.agentMode === "real" && !!st.agentOnline);
-  return real ? (
-    <p className="border-b border-white/[0.07] bg-emerald-500/[0.07] px-4 py-1.5 text-[10px] leading-snug text-emerald-100/80">
-      City incidents (as synthetic cases), staged scenarios and new console runs go to the real agent (apps/api) and their traces are replayed here, within the budget. Anything else uses the mock and is tagged Simulated.
-    </p>
-  ) : (
-    <p className="border-b border-white/[0.07] bg-fuchsia-500/[0.07] px-4 py-1.5 text-[10px] leading-snug text-fuchsia-100/80">
-      Cases below come from a mock agent that drives this visual demo. The real agent&apos;s decisions are in{" "}
-      <span className="font-mono">ANSWERS/</span> and its traces.
+  const online = useWorld((st) => st.agentOnline);
+  if (online !== false) return null;
+  return (
+    <p className="border-b border-white/[0.07] bg-rose-500/[0.07] px-4 py-1.5 text-[11px] text-rose-100/85">
+      Offline. Cases wait until it&apos;s back.
     </p>
   );
 }
@@ -48,9 +44,7 @@ const OpsPanel = memo(function OpsPanel({ onCollapse }: { onCollapse: () => void
     <aside className={`${GLASS} hud-panel flex max-h-full w-full flex-col overflow-hidden`}>
       <header className="flex items-center justify-between gap-2 border-b border-white/[0.07] px-4 py-2.5">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="h-3.5 w-[3px] shrink-0 rounded-full bg-[#ff6a1a]" />
-          <h2 className="shrink-0 whitespace-nowrap text-[12px] font-semibold tracking-tight text-white">Incident workflow</h2>
-          <span className="min-w-0 truncate font-mono text-[10px] text-white/40">default-incident</span>
+          <h2 className="shrink-0 whitespace-nowrap text-[13px] font-semibold text-white">Cases</h2>
           <AgentToggle short />
         </div>
         <button
@@ -67,6 +61,7 @@ const OpsPanel = memo(function OpsPanel({ onCollapse }: { onCollapse: () => void
       <AgentNote />
       <div className="hud-scroll min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-4 pt-3">
         <MiniFlow events={events} />
+        <AgentQueueList />
         <IncidentList />
         <CaseFeed events={events} />
         <Deliveries />
@@ -85,20 +80,18 @@ function CollapsedTab({ onOpen }: { onOpen: () => void }) {
       <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
         <path d="M6.5 1.5 L3 5 L6.5 8.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
       </svg>
-      Ops panel
-      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#ff6a1a]" />
+      Cases
     </button>
   );
 }
 
 /** Embed mode (`?embed=1`, the desk console's iframe): only an honesty badge and the clock, in a corner. */
 function EmbedBadge() {
-  const real = useWorld((st) => st.agentMode === "real" && !!st.agentOnline);
   return (
     <div className="absolute left-2 top-2 flex items-center gap-2 rounded-lg border border-white/10 bg-[#0b0d12]/70 px-2 py-1 backdrop-blur-md">
       <span className="h-2 w-2 shrink-0 rounded-sm bg-[#ff6a1a]" />
       <Clock className="text-[11px]" />
-      {real ? <RealAgentTag /> : <SimulatedTag />}
+      <AgentToggle short />
       <TourBadge />
     </div>
   );
@@ -124,14 +117,14 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
   const cov = useScenarioCoverage();
   const [barRef, barH] = useMeasuredHeight<HTMLDivElement>(TOPBAR_FALLBACK_H);
   const { tasks, loading } = useReviewQueue();
-  const mode = useWorld((state) => state.agentMode);
-  const reviewTasks = tasks.filter((task) => task.status === "pending" && (mode === "real" ? !task.simulated : task.simulated));
+  // Agent cards only (real and synthetic city cases); the city has no mock cases any more.
+  const reviewTasks = tasks.filter((task) => task.status === "pending" && task.origin !== "city");
 
   if (embed) {
     return (
       <div className="pointer-events-none absolute inset-0 z-10 select-none font-sans text-white antialiased">
         <EmbedBadge />
-        <button type="button" onClick={onReviewOpen} className="pointer-events-auto absolute right-2 top-2 rounded-lg border border-amber-400/30 bg-[#0b0d12]/80 px-3 py-2 text-[11px] text-amber-100">Human review{reviewTasks.length > 0 && <span className="ml-2 font-mono">{reviewTasks.length}</span>}</button>
+        <button type="button" onClick={onReviewOpen} className="pointer-events-auto absolute right-2 top-2 rounded-lg border border-white/15 bg-[#111318]/90 px-3 py-2 text-[11px] text-white/85">Needs a person{reviewTasks.length > 0 && <span className="ml-2 tabular-nums text-amber-200">{reviewTasks.length}</span>}</button>
       </div>
     );
   }
@@ -144,9 +137,9 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
       {/* bottom band: decision card above the hotkeys, between the minimap and the ops panel */}
       <div className="absolute z-10 flex flex-col items-center justify-end gap-2" style={px(L.bottomBand)}>
         <RealDecisionToast tasks={tasks} loading={loading} onOpenQueue={onReviewOpen} />
-        {reviewTasks.length > 0 && <button type="button" onClick={onReviewOpen} className={`${GLASS} flex max-w-sm items-center gap-3 border-amber-400/30 px-4 py-3 text-left text-xs transition hover:bg-[#15171d]/90`}>
-          <span className="h-2 w-2 shrink-0 rounded-full bg-amber-300" />
-          <span><strong className="block font-medium text-amber-100">{reviewTasks.length} case{reviewTasks.length === 1 ? " needs" : "s need"} a person</strong><span className="mt-1 block text-[10px] text-white/55">Open the decision queue →</span></span>
+        {reviewTasks.length > 0 && <button type="button" onClick={onReviewOpen} className={`${GLASS} flex items-center gap-2 px-3 py-2 text-[12px] text-white/90 transition hover:bg-[#1a1d24]`}>
+          <span className="tabular-nums font-semibold text-amber-200">{reviewTasks.length}</span>
+          <span>need a person</span>
         </button>}
         <HotkeysFooter />
       </div>
@@ -163,11 +156,7 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
 
       <div ref={barRef} className="absolute z-30" style={px(L.topBar)}>
         <TopBar
-          scenarios={<div className="flex items-center gap-2">
-            <button type="button" onClick={onReviewOpen} className="pointer-events-auto whitespace-nowrap rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] font-medium text-amber-100 transition hover:bg-amber-400/20 focus-visible:outline-2 focus-visible:outline-amber-300">Human review{reviewTasks.length > 0 && <span className="ml-2 font-mono">{reviewTasks.length}</span>}</button>
-            <ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />
-          </div>}
-          badge={<TourBadge />}
+          scenarios={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
         />
       </div>
     </div>

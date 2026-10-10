@@ -55,15 +55,15 @@ export function ScenarioButton({ open, onToggle, cov }: { open: boolean; onToggl
       type="button"
       onClick={onToggle}
       aria-expanded={open}
-      title={`Pick and run a delivery case. Cases played ${cov.cases}/${SCENARIOS.length}, edge cases ${cov.mods}/${MOD_KEYS.length}.`}
+      title={`Pick a practice case to run. ${cov.cases} of ${SCENARIOS.length} played.`}
       className={`flex h-7 shrink-0 items-center gap-2 whitespace-nowrap rounded-md border px-2 text-[11px] font-medium transition ${
         open
           ? "border-[#ff6a1a]/70 bg-[#ff6a1a]/15 text-white"
           : "border-white/10 bg-white/[0.04] text-white/85 hover:border-[#ff6a1a]/60 hover:bg-[#ff6a1a]/10 hover:text-white"
       }`}
     >
-      Scenarios
-      <span className="rounded bg-black/30 px-1 font-mono text-[9.5px] tabular-nums text-white/60">
+      Practice cases
+      <span className="rounded bg-black/30 px-1 text-[10px] tabular-nums text-white/60">
         {cov.cases}/{SCENARIOS.length}
       </span>
     </button>
@@ -73,14 +73,14 @@ export function ScenarioButton({ open, onToggle, cov }: { open: boolean; onToggl
 /** Coverage strip in the scenario panel ("cases played", PRD J4: not "covered", which reads like an eval). */
 function CoverageStrip({ cov }: { cov: Coverage }) {
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-white/[0.07] px-3 py-1.5 font-mono text-[9.5px] tabular-nums text-white/55">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-white/[0.07] px-3 py-1.5 text-[10px] tabular-nums text-white/55">
       <span className="flex items-center gap-1.5 whitespace-nowrap">
         <Meter n={cov.cases} total={SCENARIOS.length} color="#ff6a1a" />
-        Cases played {cov.cases}/{SCENARIOS.length}
+        {cov.cases} of {SCENARIOS.length} played
       </span>
       <span className="flex items-center gap-1.5 whitespace-nowrap">
         <Meter n={cov.mods} total={MOD_KEYS.length} color="#2dd4bf" />
-        Edge cases {cov.mods}/{MOD_KEYS.length}
+        {cov.mods} of {MOD_KEYS.length} twists tried
       </span>
     </div>
   );
@@ -100,12 +100,11 @@ export const ScenarioPanel = memo(function ScenarioPanel({ onClose, cov }: { onC
   return (
     <aside className={`${GLASS} hud-panel flex max-h-full w-full flex-col overflow-hidden`}>
       <header className="flex items-center gap-2 border-b border-white/[0.07] px-3 py-2">
-        <span className="h-3.5 w-[3px] rounded-full bg-[#ff6a1a]" />
-        <h2 className="shrink-0 text-[12px] font-semibold tracking-tight text-white">Scenarios</h2>
+        <h2 className="shrink-0 text-[13px] font-semibold text-white">Practice cases</h2>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search cases…"
+          placeholder="Search…"
           className="ml-auto w-[150px] min-w-0 rounded-md border border-white/10 bg-black/30 px-2 py-1 text-[11px] text-white placeholder:text-white/35 focus:border-[#ff6a1a]/60 focus:outline-none"
         />
         <button
@@ -123,7 +122,7 @@ export const ScenarioPanel = memo(function ScenarioPanel({ onClose, cov }: { onC
         {groups.length === 0 && <div className="px-2 py-3 text-center text-[11px] text-white/40">No case matches “{q}”.</div>}
         {groups.map(([where, list]) => (
           <div key={where} className="mb-2">
-            <div className="px-1.5 pb-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/40">
+            <div className="px-1.5 pb-1 text-[10px] font-semibold text-white/45">
               {WHERE_LABEL[where]} <span className="text-white/25">{list.length}</span>
             </div>
             <ul>
@@ -137,7 +136,7 @@ export const ScenarioPanel = memo(function ScenarioPanel({ onClose, cov }: { onC
                       picked === s.id ? "bg-[#ff6a1a]/20 text-white" : "text-white/75 hover:bg-white/[0.05]"
                     }`}
                   >
-                    <span className="shrink-0 font-mono text-[9.5px] text-white/45">{s.id.replace("delivery-", "#")}</span>
+                    <span className="shrink-0 text-[10px] text-white/35">{s.id.replace("delivery-", "#")}</span>
                     <span className="truncate text-[11px]">{s.title}</span>
                   </button>
                 </li>
@@ -156,7 +155,7 @@ export const ScenarioPanel = memo(function ScenarioPanel({ onClose, cov }: { onC
                 key={m}
                 type="button"
                 onClick={() => toggle(m)}
-                title={MODIFIERS[m].expect}
+                title={MODIFIERS[m].label}
                 className={`rounded-full border px-2 py-0.5 text-[10px] transition ${
                   onIt ? "border-teal-300/70 bg-teal-400/20 text-teal-100" : "border-white/10 bg-white/[0.03] text-white/60 hover:text-white"
                 }`}
@@ -170,9 +169,9 @@ export const ScenarioPanel = memo(function ScenarioPanel({ onClose, cov }: { onC
           type="button"
           disabled={!picked}
           onClick={run}
-          className="flex w-full items-center justify-center gap-2 truncate rounded-md bg-[#ff6a1a] px-3 py-1.5 text-[12px] font-semibold text-black transition hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/35"
+          className="flex w-full items-center justify-center gap-2 truncate rounded-lg bg-[#ff6a1a] px-3 py-2 text-[13px] font-semibold text-black transition hover:bg-[#ff7d38] disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/35"
         >
-          {picked ? `Run ${picked}${mods.length ? ` + ${mods.length} edge case${mods.length > 1 ? "s" : ""}` : ""}` : "Pick a case"}
+          {picked ? `Run this case${mods.length ? ` with ${mods.length} twist${mods.length > 1 ? "s" : ""}` : ""}` : "Pick a case"}
         </button>
       </footer>
     </aside>

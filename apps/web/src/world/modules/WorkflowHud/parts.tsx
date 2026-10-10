@@ -1,26 +1,18 @@
 "use client";
-// HUD building blocks: agent labels, case feed, incidents, deliveries, decision toast, hotkeys footer.
-import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+// HUD building blocks: agent status and labels, agent queue, case feed, incidents, deliveries, hotkeys footer.
+import { memo, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useWorld, type Delivery, type Incident, type IncidentKind, type WorkflowEvent } from "../../store";
 import { getScenario } from "../../scenarios";
-import { formatAge, formatCost, newAsks, RUNNER_OF, spendSplit, summariseCases } from "./flow";
+import { caseLine, caseTitle, formatAge, spendSplit, summariseCases } from "./flow";
+import { cents } from "../../../ui/plain";
 import { provenanceLabel } from "../../backendLink";
 import { budgetLeft, nextSlotAt } from "../WorkflowDriver/budget";
 import { chosenAction, formatExpected, hasRealTrace, matchExpected, scenarioIdOf } from "./scenarioMatch";
-import {
-  INCIDENT_COLOR,
-  INCIDENT_LABEL,
-  INCIDENT_STATUS_STYLE,
-  ORANGE,
-  RUNNER_COLOR,
-  RUNNER_LABEL,
-  STATE_STYLE,
-  STATUS_COLOR,
-} from "./theme";
+import { INCIDENT_COLOR, INCIDENT_LABEL, INCIDENT_STATUS_STYLE, ORANGE } from "./theme";
 
 export const GLASS =
-  "pointer-events-auto rounded-xl border border-white/10 bg-[#0b0d12]/70 shadow-[0_8px_32px_rgba(0,0,0,0.45)] backdrop-blur-xl";
+  "pointer-events-auto rounded-xl border border-white/10 bg-[#111318]/90";
 
 /** Ticking clock in ms (performance.now), for ages and countdowns. */
 export function useNow(intervalMs: number) {
@@ -71,7 +63,7 @@ export function useThrottledWorkflow(ms: number) {
 export function SectionTitle({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
     <div className="mb-2 flex items-center justify-between">
-      <h3 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/50">{children}</h3>
+      <h3 className="text-[11px] font-semibold text-white/60">{children}</h3>
       {right}
     </div>
   );
@@ -79,45 +71,23 @@ export function SectionTitle({ children, right }: { children: ReactNode; right?:
 
 // ---------------------------------------------------------------- agent labels
 
-/**
- * Honesty label (rules: no fabricated results). Everything the HUD shows about cases comes from the
- * mock engine in modules/WorkflowDriver, not the real agent in apps/api. Keep this visible in every
- * video take until the HUD replays real traces.
- */
-export function SimulatedTag({ long = false }: { long?: boolean }) {
+/** Provenance in plain words: "Live" (the real agent) or "Practice case" (made from city events). */
+export function RealAgentTag({ label = "Live" }: { label?: string }) {
+  const practice = /practice/i.test(label);
   return (
     <span
-      title="Mock agent for the visual demo. Real decisions come from the agent runtime in apps/api (ANSWERS/<n>/trace.json)."
-      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-fuchsia-400/50 bg-fuchsia-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-fuchsia-200"
-    >
-      <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-300" />
-      Simulated
-      {long && <span className="hidden whitespace-nowrap 2xl:inline"> · mock agent</span>}
-    </span>
-  );
-}
-
-/** `label` is the full provenance, e.g. "Real agent · Synthetic case" (backendLink.provenanceLabel). */
-export function RealAgentTag({ label = "Real agent" }: { label?: string }) {
-  const synthetic = /synthetic/i.test(label);
-  return (
-    <span
-      title={
-        synthetic
-          ? "Decided by the real agent in apps/api on a SYNTHETIC case built from the city simulation (simulated driver and customer messages). Replay of its trace."
-          : "Decided by the real agent in apps/api; this is a replay of its trace."
-      }
-      className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] ${
-        synthetic ? "border-sky-400/50 bg-sky-500/15 text-sky-200" : "border-emerald-400/50 bg-emerald-500/15 text-emerald-200"
+      title={practice ? "Answered by the live agent. The case was made from what happened in the city." : "Answered by the live agent."}
+      className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded px-1.5 py-[1px] text-[10px] font-medium ${
+        practice ? "bg-sky-400/15 text-sky-200" : "bg-emerald-400/15 text-emerald-200"
       }`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${synthetic ? "bg-sky-300" : "bg-emerald-300"}`} />
+      <span className={`h-1.5 w-1.5 rounded-full ${practice ? "bg-sky-300" : "bg-emerald-300"}`} />
       {label}
     </span>
   );
 }
 
-/** Real spend so far (sum of run_end.totalCostUsd of city-started cases) and the budget guard's state. */
+/** Spend so far and cases left in this 10 minutes. Click to change the limit. */
 function BudgetChip({ editable }: { editable: boolean }) {
   const b = useWorld((s) => s.agentBudget);
   const setMax = useWorld((s) => s.setAgentBudgetMax);
@@ -125,75 +95,91 @@ function BudgetChip({ editable }: { editable: boolean }) {
   const now = useEpochNow(5000);
   const left = budgetLeft(b, now);
   const next = nextSlotAt(b, now);
-  const over = left === 0;
-  const title = `Real spend by this city: $${b.spentUsd.toFixed(4)} (from each trace's run_end.totalCostUsd). Budget: ${b.maxPerWindow} real cases per 10 min, ${left} left${
-    next ? `; next slot in ${Math.ceil((next - now) / 60_000)} min` : ""
-  }. Over budget, cases run on the mock and are tagged SIMULATED.${editable ? " Click to change." : ""}`;
+  const title = `${cents(b.spentUsd) || "0¢"} spent. ${left} of ${b.maxPerWindow} cases left for this 10 minutes${
+    next ? `, more in ${Math.ceil((next - now) / 60_000)} min` : ""
+  }.${editable ? " Click to change." : ""}`;
   return (
     <span className="relative inline-flex">
       <button
         type="button"
         title={title}
         onClick={() => editable && setOpen((o) => !o)}
-        className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border px-1.5 py-[1px] font-mono text-[9px] tabular-nums ${
-          over ? "border-amber-400/50 bg-amber-500/15 text-amber-200" : "border-white/15 bg-white/[0.05] text-white/70"
-        }`}
+        className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded px-1 text-[10px] tabular-nums text-white/45 hover:text-white/80"
       >
-        ${b.spentUsd.toFixed(3)}
-        <span className="text-white/35">·</span>
-        {over ? "budget used · mock" : `${left}/${b.maxPerWindow}`}
+        {cents(b.spentUsd) || "0¢"}
+        {left === 0 && <span className="text-amber-200/80">· limit reached</span>}
       </button>
       {open && editable && (
-        <div className="absolute right-0 top-full z-40 mt-1.5 w-56 rounded-lg border border-white/10 bg-[#0b0d12]/95 p-3 text-[11px] text-white/80 shadow-xl backdrop-blur-xl">
-          <div className="font-semibold text-white">Real-agent budget</div>
-          <p className="mt-1 text-[10px] leading-snug text-white/55">
-            Max real cases the city may start per 10 minutes (incidents and staged scenarios). Over it, the mock runs, tagged Simulated.
-          </p>
+        <div className="absolute right-0 top-full z-40 mt-1.5 w-52 rounded-lg border border-white/10 bg-[#111318] p-3 text-[11px] text-white/80">
+          <div className="font-medium text-white">Cases per 10 minutes</div>
           <div className="mt-2 flex items-center gap-2">
-            <button type="button" className="h-6 w-6 rounded border border-white/15 hover:bg-white/10" onClick={() => setMax(b.maxPerWindow - 1)}>−</button>
-            <span className="w-8 text-center font-mono text-[13px] tabular-nums text-white">{b.maxPerWindow}</span>
-            <button type="button" className="h-6 w-6 rounded border border-white/15 hover:bg-white/10" onClick={() => setMax(b.maxPerWindow + 1)}>+</button>
-            <span className="text-[10px] text-white/45">per 10 min</span>
+            <button type="button" className="h-7 w-7 rounded border border-white/15 hover:bg-white/10" onClick={() => setMax(b.maxPerWindow - 1)}>−</button>
+            <span className="w-8 text-center text-[14px] tabular-nums text-white">{b.maxPerWindow}</span>
+            <button type="button" className="h-7 w-7 rounded border border-white/15 hover:bg-white/10" onClick={() => setMax(b.maxPerWindow + 1)}>+</button>
           </div>
-          <div className="mt-2 font-mono text-[10px] tabular-nums text-white/55">
-            spent ${b.spentUsd.toFixed(4)} · {b.runs} started · {b.overBudget} fell back
-          </div>
+          <div className="mt-2 text-[10px] text-white/50">More cases wait their turn.</div>
         </div>
       )}
     </span>
   );
 }
 
-/**
- * Mock vs real agent. "Real" sends each staged scenario to POST /api/cases (costs model calls), so
- * it's opt-in, and only available when the agent API answers its health check.
- */
-export function AgentToggle({ short = false }: { short?: boolean }) {
-  const mode = useWorld((s) => s.agentMode);
-  const online = useWorld((s) => s.agentOnline);
-  const setMode = useWorld((s) => s.setAgentMode);
-  const real = mode === "real" && online;
+/** The agent is not answering: cases wait, nothing is made up. */
+export function OfflineTag() {
   return (
-    <span className="inline-flex shrink-0 items-center gap-1">
-    <button
-      type="button"
-      disabled={!online && mode === "mock"}
-      onClick={() => setMode(mode === "real" ? "mock" : "real")}
-      title={
-        online
-          ? real
-            ? "Incidents and scenarios go to the real agent (apps/api), within the budget. Click to switch back to the mock."
-            : "Click to send incidents and scenarios to the real agent (apps/api). Uses model calls."
-          : "Agent API not reachable at NEXT_PUBLIC_API_URL, so the mock agent runs."
-      }
-      className="shrink-0 disabled:cursor-not-allowed"
+    <span
+      title="The agent is not answering. Cases wait until it is back."
+      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded bg-rose-500/15 px-1.5 py-[1px] text-[10px] font-medium text-rose-200"
     >
-      {real ? <RealAgentTag /> : <SimulatedTag long={!short} />}
-    </button>
-    {real && <BudgetChip editable={!short} />}
+      <span className="h-1.5 w-1.5 rounded-full bg-rose-300" />
+      Offline
     </span>
   );
 }
+
+/** Live / Offline, the spend, and how many cases are waiting. No toggle: there is only the live agent. */
+export function AgentToggle({ short = false }: { short?: boolean }) {
+  const online = useWorld((s) => s.agentOnline);
+  const queued = useWorld((s) => s.agentQueue.length);
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1">
+      {online === true ? <RealAgentTag /> : online === false ? <OfflineTag /> : <span className="text-[10px] text-white/45">Connecting…</span>}
+      {online === false && !short && <span className="whitespace-nowrap text-[10px] text-rose-200/70">paused</span>}
+      {online === true && <BudgetChip editable={!short} />}
+      {queued > 0 && (
+        <span title={`${queued} waiting their turn`} className="whitespace-nowrap rounded bg-amber-400/10 px-1.5 py-[1px] text-[10px] tabular-nums text-amber-200">
+          {queued} waiting
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** Cases waiting their turn, oldest first. */
+export const AgentQueueList = memo(function AgentQueueList() {
+  const queue = useWorld((s) => s.agentQueue);
+  const online = useWorld((s) => s.agentOnline);
+  const b = useWorld((s) => s.agentBudget);
+  const now = useEpochNow(5000);
+  if (!queue.length) return null;
+  const next = nextSlotAt(b, now);
+  const why = online !== true ? "Paused: offline" : next ? `More in ${Math.max(1, Math.ceil((next - now) / 60_000))} min` : "Next up";
+  return (
+    <section>
+      <SectionTitle right={<span className="text-[10px] text-white/45">{why}</span>}>Waiting</SectionTitle>
+      <ul className="space-y-1">
+        {queue.slice(0, 4).map((q, i) => (
+          <li key={q.id} className="flex items-center gap-2 rounded-md bg-white/[0.03] px-2 py-1 text-[11px]">
+            <span className="text-white/40 tabular-nums">{i + 1}.</span>
+            <span className="min-w-0 flex-1 truncate text-white/80">{caseTitle(q.label)}</span>
+            <span className="shrink-0 text-[10px] text-white/35">{formatAge(now - q.enqueuedAt)}</span>
+          </li>
+        ))}
+        {queue.length > 4 && <li className="text-center text-[10px] text-white/40">+{queue.length - 4} more</li>}
+      </ul>
+    </section>
+  );
+});
 
 // ---------------------------------------------------------------- icons
 
@@ -239,60 +225,40 @@ export function IncidentIcon({ kind, size = 16 }: { kind: IncidentKind; size?: n
 
 // ---------------------------------------------------------------- case feed
 
+const STATUS_TONE: Record<string, string> = {
+  Working: "bg-[#ff6a1a]/15 text-[#ffb08a]",
+  "Needs a person": "bg-amber-400/15 text-amber-200",
+  Stopped: "bg-rose-500/15 text-rose-200",
+  Problem: "bg-red-500/15 text-red-200",
+  Done: "bg-emerald-400/15 text-emerald-200",
+};
+
+/** One plain sentence per case with a status word. The raw case id and cost sit in a small grey caption. */
 export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly WorkflowEvent[] }) {
   const cases = useMemo(() => summariseCases(events, 8), [events]);
-  const now = useNow(1000);
-  const spend = useMemo(() => spendSplit(events), [events]);
+  const spend = useMemo(() => spendSplit(events).real, [events]);
   return (
     <section>
-      <SectionTitle
-        right={
-          <span
-            className="font-mono text-[10px] tabular-nums text-white/45"
-            title="Real: sum of the replayed traces' run_end.totalCostUsd. Sim est: the mock engine's made-up per-call estimate, never real spend."
-          >
-            real {formatCost(spend.real)}
-            {spend.estimated > 0 && <span className="text-fuchsia-200/50"> · sim est {formatCost(spend.estimated)}</span>}
-          </span>
-        }
-      >
-        Case feed
-      </SectionTitle>
+      <SectionTitle right={spend > 0 ? <span className="text-[10px] tabular-nums text-white/40">{cents(spend)} spent</span> : undefined}>Cases</SectionTitle>
       {cases.length === 0 ? (
-        <Empty>Waiting for the first incident.</Empty>
+        <Empty>Nothing yet.</Empty>
       ) : (
         <ul className="space-y-1.5">
           {cases.map((c) => {
-            const style = STATE_STYLE[c.state];
-            const runner = RUNNER_OF[c.last.nodeId] ?? "code";
+            const line = caseLine(events, c);
             return (
-              <li
-                key={c.caseId}
-                className="relative overflow-hidden rounded-lg border border-white/[0.06] bg-white/[0.03] py-1.5 pl-3 pr-2"
-              >
-                <span className={`absolute inset-y-0 left-0 w-[3px] ${style.bar}`} />
+              <li key={c.caseId} className="rounded-lg bg-white/[0.03] px-2.5 py-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[11px] font-medium text-white">{c.caseId}</span>
-                  {c.prov ? <RealAgentTag label={provenanceLabel(c.prov)} /> : <SimulatedTag />}
-                  <span className={`rounded px-1.5 py-px font-mono text-[9px] uppercase tracking-wider ${style.chip}`}>{style.label}</span>
-                  <span
-                    className={`ml-auto font-mono text-[10px] tabular-nums ${c.prov ? "text-white/55" : "text-fuchsia-200/45"}`}
-                    title={c.prov ? "Real cost from the trace (run_end.totalCostUsd)" : "Mock estimate, not real spend"}
-                  >
-                    {c.prov ? (c.state === "closed" || c.cost > 0 ? formatCost(c.cost) : "…") : `est ${formatCost(c.cost)}`}
-                  </span>
+                  <span className={`shrink-0 rounded px-1.5 py-px text-[10px] font-medium ${STATUS_TONE[line.status] ?? "bg-white/10 text-white/70"}`}>{line.status}</span>
+                  <span className="min-w-0 truncate text-[12px] font-medium text-white" title={line.title}>{line.title}</span>
                 </div>
-                <p className="mt-0.5 truncate text-[11px] leading-snug text-white/70" title={c.last.summary}>{c.last.summary}</p>
+                <p className="mt-0.5 truncate text-[11px] text-white/65" title={line.sentence}>{line.sentence}</p>
+                <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-white/35">
+                  {c.prov && <RealAgentTag label={provenanceLabel(c.prov)} />}
+                  <span className="min-w-0 truncate">{c.caseId.split(" · ")[0]}</span>
+                  {c.prov && c.cost > 0 && <span className="ml-auto tabular-nums">{cents(c.cost)}</span>}
+                </div>
                 <ExpectedLine caseId={c.caseId} events={events} />
-                <div className="mt-1 flex items-center gap-1.5 font-mono text-[9px] text-white/40">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: RUNNER_COLOR[runner] }} />
-                  <span style={{ color: STATUS_COLOR[c.last.status] }}>{c.last.nodeId}</span>
-                  <span>·</span>
-                  <span>{RUNNER_LABEL[runner]}</span>
-                  <span>·</span>
-                  <span>{c.steps} steps</span>
-                  <span className="ml-auto tabular-nums">{formatAge(now - c.last.t)} ago</span>
-                </div>
               </li>
             );
           })}
@@ -303,9 +269,8 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
 });
 
 /**
- * For scenario cases replayed from a REAL agent trace: the expected next action and whether the agent's
- * choice matches it. PRD J4: never shown for mock cases, whose planner copies the answer key and would
- * always "match" (that would read as a fabricated eval).
+ * For practice-set cases answered by the live agent: does its reply go where the answer key says?
+ * Only for live answers, never for anything else (PRD J4).
  */
 function ExpectedLine({ caseId, events }: { caseId: string; events: readonly WorkflowEvent[] }) {
   if (!hasRealTrace(events, caseId)) return null;
@@ -313,23 +278,11 @@ function ExpectedLine({ caseId, events }: { caseId: string; events: readonly Wor
   const expected = sid ? getScenario(sid)?.expected : null;
   if (!expected) return null;
   const chosen = chosenAction(events, caseId);
-  const ok = chosen ? matchExpected(chosen.summary, expected) : null;
+  const ok = chosen && chosen.nodeId === "action" ? matchExpected(chosen.summary, expected) : null;
+  if (ok === null) return null;
   return (
-    <div className="mt-1 flex items-center gap-1.5 rounded-md bg-black/25 px-1.5 py-1 text-[10px] leading-tight">
-      <span className="shrink-0 font-semibold uppercase tracking-wider text-white/40">Expected</span>
-      <span className="min-w-0 flex-1 truncate text-white/75" title={expected.summary}>
-        {formatExpected(expected)}
-      </span>
-      {ok === null ? (
-        <span className="shrink-0 rounded px-1 font-mono text-[9px] text-white/35">…</span>
-      ) : (
-        <span
-          title={chosen?.summary}
-          className={`shrink-0 rounded px-1 font-mono text-[9px] font-semibold ${ok ? "bg-emerald-400/15 text-emerald-300" : "bg-rose-500/15 text-rose-300"}`}
-        >
-          {ok ? "✓ match" : "✗ differs"}
-        </span>
-      )}
+    <div className={`mt-0.5 text-[10px] ${ok ? "text-emerald-300/80" : "text-rose-300/80"}`} title={`Answer key: ${formatExpected(expected)}`}>
+      {ok ? "Matches the answer key" : "Differs from the answer key"}
     </div>
   );
 }
@@ -339,6 +292,8 @@ function Empty({ children }: { children: ReactNode }) {
 }
 
 // ---------------------------------------------------------------- incidents
+
+const INCIDENT_STATUS_WORD = { active: "Happening", responding: "Help on the way", clearing: "Clearing up" } as const;
 
 export const IncidentList = memo(function IncidentList() {
   const incidents = useWorld((s) => s.incidents);
@@ -369,8 +324,8 @@ export const IncidentList = memo(function IncidentList() {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5">
                     <span className="text-[11px] font-medium text-white">{INCIDENT_LABEL[i.kind]}</span>
-                    <span className={`rounded px-1.5 py-px font-mono text-[9px] uppercase tracking-wider ${INCIDENT_STATUS_STYLE[i.status]}`}>
-                      {i.status}
+                    <span className={`rounded px-1.5 py-px text-[10px] ${INCIDENT_STATUS_STYLE[i.status]}`}>
+                      {INCIDENT_STATUS_WORD[i.status]}
                     </span>
                     <span className="ml-auto font-mono text-[10px] tabular-nums text-white/45">{formatAge(now - i.createdAt)}</span>
                   </span>
@@ -425,136 +380,13 @@ export const Deliveries = memo(function Deliveries() {
             <div className="font-mono text-[15px] font-semibold tabular-nums leading-none" style={{ color: r.n ? r.color : "rgba(255,255,255,0.35)" }}>
               {r.n}
             </div>
-            <div className="mt-1 text-[9px] uppercase tracking-[0.12em] text-white/45">{r.label}</div>
+            <div className="mt-1 text-[10px] text-white/45">{r.label}</div>
           </div>
         ))}
       </div>
     </section>
   );
 });
-
-// ---------------------------------------------------------------- decision toast
-
-const AUTO_MS = 12_000;
-
-interface Pending {
-  e: WorkflowEvent;
-  deadline: number;
-}
-
-function optionsFor(e: WorkflowEvent): { label: string; safe?: boolean }[] {
-  const s = e.summary.toLowerCase();
-  if (s.includes("refund") || s.includes("compens") || s.includes("replace"))
-    return [{ label: "Ask merchant to decide", safe: true }, { label: "Offer replacement" }, { label: "Issue refund" }];
-  if (s.includes("reroute") || s.includes("road") || s.includes("closed") || s.includes("detour"))
-    return [{ label: "Hold & ask carrier", safe: true }, { label: "Approve reroute" }, { label: "Notify customer of delay" }];
-  return [{ label: "Hold & escalate to desk", safe: true }, { label: "Approve plan" }, { label: "Notify customer" }];
-}
-
-export function DecisionToast() {
-  const [queue, setQueue] = useState<Pending[]>([]);
-  const [choice, setChoice] = useState<string | null>(null);
-  const lastId = useRef<string | null>(null);
-  const now = useNow(200);
-
-  // Watch the store for new "ask" events (no React re-render on every workflow push).
-  useEffect(() => {
-    const wf = useWorld.getState().workflow;
-    lastId.current = wf.length ? wf[wf.length - 1].id : null;
-    return useWorld.subscribe((s, prev) => {
-      if (s.workflow === prev.workflow || s.workflow.length === 0) return;
-      const fresh = newAsks(s.workflow, lastId.current);
-      lastId.current = s.workflow[s.workflow.length - 1].id;
-      if (!fresh.length) return;
-      const t = performance.now();
-      setQueue((q) => [...q, ...fresh.map((e) => ({ e, deadline: t + AUTO_MS }))].slice(-4));
-    });
-  }, []);
-
-  const cur = queue[0] ?? null;
-  const opts = useMemo(() => (cur ? optionsFor(cur.e) : []), [cur]);
-  const remaining = cur ? Math.max(0, cur.deadline - now) : 0;
-  const expired = !!cur && remaining <= 0;
-
-  // Dismiss after a choice (or the auto-resolve) has been shown briefly.
-  useEffect(() => {
-    if (!cur || (!choice && !expired)) return;
-    const id = setTimeout(() => {
-      setChoice(null);
-      setQueue((q) => {
-        const [, ...rest] = q;
-        const t = performance.now();
-        // The next card gets a fresh countdown from when it becomes visible.
-        return rest.map((p, i) => (i === 0 ? { ...p, deadline: Math.max(p.deadline, t + AUTO_MS) } : p));
-      });
-    }, 900);
-    return () => clearTimeout(id);
-  }, [cur, choice, expired]);
-
-  if (!cur) return null;
-  const picked = choice ?? (expired ? opts.find((o) => o.safe)?.label ?? null : null);
-  const secs = Math.ceil(remaining / 1000);
-
-  return (
-    <div
-      key={cur.e.id}
-      className={`${GLASS} hud-toast w-full max-w-[440px] overflow-hidden border-amber-300/30`}
-      role="alertdialog"
-      aria-label="Decision needed"
-    >
-      <div className="h-[3px] bg-white/[0.06]">
-        <div className="h-full bg-amber-400 transition-[width] duration-200 ease-linear" style={{ width: `${(remaining / AUTO_MS) * 100}%` }} />
-      </div>
-      <div className="px-4 pb-3.5 pt-3">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
-          </span>
-          <span className="shrink-0 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-300">Decision needed</span>
-          {cur.e.source === "agent" ? <RealAgentTag /> : <SimulatedTag />}
-          <span className="min-w-0 truncate font-mono text-[11px] text-white/80">{cur.e.caseId}</span>
-          {queue.length > 1 && <span className="ml-auto shrink-0 font-mono text-[10px] text-white/45">+{queue.length - 1} queued</span>}
-        </div>
-        <p className="mt-1.5 line-clamp-3 text-[13px] leading-snug text-white">{cur.e.summary}</p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {opts.map((o) => {
-            const on = picked === o.label;
-            return (
-              <button
-                key={o.label}
-                type="button"
-                disabled={!!picked}
-                onClick={() => setChoice(o.label)}
-                className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[11.5px] font-medium transition ${
-                  on
-                    ? "border-[#ff6a1a] bg-[#ff6a1a] text-black shadow-[0_0_16px_rgba(255,106,26,0.5)]"
-                    : picked
-                      ? "border-white/5 bg-white/[0.02] text-white/30"
-                      : "border-white/12 bg-white/[0.05] text-white/90 hover:border-[#ff6a1a]/60 hover:bg-[#ff6a1a]/15"
-                }`}
-              >
-                {o.label}
-                {o.safe && (
-                  <span className={`rounded px-1 font-mono text-[8.5px] uppercase tracking-wider ${on ? "bg-black/20" : "bg-emerald-400/15 text-emerald-300"}`}>
-                    safe
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-        <div className="mt-2.5 font-mono text-[10px] tabular-nums text-white/45">
-          {picked ? (
-            <span className="text-[#ff8a4a]">{choice ? "Decision sent" : "Auto-resolved"}: {picked}</span>
-          ) : (
-            <>auto-resolving with safe option in {secs}s</>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ---------------------------------------------------------------- footer
 
