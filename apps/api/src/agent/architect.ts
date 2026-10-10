@@ -11,6 +11,7 @@ import example from "../../flows/default-incident.json" with { type: "json" };
 import type { Flow, FlowEdge, FlowNode, NodeType, Runner } from "../lib/flow.ts";
 import { SORTING_SEATS } from "../lib/panel.ts";
 import type { Models, ModelUsage } from "./models.ts";
+import { decisionGuidance } from "./decision-patterns.ts";
 
 // One line per type, because the model can only arrange nodes it understands. Typed as a full
 // Record so adding a NodeType without describing it here fails the type check.
@@ -182,6 +183,45 @@ export const BRANCHING_EXAMPLE: Flow = (() => {
     e("human_cold_gate", "action_cold_approved", "approve"), e("human_cold_gate", "log_cold_rejected", "reject"),
     e("action_cold_approved", "log_cold_approved"),
   ];
+  // The worked example must not teach the Architect that an unfamiliar topic, conflicting
+  // accounts or a missing detail is a reason to stop before proposing a safe owner request.
+  // Replace those former dead ends with independent, gated planning branches.
+  const recovery = (oldEntry: string, stem: string, name: string, done: string) => {
+    for (const edge of edges) if (edge.to === oldEntry) edge.to = `planner_${stem}`;
+    const oldNode = nodes.findIndex((node) => node.id === oldEntry);
+    if (oldEntry !== done) nodes.splice(oldNode, 1);
+    else nodes[oldNode].name = `Log: ${name} request recorded`;
+    nodes.push(
+      n(`planner_${stem}`, "planner", `Plan ${name}`),
+      n(`gate_${stem}`, "safety_gate", `Check ${name} messages`, { allow_below: 0.3, block_above: 0.8 }),
+      n(`action_${stem}`, "action", `Request ${name}`),
+      n(`verify_${stem}`, "verify", `Check ${name} request`),
+      n(`human_${stem}`, "human_decision", `Decide held ${name} messages`),
+      n(`action_${stem}_approved`, "action", `Record approved ${name} request`),
+      n(`log_${stem}_approved`, "case_log", `Log: ${name} approved request recorded`),
+      n(`log_${stem}_blocked`, "case_log", `Log: ${name} message blocked`),
+      n(`log_${stem}_rejected`, "case_log", `Log: ${name} message rejected`),
+      n(`log_${stem}_held`, "case_log", `Log: ${name} message awaiting approval`),
+      n(`log_${stem}_failed`, "case_log", `Log: ${name} request failed`),
+    );
+    edges.push(
+      e(`planner_${stem}`, `gate_${stem}`),
+      e(`gate_${stem}`, `action_${stem}`, "allow"), e(`gate_${stem}`, `human_${stem}`, "ask"), e(`gate_${stem}`, `log_${stem}_blocked`, "block"),
+      e(`action_${stem}`, `verify_${stem}`), e(`verify_${stem}`, done, "ok"), e(`verify_${stem}`, `action_${stem}`, "retry"), e(`verify_${stem}`, `log_${stem}_failed`, "failed"),
+      e(`human_${stem}`, `action_${stem}_approved`, "approve"), e(`human_${stem}`, `log_${stem}_rejected`, "reject"), e(`human_${stem}`, `log_${stem}_held`, "fallback"),
+      e(`action_${stem}_approved`, `log_${stem}_approved`),
+    );
+  };
+  recovery("log_other", "other", "unfamiliar-case next step", "log_other");
+  recovery("log_parcel_clash", "parcel_clash", "conflict clarification", "log_parcel_clash");
+  // Missing details and panel flags already live in the shared case analysis. Both can go to
+  // a planner without duplicating its whole subtree or stopping to ask a person first.
+  for (const id of ["log_damage_waiting", "human_cold", "log_cold_held"]) {
+    nodes.splice(nodes.findIndex((node) => node.id === id), 1);
+    for (let i = edges.length - 1; i >= 0; i--) if (edges[i].from === id || edges[i].to === id) edges.splice(i, 1);
+  }
+  delete edges.find((edge) => edge.from === "info_damage")!.when;
+  delete edges.find((edge) => edge.from === "perspectives_cold")!.when;
   return { id: "branching-incident", name: "Branching incident flow", business: "Generic last-mile delivery, one sub-path per case type", nodes, edges };
 })();
 
@@ -201,6 +241,11 @@ ${QUESTIONS.map((q) => `- ${q.id} (${q.def.type === "noul" ? "yes/no" : "graded"
 <shape>
 Design a decision tree, not a straight line. Real cases go wrong in different ways and each way needs its own checks, so the flow branches wherever a node decides something.
 
+<decision_patterns>
+${decisionGuidance(["capacity_disruption", "dependencies", "missing_evidence", "conflicting_evidence", "failed_action", "identity_privacy", "hazard", "multi_issue", "wait_duplicate", "network_disruption"])}
+</decision_patterns>
+These patterns overlap. A triage branch is only a starting point: its planner still reads the whole case and addresses every live issue. More topic branches are not a substitute for reasoning. Never send a case to a human merely because its topic is unfamiliar or several patterns apply. Every triage needs an "other" path to a general planner, safety gate, action/verification and case log.
+
 It must be a strict tree, because it is drawn on a canvas and lines that rejoin cross each other:
 - Every node except ingest has exactly one incoming edge. The only exception is a "retry" edge from a verify back to the action it checks, at most one per verify.
 - Branches never converge. Where two branches would meet at the same kind of step, duplicate the node: each branch gets its own copy with a distinct id, such as log_damage and log_damage_held, human_damage, gate_damage, verify_damage, action_damage and action_damage_approved. Never send two branches to one shared case_log, human_decision, planner, gate, action or verify.
@@ -210,16 +255,16 @@ It must be a strict tree, because it is drawn on a canvas and lines that rejoin 
 
 Where the flow branches:
 - After triage, route by case type into separate sub-paths with different checks. Label each edge with the case type in "when", using the types this business actually meets: for example damage, missing_parcel, cold_chain, address, customs, billing, and "other" for the rest.
-- missing_info branches "missing" (a case_log where the case waits for the missing item, or first plan the request, gate it and send it) and "complete" (carry on).
-- clash_check branches "clash" (the accounts conflict: a case_log that hands it to the owning team, or a person) and "consistent".
-- perspectives branches "force_human" (a human_decision before any planning) and "brief".
+- missing_info branches "missing" to its own planner, which asks for the missing item through a gate or records a justified wait if it was already requested; "complete" carries on. Never end at a log or ask a human merely because a detail is missing.
+- clash_check branches "clash" (a planner requests the evidence or authorised owner's decision through a gate; a conflict alone is not a human hold) and "consistent".
+- perspectives branches "force_human" (a planner isolates the actual decision needing a person while preserving independent safe coordination) and "brief". A formal legal hold still sends no messages. The planner and gate decide the safe actions before any human_decision.
 - group_check branches "linked" (its own path for cases with one common cause) and "single".
 - Every safety_gate has three exits: allow to an action, ask to a human_decision, block to a case_log.
 - A human_decision after a gate branches by option: "approve" to its own copy of the action (not the one the allow exit uses), "reject" and "fallback" each to their own case_log.
 - A human_decision before any gate (after force_human or a clash) may lead only to a planner, whose plan then passes a gate, or to a case_log. Never straight to an action.
 - verify branches "ok" to a case_log, "retry" back to the action it checked (the runtime retries once), and "failed" to its own case_log or to a human_decision that leads only to a case_log.
 - Branches reuse node types under distinct ids, such as gate_damage and gate_refund, or action_notify and action_claim. Give a riskier branch its own stricter gate.
-Aim for 25 to 40 nodes and at least three decision points besides the safety gates.
+Use only as many nodes as the business needs, normally 25 to 70, and at least three decision points besides the safety gates (human_decision and verify count). Use at most four broad topic branches: a crash, unavailable vehicle and traffic delay can share a delivery-recovery path. The planner applies overlapping decision groups inside each path. Missing-info and perspectives nodes can have one unlabelled edge to a planner, because their findings travel in the analysis; split only when paths actually need different capabilities or policies. Preserve safe planning and fallback paths rather than stopping a branch to fit a node count.
 </shape>
 
 Rules the flow must satisfy. It is checked in code and rejected if any is broken:
@@ -357,6 +402,14 @@ export function validateFlow(flow: Flow, options: ValidateOptions = {}): string[
     hasIncoming.add(e.to);
   }
 
+  // Topic-specific trees must still have a way forward for unseen incidents.
+  for (const n of nodes.filter((n) => n.type === "triage")) {
+    const out = outs.get(n.id) ?? [];
+    if (out.length && !out.some((e) => !labelOf(e) || labelOf(e) === "other")) {
+      problems.push(`triage "${n.id}" needs an "other" or unlabelled fallback for unfamiliar cases`);
+    }
+  }
+
   // The one loop a flow may have: verify sends a failed action back for a single retry. It counts
   // only when it cannot grow into a longer loop: the verify's only "retry" edge, pointing at an
   // acting node whose only way out is straight back to that verify.
@@ -382,6 +435,20 @@ export function validateFlow(flow: Flow, options: ValidateOptions = {}): string[
   if (ingests.length === 0) problems.push("no ingest node");
   if (ofType("case_log").length === 0) problems.push("no case_log node");
   if (humans.length === 0) problems.push("no human_decision node");
+
+  const planningBranches = [["triage", "other"], ["missing_info", "missing"], ["clash_check", "clash"]] as const;
+  for (const [type, branch] of planningBranches) for (const id of ofType(type)) {
+    const branches = (outs.get(id) ?? []).filter((e) => labelOf(e) === branch);
+    if (!branches.length) continue;
+    const planners = ofType("planner");
+    const open = reach(branches.map((e) => e.to), next, new Set(planners));
+    const stops = [...humans, ...ofType("case_log"), ...ofType("action"), ...ofType("replan_route")];
+    const reachesPlanner = branches.some((e) => planners.includes(e.to)) || [...open].some((p) => (next.get(p) ?? []).some((to) => planners.includes(to)));
+    if (!reachesPlanner || stops.some((p) => open.has(p))) {
+      const name = type === "triage" ? "unfamiliar-case fallback" : `"${branch}" branch`;
+      problems.push(`${type} "${id}" ${name} must reach a planner before a human decision, action or terminal log`);
+    }
+  }
 
   for (const id of gates) {
     const c = byId.get(id)!.config;
@@ -487,6 +554,10 @@ export async function buildFlow(description: string, models: Models): Promise<Bu
       usage.push(res.usage);
       output = res.output;
     } catch (err) {
+      if (attempt === 0 && err instanceof Error && /Failed to parse structured output|stop_reason: max_tokens/.test(err.message)) {
+        user = `${brief}\n\nThe previous reply could not be parsed or was truncated. Return a compact flow with at most three broad topic branches, each with a planner and safety gate, including other. Missing details and reviewer flags should feed a planner through one unlabelled edge rather than duplicate its full subtree. Keep every safety boundary and case log. Do not attempt to reproduce a large tree.`;
+        continue;
+      }
       return { ok: false, problems: [`model call failed: ${err instanceof Error ? err.message : String(err)}`], usage };
     }
     const parsed = Draft.safeParse(output);

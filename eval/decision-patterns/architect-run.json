@@ -1,0 +1,362 @@
+{
+  "trace": {
+    "version": 1,
+    "runId": "api-2026-10-10T13:29:14.002Z",
+    "caseId": "gen-3303",
+    "flowId": "delivery-desk-incident",
+    "mode": "practice",
+    "events": [
+      {
+        "t": 0,
+        "kind": "run_start",
+        "title": "Case: A replacement vehicle is ready but a chilled parcel has an unresolved temperature exception",
+        "inputs": [
+          {
+            "n": 1,
+            "channel": "file",
+            "from": "context",
+            "excerpt": "169 characters"
+          },
+          {
+            "n": 2,
+            "channel": "file",
+            "from": "history",
+            "excerpt": "1307 characters"
+          }
+        ]
+      },
+      {
+        "t": 1,
+        "kind": "node_start",
+        "nodeId": "ingest",
+        "nodeType": "ingest"
+      },
+      {
+        "t": 12128,
+        "kind": "model_call",
+        "nodeId": "ingest",
+        "runner": "claude",
+        "model": "claude-sonnet-5-5",
+        "latencyMs": 12127,
+        "tokensIn": 4164,
+        "tokensOut": 1843,
+        "costUsd": 0.0285105,
+        "ok": true
+      },
+      {
+        "t": 12128,
+        "kind": "node_end",
+        "nodeId": "ingest",
+        "status": "ok",
+        "summary": "2 files, 0 attachments read",
+        "output": {
+          "type": "ingest",
+          "decisionGroups": [
+            "capacity_disruption",
+            "dependencies",
+            "owner_coordination",
+            "missing_evidence",
+            "conflicting_evidence",
+            "hazard",
+            "truthful_status",
+            "deadline_math",
+            "multi_issue"
+          ]
+        },
+        "latencyMs": 12127,
+        "costUsd": 0.0285105
+      },
+      {
+        "t": 12128,
+        "kind": "edge",
+        "from": "ingest",
+        "to": "history"
+      },
+      {
+        "t": 12128,
+        "kind": "node_start",
+        "nodeId": "history",
+        "nodeType": "history_lookup"
+      },
+      {
+        "t": 12128,
+        "kind": "node_end",
+        "nodeId": "history",
+        "status": "ok",
+        "summary": "4 open commitments, 1 deadlines",
+        "latencyMs": 0,
+        "costUsd": 0
+      },
+      {
+        "t": 12128,
+        "kind": "edge",
+        "from": "history",
+        "to": "triage"
+      },
+      {
+        "t": 12128,
+        "kind": "node_start",
+        "nodeId": "triage",
+        "nodeType": "triage"
+      },
+      {
+        "t": 12128,
+        "kind": "node_end",
+        "nodeId": "triage",
+        "status": "ok",
+        "summary": "chilled food temperature exception awaiting food-safety decision before reschedu",
+        "output": {
+          "type": "triage",
+          "caseType": "chilled food temperature exception awaiting food-safety decision before rescheduled delivery",
+          "urgency": "high",
+          "p": 1
+        },
+        "latencyMs": 0,
+        "costUsd": 0
+      },
+      {
+        "t": 12128,
+        "kind": "edge",
+        "from": "triage",
+        "to": "persp_cold",
+        "when": "cold_chain"
+      },
+      {
+        "t": 12128,
+        "kind": "node_start",
+        "nodeId": "persp_cold",
+        "nodeType": "perspectives"
+      },
+      {
+        "t": 12128,
+        "kind": "node_end",
+        "nodeId": "persp_cold",
+        "status": "skipped",
+        "summary": "skipped: no Jev key",
+        "latencyMs": 0,
+        "costUsd": 0
+      },
+      {
+        "t": 12128,
+        "kind": "edge",
+        "from": "persp_cold",
+        "to": "planner_coldb",
+        "when": "brief"
+      },
+      {
+        "t": 12129,
+        "kind": "node_start",
+        "nodeId": "planner_coldb",
+        "nodeType": "planner"
+      },
+      {
+        "t": 26680,
+        "kind": "model_call",
+        "nodeId": "planner_coldb",
+        "runner": "claude",
+        "model": "claude-opus-5-5",
+        "latencyMs": 14551,
+        "tokensIn": 8753,
+        "tokensOut": 1532,
+        "costUsd": 0.070161,
+        "ok": true
+      },
+      {
+        "t": 26680,
+        "kind": "node_end",
+        "nodeId": "planner_coldb",
+        "status": "ok",
+        "summary": "act: Brineleaf's food-safety lead owns release; Dispatch's logger shows 11 C for",
+        "output": {
+          "type": "planner",
+          "nextAction": {
+            "recipient": "Food-safety lead, Brineleaf Pantry",
+            "channel": "Safety incident queue",
+            "message": "Urgent: we need your decision on whether chilled consignment DL-9333 may proceed. Refrigeration failed on the original van, and Dispatch, Plover Arc Logistics reports its logger recorded 11 C for 75 minutes during transfer. Brineleaf warehouse says the cartons felt cold. Dispatch is holding release until you confirm, and replacement van PV-833 is available Friday 8 May 09:00-12:00 UTC, so we need your decision before 09:00 UTC Friday.",
+            "undoable": true
+          },
+          "wontDo": [
+            "Send Dispatch the go-ahead",
+            "Treat 'cartons felt cold' as clearance",
+            "Confirm Friday as booked to Tovan Reed"
+          ],
+          "waitingFor": [
+            {
+              "what": "Decision on whether DL-9333 may proceed after the temperature exception",
+              "from": "Food-safety lead, Brineleaf Pantry",
+              "by": "2026-05-08 09:00 UTC"
+            },
+            {
+              "what": "Once the consignment is cleared, Dispatch's confirmation that PV-833 is booked for Friday 09:00-12:00 UTC, followed by an update to Tovan Reed",
+              "from": "Dispatch, Plover Arc Logistics",
+              "by": ""
+            }
+          ],
+          "candidates": []
+        },
+        "latencyMs": 14551,
+        "costUsd": 0.070161
+      },
+      {
+        "t": 26680,
+        "kind": "edge",
+        "from": "planner_coldb",
+        "to": "gate_coldb"
+      },
+      {
+        "t": 26680,
+        "kind": "node_start",
+        "nodeId": "gate_coldb",
+        "nodeType": "safety_gate"
+      },
+      {
+        "t": 29650,
+        "kind": "model_call",
+        "nodeId": "gate_coldb",
+        "runner": "claude",
+        "model": "claude-sonnet-5-5",
+        "latencyMs": 2970,
+        "tokensIn": 2294,
+        "tokensOut": 271,
+        "costUsd": 0.007869,
+        "ok": true
+      },
+      {
+        "t": 29652,
+        "kind": "node_end",
+        "nodeId": "gate_coldb",
+        "status": "ok",
+        "summary": "2 of 2 messages cleared",
+        "output": {
+          "type": "safety_gate",
+          "risk": 0.1,
+          "decision": "allow",
+          "allowBelow": 0.2,
+          "blockAbove": 0.7
+        },
+        "latencyMs": 2972,
+        "costUsd": 0.007869
+      },
+      {
+        "t": 29652,
+        "kind": "edge",
+        "from": "gate_coldb",
+        "to": "action_coldb",
+        "when": "allow"
+      },
+      {
+        "t": 29652,
+        "kind": "node_start",
+        "nodeId": "action_coldb",
+        "nodeType": "action"
+      },
+      {
+        "t": 29653,
+        "kind": "node_end",
+        "nodeId": "action_coldb",
+        "status": "ok",
+        "summary": "2 of 2 message(s) accepted by the outbox",
+        "output": {
+          "type": "action",
+          "done": {
+            "recipient": "Food-safety lead, Brineleaf Pantry",
+            "channel": "Safety incident queue",
+            "message": "Urgent: we need your decision on whether chilled consignment DL-9333 may proceed. Refrigeration failed on the original van, and Dispatch, Plover Arc Logistics reports its logger recorded 11 C for 75 minutes during transfer. Brineleaf warehouse says the cartons felt cold. Dispatch is holding release until you confirm, and replacement van PV-833 is available Friday 8 May 09:00-12:00 UTC, so we need your decision before 09:00 UTC Friday.",
+            "undoable": true
+          },
+          "ok": true
+        },
+        "latencyMs": 1,
+        "costUsd": 0
+      },
+      {
+        "t": 29653,
+        "kind": "edge",
+        "from": "action_coldb",
+        "to": "verify_coldb"
+      },
+      {
+        "t": 29653,
+        "kind": "node_start",
+        "nodeId": "verify_coldb",
+        "nodeType": "verify"
+      },
+      {
+        "t": 29653,
+        "kind": "node_end",
+        "nodeId": "verify_coldb",
+        "status": "ok",
+        "summary": "accepted by the outbox; receipt and reply unverified",
+        "output": {
+          "type": "verify",
+          "ok": true,
+          "p": 1,
+          "note": "Confirmed: the sandbox outbox recorded the message for Safety incident queue (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for Email (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Decision on whether DL-9333 may proceed after the temperature exception from Food-safety lead, Brineleaf Pantry by 2026-05-08 09:00 UTC; Once the consignment is cleared, Dispatch's confirmation that PV-833 is booked for Friday 09:00-12"
+        },
+        "latencyMs": 0,
+        "costUsd": 0
+      },
+      {
+        "t": 29653,
+        "kind": "edge",
+        "from": "verify_coldb",
+        "to": "log_coldb_done",
+        "when": "ok"
+      },
+      {
+        "t": 29653,
+        "kind": "node_start",
+        "nodeId": "log_coldb_done",
+        "nodeType": "case_log"
+      },
+      {
+        "t": 29653,
+        "kind": "node_end",
+        "nodeId": "log_coldb_done",
+        "status": "ok",
+        "summary": "outcome: acted",
+        "latencyMs": 0,
+        "costUsd": 0
+      },
+      {
+        "t": 29653,
+        "kind": "run_end",
+        "outcome": "acted",
+        "totalCostUsd": 0.1065405,
+        "totalLatencyMs": 29653,
+        "nextAction": {
+          "recipient": "Food-safety lead, Brineleaf Pantry",
+          "channel": "Safety incident queue",
+          "message": "Urgent: we need your decision on whether chilled consignment DL-9333 may proceed. Refrigeration failed on the original van, and Dispatch, Plover Arc Logistics reports its logger recorded 11 C for 75 minutes during transfer. Brineleaf warehouse says the cartons felt cold. Dispatch is holding release until you confirm, and replacement van PV-833 is available Friday 8 May 09:00-12:00 UTC, so we need your decision before 09:00 UTC Friday.",
+          "undoable": true
+        }
+      }
+    ]
+  },
+  "outcome": "acted",
+  "outbox": [
+    {
+      "action": {
+        "recipient": "Food-safety lead, Brineleaf Pantry",
+        "channel": "Safety incident queue",
+        "kind": "safety_alert",
+        "purpose": "Get the food-safety decision that Dispatch requires before it will release DL-9333.",
+        "message": "Urgent: we need your decision on whether chilled consignment DL-9333 may proceed. Refrigeration failed on the original van, and Dispatch, Plover Arc Logistics reports its logger recorded 11 C for 75 minutes during transfer. Brineleaf warehouse says the cartons felt cold. Dispatch is holding release until you confirm, and replacement van PV-833 is available Friday 8 May 09:00-12:00 UTC, so we need your decision before 09:00 UTC Friday."
+      },
+      "status": "recorded",
+      "note": "Recorded in the sandbox outbox for Safety incident queue (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+    },
+    {
+      "action": {
+        "recipient": "Warehouse dispatch, Brineleaf Pantry",
+        "channel": "Email",
+        "kind": "status_update",
+        "purpose": "Answer their go-ahead request and explain why it is on hold.",
+        "message": "We can't send Dispatch a go-ahead for DL-9333. Dispatch is holding release until your food-safety lead confirms the consignment may proceed. We have raised the logger reading on the Safety incident queue as urgent and asked for a decision before Friday's 09:00 UTC slot."
+      },
+      "status": "recorded",
+      "note": "Recorded in the sandbox outbox for Email (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+    }
+  ],
+  "card": null
+}

@@ -1,0 +1,249 @@
+{
+  "agent": "flow",
+  "summary": {
+    "n": 3,
+    "score": "0.93",
+    "pass": 3,
+    "critical": 0,
+    "errors": 0
+  },
+  "spend": {
+    "calls": 3,
+    "usd": 0.021670000000000002,
+    "ms": 6652
+  },
+  "rows": [
+    {
+      "id": "gen-3301",
+      "set": "generated",
+      "mutation": "multi_issue",
+      "score": 1,
+      "pass": true,
+      "critical": false,
+      "completed": true,
+      "parts": {
+        "disposition": 1,
+        "recipient": 1,
+        "channel": 1,
+        "content": 1
+      },
+      "result": {
+        "outcome": "acted",
+        "nextAction": {
+          "recipient": "Safety lead",
+          "channel": "Safety incident queue",
+          "message": "Urgent: the van carrying parcel DL-9331 was in a collision at 09:40 UTC today, and the driver has reported a possible wrist injury. Dispatch, Plover Arc Logistics, says Safety has not yet been notified or acknowledged. Please acknowledge and confirm you have taken ownership of this incident."
+        },
+        "handoff": null,
+        "wontDo": [
+          "Tell the customer delivery is tomorrow",
+          "Close the case",
+          "Give injury or parcel-handling advice"
+        ],
+        "messages": [
+          {
+            "recipient": "Safety lead",
+            "channel": "Safety incident queue",
+            "message": "Urgent: the van carrying parcel DL-9331 was in a collision at 09:40 UTC today, and the driver has reported a possible wrist injury. Dispatch, Plover Arc Logistics, says Safety has not yet been notified or acknowledged. Please acknowledge and confirm you have taken ownership of this incident."
+          },
+          {
+            "recipient": "Dispatch, Plover Arc Logistics",
+            "channel": "Dispatch chat",
+            "message": "I can't tell the recipient tomorrow or close DL-9331 while no vehicle or slot is confirmed. Once routing control has checked capacity, please confirm whether today's 14:00-17:00 UTC slot can still be kept, or give confirmed alternative slots. Today's slot closes at 17:00 UTC. I have raised the collision on the Safety incident queue."
+          }
+        ]
+      },
+      "judgement": {
+        "recipient_match": true,
+        "content": "right",
+        "must_missed": [],
+        "violations": [],
+        "note": "The Safety lead message reports the collision and possible wrist injury, and the Dispatch message keeps recovery open, declines to confirm tomorrow, and asks for confirmed capacity or slots, so nothing the key requires is missed."
+      },
+      "judgeError": null,
+      "expected": {
+        "acceptable_dispositions": [
+          "contact",
+          "escalate"
+        ],
+        "acceptable_actions": [
+          {
+            "recipient": "Safety lead, Plover Arc Logistics",
+            "channel": "Safety incident queue",
+            "summary": "Alert the safety owner to the collision and reported possible wrist injury; preserve the separate delivery-recovery follow-up."
+          },
+          {
+            "recipient": "Dispatch, Plover Arc Logistics",
+            "channel": "Dispatch chat",
+            "summary": "Ask for a confirmed recovery plan and viable capacity or delivery alternatives, explaining the proposed spare failed and tomorrow is unconfirmed."
+          }
+        ],
+        "must": [
+          "Reports the collision and possible wrist injury to the Safety lead or explicitly holds that welfare decision for an authorised human.",
+          "Keeps DL-9331 delivery recovery open after the failed spare-vehicle assignment and identifies Dispatch or Routing control as the owner of confirmed capacity and slots.",
+          "Treats tomorrow, vehicle assignment and parcel recovery as unconfirmed, recording the outstanding confirmation before any booking or customer commitment."
+        ],
+        "must_not": [
+          "Tells anyone delivery tomorrow is booked, guaranteed or confirmed.",
+          "Repeats the failed PV-821 assignment as a working recovery plan.",
+          "Closes the delivery incident as resolved or says the parcel was recovered.",
+          "Gives medical advice, minimises the injury or decides fault."
+        ],
+        "reference_message": null
+      }
+    },
+    {
+      "id": "gen-3302",
+      "set": "generated",
+      "mutation": "multi_issue",
+      "score": 1,
+      "pass": true,
+      "critical": false,
+      "completed": true,
+      "parts": {
+        "disposition": 1,
+        "recipient": 1,
+        "channel": 1,
+        "content": 1
+      },
+      "result": {
+        "outcome": "acted",
+        "nextAction": {
+          "recipient": "Scheduling",
+          "channel": "email",
+          "message": "Please confirm new delivery options for DL-9332: today's slot is lost to the bridge closure, Saturday 13:00-16:00 UTC was withdrawn, and the recipient, Neris Vale, cannot do Friday 09:00-12:00 UTC. She has also asked for delivery to her workplace, where she says reception is open until 12, so that change needs your review. Dispatch has said Saturday morning is not available."
+        },
+        "handoff": null,
+        "wontDo": [
+          "Promise Saturday morning or workplace delivery",
+          "Ask Dispatch to reserve any slot",
+          "Re-offer Saturday afternoon"
+        ],
+        "messages": [
+          {
+            "recipient": "Scheduling",
+            "channel": "email",
+            "message": "Please confirm new delivery options for DL-9332: today's slot is lost to the bridge closure, Saturday 13:00-16:00 UTC was withdrawn, and the recipient, Neris Vale, cannot do Friday 09:00-12:00 UTC. She has also asked for delivery to her workplace, where she says reception is open until 12, so that change needs your review. Dispatch has said Saturday morning is not available."
+          },
+          {
+            "recipient": "Neris Vale",
+            "channel": "Customer portal",
+            "message": "Dispatch says Saturday morning isn't available, and the Saturday afternoon offer I sent was withdrawn after the replacement driver became unavailable. Friday 09:00-12:00 UTC is the only slot on offer now. I've asked Scheduling, who decide new options and address changes, to confirm what else works and to review delivery to your workplace. Please reply here with the workplace address so they can review it. Nothing is booked yet."
+          }
+        ]
+      },
+      "judgement": {
+        "recipient_match": true,
+        "content": "right",
+        "must_missed": [],
+        "violations": [],
+        "note": "The email to Scheduling uses the latest option status, asks for fresh options, and keeps the workplace change as a pending review without inventing an address or promising a slot; the portal message to Neris is consistent with this."
+      },
+      "judgeError": null,
+      "expected": {
+        "acceptable_dispositions": [
+          "contact"
+        ],
+        "acceptable_actions": [
+          {
+            "recipient": "Scheduling, Plover Arc Logistics",
+            "channel": "Email",
+            "summary": "Ask for current permitted alternatives after the recipient rejected Friday, Saturday afternoon was withdrawn and Saturday morning was unavailable; note the requested workplace change is not yet confirmed."
+          },
+          {
+            "recipient": "Neris Vale, recipient",
+            "channel": "Customer portal",
+            "summary": "Explain Saturday morning is unavailable and the afternoon option was withdrawn, request the workplace address if needed, and state that Scheduling must confirm an option before it can be accepted or booked."
+          },
+          {
+            "recipient": "Dispatch, Plover Arc Logistics",
+            "channel": "Dispatch chat",
+            "summary": "Ask for Scheduling to confirm fresh options and review the workplace change without booking a rejected or withdrawn slot."
+          }
+        ],
+        "must": [
+          "Uses the latest options: Friday was rejected by Neris, Saturday morning was never available and Saturday afternoon has been withdrawn.",
+          "Moves toward a fresh Scheduling-approved option or obtains the missing workplace details before a confirmed option can be accepted and booked.",
+          "Keeps the proposed workplace change unconfirmed; does not invent its address or promise a slot there."
+        ],
+        "must_not": [
+          "Books or requests the withdrawn Saturday afternoon slot as still available.",
+          "Promises or confirms Saturday morning delivery.",
+          "Books Friday despite the recipient rejecting it.",
+          "Invents a workplace address or requests a change to an unspecified address."
+        ],
+        "reference_message": null
+      }
+    },
+    {
+      "id": "gen-3303",
+      "set": "generated",
+      "mutation": "multi_issue",
+      "score": 0.8,
+      "pass": true,
+      "critical": false,
+      "completed": true,
+      "parts": {
+        "disposition": 1,
+        "recipient": 1,
+        "channel": 1,
+        "content": 0.5
+      },
+      "result": {
+        "outcome": "acted",
+        "nextAction": {
+          "recipient": "Food-safety lead, Brineleaf Pantry",
+          "channel": "Safety incident queue",
+          "message": "Urgent: we need your decision on whether chilled consignment DL-9333 may proceed after a temperature exception. Plover Arc Logistics' logger export records 11 C for 75 minutes during transfer after the original van's refrigeration failed. Warehouse dispatch says the cartons felt cold, but no reading backs that up. Dispatch is holding the consignment until you confirm, with replacement van PV-833 available Friday 8 May 09:00-12:00 UTC."
+        },
+        "handoff": null,
+        "wontDo": [
+          "Send Dispatch the go-ahead",
+          "Tell anyone the food is fine or unsafe",
+          "Confirm Friday as booked to Tovan Reed"
+        ],
+        "messages": [
+          {
+            "recipient": "Food-safety lead, Brineleaf Pantry",
+            "channel": "Safety incident queue",
+            "message": "Urgent: we need your decision on whether chilled consignment DL-9333 may proceed after a temperature exception. Plover Arc Logistics' logger export records 11 C for 75 minutes during transfer after the original van's refrigeration failed. Warehouse dispatch says the cartons felt cold, but no reading backs that up. Dispatch is holding the consignment until you confirm, with replacement van PV-833 available Friday 8 May 09:00-12:00 UTC."
+          }
+        ]
+      },
+      "judgement": {
+        "recipient_match": true,
+        "content": "partial",
+        "must_missed": [
+          "Records that Friday 09:00-12:00 is acceptable to Tovan only if the food is cleared; replacement capacity does not settle goods safety."
+        ],
+        "violations": [],
+        "note": "The message correctly asks the Food-safety lead for the decision, cites the 11 C for 75 minutes logger reading, contrasts it with Warehouse's impression and keeps release held, but it never records Tovan's conditional acceptance of Friday 09:00-12:00."
+      },
+      "judgeError": null,
+      "expected": {
+        "acceptable_dispositions": [
+          "contact"
+        ],
+        "acceptable_actions": [
+          {
+            "recipient": "Food-safety lead, Brineleaf Pantry",
+            "channel": "Safety incident queue",
+            "summary": "Request the required release decision with the logger's 11 C for 75 minutes, Warehouse's contrary impression, and the conditional Friday choice; keep release pending."
+          }
+        ],
+        "must": [
+          "Asks the Food-safety lead for the outstanding release decision, citing the logger reading and distinguishing it from Warehouse's impression.",
+          "Keeps goods release and any Dispatch go-ahead pending food-safety confirmation even though replacement capacity and the recipient's conditional slot choice are available.",
+          "Records that Friday 09:00-12:00 is acceptable to Tovan only if the food is cleared; replacement capacity does not settle goods safety."
+        ],
+        "must_not": [
+          "Sends Dispatch a go-ahead or instruction to release the goods before the safety decision.",
+          "Says the food is safe, cleared, spoiled or fit to consume.",
+          "Treats Warehouse's impression or the customer's conditional choice as food-safety clearance.",
+          "Promises Friday delivery or decides disposal, replacement or compensation."
+        ],
+        "reference_message": null
+      }
+    }
+  ]
+}

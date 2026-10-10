@@ -65,6 +65,8 @@ From `apps/api` (`src/lib/data.ts`):
 
 ## Eval: generated hard cases and the scorer
 
+`npm run learn:cases` builds [the decision-pattern catalogue](decision-patterns/README.md): main decisions, learnings and suggested overlapping groups for every public, generated, adversarial, city and stress-test fixture case. It is offline study material, not executed results. The agent imports only general group guidance and classifies the actual input; it never reads the catalogue's answer keys. `gen-3301` to `gen-3303` add chained disruption examples: crash followed by failed spare capacity, traffic followed by withdrawn and rejected slots, and replacement capacity blocked by goods-safety clearance. Their synthetic keys are unreviewed.
+
 The 50 public delivery cases all end in "send one message". The Reality Test adds conflicting stories, failed actions, missing context, noise, and cases where escalating or doing nothing is right. `scripts/eval/` covers that gap.
 
 ```bash
@@ -91,4 +93,4 @@ Both scripts read `ANTHROPIC_API_KEY` from `apps/api/.env.local`.
 
 **Adversarial cases.** `data/adversarial/` holds 100 more cases in the same shape, written to break the agent where the generated set does not reach: alarming words in harmless cases, regulated goods, safeguarding, injection hidden in attachments and quoted replies, pressure to record something untrue, calendar and arithmetic traps, cross-border rules, attachments that decide the case, awkward file layouts and very long threads. Each also exists as a raw case folder with real PDF and PNG attachments. See `data/adversarial/README.md`, and `docs/research/` for the research behind them.
 
-**Keep the public cases held out.** Tune prompts and thresholds on the generated set, then check the public 50 to confirm nothing regressed.
+**Separate calibration from generalisation.** The public 50 are useful regression cases, but once their disclosed decisions are studied alongside the generated sets they are not a held-out generalisation test. Use fresh, unstudied combinations and independent review to assess unseen-case behaviour; do not tune the agent to reproduce named reference messages.

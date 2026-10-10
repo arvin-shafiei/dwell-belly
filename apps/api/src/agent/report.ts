@@ -2,6 +2,7 @@
 // edited by hand. Wording is deliberate: a message in the sandbox outbox is "recorded", never
 // "sent and confirmed", because no live system is connected.
 import type { RunResult } from "./run.ts";
+import { decisionGroupNames } from "./decision-patterns.ts";
 
 const DECISION_LABEL: Record<string, string> = {
   acted: "ACT",
@@ -106,6 +107,8 @@ export function renderReasoning(r: RunResult): string {
 
   if (u) {
     lines.push("", u.summary, "", `Our role: ${u.our_role}`, `Case type: ${u.case_type}. Urgency: ${u.urgency}.`);
+    const groups = decisionGroupNames(u.decision_groups);
+    if (groups.length) lines.push(`Decision patterns identified: ${groups.join("; ")}.`);
     lines.push("", "## 2. Facts and claims", "| Source | Statement | Basis |", "|---|---|---|",
       ...u.claims.map((c) => `| ${cell(c.who)} | ${cell(c.says)} | ${c.basis.replaceAll("_", " ")} |`));
     lines.push("", "## 3. Commitments so far", u.commitments.length

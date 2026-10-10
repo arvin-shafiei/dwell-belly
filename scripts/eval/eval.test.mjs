@@ -77,6 +77,18 @@ test("traceToResult rejects a trace that never finished", () => {
   assert.throws(() => traceToResult({ events: [{ kind: "run_start" }] }), /no run_end/);
 });
 
+test("trace evaluation retains overlapping groups and pending prerequisites without turning waits into actions", () => {
+  const waitingFor = [{ what: "Food-safety clearance before Dispatch may release", from: "Food-safety lead", by: "" }];
+  const result = traceToResult({ events: [
+    { kind: "node_end", output: { type: "ingest", decisionGroups: ["capacity_disruption", "dependencies", "hazard"] } },
+    { kind: "node_end", output: { type: "planner", wontDo: ["Release before clearance"], waitingFor } },
+    { kind: "run_end", outcome: "asked_for_info" },
+  ] });
+  assert.deepEqual(result.decisionGroups, ["capacity_disruption", "dependencies", "hazard"]);
+  assert.deepEqual(result.waitingFor, waitingFor);
+  assert.equal(result.nextAction, null);
+});
+
 const draft = (over = {}) => ({
   events: [
     { n: 1, timestamp: "2026-03-01T09:00:00Z", stage: "Context", channel: "Email", from: "a", to: "b", body: "x" },

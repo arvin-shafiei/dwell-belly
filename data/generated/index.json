@@ -2938,5 +2938,42 @@
     "seed_case": null,
     "grounding": "seed-web-126",
     "file": "generated/delivery/gen-3210.json"
+  },
+  {
+    "id": "gen-3301",
+    "mutation": "multi_issue",
+    "title": "Case: A roadside collision and failed replacement threaten an afternoon delivery",
+    "events": 4,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": null,
+    "file": "generated/delivery/gen-3301.json"
+  },
+  {
+    "id": "gen-3302",
+    "mutation": "multi_issue",
+    "title": "Case: A traffic delay changes the delivery options before the recipient replies",
+    "events": 4,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": null,
+    "file": "generated/delivery/gen-3302.json"
+  },
+  {
+    "id": "gen-3303",
+    "mutation": "multi_issue",
+    "title": "Case: A replacement vehicle is ready but a chilled parcel has an unresolved temperature exception",
+    "events": 4,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": null,
+    "file": "generated/delivery/gen-3303.json"
   }
 ]

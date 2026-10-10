@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DECISION_GROUP_IDS } from "./decision-patterns.ts";
 
 /** Everything the agent may read about one case. Built by load.ts from a folder or a parsed view. */
 export interface CaseBundle {
@@ -16,6 +17,8 @@ export interface CaseBundle {
 export const Understanding = z.object({
   summary: z.string().describe("At most two short sentences: what happened and what is being asked of the desk now. Written so someone who has not seen the case understands it."),
   case_type: z.string(),
+  decision_groups: z.array(z.enum(DECISION_GROUP_IDS)).optional().describe(
+    "Every applicable decision pattern, chosen from the actual evidence. Several groups may overlap; include unfamiliar when no standard pattern settles the case. These labels guide reasoning, never authorise an action. Optional for compatibility with earlier saved analyses."),
   urgency: z.enum(["low", "medium", "high"]),
   our_role: z.string().describe("Who 'we' are in this case and what we do and do not control, from the case itself."),
   parties: z.array(z.object({
