@@ -11,6 +11,7 @@ import {
   Badge, Button, EmptyState, ErrorState, HeaderActions, IconPlay, Panel, SimulatedBadge, Skeleton, cx,
   formatDuration, useConsole,
 } from "../ui";
+import { DownloadResultsButton, EvidencePackButton } from "../export/Buttons";
 import { useEvidence } from "../useApi";
 import {
   PRACTICE_SET, byPattern, headline, normalizeRow, scorecard, segments, setLabel, strength, tableRows, why, words,
@@ -247,6 +248,10 @@ export default function EvidenceGrid() {
         {/* 1. Big honest numbers */}
         <div className={cx("grid gap-3", tiles.length === 5 ? "grid-cols-2 lg:grid-cols-5" : "grid-cols-2 lg:grid-cols-4")}>
           {tiles.map((t) => <Big key={t.label} {...t} />)}
+        </div>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <DownloadResultsButton />
+          <EvidencePackButton />
         </div>
         {top.run === 0 ? (
           <p className="text-[14px] text-white/60">Nothing has been run yet. Press <span className="text-white/85">Run more</span> to start.</p>
