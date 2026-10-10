@@ -130,8 +130,8 @@ test("a model failure becomes an error outcome with an honest answer, not a thro
   assert.equal(r.trace.events.at(-1)?.kind, "run_end");
 });
 
-test("a failed critic call leaves the message unchecked, so it is held, not sent", async () => {
-  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [] }] })));
+test("a critic that twice returns no usable scores leaves the message unchecked, so it is held, not sent", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [] }, { actions: [] }] })));
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
 });
 
@@ -191,9 +191,15 @@ test("a panel that throws is skipped and the case still completes", async () => 
   assert.equal(r.panel?.ok, false);
 });
 
-test("critic scores with the wrong index are not trusted: the message is held", async () => {
-  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [{ ...scores(0), index: 3 }] }] })));
-  assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
+test("critic scores numbered from 1 are matched by order, and the wrong number of scores is not trusted", async () => {
+  const oneBased = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [{ ...scores(0), index: 1 }] }] })));
+  assert.deepEqual(oneBased.outbox.map((o) => o.status), ["recorded"]);
+  const two = { actions: [scores(0), { ...scores(0), index: 1 }] };
+  const tooMany = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [two, two] })));
+  assert.deepEqual(tooMany.outbox.map((o) => o.status), ["held_for_human"]);
+  const recovered = fake({ understand: [understanding], decide: [decision], critic: [two, { actions: [scores(0)] }] });
+  assert.deepEqual((await runCase(bundle, opts(recovered))).outbox.map((o) => o.status), ["recorded"]);
+  assert.deepEqual(recovered.calls, ["understand", "decide", "critic", "critic"]);
 });
 
 test("deciding to act with nothing to send goes to a human, not 'no action needed'", async () => {

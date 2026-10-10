@@ -176,7 +176,7 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
   ].filter(Boolean).join("\n\n");
 
   rec.begin("planner", "planner");
-  let decided = await models.structured({ system: DECIDE_SYSTEM, user: brief, schema: Decision, media: bundle.media });
+  let decided = await models.structured({ system: DECIDE_SYSTEM, user: brief, schema: Decision, media: bundle.media, tier: "strong" });
   rec.call("claude", decided.usage);
   let d = decided.output;
 
@@ -190,7 +190,12 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
       `<outgoing_messages>\n${JSON.stringify(actions.map((a, index) => ({ index, to: a.recipient, channel: a.channel, message: a.message })), null, 1)}\n</outgoing_messages>`;
     const res = await models.structured({ system: CRITIC_SYSTEM, user, schema: Critique, media: bundle.media, effort: "low" });
     rec.call("claude", res.usage);
-    return res.output;
+    if (res.output.actions.length === actions.length) return res.output;
+    // The wrong number of scores cannot be matched to messages. Ask once more on the stronger model
+    // before giving up; an unmatched reply leaves every message held for a person.
+    const again = await models.structured({ system: CRITIC_SYSTEM, user: `${user}\n\nReturn exactly ${actions.length} entries in "actions", one per outgoing message, with index 0 to ${actions.length - 1}.`, schema: Critique, media: bundle.media, effort: "low", tier: "strong" });
+    rec.call("claude", again.usage);
+    return again.output;
   };
 
   const planned = () => (d.decision_type === "wait_no_action" ? [] : d.actions);
@@ -209,6 +214,7 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
       user: `${brief}\n\n<gate_objections>\nYour previous messages were stopped by the safety check:\n${feedback}\nRewrite so each message stays within the desk's role, or drop it and escalate that part.\n</gate_objections>`,
       schema: Decision,
       media: bundle.media,
+      tier: "strong",
     });
     rec.call("claude", decided.usage);
     d = decided.output;

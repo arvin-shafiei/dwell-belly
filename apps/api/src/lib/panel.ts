@@ -82,7 +82,11 @@ export const SORTING_SEATS: Seat[] = [
       },
       legal_or_public: {
         type: "noul",
-        instructions: "Does any message threaten or mention legal action, a solicitor, a regulator, an ombudsman, the police or the press?",
+        instructions: "Has formal legal, regulatory, police or press action actually been started or formally notified in this case?",
+        criteria: {
+          true: "A solicitor's letter, a court or tribunal claim, a regulator or ombudsman complaint reference, a police request, or a journalist asking for comment",
+          false: "Anger, a threat to leave a bad review, a card dispute or chargeback with a bank, or a vague threat to take it further, with nothing formal started",
+        },
       },
     },
   },

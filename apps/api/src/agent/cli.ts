@@ -9,7 +9,7 @@ import { runPanel } from "../lib/panel.ts";
 import { historyStore, record } from "./history.ts";
 import * as judge from "./judge.ts";
 import { loadFolder } from "./load.ts";
-import { claude } from "./models.ts";
+import { chosenModels, claude } from "./models.ts";
 import { renderAnswer, renderReasoning } from "./report.ts";
 import { runCase } from "./run.ts";
 import { findTools } from "./tools.ts";
@@ -40,7 +40,8 @@ async function main() {
   }
 
   const flow: Flow = JSON.parse(await readFile(FLOW_FILE, "utf8"));
-  const models = claude();
+  const chosen = chosenModels();
+  const models = claude(undefined, chosen);
   const jev = Boolean(process.env.TYPESAFE_API_KEY);
   const panel = jev ? runPanel : undefined;
   const quick = jev ? judge : undefined;
@@ -51,7 +52,7 @@ async function main() {
     .sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
   if (names.length === 0) throw new Error(`No case folders found in ${casesDir}`);
   await mkdir(outDir, { recursive: true });
-  console.log(`${names.length} cases, ${values.concurrency} at a time, mode ${mode}, Jev panel ${panel ? "on" : "off (no key)"}`);
+  console.log(`${names.length} cases, ${values.concurrency} at a time, mode ${mode}, deciding on ${chosen.strong}, reading and checking on ${chosen.fast}, Jev ${panel ? "on" : "off (no key)"}`);
 
   const store = historyStore(path.join(outDir, "case-history.jsonl"));
   const lines = new Map<string, string>();

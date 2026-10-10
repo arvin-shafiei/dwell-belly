@@ -65,6 +65,8 @@ Also in `apps/api/src/agent/`:
 | `architect.ts`, `selftest.ts` | Builds a flow from a business description and validates it; runs generated cases through a flow | `POST /api/architect` |
 | `watch.ts`, `replan.ts` | Order-event checks and greedy drop reassignment, on events the caller supplies (the practice data has no order stream) | `POST /api/watch`. Replan is a greedy heuristic, not an optimiser |
 
+Models: the deciding step runs on `claude-opus-5-5`; reading the case and checking the drafts run on `claude-sonnet-5-5` at half the price. Override with `AGENT_MODEL` and `AGENT_FAST_MODEL`. Keys are read from `.env.local` at the repo root or `apps/api/.env.local`.
+
 Voice: an event may carry `source` (`live_human`, `simulated_persona`, `audio_attachment`). Events voiced by a simulated persona are dropped from the evidence unless a request sets `mode: "demo"`, so they cannot enter a scored run.
 
 Other scripts: `npm run build`, `npm run lint`, `npm run data` (rebuild parsed cases).
