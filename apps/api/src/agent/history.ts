@@ -4,16 +4,14 @@
 // throws; a disk problem comes back as ok=false and the flow carries on without history.
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Outcome } from "../lib/trace.ts";
 import type { RunResult } from "./run.ts";
 import type { Decision, PlannedAction, Understanding } from "./types.ts";
 
-// import.meta.dirname is undefined once Next bundles this file for a route, and resolving a path
-// from it at load time takes the whole route down. There the server's cwd is apps/api.
-const here: string | undefined = import.meta.dirname;
-export const DEFAULT_STORE_FILE = here
-  ? path.resolve(here, "..", "..", "..", "..", ".case-history", "runs.jsonl")
-  : path.resolve(process.cwd(), "..", "..", ".case-history", "runs.jsonl");
+// Next.js bundles route handlers without import.meta.dirname, so fall back to the module URL.
+const HERE = import.meta.dirname ?? path.dirname(fileURLToPath(import.meta.url));
+export const DEFAULT_STORE_FILE = path.resolve(HERE, "..", "..", "..", "..", ".case-history", "runs.jsonl");
 
 export interface Store { file: string }
 
