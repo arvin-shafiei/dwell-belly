@@ -73,6 +73,9 @@ export function applyCommand(cmd: CityCommand, d: RemoteDeps): boolean {
         case "chase":
           d.chase();
           return true;
+        case "motorcade":
+          d.emit({ type: "request:event", kind: "motorcade" });
+          return true;
         default:
           return false;
       }

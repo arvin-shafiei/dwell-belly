@@ -11,7 +11,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useReviewQueue } from "../../review/useReviewQueue";
 import type { ReviewTask } from "../../review/types";
 import { useEvidence } from "../useApi";
-import { ErrorState, ExecuteButton, HeaderActions, RealBadge } from "../ui";
+import { ErrorState, RealBadge } from "../ui";
 import { homeNumbers, openDecisions } from "../home/logic";
 import Numbers from "../home/Numbers";
 import NeedsYou from "../home/NeedsYou";
@@ -33,10 +33,6 @@ export default function OverviewTab() {
 
   return (
     <div className="h-full overflow-y-auto">
-      <HeaderActions>
-        <ExecuteButton />
-      </HeaderActions>
-
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-8 px-6 py-8">
         <p className="text-[15px] leading-relaxed text-white/60">
           Rivet handles delivery problems: it reads the messages, checks the stories, and sends the right message, or

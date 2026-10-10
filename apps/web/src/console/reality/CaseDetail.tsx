@@ -39,6 +39,7 @@ export default function CaseDetail({ c, onBack }: { c: RealityCase; onBack: () =
   const cost = cents(c.costUsd);
 
   return (
+    <div className="h-full overflow-y-auto">
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 p-6">
       <div>
         <Button variant="ghost" size="sm" icon={<IconChevronLeft size={14} />} onClick={onBack}>
@@ -105,6 +106,7 @@ export default function CaseDetail({ c, onBack }: { c: RealityCase; onBack: () =
           )}
         </div>
       </Panel>
+    </div>
     </div>
   );
 }

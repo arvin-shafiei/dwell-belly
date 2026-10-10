@@ -53,6 +53,7 @@ export default function RealityView() {
   if (open) return <CaseDetail c={open} onBack={() => setParams({ case: null })} />;
 
   return (
+    <div className="h-full overflow-y-auto">
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 p-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
@@ -82,6 +83,7 @@ export default function RealityView() {
           <CaseTable cases={cases.filter((c) => caseStatus(c) !== "working")} onOpen={(id) => setParams({ case: id })} />
         </>
       )}
+    </div>
     </div>
   );
 }
