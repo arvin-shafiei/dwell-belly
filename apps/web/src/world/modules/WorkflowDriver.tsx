@@ -66,12 +66,8 @@ export default function WorkflowDriver() {
 
     const off = on((ev) => {
       switch (ev.type) {
-        case "incident:created":
-          link.incident(ev.incidentId);
-          return;
-        case "delivery:delayed":
-          link.delayed(ev.deliveryId, ev.reason);
-          return;
+        // City-made incidents (crashes, roadworks, late vans) are scenery now: they no longer become
+        // agent cases. Only real cases (practice set, scenarios, console runs) go to the agent.
         case "scenario:staged":
           link.staged(ev);
           return;

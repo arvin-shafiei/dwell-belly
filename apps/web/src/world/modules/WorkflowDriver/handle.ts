@@ -41,6 +41,6 @@ export function restoreQueue(p: PendingRestore) {
 
 function applyRestore(l: CityAgentLink, p: PendingRestore) {
   pending = null;
-  for (const id of p.requeueIncidents) l.incident(id);
+  // Restored incident cases are not re-sent: city incidents are scenery, not agent cases.
   for (const r of p.resume) l.resume(r.executionId, r.label);
 }

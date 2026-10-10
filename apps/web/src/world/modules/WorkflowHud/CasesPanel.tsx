@@ -1,19 +1,18 @@
 "use client";
-// The city's side panel: one "Cases" list (every incident and the case it became, newest first) and,
-// under it, the selected case's run drawn on the playbook with an n8n-style events timeline.
-// Click a case -> the camera flies to its incident and the playbook shows its run. Click a step ->
-// its lines expand. Merge/dedupe and selection rules live in casesModel.ts (unit-tested).
-import { memo, useEffect, useMemo, useState } from "react";
+// The city's side panel: one "Cases" list (real cases only: practice set, scenarios, console runs) and,
+// under it, the selected case's run on the playbook. The playbook view follows the run: the current
+// step is a big card kept centred as the trace advances, earlier steps marked done (green / amber /
+// red). "Show whole path" shows every step. Merge/dedupe rules live in casesModel.ts (unit-tested).
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useWorld, type WorkflowEvent } from "../../store";
-import { loadCityState, type CityRun } from "../../cityState";
+import { loadCityState } from "../../cityState";
 import { traceToTimedEvents } from "../../agentBridge";
-import { getExecution } from "../../../console/workflows/api";
+import { getExecution, listExecutions } from "../../../console/workflows/api";
 import { scrubLeaks } from "../../../ui/plain";
 import { on } from "../../bus";
-import { caseEvents, caseForIncident, CASE_STATE_WORD, mergeCases, resolveSelection, type CaseItem, type CaseState } from "./casesModel";
-import { nodeStatuses, stepName, type NodeStatus } from "./flow";
-import { FlowPicture } from "./MiniFlow";
-import { IncidentIcon, useThrottledWorkflow } from "./parts";
+import { caseEvents, caseForCaseId, CASE_STATE_WORD, currentStep, mergeCases, resolveSelection, runPath, type CaseItem, type CaseState, type PathStep, type RunRow, type SavedRun } from "./casesModel";
+import { stepName, type NodeStatus } from "./flow";
+import { useThrottledWorkflow } from "./parts";
 import { STATUS_COLOR } from "./theme";
 
 const STATE_TONE: Record<CaseState, string> = {
@@ -24,20 +23,26 @@ const STATE_TONE: Record<CaseState, string> = {
   stopped: "bg-rose-500/15 text-rose-200",
 };
 
-/** Feed label -> incident id, remembered from the agent queue (an incident leaves the queue once it starts). */
-const LABEL_INCIDENT: Record<string, string> = {};
-function rememberLabels(queue: readonly { label: string; incidentId?: string }[]) {
-  for (const q of queue) if (q.incidentId) LABEL_INCIDENT[q.label] = q.incidentId;
+/** Case id -> where the city acted it out (scenario:staged), for the camera. */
+const STAGED: Record<string, { x: number; z: number }> = {};
+function rememberStaged(caseId: string, x: number, z: number) {
+  STAGED[caseId] = { x, z };
 }
 
-/** Recent city runs from SQLite, refreshed every 10 s. */
-function useCityRuns(): CityRun[] {
-  const [runs, setRuns] = useState<CityRun[]>([]);
+/** Saved runs from SQLite (city runs + recent console executions), refreshed every 10 s. */
+function useSavedRuns(): SavedRun[] {
+  const [runs, setRuns] = useState<SavedRun[]>([]);
   useEffect(() => {
     let alive = true;
-    const load = () => void loadCityState().then((r) => alive && r && Array.isArray(r.runs) && setRuns(r.runs));
-    load();
-    const id = setInterval(load, 10_000);
+    const load = async () => {
+      const [city, ex] = await Promise.all([loadCityState(), listExecutions(30)]);
+      if (!alive) return;
+      const out: SavedRun[] = [...(city && Array.isArray(city.runs) ? city.runs : [])];
+      if (ex.ok) for (const e of ex.data.executions) if (!out.some((r) => r.id === e.id)) out.push(e as SavedRun);
+      setRuns(out);
+    };
+    void load();
+    const id = setInterval(() => void load(), 10_000);
     return () => {
       alive = false;
       clearInterval(id);
@@ -67,102 +72,90 @@ function age(ms: number): string {
   return h < 48 ? `${h}h` : `${Math.round(h / 24)}d`;
 }
 
-function LateIcon() {
+function CaseRow({ it, active, now, onPick }: { it: CaseItem; active: boolean; now: number; onPick: () => void }) {
   return (
-    <svg width={15} height={15} viewBox="0 0 16 16" aria-hidden className="shrink-0">
-      <circle cx="8" cy="8" r="6.2" fill="none" stroke="#fbbf24" strokeWidth="1.6" />
-      <path d="M8 4.5 V8 L10.4 9.6" stroke="#fbbf24" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-    </svg>
+    <button
+      type="button"
+      onClick={onPick}
+      aria-pressed={active}
+      className={`w-full rounded-lg border px-2.5 py-2 text-left transition ${active ? "border-white/40 bg-white/[0.08]" : "border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"}`}
+    >
+      <span className="flex items-center gap-2">
+        <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-white">{it.title}</span>
+        <span className="shrink-0 text-[11px] tabular-nums text-white/40">{age(now - it.at)}</span>
+      </span>
+      <span className="mt-1 flex items-center gap-2">
+        <span className={`shrink-0 rounded px-1.5 py-px text-[11px] font-medium ${STATE_TONE[it.state]}`}>{CASE_STATE_WORD[it.state]}</span>
+        <span className="min-w-0 truncate text-[11px] text-white/40">{it.caseId}</span>
+      </span>
+    </button>
   );
 }
 
 export const CasesPanel = memo(function CasesPanel({ onDecide }: { onDecide: () => void }) {
   const workflow = useThrottledWorkflow(300);
-  const incidents = useWorld((s) => s.incidents);
-  const queue = useWorld((s) => s.agentQueue);
   const setFocus = useWorld((s) => s.setFocus);
-  const runs = useCityRuns();
+  const runs = useSavedRuns();
   const clocks = useClocks(2000);
-  const [sel, setSel] = useState<{ key: string; incidentId: string | null } | null>(null);
-
-  useEffect(() => {
-    rememberLabels(useWorld.getState().agentQueue);
-    return useWorld.subscribe((s, p) => {
-      if (s.agentQueue !== p.agentQueue) rememberLabels(s.agentQueue);
-    });
-  }, []);
+  const [sel, setSel] = useState<{ key: string; label: string | null } | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   const items = useMemo(
-    () => (clocks.epoch ? mergeCases({ incidents, workflow, runs, queue, labelIncident: LABEL_INCIDENT, perfNow: clocks.perf, epochNow: clocks.epoch }) : []),
-    [incidents, workflow, runs, queue, clocks],
+    () => (clocks.epoch ? mergeCases({ workflow, runs, positions: STAGED, perfNow: clocks.perf, epochNow: clocks.epoch }) : []),
+    [workflow, runs, clocks],
   );
-  const selected = resolveSelection(items, sel);
+  // Nothing picked: follow the newest case (so a run that starts is shown as it happens).
+  const selected = resolveSelection(items, sel) ?? items[0] ?? null;
 
   const pick = (it: CaseItem) => {
-    setSel({ key: it.key, incidentId: it.incidentId });
+    setSel({ key: it.key, label: it.label });
     if (it.pos) setFocus(it.pos);
   };
 
-  // An incident clicked in the city (or on the minimap) selects its case.
+  // Remember where scenarios were acted out; a staged case selects itself.
   useEffect(
     () =>
       on((e) => {
-        if (e.type !== "ui:selectIncident") return;
-        const it = caseForIncident(items, e.incidentId);
-        if (it) setSel({ key: it.key, incidentId: it.incidentId });
+        if (e.type === "scenario:staged") rememberStaged(e.scenarioId, e.x, e.z);
+        if (e.type === "ui:selectCase") {
+          const it = caseForCaseId(items, e.caseId);
+          if (it) setSel({ key: it.key, label: it.label });
+        }
       }),
     [items],
   );
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <ul className="hud-scroll max-h-[42%] shrink-0 space-y-1 overflow-y-auto px-3 py-2" aria-label="Cases">
-        {items.length === 0 && <li className="px-1 py-3 text-center text-[11px] text-white/40">Nothing yet. Roads are open.</li>}
-        {items.map((it) => {
-          const active = selected?.key === it.key;
-          return (
+      {expanded && selected ? (
+        <div className="shrink-0 px-3 py-2">
+          <CaseRow it={selected} active now={clocks.epoch} onPick={() => setExpanded(false)} />
+        </div>
+      ) : (
+        <ul className="hud-scroll max-h-[38%] shrink-0 space-y-1 overflow-y-auto px-3 py-2" aria-label="Cases">
+          {items.length === 0 && <li className="px-1 py-3 text-center text-[12px] text-white/45">No cases yet. Start one from Practice cases.</li>}
+          {items.map((it) => (
             <li key={it.key}>
-              <button
-                type="button"
-                onClick={() => pick(it)}
-                aria-pressed={active}
-                className={`flex w-full items-center gap-2.5 rounded-lg border px-2 py-1.5 text-left transition ${active ? "border-white/40 bg-white/[0.08]" : "border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"}`}
-              >
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-black/40">
-                  {it.kind ? <IncidentIcon kind={it.kind} size={15} /> : <LateIcon />}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-1.5">
-                    <span className="min-w-0 truncate text-[12px] font-medium text-white">{it.title}</span>
-                    <span className="ml-auto shrink-0 text-[10px] tabular-nums text-white/40">{age(clocks.epoch - it.at)}</span>
-                  </span>
-                  <span className="mt-0.5 flex items-center gap-1.5">
-                    <span className={`shrink-0 rounded px-1.5 py-px text-[10px] font-medium ${STATE_TONE[it.state]}`}>{CASE_STATE_WORD[it.state]}</span>
-                    {it.note && <span className="min-w-0 truncate text-[10.5px] text-white/50">{it.note}</span>}
-                  </span>
-                </span>
-              </button>
+              <CaseRow it={it} active={selected?.key === it.key} now={clocks.epoch} onPick={() => pick(it)} />
             </li>
-          );
-        })}
-      </ul>
-      <div className="hud-scroll min-h-0 flex-1 overflow-y-auto border-t border-white/[0.07] px-3 pb-3 pt-2.5">
+          ))}
+        </ul>
+      )}
+      <div className="flex min-h-0 flex-1 flex-col rounded-b-xl border-t border-white/[0.07] bg-[#111318] px-3 pb-3 pt-2.5">
         {selected ? (
-          <RunView key={selected.key} item={selected} workflow={workflow} onDecide={onDecide} />
+          <RunView key={selected.key} item={selected} workflow={workflow} onDecide={onDecide} expanded={expanded} onExpand={() => setExpanded((x) => !x)} />
         ) : (
-          <p className="py-6 text-center text-[11px] text-white/40">Pick a case to see its run on the playbook.</p>
+          <p className="py-6 text-center text-[12px] text-white/45">Pick a case to see its run on the playbook.</p>
         )}
       </div>
     </div>
   );
 });
 
-interface Row { atMs: number; nodeId: string; status: NodeStatus; summary: string }
-
 /** The run's lines: the HUD feed when it has them, else the saved trace from SQLite. */
-function useRunRows(item: CaseItem, workflow: readonly WorkflowEvent[]): { rows: Row[]; loading: boolean } {
+function useRunRows(item: CaseItem, workflow: readonly WorkflowEvent[]): { rows: RunRow[]; loading: boolean; fromTrace: boolean } {
   const feed = useMemo(() => caseEvents(workflow, item), [workflow, item]);
-  const [fetched, setFetched] = useState<Row[] | null>(null);
+  const [fetched, setFetched] = useState<RunRow[] | null>(null);
   const needFetch = feed.length === 0 && !!item.executionId;
   useEffect(() => {
     if (!needFetch || !item.executionId) return;
@@ -178,65 +171,123 @@ function useRunRows(item: CaseItem, workflow: readonly WorkflowEvent[]): { rows:
   }, [needFetch, item.executionId, item.label, item.title]);
   if (feed.length) {
     const t0 = feed[0].t;
-    return { rows: feed.map((e) => ({ atMs: e.t - t0, nodeId: e.nodeId, status: e.status, summary: e.summary })), loading: false };
+    return { rows: feed.map((e) => ({ atMs: e.t - t0, nodeId: e.nodeId, status: e.status, summary: e.summary })), loading: false, fromTrace: false };
   }
-  return { rows: fetched ?? [], loading: needFetch && fetched === null };
+  return { rows: fetched ?? [], loading: needFetch && fetched === null, fromTrace: needFetch };
 }
 
-function RunView({ item, workflow, onDecide }: { item: CaseItem; workflow: readonly WorkflowEvent[]; onDecide: () => void }) {
-  const { rows, loading } = useRunRows(item, workflow);
-  const [step, setStep] = useState<string | null>(null);
-  const st = useMemo(() => nodeStatuses(rows.map((r, i) => ({ id: String(i), t: r.atMs, caseId: "x", nodeId: r.nodeId, status: r.status, summary: r.summary })), "x"), [rows]);
-  const shown = step ? rows.filter((r) => r.nodeId === step || (step === "block" && r.nodeId === "gate" && r.status === "block")) : rows;
+const MARK: Record<NodeStatus, { word: string; tone: string }> = {
+  start: { word: "Working", tone: "border-[#ff6a1a] bg-[#ff6a1a]/10" },
+  ok: { word: "Done", tone: "border-emerald-400/70 bg-emerald-400/[0.07]" },
+  ask: { word: "Needs a person", tone: "border-amber-400/80 bg-amber-400/[0.08]" },
+  block: { word: "Stopped", tone: "border-rose-500/80 bg-rose-500/[0.08]" },
+  error: { word: "Went wrong", tone: "border-red-500/80 bg-red-500/[0.08]" },
+};
+
+/** Fetched traces replay one line at a time so the view can follow the run as it happens. */
+function useReveal(rows: readonly RunRow[], animate: boolean): RunRow[] {
+  const [n, setN] = useState(animate ? 0 : rows.length);
+  useEffect(() => {
+    if (!animate) return;
+    if (n >= rows.length) return;
+    const id = setTimeout(() => setN((k) => k + 1), n === 0 ? 150 : 650);
+    return () => clearTimeout(id);
+  }, [animate, n, rows.length]);
+  return animate ? rows.slice(0, n) : (rows as RunRow[]);
+}
+
+function StepCard({ s, current, open, onToggle, cardRef }: { s: PathStep; current: boolean; open: boolean; onToggle: () => void; cardRef?: (el: HTMLLIElement | null) => void }) {
+  const last = s.lines[s.lines.length - 1];
+  const mark = s.status ? MARK[s.status] : null;
+  const result = last ? scrubLeaks(last.summary) || "…" : "Not reached";
+  return (
+    <li ref={cardRef}>
+      <button
+        type="button"
+        onClick={onToggle}
+        className={`w-full rounded-xl border-2 px-3.5 py-3 text-left transition-all duration-300 ${mark ? mark.tone : "border-white/10 bg-white/[0.02]"} ${current ? "shadow-[0_0_0_3px_rgba(255,255,255,0.12)]" : "opacity-80"}`}
+      >
+        <div className="flex items-center gap-2">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: s.status ? STATUS_COLOR[s.status] : "rgba(255,255,255,0.2)" }} />
+          <span className="min-w-0 flex-1 truncate text-[15px] font-semibold text-white">{stepName(s.nodeId)}</span>
+          {mark && <span className="shrink-0 text-[12px] text-white/70">{mark.word}</span>}
+        </div>
+        <p className={`mt-1.5 text-[13px] leading-snug ${s.status ? "text-white/90" : "text-white/40"}`}>{result}</p>
+        {open && s.lines.length > 0 && (
+          <ol className="mt-2 space-y-1 border-t border-white/10 pt-2">
+            {s.lines.map((r, i) => (
+              <li key={i} className="flex gap-2 text-[12px] text-white/75">
+                <span className="shrink-0 font-mono tabular-nums text-white/45">+{(r.atMs / 1000).toFixed(1)}s</span>
+                <span className="min-w-0">{scrubLeaks(r.summary) || "…"}</span>
+              </li>
+            ))}
+          </ol>
+        )}
+      </button>
+    </li>
+  );
+}
+
+function RunView({ item, workflow, onDecide, expanded, onExpand }: { item: CaseItem; workflow: readonly WorkflowEvent[]; onDecide: () => void; expanded: boolean; onExpand: () => void }) {
+  const { rows: all, loading, fromTrace } = useRunRows(item, workflow);
+  const rows = useReveal(all, fromTrace);
+  const [whole, setWhole] = useState(false);
+  const [open, setOpen] = useState<string | null>(null);
+  const path = useMemo(() => runPath(rows, whole), [rows, whole]);
+  const current = currentStep(path);
+  const refs = useRef(new Map<string, HTMLLIElement>());
+  const box = useRef<HTMLOListElement>(null);
+
+  // Follow the run: keep the current step centred as the trace advances (and on the last step when done).
+  useEffect(() => {
+    const el = current ? refs.current.get(current) : null;
+    const b = box.current;
+    if (!el || !b || whole) return;
+    b.scrollTo({ top: el.offsetTop - b.clientHeight / 2 + el.clientHeight / 2, behavior: "smooth" });
+  }, [current, rows.length, whole]);
 
   return (
-    <section>
-      <div className="mb-1.5 flex items-center gap-2">
-        <h3 className="min-w-0 truncate text-[12px] font-semibold text-white">{item.title}</h3>
-        <span className={`shrink-0 rounded px-1.5 py-px text-[10px] font-medium ${STATE_TONE[item.state]}`}>{CASE_STATE_WORD[item.state]}</span>
+    <section className="flex min-h-0 flex-1 flex-col">
+      <div className="mb-2 flex items-center gap-2">
+        <h3 className="min-w-0 truncate text-[14px] font-semibold text-white">{item.title}</h3>
+        <span className={`shrink-0 rounded px-1.5 py-px text-[11px] font-medium ${STATE_TONE[item.state]}`}>{CASE_STATE_WORD[item.state]}</span>
       </div>
-      <FlowPicture st={st} picked={step} onPick={(id) => setStep((s) => (s === id ? null : id))} />
-      <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="mb-2 flex flex-wrap gap-1.5">
         {item.state === "person" && (
-          <button type="button" onClick={onDecide} className="rounded-md bg-amber-400/90 px-2.5 py-1 text-[11px] font-semibold text-black transition hover:bg-amber-300">
+          <button type="button" onClick={onDecide} className="rounded-md bg-amber-400/90 px-2.5 py-1 text-[12px] font-semibold text-black transition hover:bg-amber-300">
             Decide
           </button>
         )}
+        <button type="button" onClick={() => setWhole((w) => !w)} className="rounded-md border border-white/15 px-2.5 py-1 text-[12px] text-white/85 transition hover:bg-white/10">
+          {whole ? "Follow the run" : "Show whole path"}
+        </button>
+        <button type="button" onClick={onExpand} className="rounded-md border border-white/15 px-2.5 py-1 text-[12px] text-white/85 transition hover:bg-white/10">
+          {expanded ? "Show the list" : "Bigger"}
+        </button>
         {item.executionId && (
-          <a href={`/?tab=workflows&run=${encodeURIComponent(item.executionId)}`} className="rounded-md border border-white/15 px-2.5 py-1 text-[11px] text-white/85 transition hover:bg-white/10">
+          <a href={`/?tab=workflows&run=${encodeURIComponent(item.executionId)}`} className="rounded-md border border-white/15 px-2.5 py-1 text-[12px] text-white/85 transition hover:bg-white/10">
             Open in Playbooks
           </a>
         )}
       </div>
-      <div className="mb-1 mt-3 flex items-center justify-between text-[10px] uppercase tracking-wide text-white/40">
-        <span>{step ? stepName(step) : "Events"}</span>
-        {step && (
-          <button type="button" onClick={() => setStep(null)} className="normal-case tracking-normal text-white/55 hover:text-white">
-            Show all
-          </button>
-        )}
-      </div>
       {loading ? (
-        <p className="text-[11px] text-white/40">Loading the run…</p>
-      ) : shown.length === 0 ? (
-        <p className="text-[11px] text-white/40">{step ? "This case didn't reach this step." : item.state === "waiting" ? "Waiting for its turn." : "No steps recorded."}</p>
+        <p className="text-[12px] text-white/45">Loading the run…</p>
+      ) : path.length === 0 ? (
+        <p className="text-[12px] text-white/45">{item.state === "waiting" ? "Waiting for its turn." : "No steps recorded yet."}</p>
       ) : (
-        <ol className="space-y-px">
-          {shown.map((r, i) => (
-            <li key={i}>
-              <button
-                type="button"
-                onClick={() => setStep((s) => (s === r.nodeId ? null : r.nodeId))}
-                className="grid w-full grid-cols-[36px_10px_1fr] items-start gap-1.5 rounded px-1 py-1 text-left hover:bg-white/[0.04]"
-              >
-                <span className="pt-px text-right font-mono text-[10px] tabular-nums text-white/35">+{(r.atMs / 1000).toFixed(1)}s</span>
-                <span className="mt-[5px] h-1.5 w-1.5 rounded-full" style={{ background: STATUS_COLOR[r.status] }} />
-                <span className="min-w-0">
-                  <span className="block text-[10.5px] text-white/45">{stepName(r.nodeId)}</span>
-                  <span className="block text-[11px] leading-snug text-white/85">{scrubLeaks(r.summary) || "…"}</span>
-                </span>
-              </button>
-            </li>
+        <ol ref={box} className={`hud-scroll relative min-h-[220px] flex-1 space-y-2 overflow-y-auto ${whole ? "" : "py-[30%]"}`}>
+          {path.map((s) => (
+            <StepCard
+              key={s.nodeId}
+              s={s}
+              current={whole ? !!s.status : s.nodeId === current}
+              open={open === s.nodeId}
+              onToggle={() => setOpen((o) => (o === s.nodeId ? null : s.nodeId))}
+              cardRef={(el) => {
+                if (el) refs.current.set(s.nodeId, el);
+                else refs.current.delete(s.nodeId);
+              }}
+            />
           ))}
         </ol>
       )}

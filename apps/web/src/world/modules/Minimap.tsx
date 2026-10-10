@@ -7,7 +7,6 @@ import { WATER_X, ZONES, type ZoneName } from "../config";
 import { allVehicles, type VehicleKind } from "../registry";
 import { ROAD_EDGES, ROAD_NODES, type RoadKind } from "../roads";
 import { useWorld } from "../store";
-import { emit } from "../bus";
 import { MINIMAP } from "./WorkflowHud/layout";
 
 // Footprint is shared with the HUD (WorkflowHud/layout.ts) so the scenario panel and decision card clear it.
@@ -304,13 +303,6 @@ export default function Minimap({ embed = false }: { embed?: boolean }) {
     const py = ((e.clientY - r.top) / r.height) * SIZE;
     const s = useWorld.getState();
     s.select(null);
-    // Clicking an incident's dot selects its case in the side panel.
-    const hit = s.incidents.find((i) => i.status !== "cleared" && Math.hypot(toPx(i.x) - px, toPx(i.z) - py) < 10);
-    if (hit) {
-      s.setFocus({ x: hit.x, z: hit.z });
-      emit({ type: "ui:selectIncident", incidentId: hit.id });
-      return;
-    }
     s.setFocus({ x: toWorld(px), z: toWorld(py) });
   };
 
