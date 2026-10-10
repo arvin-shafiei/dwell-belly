@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.4, 10 Oct 2026, 11:50 BST. **Owner of this doc:** Oriol.
+**Version:** 1.5, 10 Oct 2026, 12:20 BST. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -767,114 +767,65 @@ eval/results.md              scores on all three datasets, committed
 
 # Part I. Voice (P3, below the cut line)
 
-Voice targets Best Voice, and it serves real-world use and the demo. It starts only after the P0 checkpoint is green.
+Voice is **a channel the agent chooses, not a feature we show off**. The desk works across the channels operations already uses: email, portals, and the phone. The agent picks voice only when time or circumstances demand it:
+- **Minutes to a deadline:** in practice cases 003 and 018, the recorded correct action was a call.
+- **People who can't type:** drivers send voice notes.
+- **A manager away from the screen:** approves by voice.
 
-## I1. Features
+Everything said by voice goes through the same pipeline and the same gate as written messages. The build plan is `docs/superpowers/plans/2026-10-10-voice-layer.md`.
 
-| Feature | Flow | Trace events |
-|---|---|---|
-| **Driver voice notes** | A driver records a note (they can't text while driving). Scribe transcribes it. It becomes a `CaseMessage` (channel "Voice note", `isClaim: true`) and the case resumes. Clash Check compares it with the customer's account. | `voice_note_in`, then a new segment |
-| **Agent calls a person** | Decide plans a `call` action, and the gate checks it like any message. In demo mode the voice layer starts the call. Each answer comes back as a claim with the `callId`, and the case resumes once. Driver calls open with "Are you safe to talk?", ask at most 3 questions and stay under 30 seconds. | `call_planned`, `call_ringing`, `call_connected`, `utterance`, `commitment_check`, `call_ended` |
-| **Manager approves by voice** | For a `hold_for_human` card, the voice layer calls the on-call manager and reads the card. They say "option 2". It is read back, then submitted as `human_decision { by: "voice" }`, and the held action goes through the normal gate. Tap approval is the same event with `by: "tap"`. | the call events, then `human_decision` |
-| **Simulated people (demo)** | Driver, customer and dispatch personas, each with its own voice. Claude writes each line and ElevenLabs TTS speaks it, streamed to the browser. A human can listen live or take over a seat. | the same events with `source: "simulated_persona"`; the trace is `synthetic: true` |
+## I1. Who talks to whom
 
-## I2. Wiring
+| Flow | What happens in the pipeline |
+|---|---|
+| **Driver → desk: voice note** | Scribe transcribes it, and it becomes a case event (channel "Voice note", `voice (unverified claim)`, stamped on the case's timeline). The case re-runs with the desk's earlier messages included. Ingest (Claude), Triage (Jev), Perspectives (Jev), Clash (Jev) and Planner (Claude) all see it as a claim, never a record. |
+| **Desk agent → recipient: call** | Planned by the Planner and checked by the gate before the call. In the call, every promise goes through `checkCommitment`, which is `gate()` plus Jev's `messageRisk`, with the same thresholds, within 2.5 s, and **deny** if there's no answer. After hang-up the transcript becomes claim events and the case re-runs. |
+| **Desk agent → desk manager: approval** | The agent reads the decision card (`whyStopped`, the evidence, each option's `effect`, what's `alreadyDone`). The manager picks an option, and it is read back. The decision goes into `run.ts` as a trusted `humanDecision`, which releases only held messages that implement it, never blocked ones. |
+| **Stretch: ring the manager's phone** | The same approval over a real call (Twilio, ElevenLabs outbound call). After hang-up, Jev answers "which option was confirmed?" from the transcript; below the threshold, nothing is approved. Built only if the rest is green by 15:00. |
+| **Stretch, off stage: AI personas** | A test and rehearsal tool only, never on stage: it would read as a standalone voice demo. |
 
-ElevenLabs servers cannot reach `localhost`, and a tunnel is one more thing to break on venue Wi-Fi. So **the browser is the relay**: the `@elevenlabs/react` session receives every line (`onMessage`) and runs the agent's tools as client tools, then forwards both to our local API. A webhook route exists but is optional, only for a tunnel.
+## I2. Modes and guarantees
 
-**Code layout:**
-
-```
-apps/api/src/voice/      plain TypeScript, no Next imports
-  policy.ts      assertVoiceAllowed(mode, op): the ONE place that decides what voice may do per mode
-  elevenlabs.ts  fetch client: signed URL, speech-to-text, TTS stream; every call has a timeout
-  notes.ts       voice note or audio attachment -> CaseMessage
-  calls.ts       executeCall(); call registry (callId -> caseId, actionId, state)
-  simulate.ts    persona loop for demo calls (demo only)
-  tools.ts       submit_decision, propose_commitment, record_fact, request_human
-  events.ts      per-case append-only event log + pub/sub feeding SSE and the trace
-apps/api/src/app/api/voice/**                     thin route handlers
-apps/api/src/app/api/cases/[id]/stream/route.ts   SSE
-runs/                                             gitignored: audio, raw transcripts, live logs
-```
-
-**ElevenLabs agent "Desk Caller":** one agent, overridden per call.
-- **Models:** Claude Haiku 4.5 for the language model, `eleven_flash_v2_5` for the voice.
-- **Dynamic variables:** `case_id`, `call_id`, `callee_role`, `callee_name`, `goal`, `case_brief` (at most about 600 characters, nothing the callee isn't entitled to), `questions`, `boundaries` and `options`.
-- **First message:** "Hi, this is the delivery desk assistant, an AI. This call is recorded for the case log. Are you safe to talk?"
-- **Boundaries in its prompt:**
-  - never promise money, times or outcomes outside `allowedCommitments`
-  - never ask for or read out codes, PINs or other people's details
-  - never choose an option for the human
-  - end politely if the callee isn't safe to talk
-  - at most 3 questions
-  - anything else goes to `request_human`
-
-## I3. Endpoints and tools
-
-| Route | Request | Response |
-|---|---|---|
-| `POST /api/voice/note` | multipart `{ audio, caseId, from, role, source }` or JSON with `transcript` | `{ messageId, transcript, lang, asrConfidence, status: "appended" \| "rejected", reason? }` |
-| `POST /api/voice/session` | `{ caseId, actionId }` | `{ callId, signedUrl, dynamicVariables, overrides }`; 403 in reality mode; the API key stays on the server |
-| `POST /api/voice/simulate` | `{ caseId, actionId, personaId }` | `{ callId }`, then events over SSE; 403 unless demo |
-| `POST /api/voice/events` | browser relay `{ callId, seq, type: "connected" \| "utterance" \| "ended" \| "error", speaker, text, final, tMs, reason? }` | 204, idempotent on `(callId, seq)` |
-| `POST /api/voice/tools/:tool` | headers `x-case-id`, `x-call-id`; body per tool | `{ result }` within 3 to 5 seconds |
-| `POST /api/voice/webhook` | optional; signature-verified, deduped | 200 |
-| `GET /api/cases/:id/stream` | SSE, `Last-Event-ID` to resume | `id: <seq>`, `data: TraceEvent`, heartbeat every 15 s |
-| `GET /api/cases/:id/trace` | | the saved `Trace` |
-| `GET /api/voice/audio/:messageId` | | audio from `runs/` |
-
-| Tool | Args | Handler |
-|---|---|---|
-| `submit_decision` | `option_id`, `spoken_confirmation` | The option must exist on the card and the card must be open. Reads back, then emits `human_decision { by: "voice" }` and calls `resumeCase`. |
-| `propose_commitment` | `text`, `type` | Runs `checkAction` within 3 seconds; a timeout counts as a denial. Emits `commitment_check` and returns `{ allowed, approved_wording }`. |
-| `record_fact` | `field`, `value`, `speaker_role` | Appends a claim `CaseMessage` tagged with the call's source |
-| `request_human` | `reason` | Emits `handover_requested`, routes the card, and ends the call politely |
-
-## I4. Modes (enforced in `voice/policy.ts`, plus two backstops)
-
-| Operation | reality | practice | demo |
+| | reality (16:30 batch) | practice | demo |
 |---|---|---|---|
-| Place a call | planned only (`placed: false`) | planned only | yes |
-| `simulated_persona` input | rejected | flagged self-test only | yes, `synthetic: true`, SIMULATED |
-| `live_human` voice note | rejected | rejected | yes |
-| `audio_attachment` in a case | transcribed, tagged as a claim | yes | yes |
+| Audio files in a case | transcribed into claim documents (bounded, never throws) | yes | yes |
+| Voice notes, calls | refused | refused | yes |
+| Simulated personas | refused in code | refused | allowed; the trace is `synthetic: true`, with a SIMULATED badge |
 
-**Backstops:**
-1. The loader drops simulated messages in reality mode.
-2. The ANSWER renderer refuses a reality trace that contains one.
+`cli.ts` stays sandbox-only. No call is ever placed in a scored run.
 
-## I5. Voice edge cases
+## I3. Wiring
+
+- **Server:** `apps/api/src/voice/` holds the policy, the ElevenLabs client, notes, the re-run builder, sessions and tools. The routes are `POST /api/voice/note`, `POST /api/voice/session` (returns a WebRTC token; the key stays on the server) and `POST /api/voice/tools/:tool` (always answers within 2.5 s).
+- **The agent, "Desk Caller":** created by `scripts/voice/create-agent.mjs`. It runs `claude-haiku-4-5`, has defaults for all 10 dynamic variables, and four client tools: `submit_decision`, `propose_commitment`, `record_fact` and `request_human`. Its first message: "Hi, this is the delivery desk assistant, an AI. This call is recorded for the case log. Are you safe to talk?"
+- **Browser:** `@elevenlabs/react` 1.15.2, inside `<ConversationProvider>`, over WebRTC. The components `VoiceNoteButton`, `CallDrawer` and `ApproveByVoice` mount in the console's Executions tab. Voice nodes are drawn as an overlay on the n8n canvas; `default-incident.json` is unchanged.
+- **No updates during a call.** A re-run takes 30 to 150 s, so calls use what was known before the call and re-run after hang-up.
+
+## I4. Edge cases
 
 | Case | Handling |
 |---|---|
-| No answer, busy, timeout | `call_ended { reason }`; retry once later or switch channel. At most 2 calls per case and 1 per person. |
-| Voicemail | Detected in the first exchange. Leave only a callback request, never personal data. |
-| Hang-up mid-call | Keep the lines so far and resume with what was learned |
-| Wrong person answers | Confirm identity first and share nothing until confirmed |
-| The callee asks for things they aren't entitled to | The brief contains only what they may know. Refuse politely and offer the verified channel. |
-| The voice model tries to promise something | It must call `propose_commitment`. The transcript is re-checked after the call, and any unapproved promise is flagged in the ANSWER. |
-| Ambiguous approval | Read the choice back and ask for a yes. No yes means no decision, and the fallback stands. |
-| Duplicate or late events | Deduped on `(callId, seq)`. Late events start a new segment; an earlier ANSWER is never rewritten. |
-| Empty or unclear audio | Below 0.6 confidence, mark it unclear and ask again |
-| Non-English speech | Transcribe with language detection; work from the translation and keep the original |
-| ElevenLabs down or out of credits | Every call has a timeout. Fall back to a text message, log a `voice_error`, and use the backup recording. |
-| Driver not safe to talk | End politely and request a voice note instead |
-| Two calls at once on one case | Refused: one live call per case |
-| Personal data in transcripts | `runs/` and audio are gitignored; demo traces in the repo use simulated people only |
+| Microphone blocked or missing | A typed-note fallback |
+| Silent or empty audio, low confidence | No event, or the `[unclear transcription]` prefix below 0.6 |
+| ElevenLabs 401, 402 (credits) or 429 | A readable failure, then a typed note or tap approval |
+| Tool slow or failing | The denial wording within 2.5 s, never silence |
+| Unknown option, card already decided, duplicate submit | Refused, or idempotent |
+| A voice event with a wall-clock time | Stamped on the case's own timeline instead |
+| A re-run would repeat earlier messages | The earlier desk messages are included as events |
+| Wrong person, not safe to talk, voicemail | Confirm identity first; end politely; never leave personal data |
+| Venue Wi-Fi | `localhost` for the microphone, a phone hotspot, and a recorded backup take |
 
-## I6. Build order (after the P0 checkpoint; mocks first so the city is never blocked)
+## I5. Dependencies
 
-The full 3-hour voice plan does not fit after a 13:45 P0 checkpoint, so voice is cut to steps 1 to 4. Steps 5 and 6 happen only if time is left after the video is recorded.
-
-| Step | Task | In scope |
-|---|---|---|
-| 1 | A recorded mock voice event file for case 003 that the city can animate against | yes (can start any time) |
-| 2 | `events.ts`, the SSE stream, the browser relay | yes |
-| 3 | `policy.ts`, voice notes, transcription of audio attachments | yes |
-| 4 | The "Desk Caller" agent, signed sessions, the four tools, voice approval on case 024 | yes, target 15:15 |
-| 5 | The simulated boss-to-driver call | only if time |
-| 6 | Wider voice edge-case handling | only if time; I5 rows for steps 1 to 4 are in scope |
+- **Anson:**
+  - the voice-claim label and one prompt sentence
+  - the trusted `humanDecision` input in `run.ts`
+  - sign-off on transcribing audio in `loadFolder`
+- **Arvin:**
+  - `ExecutionRecord` gains the `voice` origin, `parentExecutionId`, `outbox`, `card` and `voice`
+  - the execute endpoint accepts `extraEvents` and `humanDecision`
+  - mount slots in the Executions tab
+- **Keys:** an ElevenLabs key with Conversational AI write, Speech to Text, Text to Speech and Voices read permissions, in `apps/api/.env.local`.
 
 ---
 
@@ -1090,6 +1041,7 @@ This table is the reallocation.
 
 ## Changelog
 
+- **1.5 (12:20):** Part I rewritten to the final voice design after three stress tests (pipeline, ElevenLabs and browser, console fit). Voice is a channel the agent chooses. Changes: case-time stamps; earlier desk messages on re-run; in-call promise checks through `gate()` plus Jev; approval through a trusted `humanDecision` in `run.ts`; no updates during calls; the call transport dropped; personas and the Twilio phone call as stretch goals. The plan is in `docs/superpowers/plans/2026-10-10-voice-layer.md`.
 - **1.4 (11:50):** the UI decision.
   - **Who sees what (A4):** the judging agents read files, never the UI, which earns points only through the demo and People's Choice.
   - **The desk console and evidence grid become the main UI** (new J0, priority P2), reading only real outputs. The runtime is asked to save `result.json` next to each trace.
