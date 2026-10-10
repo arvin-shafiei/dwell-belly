@@ -23,7 +23,7 @@ export function taskFromTrace(value: unknown, receivedAt: string, id: string, re
   const options = Array.isArray(card.options) ? card.options.flatMap((value) => {
     const option = record(value);
     return option && str(option.id) && str(option.label)
-      ? [{ id: str(option.id), label: str(option.label), undoable: option.undoable === true }] : [];
+      ? [{ id: str(option.id), label: str(option.label), undoable: option.undoable === true, ...(str(option.effect) && { effect: str(option.effect) }) }] : [];
   }) : [];
   const fallbackOption = options.find((o) => o.id === card.fallbackOptionId);
   const triage = segment.map((e) => record(e.output)).find((o) => o?.type === "triage");
@@ -56,8 +56,12 @@ export function taskFromTrace(value: unknown, receivedAt: string, id: string, re
   return {
     id, caseId: str(trace.caseId), runId: str(trace.runId), cardId: str(card.cardId, id),
     title: str(segment.find((e) => e.kind === "run_start")?.title, str(trace.caseId)),
-    summary: str(card.summary), routeTo: str(card.routeTo), mustDecide: str(card.mustDecide, "Choose the next step. The agent has held this case for a person."),
-    clash: str(card.clash) || null, tried: strings(card.tried), wouldChangeMyMind: str(card.wouldChangeMyMind), options,
+    summary: str(card.summary), routeTo: str(card.routeTo), mustDecide: str(record(card.whyStopped)?.line, str(card.mustDecide, "Choose the next step. The agent has held this case for a person.")),
+    evidence: Array.isArray(card.evidence) ? card.evidence.flatMap((value) => {
+      const item = record(value);
+      return item && str(item.who) && str(item.says) ? [{ who: str(item.who), says: str(item.says), basis: str(item.basis) }] : [];
+    }) : [],
+    clash: str(card.clash) || null, tried: strings(card.alreadyDone).length ? strings(card.alreadyDone) : strings(card.tried), wouldChangeMyMind: str(card.wouldChangeMyMind), options,
     fallback: str(card.fallback, fallbackOption?.label ?? "Hold this case and send nothing further until the owning team decides."),
     receivedAt, deadlineAt: new Date(Date.parse(receivedAt) + deadlineMins * 60_000).toISOString(),
     urgency: triage?.urgency === "high" || triage?.urgency === "low" ? triage.urgency : "medium",

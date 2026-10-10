@@ -12,7 +12,13 @@ export class ReviewError extends Error {
 export function repoRoot() {
   return path.basename(process.cwd()) === "web" ? path.resolve(process.cwd(), "../..") : process.cwd();
 }
-const keyOf = (trace: Record<string, unknown>) => createHash("sha256").update(`${trace.runId}\n${trace.caseId}`).digest("hex").slice(0, 32);
+function keyOf(trace: Record<string, unknown>) {
+  const events = Array.isArray(trace.events) ? trace.events.map(record).filter((e) => e !== null) : [];
+  const start = events.findLast((event) => event?.kind === "run_start");
+  // A resumed segment may require a new decision. Never carry an old approval into its card.
+  const segment = `${start?.seq ?? ""}:${start?.t ?? 0}`;
+  return createHash("sha256").update(`${trace.runId}\n${trace.caseId}\n${segment}`).digest("hex").slice(0, 32);
+}
 
 async function optionalJson(file: string): Promise<unknown> {
   try { return JSON.parse(await readFile(file, "utf8")); }
@@ -37,7 +43,8 @@ async function traceFiles(dir: string, depth = 0): Promise<string[]> {
 
 export async function listTasks(root = repoRoot()): Promise<ReviewQueue> {
   const warnings: string[] = [];
-  const files = (await Promise.all(["ANSWERS", "runs", "examples/practice-run"].map((dir) => traceFiles(path.join(root, dir))))).flat();
+  // These are runtime records in the checkout, not assets to bundle into a deployment.
+  const files = (await Promise.all(["ANSWERS", "runs", "examples/practice-run"].map((dir) => traceFiles(path.join(/* turbopackIgnore: true */ root, dir))))).flat();
   const tasks = new Map<string, ReviewTask>();
   for (const file of files) {
     try {

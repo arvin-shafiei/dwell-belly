@@ -4,6 +4,7 @@ export interface ReviewOption {
   id: string;
   label: string;
   undoable: boolean;
+  effect?: string;
 }
 
 export interface ReviewDecision {
@@ -25,6 +26,7 @@ export interface ReviewTask {
   summary: string;
   routeTo: string;
   mustDecide: string;
+  evidence: { who: string; says: string; basis: string }[];
   clash: string | null;
   tried: string[];
   wouldChangeMyMind: string;

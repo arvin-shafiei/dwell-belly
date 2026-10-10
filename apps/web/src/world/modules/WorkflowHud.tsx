@@ -144,7 +144,7 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
       <div className="absolute z-10 flex flex-col items-center justify-end gap-2" style={px(L.bottomBand)}>
         {reviewTasks.length > 0 && <button type="button" onClick={onReviewOpen} className={`${GLASS} flex max-w-sm items-center gap-3 border-amber-400/30 px-4 py-3 text-left text-xs transition hover:bg-[#15171d]/90`}>
           <span className="h-2 w-2 shrink-0 rounded-full bg-amber-300" />
-          <span><strong className="block font-medium text-amber-100">{reviewTasks.length} case{reviewTasks.length === 1 ? "" : "s"} need a person</strong><span className="mt-1 block text-[10px] text-white/55">Open the decision queue →</span></span>
+          <span><strong className="block font-medium text-amber-100">{reviewTasks.length} case{reviewTasks.length === 1 ? " needs" : "s need"} a person</strong><span className="mt-1 block text-[10px] text-white/55">Open the decision queue →</span></span>
         </button>}
         <HotkeysFooter />
       </div>

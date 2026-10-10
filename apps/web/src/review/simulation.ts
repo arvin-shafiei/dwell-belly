@@ -16,7 +16,7 @@ export function simulationTasks(engine: WorkflowEngine, sessionId: string, now: 
       : /damag|refund|claim|replacement/i.test(`${c.title} ${priority}`) ? "Claims team" : "Depot manager";
     return [{
       id: `simulation:${sessionId}:${c.id}`, caseId: c.id, runId: sessionId, cardId: `simulation:${sessionId}:${c.id}`,
-      title: c.title, summary: step("planner") || c.title, mustDecide: "The simulated agent paused at its safety gate. Choose what it should do next.",
+      title: c.title, summary: step("planner") || c.title, mustDecide: "The simulated agent paused at its safety gate. Choose what it should do next.", evidence: [],
       routeTo, clash: c.clash ? step("clash") : null,
       tried: [step("history"), step("group"), step("missing_info")].filter(Boolean),
       wouldChangeMyMind: step("missing_info") || "Confirmation from the owning delivery team.",

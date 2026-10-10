@@ -1,22 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { deadlineLabel, taskFromTrace } from "./model";
 
-export function fixtureTrace(mode = "practice") {
-  return {
-    version: 1, caseId: "delivery-024", runId: "review-test-run", mode, flowId: "default-incident",
-    events: [
-      { kind: "run_start", t: 0, title: "Damaged parcel needs an owner decision" },
-      { kind: "node_end", t: 1, nodeId: "triage", output: { type: "triage", urgency: "high" } },
-      { kind: "node_end", t: 2, nodeId: "human", output: { type: "human_decision", card: {
-        summary: "Customer reports damage; carrier has not confirmed the condition.", routeTo: "Claims team", clash: "Carrier scan says intact; customer reports damage.",
-        tried: ["Requested the carrier's evidence"], wouldChangeMyMind: "A carrier inspection", deadlineMins: 15,
-        options: [{ id: "investigate", label: "Ask claims team to investigate", undoable: true }, { id: "hold", label: "Hold the refund request", undoable: true }],
-        fallback: "Hold the request and send nothing further",
-      } } },
-      { kind: "run_end", t: 3, outcome: "escalated", totalCostUsd: .03, totalLatencyMs: 2500 },
-    ],
-  };
-}
+import { fixtureTrace } from "./test-fixtures";
 
 describe("human review trace adapter", () => {
   it("uses the actual handover, urgency, options and deadline", () => {
@@ -36,6 +21,22 @@ describe("human review trace adapter", () => {
     const card = trace.events[2].output!.card!;
     const future = { ...trace, events: [trace.events[0], { kind: "card", card: { ...card, fallback: undefined, fallbackOptionId: "hold" } }] };
     expect(taskFromTrace(future, "2026-10-10T12:00:00Z", "test-id")?.fallback).toBe("Hold the refund request");
+  });
+  it("preserves the richer agent card explanation, evidence and option effects", () => {
+    const trace = fixtureTrace();
+    const card = trace.events[2].output!.card!;
+    const enriched = { ...trace, events: [trace.events[0], { kind: "card", card: {
+      ...card,
+      whyStopped: { line: "The carrier and customer give conflicting accounts" },
+      evidence: [{ who: "Customer", says: "The parcel arrived damaged", basis: "customer_statement" }],
+      alreadyDone: ["Checked the tracking history"],
+      options: [{ ...card.options[0], effect: "Ask the owning team to inspect the damage" }],
+    } }] };
+    const task = taskFromTrace(enriched, "2026-10-10T12:00:00Z", "test-id")!;
+    expect(task.mustDecide).toBe("The carrier and customer give conflicting accounts");
+    expect(task.evidence[0]).toMatchObject({ who: "Customer", basis: "customer_statement" });
+    expect(task.tried).toEqual(["Checked the tracking history"]);
+    expect(task.options[0].effect).toBe("Ask the owning team to inspect the damage");
   });
   it("keeps simulated traces labelled and rejects incomplete cards", () => {
     expect(taskFromTrace({ ...fixtureTrace("demo"), synthetic: true }, "2026-10-10T12:00:00Z", "test-id")?.simulated).toBe(true);

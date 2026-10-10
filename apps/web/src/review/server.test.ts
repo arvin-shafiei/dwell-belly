@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { decideTask, listTasks, registerTrace } from "./server";
-import { fixtureTrace } from "./model.test";
+import { fixtureTrace } from "./test-fixtures";
 
 let root: string;
 beforeEach(async () => { root = await mkdtemp(path.join(os.tmpdir(), "rivet-review-test-")); });
@@ -34,6 +34,16 @@ describe("persistent human decisions", () => {
     const again = (await registerTrace({ trace: fixtureTrace() }, root))!;
     expect(again.id).toBe(task.id);
     expect(again.deadlineAt).toBe(task.deadlineAt);
+  });
+  it("requires a new decision for a resumed segment of the same case", async () => {
+    const trace = fixtureTrace();
+    const original = (await registerTrace({ trace }, root))!;
+    await decideTask(original.id, { optionId: "hold", who: "Reviewer" }, root);
+    const resumed = { ...trace, events: [...trace.events, { ...trace.events[0], t: 100 }, trace.events[2]] };
+    const next = (await registerTrace({ trace: resumed }, root))!;
+    expect(next.id).not.toBe(original.id);
+    expect(next.decision).toBeNull();
+    expect(next.status).toBe("pending");
   });
   it("continues loading good cases when another trace is corrupt", async () => {
     await registerTrace({ trace: fixtureTrace() }, root);

@@ -80,6 +80,12 @@
 .review-case-meta { display:flex; gap:12px; justify-content:space-between; color:var(--desk-muted); font-size:11px; padding-bottom:22px; border-bottom:1px solid var(--desk-border); }
 .review-case-meta strong { color:var(--desk-copy); font-weight:500; }
 .review-brief { margin:24px 0; }
+.review-key-evidence { margin:0 0 24px; }
+.review-key-evidence h3 { font-size:12px; font-weight:550; margin:0 0 12px; }
+.review-key-evidence>div { border-left:2px solid var(--desk-border-strong); padding:8px 14px; margin-bottom:8px; }
+.review-key-evidence>div>div { display:flex; gap:12px; justify-content:space-between; font-size:10px; color:var(--desk-muted); }
+.review-key-evidence strong { font-weight:500; color:var(--desk-copy); }
+.review-key-evidence p { margin:6px 0 0; color:var(--desk-copy); font-size:12px; }
 .review-section-label { font-size:10px; color:var(--desk-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
 .review-summary { font-size:14px; line-height:1.7; color:var(--desk-copy); margin:0 0 12px; }
 .review-muted { color:var(--desk-muted); font-size:12px; margin:0; }

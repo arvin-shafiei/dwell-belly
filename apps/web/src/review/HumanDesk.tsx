@@ -53,6 +53,8 @@ function CaseDetail({ task, now, onDecide }: {
         <p className="review-muted">{task.mustDecide}</p>
       </section>
 
+      {task.evidence.length > 0 && <section className="review-key-evidence"><h3>Evidence behind the decision</h3>{task.evidence.map((item, i) => <div key={i}><div><strong>{item.who}</strong><span>{item.basis.replaceAll("_", " ")}</span></div><p>{item.says}</p></div>)}</section>}
+
       <div className="review-evidence-grid">
         <section className={`review-evidence ${task.clash ? "has-clash" : ""}`}>
           <h3>{task.clash ? "Stories do not agree" : "No clash reported"}</h3>
@@ -86,7 +88,7 @@ function CaseDetail({ task, now, onDecide }: {
               <label key={o.id} className={`review-option ${selected === o.id ? "selected" : ""}`}>
                 <input type="radio" name={`decision-${task.id}`} value={o.id} checked={selected === o.id} onChange={() => setSelected(o.id)} />
                 <span className="review-option-number">{String(i + 1).padStart(2, "0")}</span>
-                <span className="review-option-copy"><strong>{o.label}</strong><small>{o.undoable ? "Marked undoable by the agent" : "Requires your authority to proceed"}</small></span>
+                <span className="review-option-copy"><strong>{o.label}</strong><small>{o.effect || (o.undoable ? "Marked undoable by the agent" : "Requires your authority to proceed")}</small></span>
                 <span className="review-radio" aria-hidden="true" />
               </label>
             ))}
@@ -97,8 +99,8 @@ function CaseDetail({ task, now, onDecide }: {
               <label>Your name<input value={who} onChange={(e) => setWho(e.target.value)} maxLength={120} autoComplete="name" placeholder="Who is deciding?" required disabled={saving} /></label>
               <label>Handover note <span>(optional)</span><textarea value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} rows={2} placeholder="Add context for the next person" disabled={saving} /></label>
             </div>
-            {option && <p className="review-confirm-copy">You are choosing <strong>{option.label}</strong>. {task.simulated ? "This updates the simulation." : "Your decision will be saved; execution remains with the owning team."}</p>}
-            <button className="review-primary" disabled={!option || !who.trim() || saving} type="submit">{saving ? "Recording decision…" : task.simulated ? "Apply to simulation" : "Record decision"}<span aria-hidden="true">↗</span></button>
+            {option && <p className="review-confirm-copy">You are choosing <strong>{option.label}</strong>. {task.origin === "city" ? "This updates the simulation." : "Your decision will be saved; execution remains with the owning team."}</p>}
+            <button className="review-primary" disabled={!option || !who.trim() || saving} type="submit">{saving ? "Recording decision…" : task.origin === "city" ? "Apply to simulation" : "Record decision"}<span aria-hidden="true">↗</span></button>
           </>}
           {error && <p className="review-error" role="alert">{error}</p>}
           {success && !task.decision && <p className="review-confirmation" role="status">Decision accepted. Waiting for the case to update.</p>}
@@ -153,7 +155,7 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
     <div className={`review-desk ${embedded ? "review-embedded" : ""}`}>
       <header className="review-topbar">
         <Link href="/" className="review-brand" aria-label="Rivet operations console"><span className="review-brand-mark">R</span><span>Rivet<span className="review-brand-sub">Operations desk</span></span></Link>
-        <nav aria-label="View navigation"><Link href="/">Workflows</Link><Link href="/city" target={embedded ? "_blank" : undefined}>City simulation</Link><span aria-current="page">Human review</span></nav>
+        <nav aria-label="View navigation"><Link href="/?tab=workflows" onClick={onClose}>Workflows</Link><Link href="/city" target={embedded ? "_blank" : undefined}>City simulation</Link><span aria-current="page">Human review</span></nav>
         {onClose ? <button onClick={onClose} className="review-close" aria-label="Close human review">×</button> : <span className="review-connection"><i />Queue updates automatically</span>}
       </header>
       <div className="review-page-heading">
