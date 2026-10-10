@@ -165,7 +165,7 @@ Keys are read from `.env.local` at the repo root or `apps/api/.env.local`. `GET 
 
 ## Evidence
 
-[`eval/results.md`](eval/results.md) has three scored runs on the same 48 cases (12 organiser practice cases, 36 generated hard cases) and one timed batch of all 50 practice cases, with a section on what those runs do not show. In short: the last scored run was 0.90 with 45 of 48 passing and 2 broken rules, both since fixed and re-checked case by case but not re-scored as a set; the timed batch answered 50 of 50 in 165 seconds for $2.70.
+[`eval/results.md`](eval/results.md) has four scored runs on the same 48 cases (12 organiser practice cases, 36 generated hard cases) and one timed batch of all 50 practice cases, with a section on what those runs do not show. In short: the latest scored run, on the code as merged at 14:05 on 10 October, was 0.92 with 46 of 48 passing and no broken rules; the timed batch answered 50 of 50 in 165 seconds for $2.70. Each score is a single run of a non-deterministic agent.
 
 The test set is in `data/generated/delivery/`: 243 hard cases with answer keys (120 across twelve difficulty patterns, 123 built from anonymised real complaints in `data/scraped/`). Every answer key was checked by an independent solver that could not see it.
 
@@ -180,7 +180,7 @@ The test set is in `data/generated/delivery/`: 243 hard cases with answer keys (
 
 ## Known limitations
 
-- **The current code has not been scored as a whole.** Several changes followed the last scored run and were only re-checked on individual cases.
+- **Scores are single runs on 48 cases.** The agent is not deterministic, and the full sets (50 practice, 243 generated) have never been scored end to end.
 - **Answer keys for the generated cases were written by Claude.** A second agent checked each one blind, but no person has reviewed them.
 - **The practice eval is strict in ways that may not match the judges.** 22 of the 50 practice keys name a team the agent is never shown; we accept a request routed through a visible team.
 - **Tuned on delivery cases only.** The prompts are role-based and name no company, and the loader reads all four tracks' folders, but no other track has been run.
