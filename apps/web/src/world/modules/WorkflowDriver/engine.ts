@@ -30,8 +30,11 @@ export interface StepSummary {
 export interface DecisionCard {
   options: string[];
   safe: string; // auto-picked after humanTimeoutMs; always undoable
+  reason?: string;
+  routeTo?: string;
   chosen?: string;
   auto?: boolean; // true when nobody answered in time
+  deadlineAt?: number; // engine time, shared by the HUD and human review desk
 }
 
 export interface Case {
@@ -177,6 +180,9 @@ export interface Spec {
   verifyFails?: boolean; // forced; otherwise 25% random
   verifyFailText?: string;
   gateNote?: string; // appended to the gate summary
+  reviewReason?: string; // the decision that needs human authority, not just a risky topic
+  reviewOwner?: string;
+  actBeforeReview?: boolean; // safe coordination goes out while the remaining decision is held
   noAction?: boolean; // skip action + verify
   outcome?: Outcome; // forced outcome unless the gate blocks
   caseLabel?: string; // appended to the case id, e.g. "delivery-024"
@@ -240,7 +246,7 @@ const INCIDENT_SPECS: Record<IncidentKind, Omit<Spec, "kind" | "title" | "incide
     intent: "road_incident", priority: "high", p: 0.92,
     clashChance: 0.5, clash: "Clash: driver 'just a bump' vs police 'road closed 2h'",
     plan: "Plan: reroute {n} vans · log for insurer · no blame in messages",
-    risk: [0.2, 0.5],
+    risk: [0.08, 0.24],
     card: ["Reroute + log", "Hold deliveries", "Investigate"], safe: "Reroute + log",
     blockReason: "liability unclear",
     action: "Replan → {n} vans avoid {street} · incident log filed",
@@ -255,7 +261,9 @@ const INCIDENT_SPECS: Record<IncidentKind, Omit<Spec, "kind" | "title" | "incide
     clashChance: 0.6, clash: "Clash: dashcam shows red light vs driver 'it was amber'",
     missing: "Missing info: injury status · ask ops lead, not the driver",
     plan: "Plan: spare truck, transfer {n} parcels, notify insurer",
-    risk: [0.55, 0.95],
+    risk: [0.55, 0.75],
+    reviewReason: "A Rivet driver may be injured after a collision. The ops lead must decide the welfare response and any parcel transfer.",
+    reviewOwner: "On-call lead",
     card: ["Spare truck + transfer", "Hold parcels", "Notify insurer only"], safe: "Hold parcels",
     blockReason: "possible injury · ops lead takes over",
     action: "Dispatch → spare truck T-04 to {street} · insurer notified",
@@ -270,7 +278,7 @@ const INCIDENT_SPECS: Record<IncidentKind, Omit<Spec, "kind" | "title" | "incide
     clashChance: 0.5, clash: "Clash: map says 1 lane open vs police 'full closure'",
     missing: "Missing info: are any Rivet drivers involved? · ask fleet desk",
     plan: "Plan: hold vans clear of {street}, reroute {n} · tell recipients, no ETAs",
-    risk: [0.3, 0.6],
+    risk: [0.08, 0.24],
     card: ["Reroute all", "Hold vans in place", "Investigate"], safe: "Hold vans in place",
     blockReason: "driver involvement unknown",
     action: "Replan → {n} vans rerouted around {street} · SMS recipients",
@@ -285,7 +293,9 @@ const INCIDENT_SPECS: Record<IncidentKind, Omit<Spec, "kind" | "title" | "incide
     clashChance: 0.4, clash: "Clash: news says 'airport area' vs police cordon at {street}",
     missing: "Missing info: cordon size and duration · follow police updates",
     plan: "Plan: pull {n} vans out of the cordon, pause drops, wait for police",
-    risk: [0.82, 0.95],
+    risk: [0.55, 0.75],
+    reviewReason: "A major incident affects deliveries inside a police cordon. The on-call lead must decide the service suspension with the authorities.",
+    reviewOwner: "On-call lead",
     card: ["Pause all drops", "Reroute outside cordon", "Investigate"], safe: "Pause all drops",
     blockReason: "major incident · ops lead takes over",
     action: "Dispatch → {n} vans paused outside cordon",
@@ -299,7 +309,7 @@ const INCIDENT_SPECS: Record<IncidentKind, Omit<Spec, "kind" | "title" | "incide
     intent: "road_closure", priority: "high", p: 0.95,
     clashChance: 0.3, clash: "Clash: driver video shows road open vs police 'closed 3h'",
     plan: "Plan: reroute {n} vans around {street} · no exact ETAs to recipients",
-    risk: [0.3, 0.6],
+    risk: [0.08, 0.24],
     card: ["Reroute all", "Hold at depot", "Investigate"], safe: "Reroute all",
     blockReason: "closure length unknown",
     action: "Replan → {n} vans avoid {street} · SMS {n} recipients 'running late'",
@@ -312,11 +322,11 @@ const INCIDENT_SPECS: Record<IncidentKind, Omit<Spec, "kind" | "title" | "incide
     history: "History: {van} has {n} parcels left · last service 9 days ago",
     intent: "vehicle_breakdown", priority: "high", p: 0.93,
     clashChance: 0.3, clash: "Clash: telematics 'engine running' vs driver 'engine dead'",
-    plan: "Plan: spare van from depot, transfer {n} parcels, tow {van}",
-    risk: [0.25, 0.6],
+    plan: "Plan: ask fleet desk for recovery and a spare van · promise nothing",
+    risk: [0.08, 0.24],
     card: ["Send spare van", "Hold to tomorrow", "Tow + transfer"], safe: "Send spare van",
     blockReason: "driver safety unconfirmed",
-    action: "Dispatch → spare van V-03 to {street} · tow booked",
+    action: "Fleet queue → fleet desk: request recovery and a spare van at {street}",
     target: "fleet desk",
     verifyOk: "Verify: V-03 en route · tow confirmed",
   },
@@ -433,6 +443,7 @@ export class WorkflowEngine {
         group: NO_GROUP,
         missing: tpl.missing && f(tpl.missing),
         plan: f(tpl.plan), risk: tpl.risk, card: tpl.card, safe: tpl.safe, blockReason: tpl.blockReason,
+        reviewReason: tpl.reviewReason, reviewOwner: tpl.reviewOwner, noAction: tpl.noAction,
         action: f(tpl.action), target: f(tpl.target), verifyOk: f(tpl.verifyOk),
         deliveryIds: [vars.dl],
       },
@@ -448,7 +459,7 @@ export class WorkflowEngine {
   /** Answer a waiting decision card (from the HUD). Returns false if the case isn't waiting. */
   decide(caseId: string, option: string): boolean {
     const r = this.active.find((x) => x.c.id === caseId);
-    if (!r || r.c.state !== "awaiting_human") return false;
+    if (!r || r.c.state !== "awaiting_human" || r.choice !== undefined || !r.c.decision?.options.includes(option) || this.t >= r.until) return false;
     r.choice = option;
     return true;
   }
@@ -476,9 +487,9 @@ export class WorkflowEngine {
       intent: "bulk_delay", priority: "high", p: 0.9,
       group: `Group: ${n} deliveries, 1 cause → 1 case, not ${n}`,
       plan: `Plan: one delay notice to ${n} recipients · no exact ETAs`,
-      risk: [0.1, 0.4], card: ["Notify all", "Rebook tomorrow", "Investigate"], safe: "Notify all",
+      risk: [0.08, 0.24], card: ["Notify all", "Rebook tomorrow", "Investigate"], safe: "Notify all",
       blockReason: "cause unconfirmed",
-      action: `SMS → ${n} recipients: 'running late, new window today'`,
+      action: `SMS → ${n} recipients: 'running late, revised window not confirmed'`,
       target: "SMS gateway",
       verifyOk: `Verify: ${n}/${n} SMS delivered`,
       deliveryIds: ids,
@@ -495,10 +506,10 @@ export class WorkflowEngine {
       history: `History: ${dl} delayed · ${cause}`,
       intent: "where_is_my_parcel", priority: "medium", p: 0.88,
       group: linked ? `Group: linked to ${linked.id} (${linked.label})` : NO_GROUP,
-      plan: "Plan: explain the delay, new window today, no exact ETA",
+      plan: "Plan: explain the delay, revised window not confirmed, no exact ETA",
       risk: [0.05, 0.22], card: ["Send delay notice", "Rebook tomorrow", "Investigate"], safe: "Send delay notice",
       blockReason: "tracking unreliable",
-      action: `Portal → recipient: ${dl} delayed, new window today`,
+      action: `Portal → recipient: ${dl} delayed, revised window not confirmed`,
       target: "recipient",
       verifyOk: "Verify: message delivered and read",
       deliveryIds: [dl],
@@ -516,7 +527,7 @@ export class WorkflowEngine {
     const c: Case = {
       id, kind: spec.kind, title: clip(spec.title), createdAt: this.t, state: "queued", currentNode: null,
       risk, gate, clash: !!spec.clash, costUsd: 0, steps: [], incidentId: spec.incidentId, deliveryIds: spec.deliveryIds,
-      decision: gate === "ask" ? { options: spec.card, safe: spec.safe } : undefined,
+      decision: gate === "ask" ? { options: spec.card, safe: spec.safe, reason: spec.reviewReason ?? "The proposed action needs approval from the owning team before the desk can commit to it.", routeTo: spec.reviewOwner } : undefined,
       ...(sc && {
         scenarioId: sc.scenarioId, runId: sc.runId, modifiers: sc.modifiers, vehicleId: sc.vehicleId,
         at: sc.x !== undefined && sc.z !== undefined ? { x: sc.x, z: sc.z } : undefined,
@@ -542,12 +553,15 @@ export class WorkflowEngine {
     if (gate === "allow") add("gate", "ok", `Gate: risk ${r} < 0.3 · allow${note}`);
     else if (gate === "ask") add("gate", "ok", `Gate: risk ${r} · ask a human${note}`);
     else add("gate", "block", `Gate: risk ${r} ≥ 0.8 · block · ${spec.blockReason}`);
-    if (gate === "ask") add("human", "ask", `Decide: ${spec.card.join(" / ")}`);
-    if (gate !== "block" && !spec.noAction) {
+    const actionSteps = () => {
       add("action", "ok", spec.action);
       if (verifyFails) add("verify", "error", spec.verifyFailText ?? `Verify: no ack from ${spec.target} yet · retrying`);
       add("verify", "ok", spec.verifyOk);
-    }
+    };
+    const beforeReview = gate === "ask" && spec.actBeforeReview && !spec.noAction;
+    if (beforeReview) actionSteps();
+    if (gate === "ask") add("human", "ask", `Decide: ${spec.card.join(" / ")}`);
+    if (gate !== "block" && !spec.noAction && !beforeReview) actionSteps();
     // Mock cost: Claude writes/plans, Jev scores, code is free.
     let cost = 0.0001;
     for (const s of steps) cost += s.runner === "claude" ? 0.0006 + this.rand() * 0.0005 : s.runner === "jev" ? 0.00004 + this.rand() * 0.00004 : 0;
@@ -587,6 +601,7 @@ export class WorkflowEngine {
         if (s.nodeId === "human") {
           r.phase = "await";
           r.until = this.t + this.o.humanTimeoutMs;
+          r.c.decision!.deadlineAt = r.until;
           r.c.state = "awaiting_human";
           return;
         }

@@ -32,6 +32,10 @@ describe("publicView", () => {
     }
     const gen = JSON.parse(await readFile(path.join(DATA, "generated", "delivery", "gen-101.json"), "utf8"));
     expect(generatedView(gen)).toEqual(evalCases.find((c) => c.id === "gen-101")!.view);
+    for (const id of ["adv-001", "adv-073", "adv-074"]) {
+      const adv = JSON.parse(await readFile(path.join(DATA, "adversarial", "delivery", `${id}.json`), "utf8"));
+      expect(generatedView(adv)).toEqual(evalCases.find((c) => c.id === id)!.view);
+    }
   });
 });
 

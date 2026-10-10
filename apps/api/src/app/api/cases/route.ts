@@ -8,6 +8,7 @@ import { runCase } from "@/agent/run";
 import { json } from "@/lib/cors";
 import type { Flow } from "@/lib/flow";
 import { runPanel } from "@/lib/panel";
+import { saveReviewRecord } from "@/lib/review-record";
 
 // POST /api/cases  body: a case view { id, title?, context?, events[], attachments?, mode?, flow?, flowId? }
 // `flowId` picks a flow file by id (default "default-incident").
@@ -36,7 +37,12 @@ export async function POST(req: Request) {
     mode: demo ? "demo" : "practice",
     runId: `api-${new Date().toISOString()}`,
   });
-  return json({ trace: result.trace, outcome: result.outcome, outbox: result.outbox, card: result.card ?? null });
+  // A run that heard a simulated persona is labelled, so no view can present it as a real case.
+  if (demo && view.events.some((e) => e.source === "simulated_persona")) result.trace.synthetic = true;
+  let reviewWarning: string | undefined;
+  try { await saveReviewRecord(result); }
+  catch { reviewWarning = "The decision card could not be saved to the human review queue. Keep this response for handover."; }
+  return json({ trace: result.trace, outcome: result.outcome, outbox: result.outbox, card: result.card ?? null, ...(reviewWarning && { reviewWarning }) });
 }
 
 export function GET() {

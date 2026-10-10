@@ -195,14 +195,69 @@ test("a case that times out stays a failure even when its model call returns lat
   assert.equal(r.trace.events.at(-1)?.kind, "run_end");
 });
 
-test("a force_human panel rule holds every message, whatever the planner chose", async () => {
-  const panel = async () => ({ ok: true, seats: [{ id: "rule_keeper", name: "Rule keeper", answers: { legal_or_public: 0.95 }, raised: ["legal_or_public"] }], forceHuman: true, notes: ["Legal threat"], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
-  const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), panel });
+const flaggedPanel = async () => ({ ok: true, seats: [{ id: "rule_keeper", name: "Rule keeper", answers: { legal_or_public: 0.95 }, raised: ["legal_or_public"] }], forceHuman: true, notes: ["Legal threat"], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
+
+test("a panel flag alone does not hold checked coordination messages", async () => {
+  for (const kind of ["request_to_owner", "question", "status_update", "safety_alert"] as const) {
+    const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [{ ...decision, actions: [{ ...action, kind }] }], critic: [{ actions: [scores(0)] }] })), panel: flaggedPanel });
+    assert.equal(r.outcome, "acted", kind);
+    assert.deepEqual(r.outbox.map((o) => o.status), ["recorded"]);
+    assert.equal(r.card, undefined);
+  }
+});
+
+test("a panel flag holds a commitment while a safe owner request goes out", async () => {
+  const commitment = { ...action, kind: "other" as const, purpose: "Commit the desk to a delivery change", message: "We will redirect DL-024 to a different address." };
+  const r = await runCase(bundle, { ...opts(fake({
+    understand: [understanding], decide: [{ ...decision, actions: [action, commitment] }],
+    critic: [{ actions: [scores(0), { ...scores(0), index: 1 }] }],
+  })), panel: flaggedPanel });
   assert.equal(r.outcome, "escalated");
+  assert.deepEqual(r.outbox.map((o) => o.status), ["recorded", "held_for_human"]);
+  assert.equal(r.card?.whyStopped?.reason, "rule_requires_person");
+  assert.equal(r.card?.alreadyDone?.length, 1);
+  assert.deepEqual(r.gated.map((g) => g.verdict), ["allow", "ask"]);
+  const gateEvent = r.trace.events.find((e) => e.kind === "node_end" && e.nodeId === "gate");
+  assert.equal(gateEvent?.kind === "node_end" && gateEvent.output?.type === "safety_gate" && gateEvent.output.decision, "ask");
+  assert.match(gateEvent?.kind === "node_end" ? gateEvent.summary : "", /1 of 2 messages cleared/);
+});
+
+test("a coordination label does not bypass the critic when a panel flags the case", async () => {
+  const r = await runCase(bundle, { ...opts(fake({
+    understand: [understanding], decide: [decision, decision],
+    critic: [{ actions: [scores(0.9)] }, { actions: [scores(0.9)] }],
+  })), panel: flaggedPanel });
+  assert.deepEqual(r.outbox.map((o) => o.status), ["blocked"]);
+});
+
+test("an unavailable critic still holds coordination even with a panel flag", async () => {
+  const r = await runCase(bundle, { ...opts(fake({
+    understand: [understanding], decide: [decision], critic: [{ actions: [] }, { actions: [] }],
+  })), panel: flaggedPanel });
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
-  assert.deepEqual(r.card?.whyStopped, { reason: "rule_requires_person", line: "Legal, regulator, police or press involvement. A person at the desk decides before anything is sent." });
-  const end = r.trace.events.at(-1);
-  assert.equal(end?.kind === "run_end" ? end.nextAction : "not a run_end", undefined);
+  assert.equal(r.card?.whyStopped?.reason, "message_too_risky");
+});
+
+test("a formal legal hold keeps a human card when no message is planned", async () => {
+  const handover = {
+    route_to: "legal lead", why_a_person: "A formal solicitor's letter requires a legal hold.", summary: "Formal letter names the desk; deadline in 14 days.",
+    key_evidence: [], clash: "", options: [{ label: "Keep legal hold", effect: "Nothing is sent until the legal lead decides", undoable: true }],
+    would_change_my_mind: "The legal lead's instruction", safe_fallback: "Keep legal hold; send nothing",
+  };
+  const r = await runCase(bundle, { ...opts(fake({
+    understand: [understanding], decide: [{ ...decision, decision_type: "escalate_to_human", actions: [], handover }],
+  })), panel: flaggedPanel });
+  assert.equal(r.outcome, "escalated");
+  assert.equal(r.card?.routeTo, "legal lead");
+  assert.equal(r.outbox.length, 0);
+});
+
+test("a panel flag does not resurrect a duplicate case that owes nobody a message", async () => {
+  const r = await runCase(bundle, { ...opts(fake({
+    understand: [understanding], decide: [{ ...decision, decision_type: "wait_no_action", actions: [] }],
+  })), panel: flaggedPanel });
+  assert.equal(r.outcome, "no_action");
+  assert.equal(r.card, undefined);
 });
 
 test("a panel that throws is skipped and the case still completes", async () => {

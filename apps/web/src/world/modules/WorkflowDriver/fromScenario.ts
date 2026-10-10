@@ -1,10 +1,10 @@
 // Builds a workflow case script from a real delivery scenario (world/scenarios.ts) plus Reality Test
 // modifiers. Pure: the only randomness comes from the injected rand().
-import { getScenario, type CaseScenario, type Modifier, type Scene } from "../../scenarios";
+import { getScenario, type CaseScenario, type Modifier } from "../../scenarios";
 import type { Outcome, ScenarioInput, Spec } from "./engine";
 
-/** Scenes where even the plain case goes to a human (damage, safety, high value, loss). */
-const HUMAN_SCENES = new Set<Scene>([
+/** These topics need priority and an owning specialist, not approval of the routine request. */
+const URGENT_SCENES = new Set([
   "leaking_parcel", "cold_chain_breach", "damage_confirmed", "pod_missing_high_value", "lost_parcel",
 ]);
 
@@ -52,7 +52,7 @@ export function scenarioSpec(input: ScenarioInput, rand: () => number): Spec {
       ? `History: ${ref} · already rebooked tomorrow 9–12, customer confirmed`
       : `History: ${ref} · ${s.context ?? s.title}`;
 
-  const urgent = has("repeat_complaint") || has("time_pressure") || has("needs_human") || HUMAN_SCENES.has(s.scene);
+  const urgent = has("repeat_complaint") || has("time_pressure") || has("needs_human") || URGENT_SCENES.has(s.scene);
 
   // Planner: the scenario's expected next action, with refusals noted up front.
   const refusals: string[] = [];
@@ -65,23 +65,23 @@ export function scenarioSpec(input: ScenarioInput, rand: () => number): Spec {
       ? "Plan: ask for order no. + postcode first · no action until matched"
       : `Plan: ${[...refusals, exp.summary].join(" · ")}`;
 
-  // Gate: injection blocks; humans for needs_human / deadlines / risky scenes.
+  // Judge the next action. Public cases already specify a safe request to an owner. Topic,
+  // urgency and conflicting claims do not turn that request into a supervisor decision.
   let riskRange = range(0.05, 0.25);
   let card = ["Send planned message", "Escalate to ops lead", "Investigate"];
-  let safe = "Send planned message";
+  const safe = has("needs_human") ? "Keep claim open" : "Send planned message";
   let gateNote: string | undefined;
   if (has("prompt_injection")) riskRange = range(0.9, 0.97);
-  else if (has("time_pressure")) {
-    riskRange = range(0.5, 0.75);
-    card = ["Act before deadline", "Extend hold", "Let it return"];
-    safe = "Act before deadline";
-    gateNote = "returns in 2h; no answer → act";
-  } else if (has("needs_human")) {
+  else if (has("needs_human")) {
     riskRange = range(0.55, 0.78);
-    card = ["Send planned message", "Escalate to manager", "Hold"];
-  } else if (HUMAN_SCENES.has(s.scene)) riskRange = range(0.32, 0.55);
+    card = ["Assign complaint to manager", "Request legal review", "Keep claim open"];
+    gateNote = "owner request cleared; legal response needs a manager";
+  } else if (has("time_pressure")) {
+    gateNote = "returns in 2h; notify owner now, promise no change";
+  }
+  const reviewReason = has("needs_human") ? "The customer threatens legal action on a high-value shipment. A desk manager must decide the response; the agent cannot settle the claim." : undefined;
 
-  const outcome: Outcome | undefined = has("do_nothing") ? "no_action" : has("missing_context") ? "asked_for_info" : undefined;
+  const outcome: Outcome | undefined = has("needs_human") ? undefined : has("do_nothing") ? "no_action" : has("missing_context") ? "asked_for_info" : undefined;
   const action = has("missing_context")
     ? `${custChannel} → ${custName}: which order number and postcode?`
     : `${expChannel} → ${expRecipient}: ${exp.summary}`;
@@ -111,6 +111,9 @@ export function scenarioSpec(input: ScenarioInput, rand: () => number): Spec {
     card,
     safe,
     gateNote,
+    reviewReason,
+    reviewOwner: has("needs_human") ? "Desk supervisor" : undefined,
+    actBeforeReview: has("needs_human"),
     blockReason: has("prompt_injection") ? "prompt injection treated as data, logged" : "out of policy",
     action,
     target: lead(expRecipient),

@@ -10,7 +10,8 @@ import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useWorld } from "../store";
 import { hudLayout, TOPBAR_FALLBACK_H, type Insets } from "./WorkflowHud/layout";
 import { MiniFlow } from "./WorkflowHud/MiniFlow";
-import { AgentToggle, CaseFeed, DecisionToast, Deliveries, GLASS, HotkeysFooter, IncidentList, RealAgentTag, SimulatedTag, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { AgentToggle, CaseFeed, Deliveries, GLASS, HotkeysFooter, IncidentList, RealAgentTag, SimulatedTag, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { useReviewQueue } from "../../review/useReviewQueue";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
 import { Clock, TopBar } from "./WorkflowHud/topbar";
 
@@ -116,16 +117,20 @@ function useMeasuredHeight<T extends HTMLElement>(fallback: number) {
   return [ref, h] as const;
 }
 
-export default function WorkflowHud({ embed = false }: { embed?: boolean }) {
+export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: boolean; onReviewOpen: () => void }) {
   const [open, setOpen] = useState(true);
   const [scenOpen, setScenOpen] = useState(false);
   const cov = useScenarioCoverage();
   const [barRef, barH] = useMeasuredHeight<HTMLDivElement>(TOPBAR_FALLBACK_H);
+  const { tasks } = useReviewQueue();
+  const mode = useWorld((state) => state.agentMode);
+  const reviewTasks = tasks.filter((task) => task.status === "pending" && (mode === "real" ? !task.simulated : task.simulated));
 
   if (embed) {
     return (
       <div className="pointer-events-none absolute inset-0 z-10 select-none font-sans text-white antialiased">
         <EmbedBadge />
+        <button type="button" onClick={onReviewOpen} className="pointer-events-auto absolute right-2 top-2 rounded-lg border border-amber-400/30 bg-[#0b0d12]/80 px-3 py-2 text-[11px] text-amber-100">Human review{reviewTasks.length > 0 && <span className="ml-2 font-mono">{reviewTasks.length}</span>}</button>
       </div>
     );
   }
@@ -137,7 +142,10 @@ export default function WorkflowHud({ embed = false }: { embed?: boolean }) {
 
       {/* bottom band: decision card above the hotkeys, between the minimap and the ops panel */}
       <div className="absolute z-10 flex flex-col items-center justify-end gap-2" style={px(L.bottomBand)}>
-        <DecisionToast />
+        {reviewTasks.length > 0 && <button type="button" onClick={onReviewOpen} className={`${GLASS} flex max-w-sm items-center gap-3 border-amber-400/30 px-4 py-3 text-left text-xs transition hover:bg-[#15171d]/90`}>
+          <span className="h-2 w-2 shrink-0 rounded-full bg-amber-300" />
+          <span><strong className="block font-medium text-amber-100">{reviewTasks.length} case{reviewTasks.length === 1 ? " needs" : "s need"} a person</strong><span className="mt-1 block text-[10px] text-white/55">Open the decision queue →</span></span>
+        </button>}
         <HotkeysFooter />
       </div>
 
@@ -153,7 +161,10 @@ export default function WorkflowHud({ embed = false }: { embed?: boolean }) {
 
       <div ref={barRef} className="absolute z-30" style={px(L.topBar)}>
         <TopBar
-          scenarios={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
+          scenarios={<div className="flex items-center gap-2">
+            <button type="button" onClick={onReviewOpen} className="pointer-events-auto whitespace-nowrap rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] font-medium text-amber-100 transition hover:bg-amber-400/20 focus-visible:outline-2 focus-visible:outline-amber-300">Human review{reviewTasks.length > 0 && <span className="ml-2 font-mono">{reviewTasks.length}</span>}</button>
+            <ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />
+          </div>}
           badge={<TourBadge />}
         />
       </div>

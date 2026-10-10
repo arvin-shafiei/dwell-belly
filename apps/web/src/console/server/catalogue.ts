@@ -2,6 +2,7 @@
 //   public    data/cases/delivery (via data/index.json)
 //   generated data/generated/delivery without a grounding seed
 //   grounded  data/generated/delivery with a grounding seed (data/scraped)
+//   adversarial data/adversarial/delivery (Oriol's adversarial cases, PR #12)
 //   fixtures  docs/stress-test/fixtures/NNN (index.md + history.md), id "fixture-NNN"
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
@@ -16,9 +17,13 @@ export interface CaseEntry {
 
 interface Located extends CaseEntry {
   file: string; // absolute; for fixtures, the fixture folder
+  mutation: string | null; // difficulty pattern (scripts/eval/mutations.mjs); null for public and fixtures
 }
 
-export const DATASETS = ["public", "generated", "grounded", "fixtures"] as const;
+/** A case with its difficulty pattern, for scenario sets. */
+export interface CaseWithMutation extends CaseEntry { mutation: string | null }
+
+export const DATASETS = ["public", "generated", "grounded", "adversarial", "fixtures"] as const;
 
 async function readJson<T>(file: string): Promise<T | null> {
   try {
@@ -35,29 +40,33 @@ async function scan(): Promise<Located[]> {
 
   const index = (await readJson<{ id: string; track: string; title?: string; file: string }[]>(path.join(data, "index.json"))) ?? [];
   for (const c of index) {
-    if (c.track === "delivery") out.push({ id: c.id, dataset: "public", title: c.title ?? null, file: path.join(data, c.file) });
+    if (c.track === "delivery") out.push({ id: c.id, dataset: "public", title: c.title ?? null, file: path.join(data, c.file), mutation: null });
   }
 
-  const gen = (await readJson<{ id: string; title?: string; grounding?: string | null; file: string }[]>(path.join(data, "generated", "index.json"))) ?? [];
-  const indexed = new Set(gen.map((c) => c.id));
-  for (const c of gen) {
-    out.push({ id: c.id, dataset: c.grounding ? "grounded" : "generated", title: c.title ?? null, file: path.join(data, c.file) });
-  }
-  // Generated files not yet in the index still count.
-  const genDir = path.join(data, "generated", "delivery");
-  for (const name of (await readdir(genDir).catch(() => [] as string[])).filter((n) => n.endsWith(".json")).sort()) {
-    const id = name.replace(/\.json$/, "");
-    if (indexed.has(id)) continue;
-    const c = await readJson<{ id?: string; title?: string; grounding?: string | null }>(path.join(genDir, name));
-    if (!c) continue;
-    out.push({ id: c.id ?? id, dataset: c.grounding ? "grounded" : "generated", title: c.title ?? null, file: path.join(genDir, name) });
+  type Indexed = { id: string; title?: string; grounding?: string | null; mutation?: string; file: string };
+  for (const set of ["generated", "adversarial"] as const) {
+    const dataset = (c: { grounding?: string | null }) => (set === "adversarial" ? "adversarial" : c.grounding ? "grounded" : "generated");
+    const listed = (await readJson<Indexed[]>(path.join(data, set, "index.json"))) ?? [];
+    const indexed = new Set(listed.map((c) => c.id));
+    for (const c of listed) {
+      out.push({ id: c.id, dataset: dataset(c), title: c.title ?? null, file: path.join(data, c.file), mutation: c.mutation ?? null });
+    }
+    // Files not yet in the index still count.
+    const dir = path.join(data, set, "delivery");
+    for (const name of (await readdir(dir).catch(() => [] as string[])).filter((n) => n.endsWith(".json")).sort()) {
+      const id = name.replace(/\.json$/, "");
+      if (indexed.has(id)) continue;
+      const c = await readJson<Omit<Indexed, "file">>(path.join(dir, name));
+      if (!c) continue;
+      out.push({ id: c.id ?? id, dataset: dataset(c), title: c.title ?? null, file: path.join(dir, name), mutation: c.mutation ?? null });
+    }
   }
 
   const fixDir = path.join(root, "docs", "stress-test", "fixtures");
   for (const name of (await readdir(fixDir).catch(() => [] as string[])).sort()) {
     const indexMd = await readFile(path.join(fixDir, name, "index.md"), "utf8").catch(() => null);
     if (indexMd === null) continue;
-    out.push({ id: `fixture-${name}`, dataset: "fixtures", title: fixtureTitle(indexMd), file: path.join(fixDir, name) });
+    out.push({ id: `fixture-${name}`, dataset: "fixtures", title: fixtureTitle(indexMd), file: path.join(fixDir, name), mutation: null });
   }
   return out;
 }
@@ -76,6 +85,11 @@ export async function listCases(dataset?: string | null, q?: string | null): Pro
     .filter((c) => !dataset || c.dataset === dataset)
     .filter((c) => !needle || c.id.toLowerCase().includes(needle) || (c.title ?? "").toLowerCase().includes(needle))
     .map(({ id, dataset: d, title }) => ({ id, dataset: d, title }));
+}
+
+/** Every case with its difficulty pattern. */
+export async function listCasesWithMutation(): Promise<CaseWithMutation[]> {
+  return (await located()).map(({ id, dataset, title, mutation }) => ({ id, dataset, title, mutation }));
 }
 
 export async function findCase(caseId: string, dataset?: string | null): Promise<CaseEntry | null> {

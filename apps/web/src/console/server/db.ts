@@ -70,6 +70,29 @@ const MIGRATIONS = [
   `CREATE INDEX IF NOT EXISTS executions_case ON executions (case_id, started_at)`,
   `CREATE INDEX IF NOT EXISTS executions_started ON executions (started_at)`,
   `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS workflow_versions (
+     workflow_id TEXT NOT NULL,
+     version INTEGER NOT NULL,
+     flow TEXT NOT NULL,
+     created_at TEXT NOT NULL,
+     created_by TEXT NOT NULL,
+     note TEXT,
+     parent_version INTEGER,
+     PRIMARY KEY (workflow_id, version)
+   )`,
+  `CREATE TABLE IF NOT EXISTS test_runs (
+     id TEXT PRIMARY KEY,
+     workflow_id TEXT NOT NULL,
+     version INTEGER NOT NULL,
+     scenario_set TEXT NOT NULL,
+     filter TEXT,
+     status TEXT NOT NULL,
+     started_at TEXT NOT NULL,
+     finished_at TEXT,
+     cases TEXT NOT NULL,
+     summary TEXT NOT NULL
+   )`,
+  `CREATE INDEX IF NOT EXISTS test_runs_workflow ON test_runs (workflow_id, started_at)`,
 ];
 
 /** Columns added after the first release (voice, PRD I5). ALTER TABLE ADD COLUMN is not idempotent, so check first. */

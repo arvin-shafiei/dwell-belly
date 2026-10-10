@@ -33,6 +33,7 @@ import Airport from "./modules/Airport";
 import Motorway from "./modules/Motorway";
 import River from "./modules/River";
 import ContainerTerminal from "./modules/ContainerTerminal";
+import Shipping from "./modules/Shipping";
 import Industrial from "./modules/Industrial";
 import Southbank from "./modules/Southbank";
 import OldTown from "./modules/OldTown";
@@ -50,7 +51,7 @@ import VoiceFx from "./modules/VoiceFx";
 const MODULES = {
   Sky, Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs, Airport,
   Traffic, Transit, TrafficLights, DeliveryFleet, Crashes, Responders, Roadworks, Scenarios, Life, CameraRig, WorkflowDriver,
-  Motorway, River, ContainerTerminal, Industrial, Southbank, OldTown, Shoreditch, Hampstead, Rail, Crowds, Streetscape, Construction, Chases, Collisions,
+  Motorway, River, ContainerTerminal, Shipping, Industrial, Southbank, OldTown, Shoreditch, Hampstead, Rail, Crowds, Streetscape, Construction, Chases, Collisions,
   CityRemote, VoiceFx,
 };
 
