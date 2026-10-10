@@ -2,6 +2,9 @@
 // Module: Responders. Emergency services react to incidents: police, ambulance, fire engine and a
 // recovery truck drive from their bases, secure the scene, clear it, reopen the road and go home.
 // Pure planning/lifecycle logic lives in ./Responders/ (tested); this file is the per-frame driver.
+// Cyclist hits: the ambulance goes first and fastest, a paramedic kneels by the rider, the rider is
+// stretchered into the ambulance, which leaves with blues on; then the police clear and reopen the road.
+// A tow only comes when the vehicle that hit them is wrecked (Collisions' hit record says so).
 import { useFrame } from "@react-three/fiber";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -9,8 +12,13 @@ import { emit } from "../bus";
 import { getEdge, getNode, edgeKey as makeEdgeKey, lanePosition, ROAD_EDGES } from "../roads";
 import { registerVehicle, type VehicleEntry } from "../registry";
 import { blockedSet, useWorld, type Incident, type IncidentKind } from "../store";
+import { cyclistHits } from "./Collisions/cyclist";
+import { newMedic, stepMedic, type Medic } from "./Responders/medic";
 import {
   BASE,
+  CYCLIST_AMBULANCE_BOOST,
+  GAP_M,
+  gapFor,
   companionEdges,
   leaveDelays,
   planApproach,
@@ -58,6 +66,7 @@ interface Unit {
   base: string;
   mode: Mode;
   returning: boolean; // waiting/returning towards base
+  bluesHome: boolean; // returning with blues on (ambulance taking a patient to hospital)
   departed: boolean; // has left base at least once (visible)
   route: Route | null;
   cur: Cursor;
@@ -90,6 +99,8 @@ interface Scene {
   z: number;
   life: Life;
   units: Unit[];
+  medic: Medic | null; // cyclist hit: the paramedic looking after the rider
+  workDone: boolean; // cyclist hit: the ambulance has left with the rider
 }
 
 const edgeLen = (a: string, b: string) => getEdge(a, b)?.length ?? 1;
@@ -128,6 +139,7 @@ export default function Responders() {
       if (!ROAD_EDGES.has(inc.edgeKey)) return;
       handled.current.add(inc.id);
       const now = sim.current;
+      const opts = { vehicleCrashed: !!cyclistHits.get(inc.id)?.damaged };
       const scene: Scene = {
         id: inc.id,
         kind: inc.kind,
@@ -135,11 +147,13 @@ export default function Responders() {
         note: inc.note,
         x: inc.x,
         z: inc.z,
-        life: newLife(now, { towsRequired: towsRequired(inc.kind), towWorkS: towWorkSeconds(inc.kind) }),
+        life: newLife(now, { towsRequired: towsRequired(inc.kind, opts), towWorkS: towWorkSeconds(inc.kind) }),
         units: [],
+        medic: inc.kind === "cyclist_hit" ? newMedic() : null,
+        workDone: inc.kind !== "cyclist_hit",
       };
-      const roles = planDispatch(inc.kind);
-      const delays = leaveDelays(roles);
+      const roles = planDispatch(inc.kind, opts);
+      const delays = leaveDelays(roles, inc.kind);
       roles.forEach((role, idx) => {
         unitSeq += 1;
         scene.units.push({
@@ -150,6 +164,7 @@ export default function Responders() {
           base: BASE[role],
           mode: "waiting",
           returning: false,
+          bluesHome: false,
           departed: false,
           route: null,
           cur: { seg: 0, t: 0 },
@@ -282,7 +297,8 @@ export default function Responders() {
     const police = scene.units.find((o) => o.role === "police" && o.nth === 0);
     const firstSame = u.nth > 0 ? scene.units.find((o) => o.role === u.role && o.nth === 0) : undefined;
     const avoid = firstSame?.side ?? (u.role === "tow" && police?.side ? police.side : undefined) ?? undefined;
-    const ap = planApproach(u.anchor, scene, u.role, blockedSet(), avoid, u.nth * REPEAT_GAP_M);
+    const extraGap = gapFor(u.role, scene.kind) - GAP_M[u.role] + u.nth * REPEAT_GAP_M;
+    const ap = planApproach(u.anchor, scene, u.role, blockedSet(), avoid, extraGap);
     if (ap) {
       u.route = ap.route;
       u.side = ap.side;
@@ -292,6 +308,53 @@ export default function Responders() {
     } else {
       u.mode = "waiting";
       u.retryAt = now + RETRY_S;
+    }
+  }
+
+  /** Ambulance with the rider aboard: turn round (don't drive through the scene) and go with blues on. */
+  function departWithBlues(u: Unit, now: number) {
+    const r = u.route;
+    if (u.returning || !r || r.nodes.length < 2) return;
+    u.returning = true;
+    u.bluesHome = true;
+    u.departAt = now;
+    const n = r.nodes.length;
+    const home = planReturn(r.nodes[n - 1], r.nodes[n - 2], u.base, blockedSet());
+    if (home) {
+      u.route = home;
+      u.cur = { seg: 0, t: Math.max(0, Math.min(1, 1 - u.cur.t)) };
+      u.mode = "returning";
+    } else planHome(u, now);
+  }
+
+  /** Cyclist hit: paramedic choreography; when the rider is aboard, the ambulance leaves. */
+  function stepCyclistScene(scene: Scene, dt: number, now: number) {
+    const m = scene.medic;
+    if (!m) return;
+    const amb = scene.units.find((x) => x.role === "ambulance" && x.nth === 0);
+    const hit = cyclistHits.get(scene.id);
+    if (!amb || scene.life.phase === "cleared" || scene.life.phase === "done") {
+      m.visible = false;
+      if (hit) hit.carry = null;
+      return;
+    }
+    const parked = amb.mode === "parked" && !amb.returning;
+    if (!parked && m.phase === "waiting") return;
+    const rider = hit ? (hit.rider.rest ? hit.rider : hit) : scene;
+    const res = stepMedic(m, dt, parked, { x: amb.x, z: amb.z, h: amb.heading }, UNIT_SIZE.ambulance.halfLength, rider);
+    if (hit) {
+      if (res.carry) {
+        const c = (hit.carry ??= { x: 0, y: 0, z: 0, h: 0 });
+        c.x = res.carry.x;
+        c.y = res.carry.y;
+        c.z = res.carry.z;
+        c.h = res.carry.h;
+      } else hit.carry = null;
+      hit.loaded = res.loaded;
+    }
+    if (res.done && !scene.workDone) {
+      departWithBlues(amb, now);
+      scene.workDone = true;
     }
   }
 
@@ -336,7 +399,9 @@ export default function Responders() {
         let towsArrived = 0;
         for (const u of scene.units) if (u.role === "tow" && u.mode === "parked") towsArrived++;
         const externallyCleared = !stored || (stored.status === "cleared" && scene.life.phase !== "cleared" && scene.life.phase !== "done");
-        for (const act of stepLife(scene.life, { anyArrived, towsArrived, externallyCleared }, now)) {
+        if (scene.medic) stepCyclistScene(scene, dt, now);
+        const workDone = scene.workDone;
+        for (const act of stepLife(scene.life, { anyArrived, towsArrived, externallyCleared, workDone }, now)) {
           try {
             if (act === "set_responding") world.updateIncident(scene.id, { status: "responding" });
             else if (act === "set_clearing") world.updateIncident(scene.id, { status: "clearing" });
@@ -376,7 +441,8 @@ export default function Responders() {
           const seg = Math.min(u.cur.seg, r.nodes.length - 2);
           const e = seg >= 0 ? getEdge(r.nodes[seg], r.nodes[seg + 1]) : undefined;
           const limit = e?.speedLimit ?? 11;
-          let target = u.returning ? limit : limit * RESPONSE_SPEED;
+          let target = u.returning && !u.bluesHome ? limit : limit * RESPONSE_SPEED;
+          if (scene.kind === "cyclist_hit" && u.role === "ambulance") target *= CYCLIST_AMBULANCE_BOOST;
           target = Math.min(target, 2 + remainingMetres(r, u.cur, edgeLen) * 1.1);
           // look-ahead raycast: brake for anything in front. With blues on the buffer is shorter and we don't
           // wait at junctions (everyone else yields to us); hits on our own scene (the wreck, colleagues) don't count.
@@ -384,10 +450,10 @@ export default function Responders() {
             const a = r.nodes[seg];
             const b = r.nodes[seg + 1];
             const [lx, lz, lh] = lanePosition(a, b, u.cur.t);
-            u.look.buffer = u.returning ? DEFAULT_BUFFER : BLUES_BUFFER;
+            u.look.buffer = u.returning && !u.bluesHome ? DEFAULT_BUFFER : BLUES_BUFFER;
             u.look.scan(u.id, lx, lz, lh, u.speed, dt, view.sees(lx, lz));
             if (u.look.hitId) {
-              const nb = u.returning && seg + 1 < r.nodes.length - 1 ? getNode(b) : null;
+              const nb = u.returning && !u.bluesHome && seg + 1 < r.nodes.length - 1 ? getNode(b) : null;
               target = lookTarget(target, u.look, {
                 scene,
                 junction: nb ? { x: nb.x, z: nb.z, toLine: (1 - u.cur.t) * e.length - STOP_LINE - UNIT_SIZE[u.role].halfLength } : null,
@@ -489,7 +555,8 @@ export default function Responders() {
           reg.stopped = u.mode !== "enroute" && u.mode !== "returning";
         }
 
-        const blues = visible && !u.returning && (u.mode === "enroute" || u.mode === "parked" || u.mode === "waiting");
+        const lit = u.returning ? u.bluesHome && u.mode === "returning" : u.mode === "enroute" || u.mode === "parked" || u.mode === "waiting";
+        const blues = visible && lit;
         if (p) {
           p.car.visible = visible;
           p.car.position.set(u.x, 0, u.z);
@@ -514,6 +581,19 @@ export default function Responders() {
               L.position.set(u.x, 3, u.z);
               L.intensity = 40 + 40 * Math.max(0, Math.sin(f * Math.PI * 2));
             }
+          }
+        }
+
+        // paramedic (cyclist hit): walks to the rider, kneels, walks the stretcher back
+        if (u.role === "ambulance" && p?.officer) {
+          const m = scene.medic;
+          const show = !!m && m.visible && visible;
+          p.officer.visible = show;
+          if (show && m) {
+            const walking = m.phase === "walk" || m.phase === "carry";
+            p.officer.position.set(m.x, walking ? Math.abs(Math.sin(now * 9)) * 0.06 : 0, m.z);
+            p.officer.rotation.set(0.45 * m.kneel, m.h, 0, "YXZ");
+            p.officer.scale.set(1, 1 - 0.35 * m.kneel, 1);
           }
         }
 

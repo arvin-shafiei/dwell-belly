@@ -40,35 +40,57 @@ export const REPEAT_DELAY_S = 3;
 /** Extra parking gap per repeat, so a second unit stuck on the same side doesn't park inside the first. */
 export const REPEAT_GAP_M = 6;
 
+/** Cyclist hit: the ambulance goes first (straight away), police right behind, a tow (if any) last. */
+export const CYCLIST_LEAVE_DELAY_S: Record<UnitRole, number> = { ambulance: 0, police: 1.2, fire: 2.2, tow: 3 };
+/** Cyclist hit: the ambulance parks close to the rider, police further back to protect the scene. */
+export const CYCLIST_GAP_M: Record<UnitRole, number> = { ambulance: 14, police: 24, fire: 30, tow: 5.5 };
+/** Cyclist hit: the ambulance drives this much faster than the other units (the fastest response). */
+export const CYCLIST_AMBULANCE_BOOST = 1.2;
+
 /** Leave delays for a dispatch list: base delay per role plus REPEAT_DELAY_S for each repeat. */
-export function leaveDelays(roles: readonly UnitRole[]): number[] {
+export function leaveDelays(roles: readonly UnitRole[], kind?: IncidentKind): number[] {
   const seen: Partial<Record<UnitRole, number>> = {};
+  const base = kind === "cyclist_hit" ? CYCLIST_LEAVE_DELAY_S : LEAVE_DELAY_S;
   return roles.map((r) => {
     const nth = seen[r] ?? 0;
     seen[r] = nth + 1;
-    return LEAVE_DELAY_S[r] + nth * REPEAT_DELAY_S;
+    return base[r] + nth * REPEAT_DELAY_S;
   });
 }
 
-/** Number of tow trucks the incident needs on scene before clearing can start. */
-export function towsRequired(kind: IncidentKind) {
-  return planDispatch(kind).filter((r) => r === "tow").length;
+/** Parking gap behind the incident point for a role at this kind of incident. */
+export function gapFor(role: UnitRole, kind: IncidentKind) {
+  return kind === "cyclist_hit" ? CYCLIST_GAP_M[role] : GAP_M[role];
 }
 
-/** Seconds every tow must have been on scene before "clearing". */
+export interface DispatchOpts {
+  /** Cyclist hit: the vehicle that hit them is wrecked too (a fast hit), so it needs a tow. */
+  vehicleCrashed?: boolean;
+}
+
+/** Number of tow trucks the incident needs on scene before clearing can start. */
+export function towsRequired(kind: IncidentKind, opts: DispatchOpts = {}) {
+  return planDispatch(kind, opts).filter((r) => r === "tow").length;
+}
+
+/** Seconds every tow must have been on scene before "clearing" (cyclist hit: after the ambulance has left). */
 export function towWorkSeconds(kind: IncidentKind) {
+  if (kind === "cyclist_hit") return 2;
   return kind === "pileup" ? 10 : 8;
 }
 
 // Roadworks are owned by Roadworks; plane_crash / emergency_landing by Airport.
-const HANDLED: ReadonlySet<IncidentKind> = new Set<IncidentKind>(["car_crash", "truck_crash", "pileup", "breakdown"]);
+const HANDLED: ReadonlySet<IncidentKind> = new Set<IncidentKind>(["car_crash", "truck_crash", "pileup", "breakdown", "cyclist_hit"]);
 
 export function shouldHandle(kind: IncidentKind) {
   return HANDLED.has(kind);
 }
 
-export function planDispatch(kind: IncidentKind): UnitRole[] {
+export function planDispatch(kind: IncidentKind, opts: DispatchOpts = {}): UnitRole[] {
   if (!shouldHandle(kind)) return [];
+  // Cyclist hit: ambulance FIRST (it leaves at once and drives fastest), then police; a tow only when
+  // the vehicle that hit them is wrecked.
+  if (kind === "cyclist_hit") return opts.vehicleCrashed ? ["ambulance", "police", "tow"] : ["ambulance", "police"];
   // Multi-vehicle pileup: everything, doubled up (second wave listed after the first, so it leaves later).
   if (kind === "pileup") return ["police", "ambulance", "fire", "tow", "police", "ambulance", "tow"];
   const roles: UnitRole[] = ["police"];

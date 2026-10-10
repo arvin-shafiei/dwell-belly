@@ -54,6 +54,8 @@ export function getShared(): Shared {
     mats: {
       white, glass, dark, yellow, red, amber, grey, steel, cone,
       hiVis: std("#d8f21a", { emissive: "#7a8a00", emissiveIntensity: 0.25 }),
+      paramedic: std("#1f7a4a", { emissive: "#0b3a20", emissiveIntensity: 0.2 }),
+      paramedicVest: std("#d8f21a", { emissive: "#7a8a00", emissiveIntensity: 0.25 }),
       skin: std("#e2b48c"),
       // box face order: +x, -x, +y, -y, +z, -z
       policeBody: [tex(policeSide()), tex(policeSide()), white, dark, white, white],
@@ -211,6 +213,14 @@ export function UnitMesh({
           <mesh geometry={s.body} material={m.hiVis} position={[0, 0.6, 0]} />
           <mesh geometry={s.head} material={m.skin} position={[0, 1.38, 0]} />
           <mesh geometry={s.helmet} material={m.dark} position={[0, 1.62, 0]} />
+        </group>
+      )}
+      {role === "ambulance" && (
+        // paramedic (cyclist hits): green uniform, hi-vis band; Responders moves, kneels and hides it
+        <group ref={officerRef} visible={false}>
+          <mesh geometry={s.body} material={m.paramedic} position={[0, 0.6, 0]} />
+          <mesh geometry={s.box} material={m.paramedicVest} position={[0, 0.85, 0]} scale={[0.5, 0.16, 0.5]} />
+          <mesh geometry={s.head} material={m.skin} position={[0, 1.38, 0]} />
         </group>
       )}
     </>
