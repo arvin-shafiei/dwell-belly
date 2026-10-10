@@ -39,6 +39,8 @@ export interface WorkflowEvent {
   nodeId: string; // flow node id from apps/api/flows/default-incident.json, e.g. "triage"
   status: "start" | "ok" | "ask" | "block" | "error";
   summary: string;
+  /** Who produced it: the mock engine (default) or the real agent in apps/api replayed from its trace. */
+  source?: "mock" | "agent";
 }
 
 export interface Delivery {
@@ -60,6 +62,10 @@ interface WorldState {
   focus: { x: number; z: number } | null; // camera flies here (e.g. an incident)
   timeOfDay: number; // 0..24 hours
   timeScale: number; // clock speed multiplier (HUD fast-forward): 1, 3, 10, 30
+  /** "real": staged scenarios are sent to the agent API (POST /api/cases) and its trace is replayed. */
+  agentMode: "mock" | "real";
+  /** Whether the agent API answered its health check (null = not checked yet). */
+  agentOnline: boolean | null;
   paused: boolean;
 
   blockEdge: (key: string, reason: string) => void;
@@ -75,6 +81,8 @@ interface WorldState {
   setFocus: (f: { x: number; z: number } | null) => void;
   setTimeOfDay: (h: number) => void;
   setTimeScale: (x: number) => void;
+  setAgentMode: (m: "mock" | "real") => void;
+  setAgentOnline: (v: boolean) => void;
   setPaused: (p: boolean) => void;
 }
 
@@ -88,6 +96,8 @@ export const useWorld = create<WorldState>((set) => ({
   focus: null,
   timeOfDay: 17.5,
   timeScale: 1,
+  agentMode: "mock",
+  agentOnline: null,
   paused: false,
 
   blockEdge: (key, reason) => set((s) => ({ blocked: { ...s.blocked, [key]: reason } })),
@@ -109,6 +119,8 @@ export const useWorld = create<WorldState>((set) => ({
   setFocus: (focus) => set({ focus }),
   setTimeOfDay: (timeOfDay) => set({ timeOfDay }),
   setTimeScale: (timeScale) => set({ timeScale }),
+  setAgentMode: (agentMode) => set({ agentMode }),
+  setAgentOnline: (agentOnline) => set({ agentOnline }),
   setPaused: (paused) => set({ paused }),
 }));
 

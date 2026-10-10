@@ -194,6 +194,46 @@ export function SimulatedTag({ long = false }: { long?: boolean }) {
   );
 }
 
+export function RealAgentTag() {
+  return (
+    <span
+      title="Decided by the real agent in apps/api; this is a replay of its trace."
+      className="inline-flex items-center gap-1 rounded border border-emerald-400/50 bg-emerald-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-emerald-200"
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+      Real agent
+    </span>
+  );
+}
+
+/**
+ * Mock vs real agent. "Real" sends each staged scenario to POST /api/cases (costs model calls), so
+ * it's opt-in, and only available when the agent API answers its health check.
+ */
+export function AgentToggle() {
+  const mode = useWorld((s) => s.agentMode);
+  const online = useWorld((s) => s.agentOnline);
+  const setMode = useWorld((s) => s.setAgentMode);
+  const real = mode === "real" && online;
+  return (
+    <button
+      type="button"
+      disabled={!online && mode === "mock"}
+      onClick={() => setMode(mode === "real" ? "mock" : "real")}
+      title={
+        online
+          ? real
+            ? "Scenarios go to the real agent (apps/api). Click to switch back to the mock."
+            : "Click to send scenarios to the real agent (apps/api). Uses model calls."
+          : "Agent API not reachable at NEXT_PUBLIC_API_URL, so the mock agent runs."
+      }
+      className="disabled:cursor-not-allowed"
+    >
+      {real ? <RealAgentTag /> : <SimulatedTag long />}
+    </button>
+  );
+}
+
 export const TopBar = memo(function TopBar({ badge, extra }: { badge?: ReactNode; extra?: ReactNode }) {
   const paused = useWorld((s) => s.paused);
   return (
@@ -310,6 +350,7 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
                 <span className={`absolute inset-y-0 left-0 w-[3px] ${style.bar}`} />
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[11px] font-medium text-white">{c.caseId}</span>
+                  {c.caseId.startsWith("AGT-") ? <RealAgentTag /> : <SimulatedTag />}
                   <span className={`rounded px-1.5 py-px font-mono text-[9px] uppercase tracking-wider ${style.chip}`}>{style.label}</span>
                   <span className="ml-auto font-mono text-[10px] tabular-nums text-white/55">{formatCost(c.cost)}</span>
                 </div>

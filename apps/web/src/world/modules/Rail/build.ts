@@ -573,7 +573,7 @@ function buildStation(line: Line, st: Line["stations"][number], brick: Builder, 
   const pts = centrePts(line, st.s0, st.s1, 2);
   brick.sweep(pts, () => [[-PLATFORM_HALF, -0.3], [PLATFORM_HALF, -0.3], [PLATFORM_HALF, 0.95], [-PLATFORM_HALF, 0.95]], PLATFORM, true);
   for (const side of [-1, 1])
-    brick.sweep(pts, () => [[side * (PLATFORM_HALF - 0.45), 0.96], [side * PLATFORM_HALF, 0.96]], EDGE_YELLOW);
+    brick.sweep(pts, () => [[side * (PLATFORM_HALF - 0.45), 1.03], [side * PLATFORM_HALF, 1.03]], EDGE_YELLOW); // 8 cm proud of the platform: no z-fighting
   // canopy over the middle of the platform
   const c0 = st.s0 + (st.s1 - st.s0) * 0.15, c1 = st.s1 - (st.s1 - st.s0) * 0.15;
   const cp = centrePts(line, c0, c1, 2);
@@ -678,7 +678,7 @@ function buildCrossing(lc: LevelCrossing, k: number, brick: Builder, blocks: Ins
   for (const side of [-1, 1]) {
     // white stop lines on the road either side
     const d = side * (zone + 4.2);
-    brick.box(lc.x + Math.sin(rh) * d, 0.07, lc.z + Math.cos(rh) * d, lc.roadHalf * 2, 0.04, 0.4, rh, "#f2f2f2");
+    brick.box(lc.x + Math.sin(rh) * d, 0.1, lc.z + Math.cos(rh) * d, lc.roadHalf * 2, 0.06, 0.4, rh, "#f2f2f2");
   }
   const armPivots: CrossingVisual["armPivots"] = [];
   let lampIdx = k * 4;
@@ -739,7 +739,7 @@ function buildTerminus(brick: Builder, glass: Builder, arches: Inst, blocks: Ins
   // platforms
   for (const x of TERMINUS.islands) {
     brick.box(x, H + 0.3, (TERMINUS.buffersZ + TERMINUS.platformEndZ) / 2 - 0.5, PLATFORM_HALF * 2, 1.3, TERMINUS.buffersZ - TERMINUS.platformEndZ, 0, PLATFORM);
-    for (const side of [-1, 1]) brick.box(x + side * (PLATFORM_HALF - 0.22), H + 0.97, (TERMINUS.buffersZ + TERMINUS.platformEndZ) / 2 - 0.5, 0.44, 0.02, TERMINUS.buffersZ - TERMINUS.platformEndZ, 0, EDGE_YELLOW);
+    for (const side of [-1, 1]) brick.box(x + side * (PLATFORM_HALF - 0.22), H + 1.0, (TERMINUS.buffersZ + TERMINUS.platformEndZ) / 2 - 0.5, 0.44, 0.02, TERMINUS.buffersZ - TERMINUS.platformEndZ, 0, EDGE_YELLOW);
   }
   // concourse deck at the buffer end
   brick.box(cx, H + 0.3, -331.5, S.maxX - S.minX - 2, 1.3, 3, 0, PLATFORM);
