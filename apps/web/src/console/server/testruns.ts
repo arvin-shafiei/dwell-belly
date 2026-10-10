@@ -14,7 +14,7 @@ import { fixtureExpected, scoreFixture, summarise, toTestCase, withMessages, typ
 import { recordVerdict } from "./store";
 import { getVersion } from "./versions";
 
-export const CONCURRENCY = 3;
+export const CONCURRENCY = 5;
 
 export class TestRunError extends Error {
   constructor(message: string, readonly status: number, readonly problems?: string[]) {
