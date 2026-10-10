@@ -55,9 +55,13 @@ export function formatHour(h: number): string {
   return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
-/** Workflow events from the real agent (source "agent") are REAL; everything else is SIMULATED. */
+/**
+ * REAL: the real agent's trace, a live human, a real audio attachment or a case file.
+ * SIMULATED: the mock engine (no source / "mock") and simulated personas.
+ */
+const REAL_SOURCES = new Set(["agent", "live_human", "audio_attachment", "case_file"]);
 export function sourceTag(source: string | undefined): "REAL" | "SIMULATED" {
-  return source === "agent" ? "REAL" : "SIMULATED";
+  return source && REAL_SOURCES.has(source) ? "REAL" : "SIMULATED";
 }
 
 /** Case-insensitive match on id, title, scene and where. Empty query returns everything. */
