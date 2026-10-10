@@ -95,6 +95,17 @@ export async function callTool(tool: string, state: CallStateInput & { callId: s
   }
 }
 
+/** After a call: every line the agent said goes through the safety gate. Null on any failure, never throws. */
+export async function auditTranscript(state: CallStateInput & { callId: string }, lines: { role: "user" | "agent"; message: string }[]) {
+  try {
+    return await postJson<{ checked: number; flagged: { line: string; reasons: string[] }[]; unchecked: boolean; event: ViewEvent | null }>(
+      "/api/voice/audit", { state, lines }, 8_000,
+    );
+  } catch {
+    return null;
+  }
+}
+
 export function buildRerunView(input: { view: CaseView; previousOutbox?: unknown[]; newEvents: ViewEvent[]; elapsedMs: number }) {
   return postJson<{ view: CaseView; synthetic: boolean }>("/api/voice/rerun", { ...input, mode: "demo" });
 }
