@@ -4,6 +4,9 @@ import { Canvas } from "@react-three/fiber";
 import { AdaptiveDpr, PerformanceMonitor, Stats } from "@react-three/drei";
 import { Suspense, useState } from "react";
 import { ModuleBoundary } from "./ModuleBoundary";
+import { installLogDepthPatch } from "./logDepthPatch";
+
+installLogDepthPatch();
 import Ground from "./modules/Ground";
 import Roads from "./modules/Roads";
 import Buildings from "./modules/Buildings";
