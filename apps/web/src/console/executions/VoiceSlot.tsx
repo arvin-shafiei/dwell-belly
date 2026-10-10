@@ -20,7 +20,7 @@ import { useConsoleNav } from "./nav";
 import { VOICE_LOADERS, registeredVoiceComponent } from "./voiceComponents";
 import { Badge, getJson } from "./ui";
 import {
-  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noteCaseText, noteRerun, type VoiceComponentName,
+  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noCallLine, noteCaseText, noteRerun, type VoiceComponentName,
 } from "./voiceSlots";
 
 // The voice components' props are owned by the voice layer; the slots pass the documented shapes.
@@ -119,7 +119,13 @@ function Slot({ name, label, props }: { name: VoiceComponentName; label: string;
 }
 
 function NoteButton({ execution, from = "Driver", onEvent }: { execution: ExecutionRecord; from?: string; onEvent: (e: CaseViewEvent) => void }) {
-  return <Slot name="VoiceNoteButton" label="Voice note" props={{ caseId: execution.caseId, caseText: noteCaseText(execution), from, onEvent }} />;
+  return (
+    <Slot
+      name="VoiceNoteButton"
+      label="Voice note"
+      props={{ caseId: execution.caseId, caseText: noteCaseText(execution), from, recordLabel: `🎙 Record as the ${from.toLowerCase()}`, onEvent }}
+    />
+  );
 }
 
 function CallDrawer({
@@ -134,7 +140,7 @@ function CallDrawer({
     <Slot
       name="CallDrawer"
       label={`Call ${row.action.recipient}`}
-      props={{ request: callRequest(execution, row), state: callStateSeed(execution, row.action.recipient, simulated), simulated, onDone }}
+      props={{ request: callRequest(execution, row), state: callStateSeed(execution, row.action.recipient, simulated), simulated, label: `Start call as ${row.action.recipient}`, onDone }}
     />
   );
 }
@@ -170,20 +176,51 @@ function Mounts({ execution }: { execution: ExecutionRecord }) {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <NoteButton execution={e} onEvent={(ev) => rerun("voice note", noteRerun(e, ev))} />
-      {calls.map((row, i) => (
-        <CallDrawer key={`${row.action.recipient}-${i}`} execution={e} row={row} onDone={(r) => rerun("call", callRerun(e, r))} />
-      ))}
-      {card && <ApproveByVoice execution={e} card={card} onDecision={(d) => rerun("approval", approvalRerun(e, d))} />}
-      {e.voice && <Badge tone="info" title={e.voice.callId ? `call ${e.voice.callId}` : undefined}>by voice: {e.voice.trigger}</Badge>}
-      {e.parentExecutionId && (
-        <button type="button" className="text-[11px] text-white/45 underline-offset-2 hover:text-white/80 hover:underline" onClick={() => go("executions", { id: e.parentExecutionId! }, true)}>
-          the run before this one
-        </button>
+    <div className="flex flex-col gap-3">
+      {calls.length ? (
+        calls.map((row, i) => (
+          <VoiceCard key={`${row.action.recipient}-${i}`} icon="📞" title={`The agent decided to phone ${row.action.recipient}`}>
+            {row.action.purpose && <p>Why: {row.action.purpose}</p>}
+            <p>You play {row.action.recipient}. Our AI desk agent calls you. Anything it promises is checked before it says it.</p>
+            <CallDrawer execution={e} row={row} onDone={(r) => rerun("call", callRerun(e, r))} />
+          </VoiceCard>
+        ))
+      ) : (
+        <p className="text-[13px] text-white/45">📞 {noCallLine(e.outbox)}</p>
       )}
-      {busy && <span className="text-[11px] text-[#ff6a1a]">Re-running with the {busy}…</span>}
-      {error && <span className="max-w-72 truncate text-[11px] text-[#ff5c5c]" title={error}>{error}</span>}
+      <VoiceCard icon="🎙" title="Be the driver">
+        <p>Record a voice note the way a driver at the wheel would, in any language. You&apos;ll see it in English.</p>
+        <NoteButton execution={e} onEvent={(ev) => rerun("voice note", noteRerun(e, ev))} />
+      </VoiceCard>
+      {card && (
+        <VoiceCard icon="✅" title="A person must decide">
+          <p>Say your choice out loud. The agent reads it back before it counts.</p>
+          <ApproveByVoice execution={e} card={card} onDecision={(d) => rerun("approval", approvalRerun(e, d))} />
+        </VoiceCard>
+      )}
+      <div className="flex flex-wrap items-center gap-2">
+        {e.voice && <Badge tone="info" title={e.voice.callId ? `call ${e.voice.callId}` : undefined}>by voice: {e.voice.trigger}</Badge>}
+        {e.parentExecutionId && (
+          <button type="button" className="text-[11px] text-white/45 underline-offset-2 hover:text-white/80 hover:underline" onClick={() => go("executions", { id: e.parentExecutionId! }, true)}>
+            the run before this one
+          </button>
+        )}
+        {busy && <span className="text-[12px] text-[#ff6a1a]">Re-running the case with the {busy}…</span>}
+        {error && <span className="max-w-72 truncate text-[12px] text-[#ff5c5c]" title={error}>{error}</span>}
+      </div>
+    </div>
+  );
+}
+
+/** One thing a person can do by voice: what it is, who they play, then the control. */
+function VoiceCard({ icon, title, children }: { icon: string; title: string; children: ReactNode }) {
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
+      <div className="text-[14px] font-medium text-white/90">
+        <span className="mr-1.5">{icon}</span>
+        {title}
+      </div>
+      <div className="mt-1 flex flex-col gap-2 text-[13px] text-white/55">{children}</div>
     </div>
   );
 }

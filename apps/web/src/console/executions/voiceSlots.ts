@@ -38,6 +38,14 @@ export function callableRows(outbox: OutboxEntry[] | null | undefined): OutboxEn
   return (outbox ?? []).filter((o) => /\b(call|callback|phone|telephone|ring)\b/i.test(o.action.channel));
 }
 
+/** Why a run has no call button, in plain words. */
+export function noCallLine(outbox: OutboxEntry[] | null | undefined): string {
+  const first = (outbox ?? [])[0];
+  return first
+    ? `No call needed on this run: the agent chose ${first.action.channel} to ${first.action.recipient}.`
+    : "No call needed on this run: the agent sent nothing.";
+}
+
 /** A card can be approved while it is still open. */
 export function cardOpen(card: DecisionCard | null | undefined): card is DecisionCard {
   return Boolean(card && !card.chosen && card.options?.length);
