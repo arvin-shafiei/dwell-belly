@@ -38,6 +38,31 @@ export function callableRows(outbox: OutboxEntry[] | null | undefined): OutboxEn
   return (outbox ?? []).filter((o) => /\b(call|callback|phone|telephone|ring)\b/i.test(o.action.channel));
 }
 
+const ROLE_WORDS = "recipient|customer|driver|courier|dispatcher|merchant|sender|seller|buyer|tenant|landlord|neighbour|neighbor|concierge|manager";
+const escapeRe = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Who a person is in this case, read from its own messages: "Fen Orlo, route driver" as a sender, or
+ * "recipient Elva Kesh" in a message. A pasted case keeps only its title and the agent's claims in the
+ * run, so those are read too. Empty when the case does not say. */
+export function partyRole(name: string, e: ExecutionRecord): string {
+  const events = e.trace?.events ?? [];
+  const start = events.find((x) => x.kind === "run_start");
+  if (!start || start.kind !== "run_start" || !name.trim()) return "";
+  const claims = events.flatMap((x) => {
+    const out = x.kind === "node_end" ? (x.output as { type?: string; claims?: { who: string; says: string }[] } | undefined) : undefined;
+    return out?.type === "clash_check" && Array.isArray(out.claims) ? out.claims : [];
+  });
+  const senders = [...start.inputs.map((i) => i.from), ...claims.map((c) => c.who)];
+  const asSender = senders.find((f) => f.toLowerCase().startsWith(`${name.toLowerCase()}, `));
+  if (asSender) return asSender.slice(name.length + 2).trim();
+  const mentioned = new RegExp(`\\b(${ROLE_WORDS})\\s+${escapeRe(name)}\\b`, "i");
+  for (const text of [start.title ?? "", ...start.inputs.map((i) => i.excerpt), ...claims.map((c) => c.says)]) {
+    const m = mentioned.exec(text);
+    if (m) return m[1].toLowerCase();
+  }
+  return "";
+}
+
 /** Why a run has no call button, in plain words. */
 export function noCallLine(outbox: OutboxEntry[] | null | undefined): string {
   const first = (outbox ?? [])[0];

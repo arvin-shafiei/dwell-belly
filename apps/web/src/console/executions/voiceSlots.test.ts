@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ExecutionRecord, OutboxEntry } from "../types";
-import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noCallLine, noteCaseText, noteRerun } from "./voiceSlots";
+import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noCallLine, noteCaseText, noteRerun, partyRole } from "./voiceSlots";
 
 const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
 const ex = { id: "e1", caseId: "delivery-003", dataset: "public", workflowId: "default-incident", title: "Case 003" } as ExecutionRecord & { title: string };
@@ -18,6 +18,24 @@ describe("voice slots", () => {
     ] }] } } as unknown as ExecutionRecord;
     expect(noteCaseText(run)).toBe("From: Fen Orlo, route driver\nI am at 7 Sedgeglass Mews for DL-003.\n\nFrom: Dispatch\nContact Elva Kesh.");
     expect(noteCaseText(ex)).toBe("");
+  });
+  it("says who a person is, from the case's own messages", () => {
+    const run = { ...ex, trace: { events: [{ kind: "run_start", inputs: [
+      { n: 1, channel: "Driver chat", from: "Fen Orlo, route driver", excerpt: "I am at 7 Sedgeglass Mews for DL-003." },
+      { n: 2, channel: "Dispatch chat", from: "Dispatch, Plover Arc Logistics", excerpt: "Please contact recipient Elva Kesh on the verified callback route." },
+    ] }] } } as unknown as ExecutionRecord;
+    expect(partyRole("Fen Orlo", run)).toBe("route driver");
+    expect(partyRole("Elva Kesh", run)).toBe("recipient");
+    expect(partyRole("Nobody Here", run)).toBe("");
+    expect(partyRole("Elva Kesh", ex)).toBe("");
+  });
+  it("finds the role on a pasted case, where the run keeps only the title and the agent's claims", () => {
+    const pasted = { ...ex, trace: { events: [
+      { kind: "run_start", title: "Please contact recipient Elva Kesh on the verified order callback route.", inputs: [{ n: 1, channel: "Document", from: "history", excerpt: "573 characters" }] },
+      { kind: "node_end", node: "clash", output: { type: "clash_check", clash: false, p: 0.1, claims: [{ who: "Fen Orlo, route driver", says: "Gate shut." }] } },
+    ] } } as unknown as ExecutionRecord;
+    expect(partyRole("Elva Kesh", pasted)).toBe("recipient");
+    expect(partyRole("Fen Orlo", pasted)).toBe("route driver");
   });
   it("says plainly why there is no call", () => {
     expect(noCallLine([{ ...row("Dispatch chat"), action: { ...row("Dispatch chat").action, recipient: "Dispatch, Plover Arc Logistics" } }]))
