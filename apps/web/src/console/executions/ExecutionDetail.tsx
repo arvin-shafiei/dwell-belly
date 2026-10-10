@@ -14,8 +14,8 @@ import Replay, { LiveSteps } from "./Replay";
 import DecideRerun from "./DecideRerun";
 import Timeline, { MessageCard } from "./Timeline";
 import { Badge, Button, cx } from "./ui";
-import VoiceSlot from "./VoiceSlot";
-import { callableRows } from "./voiceSlots";
+import VoiceSlot, { useLiveCalls } from "./VoiceSlot";
+import { callableRows, voiceNeeded } from "./voiceSlots";
 import { DownloadRunButton } from "../export/Buttons";
 import { ShowOnPlaybook } from "../ShowOnPlaybook";
 
@@ -112,8 +112,9 @@ export default function ExecutionDetail({
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const [replayFor, setReplayFor] = useState<string | null>(null);
-  // With Live calls on, a run that just finished and decided to phone someone rings (VoiceSlot.Ring).
+  // With Take calls on, a run that just finished and decided to phone someone rings (VoiceSlot.Ring).
   const [ringFor, setRingFor] = useState<string | null>(null);
+  const [takeCalls] = useLiveCalls();
   // When the open run finishes while you watch, play it back straight away.
   const [seen, setSeen] = useState<{ id: string; status: string } | null>(null);
   if (execution && (seen?.id !== execution.id || seen.status !== execution.status)) {
@@ -139,9 +140,11 @@ export default function ExecutionDetail({
   const steps = checklist(e.trace);
   const tone = statusTone(e);
   const toneColor = { ok: "#3ecf8e", warn: "#f5b83d", info: "#6aa7ff", err: "#ff5c5c", muted: "#8b8b96", accent: "#ff6a1a" }[tone];
-  const verdict = headline(e);
-  const why = whyLine(e);
   const running = e.status === "running";
+  // While the call is ringing, the run has not called anyone yet: say so instead of the recorded "Called …".
+  const ringRow = ringFor === e.id && !running && takeCalls ? callableRows(e.outbox)[0] : undefined;
+  const verdict = ringRow ? `Calling ${ringRow.action.recipient}…` : headline(e);
+  const why = whyLine(e);
   const replaying = replayFor === e.id && !running;
   const canReplay = !running && !!e.trace?.events.length;
 
@@ -191,8 +194,8 @@ export default function ExecutionDetail({
           </div>
         </header>
 
-        {/* With Live calls on, the call rings inside "Watch it think" under the message it belongs to, or here once the replay is closed. */}
-        {ringFor === e.id && !running && !replaying && <VoiceSlot.Ring execution={e} onDismiss={() => setRingFor(null)} />}
+        {/* With Take calls on, the call rings inside "Watch it think" under the message it belongs to, or here once the replay is closed. */}
+        {ringRow && !replaying && <VoiceSlot.Ring execution={e} />}
         {running && <LiveSteps execution={e} />}
         {replaying && (
           <Replay
@@ -201,9 +204,7 @@ export default function ExecutionDetail({
             verdict={verdict}
             why={why}
             onClose={() => setReplayFor(null)}
-            call={ringFor === e.id && callableRows(e.outbox)[0]
-              ? { to: callableRows(e.outbox)[0].action.recipient, node: <VoiceSlot.Ring execution={e} onDismiss={() => setRingFor(null)} /> }
-              : undefined}
+            call={ringRow ? { to: ringRow.action.recipient, node: <VoiceSlot.Ring execution={e} /> } : undefined}
           />
         )}
 
@@ -212,7 +213,7 @@ export default function ExecutionDetail({
         {msg && <MessageCard title={msg.title} to={msg.to} how={msg.how} message={msg.message} />}
         {card && <DecideRerun key={e.id} execution={e} card={card} onOpen={onOpen} />}
 
-        {e.status !== "running" && (
+        {e.status !== "running" && !ringRow && voiceNeeded(e, card) && (
           <section>
             <h3 className="mb-1 text-sm font-semibold text-white/60">Voice: talk to this case</h3>
             <p className="mb-3 text-[13px] text-white/45">

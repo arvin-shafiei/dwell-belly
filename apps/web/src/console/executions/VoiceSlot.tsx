@@ -14,8 +14,9 @@
 //   <VoiceSlot.CallDrawer execution row onDone />      an outbox row on a Call / Phone channel
 //   <VoiceSlot.ApproveByVoice execution card onDecision />  an open decision card
 //   <VoiceSlot.Mounts execution />                     the call and approve-by-voice cards, wired to POST /api/console/execute re-runs
-//   <VoiceSlot.Ring execution onDismiss />             with Live calls on: the incoming call when a run just decided to phone someone
-//   <VoiceSlot.LiveCallsSwitch />                      the "📞 Live calls" switch (off: calls are only recorded, like any message)
+//   <VoiceSlot.Ring execution />                       with Take calls on: the incoming call when a run just decided to phone someone
+//   <VoiceSlot.LiveCallsSwitch />                      the "📞 Take calls" switch (off: fully automatic, calls are only recorded)
+// A run with no call and no open decision shows no voice at all (voiceNeeded).
 // Driver voice notes come in on New case as attached recordings, not as a box on every run.
 import { Component, Suspense, createElement, use, useState, useSyncExternalStore, type ComponentType, type ReactNode } from "react";
 import type { CaseViewEvent, ConsoleApi, DecisionCard, ExecuteRequest, ExecutionRecord, HumanDecision, OutboxEntry } from "../types";
@@ -24,7 +25,7 @@ import { VOICE_LOADERS, registeredVoiceComponent } from "./voiceComponents";
 import { Badge, getJson } from "./ui";
 import { liveCallsOn, setLiveCalls, subscribeLiveCalls } from "../../voice/liveCalls";
 import {
-  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noCallLine, noteCaseText, partyRole, type VoiceComponentName,
+  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noteCaseText, partyRole, type VoiceComponentName,
 } from "./voiceSlots";
 
 // The voice components' props are owned by the voice layer; the slots pass the documented shapes.
@@ -179,26 +180,28 @@ function useVoiceRerun() {
   return { go, busy, error, rerun };
 }
 
-function useLiveCalls(): [boolean, (on: boolean) => void] {
+/** The "📞 Take calls" setting, remembered on this browser. */
+export function useLiveCalls(): [boolean, (on: boolean) => void] {
   return [useSyncExternalStore(subscribeLiveCalls, liveCallsOn, () => false), setLiveCalls];
 }
 
-/** "📞 Live calls": when on, a run that decides to phone someone rings as soon as it finishes. */
+/** "📞 Take calls": when on, a run that decides to phone someone pops the call up for you to take. */
 function LiveCallsSwitch() {
   const [on, set] = useLiveCalls();
   return (
     <label
       className="inline-flex cursor-pointer select-none items-center gap-2 text-[13px] text-white/65"
-      title="On: when a run decides to phone someone, it rings here as soon as it finishes, and you answer as that person. Off: the call is only recorded, like any other message."
+      title="On: when a run decides to phone someone, the call pops up for you to take, as that person. Off: fully automatic; the call is only recorded, as in the scored Reality Test."
     >
       <input type="checkbox" checked={on} onChange={(ev) => set(ev.target.checked)} className="accent-[#ff6a1a]" />
-      📞 Live calls
+      📞 Take calls
     </label>
   );
 }
 
-/** The incoming call when Live calls is on and the run just decided to phone someone. */
-function Ring({ execution, onDismiss }: { execution: ExecutionRecord; onDismiss: () => void }) {
+/** The incoming call when Take calls is on and the run just decided to phone someone. Take it and the
+ * case re-runs with what was said; don't, and it re-runs knowing nobody answered. */
+function Ring({ execution }: { execution: ExecutionRecord }) {
   const [live] = useLiveCalls();
   const { busy, error, rerun } = useVoiceRerun();
   const row = callableRows(execution.outbox)[0];
@@ -211,12 +214,20 @@ function Ring({ execution, onDismiss }: { execution: ExecutionRecord; onDismiss:
         <div className="min-w-0 flex-1">
           <div className="text-[17px] font-semibold text-white">📞 Rivet is calling {who}{role ? `, the ${role}` : ""}</div>
           {row.action.purpose && <p className="mt-1 text-[14px] text-white/70">Why: {row.action.purpose}</p>}
-          <p className="mt-1 text-[14px] text-white/70">You answer as {who}. When you hang up, the case runs again with what was said.</p>
+          <p className="mt-1 text-[14px] text-white/70">Take it and you answer as {who}; when you hang up, the case runs again with what was said. Don&apos;t take it and the case runs again knowing nobody answered.</p>
         </div>
-        <button type="button" onClick={onDismiss} className="shrink-0 text-[13px] text-white/50 hover:text-white/85">Not now</button>
+        <button
+          type="button"
+          disabled={!!busy}
+          onClick={() => void rerun("missed call", noAnswerRerun(execution, row))}
+          className="shrink-0 rounded-md border border-white/20 px-3 py-1 text-[13px] text-white/75 hover:text-white disabled:opacity-50"
+          title="Nobody answers: the case runs again and the agent picks another way."
+        >
+          Don&apos;t take it
+        </button>
       </div>
       <div className="mt-3">
-        <CallDrawer execution={execution} row={row} label="Answer" onDone={(r) => rerun("call", callRerun(execution, r))} />
+        <CallDrawer execution={execution} row={row} label="Take call" onDone={(r) => rerun("call", callRerun(execution, r))} />
       </div>
       {busy && <p className="mt-2 text-[12px] text-[#ff6a1a]">Re-running the case with the {busy}…</p>}
       {error && <p className="mt-2 text-[12px] text-[#ff5c5c]">{error}</p>}
@@ -234,17 +245,13 @@ function Mounts({ execution }: { execution: ExecutionRecord }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {calls.length ? (
-        calls.map((row, i) => (
-          <VoiceCard key={`${row.action.recipient}-${i}`} icon="📞" title={`The agent decided to phone ${row.action.recipient}${partyRole(row.action.recipient, e) ? `, the ${partyRole(row.action.recipient, e)}` : ""}`}>
-            {row.action.purpose && <p>Why: {row.action.purpose}</p>}
-            <p>You play {row.action.recipient}. Our AI desk agent calls you. Anything it promises is checked before it says it.</p>
-            <CallDrawer execution={e} row={row} onDone={(r) => rerun("call", callRerun(e, r))} />
-          </VoiceCard>
-        ))
-      ) : (
-        <p className="text-[13px] text-white/45">📞 {noCallLine(e.outbox)}</p>
-      )}
+      {calls.map((row, i) => (
+        <VoiceCard key={`${row.action.recipient}-${i}`} icon="📞" title={`The agent decided to phone ${row.action.recipient}${partyRole(row.action.recipient, e) ? `, the ${partyRole(row.action.recipient, e)}` : ""}`}>
+          {row.action.purpose && <p>Why: {row.action.purpose}</p>}
+          <p>You play {row.action.recipient}. Our AI desk agent calls you. Anything it promises is checked before it says it.</p>
+          <CallDrawer execution={e} row={row} onDone={(r) => rerun("call", callRerun(e, r))} />
+        </VoiceCard>
+      ))}
       {card && (
         <VoiceCard icon="✅" title="A person must decide">
           <p>Say your choice out loud. The agent reads it back before it counts.</p>

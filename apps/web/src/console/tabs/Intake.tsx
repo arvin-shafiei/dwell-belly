@@ -9,6 +9,7 @@ import { EXAMPLES } from "../intake/examples";
 import { AddMessage, ChannelSelect, Files, FIELD, Preview, type FileRow } from "../intake/parts";
 import { attachmentKind, buildIntakeRequest, mergeMessages, MAX_ATTACHMENT_CHARS, type DraftAttachment, type DraftMessage } from "../intake/request";
 import { splitThread } from "../intake/split";
+import VoiceSlot from "../executions/VoiceSlot";
 
 type Phase = "idle" | "saving" | "opening";
 
@@ -184,6 +185,9 @@ export default function IntakeTab() {
             >
               Run the agent
             </Button>
+            <div className="flex justify-center">
+              <VoiceSlot.LiveCallsSwitch />
+            </div>
             {busy && (
               <div className="flex items-center gap-2 text-[13px] text-white/60" role="status">
                 <Spinner size={12} />

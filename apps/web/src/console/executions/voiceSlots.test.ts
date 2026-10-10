@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ExecutionRecord, OutboxEntry } from "../types";
-import { approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noCallLine, noteCaseText, noteRerun, partyRole } from "./voiceSlots";
+import { approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noCallLine, noteCaseText, noteRerun, partyRole, voiceNeeded } from "./voiceSlots";
 
 const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
 const ex = { id: "e1", caseId: "delivery-003", dataset: "public", workflowId: "default-incident", title: "Case 003" } as ExecutionRecord & { title: string };
@@ -71,6 +71,20 @@ describe("voice slots", () => {
     expect(approvalRerun(ex, d)).toMatchObject({ parentExecutionId: "e1", humanDecision: d, voice: { trigger: "approval" } });
     expect(callRerun(ex, { events: [note], callId: "c1" })).toMatchObject({ voice: { trigger: "call", callId: "c1" } });
     expect(callRerun(ex, { events: [], decision: d }).voice?.trigger).toBe("approval");
+  });
+  it("turns a call nobody took into a re-run with one no-answer event", () => {
+    const body = noAnswerRerun(ex, row("Phone call"));
+    expect(body).toEqual({
+      caseId: "delivery-003", dataset: "public", workflowId: "default-incident", parentExecutionId: "e1",
+      extraEvents: [{ n: 0, timestamp: "", stage: null, channel: "Call", from: "Desk (voice agent)", to: "Ms Patel", body: "Called Ms Patel about Agree a slot: no answer.", source: "live_human" }],
+      voice: { trigger: "call" },
+    });
+  });
+  it("shows voice only when the run has a call or an open decision", () => {
+    expect(voiceNeeded({ ...ex, outbox: [row("Email")] } as ExecutionRecord, null)).toBe(false);
+    expect(voiceNeeded({ ...ex, outbox: [row("Phone call")] } as ExecutionRecord, null)).toBe(true);
+    expect(voiceNeeded({ ...ex, outbox: [] } as ExecutionRecord, card)).toBe(true);
+    expect(voiceNeeded({ ...ex, outbox: [] } as ExecutionRecord, { ...card, chosen: "option-1" })).toBe(false);
   });
   it("keeps the call brief within 600 characters", () => {
     const r = callRequest(ex, { ...row("Call"), action: { ...row("Call").action, message: "x".repeat(900) } });

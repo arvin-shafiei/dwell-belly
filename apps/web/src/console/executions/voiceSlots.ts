@@ -118,6 +118,21 @@ export function callRerun(e: ExecutionRecord, r: { events: CaseViewEvent[]; deci
   };
 }
 
+/** A call the person did not take: the case re-runs knowing nobody answered, so the agent picks a fallback. */
+export function noAnswerRerun(e: ExecutionRecord, row: OutboxEntry): ExecuteRequest {
+  const who = row.action.recipient;
+  const event: CaseViewEvent = {
+    n: 0, timestamp: "", stage: null, channel: "Call", from: "Desk (voice agent)", to: who,
+    body: `Called ${who} about ${row.action.purpose}: no answer.`, source: "live_human",
+  };
+  return { caseId: e.caseId, dataset: e.dataset, workflowId: e.workflowId, parentExecutionId: e.id, extraEvents: [event], voice: { trigger: "call" } };
+}
+
+/** A run shows voice only when the agent chose a call or a decision is still open. */
+export function voiceNeeded(e: ExecutionRecord, card: DecisionCard | null | undefined): boolean {
+  return callableRows(e.outbox).length > 0 || cardOpen(card);
+}
+
 export function approvalRerun(e: ExecutionRecord, d: HumanDecision): ExecuteRequest {
   return { caseId: e.caseId, dataset: e.dataset, workflowId: e.workflowId, parentExecutionId: e.id, humanDecision: d, voice: { trigger: "approval" } };
 }
