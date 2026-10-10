@@ -34,7 +34,8 @@ export interface RealitySummary {
 export interface RealityResponse {
   cases: RealityCase[];
   summary: RealitySummary | null;
-  runlog: string | null;
+  /** RUNLOG.md parsed by the server ({ runId, rows }); older servers sent the raw text. */
+  runlog: string | { runId?: string | null; rows?: unknown[] } | null;
 }
 
 export type CaseStatus = "working" | "sent" | "asked" | "person" | "stopped" | "failed" | "nothing";
@@ -137,12 +138,18 @@ export type Phase = "waiting" | "running" | "done";
  * waiting: nothing on disk yet. done: the run log is written (or the API says finished) and no
  * case is still in progress. Anything else is running.
  */
+function hasRunlog(r: RealityResponse["runlog"]): boolean {
+  if (!r) return false;
+  if (typeof r === "string") return r.trim().length > 0;
+  return Array.isArray(r.rows) && r.rows.length > 0;
+}
+
 export function runPhase(data: RealityResponse | null | undefined): Phase {
   if (!data || data.cases.length === 0) return "waiting";
   const t = tally(data);
   if (t.working > 0 || t.done < t.total) return "running";
   if (data.summary?.finished === false) return "running";
-  if (data.summary?.finished === true || (data.runlog && data.runlog.trim())) return "done";
+  if (data.summary?.finished === true || hasRunlog(data.runlog)) return "done";
   return "running";
 }
 

@@ -97,3 +97,11 @@ describe("headline", () => {
     expect(headline(c({ decision: "x".repeat(200) }), 20)).toHaveLength(20);
   });
 });
+
+describe("runPhase with the server's parsed RUNLOG", () => {
+  it("reads { runId, rows } without crashing", async () => {
+    const { runPhase } = await import("./logic");
+    expect(runPhase({ cases: [], summary: null, runlog: { runId: "r1", rows: [] } })).toBe("waiting");
+    expect(() => runPhase({ cases: [{ n: 1, caseId: "1", outcome: "acted" } as never], summary: null, runlog: { runId: "r1", rows: [{}] } })).not.toThrow();
+  });
+});
