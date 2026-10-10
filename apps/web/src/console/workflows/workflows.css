@@ -89,28 +89,19 @@
 }
 .wf-appear { animation: wf-appear 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
 
-.wf-ai-btn {
-  background: linear-gradient(135deg, #ff6a1a 0%, #e8590c 45%, #8b5cf6 100%);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 4px 14px rgba(255, 106, 26, 0.25);
-}
-.wf-ai-btn:hover { filter: brightness(1.1); }
 
 @media (prefers-reduced-motion: reduce) {
   .wf-pulse-soft, .wf-appear { animation: none; }
 }
 
-/* Improvement proposal diff */
+/* Suggested-changes diff: flat colours, no glow */
 .wf-canvas .react-flow__edge.wf-diff-added .react-flow__edge-path {
   stroke: #22c55e;
-  stroke-width: 3;
-  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.7));
+  stroke-width: 2.5;
 }
 .wf-canvas .react-flow__edge.wf-diff-removed .react-flow__edge-path {
   stroke: #ef4444;
-  stroke-width: 2.5;
+  stroke-width: 2;
   stroke-dasharray: 6 5;
   opacity: 0.8;
 }
-@keyframes wf-glow { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.18); } }
-.wf-diff-added { animation: wf-glow 1.6s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .wf-diff-added { animation: none; } }

@@ -58,9 +58,10 @@ describe("explanation and problems", () => {
   it("explains steps with gate branches", () => {
     const steps = explainFlow(flow);
     const gate = steps.find((s) => s.id === "gate")!;
-    expect(gate.label).toBe("Safety gate");
-    expect(gate.branches).toEqual(["allow → Action", "ask → Human decision", "block → Case log"]);
-    expect(steps[0].role).toMatch(/Entry point/);
+    expect(gate.label).toBe("Safety check");
+    expect(gate.branches).toEqual(["OK → Send it", "Ask a person → Ask a person", "Stop → Done"]);
+    expect(steps[0].role).toBe("Reads every message and file.");
+    for (const s of steps) expect(s.role.split(" ").length).toBeLessThanOrEqual(8);
   });
   it("maps problems to nodes", () => {
     const { byNode, general } = problemsByNode([

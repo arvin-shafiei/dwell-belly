@@ -12,7 +12,8 @@ import {
   architectValidate, createVersion, deleteWorkflow, executeCase, listVersions, getExecution, listExecutions, loadWorkflows, saveWorkflow,
   type ExecutionSummary,
 } from "./api";
-import { ArchitectPanel, Sparkle } from "./ArchitectPanel";
+import { ArchitectPanel } from "./ArchitectPanel";
+import { cents, plainOutcome } from "../../ui/plain";
 import { nameFrom, problemsByNode, revealFrame, revealOrder, slugify, type ArchitectUsage } from "./architect";
 import { WorkflowMenu } from "./WorkflowMenu";
 import { TestPanel } from "./TestPanel";
@@ -35,7 +36,7 @@ import {
 import { BranchEdge, type BranchEdgeType } from "./BranchEdge";
 import { metaFor, nodeTitle } from "./nodeTypes";
 import { DND_MIME, Palette } from "./Palette";
-import { buildOverlay, fmtMs, fmtUsd, pairKey, replayDelays } from "./status";
+import { buildOverlay, pairKey, replayDelays } from "./status";
 
 const nodeTypes = { card: FlowNodeCard };
 const edgeTypes = { branch: BranchEdge };
@@ -48,6 +49,36 @@ const docOf = (w: WorkflowRecord): FlowDoc => ({ flow: w.flow, positions: w.posi
 function isTyping(e: KeyboardEvent) {
   const t = e.target as HTMLElement | null;
   return !!t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
+}
+
+/** Small "Advanced" dropdown for rarely used actions. */
+function AdvancedMenu({ items }: { items: { label: string; onClick: () => void; disabled?: boolean }[] }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false); };
+    window.addEventListener("mousedown", close);
+    return () => window.removeEventListener("mousedown", close);
+  }, [open]);
+  return (
+    <div ref={ref} className="relative">
+      <Btn onClick={() => setOpen((o) => !o)} title="More options">Advanced <Icon name="chevron" size={11} className="rotate-90" /></Btn>
+      {open && (
+        <div className="absolute left-0 top-full z-40 mt-1 w-52 overflow-hidden rounded-lg border border-white/10 bg-[#222227] py-1 shadow-xl">
+          {items.map((it) => (
+            <button
+              key={it.label} type="button" disabled={it.disabled}
+              onClick={() => { setOpen(false); it.onClick(); }}
+              className="block w-full px-3 py-2 text-left text-[13px] text-white/80 hover:bg-white/[0.06] disabled:opacity-40"
+            >
+              {it.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function EditorInner() {
@@ -66,7 +97,7 @@ function EditorInner() {
   const [savedSig, setSavedSig] = useState("");
   const [save, setSave] = useState<{ state: "idle" | "saving" | "saved" | "error"; msg?: string }>({ state: "idle" });
   const [sel, setSel] = useState<Selection>(null);
-  const [paletteOpen, setPaletteOpen] = useState(true);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const [dims, setDims] = useState<Dims>({});
   const lastEdit = useRef<{ key: string; at: number } | null>(null);
   const saveRef = useRef<() => void>(() => {});
@@ -135,7 +166,7 @@ function EditorInner() {
   const refreshExecutions = useCallback(() => {
     listExecutions(20).then((r) => {
       if (r.ok) { setExecutions(r.data?.executions ?? []); setExecError(null); }
-      else { setExecutions([]); setExecError(r.status === 404 ? "Executions endpoint not available yet (404)." : `Could not load executions: ${r.error}`); }
+      else { setExecutions([]); setExecError("Couldn't load case runs right now."); }
     });
   }, []);
   useEffect(() => { refreshExecutions(); }, [refreshExecutions]);
@@ -148,7 +179,7 @@ function EditorInner() {
     getExecution(execId).then((r) => {
       if (!live) return;
       if (r.ok && r.data?.execution) { setExecution(r.data.execution); setExecLoadError(null); }
-      else { setExecution(null); setExecLoadError(r.ok ? "Execution not found." : `Could not load execution: ${r.error}`); }
+      else { setExecution(null); setExecLoadError("Couldn't load that case run."); }
     });
     return () => { live = false; };
   }, [execId, execution?.id]);
@@ -303,7 +334,7 @@ function EditorInner() {
     if (!doc || !current) return;
     setSave({ state: "saving" });
     if (!force && (await runValidate()) === "problems") {
-      setSave({ state: "error", msg: "The safety check found problems" });
+      setSave({ state: "error", msg: "Some things need fixing first" });
       return;
     }
     const isDraft = !!draft;
@@ -331,7 +362,7 @@ function EditorInner() {
       setSave({ state: "saved" });
       setTimeout(() => setSave((s) => (s.state === "saved" ? { state: "idle" } : s)), 2000);
     } else {
-      setSave({ state: "error", msg: r.status === 404 ? "Save endpoint not available yet (404)" : `Save failed: ${r.error}` });
+      setSave({ state: "error", msg: "Couldn't save. Try again." });
     }
   }, [doc, current, draft, runValidate, recordVersion]);
 
@@ -391,7 +422,7 @@ function EditorInner() {
       active: false, source: "db", updatedAt: new Date().toISOString(),
     };
     const r = await saveWorkflow(rec);
-    if (!r.ok) { setSave({ state: "error", msg: `Duplicate failed: ${r.error}` }); return; }
+    if (!r.ok) { setSave({ state: "error", msg: "Couldn't make a copy." }); return; }
     const saved = r.data?.workflow ?? rec;
     setRecords((rs) => [...(rs ?? []), saved]);
     switchTo(saved);
@@ -403,7 +434,7 @@ function EditorInner() {
     // Rename the saved version only; unsaved canvas edits stay unsaved.
     const rec: WorkflowRecord = { ...current, name, flow: { ...current.flow, name }, updatedAt: new Date().toISOString() };
     const r = await saveWorkflow(rec);
-    if (!r.ok) { setSave({ state: "error", msg: `Rename failed: ${r.error}` }); return; }
+    if (!r.ok) { setSave({ state: "error", msg: "Couldn't rename it." }); return; }
     const saved = r.data?.workflow ?? rec;
     setRecords((rs) => (rs ?? []).map((x) => (x.id === saved.id ? saved : x)));
   }, [current, draft]);
@@ -411,7 +442,7 @@ function EditorInner() {
   const remove = useCallback(async () => {
     if (!current || draft || current.source !== "db") return;
     const r = await deleteWorkflow(current.id);
-    if (!r.ok) { setSave({ state: "error", msg: `Delete failed: ${r.error}` }); return; }
+    if (!r.ok) { setSave({ state: "error", msg: "Couldn't delete it." }); return; }
     const rest = (records ?? []).filter((x) => x.id !== current.id);
     setRecords(rest);
     const next = rest.find((w) => w.active) ?? rest[0];
@@ -428,7 +459,7 @@ function EditorInner() {
     const r = await executeCase({ caseId: c.id, dataset: c.dataset, workflowId: currentId ?? undefined });
     if (!r.ok || !r.data?.execution) {
       setRunning(null);
-      setRunError(r.ok ? "The API returned no execution." : r.status === 404 ? "Execute endpoint not available yet (404)." : `Execute failed: ${r.error}`);
+      setRunError("The case didn't run. Try again in a minute.");
       return;
     }
     let ex = r.data.execution;
@@ -479,7 +510,7 @@ function EditorInner() {
     const flow: Flow = { ...v.flow, id: current.id, name: current.name };
     const rec: WorkflowRecord = { ...current, flow, positions: doc.positions, updatedAt: new Date().toISOString() };
     const r = await saveWorkflow(rec);
-    if (!r.ok) { setSave({ state: "error", msg: `Could not make v${v.version} current: ${r.error}` }); return false; }
+    if (!r.ok) { setSave({ state: "error", msg: `Couldn't switch to version ${v.version}.` }); return false; }
     const saved = r.data?.workflow ?? rec;
     setRecords((rs) => (rs ?? []).map((x) => (x.id === saved.id ? saved : x)));
     const next: FlowDoc = { flow, positions: doc.positions };
@@ -579,31 +610,23 @@ function EditorInner() {
 
   const primaryActions = (
     <>
-      <button
-        type="button" onClick={() => openDrawer(drawer === "ai" ? null : "ai")}
-        className={`wf-ai-btn inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-[12px] font-semibold text-white ${drawer === "ai" ? "ring-2 ring-white/30" : ""}`}
-        title="Let the Architect design a workflow from a description"
-      >
-        <Sparkle size={14} /> Build with AI
-      </button>
-      <button
-        type="button" onClick={() => openDrawer(drawer === "test" ? null : "test")}
-        className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-[12px] font-semibold ${drawer === "test" ? "border-[#22c55e]/70 bg-[#22c55e]/15 text-white" : "border-[#22c55e]/40 text-[#86efac] hover:bg-[#22c55e]/10"}`}
-        title="Test this workflow on scenarios and improve it from the failures"
-      >
-        <span aria-hidden>🧪</span> Test
-      </button>
-      <Btn variant="outline" onClick={() => setDialog(true)} disabled={!!running || !!draft} title={draft ? "Accept the draft before running it" : "Run the agent on a case"}>
-        <Icon name="play" size={13} /> Execute workflow
+      <Btn variant="outline" onClick={() => openDrawer(drawer === "ai" ? null : "ai")} title="Make a new playbook from a description">
+        <Icon name="plus" size={13} /> New playbook
       </Btn>
-      <Btn variant="primary" onClick={() => void doSave()} disabled={!dirty || save.state === "saving" || !!reveal} title="Validate, then save (⌘S)">
-        <Icon name="save" size={14} /> {save.state === "saving" ? (validating ? "Checking…" : "Saving…") : draft ? "Accept & save" : "Save"}
+      <Btn variant="outline" onClick={() => openDrawer(drawer === "test" ? null : "test")} title="Practise on real cases and improve">
+        <Icon name="check" size={13} /> Practice
+      </Btn>
+      <Btn variant="outline" onClick={() => setDialog(true)} disabled={!!running || !!draft} title={draft ? "Save the playbook first" : "Run one case through this playbook"}>
+        <Icon name="play" size={13} /> Run a case
+      </Btn>
+      <Btn variant="primary" onClick={() => void doSave()} disabled={!dirty || save.state === "saving" || !!reveal} title="Save (⌘S)">
+        {save.state === "saving" ? (validating ? "Checking…" : "Saving…") : draft ? "Use this playbook" : "Save"}
       </Btn>
     </>
   );
 
   if (!doc || !records) {
-    return <div className="grid h-full place-items-center bg-[#1f1f23] text-[13px] text-white/45">Loading workflow…</div>;
+    return <div className="grid h-full place-items-center bg-[#1f1f23] text-[13px] text-white/45">Loading playbook…</div>;
   }
 
   return (
@@ -611,7 +634,7 @@ function EditorInner() {
       {/* Header */}
       <div className="flex h-12 shrink-0 items-center gap-2 border-b border-white/10 bg-[#19191d] px-3">
         {!paletteOpen && (
-          <Btn onClick={() => setPaletteOpen(true)} title="Show nodes panel"><Icon name="plus" size={14} /> Nodes</Btn>
+          <Btn onClick={() => setPaletteOpen(true)} title="Add a step"><Icon name="plus" size={14} /> Add step</Btn>
         )}
         <div className="flex min-w-0 items-center gap-2">
           <WorkflowMenu
@@ -619,8 +642,8 @@ function EditorInner() {
             onOpen={switchTo} onDuplicate={() => void duplicate()} onRename={(n) => void rename(n)}
             onDelete={() => void remove()} onNew={() => openDrawer("ai")}
           />
-          {draft && <Badge tone="violet" title="Generated by the Architect, not saved yet">AI draft</Badge>}
-          {current?.source === "file" && !draft && <Badge title={fallback ?? "Read from apps/api/flows"}>from file</Badge>}
+          {draft && <Badge tone="orange" title="Not saved yet">Draft</Badge>}
+          {current?.source === "file" && !draft && <Badge title="Comes with the app">Built-in</Badge>}
           {dirty ? (
             <span className="inline-flex items-center gap-1 text-[11px] text-[#ff8a4c]"><span className="h-1.5 w-1.5 rounded-full bg-[#ff6a1a]" />Unsaved</span>
           ) : save.state === "saved" ? (
@@ -631,10 +654,13 @@ function EditorInner() {
         <div className="ml-2 flex items-center gap-0.5 border-l border-white/10 pl-2">
           <Btn onClick={doUndo} disabled={!hist?.past.length} title="Undo (⌘Z)"><Icon name="undo" size={15} /></Btn>
           <Btn onClick={doRedo} disabled={!hist?.future.length} title="Redo (⇧⌘Z)"><Icon name="redo" size={15} /></Btn>
-          <Btn onClick={autoLayout} title="Auto-layout"><Icon name="layout" size={15} /><span className="hidden xl:inline">Tidy up</span></Btn>
-          <Btn onClick={() => void runValidate()} disabled={validating} title="Run the Architect's safety check on this flow">
-            <Icon name="shield" size={15} /><span className="hidden xl:inline">{validating ? "Checking…" : "Validate"}</span>
-          </Btn>
+          <Btn onClick={autoLayout} title="Tidy up the layout"><Icon name="layout" size={15} /><span className="hidden xl:inline">Tidy up</span></Btn>
+          <AdvancedMenu
+            items={[
+              { label: validating ? "Checking…" : "Check it is safe", onClick: () => void runValidate(), disabled: validating },
+              { label: paletteOpen ? "Hide the step list" : "Show the step list", onClick: () => setPaletteOpen((o) => !o) },
+            ]}
+          />
         </div>
 
         <div className="ml-auto flex min-w-0 items-center gap-2">
@@ -656,33 +682,30 @@ function EditorInner() {
 
       {/* Run strip */}
       {diffView && (
-        <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-b border-[#a78bfa]/30 bg-[#a78bfa]/[0.08] px-3 py-1.5 text-[12px]">
-          <span className="inline-flex items-center gap-1.5 font-semibold text-[#c4b5fd]"><Sparkle size={13} /> Proposed changes from v{diffView.proposal.fromVersion}</span>
-          {diffView.diff.addedNodes.size > 0 && <span className="text-[#4ade80]">+{diffView.diff.addedNodes.size} node{diffView.diff.addedNodes.size === 1 ? "" : "s"}</span>}
-          {diffView.diff.removedNodes.size > 0 && <span className="text-[#f87171]">−{diffView.diff.removedNodes.size} node{diffView.diff.removedNodes.size === 1 ? "" : "s"}</span>}
-          {diffView.diff.changedNodes.size > 0 && <span className="text-[#fbbf24]">~{diffView.diff.changedNodes.size} changed</span>}
-          {(diffView.diff.addedEdges.size > 0 || diffView.diff.removedEdges.size > 0) && (
-            <span className="text-white/55">connections +{diffView.diff.addedEdges.size} / −{diffView.diff.removedEdges.size}</span>
-          )}
-          {diffCount(diffView.diff) === 0 && <span className="text-white/55">no structural change</span>}
-          <span className="ml-auto text-white/45">Accept or reject in the Test panel</span>
+        <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-b border-white/10 bg-[#1b1b1f] px-3 py-2 text-[13px]">
+          <span className="font-semibold text-white">Suggested changes</span>
+          {diffView.diff.addedNodes.size > 0 && <span className="text-[#4ade80]">{diffView.diff.addedNodes.size} new step{diffView.diff.addedNodes.size === 1 ? "" : "s"}</span>}
+          {diffView.diff.removedNodes.size > 0 && <span className="text-[#f87171]">{diffView.diff.removedNodes.size} removed</span>}
+          {diffView.diff.changedNodes.size > 0 && <span className="text-[#fbbf24]">{diffView.diff.changedNodes.size} changed</span>}
+          {diffCount(diffView.diff) === 0 && <span className="text-white/55">Only small wording changes</span>}
+          <span className="ml-auto text-white/45">Decide in Practice</span>
         </div>
       )}
       {liveCheck && !reveal && (
         <div className={`flex shrink-0 flex-wrap items-start gap-x-3 gap-y-1 border-b border-white/10 px-3 py-1.5 text-[12px] ${liveCheck.state === "problems" ? "bg-[#ef4444]/[0.07]" : "bg-[#1b1b1f]"}`}>
           {liveCheck.state === "ok" && (
-            <span className="inline-flex items-center gap-1.5 text-[#4ade80]"><Icon name="shield" size={13} /> Safety check passed: every action is gated, ask goes to a human, no cycles.</span>
+            <span className="inline-flex items-center gap-1.5 text-[#4ade80]"><Icon name="check" size={13} strokeWidth={3} /> Looks safe.</span>
           )}
           {liveCheck.state === "unavailable" && (
-            <span className="text-[#fbbf24]">Could not run the safety check: {liveCheck.msg}</span>
+            <span className="text-[#fbbf24]">Couldn&apos;t check it right now.</span>
           )}
           {liveCheck.state === "problems" && (
             <div className="min-w-0 flex-1 text-[#fca5a5]">
-              <span className="font-semibold">{liveCheck.problems.length} problem{liveCheck.problems.length === 1 ? "" : "s"} found by the safety check</span>
-              {nodeProblems?.general.length ? <span>: {nodeProblems.general.join(" · ")}</span> : null}
+              <span className="font-semibold">{liveCheck.problems.length} thing{liveCheck.problems.length === 1 ? "" : "s"} to fix</span>
               {nodeProblems && Object.keys(nodeProblems.byNode).length > 0 && (
-                <span className="text-white/50"> · marked on {Object.keys(nodeProblems.byNode).length} node(s)</span>
+                <span className="text-white/50"> · steps with a problem have a red outline</span>
               )}
+              <details className="text-white/50"><summary className="cursor-pointer">Details</summary>{liveCheck.problems.map((p, i) => <div key={i}>{p}</div>)}</details>
             </div>
           )}
           <button type="button" className="ml-auto text-white/40 hover:text-white" onClick={() => setCheck(null)} title="Dismiss"><Icon name="close" size={12} /></button>
@@ -693,7 +716,7 @@ function EditorInner() {
           {running && (
             <span className="inline-flex items-center gap-2 text-[#ff8a4c]">
               <span className="wf-spin block h-3.5 w-3.5 rounded-full border-2 border-[#ff6a1a] border-t-transparent" />
-              Running <code>{running.caseId}</code> through the agent… the canvas will replay it when it completes.
+              Working on the case… it plays here when it&apos;s done.
             </span>
           )}
           {runError && (
@@ -704,36 +727,28 @@ function EditorInner() {
               {execLoadError ? (
                 <span className="text-[#f87171]">{execLoadError}</span>
               ) : !shownExec ? (
-                <span className="text-white/45">Loading execution…</span>
+                <span className="text-white/45">Loading…</span>
               ) : (
                 <>
-                  <span className="text-white/45">Execution</span>
-                  <code className="text-white/90">{shownExec.caseId}</code>
-                  <Badge tone={shownExec.status === "success" ? "green" : shownExec.status === "error" ? "red" : "orange"}>
-                    {overlay?.end?.outcome ?? shownExec.outcome ?? shownExec.status}
-                  </Badge>
-                  {simulated && <Badge tone="amber" title="City or mock run, not the real agent">SIMULATED</Badge>}
-                  <span className="tabular-nums text-white/55">{fmtMs(shownExec.durationMs)} · {fmtUsd(shownExec.costUsd)} · {shownExec.dataset} · {shownExec.origin}</span>
-                  {shownExec.trace && shownExec.trace.flowId !== doc.flow.id && (
-                    <span className="text-[#fbbf24]">trace is from flow “{shownExec.trace.flowId}”</span>
-                  )}
-                  {!shownExec.trace && <span className="text-white/45">no trace recorded for this execution</span>}
-                  {cursor !== null && <span className="text-[#ff8a4c]">replaying {cursor}/{shownExec.trace?.events.length ?? 0}</span>}
+                  <span className="font-semibold text-white">{plainOutcome(overlay?.end?.outcome ?? shownExec.outcome ?? (shownExec.status === "running" ? null : shownExec.status))}</span>
+                  <Badge tone={simulated ? "amber" : "green"} title={simulated ? "Made from the city" : "The real agent did this"}>{simulated ? "Practice case" : "Live"}</Badge>
                   {overlay?.end?.nextAction && (
-                    <span className="min-w-0 truncate text-white/55" title={overlay.end.nextAction.message}>
-                      → {overlay.end.nextAction.channel} · {overlay.end.nextAction.recipient}
+                    <span className="min-w-0 truncate text-white/60" title={overlay.end.nextAction.message}>
+                      To {overlay.end.nextAction.recipient}, by {overlay.end.nextAction.channel}
                     </span>
                   )}
+                  {!shownExec.trace && <span className="text-white/45">No steps recorded</span>}
+                  <span className="text-[11px] text-white/30">{shownExec.caseId}{shownExec.costUsd ? ` · ${cents(shownExec.costUsd)}` : ""}</span>
                   <span className="ml-auto flex items-center gap-1">
-                    {shownExec.trace && <Btn onClick={() => setCursor(0)} title="Replay the run on the canvas"><Icon name="play" size={12} /> Replay</Btn>}
-                    <Btn onClick={() => selectExecution(null)} title="Clear the execution overlay"><Icon name="close" size={12} /> Clear</Btn>
+                    {shownExec.trace && <Btn onClick={() => setCursor(0)} title="Play it again"><Icon name="play" size={12} /> Play again</Btn>}
+                    <Btn onClick={() => selectExecution(null)} title="Hide this case"><Icon name="close" size={12} /> Hide</Btn>
                   </span>
                 </>
               )}
             </>
           )}
           {fallback && !execId && !running && (
-            <span className="text-white/45">Showing <code>apps/api/flows/default-incident.json</code> ({fallback}).</span>
+            <span className="text-white/45">Showing the built-in playbook.</span>
           )}
         </div>
       )}
@@ -791,12 +806,12 @@ function EditorInner() {
         </div>
         <div className={drawer && !(selNode || selEdge) ? "flex h-full w-[380px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]" : "hidden"}>
           <div className="flex shrink-0 gap-1 border-b border-white/10 px-2 pt-1.5">
-            {([["ai", "Architect"], ["test", "Test"]] as const).map(([k, label]) => (
+            {([["ai", "New playbook"], ["test", "Practice"]] as const).map(([k, label]) => (
               <button
                 key={k} type="button" onClick={() => openDrawer(k)}
                 className={`-mb-px inline-flex items-center gap-1.5 border-b-2 px-2.5 pb-1.5 pt-1 text-[12px] font-medium ${drawer === k ? "border-[#ff6a1a] text-white" : "border-transparent text-white/50 hover:text-white/80"}`}
               >
-                {k === "ai" ? <Sparkle size={12} /> : <span aria-hidden>🧪</span>} {label}
+                {label}
               </button>
             ))}
           </div>

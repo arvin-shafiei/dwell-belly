@@ -112,7 +112,7 @@ describe("auto-improve loop", () => {
     expect(s.iteration).toBe(3);
     s = tested(s, 4, 1);
     expect(s.step).toBe("stopped");
-    expect(s.reason).toMatch(/reached 3/);
+    expect(s.reason).toMatch(/improved 3 times/);
     expect(s.rates).toEqual([0.2, 0.4, 0.6, 0.8]);
   });
   it("stops early when the pass rate stops rising", () => {
@@ -120,16 +120,16 @@ describe("auto-improve loop", () => {
     s = improve(s);
     s = tested(s, 2, 3);
     expect(s.step).toBe("stopped");
-    expect(s.reason).toMatch(/stopped rising/);
+    expect(s.reason).toMatch(/stopped getting better/);
   });
   it("stops when all pass, on bad proposals, errors and user stop", () => {
-    expect(tested(autoStart(), 5, 0).reason).toBe("every case passes");
+    expect(tested(autoStart(), 5, 0).reason).toBe("every case is right");
     const atImprove = tested(autoStart(), 1, 4);
-    expect(autoNext(atImprove, { type: "improved", proposal: { problems: ["no ingest node"], changes: ["x"] } }).reason).toMatch(/safety check/);
+    expect(autoNext(atImprove, { type: "improved", proposal: { problems: ["no ingest node"], changes: ["x"] } }).reason).toMatch(/wasn't safe/);
     expect(autoNext(atImprove, { type: "improved", proposal: { problems: [], changes: [] } }).reason).toMatch(/no changes/);
     expect(autoNext(atImprove, { type: "failed", error: "boom" }).reason).toBe("boom");
     expect(autoNext(atImprove, { type: "stop" }).step).toBe("stopped");
-    expect(autoNext(autoStart(), { type: "tested", status: "error", summary: run().summary }).reason).toMatch(/error/);
+    expect(autoNext(autoStart(), { type: "tested", status: "error", summary: run().summary }).reason).toMatch(/didn't finish/);
     // out-of-order events are ignored
     expect(autoNext(autoStart(), { type: "accepted", version: 3 }).step).toBe("test");
   });

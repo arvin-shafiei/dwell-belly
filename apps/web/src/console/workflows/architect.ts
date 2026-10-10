@@ -1,7 +1,7 @@
 // Pure helpers for the "Ask the Architect" builder: request bodies, the order a generated flow is
 // revealed on the canvas, the step-by-step explanation, and mapping validation problems to nodes.
 import type { Flow, FlowEdge } from "../types";
-import { metaFor, nodeTitle } from "./nodeTypes";
+import { metaFor, nodeTitle, plainWhen } from "./nodeTypes";
 
 export interface ArchitectUsage { model: string; latencyMs: number; tokensIn: number; tokensOut: number; costUsd: number }
 export interface ArchitectResult { ok?: boolean; flow?: Flow; problems?: string[]; usage?: ArchitectUsage[]; error?: string }
@@ -73,7 +73,7 @@ export function explainFlow(flow: Flow): Step[] {
     const m = metaFor(n.type);
     const branches = flow.edges
       .filter((e) => e.from === id && e.when)
-      .map((e) => `${e.when} → ${byId.get(e.to) ? nodeTitle(byId.get(e.to)!) : e.to}`);
+      .map((e) => `${plainWhen(e.when)} → ${byId.get(e.to) ? nodeTitle(byId.get(e.to)!) : e.to}`);
     return { id, type: n.type, label: nodeTitle(n), role: m.description, branches };
   });
 }

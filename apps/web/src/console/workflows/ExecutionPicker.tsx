@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./icons";
 import type { ExecutionSummary } from "./api";
-import { fmtMs, fmtUsd } from "./status";
+import { cents, plainOutcome } from "../../ui/plain";
 import { Badge } from "./bits";
 
 const dot = (s: ExecutionSummary["status"]) => (s === "success" ? "#22c55e" : s === "error" ? "#ef4444" : "#ff6a1a");
@@ -45,27 +45,27 @@ export function ExecutionPicker({ executions, error, selectedId, onSelect, onRef
           <>
             <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: dot(sel.status) }} />
             <span className="truncate">{sel.caseId}</span>
-            {sel.simulated && <Badge tone="amber">SIMULATED</Badge>}
+            {sel.simulated && <Badge tone="amber">Practice case</Badge>}
           </>
         ) : (
-          <span className="text-white/60">Executions</span>
+          <span className="text-white/60">Case runs</span>
         )}
         <Icon name="chevron" size={12} className="shrink-0 rotate-90 text-white/45" />
       </button>
       {open && (
         <div className="absolute right-0 top-full z-40 mt-1.5 w-[380px] overflow-hidden rounded-lg border border-white/10 bg-[#222227] shadow-2xl">
           <div className="flex items-center justify-between border-b border-white/10 px-3 py-2 text-[11px] text-white/45">
-            <span>Recent executions</span>
+            <span>Recent case runs</span>
             {selectedId && (
               <button type="button" className="text-white/60 hover:text-white" onClick={() => { onSelect(null); setOpen(false); }}>
-                Clear overlay
+                Hide
               </button>
             )}
           </div>
           <div className="max-h-[360px] overflow-y-auto py-1">
             {error && <div className="px-3 py-3 text-[12px] text-[#f87171]">{error}</div>}
             {!error && executions === null && <div className="px-3 py-3 text-[12px] text-white/40">Loading…</div>}
-            {!error && executions?.length === 0 && <div className="px-3 py-3 text-[12px] text-white/40">No executions yet. Use Execute to run a case.</div>}
+            {!error && executions?.length === 0 && <div className="px-3 py-3 text-[12px] text-white/40">No case runs yet.</div>}
             {executions?.map((e) => (
               <button
                 key={e.id} type="button" onClick={() => { onSelect(e.id); setOpen(false); }}
@@ -75,14 +75,14 @@ export function ExecutionPicker({ executions, error, selectedId, onSelect, onRef
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5">
                     <code className="truncate text-[12px] text-white/90">{e.caseId}</code>
-                    {e.simulated && <Badge tone="amber">SIMULATED</Badge>}
+                    {e.simulated && <Badge tone="amber">Practice case</Badge>}
                   </span>
                   <span className="block truncate text-[11px] text-white/45">
-                    {e.outcome ?? e.status} · {e.dataset} · {e.origin}
+                    {plainOutcome(e.outcome ?? (e.status === "running" ? null : e.status))}
                   </span>
                 </span>
                 <span className="shrink-0 text-right text-[11px] tabular-nums text-white/50">
-                  <span className="block">{fmtMs(e.durationMs)} · {fmtUsd(e.costUsd)}</span>
+                  {e.costUsd ? <span className="block">{cents(e.costUsd)}</span> : null}
                   <span className="block text-white/35">{ago(e.startedAt)}</span>
                 </span>
               </button>

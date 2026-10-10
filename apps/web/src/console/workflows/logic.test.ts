@@ -166,3 +166,23 @@ describe("node catalogue", () => {
     expect(fmtUsd(null)).toBe("–");
   });
 });
+
+import { carefulToThresholds, carefulWord, thresholdsToCareful } from "./careful";
+import { plainWhen } from "./nodeTypes";
+
+describe("plain words", () => {
+  it("maps the careful dial onto thresholds and back", () => {
+    expect(carefulToThresholds(0)).toEqual({ allow_below: 0.5, block_above: 0.95 });
+    expect(carefulToThresholds(1)).toEqual({ allow_below: 0.15, block_above: 0.65 });
+    for (const c of [0, 0.25, 0.5, 0.75, 1]) expect(thresholdsToCareful(carefulToThresholds(c))).toBeCloseTo(c, 1);
+    const def = thresholdsToCareful({ allow_below: 0.3, block_above: 0.8 });
+    expect(carefulWord(def)).toBe("Balanced");
+    const strict = carefulToThresholds(0.9);
+    expect(strict.allow_below).toBeLessThan(strict.block_above);
+  });
+  it("labels branches in plain words", () => {
+    expect(["allow", "ask", "block"].map(plainWhen)).toEqual(["OK", "Ask a person", "Stop"]);
+    expect(plainWhen("missing_parcel")).toBe("Missing parcel");
+    expect(plainWhen("force_human")).toBe("Needs a person");
+  });
+});

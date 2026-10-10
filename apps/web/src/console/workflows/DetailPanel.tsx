@@ -1,10 +1,13 @@
 "use client";
-// Right panel: parameters (runner, gate thresholds, config JSON) and the selected execution's
-// Input / Output for the node. Also edits an edge's `when` label when an edge is selected.
+// Right panel for a step: its name, what it does, how careful a safety check is, and the case
+// run's result in plain words. Runners, raw settings and run data sit behind "Advanced".
+// Also edits a link's label when a link is selected.
 import { useState } from "react";
 import type { FlowEdge, FlowNode, Runner } from "../types";
 import { Icon } from "./icons";
-import { ALL_RUNNERS, metaFor, nodeTitle } from "./nodeTypes";
+import { ALL_RUNNERS, metaFor, nodeTitle, plainWhen } from "./nodeTypes";
+import { carefulToThresholds, carefulWord, thresholdsToCareful } from "./careful";
+import { plainStep, riskWord } from "../../ui/plain";
 import { fmtMs, fmtUsd, inputsOf, type NodeRun, type RunOverlay } from "./status";
 import { Badge, Btn, JsonView, RunnerChip, SectionLabel } from "./bits";
 
@@ -125,17 +128,16 @@ function ModelCalls({ run }: { run: NodeRun }) {
 function NoRun({ overlay }: { overlay: RunOverlay | null }) {
   return (
     <div className="rounded-md border border-dashed border-white/10 p-4 text-center text-[12px] text-white/45">
-      {overlay ? "This node did not run in the selected execution." : "Pick an execution in the header to see this node's data."}
+      {overlay ? "This step didn't run in this case." : "Pick a case run at the top to see what happened here."}
     </div>
   );
 }
 
-export function NodePanel({ node, overlay, onChange, onDelete, onClose }: {
+/** The developer view of a step: runners, raw settings and the case run's data. Behind "Advanced". */
+function NodeAdvanced({ node, overlay, onChange }: {
   node: FlowNode;
   overlay: RunOverlay | null;
   onChange: (patch: Partial<Omit<FlowNode, "id">>) => void;
-  onDelete: () => void;
-  onClose: () => void;
 }) {
   const [tab, setTab] = useState<Tab>("params");
   const meta = metaFor(node.type);
@@ -150,18 +152,8 @@ export function NodePanel({ node, overlay, onChange, onDelete, onClose }: {
   };
 
   return (
-    <aside className="flex h-full w-[360px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]">
-      <div className="flex items-start gap-2.5 px-4 pb-3 pt-3.5">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg" style={{ background: `${meta.color}22`, color: meta.color }}>
-          <Icon name={meta.icon} size={18} />
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-[14px] font-semibold text-white">{nodeTitle(node)}</div>
-          <div className="truncate text-[11px] text-white/45"><code>{node.id}</code> · {node.type}</div>
-        </div>
-        <button type="button" onClick={onDelete} title="Delete node" className="rounded p-1.5 text-white/45 hover:bg-[#ef4444]/15 hover:text-[#f87171]"><Icon name="trash" size={15} /></button>
-        <button type="button" onClick={onClose} title="Close" className="rounded p-1.5 text-white/45 hover:bg-white/10 hover:text-white"><Icon name="close" size={15} /></button>
-      </div>
+    <div className="flex min-h-0 flex-col border-t border-white/10">
+      <div className="px-4 pt-2 text-[11px] text-white/35"><code>{node.id}</code> · {node.type}</div>
       <div className="flex gap-1 border-b border-white/10 px-3">
         {([["params", "Parameters"], ["input", "Input"], ["output", "Output"]] as const).map(([k, l]) => (
           <button
@@ -204,7 +196,7 @@ export function NodePanel({ node, overlay, onChange, onDelete, onClose }: {
               return (
                 <div className="space-y-3">
                   <SectionLabel>Case inputs · {overlay.start.title}</SectionLabel>
-                  {overlay.start.inputs.length === 0 && <div className="text-[12px] text-white/45">No inputs listed in the trace.</div>}
+                  {overlay.start.inputs.length === 0 && <div className="text-[12px] text-white/45">Nothing listed.</div>}
                   {overlay.start.inputs.map((i) => (
                     <div key={i.n} className="rounded-md border border-white/10 bg-black/20 p-2.5">
                       <div className="text-[11px] text-white/45">#{i.n} · {i.channel} · {i.from}</div>
@@ -248,6 +240,76 @@ export function NodePanel({ node, overlay, onChange, onDelete, onClose }: {
           )
         )}
       </div>
+    </div>
+  );
+}
+
+function CarefulSlider({ config, risk, onChange }: {
+  config: Record<string, unknown>; risk: number | null; onChange: (c: Record<string, unknown>) => void;
+}) {
+  const value = thresholdsToCareful(config);
+  return (
+    <div>
+      <div className="flex items-baseline justify-between">
+        <span className="text-[13px] font-medium text-white/85">How careful?</span>
+        <span className="text-[13px] font-semibold text-[#ff8a4c]">{carefulWord(value)}</span>
+      </div>
+      <input
+        type="range" min={0} max={1} step={0.05} value={value} aria-label="How careful"
+        onChange={(e) => onChange({ ...config, ...carefulToThresholds(Number(e.target.value)) })}
+        className="mt-2 w-full" style={{ accentColor: "#ff6a1a" }}
+      />
+      <div className="flex justify-between text-[11.5px] text-white/45"><span>Relaxed</span><span>Strict</span></div>
+      <p className="mt-2 text-[12px] leading-snug text-white/50">Stricter means more replies wait for a person.</p>
+      {risk !== null && <p className="mt-1 text-[12px] text-white/60">In this case run the risk was {riskWord(risk)}.</p>}
+    </div>
+  );
+}
+
+export function NodePanel({ node, overlay, onChange, onDelete, onClose }: {
+  node: FlowNode;
+  overlay: RunOverlay | null;
+  onChange: (patch: Partial<Omit<FlowNode, "id">>) => void;
+  onDelete: () => void;
+  onClose: () => void;
+}) {
+  const [advanced, setAdvanced] = useState(false);
+  const meta = metaFor(node.type);
+  const run = overlay?.nodes[node.id] ?? null;
+  const gateOut = run?.output && run.output.type === "safety_gate" ? (run.output as { risk?: number }) : null;
+  const risk = typeof gateOut?.risk === "number" ? gateOut.risk : null;
+  const status = run ? (run.status === "ok" ? "Done" : run.status === "error" ? "Went wrong" : run.status === "skipped" ? "Skipped" : "Working…") : null;
+
+  return (
+    <aside className="flex h-full w-[340px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]">
+      <div className="flex items-start gap-3 px-4 pb-3 pt-4">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white/[0.06]" style={{ color: meta.color }}>
+          <Icon name={meta.icon} size={20} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="text-[16px] font-semibold leading-snug text-white">{nodeTitle(node)}</div>
+          <div className="mt-0.5 text-[13px] text-white/55">{meta.description}</div>
+        </div>
+        <button type="button" onClick={onDelete} title="Remove this step" className="rounded p-1.5 text-white/45 hover:bg-[#ef4444]/15 hover:text-[#f87171]"><Icon name="trash" size={15} /></button>
+        <button type="button" onClick={onClose} title="Close" className="rounded p-1.5 text-white/45 hover:bg-white/10 hover:text-white"><Icon name="close" size={15} /></button>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="space-y-5 px-4 pb-4">
+          {run && (
+            <div className="rounded-lg bg-white/[0.04] px-3 py-2.5">
+              <div className={`text-[13px] font-semibold ${run.status === "ok" ? "text-[#4ade80]" : run.status === "error" ? "text-[#f87171]" : "text-white/70"}`}>{status}</div>
+              {(() => { const line = plainStep(node.type, run.summary, run.output); return line ? <div className="mt-0.5 text-[13px] leading-snug text-white/75">{line}</div> : null; })()}
+            </div>
+          )}
+          {node.type === "safety_gate" && (
+            <CarefulSlider config={node.config ?? {}} risk={risk} onChange={(c) => onChange({ config: c })} />
+          )}
+          <button type="button" onClick={() => setAdvanced((a) => !a)} className="inline-flex items-center gap-1 text-[12px] text-white/45 hover:text-white/80">
+            <Icon name="chevron" size={11} className={advanced ? "rotate-90" : ""} /> Advanced
+          </button>
+        </div>
+        {advanced && <NodeAdvanced node={node} overlay={overlay} onChange={onChange} />}
+      </div>
     </aside>
   );
 }
@@ -260,21 +322,21 @@ export function EdgePanel({ edge, onWhen, onDelete, onClose }: {
     <aside className="flex h-full w-[360px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]">
       <div className="flex items-center gap-2 px-4 pb-3 pt-3.5">
         <div className="min-w-0 flex-1">
-          <div className="text-[14px] font-semibold text-white">Connection</div>
-          <div className="truncate text-[11px] text-white/45"><code>{edge.from}</code> → <code>{edge.to}</code></div>
+          <div className="text-[15px] font-semibold text-white">Link</div>
+          <div className="truncate text-[12px] text-white/45">{edge.when ? plainWhen(edge.when) : "Always"}</div>
         </div>
-        <button type="button" onClick={onDelete} title="Delete connection" className="rounded p-1.5 text-white/45 hover:bg-[#ef4444]/15 hover:text-[#f87171]"><Icon name="trash" size={15} /></button>
+        <button type="button" onClick={onDelete} title="Remove this link" className="rounded p-1.5 text-white/45 hover:bg-[#ef4444]/15 hover:text-[#f87171]"><Icon name="trash" size={15} /></button>
         <button type="button" onClick={onClose} title="Close" className="rounded p-1.5 text-white/45 hover:bg-white/10 hover:text-white"><Icon name="close" size={15} /></button>
       </div>
       <div className="space-y-2 border-t border-white/10 px-4 py-4">
-        <SectionLabel>When (condition label)</SectionLabel>
+        <SectionLabel>Label</SectionLabel>
         <input
           value={text} onChange={(e) => setText(e.target.value)}
           onBlur={() => onWhen(text)} onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") onWhen(text); }}
           placeholder="always"
           className="h-8 w-full rounded-md border border-white/10 bg-black/30 px-2 text-[12px] text-white outline-none focus:border-[#ff6a1a]/60"
         />
-        <p className="text-[11px] text-white/40">Safety gate outputs use allow / ask / block. Leave empty for an unconditional hop.</p>
+        <p className="text-[11.5px] text-white/40">Leave empty if this link is always taken.</p>
       </div>
     </aside>
   );

@@ -4,6 +4,7 @@
 // segment, just after the branch point, where no other line runs.
 import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath, type Edge, type EdgeProps } from "@xyflow/react";
 import { TRUNK } from "./layout";
+import { plainWhen } from "./nodeTypes";
 
 export type BranchEdgeData = {
   when?: string;
@@ -53,9 +54,8 @@ export function BranchEdge({
               borderColor: `${pillColor}66`,
               background: "#1f1f23",
             }}
-            title={when}
           >
-            {when}
+            {plainWhen(when)}
           </div>
         </EdgeLabelRenderer>
       )}

@@ -121,7 +121,7 @@ export function pollReducer(s: PollState, ev: PollEvent): PollState {
       return { phase: terminal(ev.run), run: ev.run, error: null, misses: 0 };
     case "poll_ok":
       if (s.phase !== "polling") return s; // late answer after cancel / reset
-      return { phase: terminal(ev.run), run: ev.run, error: ev.run.status === "error" ? "the test run failed on the server" : null, misses: 0 };
+      return { phase: terminal(ev.run), run: ev.run, error: ev.run.status === "error" ? "it didn't finish" : null, misses: 0 };
     case "poll_failed": {
       if (s.phase !== "polling") return s;
       const misses = s.misses + 1;
@@ -162,7 +162,7 @@ export const passRate = (s: TestRun["summary"]) => (s.total ? s.passed / s.total
 const pct = (r: number) => `${Math.round(r * 100)}%`;
 
 export function autoStart(max = AUTO_MAX_ITERATIONS): AutoState {
-  return { step: "test", iteration: 0, max, rates: [], reason: null, log: ["Baseline test"] };
+  return { step: "test", iteration: 0, max, rates: [], reason: null, log: ["First practice"] };
 }
 
 export function autoNext(s: AutoState, ev: AutoEvent): AutoState {
@@ -170,29 +170,29 @@ export function autoNext(s: AutoState, ev: AutoEvent): AutoState {
   const stop = (reason: string): AutoState => ({ ...s, step: "stopped", reason, log: [...s.log, `Stopped: ${reason}`] });
   switch (ev.type) {
     case "stop":
-      return stop("stopped by you");
+      return stop("you stopped it");
     case "failed":
       return stop(ev.error);
     case "tested": {
       if (s.step !== "test") return s;
-      if (ev.status !== "done") return stop(`test run ${ev.status}`);
+      if (ev.status !== "done") return stop(ev.status === "cancelled" ? "practice was stopped" : "practice didn't finish");
       const rate = passRate(ev.summary);
       const prev = s.rates.length ? s.rates[s.rates.length - 1] : null;
-      const next: AutoState = { ...s, rates: [...s.rates, rate], log: [...s.log, `Pass rate ${pct(rate)} (${ev.summary.passed}/${ev.summary.total})`] };
+      const next: AutoState = { ...s, rates: [...s.rates, rate], log: [...s.log, `${ev.summary.passed} of ${ev.summary.total} right`] };
       const halt = (reason: string): AutoState => ({ ...next, step: "stopped", reason, log: [...next.log, `Stopped: ${reason}`] });
-      if (prev !== null && rate <= prev) return halt(`pass rate stopped rising (${pct(prev)} → ${pct(rate)})`);
-      if (ev.summary.failed + ev.summary.errors === 0) return halt("every case passes");
-      if (s.iteration >= s.max) return halt(`reached ${s.max} improvements`);
-      return { ...next, step: "improve", log: [...next.log, `Improve ${s.iteration + 1} of ${s.max}`] };
+      if (prev !== null && rate <= prev) return halt(`it stopped getting better (${pct(prev)} → ${pct(rate)} right)`);
+      if (ev.summary.failed + ev.summary.errors === 0) return halt("every case is right");
+      if (s.iteration >= s.max) return halt(`improved ${s.max} times`);
+      return { ...next, step: "improve", log: [...next.log, `Improving (${s.iteration + 1} of ${s.max})`] };
     }
     case "improved":
       if (s.step !== "improve") return s;
-      if (ev.proposal.problems.length) return stop(`the proposal failed the safety check (${ev.proposal.problems[0]})`);
-      if (!ev.proposal.changes.length) return stop("the Architect proposed no changes");
-      return { ...s, step: "accept", log: [...s.log, `Proposal: ${ev.proposal.changes.length} change(s)`] };
+      if (ev.proposal.problems.length) return stop("the suggested change wasn't safe");
+      if (!ev.proposal.changes.length) return stop("no changes to suggest");
+      return { ...s, step: "accept", log: [...s.log, `${ev.proposal.changes.length} change${ev.proposal.changes.length === 1 ? "" : "s"} suggested`] };
     case "accepted":
       if (s.step !== "accept") return s;
-      return { ...s, step: "test", iteration: s.iteration + 1, log: [...s.log, `Saved v${ev.version}, re-testing on the same cases`] };
+      return { ...s, step: "test", iteration: s.iteration + 1, log: [...s.log, `Saved version ${ev.version}, practising again`] };
   }
 }
 

@@ -1,10 +1,9 @@
 "use client";
-// Header dropdown listing every workflow: switch, duplicate, rename, delete (editor-saved only).
+// Header dropdown listing every playbook: switch, copy, rename, delete (your own only).
 import { useEffect, useRef, useState } from "react";
 import type { WorkflowRecord } from "../types";
 import { Icon } from "./icons";
 import { Badge } from "./bits";
-import { Sparkle } from "./ArchitectPanel";
 
 export function WorkflowMenu({ records, current, isDraft, dirty, onOpen, onDuplicate, onRename, onDelete, onNew }: {
   records: WorkflowRecord[];
@@ -41,15 +40,14 @@ export function WorkflowMenu({ records, current, isDraft, dirty, onOpen, onDupli
       <button
         type="button" onClick={() => setOpen((o) => !o)}
         className="inline-flex h-8 min-w-0 max-w-[280px] items-center gap-2 rounded-md px-2 text-[13px] font-semibold text-white hover:bg-white/[0.06]"
-        title="Switch, duplicate, rename or delete workflows"
+        title="Switch, copy, rename or delete playbooks"
       >
-        {isDraft && <span className="text-[#c4b5fd]"><Sparkle size={13} /></span>}
-        <span className="truncate">{current?.name ?? "Workflow"}</span>
+        <span className="truncate">{current?.name ?? "Playbook"}</span>
         <Icon name="chevron" size={12} className="shrink-0 rotate-90 text-white/45" />
       </button>
       {open && (
         <div className="absolute left-0 top-full z-40 mt-1.5 w-[320px] overflow-hidden rounded-lg border border-white/10 bg-[#222227] shadow-2xl">
-          <div className="border-b border-white/10 px-3 py-2 text-[11px] text-white/45">Workflows</div>
+          <div className="border-b border-white/10 px-3 py-2 text-[12px] text-white/45">Playbooks</div>
           <div className="max-h-[300px] overflow-y-auto py-1">
             {records.map((r) => (
               <button
@@ -64,16 +62,16 @@ export function WorkflowMenu({ records, current, isDraft, dirty, onOpen, onDupli
               >
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[12.5px] text-white/90">{r.name}</span>
-                  <span className="block truncate text-[10.5px] text-white/40"><code>{r.id}</code> · {r.flow.nodes.length} nodes</span>
+                  <span className="block truncate text-[11px] text-white/40">{r.flow.nodes.length} steps</span>
                 </span>
-                {r.active && <Badge tone="green">active</Badge>}
-                <Badge>{r.source === "file" ? "file" : "saved"}</Badge>
+                {r.active && <Badge tone="green">In use</Badge>}
+                {r.source === "file" && <Badge>Built-in</Badge>}
               </button>
             ))}
           </div>
           <div className="border-t border-white/10 py-1">
             <button type="button" className={item} onClick={() => { setOpen(false); onNew(); }}>
-              <span className="text-[#c4b5fd]"><Sparkle size={13} /></span> New workflow with AI…
+              <Icon name="plus" size={13} /> New playbook…
             </button>
             {renaming !== null ? (
               <div className="flex items-center gap-1.5 px-3 py-1.5">
@@ -90,15 +88,15 @@ export function WorkflowMenu({ records, current, isDraft, dirty, onOpen, onDupli
               </button>
             )}
             <button type="button" className={item} disabled={!current || isDraft} onClick={() => { setOpen(false); onDuplicate(); }}>
-              <Icon name="group" size={13} /> Duplicate
+              <Icon name="group" size={13} /> Make a copy
             </button>
             <button
               type="button" className={`${item} text-[#f87171]`}
               disabled={!current || isDraft || current.source !== "db"}
-              title={current?.source === "file" ? "Workflows read from apps/api/flows cannot be deleted" : undefined}
+              title={current?.source === "file" ? "Built-in playbooks can't be deleted" : undefined}
               onClick={() => { setOpen(false); if (window.confirm(`Delete “${current?.name}”? This cannot be undone.`)) onDelete(); }}
             >
-              <Icon name="trash" size={13} /> Delete{current?.source === "file" ? " (file workflows can't be deleted)" : ""}
+              <Icon name="trash" size={13} /> Delete
             </button>
           </div>
         </div>
