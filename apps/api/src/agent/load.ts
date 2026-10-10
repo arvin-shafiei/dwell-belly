@@ -26,12 +26,24 @@ const UNCLEAR_BELOW = 0.6;
 export type TranscribeFn = (audio: Uint8Array, filename: string, opts?: { keyterms?: string[] }) =>
   Promise<{ ok: true; text: string; language: string; confidence: number } | { ok: false; error: string }>;
 
-async function walk(dir: string): Promise<string[]> {
+/**
+ * Every file under `dir`. The case folder itself must be readable (that throws); a subfolder that
+ * cannot be read is listed in `unreadable` and the rest of the case is still read.
+ */
+async function walk(dir: string, unreadable: string[], root = dir): Promise<string[]> {
   const out: string[] = [];
-  for (const entry of await readdir(dir, { withFileTypes: true })) {
-    if (entry.name.startsWith(".")) continue;
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch (err) {
+    if (dir === root) throw err;
+    unreadable.push(`${path.relative(root, dir)}/ (folder could not be read: ${(err as NodeJS.ErrnoException).code ?? "error"})`);
+    return out;
+  }
+  for (const entry of entries) {
+    if (entry.name.startsWith(".") || entry.name === "__MACOSX") continue;
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...await walk(full));
+    if (entry.isDirectory()) out.push(...await walk(full, unreadable, root));
     else out.push(full);
   }
   return out.sort();
@@ -50,7 +62,7 @@ export interface AudioOptions {
 
 export async function loadFolder(dir: string, options: AudioOptions = {}): Promise<CaseBundle> {
   const bundle: CaseBundle = { id: path.basename(dir), title: path.basename(dir), documents: [], media: [], unreadable: [] };
-  const files = await walk(dir);
+  const files = await walk(dir, bundle.unreadable);
   let textBudget = MAX_CASE_CHARS;
   let mediaBytes = 0;
   let audioFiles = 0;

@@ -7,15 +7,29 @@ import type { CaseBundle } from "./types.ts";
 const PRICES: Record<string, { input: number; cacheRead: number; cacheWrite: number; output: number }> = {
   "claude-opus-5-5": { input: 4, cacheRead: 0.2, cacheWrite: 5, output: 20 },
   "claude-sonnet-5-5": { input: 2, cacheRead: 0.2, cacheWrite: 2.5, output: 10 },
+  "claude-haiku-4-5-20251001": { input: 1, cacheRead: 0.1, cacheWrite: 1.25, output: 5 },
 };
+// Models that reject output_config.effort; the request leaves it out for them.
+const NO_EFFORT = new Set(["claude-haiku-4-5-20251001"]);
 // Two tiers. "strong" is for the one step where judgement decides the outcome (choosing what to
 // do and writing the messages). "fast" reads the case and checks the drafts, at half the price.
 export const DEFAULT_MODELS = { strong: "claude-opus-5-5", fast: "claude-sonnet-5-5" };
 export type Tier = keyof typeof DEFAULT_MODELS;
+/**
+ * REALITY_PROFILE=cheap: Sonnet decides, Haiku reads and checks. Much cheaper per case.
+ * NOT evaluated against the practice cases; for when money, not time, is the limit.
+ */
+export const CHEAP_MODELS = { strong: "claude-sonnet-5-5", fast: "claude-haiku-4-5-20251001" };
 
-/** The models for this run: AGENT_MODEL and AGENT_FAST_MODEL when set, otherwise the defaults. */
+/**
+ * The models for this run: AGENT_MODEL and AGENT_FAST_MODEL when set, otherwise the profile's
+ * models (REALITY_PROFILE=cheap) or the defaults.
+ */
 export function chosenModels(env: Record<string, string | undefined> = process.env): Record<Tier, string> {
-  const models = { strong: env.AGENT_MODEL?.trim() || DEFAULT_MODELS.strong, fast: env.AGENT_FAST_MODEL?.trim() || DEFAULT_MODELS.fast };
+  const profile = env.REALITY_PROFILE?.trim().toLowerCase();
+  if (profile && profile !== "cheap" && profile !== "default") throw new Error(`REALITY_PROFILE must be "cheap" or "default", not "${profile}"`);
+  const base = profile === "cheap" ? CHEAP_MODELS : DEFAULT_MODELS;
+  const models = { strong: env.AGENT_MODEL?.trim() || base.strong, fast: env.AGENT_FAST_MODEL?.trim() || base.fast };
   for (const model of Object.values(models)) {
     if (!PRICES[model]) throw new Error(`Model "${model}" is not supported. Use one of: ${Object.keys(PRICES).join(", ")}`);
   }
@@ -57,7 +71,7 @@ function mediaBlock(m: CaseBundle["media"][number]): Anthropic.ContentBlockParam
   return { type: "image", source: { ...source, media_type: m.mediaType as "image/png" | "image/jpeg" | "image/gif" | "image/webp" } };
 }
 
-export function claude(client: Anthropic = new Anthropic({ timeout: CALL_TIMEOUT_MS, maxRetries: 2 }), models: Record<Tier, string> = chosenModels()): Models {
+export function claude(client: Anthropic = new Anthropic({ timeout: CALL_TIMEOUT_MS, maxRetries: 5 }), models: Record<Tier, string> = chosenModels()): Models {
   return {
     async structured({ system, user, schema, media = [], effort = "medium", tier = "fast", signal }) {
       const started = Date.now();
@@ -69,7 +83,7 @@ export function claude(client: Anthropic = new Anthropic({ timeout: CALL_TIMEOUT
         // The system prompt is identical for every case in a batch, so it is cached.
         system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
         messages: [{ role: "user", content }],
-        output_config: { effort, format: zodOutputFormat(schema) },
+        output_config: { ...(NO_EFFORT.has(model) ? {} : { effort }), format: zodOutputFormat(schema) },
       }, { signal });
       const res = await request([...media.map(mediaBlock), { type: "text", text: user }]).catch((err) => {
         // An attachment the API will not take (corrupt, too many pages) must not cost the whole case.

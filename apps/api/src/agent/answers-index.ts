@@ -12,7 +12,9 @@ const OUTCOME_WORDS: Record<string, string> = {
 };
 const cell = (s: string) => s.replace(/\|/g, "/").replace(/\s+/g, " ").trim();
 const byNumber = (a: string, b: string) => a.localeCompare(b, "en", { numeric: true });
-const dirs = async (dir: string) => (await readdir(dir, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name).sort(byNumber);
+/** A folder that holds a case: not a hidden folder, and not the __MACOSX folder a macOS zip leaves behind. */
+export const isCaseFolder = (e: { name: string; isDirectory(): boolean }) => e.isDirectory() && !e.name.startsWith(".") && e.name !== "__MACOSX";
+const dirs = async (dir: string) => (await readdir(dir, { withFileTypes: true })).filter(isCaseFolder).map((e) => e.name).sort(byNumber);
 const exists = (file: string) => stat(file).then((s) => s.size > 0, () => false);
 
 /** Case folders that are missing one or more output files, with the files they lack. */
@@ -24,6 +26,23 @@ export async function incomplete(casesDir: string, outDir: string): Promise<{ na
     if (missing.length) out.push({ name, missing });
   }
   return out;
+}
+
+/**
+ * From each case's trace.json: what the run has spent so far, and the cases that ended in a system
+ * failure worth rerunning (not those handed over because time or the budget ran out).
+ */
+export async function spentAndErrored(casesDir: string, outDir: string): Promise<{ spentUsd: number; errored: string[] }> {
+  let spentUsd = 0;
+  const errored: string[] = [];
+  for (const name of await dirs(casesDir)) {
+    const trace = await readFile(path.join(outDir, name, "trace.json"), "utf8").then(JSON.parse, () => null);
+    const end = Array.isArray(trace?.events) ? trace.events.findLast((e: { kind?: string } | null) => e?.kind === "run_end") : undefined;
+    if (!end) continue;
+    if (typeof end.totalCostUsd === "number" && Number.isFinite(end.totalCostUsd)) spentUsd += end.totalCostUsd;
+    if (end.outcome === "error" && !/^(Time ran out|The run's spending limit)/.test(String(end.error ?? ""))) errored.push(name);
+  }
+  return { spentUsd, errored };
 }
 
 export async function buildIndex(outDir: string): Promise<{ text: string; counts: Record<string, number>; cases: number }> {

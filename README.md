@@ -407,7 +407,21 @@ The Reality Test run is one command:
 npm run reality -- <folder of case folders>
 ```
 
-It answers every case into `ANSWERS/`, reruns any that are incomplete, checks every answer file against its saved result, writes `ANSWERS/INDEX.md`, and prints the git commands left to run. It does not commit or push.
+It answers every case into `ANSWERS/`, reruns any that are incomplete or ended in a system failure, checks every answer file against its saved result, writes `ANSWERS/INDEX.md`, and prints the git commands left to run. It does not commit or push.
+
+On the day, with a deadline and a spending cap:
+
+```bash
+# small drop (up to ~300 cases): default models
+REALITY_DEADLINE=16:54 npm run reality -- <cases> ANSWERS --budget-usd 18
+# large drop: Sonnet decides, Haiku reads and checks (not evaluated on the practice cases)
+REALITY_DEADLINE=16:54 npm run reality -- <cases> ANSWERS --budget-usd 18 --profile cheap
+```
+
+- `--deadline HH:MM` (or `REALITY_DEADLINE`, local time): from 75 s before it, no case starts a model call; each remaining case still gets its four files, with an ANSWER.md handing it to a person, at no cost. Cases still running at the deadline are cut off the same way. No retries after it.
+- `--budget-usd N` (or `REALITY_BUDGET_USD`, default 18, `none` for no cap): spend is tracked from every response; a case starts only if spend plus the running cases at the average cost stays under N. The rest are handed to a person at no cost, and `RUNLOG.md` says when the budget was reached.
+- `--concurrency N` (default 24): cases at a time. Model calls in flight are throttled separately: 16 at first, growing on success, cut by 30% on a 429/529, never below 4.
+- `RUNLOG.md` and `INDEX.md` are rewritten as the run goes and at the deadline, so a run stopped by hand still has them. A progress line with done/total, rate, ETA and spend prints every 25 cases.
 
 <details>
 <summary><b>Run the agent on any folder of cases</b></summary>
