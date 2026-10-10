@@ -66,23 +66,40 @@ describe("eval rows", () => {
   };
 
   it("maps a scored row to a verdict with the judge's note", () => {
-    expect(evalRowVerdict(passing)).toEqual({ pass: true, score: 0.9, notes: "Correct team." });
+    const verdict = { pass: true, score: 0.9, notes: "Correct team.", critical: false, verdict: "Correct team.", brokenRules: [] };
+    expect(evalRowVerdict(passing)).toEqual(verdict);
     expect(evalRowSummary(passing)).toEqual({
       caseId: "gen-101", set: "generated", outcome: "acted", status: "success", error: null,
-      nextAction: "Dispatch chat → Dispatch, Plover Arc Logistics", eval: { pass: true, score: 0.9, notes: "Correct team." },
+      nextAction: "Dispatch chat → Dispatch, Plover Arc Logistics", eval: verdict, costUsd: null, durationMs: null,
     });
+  });
+
+  it("reads cost and time when a row states them, at the top level or on the result", () => {
+    expect(evalRowSummary({ ...passing, costUsd: 0.031, durationMs: 8200 })).toMatchObject({ costUsd: 0.031, durationMs: 8200 });
+    expect(evalRowSummary({ ...passing, result: { ...passing.result, costUsd: 0.02, latencyMs: 5000 } })).toMatchObject({ costUsd: 0.02, durationMs: 5000 });
+    expect(evalRowSummary({ ...passing, costUsd: Number.NaN })).toMatchObject({ costUsd: null });
   });
 
   it("names the broken rule on a critical failure", () => {
     const v = evalRowVerdict({ ...passing, score: 0, pass: false, critical: true,
       judgement: { note: "Promised a refund.", violations: [{ rule: "Never promise a refund" }], must_missed: ["Ask the owner"] } });
-    expect(v).toEqual({ pass: false, score: 0, notes: "BROKE RULE: Never promise a refund | Promised a refund. | missed: Ask the owner" });
+    expect(v).toEqual({
+      pass: false, score: 0, notes: "BROKE RULE: Never promise a refund | Promised a refund. | missed: Ask the owner",
+      critical: true, verdict: "Promised a refund.", brokenRules: ["Never promise a refund"],
+    });
+  });
+
+  it("counts a judge violation as critical even when the row's flag is missing", () => {
+    const v = evalRowVerdict({ id: "gen-1", score: 0, pass: false, completed: true,
+      judgement: { note: "n", violations: [{ rule: "Do not share the address" }] } });
+    expect(v).toMatchObject({ critical: true, brokenRules: ["Do not share the address"] });
   });
 
   it("keeps the eval's own fail verdict for an agent error and records it as an error run", () => {
     const row = { id: "delivery-003", set: "public", score: 0, pass: false, critical: false, completed: false,
       result: { outcome: "error", nextAction: null, handoff: "agent API answered 500" }, judgement: null, judgeError: null };
-    expect(evalRowVerdict(row)).toEqual({ pass: false, score: 0, notes: "agent error: agent API answered 500" });
+    // Not judged, so whether a rule was broken is unknown: critical is null, not false.
+    expect(evalRowVerdict(row)).toEqual({ pass: false, score: 0, notes: "agent error: agent API answered 500", critical: null, verdict: null, brokenRules: [] });
     expect(evalRowSummary(row)).toMatchObject({ status: "error", error: "agent API answered 500", nextAction: null });
   });
 
@@ -99,8 +116,11 @@ describe("eval rows", () => {
 
 describe("result.json", () => {
   it("reads only an explicit pass and score", () => {
-    expect(resultJsonVerdict({ pass: true, score: 0.8 })).toEqual({ pass: true, score: 0.8 });
-    expect(resultJsonVerdict({ eval: { pass: false, score: 0.2, note: "n" } })).toEqual({ pass: false, score: 0.2, notes: "n" });
+    expect(resultJsonVerdict({ pass: true, score: 0.8 })).toEqual({ pass: true, score: 0.8, critical: null, verdict: null, brokenRules: [] });
+    expect(resultJsonVerdict({ eval: { pass: false, score: 0.2, note: "n" } }))
+      .toEqual({ pass: false, score: 0.2, notes: "n", critical: null, verdict: "n", brokenRules: [] });
+    expect(resultJsonVerdict({ eval: { pass: false, score: 0, critical: true, mustNotBroken: ["No refunds"] } }))
+      .toMatchObject({ critical: true, brokenRules: ["No refunds"] });
     expect(resultJsonVerdict({ outcome: "acted" })).toBeNull();
     expect(resultJsonVerdict(null)).toBeNull();
   });

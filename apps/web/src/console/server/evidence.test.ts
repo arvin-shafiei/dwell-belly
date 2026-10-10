@@ -9,9 +9,9 @@ const ex = (o: Partial<EvidenceExecution> & { id: string; caseId: string; starte
 describe("buildEvidence", () => {
   it("joins each case with its latest finished run and latest verdict, and totals them", () => {
     const { rows, totals } = buildEvidence(
-      [{ id: "delivery-001", dataset: "public", title: "One" }, { id: "gen-101", dataset: "generated", title: "Two" }],
+      [{ id: "delivery-001", dataset: "public", title: "One" }, { id: "gen-101", dataset: "generated", title: "Two", mutation: "conflicting_information" }],
       [
-        ex({ id: "e1", caseId: "delivery-001", startedAt: "2026-10-10T10:00:00Z", eval: { pass: true, score: 0.9 }, costUsd: null, nextAction: "Email → A" }),
+        ex({ id: "e1", caseId: "delivery-001", startedAt: "2026-10-10T10:00:00Z", eval: { pass: true, score: 0.9, critical: false, verdict: "Right team.", brokenRules: [] }, costUsd: null, nextAction: "Email → A" }),
         ex({ id: "e2", caseId: "delivery-001", startedAt: "2026-10-10T11:00:00Z", outcome: "escalated", costUsd: 0.05, nextAction: null, gate: "ask" }),
         ex({ id: "e3", caseId: "delivery-001", startedAt: "2026-10-10T12:00:00Z", status: "running", outcome: null }),
         ex({ id: "sim", caseId: "gen-101", startedAt: "2026-10-10T12:00:00Z", simulated: true }),
@@ -20,12 +20,66 @@ describe("buildEvidence", () => {
     );
     expect(rows).toEqual([
       { caseId: "delivery-001", dataset: "public", title: "One", decision: "escalated", nextAction: null, gate: "ask",
-        pass: true, score: 0.9, costUsd: 0.05, durationMs: 1000, executionId: "e2" },
+        pass: true, score: 0.9, costUsd: 0.05, durationMs: 1000, executionId: "e2",
+        critical: false, verdict: "Right team.", brokenRules: [], mutation: null },
       { caseId: "gen-101", dataset: "generated", title: "Two", decision: null, nextAction: null, gate: null,
-        pass: null, score: null, costUsd: null, durationMs: null, executionId: null },
+        pass: null, score: null, costUsd: null, durationMs: null, executionId: null,
+        critical: null, verdict: null, brokenRules: [], mutation: "conflicting_information" },
       { caseId: "Case-A", dataset: "reality", title: "Reality A", decision: "acted", nextAction: "Email → A", gate: "allow",
-        pass: null, score: null, costUsd: 0.02, durationMs: 1000, executionId: "r1" },
+        pass: null, score: null, costUsd: 0.02, durationMs: 1000, executionId: "r1",
+        critical: null, verdict: null, brokenRules: [], mutation: null },
     ]);
-    expect(totals).toEqual({ cases: 3, evaluated: 1, passed: 1, costUsd: 0.07 });
+    expect(totals).toEqual({
+      cases: 3, evaluated: 1, passed: 1, costUsd: 0.07, criticalFailures: 0,
+      byDataset: [
+        { dataset: "public", run: 1, right: 1, wrong: 0 },
+        { dataset: "generated", run: 0, right: 0, wrong: 0 },
+        { dataset: "reality", run: 1, right: 0, wrong: 0 },
+      ],
+    });
+  });
+
+  it("marks a broken must_not as critical and carries the judge's note and rules", () => {
+    const { rows, totals } = buildEvidence([{ id: "gen-1", dataset: "generated", title: null }], [
+      ex({ id: "a", caseId: "gen-1", startedAt: "2026-10-10T10:00:00Z", eval: { pass: false, score: 0, verdict: "Promised a refund.", brokenRules: ["Never promise a refund"] } }),
+    ]);
+    expect(rows[0]).toMatchObject({ pass: false, score: 0, critical: true, verdict: "Promised a refund.", brokenRules: ["Never promise a refund"] });
+    expect(totals.criticalFailures).toBe(1);
+    expect(totals.byDataset).toEqual([{ dataset: "generated", run: 1, right: 0, wrong: 1 }]);
+  });
+
+  it("reads critical from old notes-only verdicts", () => {
+    const { rows } = buildEvidence([{ id: "x", dataset: "public", title: null }], [
+      ex({ id: "a", caseId: "x", startedAt: "2026-10-10T10:00:00Z", eval: { pass: false, score: 0, notes: "BROKE RULE: No refunds | note" } }),
+      ex({ id: "b", caseId: "y", startedAt: "2026-10-10T10:00:00Z", eval: { pass: false, score: 0.4, notes: "wrong team" } }),
+      ex({ id: "c", caseId: "z", startedAt: "2026-10-10T10:00:00Z", eval: { pass: false, score: 0, notes: "agent error" } }),
+    ]);
+    // y scored 0.4, so no rule was broken; z scored 0 with no reason given, so it is unknown.
+    expect(rows.map((r) => r.critical)).toEqual([true, false, null]);
+  });
+
+  it("takes cost and time from the judged run, else the shown run, else the latest run that states them", () => {
+    const { rows } = buildEvidence([{ id: "c", dataset: "public", title: null }, { id: "d", dataset: "public", title: null }], [
+      // c: the judged run (from an eval file) states no cost; the latest console run does.
+      ex({ id: "eval", caseId: "c", startedAt: "2026-10-10T12:00:00Z", costUsd: null, durationMs: null, eval: { pass: true, score: 1 } }),
+      ex({ id: "old", caseId: "c", startedAt: "2026-10-10T10:00:00Z", costUsd: 0.03, durationMs: 5000 }),
+      // d: the judged run has its own cost and time, which win over a later run's.
+      ex({ id: "j", caseId: "d", startedAt: "2026-10-10T10:00:00Z", costUsd: 0.04, durationMs: 7000, eval: { pass: true, score: 1 } }),
+      ex({ id: "k", caseId: "d", startedAt: "2026-10-10T11:00:00Z", costUsd: 0.09, durationMs: 9000 }),
+    ]);
+    expect(rows.map((r) => [r.costUsd, r.durationMs])).toEqual([[0.03, 5000], [0.04, 7000]]);
+  });
+
+  it("stays fast with 500 cases and 10 runs each", () => {
+    const cases = Array.from({ length: 500 }, (_, i) => ({ id: `gen-${i}`, dataset: i % 2 ? "generated" : "public", title: null, mutation: "m" }));
+    const runs = cases.flatMap((c, i) => Array.from({ length: 10 }, (_, j) => ex({
+      id: `${c.id}-${j}`, caseId: c.id, startedAt: `2026-10-10T${String(10 + j).padStart(2, "0")}:00:00Z`,
+      eval: j === 9 ? { pass: i % 3 !== 0, score: 0.8 } : null,
+    })));
+    const t = performance.now();
+    const { rows, totals } = buildEvidence(cases, runs);
+    expect(performance.now() - t).toBeLessThan(100);
+    expect(rows).toHaveLength(500);
+    expect(totals.evaluated).toBe(500);
   });
 });

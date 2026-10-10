@@ -11,6 +11,7 @@ import { evalModules, ensureJudgeKey, type AgentResult, type EvalCase, type Expe
 import { agentHealthy, agentUrl, execute } from "./execute";
 import { resolveSet, SET_LABELS, type SetId } from "./scenarios";
 import { fixtureExpected, scoreFixture, summarise, toTestCase, withMessages, type FixtureRubric } from "./scoring";
+import { recordVerdict } from "./store";
 import { getVersion } from "./versions";
 
 export const CONCURRENCY = 3;
@@ -142,9 +143,14 @@ async function contextFor(c: TestRunCase, evalCases: Map<string, EvalCase>): Pro
   return { view: ec.view, expected: ec.expected, fixture: false };
 }
 
-function recordVerdictOnExecution(executionId: string, v: Verdict, note: string | null) {
-  getDb().prepare("UPDATE executions SET eval_pass = ?, eval_score = ?, eval_notes = ? WHERE id = ?")
-    .run(v.pass ? 1 : 0, v.score, note, executionId);
+function recordVerdictOnExecution(executionId: string, v: Verdict, note: string | null, judgement: Judgement | null) {
+  const brokenRules = judgement?.violations.map((x) => x.rule) ?? [];
+  recordVerdict(executionId, {
+    pass: v.pass, score: v.score, notes: note,
+    critical: v.critical || brokenRules.length > 0,
+    verdict: judgement?.note ?? null,
+    brokenRules,
+  });
 }
 
 // ---------- start ----------
@@ -238,7 +244,7 @@ export async function startTestRun(body: StartBody): Promise<TestRun> {
     const verdict = result ? (ctx.fixture ? scoreFixture(result, judgement, ev.PASS_AT) : ev.scoreCase(ctx.expected, result, judgement)) : null;
     const scored = toTestCase(base, { result, agentError, judgement, judgeError, verdict, expected: ctx.expected, costUsd: exec.costUsd, durationMs: exec.durationMs });
     if (verdict?.completed && (scored.status === "passed" || scored.status === "failed")) {
-      recordVerdictOnExecution(exec.id, verdict, scored.verdict);
+      recordVerdictOnExecution(exec.id, verdict, scored.verdict, judgement);
     }
     return scored;
   };

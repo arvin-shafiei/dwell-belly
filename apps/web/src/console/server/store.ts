@@ -1,7 +1,7 @@
 // Reads and writes console records in SQLite.
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import type { DecisionCard, ExecutionRecord, ExecutionVoice, Flow, OutboxEntry, Trace, WorkflowRecord } from "../types";
+import type { DecisionCard, EvalVerdict, ExecutionRecord, ExecutionVoice, Flow, OutboxEntry, Trace, WorkflowRecord } from "../types";
 import { getDb, repoRoot, type SqlValue } from "./db";
 import { layeredLayout } from "./mapping";
 
@@ -22,6 +22,24 @@ function parseJson<T>(v: SqlValue | undefined): T | null {
   }
 }
 
+function brokenList(v: SqlValue | undefined): string[] {
+  const list = parseJson<unknown>(v);
+  return Array.isArray(list) ? list.filter((x): x is string => typeof x === "string") : [];
+}
+
+/** The eval verdict columns of a row, or null when the row was never scored. */
+export function evalFromRow(r: Row): EvalVerdict | null {
+  if (r.eval_pass === null || r.eval_pass === undefined || r.eval_score === null || r.eval_score === undefined) return null;
+  return {
+    pass: Number(r.eval_pass) === 1,
+    score: Number(r.eval_score),
+    ...(r.eval_notes !== null && r.eval_notes !== undefined ? { notes: String(r.eval_notes) } : {}),
+    critical: r.eval_critical === null || r.eval_critical === undefined ? null : Number(r.eval_critical) === 1,
+    verdict: str(r.eval_verdict),
+    brokenRules: brokenList(r.eval_broken),
+  };
+}
+
 function toListItem(r: Row): ExecutionListItem {
   return {
     id: String(r.id),
@@ -35,9 +53,7 @@ function toListItem(r: Row): ExecutionListItem {
     costUsd: num(r.cost_usd),
     origin: String(r.origin) as ExecutionRecord["origin"],
     simulated: Number(r.simulated) === 1,
-    eval: r.eval_pass === null || r.eval_score === null
-      ? null
-      : { pass: Number(r.eval_pass) === 1, score: Number(r.eval_score), ...(r.eval_notes !== null ? { notes: String(r.eval_notes) } : {}) },
+    eval: evalFromRow(r),
     error: str(r.error),
     title: str(r.title),
     nextAction: str(r.next_action),
@@ -59,7 +75,7 @@ function toRecord(r: Row): StoredExecution {
 }
 
 const LIST_COLUMNS = `id, case_id, dataset, workflow_id, status, outcome, started_at, duration_ms, cost_usd, origin, simulated,
-  title, next_action, gate, error, eval_pass, eval_score, eval_notes, parent_execution_id, voice`;
+  title, next_action, gate, error, eval_pass, eval_score, eval_notes, eval_critical, eval_verdict, eval_broken, parent_execution_id, voice`;
 
 export function listExecutions(opts: { limit?: number; dataset?: string | null } = {}): ExecutionListItem[] {
   const limit = Math.max(1, Math.min(5000, opts.limit ?? 200));
@@ -73,6 +89,33 @@ export function listExecutions(opts: { limit?: number; dataset?: string | null }
 /** Every execution (list fields only), for the evidence join. */
 export function allExecutions(): ExecutionListItem[] {
   return getDb().prepare(`SELECT ${LIST_COLUMNS} FROM executions ORDER BY started_at DESC`).all().map(toListItem);
+}
+
+/** The narrow column set the evidence join reads: real (non-simulated) runs only, no JSON blobs but the eval's. */
+export function evidenceExecutions(): (Pick<ExecutionListItem, "id" | "caseId" | "dataset" | "status" | "outcome" | "startedAt" | "durationMs" | "costUsd" | "simulated" | "title" | "nextAction" | "gate" | "eval">)[] {
+  return getDb().prepare(`SELECT id, case_id, dataset, status, outcome, started_at, duration_ms, cost_usd, simulated, title, next_action, gate,
+      eval_pass, eval_score, eval_notes, eval_critical, eval_verdict, eval_broken
+    FROM executions WHERE simulated = 0`).all().map((r) => ({
+    id: String(r.id),
+    caseId: String(r.case_id),
+    dataset: String(r.dataset),
+    status: String(r.status) as ExecutionRecord["status"],
+    outcome: str(r.outcome),
+    startedAt: String(r.started_at),
+    durationMs: num(r.duration_ms),
+    costUsd: num(r.cost_usd),
+    simulated: false,
+    title: str(r.title),
+    nextAction: str(r.next_action),
+    gate: str(r.gate),
+    eval: evalFromRow(r),
+  }));
+}
+
+/** Writes a verdict onto an existing execution (the console's test runs). */
+export function recordVerdict(executionId: string, v: { pass: boolean; score: number; notes: string | null; critical: boolean | null; verdict: string | null; brokenRules: string[] }) {
+  getDb().prepare("UPDATE executions SET eval_pass = ?, eval_score = ?, eval_notes = ?, eval_critical = ?, eval_verdict = ?, eval_broken = ? WHERE id = ?")
+    .run(v.pass ? 1 : 0, v.score, v.notes, v.critical === null ? null : v.critical ? 1 : 0, v.verdict, JSON.stringify(v.brokenRules), executionId);
 }
 
 export function getExecution(id: string): StoredExecution | null {
@@ -100,7 +143,7 @@ export interface ExecutionWrite {
   trace: Trace | null;
   answerMd: string | null;
   reasoningMd: string | null;
-  eval: { pass: boolean; score: number; notes?: string } | null;
+  eval: EvalVerdict | null;
   /** Voice additions (PRD I5). Optional so importers that predate them keep compiling. */
   parentExecutionId?: string | null;
   outbox?: OutboxEntry[] | null;
@@ -116,12 +159,14 @@ export function upsertExecution(e: ExecutionWrite) {
     e.origin, e.simulated ? 1 : 0, e.title, e.nextAction, e.gate, e.error,
     e.trace ? JSON.stringify(e.trace) : null, e.answerMd, e.reasoningMd,
     e.eval ? (e.eval.pass ? 1 : 0) : null, e.eval ? e.eval.score : null, e.eval?.notes ?? null,
+    e.eval?.critical === undefined || e.eval.critical === null ? null : e.eval.critical ? 1 : 0,
+    e.eval?.verdict ?? null, e.eval?.brokenRules ? JSON.stringify(e.eval.brokenRules) : null,
     e.parentExecutionId ?? null, e.outbox ? JSON.stringify(e.outbox) : null, e.card ? JSON.stringify(e.card) : null,
     e.voice ? JSON.stringify(e.voice) : null,
   ];
   const cols = `id, source_key, case_id, dataset, workflow_id, status, outcome, started_at, duration_ms, cost_usd,
     origin, simulated, title, next_action, gate, error, trace, answer_md, reasoning_md, eval_pass, eval_score, eval_notes,
-    parent_execution_id, outbox, card, voice`;
+    eval_critical, eval_verdict, eval_broken, parent_execution_id, outbox, card, voice`;
   const conflictCol = e.sourceKey ? "source_key" : "id";
   db.prepare(`INSERT INTO executions (${cols}) VALUES (${params.map(() => "?").join(", ")})
     ON CONFLICT(${conflictCol}) DO UPDATE SET
@@ -131,7 +176,8 @@ export function upsertExecution(e: ExecutionWrite) {
       simulated = excluded.simulated, title = excluded.title, next_action = excluded.next_action,
       gate = excluded.gate, error = excluded.error, trace = excluded.trace, answer_md = excluded.answer_md,
       reasoning_md = excluded.reasoning_md, eval_pass = excluded.eval_pass, eval_score = excluded.eval_score,
-      eval_notes = excluded.eval_notes, parent_execution_id = excluded.parent_execution_id,
+      eval_notes = excluded.eval_notes, eval_critical = excluded.eval_critical, eval_verdict = excluded.eval_verdict,
+      eval_broken = excluded.eval_broken, parent_execution_id = excluded.parent_execution_id,
       outbox = excluded.outbox, card = excluded.card, voice = excluded.voice`).run(...params);
 }
 

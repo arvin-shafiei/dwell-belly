@@ -5,10 +5,12 @@
 //   adversarial data/adversarial/delivery (Oriol's adversarial cases, PR #12)
 //   city      data/city/delivery (hand-written city scenarios; no index.json, read from the folder)
 //   fixtures  docs/stress-test/fixtures/NNN (index.md + history.md), id "fixture-NNN"
+//   adhoc     runs/adhoc/<id>.json, one-off cases from the "New case" page (console/intake/adhoc.ts)
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fixtureAttachmentPaths, fixtureView, fixtureTitle, generatedView, publicView, type CaseView } from "./caseViews";
 import { repoRoot } from "./db";
+import { ADHOC_DATASET, listAdhoc, readAdhoc } from "../intake/adhoc";
 
 export interface CaseEntry {
   id: string;
@@ -69,6 +71,7 @@ async function scan(): Promise<Located[]> {
     if (indexMd === null) continue;
     out.push({ id: `fixture-${name}`, dataset: "fixtures", title: fixtureTitle(indexMd), file: path.join(fixDir, name), mutation: null });
   }
+  for (const c of await listAdhoc()) out.push({ id: c.id, dataset: ADHOC_DATASET, title: c.title, file: "", mutation: null });
   return out;
 }
 
@@ -78,6 +81,11 @@ let cache: { at: number; cases: Promise<Located[]> } | null = null;
 async function located(): Promise<Located[]> {
   if (!cache || Date.now() - cache.at > CACHE_MS) cache = { at: Date.now(), cases: scan() };
   return cache.cases;
+}
+
+/** Changes each time the catalogue is rescanned (at most every CACHE_MS). For caching derived views. */
+export function catalogueStamp(): number {
+  return cache?.at ?? 0;
 }
 
 export async function listCases(dataset?: string | null, q?: string | null): Promise<CaseEntry[]> {
@@ -101,6 +109,11 @@ export async function findCase(caseId: string, dataset?: string | null): Promise
 
 /** The view the eval would send for this case. Null if the case is unknown. */
 export async function buildView(caseId: string, dataset?: string | null): Promise<{ entry: CaseEntry; view: CaseView } | null> {
+  // One-off cases are read straight from disk: one saved a moment ago is not in the scan cache yet.
+  if (dataset === ADHOC_DATASET || (!dataset && caseId.startsWith("adhoc-"))) {
+    const c = await readAdhoc(caseId);
+    return c ? { entry: { id: c.id, dataset: ADHOC_DATASET, title: c.title }, view: generatedView(c) } : null;
+  }
   const hit = (await located()).find((c) => c.id === caseId && (!dataset || c.dataset === dataset));
   if (!hit) return null;
   const entry = { id: hit.id, dataset: hit.dataset, title: hit.title };

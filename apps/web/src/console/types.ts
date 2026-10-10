@@ -96,7 +96,7 @@ export interface ExecutionRecord {
   answerMd: string | null;
   reasoningMd: string | null;
   /** Eval verdict when one exists. */
-  eval: { pass: boolean; score: number; notes?: string } | null;
+  eval: EvalVerdict | null;
   error?: string | null;
   /** Set when this run re-ran another execution (voice note, call or approval). */
   parentExecutionId?: string | null;
@@ -106,6 +106,19 @@ export interface ExecutionRecord {
   card?: DecisionCard | null;
   /** Present when a voice moment triggered this run. */
   voice?: ExecutionVoice | null;
+}
+
+/** The eval's verdict on one execution (scripts/eval/score.mjs). The v2 parts are absent on rows scored before they existed. */
+export interface EvalVerdict {
+  pass: boolean;
+  score: number;
+  notes?: string;
+  /** True when a must_not rule was broken (score forced to 0); null when the source does not say. */
+  critical?: boolean | null;
+  /** The judge's own short note. */
+  verdict?: string | null;
+  /** The must_not rules the judge says were broken. */
+  brokenRules?: string[];
 }
 
 /** A row of the evidence grid: every tested case across every dataset. */
@@ -118,9 +131,62 @@ export interface EvidenceRow {
   gate: string | null; // "allow" | "ask" | "block"
   pass: boolean | null; // null = not evaluated
   score: number | null;
+  costUsd: number | null; // real, from the evaluated run, else the latest run that states it
+  durationMs: number | null;
+  executionId: string | null;
+  // ---- dashboard v2 additions ----
+  /** True when a must_not was broken (score forced to 0) or the judge flagged a critical failure; null = not evaluated. */
+  critical: boolean | null;
+  /** The judge's note on the latest verdict. */
+  verdict: string | null;
+  /** must_not rules broken in the latest verdict. */
+  brokenRules: string[];
+  /** The case's difficulty pattern from its file (scripts/eval/mutations.mjs); null for public cases and fixtures. */
+  mutation: string | null;
+}
+
+export interface EvidenceTotals {
+  cases: number;
+  evaluated: number;
+  passed: number;
+  costUsd: number;
+  /** Rows whose latest verdict broke a rule. */
+  criticalFailures: number;
+  /** Per dataset: cases with a run, judged right (pass), judged wrong (fail). */
+  byDataset: { dataset: string; run: number; right: number; wrong: number }[];
+}
+
+/** One Reality Test case: a folder of ANSWERS/ (apps/api/src/agent/cli.ts). */
+export interface RealityCase {
+  n: string; // the organisers' case folder name
+  caseId: string;
+  title: string | null;
+  outcome: string | null; // run_end outcome; "error" when the run failed
+  decision: string | null; // the ANSWER.md "Decision:" line
+  escalated: boolean; // held for a person (outcome escalated or a decision card)
+  failed: boolean; // the run did not finish or ended in error
   costUsd: number | null;
   durationMs: number | null;
   executionId: string | null;
+}
+
+export interface RealitySummary {
+  total: number; // cases the run was given (max of folders and RUNLOG.md rows)
+  finished: number; // folders whose run finished without error
+  cases: number; // case folders imported
+  byOutcome: Record<string, number>;
+  escalated: number;
+  failed: number;
+  costUsd: number;
+  durationMs: number;
+  runId: string | null; // from RUNLOG.md
+  hasIndex: boolean; // ANSWERS/INDEX.md exists
+}
+
+/** ANSWERS/RUNLOG.md, parsed. Null when there is no run log. */
+export interface RealityRunlog {
+  runId: string | null;
+  rows: { caseName: string; result: string; outcome: string | null; seconds: number | null; costUsd: number | null }[];
 }
 
 /** API (all JSON, under /api/console). */
@@ -131,7 +197,9 @@ export interface ConsoleApi {
   "GET /api/console/executions/:id": { execution: ExecutionRecord };
   "POST /api/console/execute": { execution: ExecutionRecord }; // body: ExecuteRequest -> runs via apps/api POST /api/cases
   "POST /api/console/import": { imported: number }; // rescan ANSWERS/, runs/, examples/ into SQLite
-  "GET /api/console/evidence": { rows: EvidenceRow[]; totals: { cases: number; evaluated: number; passed: number; costUsd: number } };
+  "GET /api/console/evidence": { rows: EvidenceRow[]; totals: EvidenceTotals };
+  "GET /api/console/reality": { cases: RealityCase[]; summary: RealitySummary; runlog: RealityRunlog | null };
+  "GET /api/console/reality/:caseId": { answerMd: string | null; reasoningMd: string | null }; // read from ANSWERS/<n>/; 404 if no folder
   "GET /api/console/cases?dataset&q": { cases: { id: string; dataset: string; title: string | null }[] };
   "GET /api/console/status": { agentApi: boolean; agentUrl: string; dbPath: string; counts: Record<string, number> };
 }
