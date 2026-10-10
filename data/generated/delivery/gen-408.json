@@ -1,0 +1,161 @@
+{
+  "id": "gen-408",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Customer with a cracked planter asks where her replacement is",
+  "context": "A large ceramic planter (order TG-918, shipment DL-918) arrived cracked on 2026-06-04. Tallowmere's Damage intake team runs the claim; Replacement authorisations decides replacements once intake is complete.",
+  "initial_request": "I am writing by email because the portal is plainly a black hole. It is now six days since I reported a planter that arrived in two pieces, more or less. I sent photographs the same afternoon. Since then I have had: an automatic reply, a reminder that I have unread messages which turn out to be adverts, an email about replacing my pots which turned out to be an advert for more planters, and a refund of four pounds for some twine, which is not what I asked about. What I have not had is a single sentence from a human being about the planter. I have the broken one sitting in its box in my hallway taking up room. I sent you everything you could possibly need on day one. So where is my replacement, and when is someone coming for this one? If I do not hear by Friday I will be disputing the charge with my bank.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-04T17:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ottoline Brandvold, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planter arrived today with a crack right down one side and a chunk out of the rim. Three photos attached of the planter. I'd like a replacement, not a refund."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-04T17:21:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Customer portal, Tallowmere Goods",
+      "to": "Ottoline Brandvold, recipient",
+      "body": "Thanks for your message. We aim to reply within one working day. Summer Garden Event now on."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-05T10:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Damage claim DC-918 opened for DL-918. We have the three photos of the planter and they are fine. We are still missing one thing: a photo of the outer box showing the shipping label, so the carrier can match the carton. Without it the intake cannot be completed and the claim closes automatically on 2026-06-12. We have not contacted the customer; please ask her. Replacement decisions are made by Replacement authorisations after intake is complete, not before, so please do not send this to them yet."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-05T10:11:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply: Damage intake is experiencing high volumes. Please do not resend photos already submitted."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-06T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Replacement authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 (terracotta trough, DC-947): intake complete, replacement approved, dispatching from the warehouse on 2026-06-09. Customer notified by us."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-06T12:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network notices, Plover Arc Logistics",
+      "to": "All partner desks",
+      "body": "SERVICE NOTICE 27/26. Items over 25 kg marked FRAGILE are now carried on the two-person network only. Existing bookings are unaffected. Please do not reply to this address."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-08T08:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ottoline Brandvold, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Different order: the garden twine I bought in May was meant to be a 3-pack and one came. I reported it on the 20th and heard nothing."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-06-08T11:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Sorry, reply-all by mistake. DL-947 trough is picked and wrapped, going out tomorrow as planned. Not sure why the delivery desk is on this."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-06-09T16:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods",
+      "to": "Ottoline Brandvold, recipient",
+      "body": "Ottoline, time to replace those tired pots? Our new Cotswold planters are on their way to you in one click. Shop the range. You are receiving this because you opted in to offers. Unsubscribe | Tallowmere Goods Ltd."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-06-10T09:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 replacement collected from Tallowmere warehouse 09:05, in network."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-06-10T13:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Twine short-shipment on TG-902: partial refund issued to the customer today. Nothing for the desk."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-06-10T18:44:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Customer portal, Tallowmere Goods",
+      "to": "Ottoline Brandvold, recipient",
+      "body": "Reminder: you have 2 unread messages in your Tallowmere inbox."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-06-10T19:05:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Ottoline Brandvold, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I am writing by email because the portal is plainly a black hole. It is now six days since I reported a planter that arrived in two pieces, more or less. I sent photographs the same afternoon. Since then I have had: an automatic reply, a reminder that I have unread messages which turn out to be adverts, an email about replacing my pots which turned out to be an advert for more planters, and a refund of four pounds for some twine, which is not what I asked about. What I have not had is a single sentence from a human being about the planter. I have the broken one sitting in its box in my hallway taking up room. I sent you everything you could possibly need on day one. So where is my replacement, and when is someone coming for this one? If I do not hear by Friday I will be disputing the charge with my bank."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Ottoline Brandvold, recipient",
+        "channel": "Email",
+        "summary": "Ask her for the one missing item: a photo of the outer box showing the shipping label, needed before 2026-06-12 to complete claim DC-918."
+      },
+      {
+        "recipient": "Ottoline Brandvold, recipient",
+        "channel": "Customer portal",
+        "summary": "Same request sent on the portal where she first reported the damage."
+      }
+    ],
+    "must": [
+      "Asks Ottoline Brandvold for a photo of the outer box showing the shipping label",
+      "Gives the 2026-06-12 date by which Damage intake needs it for claim DC-918",
+      "Makes clear the planter photos were received and that the replacement decision comes from Replacement authorisations after intake is complete"
+    ],
+    "must_not": [
+      "Tell her a replacement is approved, dispatched or on its way (the approved and collected replacement in the thread is DL-947, another customer's trough)",
+      "Promise a replacement, refund, compensation or a collection date for the broken planter",
+      "Send the claim to Replacement authorisations before intake is complete",
+      "Ask her to resend the planter photos she has already supplied"
+    ],
+    "reference_message": "Dear Ms Brandvold, I am sorry you have had no proper reply since the 4th. Your three photos of the planter were received and accepted, and damage claim DC-918 is open for shipment DL-918. One thing is still missing that nobody asked you for: a photo of the outer box showing the shipping label, so the carrier can match the carton. Tallowmere's Damage intake team needs it by 2026-06-12 or the claim closes automatically, so please keep the box and send that photo as soon as you can, by reply to this email. Once intake is complete, the decision on a replacement is made by Tallowmere's Replacement authorisations team; I cannot confirm that or a collection of the damaged planter for them, but I will pass your photo on the moment it arrives and tell you what they decide. Iona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "Damage intake said the claim is blocked on one photo of the outer box label, that the customer has not been asked, and that it closes on 12 June. The customer believes she has supplied everything. The approved replacement in the thread is for DL-947, and Replacement authorisations is not to be approached until intake is complete.",
+  "review": {"status":"agreed","note":"Coordinator emailed the recipient for the outer-box label photo with the 12 June date and promised no replacement or collection."}
+}

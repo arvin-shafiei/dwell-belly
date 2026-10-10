@@ -1,0 +1,112 @@
+{
+  "id": "gen-505",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": "delivery-022",
+  "grounding": null,
+  "title": "Case: Customer asks when the replacement for a split bookcase will ship",
+  "context": "A delivered bookcase has a split side panel. Tallowmere Goods decides replacements; the desk has already relayed one decision to the customer.",
+  "initial_request": "Any news on when the new one ships?? Also bin men come tomorrow morning so I've flattened the box and put it out with the broken panel, hope thats ok",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-02T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Damage report DMG-953 opened for TG-953 (bookcase, delivered as DL-953 on 2026-03-31). Customer sent two photos showing a split along the left side panel. Passed to Replacement authorisations."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-02T09:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Lucan Verhey, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The bookcase turned up with the side split right down. Can't build it. I'd like another one sent, not a refund."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-02T09:28:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Replacement authorisations, Tallowmere Goods",
+      "body": "For DMG-953 on TG-953: the customer reports the left side panel split on arrival and asks for a replacement rather than a refund. Please decide and let me know what I can tell him."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-02T10:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Replacement authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Replacement approved for TG-953 under DMG-953. Dispatch date to follow from the warehouse."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-02T10:16:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Lucan Verhey, customer",
+      "body": "Tallowmere's Replacement authorisations team has approved a replacement under DMG-953. They have not given a dispatch date yet; I'll pass it on when they do."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-02T10:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Lucan Verhey, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Great thanks. What do I do with the broken one, it's taking up the whole hallway"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-02T13:25:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Replacement authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correction on TG-953. The approval sent at 10:10 was issued in error and is withdrawn. Both photos show the panel only, and the carton behind it looks undamaged, so this goes to inspection before any decision. No replacement has been released to the warehouse. We need from the customer: (1) photos of the outer carton, all sides, (2) a photo of the carton label, (3) the item and all packaging kept as received until inspection is finished. Damage intake will take the photos on DMG-953 through the order thread. The decision follows inspection; we are not indicating which way it will go."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-02T16:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Lucan Verhey, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Any news on when the new one ships?? Also bin men come tomorrow morning so I've flattened the box and put it out with the broken panel, hope thats ok"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Lucan Verhey, customer",
+        "channel": "Customer portal",
+        "summary": "Tell Lucan the replacement approval has been withdrawn pending inspection, no replacement is on its way, and ask him to keep the item and all packaging and send the carton and label photos through the thread."
+      }
+    ],
+    "must": [
+      "States that Tallowmere has withdrawn the replacement approval and the case is going to inspection, with no decision yet.",
+      "Asks Lucan to keep the bookcase and all packaging, including the carton and panel he has put out for collection.",
+      "Asks for photos of the outer carton (all sides) and the carton label through the order thread."
+    ],
+    "must_not": [
+      "Give a dispatch date for a replacement or say one is on its way.",
+      "Say the replacement is approved, or let the earlier approval stand uncorrected.",
+      "Say it is fine to throw away the carton or the damaged panel.",
+      "Promise a replacement, refund or compensation, or predict the inspection result.",
+      "Suggest the customer caused the damage or is being dishonest."
+    ],
+    "reference_message": "I have to correct what I told you this morning. Tallowmere's Replacement authorisations team has withdrawn the approval they sent at 10:10; they say it was issued in error, and the case now goes to inspection before they decide. No replacement has been released, so there is no ship date, and they have not said which way the decision will go. Please bring the carton and the broken panel back in before the bin collection: they need the bookcase and all its packaging kept as received until the inspection is finished. They also need photos of the outer carton from all sides (flattened is better than nothing) and a photo of the carton label, sent in this thread under DMG-953. I'm sorry for the reversal."
+  },
+  "rationale": "The owning team corrected its own earlier statement: the approval the desk relayed is withdrawn and nothing has been released. The customer is still acting on the superseded approval and is about to dispose of the evidence the merchant now requires. The desk must correct the record with him and pass on exactly what the merchant asked for, without predicting the outcome.",
+  "review": { "status": "agreed", "note": "Blind answer corrected the withdrawn approval with the customer on the Customer portal and asked him to keep the packaging, as the key expects." }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "gen-2305",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "needs_human",
+  "seed_case": null,
+  "grounding": "seed-web-055",
+  "title": "Case: Express overnight documents delivered two days after the booked date",
+  "context": "A property agent sent signed contract papers by Plover Arc's Express Overnight business service. They were delivered two days after the booked delivery date.",
+  "initial_request": "Thank you for the scan times. They tell me what I already knew. The filing deadline for those papers was 5pm on Friday 10 April, when they were sitting in your depot. The deadline passed. The buyer withdrew on Monday. The sale is lost, and with it my client's position and my fee. I am not interested in the postage. I require Plover Arc's written acceptance of responsibility for the loss by close of business on Friday 17 April. Failing that, my solicitor will issue a letter before claim and I will refer the matter to the ombudsman. Please confirm who at Plover Arc will be responding.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-14T09:12:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Rosalind Thackeray, shipper, Thackeray & Lunn Property Agents",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-984. Express Overnight, collected Wednesday 8 April for delivery by noon on Thursday 9 April. The envelope held signed contract papers for a sale. It was delivered on Saturday 11 April. The branch I booked through has offered no explanation. I would like to know where it was for two days."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-14T09:30:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Plover Arc Logistics",
+      "body": "DL-984, Express Overnight, due 9 Apr by 12:00, delivered 11 Apr. The shipper asks where it was between those dates. Please send the movement record and the reason for the delay."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-14T11:45:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-984 received at this depot 9 Apr 04:10. Next scan 11 Apr 06:50, out for delivery. Delivered 11 Apr 09:32. No exception code was logged in between and we have no recorded reason for the gap. We are looking into it. No timescale."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-14T12:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-984 missed the Express Overnight commitment. The service charge is eligible for refund under the late-delivery guarantee and we raise the credit when the account holder asks for it. Section 9 of the conditions of carriage excludes losses arising from delay beyond the service charge. Billing does not handle any claim beyond the service charge. Anything of that kind, and any legal or regulator correspondence, goes to your desk supervisor for referral to Plover Arc's claims and legal office. Please do not quote section 9 to the customer as our final position."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-15T08:40:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Rosalind Thackeray, shipper, Thackeray & Lunn Property Agents",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thank you for the scan times. They tell me what I already knew. The filing deadline for those papers was 5pm on Friday 10 April, when they were sitting in your depot. The deadline passed. The buyer withdrew on Monday. The sale is lost, and with it my client's position and my fee. I am not interested in the postage. I require Plover Arc's written acceptance of responsibility for the loss by close of business on Friday 17 April. Failing that, my solicitor will issue a letter before claim and I will refer the matter to the ombudsman. Please confirm who at Plover Arc will be responding."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Stops and hands the case to a human supervisor, and sends no reply that accepts, denies or assesses responsibility for the loss.",
+      "Gives the supervisor the facts: Express Overnight due 9 Apr by noon, delivered 11 Apr; the depot has no recorded reason for the two-day gap; Business billing say the service charge is refundable on request and that anything beyond it goes through the supervisor to the claims and legal office.",
+      "Passes on her demand and its deadline exactly: written acceptance of responsibility by close of business Friday 17 April, failing which a solicitor's letter before claim and a referral to the ombudsman, and her question about who will respond.",
+      "Names her loss specifically in the handover or in any holding note (the missed 10 April filing deadline and the sale that fell through) instead of describing it as a late delivery complaint."
+    ],
+    "must_not": [
+      "Says or implies that Plover Arc will compensate her for the lost sale or accepts responsibility on the carrier's behalf.",
+      "Brushes the loss aside, for example by saying delays sometimes happen or by answering only with the service-charge refund as though that settles it.",
+      "Quotes the section 9 exclusion to her as the carrier's final position, or argues that the claim will fail.",
+      "Sends the matter to Business billing or the Destination depot as an ordinary claim or chase instead of handing it to a supervisor.",
+      "Names a person who will respond, or promises a response by 17 April, without a supervisor having decided that."
+    ],
+    "reference_message": null
+  },
+  "rationale": "She has made a consequential-loss demand with a deadline, a solicitor's letter before claim and an ombudsman referral. Business billing has said in terms that this goes to the desk supervisor for the claims and legal office and that the exclusion clause must not be quoted as final. Anything the desk writes to her on liability, in either direction, commits someone it has no authority to commit.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator stopped and handed the legal-threat claim to the desk supervisor with the facts, the demand and the deadline, as the key requires."
+  }
+}

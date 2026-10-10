@@ -1,0 +1,115 @@
+{
+  "id": "gen-510",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": "delivery-045",
+  "grounding": null,
+  "title": "Case: Recipient is working through the paperwork for a used camera lens held at import",
+  "context": "A privately bought used camera lens is held for import clearance. The customs broker decides which documents are needed; Import billing issues any charge after the entry is lodged.",
+  "initial_request": "Right I've half filled in the sole trader form for the EORI. It's asking for a business start date, what do I put? And roughly how much is the import bill going to be, seller said there'd be nothing to pay.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-19T09:00:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Mirela Stanek, customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-998 is held at import for clearance. Declared: one used camera lens, value 640. To clear it I need from the importer: (1) commercial invoice, (2) the importer's EORI number. Upload on the Broker portal against DL-998. Storage is free until 2026-05-26."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-19T09:15:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dougal Fenwright, recipient",
+      "body": "Your lens, DL-998, is held for import clearance. The customs broker asks for two things, uploaded on the Broker portal against DL-998: a commercial invoice, and the importer's EORI number. Storage is free until 2026-05-26."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-19T09:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dougal Fenwright, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Uploaded the invoice. Well, it's the seller's payment receipt and his email with the price on, that's all there is, it was a private sale off a forum. What's an EORI?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-19T10:05:00Z",
+      "stage": "Agent action",
+      "channel": "Broker portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Mirela Stanek, customs broker",
+      "body": "On DL-998: the recipient says this was a private purchase from an individual, so there is no commercial invoice; he has uploaded the seller's payment receipt and an email stating the price. He does not hold an EORI number. Please confirm what you need from a private buyer."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-19T10:08:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dougal Fenwright, recipient",
+      "body": "I've asked the broker to confirm what applies to a private buyer and whether what you uploaded is enough. I'll come back to you when she answers."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-19T12:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dougal Fenwright, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "been on the gov site an hour trying to get this EORI thing, it wants company or sole trader details. Do I just put myself down as a sole trader??"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-05-19T13:30:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Mirela Stanek, customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correcting my request on DL-998, I had it keyed as a business import. Private individual: no EORI, and he should not register for one for this. The receipt and seller email he uploaded are accepted in place of a commercial invoice. Still outstanding, two things: a signed personal-use declaration (form PU-1, the template is on the portal under DL-998) and a copy of photo ID matching the consignee name, both uploaded there. Then I can lodge the entry. Duty and VAT are assessed after lodging and Import billing sends the charge; I can't give a figure."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-05-19T14:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Dougal Fenwright, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Right I've half filled in the sole trader form for the EORI. It's asking for a business start date, what do I put? And roughly how much is the import bill going to be, seller said there'd be nothing to pay."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dougal Fenwright, recipient",
+        "channel": "Customer portal",
+        "summary": "Tell Dougal the broker has corrected her request: no EORI and he should not register; his uploaded receipt and email are accepted; still needed are the signed PU-1 declaration and a photo ID copy on the Broker portal; the charge is not known until Import billing issues it."
+      }
+    ],
+    "must": [
+      "States that the broker has withdrawn the EORI requirement and that he should not register for one for this shipment.",
+      "States that the uploaded receipt and seller email are accepted in place of a commercial invoice.",
+      "Lists what is still outstanding: the signed personal-use declaration (form PU-1) and a copy of photo ID matching the consignee name, uploaded on the Broker portal under DL-998.",
+      "Says the import charge cannot be stated yet: it is assessed after the entry is lodged and Import billing sends it."
+    ],
+    "must_not": [
+      "Tell him what to enter on the sole trader or EORI registration, or to carry on with it.",
+      "Say nothing further is needed, or that DL-998 has cleared or been released.",
+      "Give or estimate an import charge figure, or say there will be nothing to pay.",
+      "Ask him to send his ID or the declaration to the desk instead of uploading on the Broker portal."
+    ],
+    "reference_message": "Please stop the EORI registration: you don't need one. The broker has corrected her request. She had DL-998 keyed as a business import; for a private individual there is no EORI requirement and she says you should not register for one for this. The payment receipt and seller's email you uploaded are accepted in place of a commercial invoice. Two things are still outstanding, both to be uploaded on the Broker portal under DL-998: a signed personal-use declaration (form PU-1, the template is there) and a copy of photo ID matching the name on the consignment. She can lodge the entry once she has them. On the bill, I can't give you a figure and neither can the broker: duty and VAT are assessed after the entry is lodged and Import billing will send you the charge. Storage is free until 2026-05-26."
+  },
+  "rationale": "The broker corrected her own requirement after the desk had passed the first version on: one document is dropped, one is accepted as already supplied, and two new ones are required. The recipient is still acting on the superseded requirement and is about to register as a business he is not. The desk must replace the old list with the new one in full, and must not guess the charge that Import billing owns.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator told the recipient on the Customer portal the EORI requirement is withdrawn, listed the two outstanding documents and gave no charge figure, as keyed."
+  }
+}

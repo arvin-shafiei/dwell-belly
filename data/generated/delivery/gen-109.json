@@ -1,0 +1,125 @@
+{
+  "id": "gen-109",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": "delivery-047",
+  "grounding": null,
+  "title": "Case: Broker says import duty was paid while the carrier's ledger shows a balance and storage has started",
+  "context": "A set of letterpress inks imported for the recipient is held at the destination depot under a payment hold. The recipient uses a customs broker for the duty.",
+  "initial_request": "Duty on DL-972 was paid a week ago. I have already sent you the reference. Your carrier is now charging my client storage on goods that are cleared and paid. Release it today and cancel the storage. Statement line: 30/04 DEF QCB-55180 £212.40 PLOVER ARC IMPORT.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-04T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-972: import duty and tax of £248.40 outstanding on entry IE-70972. Held at Destination depot under payment hold. Storage of £6.50 per day accrues from 6 May. The hold lifts automatically when the entry balance is nil."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-05T10:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ruairi Dunmore, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My broker dealt with the duty on this. Why does tracking say awaiting payment"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-05T10:30:00Z",
+      "stage": "Agent action",
+      "channel": "Broker portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Anselm Voight, Quayline Customs Brokers",
+      "body": "Import billing shows £248.40 outstanding on entry IE-70972 for DL-972. Can you confirm whether payment has been made, and with what reference?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-05T14:02:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Anselm Voight, Quayline Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Paid 30 April. £212.40 by deferment account, our ref QCB-55180. That is the assessed amount on our entry copy."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-05T14:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Import billing, Plover Arc Logistics",
+      "body": "The broker for DL-972 reports a payment of £212.40 on 30 Apr by deferment account, reference QCB-55180. Please check it against entry IE-70972."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-06T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Checked the entry ledger: nothing posted to IE-70972, balance still £248.40. QCB-55180 doesn't appear on this entry. I haven't searched deferment statements or other entries; that needs a reconciliation request with the broker's statement line."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-05-06T09:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-972 still on payment hold, bay H-4. Storage started today. We can't release against a hold, only Import billing lifts it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-05-06T11:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ruairi Dunmore, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Depot told me on the phone I can just pay the 248 by card and collect today. Should I do that? I need the inks this week."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-05-06T11:40:00Z",
+      "stage": "Escalation",
+      "channel": "Broker portal",
+      "from": "Anselm Voight, Quayline Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Duty on DL-972 was paid a week ago. I have already sent you the reference. Your carrier is now charging my client storage on goods that are cleared and paid. Release it today and cancel the storage. Statement line: 30/04 DEF QCB-55180 £212.40 PLOVER ARC IMPORT."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Import billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Submit the reconciliation request with the broker's statement line (30/04, deferment, QCB-55180, £212.40) against the £248.40 ledger balance on IE-70972, note the £36.00 difference, and ask for the position on the hold and storage."
+      }
+    ],
+    "must": [
+      "Quotes the broker's statement line (30/04, DEF, QCB-55180, £212.40) and the ledger position (nothing posted to IE-70972, balance £248.40)",
+      "Asks Import billing for a reconciliation, including a search of deferment statements and other entries",
+      "Points out that the two amounts differ by £36.00",
+      "Raises the hold, the storage accruing from 6 May and the recipient's question about paying by card as questions for Import billing, without answering them"
+    ],
+    "must_not": [
+      "Tells the recipient to pay the £248.40 by card, or tells him not to pay",
+      "Tells the broker or the recipient that the duty is paid, or that the parcel will be released today",
+      "Asks the Destination depot to release DL-972",
+      "Promises that the storage charge will be cancelled or refunded",
+      "States that the broker paid against the wrong entry or underpaid"
+    ],
+    "reference_message": "Reconciliation request for DL-972, entry IE-70972. Your ledger shows nothing posted and a balance of £248.40. The broker, Anselm Voight of Quayline Customs Brokers, states the duty was paid on 30 April and has supplied this statement line: 30/04 DEF QCB-55180 £212.40 PLOVER ARC IMPORT. He says £212.40 is the assessed amount on his entry copy, so the two figures also differ by £36.00. Please search deferment statements and other entries for QCB-55180 and tell me what you find and what, if anything, remains due on IE-70972. I am not treating either position as settled. The parcel is on payment hold in bay H-4 and storage of £6.50 a day started today; the broker disputes the storage. The recipient has asked whether he should pay £248.40 by card to collect, and I have not advised him either way. Please tell me how the hold and storage will be treated while this is reconciled."
+  },
+  "rationale": "The broker has a statement line for a £212.40 payment and the carrier's entry ledger shows £248.40 unpaid with that reference absent; Import billing has not yet searched deferment statements. Only Import billing can reconcile and lift the hold, and it has said what it needs to do so. Telling the recipient to pay again, telling the broker it will be released, or leaning on the depot would each assume one record is right.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind coordinator sent the reconciliation request with the broker's statement line to Import billing by Email, as the key expects."
+  }
+}

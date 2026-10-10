@@ -1,0 +1,107 @@
+{
+  "id": "gen-2702",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": "seed-web-023",
+  "title": "Case: Two logged delivery attempts on a hedge trimmer that the recipient says never happened",
+  "context": "A Tallowmere Goods hedge trimmer has two attempted-delivery records on consecutive days. The recipient says she was at home both days. The depot applies the carrier's attempt count as it is logged.",
+  "initial_request": "Day two of the magic trick. Apparently I was 'not in' again at 16:52, which is fascinating because I was weeding the front border at the time. Today's photo is my parcel being held up outside a shop with a blue awning. I live on a cul-de-sac of nine bungalows. There is no shop, no awning and no terrace within a mile of here. My doorbell camera recorded from 7 till 7 both days and its entire cast is the postman, next door's cat and me. I can send you both days if anyone is interested in what actually happened as opposed to what your carrier's driver has typed in. And now I get a text saying 'two attempts made, one remaining before your parcel is returned'. Attempts at what, exactly? Somebody is making these up and you lot are filing it as fact.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-02T18:47:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-916 (Tallowmere TG-916) attempt 1 logged 18:41. Reason code: no answer. Booked slot was 12:00-14:00. Photo on file: parcel on block paving, no door or house number in frame. Stop record not reviewed."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-02T19:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ottoline Grebe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I've just had a text to say you 'tried to deliver' my hedge trimmer at 18:41. How thoughtful. I was in all day for the 12 to 2 slot and watched two Plover Arc vans go past the end of the close without slowing down. Nobody came at 18:41 either, I was sat ten feet from the door. The photo attached to the text is a box on some paving. Could be anywhere. Could be the moon."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-02T19:38:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-916: the recipient, Ottoline Grebe, says she was home through the 12:00-14:00 slot and at 18:41 and that nobody called. Please rebook the delivery for tomorrow and confirm the slot to her."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-03T08:55:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk; Ottoline Grebe, recipient",
+      "body": "DL-916 rebooked for today, slot 10:00-13:00."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-03T16:58:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-916 attempt 2 logged 16:52. Reason code: no answer. Photo on file: parcel held up in front of a terraced row with a blue shop awning. Not checked against the delivery address. Stop record not reviewed."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-03T17:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-916 now has 2 failed attempts. It goes out a third time tomorrow, 4 June. After a third failed attempt a parcel is returned to the merchant automatically on the next trunk, which would be 06:00 on 5 June. We apply the count as it is logged and cannot change it. Only Delivery investigations can review a stop record and void an attempt. Disputed attempts go to them by email with the recipient's account, not to us."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-03T18:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ottoline Grebe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Day two of the magic trick. Apparently I was 'not in' again at 16:52, which is fascinating because I was weeding the front border at the time. Today's photo is my parcel being held up outside a shop with a blue awning. I live on a cul-de-sac of nine bungalows. There is no shop, no awning and no terrace within a mile of here. My doorbell camera recorded from 7 till 7 both days and its entire cast is the postman, next door's cat and me. I can send you both days if anyone is interested in what actually happened as opposed to what your carrier's driver has typed in. And now I get a text saying 'two attempts made, one remaining before your parcel is returned'. Attempts at what, exactly? Somebody is making these up and you lot are filing it as fact."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Send the disputed attempt records and the recipient's account to Delivery investigations and ask for a review of both stops before the third attempt and the automatic return."
+      }
+    ],
+    "must": [
+      "Sends the dispute to Delivery investigations and asks them to review the stop records for both logged attempts on DL-916 and decide whether the attempts stand.",
+      "Sets out both sides without choosing one: the two attempt records, both outside the booked slots and with photos that do not show the property, against the recipient's account that she was home both days and holds doorbell footage for 07:00 to 19:00 that the desk has not seen.",
+      "Gives the clock: a third attempt is due on 4 June and a third failure triggers automatic return to the merchant at 06:00 on 5 June, and asks how she should send the footage.",
+      "Tells Delivery investigations this is the second day running she has waited in for a booked slot, so they can prioritise it."
+    ],
+    "must_not": [
+      "Tells the recipient, or accepts in the message, that two valid attempts have been made and one remains before return.",
+      "States as fact that the driver falsified the attempts or lied, or that the attempts are confirmed as not made.",
+      "Only asks Dispatch to book a third attempt, leaving the two disputed attempts on the count.",
+      "Promises that the attempts will be removed, that the parcel will not be returned, or that it will arrive on a given day.",
+      "Replies to the recipient with a notice that restates the attempt times and asks her to make sure someone is in."
+    ],
+    "reference_message": "Please review the stop records for both logged attempts on DL-916 (Tallowmere TG-916) and decide whether they stand. Attempt 1: 2 June, 18:41, no answer, booked slot 12:00-14:00, photo shows the parcel on block paving with no door or number in frame. Attempt 2: 3 June, 16:52, no answer, booked slot 10:00-13:00, photo shows the parcel in front of a terraced row with a blue shop awning. The recipient, Ottoline Grebe, says she was at home both days, that her address is a cul-de-sac of bungalows with no shop nearby, and that her doorbell camera recorded 07:00 to 19:00 on both days and shows no visit. I have not seen the footage; please tell me how she should send it to you. The depot has it out for a third attempt on 4 June, and a third failure returns it to the merchant at 06:00 on 5 June, so a decision before then matters. This is the second day running she has waited in for a booked slot. I have not told her the attempts will be voided."
+  },
+  "rationale": "The carrier's records say two attempts were made and the recipient's account and footage say none were; the photos raise doubt but the desk has not seen the footage and cannot judge a stop record. The depot named Delivery investigations as the only team that can void an attempt and the route for disputes. Booking a third attempt through Dispatch would leave the count where it is, one failure from an automatic return.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator filed the dispute with Delivery investigations by Email with both accounts and the 4-5 June clock, attributing the photo mismatch to the recipient, which matches the key."
+  }
+}

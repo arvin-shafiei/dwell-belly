@@ -1,0 +1,114 @@
+{
+  "id": "gen-506",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": "delivery-024",
+  "grounding": null,
+  "title": "Case: Recipient writes again about a pair of binoculars recorded as left with a neighbour",
+  "context": "A parcel of binoculars is scanned as delivered to a neighbour but the recipient reported it missing. The parcel trace team owns the trace and its status.",
+  "initial_request": "I'm so sorry, I've only just opened it. The parcel number 9 gave me is the garden hose from my other order, the label says DL-958. The binoculars (DL-962) are still missing. Number 9 says that's the only one they were given. Can you un-close it?",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-08T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace PT-962 opened on DL-962. Carrier scan shows delivered 2026-04-06 14:18, 'left with neighbour', no house number recorded. Driver interview requested, due 2026-04-09."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-08T09:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Anwen Sadiku, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking says delivered Monday, left with neighbour. Nothing here and no card. I've asked both sides, nobody's got it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-08T09:22:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Anwen Sadiku, recipient",
+      "body": "The parcel trace team has opened trace PT-962 on DL-962 and has asked to interview the driver, due tomorrow. There is no conclusion yet; I'll update you when they report."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-08T13:02:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Anwen Sadiku, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Panic over!! Number 9 just knocked, they've had a Plover parcel for me since Monday. You can close it, sorry for the fuss."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-08T13:10:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "Update on PT-962: the recipient reports a neighbour at number 9 has handed her a Plover Arc parcel held since Monday, and she asks for the trace to be closed."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-08T13:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "PT-962 closed as 'located by recipient'. Driver interview cancelled."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-08T13:50:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Anwen Sadiku, recipient",
+      "body": "The parcel trace team has closed PT-962 following your message."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-08T18:40:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Anwen Sadiku, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm so sorry, I've only just opened it. The parcel number 9 gave me is the garden hose from my other order, the label says DL-958. The binoculars (DL-962) are still missing. Number 9 says that's the only one they were given. Can you un-close it?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Parcel trace team, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask the parcel trace team to reopen PT-962 and reinstate the driver interview: the parcel the recipient found was DL-958, a different shipment, and DL-962 is still not received."
+      }
+    ],
+    "must": [
+      "Asks the parcel trace team to reopen PT-962 for DL-962.",
+      "Explains that the parcel handed over by number 9 was DL-958, a different order, so the earlier 'located' report was mistaken.",
+      "States that DL-962 is still not received and asks for the cancelled driver interview to be reinstated or for confirmation of next steps."
+    ],
+    "must_not": [
+      "Treat PT-962 as resolved or tell Anwen that DL-962 has been delivered or located.",
+      "Tell Anwen the trace has been reopened before the parcel trace team confirms it.",
+      "State that the binoculars are lost or stolen, or blame the driver or the neighbour.",
+      "Promise a refund, replacement or compensation."
+    ],
+    "reference_message": "Correction on PT-962, please reopen. The recipient has now opened the parcel her neighbour at number 9 handed over and it is a different shipment, DL-958 (a garden hose from another order), not DL-962. The binoculars on DL-962 have still not been received, and number 9 says that was the only parcel they were given. Her 13:02 message asking to close was a mistake on that basis. Please reopen the trace on DL-962, reinstate the driver interview, and confirm the new status so I can update her."
+  },
+  "rationale": "The recipient withdrew her report, the desk passed that on, and the owning team closed the trace and cancelled the interview. She has now corrected herself with a specific reason (the label reads DL-958), so the closure rests on a superseded statement and has to be undone by the team that owns it. The desk cannot reopen it itself and must not present the parcel as found or as lost.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the Parcel trace team by Email to reopen PT-962 with the DL-958 correction, matching the key."
+  }
+}

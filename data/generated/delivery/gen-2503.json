@@ -1,0 +1,87 @@
+{
+  "id": "gen-2503",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": "seed-web-033",
+  "title": "Case: Recipient queries a late fee on an import charges invoice that reached him after its due date",
+  "context": "Import billing invoiced the recipient of DL-963 for import charges under invoice IB-963. The recipient account and shipment match are verified.",
+  "initial_request": "Dates, in order. Invoice IB-963 is dated 2 May. The envelope it came in is postmarked 14 May. It was delivered to me on 16 May. The late fee and interest run from 9 May. I rang on 18 May and was told the fee stands because the system says overdue. I paid the import charge itself on 19 May. I have kept the envelope and can send a photograph of the postmark to whoever needs it. I am not disputing the charge. I am asking for the late fee and interest to be removed, since they were triggered before the invoice was posted.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-18T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Invoice IB-963, import charges on DL-963, issued 2 May 2026, terms 7 days. Unpaid at day 16. A fixed late fee and interest were applied automatically on 9 May. The system records the invoice as sent by post on 2 May. We hold no posting receipt at this desk. Mailroom dispatch records can be pulled by Import billing on request."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-18T15:30:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Customer care line, Plover Arc Logistics",
+      "to": "Idris Callow, recipient",
+      "body": "Caller: The invoice reached me on the 16th. Agent: The system shows it overdue since the 9th, so the late fee stands. Caller: It was overdue before I had seen it. Agent: I can only go by what the system shows."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-19T08:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Idris Callow, recipient",
+      "to": "Import billing, Plover Arc Logistics",
+      "body": "I have paid the import charge on IB-963 in full this morning. I have not paid the late fee or the interest."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-19T09:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Payment of the principal on IB-963 received 19 May. The late fee and interest remain outstanding and the account continues to show overdue. Fee reviews are decided by Import billing on a written request with evidence."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-19T09:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Idris Callow, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dates, in order. Invoice IB-963 is dated 2 May. The envelope it came in is postmarked 14 May. It was delivered to me on 16 May. The late fee and interest run from 9 May. I rang on 18 May and was told the fee stands because the system says overdue. I paid the import charge itself on 19 May. I have kept the envelope and can send a photograph of the postmark to whoever needs it. I am not disputing the charge. I am asking for the late fee and interest to be removed, since they were triggered before the invoice was posted."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Import billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Written fee-review request on IB-963 setting out the system's 2 May posting date against the recipient's 14 May postmark, asking them to pull the mailroom record and decide."
+      }
+    ],
+    "must": [
+      "Puts both dates in front of Import billing as an unresolved conflict: the system records the invoice as posted on 2 May; the recipient reports a 14 May postmark and receipt on 16 May.",
+      "Asks Import billing to pull the mailroom dispatch record and review the late fee and interest, and tells them the recipient has kept the postmarked envelope and offers a photograph of it.",
+      "Makes clear the recipient is not disputing the import charge, has paid the principal (received 19 May), and is asking only about the late fee and interest."
+    ],
+    "must_not": [
+      "Tells the recipient the late fee stands or must be paid because the system shows the invoice as overdue.",
+      "Tells the recipient the late fee or interest has been or will be removed.",
+      "States as fact that the carrier posted the invoice late, or that the recipient's dates are wrong.",
+      "Advises the recipient to withhold or to pay the fee while the review is open."
+    ],
+    "reference_message": "Written fee-review request for invoice IB-963 (import charges, DL-963), recipient Idris Callow. There is a conflict on when the invoice was sent. Your system records it as posted on 2 May, the invoice date. The recipient reports the envelope is postmarked 14 May and reached him on 16 May, which is after the late fee and interest were applied on 9 May. He has kept the envelope and offers a photograph of the postmark. Neither date is verified at my end. Please pull the mailroom dispatch record for IB-963, review the late fee and interest against it, and tell me where he should send the photograph. He is not disputing the import charge: you confirmed the principal was received on 19 May. He was told by phone on 18 May that the fee stands because the system shows overdue, so a reasoned written answer would help. I have not told him the fee will be removed."
+  },
+  "rationale": "The billing system says the invoice was posted on 2 May; the recipient says the postmark is 14 May. That fact decides whether the penalty is fair, and only Import billing can pull the mailroom record and rule on a fee review. The desk sends them the conflict and the offered evidence, and neither defends the fee nor waives it.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent the written fee-review request to Import billing with both dates and the mailroom-record request, matching the key; the second must now accepts offering the postmark photograph without asking where to send it."
+  }
+}

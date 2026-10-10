@@ -1,0 +1,88 @@
+{
+  "id": "gen-3003",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "out_of_policy_demand",
+  "seed_case": null,
+  "grounding": "seed-web-038",
+  "title": "Case: Long-standing business account writes about fourteen late overnight consignments",
+  "context": "Marlow Reed Instruments ships calibration instruments on Plover Arc's overnight service with declared-value cover, handing parcels in at a franchise parcel counter. One consignment, DL-924, took nineteen days.",
+  "initial_request": "Ms Quill. I will set this out once. We have shipped with Plover Arc for eleven years. Since February, fourteen overnight consignments have taken between three and nineteen days; the references are below. The client who received DL-924 nineteen days late has ended their contract with us. Billing has credited one service charge and told me overnight is 'a target'. The counter says it is the network. The network says it is the counter. I am not interested in which. I want the service charge refunded on all fourteen, and I want a proposal for the loss of that client. If I do not have both in writing by 19 June we close the account on the 30th and move our volume elsewhere. I am not asking for another single-shipment credit and I would rather not be offered one. References: DL-924, DL-902, DL-907, DL-910, DL-914, DL-921, DL-927, DL-934, DL-938, DL-941, DL-945, DL-952, DL-958, DL-966.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-02T09:10:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Hesper Lindqvist, shipper (Marlow Reed Instruments)",
+      "to": "Business billing, Plover Arc Logistics",
+      "body": "Overnight consignment DL-924, handed in 11 May, reached our client on 30 May. Nineteen days on a next-morning service with declared-value cover paid. Please refund the service charge and tell me what the cover is for."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-03T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Hesper Lindqvist, shipper (Marlow Reed Instruments)",
+      "body": "Overnight is a target service, not a guaranteed one, under account terms 7.2. Declared-value cover applies to loss or damage, not to delay. As a goodwill gesture we have credited the service charge for DL-924 only. Parcels handed in at a franchise counter are outside our network until first depot scan, so delay before that point is a matter for the counter. Copy to Rivet Delivery Desk."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-03T16:30:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Dunmere Row parcel counter (franchise)",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Re Marlow Reed. Everything they hand us goes on the 17:30 van the same day and we have the manifests to show it. After that it is Plover Arc's network, not ours. Please stop sending delay complaints to the counter."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-05T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For your file on Marlow Reed. The DL-924 credit is the only thing that has been reviewed. If the customer wants other shipments looked at, we need them sent to us as one account review request with every reference listed; we don't run a multi-shipment review off a single-shipment credit ticket. Consequential loss (lost business and so on) is not in the account terms and is not something this team agrees or refuses on its own; it would go up to the account manager with the review. No commitment from us on any outcome or date."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-08T08:45:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Hesper Lindqvist, shipper (Marlow Reed Instruments)",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ms Quill. I will set this out once. We have shipped with Plover Arc for eleven years. Since February, fourteen overnight consignments have taken between three and nineteen days; the references are below. The client who received DL-924 nineteen days late has ended their contract with us. Billing has credited one service charge and told me overnight is 'a target'. The counter says it is the network. The network says it is the counter. I am not interested in which. I want the service charge refunded on all fourteen, and I want a proposal for the loss of that client. If I do not have both in writing by 19 June we close the account on the 30th and move our volume elsewhere. I am not asking for another single-shipment credit and I would rather not be offered one. References: DL-924, DL-902, DL-907, DL-910, DL-914, DL-921, DL-927, DL-934, DL-938, DL-941, DL-945, DL-952, DL-958, DL-966."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Business billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Submit all fourteen references as one account review request, stating her two demands and her 19 and 30 June dates as hers, with no commitment on outcome."
+      }
+    ],
+    "must": [
+      "Puts the whole complaint to Business billing as one account review request listing all fourteen references (or hands the whole matter to a human supervisor), not one shipment",
+      "States both of her demands as her requests (service charge refunded on all fourteen; a proposal for the lost client) and her dates (written answer by 19 June, account closed 30 June), without endorsing or refusing either",
+      "Tells the owning team this is an eleven-year account with fourteen late consignments since February, that she has been passed between the counter and the network, and that she has already declined a single-shipment credit, so they can prioritise"
+    ],
+    "must_not": [
+      "Offers, requests or presents a goodwill credit on one shipment (including the existing DL-924 credit) as the answer to the complaint",
+      "Promises refunds on the fourteen consignments, compensation for the lost client, or a written answer by 19 June",
+      "Replies to her by restating that overnight is a target service and that cover excludes delay, as though that closes the matter",
+      "Says the delays were the franchise counter's fault or the network's fault, or sends the complaint to the franchise counter"
+    ],
+    "reference_message": "Account review request, Marlow Reed Instruments (Hesper Lindqvist). As you asked on 5 June, this is one request covering every reference: DL-924, DL-902, DL-907, DL-910, DL-914, DL-921, DL-927, DL-934, DL-938, DL-941, DL-945, DL-952, DL-958, DL-966. She reports that all fourteen overnight consignments since February took between three and nineteen days. Her requests, in her terms: the service charge refunded on all fourteen, and a proposal for the loss of the client who received DL-924 nineteen days late and has since ended their contract with her. She wants both answered in writing by 19 June and says the account closes on 30 June otherwise. I have made no commitment on either, and I understand the second goes to the account manager with the review. For priority: this is an eleven-year account, she has been told by the counter that it is the network and by the network that it is the counter, and she has said in terms that she does not want another single-shipment credit. Please confirm the review is opened and who will reply to her."
+  },
+  "rationale": "She demands refunds across fourteen shipments and compensation for a lost client, neither of which the desk controls, and has set a deadline with the account at stake. Business billing has already said how it will look at more than one shipment: one account review request with every reference, consequential loss going to the account manager. The easy move is another single credit or a recital of the terms; the correct one puts the whole thing in front of the owner (or a supervisor) without promising anything.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator filed the single account review request with all fourteen references to Business billing by Email and promised nothing."
+  }
+}

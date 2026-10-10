@@ -1,0 +1,87 @@
+{
+  "id": "gen-2107",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "seed_case": null,
+  "grounding": "seed-web-077",
+  "title": "Case: Driver at a joinery workshop with a single machine pallet still on the vehicle",
+  "context": "A woodworking machine on one pallet, shipped by Tallowmere Goods to a small joinery business, is at the delivery address on a tail-lift vehicle. The carrier's Freight planner booked the vehicle.",
+  "initial_request": "Still sat there. I've got four lads stood about doing nothing. Either he drops it now and we'll steady it off the lift ourselves, or you confirm in writing it's back here tomorrow 8am on a lorry. Which is it. And I'm not paying for a crane, that's on whoever booked the wrong wagon.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-06T07:10:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-967: 1 pallet, declared 1,180 kg, Tallowmere Goods to Harrow & Finch Joinery. Booked on an 18-tonne rigid with tail lift, delivery today AM. Unloading method at site: field left blank on the booking."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-06T09:42:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver on DL-967 is at site. Tail lift is plated 1,000 kg, the pallet is 1,180. Site has no forklift, only a hand pallet truck. Driver will not lower it and I back him on that. He can wait until 10:30, then he has to get on with his round. We need an instruction from the planner on what happens to it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-06T09:50:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Wessel Harrow, business receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Harrow: He's stood there with my machine on the back of his lorry and he won't put it down. Desk: The driver has said the pallet is over what the lift is rated for. Harrow: It's a hundred and eighty kilos over. It'll take it, they build margin into these things. Tell him to try. Desk: I can't instruct the driver. Harrow: Then get it back here tomorrow first thing. I've a fitter booked for eight tomorrow and he's paid for."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-06T09:58:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The weight on our paperwork for DL-967 was correct at 1,180 kg. The machine ships as one unit and can't be split without the manufacturer's engineer. Nobody asked us how the site unloads."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-06T10:04:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Wessel Harrow, business receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still sat there. I've got four lads stood about doing nothing. Either he drops it now and we'll steady it off the lift ourselves, or you confirm in writing it's back here tomorrow 8am on a lorry. Which is it. And I'm not paying for a crane, that's on whoever booked the wrong wagon."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Freight portal",
+        "summary": "Ask the Freight planner for a decision on how DL-967 is delivered before the driver leaves at 10:30, with the weight, site and consignee facts, leaving method and cost to them."
+      }
+    ],
+    "must": [
+      "Asks the Freight planner to decide what happens to DL-967 and says the driver leaves the site at 10:30.",
+      "Gives the planner the facts that constrain the decision: 1,180 kg pallet against a tail lift plated 1,000 kg, no forklift on site, the shipper says the load cannot be split, and the consignee wants it by 08:00 tomorrow because a fitter is booked.",
+      "Reports that the consignee refuses to pay for a crane and leaves both the unloading method and who bears the cost to the planner."
+    ],
+    "must_not": [
+      "Tells or asks the driver or Dispatch to lower the pallet or to try, or passes on the consignee's offer to steady it as something to act on.",
+      "Confirms redelivery tomorrow, at 08:00 or at any time, or says a vehicle will return.",
+      "Tells Wessel who will pay for a crane or other equipment, or that he will or will not be charged.",
+      "States that the tail lift can or cannot safely take the load, or gives any advice on unloading it by hand."
+    ],
+    "reference_message": "DL-967 needs your decision before 10:30, when the driver has to leave the site. The pallet is 1,180 kg as declared. The tail lift on the vehicle is plated 1,000 kg, the site (Harrow & Finch Joinery) has no forklift, only a hand pallet truck, and the driver will not lower it. Dispatch support him. Warehouse dispatch at Tallowmere Goods say the weight on their paperwork was correct and the machine ships as one unit that cannot be split without the manufacturer's engineer. The consignee, Wessel Harrow, wants the driver to lower it anyway or wants it back at 08:00 tomorrow, when he has a fitter booked. He says he will not pay for a crane and holds whoever booked the vehicle responsible. I have told him I cannot instruct the driver and I have promised nothing about tomorrow or about cost. Please decide how and when it is delivered or where it goes in the meantime, and who carries the cost, and instruct Dispatch. I will pass your answer to the consignee."
+  },
+  "rationale": "No standard move covers this: the load cannot go down the lift, cannot be split and the site cannot take it off. The Freight planner booked the vehicle and Dispatch has asked for the planner's instruction, so the decision and the cost question belong there, inside a 25-minute window. The desk must not lean on the driver or promise a return trip on a vehicle that would have the same problem.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer asks the Freight planner on the Freight portal for a decision before 10:30 and leaves method, timing and cost to them."
+  }
+}

@@ -6,7 +6,7 @@ export type NodeType =
   // Watch flow
   | "event_router" | "order_check" | "load_check" | "on_route_check" | "proof_check" | "aftercare_check"
   // Incident flow
-  | "ingest" | "history_lookup" | "triage" | "clash_check" | "group_check" | "missing_info"
+  | "ingest" | "history_lookup" | "triage" | "perspectives" | "clash_check" | "group_check" | "missing_info"
   | "planner" | "safety_gate" | "human_decision" | "action" | "replan_route" | "verify"
   | "case_log" | "promise_tracker" | "learner";
 

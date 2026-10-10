@@ -62,3 +62,29 @@ From `apps/api` (`src/lib/data.ts`):
 - `GET /api/data/cases?track=delivery`: list of cases (index entries)
 - `GET /api/data/cases/delivery-021`: full case
 - `GET /api/data/cases/delivery-021?view=escalation`: only what was known at escalation
+
+## Eval: generated hard cases and the scorer
+
+The 50 public delivery cases all end in "send one message". The Reality Test adds conflicting stories, failed actions, missing context, noise, and cases where escalating or doing nothing is right. `scripts/eval/` covers that gap.
+
+```bash
+npm run gen:cases -- --per 4                 # 12 difficulty patterns x 4 = 48 cases -> data/generated/delivery/gen-NNN.json
+npm run gen:cases -- --only needs_human --per 6
+npm run eval -- --agent baseline             # one Claude call per case, no flow: the floor to beat
+npm run eval -- --api http://localhost:4000/api/cases
+npm run eval -- --traces traces              # score trace files already on disk
+npm run eval -- --agent baseline --set generated --limit 10
+npm run test:eval                            # unit tests for the scoring arithmetic, no API key needed
+```
+
+Both scripts read `ANTHROPIC_API_KEY` from `apps/api/.env.local`.
+
+**Generated cases.** Each file has the history the desk sees (`events`, ending at the escalation), the difficulty pattern (`mutation`, listed in `scripts/eval/mutations.mjs`) and an answer key (`expected`): acceptable dispositions (`contact`, `escalate`, `no_action`), acceptable recipient and channel pairs, `must`, `must_not` and a reference message. Drafts that fail the structural checks in `gen-cases.mjs` are rejected and not written. The answer keys are written by Claude and have not been reviewed by a person, so read a failing case before trusting its verdict.
+
+**What the agent sees.** Only `view`: id, title, context, initial request, events and attachments. Generated ids are opaque (`gen-007`) so the pattern does not leak. For public cases the cut is stricter than `?view=escalation`: title and Context are removed (they often state the answer) and so are attachments that only arrive after the escalation. `--with-context` puts title and Context back so the two scores can be compared.
+
+**How an agent plugs in.** `--api` POSTs the view as JSON and expects a `Trace` back (or `{ trace }`), as defined in `docs/plans/2026-10-10-3d-workflow-viz-design.md` §4. The eval reads the `run_end` event (`outcome`, `nextAction`), the `human_decision` card and the planner's `wontDo`. `--traces <dir>` reads `<dir>/<caseId>.json` in the same shape.
+
+**Scoring** (weights in `scripts/eval/score.mjs`): disposition 0.3, recipient 0.2, channel 0.1, content 0.4. Disposition and channel are checked in code. Recipient, content and rule-breaking are judged by Claude against the answer key. Breaking any `must_not` rule sets the case to 0. A case passes at 0.7 or above. Results print by set and by difficulty pattern, and every decision and verdict is saved to `runs/` (gitignored).
+
+**Keep the public cases held out.** Tune prompts and thresholds on the generated set, then check the public 50 to confirm nothing regressed.

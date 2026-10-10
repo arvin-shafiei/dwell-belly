@@ -1,0 +1,89 @@
+{
+  "id": "gen-2505",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": "seed-web-057",
+  "title": "Case: Business account holder copies the desk on an overdue-invoice exchange with Business billing",
+  "context": "Lund & Varga Framing ships on Plover Arc business account BA-985 and has two shipments in transit, DL-985 and DL-987. The desk was copied on the billing thread.",
+  "initial_request": "Copying you so this is on your file. I have the confirmation from Business billing that both orders keep moving and that we have until the 14th, which is the date I gave them in the first place. I will say that being told 'despite our reminder no payment or contact has been received' and 'no further extension will be considered' after eleven years of paying on time, because one person was on holiday for a fortnight, is not how I would speak to a customer. I've written to our account manager about the wording myself. I'm not asking you for anything and there's no need to reply. Payment goes Friday.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-08-10T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Petra Lund, Lund & Varga Framing (copy to Iona Quill, Rivet Delivery Desk)",
+      "body": "Account BA-985: invoice INV-985 is 12 days overdue. Despite our reminder no payment or contact has been received. The account is scheduled for suspension on 12 August. Suspension stops all shipments on the account, including those in transit."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-08-10T11:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Petra Lund, Lund & Varga Framing",
+      "to": "Business billing, Plover Arc Logistics (copy to Iona Quill, Rivet Delivery Desk)",
+      "body": "I was on annual leave from 24 July and returned this morning to find INV-985 on my desk. I am sorry it was missed. It went to our finance lead today and is on the weekly payment run for Friday 14 August. We have two orders for our own clients in transit with you and would ask that they are not held."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-08-10T14:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Petra Lund, Lund & Varga Framing (copy to Iona Quill, Rivet Delivery Desk)",
+      "body": "As a one-time courtesy the suspension of BA-985 is deferred to close of business on 14 August. If cleared funds are not received by then the account will be suspended without further notice. No further extension will be considered."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-08-10T14:45:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Business billing, Plover Arc Logistics",
+      "body": "For BA-985: please confirm whether in-transit shipments DL-985 and DL-987 continue to move during the deferral to 14 August."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-08-10T15:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirmed. While the deferral to close of business 14 August is in place, BA-985 is active and DL-985 and DL-987 move as booked. The same confirmation has been sent to Ms Lund."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-08-10T16:05:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Petra Lund, Lund & Varga Framing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Copying you so this is on your file. I have the confirmation from Business billing that both orders keep moving and that we have until the 14th, which is the date I gave them in the first place. I will say that being told 'despite our reminder no payment or contact has been received' and 'no further extension will be considered' after eleven years of paying on time, because one person was on holiday for a fortnight, is not how I would speak to a customer. I've written to our account manager about the wording myself. I'm not asking you for anything and there's no need to reply. Payment goes Friday."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Sends no message, and records why: Business billing has confirmed in writing the deferral to 14 August and that DL-985 and DL-987 keep moving, Ms Lund has acknowledged it, and her email asks for nothing.",
+      "Notes for the file that she has raised a complaint about the wording of the billing emails with her account manager, so the record shows it was seen and not ignored."
+    ],
+    "must_not": [
+      "Tells Ms Lund the suspension has been lifted or cancelled, or that the account is safe, when it is only deferred to 14 August and depends on payment.",
+      "Sends Business billing another request to confirm or extend what it has already confirmed.",
+      "Apologises on Plover Arc's behalf for the billing team's wording, or passes judgement on it, in a message to either party.",
+      "Hands the case to a supervisor as though a decision were pending."
+    ],
+    "reference_message": null
+  },
+  "rationale": "Business billing owns the suspension and has confirmed the deferral and the two live shipments in writing to both the desk and the customer. Her last email is an explicit FYI: she acknowledges the confirmation, has taken her complaint to the account manager herself, and says no reply is needed. Any reassurance from the desk would either be noise or would overstate a conditional deferral as a lifted suspension.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator took no action and logged why, including the wording complaint she raised with her account manager, matching the key."
+  }
+}

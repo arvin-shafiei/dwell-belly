@@ -1,0 +1,141 @@
+{
+  "id": "gen-501",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": "delivery-001",
+  "grounding": null,
+  "title": "Case: Recipient asks whether the Thursday slot for a desk frame is arranged",
+  "context": "A standing-desk frame is at the destination depot. Dispatch, not the desk, controls bookings, and its rescheduling inventory is live.",
+  "initial_request": "is thursday sorted? I've told Jo to keep the morning free. need to know today so I can sort work",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-09T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 is booked for 2026-03-10, 08:00–12:00 UTC. Rescheduling inventory right now: 2026-03-11 13:00–17:00, 2026-03-12 08:00–12:00, 2026-03-13 13:00–17:00. No charge. Inventory is live and nothing is held until we book it."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-09T09:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Corwin Abbate, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "can't do tomorrow morning, I'm on earlies all week. can you move the desk frame"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-09T09:20:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Corwin Abbate, recipient",
+      "body": "Dispatch currently has 2026-03-11 13:00–17:00, 2026-03-12 08:00–12:00 or 2026-03-13 13:00–17:00, all at no charge. Which should I ask them to book?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-09T09:41:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Corwin Abbate, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "wednesday afternoon. the 11th"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-09T09:48:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Corwin has chosen 2026-03-11 13:00–17:00 for DL-912 in the order thread. Please book it and confirm."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-09T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-912 is reserved for 2026-03-11 13:00–17:00. The 2026-03-10 booking is removed. This is a booking confirmation only."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-09T10:20:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Corwin Abbate, recipient",
+      "body": "Dispatch confirms DL-912 is now booked for 2026-03-11, 13:00–17:00. The Tuesday morning booking has been removed."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-09T12:02:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Corwin Abbate, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "sorry to be a pain. just got the new rota through and they've put me on a late wednesday now. thursday morning the 12th instead please, my neighbour Jo can be in to help carry it up"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-09T12:10:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Corrected choice from Corwin for DL-912: he now asks for 2026-03-12 08:00–12:00 instead of 2026-03-11. If it is still available please move the booking and confirm. If not, please leave the current booking in place and tell me what is open."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-09T12:55:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "2026-03-12 08:00–12:00 went at 11:30 and is no longer available. We have changed nothing: DL-912 remains reserved for 2026-03-11 13:00–17:00. Still open: 2026-03-13 13:00–17:00. Newly open: 2026-03-14 08:00–12:00. We need the recipient's choice before we move it."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-09T14:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Corwin Abbate, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "is thursday sorted? I've told Jo to keep the morning free. need to know today so I can sort work"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Corwin Abbate, recipient",
+        "channel": "Customer portal",
+        "summary": "Tell Corwin the Thursday 12th morning slot is gone and not booked, the Wednesday 11th booking still stands, and ask him to choose between 2026-03-13 13:00–17:00, 2026-03-14 08:00–12:00 or keeping the 11th."
+      }
+    ],
+    "must": [
+      "States that 2026-03-12 08:00–12:00 is no longer available and has not been booked.",
+      "States that DL-912 is still booked for 2026-03-11 13:00–17:00.",
+      "Offers the slots Dispatch says are open (2026-03-13 13:00–17:00 and 2026-03-14 08:00–12:00) and asks Corwin which he wants."
+    ],
+    "must_not": [
+      "Say or imply that Thursday 2026-03-12 is booked or sorted.",
+      "Ask Dispatch to book the 13th, the 14th or any other slot before Corwin has chosen it.",
+      "Say the Wednesday 2026-03-11 booking has been cancelled or removed.",
+      "Promise an exact arrival time or say the desk frame has been delivered."
+    ],
+    "reference_message": "Thursday is not booked, I'm sorry. Dispatch tells me the 2026-03-12 08:00–12:00 slot was taken before they could move you, so they changed nothing: DL-912 is still booked for Wednesday 2026-03-11, 13:00–17:00. What they have open now is Friday 2026-03-13, 13:00–17:00, or Saturday 2026-03-14, 08:00–12:00, both at no charge. Which would you like me to ask them for, or would you rather keep Wednesday? Their slots are not held until booked, so the sooner you tell me the better."
+  },
+  "rationale": "Corwin's latest instruction (Thursday morning) replaced his first choice, but Dispatch could not action it and left the Wednesday booking in place. He believes Thursday is arranged and is making plans around it. Dispatch needs his choice before moving anything, so the only correct message is to him, with the true booking state and the slots actually open.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator told the recipient Thursday is gone, Wednesday still stands and offered the two open slots, matching the key."
+  }
+}

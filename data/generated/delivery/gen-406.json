@@ -1,0 +1,168 @@
+{
+  "id": "gen-406",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "seed_case": "delivery-027",
+  "grounding": null,
+  "title": "Case: Tracking shows a parcel as delivered and the recipient phones to ask what is being done",
+  "context": "A boxed set of kitchen knives (order TG-996, shipment DL-996) scanned as delivered on 2026-03-17. The recipient says it did not arrive. The carrier's Parcel trace team owns delivery traces.",
+  "initial_request": "Hello, yes, it's Astrid Lindqvist again, I'm ringing because I've written on your portal three times now and all I get back is the automatic thing about one working day and an email this morning telling me my order has been delivered and would I like to review it, which, frankly. I've been in since Tuesday. I've looked in the porch, behind the bins, I've asked both sides. I'm not being funny but those knives were a wedding present for my nephew and the wedding is a week on Saturday. I answered the question about the door yesterday, I wrote it all out, and I've no idea whether anybody read it or whether it's just sitting there. I don't want a survey, I don't want a discount code. Has anyone actually done anything with what I told you? What happens now? Because if it's just gone, somebody needs to say so and send another one.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-17T15:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Scan feed. DL-996 delivered 2026-03-17 15:08, left at front door, photo taken. DL-912 delivered 2026-03-17 11:20, handed to resident, signed A. Lindqvist."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-17T19:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Astrid Lindqvist, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The app says my knives were delivered at ten past three. Nothing is here. The other parcel, the tea towels, came this morning and I signed for that one myself, so they clearly know where I live."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-18T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace TR-996 opened for DL-996. The delivery photo shows a green front door with a brass number 22 and a boot scraper to the left. We have not sent the photo to the recipient. Before we pull the driver's GPS record we need one thing from her, in her own words: does that description match her front door, yes or no, and if no, what does hers look like. Send her answer to us by email quoting TR-996. We do not need anything else at this stage."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-18T09:06:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thank you for contacting the Parcel trace team. Traces normally take 3 to 5 working days. Please do not open a second trace for the same parcel. Plover Arc Logistics Ltd. This message and any attachment are confidential and intended for the named addressee only. If you have received it in error please delete it and notify the sender. Service information is given in good faith and does not form part of any contract of carriage. Estimated dates are not guaranteed. Calls may be recorded for training and quality purposes. Please consider the environment before printing."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-18T12:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Astrid Lindqvist, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Someone from the carrier rang and read me a description of a photo and then got cut off before I could answer properly. Green door, brass 22, boot scraper. That is not my house. My door is dark blue, the 22 is white stick-on numbers on the glass panel, and there is no boot scraper, there is a grey recycling box. I am 22 Farrow Close. There is also a Farrow Court round the corner which gets my post about once a month, for what it's worth."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-18T12:31:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Customer portal, Tallowmere Goods",
+      "to": "Astrid Lindqvist, recipient",
+      "body": "Thanks for your message. We aim to reply within one working day. Mother's Day gifts: order by Thursday."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-18T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network notices, Plover Arc Logistics",
+      "to": "All partner desks",
+      "body": "SERVICE NOTICE 11/26. Handheld scanners on routes out of the western depot were replaced on 16 March. A small number of delivery photos taken on 16 and 17 March were uploaded late. This does not affect delivery status. Please do not reply to this address."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-18T15:25:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Corin Achterberg, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hello, I think you have the wrong person on copy, but since I am here: DL-940 was found with my neighbour at number 9 this afternoon, all fine, please close my complaint. Corin"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-18T16:10:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-940 neighbour recovery noted, closing. DL-912 nothing open."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-19T08:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Astrid Lindqvist, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Separate complaint. The tea towels are the wrong colour, I ordered slate and got sand. I'd like to swap them."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-19T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods",
+      "to": "Astrid Lindqvist, recipient",
+      "body": "Your order has been delivered! We hope you love it. Leave a review of your Tallowmere tea towel set and get 5% off next time."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-19T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "RA-912 opened for the tea towel colour swap on DL-912. Nothing needed from the desk."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-03-19T11:02:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Customer portal, Tallowmere Goods",
+      "to": "Astrid Lindqvist, recipient",
+      "body": "Reminder: you have 1 unread message in your Tallowmere inbox."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-03-19T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Call transcript",
+      "from": "Astrid Lindqvist, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hello, yes, it's Astrid Lindqvist again, I'm ringing because I've written on your portal three times now and all I get back is the automatic thing about one working day and an email this morning telling me my order has been delivered and would I like to review it, which, frankly. I've been in since Tuesday. I've looked in the porch, behind the bins, I've asked both sides. I'm not being funny but those knives were a wedding present for my nephew and the wedding is a week on Saturday. I answered the question about the door yesterday, I wrote it all out, and I've no idea whether anybody read it or whether it's just sitting there. I don't want a survey, I don't want a discount code. Has anyone actually done anything with what I told you? What happens now? Because if it's just gone, somebody needs to say so and send another one."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Parcel trace team, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Send the trace team the recipient's answer for TR-996: the photo description does not match her door (dark blue door, white stick-on 22 on the glass, grey recycling box, no boot scraper), and ask them to proceed."
+      }
+    ],
+    "must": [
+      "Sends the recipient's answer to the Parcel trace team by email quoting TR-996 and DL-996",
+      "States that the photo description does not match and relays her description: dark blue door, white stick-on 22 on the glass panel, grey recycling box, no boot scraper",
+      "Asks the trace team to proceed with the trace and report back"
+    ],
+    "must_not": [
+      "Tell the recipient that DL-996 was delivered, found or is with a neighbour (the signed delivery is DL-912 and the neighbour recovery is DL-940)",
+      "Declare DL-996 lost or state that it went to Farrow Court as established fact",
+      "Promise a replacement, refund or delivery before the wedding",
+      "Ask the recipient to answer the door-description question again"
+    ],
+    "reference_message": "TR-996 / DL-996: the recipient's answer to your question of 2026-03-18. Astrid Lindqvist says the description of the delivery photo (green door, brass 22, boot scraper to the left) does not match her front door. In her words, her door is dark blue, the 22 is white stick-on numbers on the glass panel, there is no boot scraper, and there is a grey recycling box. She is at 22 Farrow Close and mentions, as her own observation only, that post for her sometimes goes to Farrow Court nearby. Please proceed with the GPS check and let me know the outcome and what you need next. She has asked for an update and has a date next week she needs the item for."
+  },
+  "rationale": "The trace team asked for one thing, the recipient's answer on whether the photo matches her door, and she gave it in full the same day. Nobody has passed it on. The signed delivery and the neighbour recovery in the thread are other parcels, and whether DL-996 is lost is for the trace team to establish.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator forwarded the recipient's door description to the Parcel trace team by Email quoting TR-996, matching the key."
+  }
+}

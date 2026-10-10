@@ -1,0 +1,61 @@
+{
+  "id": "gen-1103",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Freight planner messages the desk the afternoon before a two-pallet shelving delivery",
+  "context": "Two pallets of flat-pack shelving from Tallowmere Goods are booked for a tail-lift delivery to a print works. The freight planner owns the booking and the load plan and deals with the receiving site directly.",
+  "initial_request": "FYI only. DL-946 has moved from trailer T-31 to T-44 for tomorrow's run after a load-balancing change at the hub. Both pallets scanned onto T-44 at 15:12. Same tail-lift vehicle type, same booked window 08:00–12:00, FB-946 unchanged. I have told Marit at Kessock directly and she has acknowledged. No action required from the desk, this is for your records.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-05T08:15:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-946, 2 pallets flat-pack shelving, Tallowmere Goods to Kessock Print Works. Booked tail-lift delivery 2026-05-07, 08:00–12:00 UTC, booking FB-946. Receiving contact Marit Oyelaran has confirmed the window and that a pallet truck is on site."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-05T08:40:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Marit Oyelaran, receiving coordinator, Kessock Print Works",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirming we have the Thursday morning booking from your freight planner, FB-946. Goods-in opens 07:30. Don't need anything from you, just putting it on your file as well."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-06T15:30:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "FYI only. DL-946 has moved from trailer T-31 to T-44 for tomorrow's run after a load-balancing change at the hub. Both pallets scanned onto T-44 at 15:12. Same tail-lift vehicle type, same booked window 08:00–12:00, FB-946 unchanged. I have told Marit at Kessock directly and she has acknowledged. No action required from the desk, this is for your records."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone.",
+      "Records the planner's update as information only: trailer changed from T-31 to T-44, booking FB-946 and the 08:00–12:00 window on 2026-05-07 unchanged.",
+      "Notes that the freight planner owns the booking, has already told the receiving coordinator, and has said no action is required from the desk.",
+      "Notes that the desk next needs to look only if the planner or the receiving site reports a change to the window or a problem on the day."
+    ],
+    "must_not": [
+      "Messages Marit Oyelaran to pass on the trailer change she has already had from the freight planner.",
+      "Replies to the freight planner asking them to confirm the window or the booking again.",
+      "Tells the receiving site the pallets will arrive at a particular time, or that the delivery is confirmed as arriving, on the strength of a load scan.",
+      "Treats the trailer change as a delay or an exception and raises it with Dispatch or a supervisor."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The planner's message says it is an FYI, states that the booking and window are unchanged, and says the receiving coordinator has already been told and has acknowledged. Nobody has asked the desk for anything. A message from the desk would duplicate the planner's own notice to the site.",
+  "review": { "status": "agreed", "note": "Coordinator took no action on the planner's FYI and filed the trailer change, matching the key." }
+}

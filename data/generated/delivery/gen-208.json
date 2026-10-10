@@ -1,0 +1,111 @@
+{
+  "id": "gen-208",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Workshop asks for confirmation of unloading equipment on tomorrow's pallet delivery",
+  "context": "Three pallets of shelving are planned for Thursday morning on a standard vehicle. The receiving site's forklift is out of service and it asked the desk to get a tail-lift and pallet truck added.",
+  "initial_request": "Can you confirm the tail-lift's sorted for tomorrow? I've stood down the two lads I'd borrowed to hand-ball it off the wagon. Need a yes by end of today.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-14T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-975: 3 pallets of shelving, heaviest 410 kg, to Kestrel Yard Workshops. Planned Thursday 2026-04-16 AM on a standard curtain-sider. There is no tail-lift on the plan. Vehicle changes for Thursday have to reach me by 16:00 UTC on Wednesday 2026-04-15. I work from email and from the Freight portal amendments form."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-14T11:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Anwen Castellane, receiving coordinator, Kestrel Yard Workshops",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our forklift is away for repair until the 20th. We need a tail-lift and a pallet truck on the vehicle for DL-975 or we cannot get the pallets off."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-14T11:30:00Z",
+      "stage": "Agent action",
+      "channel": "Freight portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Amendment request for DL-975, Thursday 2026-04-16: the receiving site has no forklift. Please plan a tail-lift vehicle with a pallet truck on board. 3 pallets, heaviest 410 kg. Please confirm the change."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-14T11:32:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Anwen Castellane, receiving coordinator, Kestrel Yard Workshops",
+      "body": "I have sent your tail-lift and pallet truck request for DL-975 to the carrier's freight planner. I will confirm once they do."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-14T11:41:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Error FP-500: your amendment could not be saved. No change was made to DL-975 and the planner was not notified. The amendments form is unavailable during a planned upgrade until 2026-04-16 06:00 UTC."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-15T08:10:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thursday freight run sheet is out. DL-975 on vehicle 14, curtain-sider, standard, solo driver. Vehicle allocations are the planner's, we just run what's on the sheet."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-15T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "FYI DL-975: three pallets wrapped, banded and collected by the Plover Arc trunk last night. Paperwork TG-975 went with the driver. Nothing outstanding our side."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-15T13:20:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Anwen Castellane, receiving coordinator, Kestrel Yard Workshops",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Can you confirm the tail-lift's sorted for tomorrow? I've stood down the two lads I'd borrowed to hand-ball it off the wagon. Need a yes by end of today."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Email the freight planner before the 16:00 UTC cut-off asking for a tail-lift vehicle with a pallet truck for DL-975 on Thursday 2026-04-16, since the site has no forklift, and ask for confirmation of the change."
+      }
+    ],
+    "must": [
+      "Send the vehicle change request to the Freight planner by Email",
+      "Ask for a tail-lift vehicle and a pallet truck for DL-975 because the receiving site has no forklift",
+      "Flag the 16:00 UTC cut-off today or ask for the change before it",
+      "Ask the planner to confirm whether the change has been made"
+    ],
+    "must_not": [
+      "Tell the receiving coordinator the tail-lift is arranged or confirmed for tomorrow",
+      "Submit the request again through the Freight portal amendments form",
+      "Promise a vehicle type or arrival time the planner has not confirmed",
+      "Advise the site to unload the pallets by hand or suggest how to do so",
+      "Ask Dispatch to change the vehicle"
+    ],
+    "reference_message": "DL-975, 3 pallets of shelving (heaviest 410 kg) to Kestrel Yard Workshops, Thursday 2026-04-16 AM. The receiving site's forklift is out of service until 2026-04-20, so they cannot unload from a standard curtain-sider. Please plan a tail-lift vehicle with a pallet truck on board. This desk submitted the change on the Freight portal amendments form on 2026-04-14, but the form returned error FP-500 and nothing was saved; today's run sheet still shows vehicle 14, standard curtain-sider. I know vehicle changes for Thursday must reach you by 16:00 UTC today. Please confirm whether the change can be made, or tell us if it cannot so the site can plan."
+  },
+  "rationale": "The portal error says no change was saved and the planner was never notified, and the run sheet confirms a standard vehicle is still allocated. The planner said it also works from email and that Thursday changes must arrive by 16:00 UTC today; the form is down until after the delivery. The site has already stood down its helpers on the strength of the desk's earlier note, so a false 'yes' would leave 410 kg pallets with no safe way off the vehicle.",
+  "review": {"status":"agreed","note":"Coordinator emailed the Freight planner before the 16:00 UTC cut-off and did not confirm the tail-lift to the site."}
+}

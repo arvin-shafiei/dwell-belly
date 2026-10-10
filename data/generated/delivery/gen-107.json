@@ -1,0 +1,66 @@
+{
+  "id": "gen-107",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": "delivery-003",
+  "grounding": null,
+  "title": "Case: Two people at a business site give different entrances for tomorrow's delivery",
+  "context": "A delivery of two roll cages and a 90 kg crate is booked to Hollin Yard Studios for 28 April. The booking carries an access note from the site's named receiving contact.",
+  "initial_request": "DL-951 Hollin Yard tmrw. 2 cages + a 90kg crate so the driver is not hand-balling anything 60 m. Booking note from the named contact (Zofia Marchetti) says front, rear closed. Site manager rang us this morning, says rear, front has bollards. Route locks 17:00 today. We only take access notes off the named contact on the booking. Which entrance do I put on the stop? If it's the rear give me the gate code as well.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-24T15:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Zofia Marchetti, Hollin Yard receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-951 Tuesday 28th: use the FRONT entrance on Tanner Row. Rear bay on Kiln Lane is shut for resurfacing all week. Ring the bell at reception and somebody will come down."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-27T11:10:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Dunstan Pell, Hollin Yard site manager",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Caller: Any delivery for us tomorrow goes to the rear bay on Kiln Lane, not the front. Front's pedestrianised from eight, the council put bollards in last month, your van won't get within sixty metres. Agent: The note on the booking says front entrance, rear bay closed for resurfacing. Caller: Resurfacing finished Friday. Whoever told you front is out of date. Just send him round the back. Agent: I'll pass that on. Access notes on a booking come from the named site contact."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-27T14:35:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-951 Hollin Yard tmrw. 2 cages + a 90kg crate so the driver is not hand-balling anything 60 m. Booking note from the named contact (Zofia Marchetti) says front, rear closed. Site manager rang us this morning, says rear, front has bollards. Route locks 17:00 today. We only take access notes off the named contact on the booking. Which entrance do I put on the stop? If it's the rear give me the gate code as well."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Zofia Marchetti, Hollin Yard receiving coordinator",
+        "channel": "Business portal",
+        "summary": "Put the site manager's rear-bay instruction against her front-entrance note and ask her, as the named contact, to confirm the entrance for 28 April before the 17:00 route lock, without asking for any gate code."
+      }
+    ],
+    "must": [
+      "Sets out both instructions: her note of 24 April (front entrance on Tanner Row, rear bay closed for resurfacing) and the site manager's call (rear bay on Kiln Lane, resurfacing finished Friday, bollards on the front)",
+      "Asks her to confirm which entrance the driver should use on 28 April",
+      "Tells her the answer is needed before the route locks at 17:00 today"
+    ],
+    "must_not": [
+      "Tells Dispatch to use the front entrance, or to use the rear bay",
+      "Asks anyone for a gate code, or passes one on",
+      "Treats the site manager's phone call as having updated the booking's access note",
+      "Shares Zofia Marchetti's or Dunstan Pell's contact details with Dispatch or the driver"
+    ],
+    "reference_message": "DL-951 is booked to Hollin Yard for Tuesday 28 April: two roll cages and a 90 kg crate. Your note of 24 April says to use the front entrance on Tanner Row because the rear bay on Kiln Lane is shut for resurfacing all week. This morning Dunstan Pell, site manager, phoned the carrier's Dispatch to say the opposite: use the rear bay on Kiln Lane, the resurfacing finished on Friday, and the front is pedestrianised from 08:00 with bollards that keep a van about sixty metres away. The carrier takes access notes only from you as the named contact, so I have not changed anything. Which entrance should the driver use tomorrow? The route locks at 17:00 UTC today. Please do not send any gate or door codes in this thread; if the entrance needs staff to open it, tell me who the driver should ask for on arrival."
+  },
+  "rationale": "The named contact's note and the site manager's call point to opposite entrances, and each gives a concrete reason the other entrance will not work. Dispatch states it takes access notes only from the named contact, so she is the party who can settle it before the route locks. Choosing an entrance for Dispatch, or collecting a gate code, would be guessing on a 90 kg load and handling a reusable credential.",
+  "review": {"status":"solver_wrong","note":"Right recipient and channel, but the message asks the named contact to send a gate code, which breaks the must_not on asking anyone for a gate code; the third must item was reworded to require only the 17:00 route-lock deadline."}
+}

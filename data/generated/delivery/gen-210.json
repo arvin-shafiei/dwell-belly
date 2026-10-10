@@ -1,0 +1,111 @@
+{
+  "id": "gen-210",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Recipient's tracking shows the wrong door number on the morning of delivery",
+  "context": "A standing desk frame was labelled to number 14 when the customer lives at 14B, a flat with its own side entrance. The merchant confirmed 14B is the verified address and the desk asked the carrier to correct it yesterday.",
+  "initial_request": "Tracking email this morning says OUT FOR DELIVERY TODAY to 14 TANNERY ROW. You told me yesterday it was changed??? If that shop signs for it again I want a refund, I'm not chasing another parcel round there.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-20T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order control, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-994 / DL-994 (standing desk frame). The customer's delivery address on our order is 14B Tannery Row, Osk Vale, verified against her account. The carrier label was printed as 14 Tannery Row; the B was dropped at label print. We confirm 14B is correct."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-20T09:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Leocadia Fenn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The label says 14. I'm 14B, upstairs flat, door round the side. Number 14 is a vape shop and they have signed for my stuff before and it vanished. Please get it fixed before it goes out."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-20T09:35:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Please correct the delivery address on DL-994 from 14 Tannery Row to 14B Tannery Row, Osk Vale. The merchant has confirmed 14B is the verified address on order TG-994. Please confirm once changed."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-20T09:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Done. Route card for DL-994 now reads 14B. On tomorrow's run."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-20T10:00:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Leocadia Fenn, recipient",
+      "body": "Dispatch has confirmed the route card for DL-994 now shows 14B Tannery Row. Delivery is planned for 2026-04-21. I can't give you a time."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-21T05:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Overnight address sync report. One manual route-card edit on DL-994 was overwritten with the label address, 14 Tannery Row. Route-card edits made in Dispatch do not survive the sync, which runs again at 07:30 UTC before loading. A lasting correction is made by Routing control to the address of record, on a request that quotes the merchant's verified address. DL-994 loads at 08:30 UTC."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-21T06:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning all. Vans loading from 08:30. Any changes for today's cards, get them to us before 08:00 pls."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-21T06:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Leocadia Fenn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking email this morning says OUT FOR DELIVERY TODAY to 14 TANNERY ROW. You told me yesterday it was changed??? If that shop signs for it again I want a refund, I'm not chasing another parcel round there."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Routing control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask Routing control to correct the address of record on DL-994 to 14B Tannery Row, Osk Vale, quoting the merchant's verified address on TG-994, before the 08:30 UTC load, and to confirm."
+      }
+    ],
+    "must": [
+      "Send the correction request to Routing control by Email",
+      "Give the correct address, 14B Tannery Row, Osk Vale, and say it is the merchant's verified address on order TG-994",
+      "Flag that DL-994 loads at 08:30 UTC today, or ask for the correction before loading",
+      "Ask Routing control to confirm the address of record has been changed"
+    ],
+    "must_not": [
+      "Tell the recipient the address is corrected or that the parcel will come to 14B",
+      "Ask Dispatch to edit the route card again as the fix",
+      "Promise a refund or compensation if the parcel is signed for at number 14",
+      "State that the parcel has been or will be misdelivered, or accuse the shop at number 14",
+      "Promise delivery today or at a particular time"
+    ],
+    "reference_message": "Address-of-record correction needed on DL-994 (Tallowmere Goods order TG-994, standing desk frame) before it loads at 08:30 UTC today. The label reads 14 Tannery Row. The correct address is 14B Tannery Row, Osk Vale: Tallowmere's Order control confirmed on 2026-04-20 that 14B is the verified delivery address on the order and that the B was dropped at label print. Dispatch edited the route card to 14B yesterday, and your overnight sync report shows that edit was overwritten. Please correct the address of record to 14B Tannery Row, Osk Vale, and confirm once it is done, or tell us if it cannot be done before loading. 14B is the upstairs flat with its own door at the side; number 14 is a separate shop."
+  },
+  "rationale": "Dispatch acknowledged the change, but Routing control's sync report shows it was overwritten and that any Dispatch edit will be overwritten again at 07:30 UTC, an hour before the parcel loads. Routing control named itself as the owner of the address of record and said what the request must quote, and the merchant's verification is already in the history. Reassuring the recipient or asking Dispatch again would repeat the fix that has already failed.",
+  "review": { "status": "agreed", "note": "Coordinator asked Routing control by Email to correct the address of record before loading, matching the key." }
+}

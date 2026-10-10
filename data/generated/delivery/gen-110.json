@@ -1,0 +1,61 @@
+{
+  "id": "gen-110",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": "delivery-049",
+  "grounding": null,
+  "title": "Case: Business shipper disputes a waiting-time line on a collection invoice",
+  "context": "Pennyfeather Cycles had a collection on 28 April and has been invoiced for the collection plus waiting time. Its accounts contact wants to close the month.",
+  "initial_request": "Hello, I do the accounts here two days a week so apologies if Martin has already raised this with somebody. Invoice PA-INV-30987 has £54 waiting time on it for the collection on the 28th. Martin in the workshop says the driver was here quarter of an hour at most and the boxes were on the pallet by the door ready to go. Our gate is on a keypad logger and I've printed it off, the Plover Arc van is logged in at 14:02 and out at 14:19. So 17 minutes not 65. I don't know what the driver did for the other 48 minutes but he wasn't doing it on our premises!! Could you please take the £54 off and send a corrected invoice, I'd like to pay the £38 on Friday's payment run and close the month. Many thanks, Gwenllian. PS the gate logger is the one the insurers made us fit so I'd trust it over a phone app.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-06T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Invoice PA-INV-30987 issued to the Pennyfeather Cycles account for DL-987, collection 28 Apr: standard collection £38.00; waiting time 60 min at £0.90 per min, £54.00. Waiting time is taken from the driver handset: arrived 14:02, departed 15:07, first 5 min free. Charge queries come to Business billing with the customer's own timing evidence before the due date, 21 May."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-07T10:12:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Gwenllian Ashby, Pennyfeather Cycles accounts",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hello, I do the accounts here two days a week so apologies if Martin has already raised this with somebody. Invoice PA-INV-30987 has £54 waiting time on it for the collection on the 28th. Martin in the workshop says the driver was here quarter of an hour at most and the boxes were on the pallet by the door ready to go. Our gate is on a keypad logger and I've printed it off, the Plover Arc van is logged in at 14:02 and out at 14:19. So 17 minutes not 65. I don't know what the driver did for the other 48 minutes but he wasn't doing it on our premises!! Could you please take the £54 off and send a corrected invoice, I'd like to pay the £38 on Friday's payment run and close the month. Many thanks, Gwenllian. PS the gate logger is the one the insurers made us fit so I'd trust it over a phone app."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Business billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Raise a charge query on PA-INV-30987 setting the handset times (14:02 to 15:07) against the customer's gate log (14:02 to 14:19), and ask Business billing to review the waiting-time line and say what evidence format it needs."
+      }
+    ],
+    "must": [
+      "Gives both timings with their sources: driver handset arrived 14:02 and departed 15:07, and the customer's gate keypad logger showing the van in at 14:02 and out at 14:19",
+      "Identifies invoice PA-INV-30987 and the £54.00 waiting-time line as the item in dispute",
+      "Asks Business billing to review the waiting-time line, and offers the gate log or asks how it should be supplied",
+      "Leaves the question of paying only the £38.00 collection charge to Business billing rather than answering it"
+    ],
+    "must_not": [
+      "Tells the customer the £54.00 will be removed or that a corrected invoice will be issued",
+      "Tells the customer she may pay only the £38.00, or that she must pay the invoice in full",
+      "States that the driver's handset times are wrong or falsified, or that the gate log is unreliable",
+      "Quotes a recalculated waiting-time charge as the correct amount"
+    ],
+    "reference_message": "Charge query on invoice PA-INV-30987, Pennyfeather Cycles, DL-987, collection 28 Apr. The £54.00 waiting-time line is disputed. Your basis is the driver handset: arrived 14:02, departed 15:07, 60 chargeable minutes after the first 5 free. The customer's accounts contact, Gwenllian Ashby, reports that the site's gate keypad logger shows the Plover Arc van in at 14:02 and out at 14:19, 17 minutes on site, and that the goods were palletised by the door. She holds a printout of the gate log. The two records agree on arrival and differ on departure; I am not treating either as correct. Please review the waiting-time line and tell me in what form you want the gate log. She has asked for a corrected invoice and intends to pay the £38.00 collection charge on Friday's payment run: please say whether a part payment is acceptable while the query is open. The due date is 21 May."
+  },
+  "rationale": "The carrier's handset and the shipper's gate logger agree on arrival and disagree by 48 minutes on departure, and nothing in the history shows which is right. Business billing owns the charge and has asked for queries with the customer's timing evidence. Agreeing to remove the £54, approving a short payment, or recalculating the charge from the gate log would be the desk deciding the dispute.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed Business billing as keyed; musts 3 and 4 rewritten so they check the review request and that part payment is left to billing, not a specific phrasing."
+  }
+}

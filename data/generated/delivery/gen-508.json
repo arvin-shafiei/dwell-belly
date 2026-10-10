@@ -1,0 +1,120 @@
+{
+  "id": "gen-508",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": "delivery-031",
+  "grounding": null,
+  "title": "Case: Customer plans to drop off a return for a kettle and toaster order",
+  "context": "A two-line order has an authorised return and an issued label. Tallowmere Goods owns the return authorisation; refunds follow the warehouse receipt scan.",
+  "initial_request": "Yes. Kettle stays, toaster goes back. Was going to drop it at the parcel shop after work, about half 5. Will wait if I have to but is the same label ok?",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-05T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return RTN-983 authorised for TG-983, both lines: kettle (line 1) and four-slice toaster (line 2), reason 'changed mind', inside the 30-day window. Return label team will issue one label for one carton. Refunds team refunds per line on the returns warehouse's receipt scan, not before."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-05T09:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Return label team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Label issued for RTN-983 and emailed to the customer. One carton, both items. Valid 14 days. Return shipment reference DL-983."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-05T09:31:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jarrah Pemberton, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "got the label thanks. Dropping both off at the weekend."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-06T19:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jarrah Pemberton, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Had a rethink. Forget the return, I'll keep them."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-06T19:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jarrah Pemberton, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Sorry ignore that last one, typed it too fast. I mean I'm keeping the KETTLE (mum's has just died so she's having this one). Toaster is still going back, it's too wide for the shelf. So just the toaster in the box."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-07T08:10:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jarrah Pemberton, customer",
+      "body": "To check I have this right: you are keeping the kettle and returning only the toaster? Please don't hand the carton over until Tallowmere confirms the return has been changed to match."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-05-07T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Our portal log shows the customer opened and abandoned a 'cancel return' form on RTN-983 last night. Nothing was submitted, so RTN-983 stands as authorised, both lines. Tell us if anything needs changing; amendments have to reach us before the carton gets its first carrier scan."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-05-07T08:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For information on TG-983: the refund is calculated on what the returns warehouse scans in against the authorised lines. A carton that does not match the authorisation goes to the manual discrepancy queue, typically 10 or more working days."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-05-07T12:15:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Jarrah Pemberton, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Yes. Kettle stays, toaster goes back. Was going to drop it at the parcel shop after work, about half 5. Will wait if I have to but is the same label ok?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Returns authorisations, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Ask Returns authorisations to amend RTN-983 to line 2 (toaster) only because the customer is keeping the kettle, and to confirm the amendment and whether the existing label is still valid."
+      }
+    ],
+    "must": [
+      "Asks Returns authorisations to amend RTN-983 so it covers the toaster (line 2) only, with the kettle (line 1) kept by the customer.",
+      "Makes clear the return is not cancelled: the toaster is still coming back.",
+      "Asks for confirmation of the amendment and whether the existing label for DL-983 can still be used."
+    ],
+    "must_not": [
+      "Ask for RTN-983 to be cancelled in full.",
+      "Leave RTN-983 as both lines, or tell the customer to send both items.",
+      "Tell Jarrah the return has been amended or that the existing label is fine before Tallowmere confirms.",
+      "Promise a refund amount or a refund date."
+    ],
+    "reference_message": "Amendment needed on RTN-983 (TG-983) before the carton is scanned. The customer has confirmed in her order thread, twice, that she is keeping the kettle (line 1) and returning only the four-slice toaster (line 2). She is not cancelling the return; the abandoned cancel form last night was a first thought she corrected within half an hour. Please amend RTN-983 to line 2 only and confirm, and tell me whether the label already issued for DL-983 is still valid for a toaster-only carton or whether a new one is needed. She had planned to drop it off today at about 17:30 and is holding until she hears."
+  },
+  "rationale": "The customer's instruction changed three times: return both, keep both, then keep the kettle and return the toaster, which she has confirmed. The latest instruction only partly replaces the authorised return, and Tallowmere's record still shows both lines. A mismatched carton goes to a slow discrepancy queue, so the authorisation has to be amended by the team that owns it before she posts anything, and the label question is theirs to answer.",
+  "review": { "status": "agreed", "note": "Coordinator asked Returns authorisations by Email to amend RTN-983 to the toaster only and to confirm the label, matching the key." }
+}

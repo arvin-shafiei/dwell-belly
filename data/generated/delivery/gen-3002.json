@@ -1,0 +1,107 @@
+{
+  "id": "gen-3002",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": "seed-web-026",
+  "title": "Case: Customer writes after a wrongly forwarded parcel is collected from him and his ticket shows closed",
+  "context": "Desmond Okafor-Pryce returned a bread maker to Tallowmere Goods under label DL-918. The merchant's returns dock received someone else's parcel instead and forwarded it to him as DL-953.",
+  "initial_request": "closed is it well thats nice for you ive just had an email saying matter closed and my ticket says closed and i STILL havent got my money for the bread maker i sent back nearly three weeks ago and nobody has said one word about where that is all anyone wants to talk about is somebody elses curtain poles which i never asked for and had to argue with your driver to get rid of and now its apparently everyone elses fault ive spent hours on hold to plover arc on a pay as you go mobile and i want that credit back as well and tallowmere say they cant refund me till you lot say where my parcel is so where is it",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-04T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-918 return (bread maker) was authorised 20 Apr on label DL-918. What reached our returns dock on 27 Apr carrying a DL-918 relabel was not ours: a boxed set of curtain poles addressed to somebody else entirely. Our warehouse forwarded it on 28 Apr to Mr Okafor-Pryce as 'returned to sender', consignment DL-953, which was our mistake. The refund on TG-918 stays on hold until the bread maker is received here or Plover Arc confirms in writing where DL-918 is. We can't release it on the customer's word."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-04T11:30:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "Two items on TG-918. (1) Please trace return DL-918, a bread maker collected from the customer on 21 Apr and not received by the merchant. (2) A third party's parcel was forwarded to the customer in error as DL-953 and needs collecting from him. The merchant's refund depends on (1)."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-05T09:00:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ticket PT-6620 raised. Collection of DL-953 booked for 7 May."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-07T15:10:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Desmond Okafor-Pryce, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "your driver has just been stood on my step for twenty five minutes telling me he cant take it because the label doesnt match his handheld and hes rung his depot twice while i stand there holding somebody elses curtain poles and in the end he took it but only after i said i was leaving it on the pavement so thats that one gone now what about mine"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-07T15:45:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "AUTOMATED: PT-6620 closed. Linked consignment DL-953 scanned 'collected' 7 May 15:31. Closed tickets cannot be reopened or replied to on this queue. For any item not covered by the collection, email Parcel trace team quoting the original shipment reference."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-08T09:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Desmond Okafor-Pryce, customer",
+      "body": "Mr Okafor-Pryce, the relabel occurred at the merchant's returns dock and the onward forwarding was the merchant's decision, not ours. Our driver followed handheld procedure at your address. The stray consignment has been collected and we consider the matter closed. Copy to Rivet Delivery Desk."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-05-08T10:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Desmond Okafor-Pryce, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "closed is it well thats nice for you ive just had an email saying matter closed and my ticket says closed and i STILL havent got my money for the bread maker i sent back nearly three weeks ago and nobody has said one word about where that is all anyone wants to talk about is somebody elses curtain poles which i never asked for and had to argue with your driver to get rid of and now its apparently everyone elses fault ive spent hours on hold to plover arc on a pay as you go mobile and i want that credit back as well and tallowmere say they cant refund me till you lot say where my parcel is so where is it"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Parcel trace team, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask by email for a trace on the original return DL-918, which PT-6620 closed without covering, noting the merchant's refund waits on written confirmation."
+      }
+    ],
+    "must": [
+      "Emails Parcel trace team asking for a trace on return DL-918 (bread maker, collected 21 April, not received by the merchant) as its own request",
+      "Says plainly that PT-6620 closed on the DL-953 collection and that the trace on DL-918 was never done",
+      "Says the merchant is holding the TG-918 refund until Plover Arc confirms in writing where DL-918 is",
+      "Tells the team how long the customer has been waiting (return collected 21 April, nearly three weeks without parcel or refund) and that he has been told the matter is closed, so they can prioritise; any mention of his phone costs is passed on as his request, not a promise"
+    ],
+    "must_not": [
+      "Treats the collection of DL-953 or the closure of PT-6620 as the end of the case",
+      "Reports the earlier trace request as done or in progress, or posts the new request to the closed PT-6620 ticket on the Depot work queue",
+      "Promises the bread maker refund, or a refund of his phone costs, or a date for either",
+      "States that DL-918 is lost, or says whose fault the mix-up was",
+      "Tells the customer his ticket is closed or sends him back to the merchant without anyone tracing his own parcel"
+    ],
+    "reference_message": "New trace request, original reference DL-918 (merchant order TG-918). This is the customer's own return, a bread maker collected from Desmond Okafor-Pryce on 21 April and never received at Tallowmere's returns dock. I asked for this trace on 4 May in PT-6620, but that ticket closed automatically on 7 May when the other consignment on it, DL-953, was collected, so DL-918 has not been traced at all. Tallowmere Returns authorisations is holding his refund until Plover Arc confirms in writing where DL-918 is. Please open a trace and reply with a reference and next update time. For priority: he has been without parcel or refund for nearly three weeks, was sent a stranger's parcel, had a 25-minute dispute at his door before the driver would take it back, and has now been told the matter is closed. He is also asking for his phone costs for calls to Plover Arc; I have promised him nothing and pass that on for whoever decides it."
+  },
+  "rationale": "The desk's 4 May ticket carried two items and closed itself when only the stranger's parcel was collected, so the customer's own return was never traced. The auto-close notice names the working route: email Parcel trace team with the original reference. The tempting reading is that 'collected' and 'matter closed' finish the case; the merchant's refund still waits on a written answer about DL-918.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed Parcel trace team for a fresh DL-918 trace as the key requires; the prioritisation must item no longer requires relaying the phone-cost request to a team that does not decide it."
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "id": "gen-3010",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": "seed-web-124",
+  "title": "Case: Merchant writes about packing photos on a freight damage claim while the portal shows documents awaited",
+  "context": "Tallowmere Goods shipped a games table by booked freight as DL-986. The buyer reported forklift damage and two missing parts, and a claim, FC-2207, is with Freight planner.",
+  "initial_request": "For your records, and for the avoidance of doubt. We have supplied the packing photographs for TG-986 on two occasions, 3 and 5 November. Freight planner confirmed in writing on 9 November that it holds them and that we shall have its decision by 20 November. We shall wait for that date. We are informed that our buyer has lodged the matter with the small claims tribunal against us; that is between the buyer and Tallowmere and we are dealing with it ourselves. We ask nothing of the desk today. We record only that we shall not be supplying the photographs a third time. E. Marlowe-Kane, Damage intake.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-11-03T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "TG-986 / DL-986, games table. The buyer reports forklift tines through the carton on the long side and two parts missing, one leg brace and the scoring rail. Attached: five packing photographs taken at our dock on 26 Oct and four photographs taken by the buyer on delivery, 30 Oct. Copy to Rivet Delivery Desk."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-11-05T09:20:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal claims notifications",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "AUTOMATED: Claim FC-2207 (DL-986). Documents awaited: packing photos. Please request from shipper."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-11-05T09:45:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Damage intake, Tallowmere Goods",
+      "body": "The Freight portal shows packing photos awaited on claim FC-2207 for DL-986. Could you send them so the claim can move?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-11-05T13:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "As requested, again, in full: the same nine photographs we sent on 3 November, five packing and four on delivery, to you and to Freight planner. This is the second time we have supplied them."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-11-09T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "FC-2207: confirming we hold all nine photographs for DL-986, five packing and four on delivery, received 3 Nov and again 5 Nov. Nothing further is needed from the shipper or from the desk. The booking carried no transit cover, so this is a liability review rather than a cover claim; our decision goes direct to Tallowmere Damage intake by 20 Nov. The portal regenerates a 'documents awaited' prompt every time the claim is re-keyed and will keep doing so until it closes. Ignore those prompts. Do not pass them to the shipper. Copied to Damage intake."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-11-12T07:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal claims notifications",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "AUTOMATED: Claim FC-2207 (DL-986). Documents awaited: packing photos. Please request from shipper. Reminder 2."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-11-12T10:25:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For your records, and for the avoidance of doubt. We have supplied the packing photographs for TG-986 on two occasions, 3 and 5 November. Freight planner confirmed in writing on 9 November that it holds them and that we shall have its decision by 20 November. We shall wait for that date. We are informed that our buyer has lodged the matter with the small claims tribunal against us; that is between the buyer and Tallowmere and we are dealing with it ourselves. We ask nothing of the desk today. We record only that we shall not be supplying the photographs a third time. E. Marlowe-Kane, Damage intake."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message",
+      "Gives the reason: Freight planner confirmed on 9 November that it holds all nine photographs and will give its decision to Damage intake by 20 November, which is not yet due, and the merchant has said it asks nothing of the desk",
+      "Treats the 12 November 'documents awaited' reminder as the regenerated portal prompt Freight planner said to ignore, and records that the merchant has already supplied the photographs twice"
+    ],
+    "must_not": [
+      "Asks Damage intake for the packing photographs again, or forwards the portal reminder to them",
+      "Chases Freight planner for its decision before 20 November",
+      "Tells Tallowmere anything about the likely outcome, liability or compensation",
+      "Comments on or offers help with the tribunal matter between Tallowmere and its buyer",
+      "Sends Damage intake an acknowledgement that restates the claim status or asks them to confirm what they have already sent"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The portal's reminder and the merchant's stiff message both look like prompts to act, and the desk has already made the mistake once by asking for photographs the planner held. Freight planner has since confirmed it has all nine, set a decision date that has not passed, and said to ignore the regenerated prompts. The merchant states it asks nothing and the tribunal matter is its own. Any message now would be noise at best and a third photo request at worst.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator took no action, gave the key's reasons and treated the portal reminder as the prompt Freight planner said to ignore."
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "gen-303",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "seed_case": "delivery-045",
+  "grounding": null,
+  "title": "Case: Broker sends a corrected value for an import shipment on hold",
+  "context": "DL-926 is held at import while the duty charge is recalculated. Import billing will only rerun the charge from the broker's amended entry document.",
+  "initial_request": "Amended entry summary for DL-926 attached. Corrected value EUR 1,870. Please pass to Import billing straight away so they rerun the charge and release it, the consignee is chasing us hourly.\n\n[Broker portal: this message has 0 files attached]",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-15T08:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-926 is on hold at import. The duty calculation was run on the broker's first entry, declared value EUR 2,140. The broker now says that value was wrong. We cannot rerun until we hold the broker's amended entry summary. To be clear: we do not take a corrected figure by phone or from the body of a message. It has to be the document."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-15T09:45:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Ilse Brandvold, Calder Wharf Customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-926: the value was keyed with freight included, it should be lower. We'll have the amended entry to you this afternoon."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-15T14:38:00Z",
+      "stage": "Escalation",
+      "channel": "Broker portal",
+      "from": "Ilse Brandvold, Calder Wharf Customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Amended entry summary for DL-926 attached. Corrected value EUR 1,870. Please pass to Import billing straight away so they rerun the charge and release it, the consignee is chasing us hourly.\n\n[Broker portal: this message has 0 files attached]"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Ilse Brandvold, Calder Wharf Customs broker",
+        "channel": "Broker portal",
+        "summary": "Say no file arrived with the message and ask for the amended entry summary for DL-926 to be attached again."
+      }
+    ],
+    "must": [
+      "Tells the broker that the message arrived with no file attached",
+      "Asks the broker to send the amended entry summary for DL-926 again as a file",
+      "Makes no statement that the hold will be released or the charge reduced"
+    ],
+    "must_not": [
+      "Passes the figure EUR 1,870 to Import billing as the corrected value, or tells Import billing the amended entry is attached or on its way from the desk",
+      "Tells the broker that the document has been passed to Import billing",
+      "Asks the shipper or the consignee for a new invoice or any other document",
+      "States that DL-926 will be released or that the import charge will be lower"
+    ],
+    "reference_message": "Your 14:38 message for DL-926 reached me with no file attached. Please send the amended entry summary again as an attachment on this portal. Import billing will only rerun the charge from the document itself, so I have not passed the figure on. I will forward the file to them as soon as it arrives."
+  },
+  "rationale": "Import billing stated that it will not accept a corrected figure from a message body, and the portal shows the broker's message came with no file. Relaying EUR 1,870 would be useless at best and would misrepresent what the desk holds. The broker has the document and is the only party who can resend it.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the broker on the Broker portal to resend the file as keyed; no change to the key."
+  }
+}

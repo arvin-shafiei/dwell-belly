@@ -1,0 +1,92 @@
+{
+  "id": "gen-2203",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": "seed-web-030",
+  "title": "Case: Evening delivery to a secured building returned to depot without an attempt",
+  "context": "DL-961, a parcel for Casimir Okonjo-Vance in a secured apartment building, has been in the Plover Arc network since 9 May and was booked for an evening window on 3 June.",
+  "initial_request": "Dear Ms Quill, I write regarding DL-961, which has been in transit since 9 May. On 1 June, as instructed by your carrier's own delivery page, I entered the entrance code for my building (4471#) and completed the electronic signature release, and I received on-screen confirmation that both had been saved. I remained at home throughout yesterday's 18:00 to 21:00 window. I am now informed that the driver returned to the depot without attempting delivery for want of access details, and that the next date is 8 June. I did precisely what was asked of me. I should be grateful to learn why the information did not reach the driver and what will be different on the 8th. I would rather not simply be told to enter it again. Yours sincerely, C. Okonjo-Vance",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-27T08:10:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-961 reached us 26 May after the hub backlog. First evening route with space for that zone is 3 June."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-02T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-961 booked evening window 3 June, 18:00 to 21:00. Delivery preferences on the consignee record were updated by the consignee 1 June 20:14: access notes PRESENT, signature release PRESENT. The contents are masked to us, we only see that they exist. Stop data on the driver handheld is built from that record by Routing control, not by Scheduling."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-03T21:25:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-961 back at depot. Driver note: 'secure building, no access info on stop, not attempted'. Next evening route for that zone is 8 June. Tagging Routing control because the stop data is theirs."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-03T21:31:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Routing control, night shift. We can't pull stop build logs overnight, day team can from 07:00. Send it to us here or by Email with the reference and what you've got and they'll look."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-04T08:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Casimir Okonjo-Vance, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dear Ms Quill, I write regarding DL-961, which has been in transit since 9 May. On 1 June, as instructed by your carrier's own delivery page, I entered the entrance code for my building (4471#) and completed the electronic signature release, and I received on-screen confirmation that both had been saved. I remained at home throughout yesterday's 18:00 to 21:00 window. I am now informed that the driver returned to the depot without attempting delivery for want of access details, and that the next date is 8 June. I did precisely what was asked of me. I should be grateful to learn why the information did not reach the driver and what will be different on the 8th. I would rather not simply be told to enter it again. Yours sincerely, C. Okonjo-Vance"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Routing control, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Put the conflict between the saved preferences record and the driver's 'no access info on stop' note to Routing control and ask them to check the stop build before the 8 June route."
+      },
+      {
+        "recipient": "Routing control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same request by Email, as Routing control offered either route."
+      }
+    ],
+    "must": [
+      "Sends Routing control the conflict: Scheduling shows access notes and signature release present on the consignee record since 1 June 20:14, while the driver's note says there was no access info on the stop",
+      "Asks Routing control to check the stop build for DL-961 and say what will reach the handheld for the 8 June route, without asserting where the fault lies",
+      "Tells Routing control the consignee had supplied everything asked for, waited in for the whole window, and the parcel has been in transit since 9 May, so a second lost window is avoided"
+    ],
+    "must_not": [
+      "Asks the recipient to enter, re-enter, confirm or send the door code or access instructions",
+      "Repeats the entrance code 4471# in any message",
+      "Tells the recipient the parcel will be delivered on 8 June or that the problem is fixed, before Routing control confirms it",
+      "States as fact that the driver ignored the code, or that the system lost it"
+    ],
+    "reference_message": "DL-961, for your day team as offered last night. Scheduling's view of the consignee record shows delivery preferences updated 1 June 20:14 with access notes present and signature release present. The driver's note from the 3 June evening route reads 'secure building, no access info on stop, not attempted'. Those two do not fit and I can't tell which side dropped it. Please check the stop build for DL-961 and tell me whether the access notes and signature release will be on the handheld for the 8 June route. The consignee did everything the delivery page asked, stayed in for the whole window, and the parcel has been in transit since 9 May. I am not asking him to re-enter anything and I am not passing the access details through this chat."
+  },
+  "rationale": "The lazy fix is to ask the recipient to add his access instructions again, which he has already done and has asked not to be told. The record Scheduling can see and the driver's note contradict each other, and Routing control builds the stop data and has offered to check the log, so the conflict goes to them. The recipient put the door code in his message; it is a reusable security credential and must not be copied into anything the desk sends.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator put the record-versus-driver-note conflict to Routing control on Dispatch chat without repeating the entrance code, matching the key."
+  }
+}

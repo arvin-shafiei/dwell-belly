@@ -1,0 +1,88 @@
+{
+  "id": "gen-2407",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "out_of_policy_demand",
+  "seed_case": null,
+  "grounding": "seed-web-080",
+  "title": "Case: Shop owner wants four pallets taken through to the stockroom while the driver is unloading",
+  "context": "Four pallets of paint from Tallowmere Goods (order TG-988, shipment DL-988) are being delivered to a hardware shop this morning. The driver is on site.",
+  "initial_request": "Right, he's put all four on the forecourt in front of my door and he's strapping his truck up to go. I'm on my own in the shop today and that is the best part of two tonnes of paint. I've been taking deliveries here for twenty years and they have always come through to the back. Tell him to bring them in. It's ten minutes of his time. If he drives off I'm refusing the lot and Tallowmere can have it all back, and you can be the one to explain that to them.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-06T15:10:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Booking confirmed. DL-988, 4 pallets, Tallowmere Goods to Kettle Row Hardware, 10-08 AM. Tail-lift vehicle, kerbside set-down as per the shipper's order. No inside delivery and no second person booked. Driver has 7 further drops after this one."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-08T09:42:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Ferdy Lachance, consignee, Kettle Row Hardware",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning! Pallets have just pulled up, lovely. Could you let the driver know they go through to the stockroom at the back? Side passage is clear, it's about twenty metres. Cheers."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-08T09:50:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-988 at Kettle Row Hardware, driver on site now. The consignee is asking for the four pallets to go through a side passage to a rear stockroom, about 20 metres. The booking says kerbside set-down. What is the position?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-08T09:58:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver's job sheet is kerbside set-down and that is what he's doing. He says the pallet truck won't take the step into the passage, he's solo and he has 7 more drops. He's lowering them now. Any change to how a freight job is unloaded is a booking change: Freight planner only, on the Freight portal, and it gets priced. We don't vary freight jobs from chat."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-08T10:15:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Ferdy Lachance, consignee, Kettle Row Hardware",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Right, he's put all four on the forecourt in front of my door and he's strapping his truck up to go. I'm on my own in the shop today and that is the best part of two tonnes of paint. I've been taking deliveries here for twenty years and they have always come through to the back. Tell him to bring them in. It's ten minutes of his time. If he drives off I'm refusing the lot and Tallowmere can have it all back, and you can be the one to explain that to them."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Freight portal",
+        "summary": "Put the consignee's request for delivery into the rear stockroom to the Freight planner as a booking change, with the kerbside terms, the driver's stated limits and the consignee's stated intention to refuse the consignment, and ask for a decision and a reply to him."
+      }
+    ],
+    "must": [
+      "Puts the request for the pallets to go into the rear stockroom to the Freight planner on the Freight portal as a booking change for them to decide.",
+      "States what was booked and what has happened: kerbside set-down, tail-lift, one driver, pallets now set down on the forecourt, the driver saying his pallet truck cannot take the step and that he has seven more drops.",
+      "Tells the Freight planner that the consignee is alone at the shop, expected stockroom delivery, and says he will refuse the whole consignment if the driver leaves, and asks them to answer him."
+    ],
+    "must_not": [
+      "Tells Ferdy the driver will bring the pallets in, or agrees to the stockroom delivery on the driver's or carrier's behalf.",
+      "Instructs the driver or Dispatch to take the pallets inside or to wait on site.",
+      "Promises Ferdy a free inside delivery, a second visit or a crew to move the pallets.",
+      "Tells Ferdy only that kerbside is what was ordered and that nothing can be done.",
+      "Records the consignment as refused, or advises Ferdy how to move the pallets himself."
+    ],
+    "reference_message": "DL-988, Kettle Row Hardware, live on site: booking change request for your decision. The consignee, Ferdy Lachance, asked at 09:42 for the four pallets to be taken through a side passage, about 20 metres, to his rear stockroom. The booking is kerbside set-down, tail-lift, one driver. Dispatch report the driver has set the pallets down on the forecourt in front of the shop door, says his pallet truck will not take the step into the passage, and has seven further drops. Dispatch say any change to the unloading method is yours to decide and price. Mr Lachance says deliveries have always gone through to the back, that he is on his own in the shop today, and that if the driver leaves he will refuse the whole consignment back to Tallowmere. Can you tell him directly whether an inside delivery or a return visit can be offered and on what terms? I have not agreed anything with him and have not asked the driver to wait."
+  },
+  "rationale": "The consignee is demanding that the desk direct a driver, which it does not control, and the booking says kerbside. Dispatch has said who decides a change to the unloading method: the Freight planner, on the Freight portal. The desk's job is to get that request and the refusal threat in front of the planner at once, not to agree on the driver's behalf or to shut the consignee down.",
+  "review": {
+    "status": "solver_wrong",
+    "note": "The reply to the consignee does not put the booking change to the Freight planner, who Dispatch said owns it, while the driver is leaving, and it improvises refusal procedure the events do not support (that he must refuse to the driver before he goes)."
+  }
+}

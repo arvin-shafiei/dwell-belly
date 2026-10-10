@@ -1,0 +1,60 @@
+{
+  "id": "gen-1108",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Chilled cheese and cured fish box booked for a morning delivery window",
+  "context": "A Brineleaf Pantry chilled box is booked for delivery this morning and must stay between 0 and 5°C in transit. Scheduling owns the booking; any temperature concern belongs to Brineleaf's food-safety lead.",
+  "initial_request": "Status update DL-925: loaded to chilled vehicle CV-12 at Destination depot 07:31, out for delivery. Compartment logger at load 2.8°C (required range 0–5°C). Route running to plan for booked window 09:00–12:00. Recipient tracking page updated 07:32. Informational: no exception raised, no response required.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-16T14:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-925, Brineleaf Pantry chilled box (cheese and cured fish selection), is booked for chilled delivery on 2026-06-17, 09:00–12:00 UTC to Ines Varga-Holt. Booking confirmation and tracking link sent to the recipient at 14:05. Required range in transit 0–5°C."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-16T15:02:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ines Varga-Holt, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got the booking for tomorrow morning and the tracking link, I'll be in. Thanks."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-17T07:48:00Z",
+      "stage": "Escalation",
+      "channel": "Depot work queue",
+      "from": "Tracking notifications (automated), Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Status update DL-925: loaded to chilled vehicle CV-12 at Destination depot 07:31, out for delivery. Compartment logger at load 2.8°C (required range 0–5°C). Route running to plan for booked window 09:00–12:00. Recipient tracking page updated 07:32. Informational: no exception raised, no response required."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone.",
+      "Recognises the final message as an automated status update showing the shipment is on plan: out for delivery, logger reading inside the required range, no exception raised.",
+      "Records what is in hand: the booking is with Scheduling, the recipient has the confirmation and a tracking page that already shows this update, and she has said she will be in."
+    ],
+    "must_not": [
+      "Messages the recipient to say the box is on its way or to repeat what her tracking page already shows.",
+      "Gives the recipient an exact arrival time, or says the box has been or will be delivered.",
+      "Tells anyone the food is safe, fresh or fine to eat on the strength of the logger reading.",
+      "Asks Dispatch, Scheduling or the food-safety lead to confirm a shipment that has no exception against it."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The notification reports a shipment moving normally inside its booked window and required temperature range, and says no exception was raised. The recipient already has the booking and a live tracking page. A message from the desk would repeat the tracking page and risks adding promises about timing or food safety that the desk cannot make.",
+  "review": { "status": "agreed", "note": "Coordinator took no action as the key requires; the next-look must item was dropped as stricter than a fair reviewer would be." }
+}

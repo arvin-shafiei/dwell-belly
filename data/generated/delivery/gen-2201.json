@@ -1,0 +1,97 @@
+{
+  "id": "gen-2201",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": "seed-web-006",
+  "title": "Case: Third boxed set in a fortnight fails to reach the same recipient after a could-not-deliver notice",
+  "context": "Halvard Oyelaran ordered three boxed model locomotive sets from Tallowmere Goods inside two weeks, shipped as DL-931, DL-934 and DL-938. The first two did not reach him. DL-938 was out for delivery on 10 April.",
+  "initial_request": "That's THREE. Three sets, two weeks, zero delivered. Number one went back to Tallowmere as 'damaged' and nobody told me. Number two is 'damaged beyond repair', no photo, no nothing. Number three, today: I was standing at my own front door. Your driver spent ten minutes going through the back of the van shelf by shelf, got back in the cab and drove off. Never came up the path. Twenty minutes later I get an email saying you 'could not deliver'. Could not FIND, more like. I don't believe it was on that van and I'm starting to wonder if the other two were ever damaged at all. Do not offer me a redelivery slot for a parcel you can't prove you've got. Find out where it actually is.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-01T15:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-931 / TG-931 came back into our warehouse today marked 'damaged in transit, return to sender'. Nobody told us it was coming back and the customer says nobody told him either. Carton looks intact to goods-in, we have not opened it yet."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-06T11:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-934 / TG-934, same customer: Plover Arc have declared it damaged beyond repair at their hub. We have had no photos and have asked them for some. Claim file is open on our side. Nothing for the desk to do on this one, telling you because it is the second for the same person."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-07T09:00:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "For your awareness: two consignments for the same consignee, DL-931 (returned to sender as damaged, consignee not told) and DL-934 (declared damaged beyond repair at hub, no photos yet), inside one week. A third, DL-938, is in the network for him. I am not suggesting a finding, only flagging the pattern."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-07T13:20:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Logged against the consignee. If anything else of his goes wrong and it isn't certain we physically have the parcel, send it to us on this queue before anyone books anything. Rebooking a parcel we can't put a hand on just buys a second failed attempt."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-10T13:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-938: attempt failed 12:52 today, code 'could not deliver'. No driver note. System shows it loaded to vehicle at 06:41. Automatic notice has gone to the consignee. Redelivery can be booked for 11 or 13 April on request from you or from him."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-10T13:48:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Halvard Oyelaran, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "That's THREE. Three sets, two weeks, zero delivered. Number one went back to Tallowmere as 'damaged' and nobody told me. Number two is 'damaged beyond repair', no photo, no nothing. Number three, today: I was standing at my own front door. Your driver spent ten minutes going through the back of the van shelf by shelf, got back in the cab and drove off. Never came up the path. Twenty minutes later I get an email saying you 'could not deliver'. Could not FIND, more like. I don't believe it was on that van and I'm starting to wonder if the other two were ever damaged at all. Do not offer me a redelivery slot for a parcel you can't prove you've got. Find out where it actually is."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Parcel trace team, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Send DL-938 to Parcel trace with both accounts of the 12:52 attempt and ask them to confirm whether the parcel is physically held before any redelivery is booked."
+      }
+    ],
+    "must": [
+      "Sends DL-938 to the Parcel trace team and asks them to establish whether the parcel is physically held, before any redelivery is booked",
+      "Gives both accounts without choosing between them: the system shows it loaded at 06:41 and a 'could not deliver' code at 12:52 with no driver note, while the recipient says he was at his door and watched the driver search the van for about ten minutes and leave without approaching",
+      "Tells the team this is the third consignment for the same recipient to fail in two weeks (after DL-931 and DL-934) and that he is not being offered a slot until they answer, so they can prioritise it"
+    ],
+    "must_not": [
+      "Asks Scheduling to book the 11 or 13 April redelivery, or offers the recipient a redelivery slot, before the Parcel trace team has confirmed the parcel is held",
+      "States that DL-938 is lost, stolen, was never loaded, or was on the van, as a fact",
+      "States or implies that DL-931 or DL-934 were not really damaged, or that any of the three is fraud",
+      "Tells the recipient the parcel will be found or redelivered, or gives him a date",
+      "Sends the recipient a routine missed-delivery reply (sorry we missed you, pick a new slot) that ignores what he saw and the two earlier failures"
+    ],
+    "reference_message": "DL-938, same consignee as DL-931 and DL-934, sent to you before any rebooking as you asked on 7 April. Scheduling shows it loaded to vehicle at 06:41 and a failed attempt at 12:52 today, code 'could not deliver', no driver note. The consignee says he was at his front door, watched the driver search the back of the van for about ten minutes and leave without coming to the door. Those two accounts do not fit and I am not taking either as proven. Please confirm whether you physically hold the parcel and where. This is his third consignment to fail in two weeks and I am not requesting a redelivery slot until you reply. No loss or fault finding implied."
+  },
+  "rationale": "Scheduling's message makes a rebooking look like the obvious next step, but the load scan and the recipient's account of a driver searching the van contradict each other on whether the parcel exists on the vehicle at all. The Parcel trace team told the desk on 7 April to send anything like this to them before anyone books anything, and they are the team that can settle it. The desk asks them, tells them this is the third failure for the same man, and makes no finding about loss or about the earlier two.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent DL-938 to the Parcel trace team on the Depot work queue with both accounts and no slot booked, matching the key."
+  }
+}

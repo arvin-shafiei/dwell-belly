@@ -1,0 +1,109 @@
+{
+  "id": "gen-1107",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Merchant disputes a failed-collection charge on a carrier invoice for a pallet of lamp bases",
+  "context": "Tallowmere Goods' warehouse is disputing one line on a Plover Arc invoice. The desk passed on the original collection request last month and has been copied on the thread; Business billing owns invoice disputes and credits.",
+  "initial_request": "Credit note PA-CN-984 for GBP 45.00 issued this morning against PA-INV-984 line 7. Copy attached and sent to Hesper. BD-984 is closed on our side unless you see a problem with it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-02T09:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Business billing, Plover Arc Logistics; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Invoice PA-INV-984 line 7 charges GBP 45.00 'failed collection' against DL-984 (pallet of lamp bases) on 2026-05-26. Our dock was staffed all day and the gate log shows no Plover Arc vehicle. We dispute the line. Copying Iona at the Rivet desk for visibility only, as the desk passed on the original collection request."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-02T09:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Warehouse dispatch, Tallowmere Goods; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Dispute BD-984 opened against line 7. Our record shows a driver attempt at 14:22 on 26 May, reason 'premises closed'. Please send your gate log extract for 26 May, 13:00–16:00."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-02T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Business billing, Plover Arc Logistics; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Gate log attached. No entry 13:00–16:00 for any Plover Arc registration. Also your driver's note says 'Unit 6'. We are Unit 9. Unit 6 on this estate has been empty since March, so yes, it would have looked closed."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-02T11:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Warehouse dispatch, Tallowmere Goods; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks, that helps. I am asking Collections control for the GPS trace on the 14:22 attempt and will come back to you on this thread."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-02T14:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Business billing, Plover Arc Logistics; Warehouse dispatch, Tallowmere Goods; cc Iona Quill, Rivet Delivery Desk",
+      "body": "GPS for the 14:22 scan on DL-984 is on the Unit 6 forecourt. The collection address on the job was correct (Unit 9). Driver went to the wrong unit. Our error, not the site's."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-02T14:48:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Warehouse dispatch, Tallowmere Goods; cc Iona Quill, Rivet Delivery Desk",
+      "body": "On that basis line 7 will be credited in full. The credit note goes out on tomorrow morning's run and I will send the number here. For clarity, DL-984 itself was collected on 27 May and is not affected."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-02T15:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Business billing, Plover Arc Logistics; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Good. Please address the credit note to Hesper Lund in our accounts. We will hold payment of line 7 only; the rest of the invoice goes through as normal."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-06-03T10:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Warehouse dispatch, Tallowmere Goods; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Credit note PA-CN-984 for GBP 45.00 issued this morning against PA-INV-984 line 7. Copy attached and sent to Hesper. BD-984 is closed on our side unless you see a problem with it."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone.",
+      "Recognises that the desk is copied for visibility only: every message is between Warehouse dispatch and Business billing, and none asks the desk a question or for an action.",
+      "Gives the reason nothing is owed: Business billing owns the dispute and has issued credit note PA-CN-984 for line 7, and its closing question is addressed to the merchant, not the desk."
+    ],
+    "must_not": [
+      "Replies to the thread to acknowledge, summarise or confirm the credit to either party.",
+      "Tells Tallowmere Goods the dispute is settled or the credit has been applied to their account on the desk's own word.",
+      "Asks Business billing or Collections control for further detail, or asks Warehouse dispatch to confirm they accept the credit note.",
+      "Comments on who was at fault for the failed collection or on whether other charges on the invoice are correct.",
+      "Opens anything with Dispatch or Collections control about DL-984, which was collected on 27 May and is not in question."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The two parties that own the invoice are settling it between themselves and copied the desk for visibility, saying so in the first message. The last message is addressed to the merchant and its only open point is for the merchant. A reply from the desk would add a third voice to a billing thread it has no authority in.",
+  "review": {
+    "status": "widened",
+    "note": "Coordinator's no_action matched, but two must items demanded log wording a fair reviewer would not require; rewritten to be checkable."
+  }
+}

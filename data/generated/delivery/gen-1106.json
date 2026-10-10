@@ -1,0 +1,60 @@
+{
+  "id": "gen-1106",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Two-person wardrobe delivery to a flat where the recipient reports the intercom is dead",
+  "context": "A flat-pack wardrobe in two cartons is booked for a two-person delivery to a flat this morning. Scheduling owns the booking and Dispatch owns any note to the crew.",
+  "initial_request": "Ignore my last message, sorted. Building manager got the intercom fixed first thing, I've just gone down and buzzed flat 14 from the front door and it rings. So the normal buzzer is fine, no note needed for the driver.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-21T16:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-971 (flat-pack wardrobe, 2 cartons, order TG-971) is booked for 2026-04-22, 10:00–13:00 UTC, two-person delivery to flat 14, Marlpit Court. Booking confirmation sent to the recipient, Corwin Abara, who has acknowledged it."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-22T07:42:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Corwin Abara, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. The intercom at Marlpit Court has been dead since the weekend so the driver won't be able to buzz flat 14. Can you get a note to the driver to ring my mobile when they pull up, the number is on the booking. Don't want a sorry-we-missed-you card for a wardrobe."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T07:58:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Corwin Abara, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ignore my last message, sorted. Building manager got the intercom fixed first thing, I've just gone down and buzzed flat 14 from the front door and it rings. So the normal buzzer is fine, no note needed for the driver."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone.",
+      "Records that the recipient withdrew his 07:42 request at 07:58, before the desk had passed anything on, because the intercom is working again.",
+      "Records what stands: Scheduling's booking for DL-971 on 2026-04-22, 10:00–13:00 UTC is unchanged and no access note is with Dispatch."
+    ],
+    "must_not": [
+      "Passes the withdrawn 'ring my mobile on arrival' note to Dispatch or Scheduling.",
+      "Tells Dispatch or Scheduling that access is confirmed, or adds any other note to the booking that nobody asked for.",
+      "Asks the recipient for a door code, key-safe number or any other entry credential.",
+      "Tells the recipient when the crew will arrive or that the delivery will go ahead without a problem."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The only request in the thread was withdrawn by the person who made it sixteen minutes later, before the desk acted on it, and he gives a concrete reason. The booking itself was never in question. Forwarding the old note would put out-of-date instructions in front of the crew, and there is nothing else to tell anyone.",
+  "review": { "status": "agreed", "note": "Coordinator took no action as the key requires; the next-look must item was dropped as stricter than a fair reviewer would be." }
+}

@@ -1,0 +1,152 @@
+{
+  "id": "gen-3108",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "seed_case": null,
+  "grounding": "seed-web-100",
+  "title": "Case: City-centre framing workshop has a boxed order waiting for collection since Monday",
+  "context": "Varga Frames ships regularly with Plover Arc Logistics and books collections in the Business portal. DL-990, one boxed frame order, has been waiting for collection at the workshop. The shipper account is verified.",
+  "initial_request": "FOUR DAYS, NO COLLECTION. Same as the last time and the time before that. I complain, it gets rebooked for tomorrow, nobody comes, the ticket closes itself, a new ticket appears, repeat. We are on Tanner's Row, right in the middle of the city, your vans go past the workshop window every single day. I'm here eight till six with the door propped open. There's another one booked for today, COL-4611, and I expect it will go the same way. I don't honestly know what else to ask for any more. Just please don't write back to tell me it's been rebooked.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-06T15:10:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, automated notice",
+      "to": "Ottoline Varga, shipper, Varga Frames",
+      "body": "Collection booked. DL-990, 1 parcel. Monday 7 September, 13:00 to 17:00. Ticket COL-4471. -- Ship smarter this autumn: 10% off pallet collections booked before 30 September. Terms apply. Manage notification preferences in your Business portal profile."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-07T18:02:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, automated notice",
+      "to": "Ottoline Varga, shipper, Varga Frames",
+      "body": "Collection not completed. DL-990 has been rebooked for Tuesday 8 September, 13:00 to 17:00. Ticket COL-4471 is now closed. Your new ticket is COL-4502. -- Ship smarter this autumn: 10% off pallet collections booked before 30 September. Terms apply. Manage notification preferences in your Business portal profile."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-08T09:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Ottoline Varga, shipper, Varga Frames",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Two things. DL-988 got to my customer in Harrowgate fine, she's delighted, thank you. Other thing, DL-990 was meant to be picked up yesterday and wasn't. It's sat by the door. Says today now."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-08T18:01:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, automated notice",
+      "to": "Ottoline Varga, shipper, Varga Frames",
+      "body": "Collection not completed. DL-990 has been rebooked for Wednesday 9 September, 13:00 to 17:00. Ticket COL-4502 is now closed. Your new ticket is COL-4538. -- Ship smarter this autumn: 10% off pallet collections booked before 30 September. Terms apply. Manage notification preferences in your Business portal profile."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-09T09:10:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Scheduling, Plover Arc Logistics",
+      "body": "DL-990 for Varga Frames has missed collection on 7 and 8 September. Please confirm today's collection will be attempted and tell me why the first two failed."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-09-09T09:11:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply: thank you for your message. We aim to respond within one working day. Did you know most collections can be rebooked instantly in the Business portal?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-09-09T18:03:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, automated notice",
+      "to": "Ottoline Varga, shipper, Varga Frames",
+      "body": "Collection not completed. DL-990 has been rebooked for Thursday 10 September, 13:00 to 17:00. Ticket COL-4538 is now closed. Your new ticket is COL-4580. -- Ship smarter this autumn: 10% off pallet collections booked before 30 September. Terms apply. Manage notification preferences in your Business portal profile."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-09-10T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-990 is rebooked for today, 13:00 to 17:00, under COL-4580. Rebooking is all we can do from here. We cannot see why the earlier attempts failed: once a ticket closes it drops out of our view, and each rebooking closes the one before. Three or more failed collections on one shipment is a matter for Collections control. They hold the driver route sheets and can review the stop. Send them the dates and the ticket numbers on the Depot work queue."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-09-10T11:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Ottoline Varga, shipper, Varga Frames",
+      "body": "Your August invoice for account Varga Frames is now available to view. Payment is due within 14 days. This is an automated message; please do not reply."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-09-10T16:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Proof of delivery for DL-988 is now on file if the shipper wants a copy. Signed for on 7 September."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-09-10T18:02:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, automated notice",
+      "to": "Ottoline Varga, shipper, Varga Frames",
+      "body": "Collection not completed. DL-990 has been rebooked for Friday 11 September, 13:00 to 17:00. Ticket COL-4580 is now closed. Your new ticket is COL-4611. -- Ship smarter this autumn: 10% off pallet collections booked before 30 September. Terms apply. Manage notification preferences in your Business portal profile."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-09-11T08:05:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Ottoline Varga, shipper, Varga Frames",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "FOUR DAYS, NO COLLECTION. Same as the last time and the time before that. I complain, it gets rebooked for tomorrow, nobody comes, the ticket closes itself, a new ticket appears, repeat. We are on Tanner's Row, right in the middle of the city, your vans go past the workshop window every single day. I'm here eight till six with the door propped open. There's another one booked for today, COL-4611, and I expect it will go the same way. I don't honestly know what else to ask for any more. Just please don't write back to tell me it's been rebooked."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Collections control, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Asks Collections control to review the stop for DL-990 against the driver route sheets after four failed collections, listing the dates and the closed ticket numbers."
+      }
+    ],
+    "must": [
+      "Asks Collections control, on the Depot work queue, to review the collection stop for DL-990 against the driver route sheets and say why the collections are failing.",
+      "Lists the four failed collections on 7, 8, 9 and 10 September with the closed tickets COL-4471, COL-4502, COL-4538 and COL-4580, and the open ticket COL-4611 for 11 September.",
+      "States the shipper's account that the workshop on Tanner's Row is staffed 08:00 to 18:00 with the door open and the parcel waiting by the door.",
+      "Tells Collections control that this shipper has had the same rebook-and-close cycle before and that each rebooking wipes the history, so the review is prioritised and not answered with another rebooking."
+    ],
+    "must_not": [
+      "Rebooks the collection for another day, or asks Scheduling to rebook it.",
+      "Tells the shipper that today's collection under COL-4611 will happen, or that the collection has been rebooked.",
+      "Brings DL-988, its proof of delivery, the August invoice or the promotional offer into the message.",
+      "States as fact that drivers are skipping the stop, or suggests the shipper was not there to hand the parcel over.",
+      "Sends the request to Scheduling again, who have said they can only rebook and cannot see the earlier attempts."
+    ],
+    "reference_message": "DL-990, Varga Frames, Tanner's Row: stop review requested after four failed collections. Scheduling have told me that three or more failures on one shipment come to you and that you hold the driver route sheets. Failed collections, all booked 13:00 to 17:00: 7 September (COL-4471, closed), 8 September (COL-4502, closed), 9 September (COL-4538, closed), 10 September (COL-4580, closed). A fifth is booked for today, 11 September, under COL-4611. Each rebooking closed the ticket before it, so Scheduling cannot see why any attempt failed and no reason has been given to the shipper. The shipper, Ottoline Varga, says the workshop is staffed 08:00 to 18:00 with the door open, the parcel is boxed and waiting by the door, and Plover Arc vans pass the window daily. I have not verified why the stop is being missed. Please check the route sheets for those four dates, tell me what the drivers recorded at this stop, and say what will be different for today's collection. She tells me this is not the first time she has been through this cycle and she has all but given up asking, so please do not answer this with another rebooking."
+  },
+  "rationale": "Most of the thread is automated rebooking notices, a marketing footer, an invoice notice and a different shipment that went fine. The one message that decides the next step is Scheduling's on 10 September: they can only rebook, cannot see closed tickets, and three or more failures go to Collections control on the Depot work queue with the dates and ticket numbers. Another rebooking is exactly the loop that has already failed four times.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer sends the four failed dates and ticket numbers to Collections control on the Depot work queue and asks for a route-sheet review, not a rebooking."
+  }
+}

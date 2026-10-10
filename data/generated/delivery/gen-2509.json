@@ -1,0 +1,89 @@
+{
+  "id": "gen-2509",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "seed_case": null,
+  "grounding": "seed-web-106",
+  "title": "Case: Crate collected after its freight booking was cancelled comes back two weeks later with a return charge",
+  "context": "Lorcan Wey booked a freight collection with Plover Arc under DL-939, cancelled it the same morning and was refunded. He then booked a different carrier for the same crate.",
+  "initial_request": "I honestly had to read the invoice twice. I cancelled you on the 4th. You refunded me the same day. I booked someone else. On the 5th a driver turns up, I assume he's from the other firm because why on earth would it be yours, and he takes a crate with ANOTHER COMPANY'S LABEL on it and says nothing. The carrier I actually booked logged a failed pickup because the crate had gone. My customer waited two weeks for it and then cancelled the order. And now the crate is back on my floor marked return to sender and you are charging ME for bringing it back? You took something you had no booking for. That is effectively stealing it. Cancel the charge and tell me who is paying for the order I lost.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-04T13:45:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Lorcan Wey, shipper",
+      "body": "Booking DL-939 (one crate, collection 5 May) was cancelled at your request at 10:12 today. Refund issued in full at 13:40. No collection will take place."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-20T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recovery team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "One crate was delivered back to Lorcan Wey on 19 May marked return to sender. It carried another carrier's consignment label and no Plover Arc label. It was first scanned into our network on 5 May against booking DL-939, which shows cancelled and refunded on 4 May. It sat at Calder hub as unidentified freight until we traced the sender from the crate. We do not know how it came to be collected."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-20T11:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Lorcan Wey, shipper (copy to Iona Quill, Rivet Delivery Desk)",
+      "body": "A return-to-sender charge has been raised against DL-939. Payment is due within 14 days."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-20T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "On the DL-939 return charge: we can't remove it on our own say-so. If Collections control, Plover Arc Logistics confirms from its job records that the 5 May collection was sent out against a cancelled booking, the charge falls away. That record is theirs, not ours. They take queries by email."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-20T15:25:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Lorcan Wey, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I honestly had to read the invoice twice. I cancelled you on the 4th. You refunded me the same day. I booked someone else. On the 5th a driver turns up, I assume he's from the other firm because why on earth would it be yours, and he takes a crate with ANOTHER COMPANY'S LABEL on it and says nothing. The carrier I actually booked logged a failed pickup because the crate had gone. My customer waited two weeks for it and then cancelled the order. And now the crate is back on my floor marked return to sender and you are charging ME for bringing it back? You took something you had no booking for. That is effectively stealing it. Cancel the charge and tell me who is paying for the order I lost."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Collections control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask Collections control to check its job records and confirm whether the 5 May collection was dispatched against cancelled booking DL-939, so Business billing can rule on the return charge."
+      }
+    ],
+    "must": [
+      "Sets out the sequence from the record: DL-939 cancelled and refunded on 4 May, a crate with another carrier's label scanned into the network on 5 May against that booking, returned to the sender on 19 May, return charge raised on 20 May.",
+      "Names Collections control's job record for the 5 May collection as what settles the return charge, as Business billing said, and asks for it to be checked with the answer going to Business billing and the desk (in the message to Collections control, or as the stated next step in a supervisor handoff).",
+      "States in the message or handoff that the shipper was without his crate for two weeks, reports losing the customer's order, and is now being billed for the return, so it is not left in a queue."
+    ],
+    "must_not": [
+      "Treats the collection as the shipper's mistake for handing the crate over, or tells him the return charge stands.",
+      "Tells the shipper the return charge is cancelled or will be cancelled.",
+      "Agrees or states that the crate was stolen, or assigns fault to the driver or to any team before Collections control has checked.",
+      "Promises compensation for the lost order or says who will pay for it.",
+      "Contacts the other carrier or shares its details."
+    ],
+    "reference_message": "Query on a collection made against a cancelled booking. DL-939 (one crate, shipper Lorcan Wey) was cancelled at 10:12 on 4 May and refunded in full at 13:40 the same day; the Freight planner told him no collection would take place. The Recovery team reports that a crate carrying another carrier's label was scanned into our network on 5 May against DL-939, sat at Calder hub as unidentified freight, and was delivered back to him on 19 May marked return to sender. He says a driver arrived on 5 May and took it. Business billing raised a return-to-sender charge today and says it falls away only if you confirm the 5 May collection was sent out against a cancelled booking. Please check your job records for 5 May and confirm either way to Business billing and to me. For priority: he was without the crate for two weeks, the carrier he had actually booked logged a failed pickup, he reports his customer cancelled the order, and he is now being billed for the return. I have not told him the charge will be removed and I am making no finding on how the collection happened."
+  },
+  "rationale": "No playbook covers freight that travelled with no valid consignment. Business billing has said exactly what would settle the charge: Collections control's record of whether a driver was sent on a cancelled job. The desk asks for that record (or hands the whole matter to a supervisor), without blaming the shipper, endorsing his theft allegation, or promising the charge or his lost order will be made good.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed Collections control for the job record, matching the key; the second and third must items are reworded so they are checkable for either accepted disposition."
+  }
+}

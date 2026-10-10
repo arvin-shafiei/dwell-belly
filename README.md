@@ -32,6 +32,41 @@ cp apps/web/.env.example apps/web/.env.local
 npm run dev        # api on :4000, web on :3000
 ```
 
+## Run the agent on a folder of cases
+
+```bash
+npm run answer -- <casesDir> ANSWERS        # every subfolder is one case
+npm run answer -- <casesDir> ANSWERS --resume   # rerun only the cases that failed
+```
+
+Each case gets `ANSWERS/<case>/ANSWER.md`, `REASONING.md` and `trace.json`, and the batch writes `ANSWERS/RUNLOG.md`. All four are generated; none is edited by hand. The agent lives in `apps/api/src/agent/` as a plain module (no Next.js needed to run it):
+
+| Step | File | What it does |
+|---|---|---|
+| Load | `load.ts` | Reads any folder: text as text, PDFs and images straight to the model, unreadable files listed |
+| Understand | `run.ts`, `prompts.ts` | One Claude call: parties and roles, records vs claims, conflicts, commitments, hazards, instruction-like text |
+| Perspectives | `../lib/panel.ts` | Five seats, 12 Jev questions in one call. Skipped when there is no `TYPESAFE_API_KEY` |
+| Decide | `run.ts`, `prompts.ts` | One Claude call: act, ask for info, escalate to a human, or wait; the messages; what it won't do |
+| Safety gate | `gate.ts` | Each outgoing message is checked on its own: hard rules in code, then a critic's score against thresholds from `flows/default-incident.json`. One rewrite, then the verdict stands |
+| Act | `run.ts` | Cleared messages go to a sandbox outbox. No live system is connected, so nothing is reported as confirmed |
+| Report | `report.ts` | Renders the answer files from the run result |
+
+A case that fails at any step still gets an `ANSWER.md` saying where it failed and that it was handed to a person. `npm run test:agent` runs the flow and every module against scripted fakes (no key needed).
+
+Also in `apps/api/src/agent/`:
+
+| File | What it does | Used by the flow? |
+|---|---|---|
+| `clock.ts` | Case time and time left to each deadline, worked out in code | Yes, in the planner's brief |
+| `jev.ts`, `judge.ts` | Jev triage, clash score and per-message risk | Triage and clash when `TYPESAFE_API_KEY` is set. The gate's critic stays on Claude unless the gate node config sets `"critic": "jev"` |
+| `outbox.ts` | Delivery with timeout, one retry and alternate channels; says exactly what was and was not accepted | Yes. The default transport is a sandbox that reaches nobody and says so |
+| `tools.ts` | Finds a tool manifest shipped with a case and can call it over HTTP | Tools are listed in the answer, never called automatically |
+| `history.ts` | Case store, grouping of related cases, open promises, the learner's threshold suggestions | The runner records every run to `<outDir>/case-history.jsonl`. Nothing reads it back during a batch, so cases stay independent |
+| `architect.ts`, `selftest.ts` | Builds a flow from a business description and validates it; runs generated cases through a flow | `POST /api/architect` |
+| `watch.ts`, `replan.ts` | Order-event checks and greedy drop reassignment, on events the caller supplies (the practice data has no order stream) | `POST /api/watch`. Replan is a greedy heuristic, not an optimiser |
+
+Voice: an event may carry `source` (`live_human`, `simulated_persona`, `audio_attachment`). Events voiced by a simulated persona are dropped from the evidence unless a request sets `mode: "demo"`, so they cannot enter a scored run.
+
 Other scripts: `npm run build`, `npm run lint`, `npm run data` (rebuild parsed cases).
 
 ## Models / APIs

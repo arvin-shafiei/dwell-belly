@@ -1,0 +1,103 @@
+{
+  "id": "gen-2601",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": "seed-web-010",
+  "title": "Case: Resident of a block of flats reports another parcel left outside the rear of the building",
+  "context": "Maureen Ostrycz lives at flat 11, Corbel House, a block with a shared front entrance. She has written to the desk before about where her Tallowmere Goods parcels are left.",
+  "initial_request": "It's happened again. DL-914, the slow cooker. Not at my door, not in the lobby, on the ground round the back by the bin store. A man from Tenter House next door saw my name on it walking past and carried it round. That is the fourth one. I have told you this. I told you last week and the time before. I asked for someone to ring me and nobody rang, same as the time before that. I don't know how else to say it. The driver doesn't come in the front door, that's all it is. If it's the door that's the problem I'll give you the code for it, just say and I'll type it here. I'm not after anything, I've got the parcel. I just want it to stop.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-02T10:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maureen Ostrycz, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Third time now. Parcel left on the floor outside the back of Corbel House, behind the bins, in the rain. Flat 11. I was in all day. Can somebody please ring me about this, I'd rather explain it to a person. I asked for a call after the last one as well and didn't get one."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-02T10:40:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Plover Arc Logistics",
+      "body": "Flat 11, Corbel House (recipient Maureen Ostrycz): third report of a parcel left on the ground at the rear of the building instead of at the flat. Please add an access note for the address and arrange the callback she has asked for twice."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-02T10:41:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply. Ticket DQ-5518 received."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-03T10:45:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DQ-5518 closed automatically. Reason: no live shipment on this address. Tickets without a live shipment close after 24 hours. No action was taken on this ticket. Standing access problems at an address are not handled in this queue: Routing control keeps the address notes and briefs the route, reach them on Dispatch chat. This queue does not book customer callbacks and the request was not passed on."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-09T15:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-914 / TG-914 delivered 14:52 today. Driver note: 'no answer main door, left rear of bldg'. No signature, no photo."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-09T15:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "General reminder to desks: when you send us an address for a standing access note, give the pattern (how many times, what the driver notes say). Do not put door or gate codes in chat. If a code is needed we send the resident our own secure access form."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-09T18:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Maureen Ostrycz, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "It's happened again. DL-914, the slow cooker. Not at my door, not in the lobby, on the ground round the back by the bin store. A man from Tenter House next door saw my name on it walking past and carried it round. That is the fourth one. I have told you this. I told you last week and the time before. I asked for someone to ring me and nobody rang, same as the time before that. I don't know how else to say it. The driver doesn't come in the front door, that's all it is. If it's the door that's the problem I'll give you the code for it, just say and I'll type it here. I'm not after anything, I've got the parcel. I just want it to stop."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Routing control, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Report the repeated rear-of-building drops at flat 11, Corbel House as a pattern and ask for a standing access note and route briefing, saying the earlier depot ticket was closed with no action."
+      }
+    ],
+    "must": [
+      "Sends the access problem at flat 11, Corbel House to Routing control on Dispatch chat and asks for a standing access note or route briefing",
+      "Gives the pattern: four parcels left at the rear of the building, the latest DL-914 on 9 April with the driver note 'no answer main door, left rear of bldg', found by a neighbour from the next block",
+      "Says plainly that the earlier ticket DQ-5518 was closed with no action taken and that the resident has asked for a callback at least twice and has not had one, so the team knows she has already been failed more than once"
+    ],
+    "must_not": [
+      "Tells Maureen Ostrycz that a callback has been booked or will happen, or that the problem has been fixed",
+      "Describes ticket DQ-5518 as actioned, or says an access note or driver reminder is already in place",
+      "Raises it again with Destination depot on the Depot work queue",
+      "Asks Maureen Ostrycz for the door code, or passes any door code on",
+      "Presents the report to anyone as a single missed delivery or a first complaint, or sends her a first-time apology that ignores the earlier reports"
+    ],
+    "reference_message": "Standing access problem, flat 11, Corbel House (recipient Maureen Ostrycz). Four parcels have now been left on the ground at the rear of the building by the bin store instead of at the flat. Latest is DL-914 / TG-914, delivered 14:52 on 9 April, driver note 'no answer main door, left rear of bldg', no signature or photo; a neighbour from the next block found it and carried it round. She says she was in. I raised this on 2 April as depot ticket DQ-5518; it was closed automatically with no action and the callback she asked for was never passed on. She has now asked for a call at least twice and had none. Please put a standing access note on the address and brief the route, and tell me what you need from her. She has offered the door code; I have not taken it and will not put it here. If you need access details please send her your secure form."
+  },
+  "rationale": "The desk's own ticket was auto-closed with no action and the depot said who owns standing access problems: Routing control, on Dispatch chat. The hasty moves are to re-raise in the dead queue, to promise the callback that has already failed twice, or to accept the door code she offers. The right message goes to Routing control as a pattern, says the earlier attempt failed, and leaves the code out.",
+  "review": { "status": "agreed", "note": "Coordinator sent the pattern to Routing control on Dispatch chat, named the dead ticket DQ-5518 and refused the door code, matching the key." }
+}

@@ -1,0 +1,103 @@
+{
+  "id": "gen-2602",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": "seed-web-022",
+  "title": "Case: Shipper of a glass lampshade sent abroad writes about the replies to his damage claim",
+  "context": "Zdenek Hruby sent a hand-painted glass lampshade to a buyer abroad on DL-927 with Plover Arc's added cover. It was delivered on 24 February and he has claimed for damage under reference CL-4471.",
+  "initial_request": "Please somebody explain me. First letter say too late, 21 days. I explain: lady who buy the lamp shade she not speak my language, I not speak hers, we write with translator in telephone, photos take long time. And I telephone you 3 March to say is broken, this you have. Then second letter say not too late, but no photo of box. Now third again too late and nobody look anymore. Which one is true? You change reason every time I answer. Lady maybe still have box, I can ask her. But I not go ask her again for nothing if you say after again too late. I pay for insurance on this parcel. Glass is in pieces. DL-927.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-20T14:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Zdenek Hruby, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I make claim today for DL-927. Lamp shade from glass, arrived broken to buyer. I attach 3 photo from buyer of the glass. Value 140.00. I have the insurance."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-23T09:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "CL-4471 / DL-927. Delivered 24 Feb. Claim form received 20 Mar, day 24. Damage claims must be made within 21 days of delivery. Closed as out of time. Please let the shipper know."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-24T11:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Zdenek Hruby, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Not fair. I telephone your number on 3 March and say broken, man say ok send photos when you have. Photos come slow because buyer is other country other language. Please look again."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-24T12:10:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Delivery investigations, Plover Arc Logistics",
+      "body": "CL-4471 / DL-927: the shipper says he reported the damage by phone on 3 March and was told to send photos when he had them. The claim was closed on 23 March as out of time. Please review."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-27T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "CL-4471 reviewed. Call log shows damage first reported 3 Mar, day 7, so the claim was made in time. Declined on evidence: three photos of the item, none of the outer packaging. We cannot assess packing or transit damage without one. Claim decisions and appeals on damage sit with this team."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-30T09:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "CL-4471: our record still shows closed, out of time. The 21 days run from delivery to receipt of the completed claim form, not to a phone call. We administer claim intake and the file is shut on our system, so no further evidence will be looked at. Please do not ask the shipper for more."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-30T16:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Zdenek Hruby, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please somebody explain me. First letter say too late, 21 days. I explain: lady who buy the lamp shade she not speak my language, I not speak hers, we write with translator in telephone, photos take long time. And I telephone you 3 March to say is broken, this you have. Then second letter say not too late, but no photo of box. Now third again too late and nobody look anymore. Which one is true? You change reason every time I answer. Lady maybe still have box, I can ask her. But I not go ask her again for nothing if you say after again too late. I pay for insurance on this parcel. Glass is in pieces. DL-927."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Set out the two contradictory positions on CL-4471 and ask which stands and whether a packaging photo would now be considered."
+      }
+    ],
+    "must": [
+      "Sends the contradiction on CL-4471 to Delivery investigations by Email and asks them to settle which position stands",
+      "States both positions with their source: Delivery investigations on 27 March (in time from the 3 March call, declined for no packaging photo) and Parcel trace team on 30 March (out of time, file shut, no further evidence)",
+      "Asks whether a photo of the outer packaging from the buyer would be considered if supplied now, before the shipper is asked to get one",
+      "Tells the team the shipper has been refused three times on two different grounds, and that evidence has to come from a buyer abroad who shares no language with him, so each request costs him time"
+    ],
+    "must_not": [
+      "Tells the shipper the claim is out of time, or that it was made in time, as a settled fact",
+      "Promises or implies that the cover will pay, or that the claim will be reopened or accepted",
+      "Tells the shipper to get a packaging photo from the buyer as though it will reopen the claim, before the owning team has said it would be considered",
+      "Replies to the shipper with only the time limit or a statement that the file is closed"
+    ],
+    "reference_message": "CL-4471 / DL-927 (glass lampshade, delivered abroad 24 February, shipper Zdenek Hruby, cover purchased). The desk holds two written positions that cannot both be right. Yours of 27 March: damage first reported by phone 3 March, day 7, so the claim was made in time; declined because there is no photo of the outer packaging. Parcel trace team, 30 March: closed as out of time because the form arrived on day 24, file shut, no further evidence will be looked at. The shipper has now been refused three times on two different grounds. He says the buyer may still have the box and he can ask her for a photo, but she is abroad, they share no language and work through a translation app, so he does not want to ask again unless it will count. Please confirm in writing which position stands, and whether a packaging photo supplied now would be assessed. I have told him neither outcome and promised nothing."
+  },
+  "rationale": "Two teams give opposite answers on whether the claim was in time, and that fact decides whether a packaging photo is worth chasing. Neither is proven from the desk's side. Delivery investigations has said damage decisions and appeals sit with it, so the conflict goes there; restating the time limit, or sending the shipper back to the buyer on a promise, would both be picking a side.",
+  "review": { "status": "agreed", "note": "Coordinator put both written positions on CL-4471 to Delivery investigations by Email and held the shipper from chasing the buyer, matching the key." }
+}

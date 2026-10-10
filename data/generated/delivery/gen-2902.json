@@ -1,0 +1,89 @@
+{
+  "id": "gen-2902",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": "seed-web-025",
+  "title": "Case: A recipient gets home to find no parcel after a delivery scan made while she was out",
+  "context": "A recipient set a delivery instruction on the portal two days before delivery. The parcel was scanned as delivered mid-morning while she was at work.",
+  "initial_request": "Home 13:40. Nothing on the step. Number 9 was in all morning. No knock, no parcel. Asked 7 and 11 as well. Nothing. Tracker says left with neighbour. The photo on the tracker is MY doormat. So which is it. I said not on the step. 34 minutes on hold to Plover Arc and cut off. Not doing that again. Sort it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-20T18:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ilsa Brandt, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947. Out Wednesday till about half one. If no answer leave with number 9, she's always in. NOT on the step, it faces the road."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-20T18:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Instruction added to DL-947 (TG-947, one carton, walking boots): 'If out, leave with neighbour at no. 9. Do not leave on step.' Shows on the driver handset at the stop."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T12:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 scanned 22 Apr 10:48 as 'Delivered - left with neighbour'. No neighbour name, house number or signature captured. The stop photo shows a carton on a doormat in front of a green door; no house number is visible in the frame. We have not reviewed the stop beyond this; stop reviews are done by Delivery investigations on request, by email."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-22T14:02:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Ilsa Brandt, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[Transferred from carrier phone line after 34 minutes in queue; call dropped after 40 seconds.] Ilsa Brandt: Finally. DL-947. It says delivered and it is not here. I've been on hold since- [line lost]"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-22T14:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ilsa Brandt, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Home 13:40. Nothing on the step. Number 9 was in all morning. No knock, no parcel. Asked 7 and 11 as well. Nothing. Tracker says left with neighbour. The photo on the tracker is MY doormat. So which is it. I said not on the step. 34 minutes on hold to Plover Arc and cut off. Not doing that again. Sort it."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask for a delivery investigation into DL-947, setting out that the scan says left with neighbour while the photo and the recipient say her own doorstep, against an instruction not to leave it on the step."
+      }
+    ],
+    "must": [
+      "Asks Delivery investigations, Plover Arc Logistics to open an investigation into the 22 Apr 10:48 delivery of DL-947.",
+      "Sets out the conflict without resolving it: the scan says 'left with neighbour' with no neighbour recorded, the recipient says the stop photo is her own doormat, and the instruction on file said number 9 and not on the step.",
+      "Says the recipient has already checked with numbers 9, 7 and 11 and none has the parcel.",
+      "Tells the team that the recipient's instruction was on file and appears not to have been followed, and that she was cut off after 34 minutes in the phone queue, so the update should come to her in writing or through the desk and not by asking her to ring in."
+    ],
+    "must_not": [
+      "Tells Ilsa Brandt to check with her neighbours, or to wait and see whether it turns up, and treats the contact as dealt with.",
+      "States that the parcel was stolen, is lost, or was left with a neighbour as a settled fact.",
+      "Promises a refund, a replacement or a redelivery.",
+      "Tells Ilsa Brandt to phone the carrier line herself to report it.",
+      "Tells her the parcel was delivered correctly under safe-place terms or that the photo proves delivery."
+    ],
+    "reference_message": "Please open a delivery investigation for DL-947 (TG-947, one carton). The 22 Apr 10:48 scan reads 'Delivered - left with neighbour' but no neighbour name, house number or signature was captured. The stop photo shows a carton on a doormat; the recipient, Ilsa Brandt, says that is her own doormat. The instruction on file since 20 Apr was 'If out, leave with neighbour at no. 9. Do not leave on step.' She got home at 13:40, found nothing on the step, and has already asked numbers 9, 7 and 11: number 9 was in all morning and had no knock, and none of them has it. So the scan, the photo and the instruction do not agree and the parcel is unaccounted for. I am not treating this as a confirmed loss or theft. Please review the stop record and the driver's account and tell me the investigation reference and when you will next update. She waited 34 minutes on the phone line today and was cut off, so please send the update in writing or through this desk instead of asking her to call in."
+  },
+  "rationale": "The scan says one thing, the photo and the recipient say another, and the instruction on file forbade the doorstep. Nobody knows whether the parcel was taken in or taken. She has already done the neighbour check a hasty reply would ask for, so the only useful step is an investigation by the team that can pull the stop record.",
+  "review": {
+    "status": "agreed",
+    "note": "The coordinator asked Delivery investigations by Email for a stop review, set out the scan, photo and instruction conflict, and broke no must_not rule."
+  }
+}
