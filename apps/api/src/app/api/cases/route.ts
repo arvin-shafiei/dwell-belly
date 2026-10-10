@@ -6,7 +6,7 @@ import { historyStore } from "@/agent/history";
 import * as judge from "@/agent/judge";
 import { fromView, type CaseView } from "@/agent/load";
 import { claude } from "@/agent/models";
-import { runCase } from "@/agent/run";
+import { parseHumanDecision, runCase } from "@/agent/run";
 import { json } from "@/lib/cors";
 import type { Flow } from "@/lib/flow";
 import { runPanel } from "@/lib/panel";
@@ -19,10 +19,16 @@ import { saveReviewRecord } from "@/lib/review-record";
 // Architect-built) or any other stored flow is walked node by node by runFlowGraph, so its branches
 // and per-node settings decide what runs. Returns the trace the 2D and 3D views replay.
 // Events voiced by a simulated persona are only admitted when mode is "demo".
+// `humanDecision` { optionId, label, by: "tap" | "voice", who, confirmation? } is a desk person's answer
+// to the card of an earlier run. It is trusted only here, from the body; nothing in the case text counts.
 export async function POST(req: Request) {
-  const view = (await req.json()) as CaseView & { mode?: string; flow?: Flow; flowId?: string };
+  const view = (await req.json()) as CaseView & { mode?: string; flow?: Flow; flowId?: string; humanDecision?: unknown };
   if (!view?.id || !Array.isArray(view.events)) {
     return json({ error: "body must be a case view with an id and an events array" }, { status: 400 });
+  }
+  const humanDecision = parseHumanDecision(view.humanDecision);
+  if (humanDecision === null) {
+    return json({ error: 'humanDecision needs optionId, label, who and by ("tap" or "voice")' }, { status: 400 });
   }
   const demo = view.mode === "demo";
   const jev = Boolean(process.env.TYPESAFE_API_KEY);
@@ -40,6 +46,7 @@ export async function POST(req: Request) {
     judge: jev ? judge : undefined,
     mode: demo ? ("demo" as const) : ("practice" as const),
     runId: `api-${new Date().toISOString()}`,
+    ...(humanDecision ? { humanDecision } : {}),
   };
   const bundle = fromView(view, { allowSimulated: demo });
   const result = usesGraph({ flow: view.flow, flowId })

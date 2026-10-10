@@ -12,7 +12,7 @@ import type { PanelRule } from "../lib/panel.ts";
 import { CASE_TYPES, type CaseType } from "./judge.ts";
 import { groupCandidates, type Store } from "./history.ts";
 import {
-  actionStep, clashEnd, clashStart, gateStep, historyStep, humanCard, humanStep, ingestStep, isWaiting, needsHuman, openCase,
+  actionStep, answerStep, clashEnd, decisionKind, clashStart, gateStep, historyStep, humanCard, humanStep, ingestStep, isWaiting, needsHuman, openCase,
   panelEnd, panelStart, planStep, runGuarded, settle, triageEnd, triageStart, verifyStep,
   type CaseState, type GateNodeConfig, type Recorder, type RunOptions, type RunResult, type Stance, type WorkOptions,
 } from "./run.ts";
@@ -56,6 +56,8 @@ const SIMILAR: Record<string, string[]> = {
   retry: ["again", "resend"],
   failed: ["fail", "failure", "error"],
   fallback: ["timeout", "no_answer", "unanswered", "default"],
+  approve: ["approved", "accept", "accepted", "yes", "proceed", "go", "send"],
+  reject: ["rejected", "decline", "declined", "no", "send_nothing", "hold"],
 };
 
 // What each triage case type tends to be called on a branch label, so "missing_parcel" catches
@@ -144,6 +146,8 @@ function gateExits(s: CaseState): string[] {
   const nothingPlanned = !isWaiting(s) && s.result.gated.length === 0;
   if (s.held.length || s.forced || s.d?.decision_type === "escalate_to_human" || nothingPlanned) fired.push("ask");
   if (s.blocked.length) fired.push("block");
+  // A person has already answered this case's card: the ask exit carries that answer to the human step.
+  if (s.opts.humanDecision && !fired.includes("ask")) fired.splice(s.cleared.length ? 1 : 0, 0, "ask");
   // Waiting with nothing to send: nothing is stopped, and the action step will find nothing to do.
   return fired.length ? fired : ["allow"];
 }
@@ -294,11 +298,18 @@ async function runNode(s: CaseState, node: FlowNode, viaRetry: boolean, m: WalkM
       await gateStep(s, node.id, config as GateNodeConfig);
       return { results: gateExits(s), all: true };
 
-    case "human_decision":
+    case "human_decision": {
+      const answer = opts.humanDecision;
+      if (answer) {
+        // Trusted: from the desk through the API body. Route by the option id, its label, then its kind.
+        answerStep(s, node.id, answer);
+        return { results: [norm(answer.optionId), norm(answer.label), decisionKind(answer)] };
+      }
       s.humanAsked = true;
       humanStep(s, node.id);
       // Nobody answers during a run: the card's safe fallback stands, and held messages stay held.
       return { results: ["fallback"] };
+    }
 
     case "action": {
       // Only gate-cleared messages, each handed over once; a retry resends what was not delivered.

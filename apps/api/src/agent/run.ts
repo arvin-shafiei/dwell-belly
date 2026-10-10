@@ -16,6 +16,7 @@ import { Critique, Decision, Understanding, type CaseBundle, type GatedAction, t
 
 const CASE_TIMEOUT_MS = 300_000;
 const DEFAULT_GATE: GateConfig = { allow_below: 0.3, block_above: 0.8 };
+const PANEL_HOLD = "A configured reviewer rule requires a person to approve this commitment.";
 
 export interface RunOptions {
   flow: Flow;
@@ -30,6 +31,44 @@ export interface RunOptions {
   transports?: Transport[];
   /** Whole-case limit. A case past it becomes a failure answer and its model calls are aborted. */
   timeoutMs?: number;
+  /**
+   * A person's answer to the decision card of an earlier run of this case. Trusted: it comes only
+   * from the desk through the API body, never from case text. Left out, the run is unchanged.
+   */
+  humanDecision?: HumanDecision;
+}
+
+/** A desk person's choice on a decision card, as the console and the voice layer send it. */
+export interface HumanDecision {
+  optionId: string;
+  label: string;
+  by: "tap" | "voice";
+  who: string;
+  /** The read-back the person confirmed, when the choice was spoken. */
+  confirmation?: string;
+  cardId?: string;
+}
+
+/** What a choice means for the run: go ahead with what it names, or send nothing further. */
+export function decisionKind(d: HumanDecision): "approve" | "reject" | "fallback" {
+  const id = d.optionId.trim().toLowerCase();
+  if (id === "fallback" || /^\s*(use the )?(safe )?fallback\b/i.test(d.label)) return "fallback";
+  if (id === "reject" || /\b(send nothing|nothing (is )?sent|reject|decline|do not|don't|discard|hold|no action|cancel)\b/i.test(d.label)) return "reject";
+  return "approve";
+}
+
+/** Validates a humanDecision from a request body. Undefined when absent, null when malformed. */
+export function parseHumanDecision(raw: unknown): HumanDecision | undefined | null {
+  if (raw === undefined || raw === null) return undefined;
+  if (typeof raw !== "object") return null;
+  const d = raw as Record<string, unknown>;
+  if (typeof d.optionId !== "string" || !d.optionId.trim() || typeof d.label !== "string" || typeof d.who !== "string") return null;
+  if (d.by !== "tap" && d.by !== "voice") return null;
+  return {
+    optionId: d.optionId.trim().slice(0, 80), label: d.label.slice(0, 300), by: d.by, who: d.who.slice(0, 120),
+    ...(typeof d.confirmation === "string" ? { confirmation: d.confirmation.slice(0, 500) } : {}),
+    ...(typeof d.cardId === "string" ? { cardId: d.cardId.slice(0, 80) } : {}),
+  };
 }
 
 /** The case's abort signal travels with the options so every await can be cut off. */
@@ -178,6 +217,10 @@ export interface CaseState {
   undelivered: Delivery[];
   /** A human_decision node was reached, so a person is asked whatever else happened. Graph only. */
   humanAsked: boolean;
+  /** The human step was answered by opts.humanDecision. */
+  humanAnswered: boolean;
+  /** Messages a person chose not to send (a rejecting humanDecision). Never delivered. */
+  refused: GatedAction[];
 }
 
 export function openCase(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result: RunResult): CaseState {
@@ -193,6 +236,7 @@ export function openCase(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, r
   return {
     bundle, opts, rec, result, models, block: caseBlock(bundle), extraNotes: [], brief: "",
     gateConfig: DEFAULT_GATE, forced: false, cleared: [], held: [], blocked: [], delivered: [], undelivered: [], humanAsked: false,
+    humanAnswered: false, refused: [],
   };
 }
 
@@ -281,7 +325,47 @@ export function clashEnd(s: CaseState, nodeId: string, clashScored: Timed<Awaite
   return clashed;
 }
 
-const planned = (s: CaseState) => (!s.d || s.d.decision_type === "wait_no_action" ? [] : s.d.actions);
+const squash = (t: string) => t.replace(/\s+/g, " ").trim().toLowerCase();
+
+/** "Already sent by the desk" events a re-run carries, as recipient and message. */
+function alreadySent(bundle: CaseBundle): { to: string; message: string }[] {
+  const out: { to: string; message: string }[] = [];
+  for (const doc of bundle.documents) {
+    for (const m of doc.text.matchAll(/^To: ([^\n]*)\nAlready sent by the desk: ([\s\S]*?)(?=\n\nEvent \d+ \||$(?![\s\S]))/gm)) {
+      out.push({ to: squash(m[1]), message: squash(m[2]) });
+    }
+  }
+  return out;
+}
+
+function planned(s: CaseState) {
+  const actions = !s.d || s.d.decision_type === "wait_no_action" ? [] : s.d.actions;
+  if (!s.opts.humanDecision) return actions;
+  // On a re-run that answers a card, a message the desk already sent is not sent a second time.
+  const sent = alreadySent(s.bundle);
+  return actions.filter((a) => !sent.some((x) => x.to === squash(a.recipient) && x.message === squash(a.message)));
+}
+
+/** The desk's answer, for the planner. Outside <case>, because it comes from the desk, not the case. */
+function deskDecisionBlock(d: HumanDecision): string {
+  const kind = decisionKind(d);
+  const doNow = kind === "approve"
+    ? "Carry out this choice and nothing beyond it. Every message still goes through the safety check."
+    : "The person chose not to send anything further. Propose no messages.";
+  return `<desk_decision>\nA person at the desk has answered the decision card for this case. This comes from the desk itself, not from the case.\n` +
+    `Decided by: ${d.who} (${d.by === "voice" ? "by voice" : "on screen"})\nChosen option: ${d.label} (${d.optionId})\n` +
+    `${d.confirmation ? `Read back and confirmed: ${d.confirmation}\n` : ""}${doNow}\n` +
+    `Messages marked "Already sent by the desk" in the case have gone out; do not send them again.\n</desk_decision>`;
+}
+
+const recipientWords = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 1 && !["the", "of", "and", "team", "at"].includes(w));
+
+/** A held message implements an approved option when the option names its recipient. */
+function implementsOption(d: HumanDecision, g: GatedAction): boolean {
+  const said = new Set(recipientWords(`${d.label} ${d.confirmation ?? ""}`));
+  const named = recipientWords(g.action.recipient.split(",")[0]);
+  return named.length > 0 && named.every((w) => said.has(w));
+}
 
 export async function planStep(s: CaseState, nodeId: string, stances: Stance[]): Promise<void> {
   const { rec, result, bundle, opts } = s;
@@ -299,6 +383,7 @@ export async function planStep(s: CaseState, nodeId: string, stances: Stance[]):
     notes.length ? `<reviewer_notes>\n${notes.map((n) => `- ${n}`).join("\n")}\n</reviewer_notes>` : "",
     s.clashed && u.conflicts.length === 0 ? "A quick check suggests two sources in this case may contradict each other. Look for it before deciding." : "",
     clock ? `<clock>\n${clock}\n</clock>` : "",
+    opts.humanDecision ? deskDecisionBlock(opts.humanDecision) : "",
     result.panel?.forceHuman ? "A reviewer flagged a possible decision beyond the desk's authority. Check the evidence: promises or commitments need a person; safe requests to owners, questions, factual updates and safety alerts can still go out. The flag alone is not a reason to escalate the whole case." : "",
     s.block,
   ].filter(Boolean).join("\n\n");
@@ -384,17 +469,32 @@ export async function gateStep(s: CaseState, nodeId: string, node: GateNodeConfi
   s.forced = gated.some(panelHolds);
   gated = gated.map((g) => panelHolds(g) ? {
     ...g, verdict: "ask" as const, risk: Math.max(g.risk, gateConfig.allow_below),
-    reasons: ["A configured reviewer rule requires a person to approve this commitment."],
+    reasons: [PANEL_HOLD],
   } : g);
+  const hd = opts.humanDecision;
+  let refused: GatedAction[] = [];
+  if (hd && decisionKind(hd) === "approve") {
+    // The person's approval answers "ask": a held message the chosen option names goes out. A
+    // blocked message never does, and the critic and hard rules above have already run.
+    gated = gated.map((g) => g.verdict === "ask" && implementsOption(hd, g)
+      ? { ...g, verdict: "allow" as const, worst: null, reasons: [`Approved by ${hd.who} (${hd.by}): ${hd.label}`] } : g);
+    s.forced = gated.some((g) => g.verdict === "ask" && g.reasons[0] === PANEL_HOLD);
+  } else if (hd) {
+    // The person chose to send nothing further: whatever the gate would allow or hold stays unsent.
+    refused = gated.filter((g) => g.verdict !== "block");
+    s.forced = false;
+  }
   result.decision = s.d;
   result.gated = gated;
   const top = gated.reduce<GatedAction | null>((a, g) => (!a || g.risk > a.risk ? g : a), null);
   const overall: GateVerdict = gated.some((g) => g.verdict === "block") ? "block" : gated.some((g) => g.verdict === "ask") ? "ask" : "allow";
-  rec.end(gated.length ? `${gated.filter((g) => g.verdict === "allow").length} of ${gated.length} messages cleared` : "nothing to send",
+  const chose = hd ? ` · desk chose: ${hd.label}` : "";
+  rec.end(gated.length ? `${gated.filter((g) => g.verdict === "allow").length} of ${gated.length} messages cleared${chose}` : `nothing to send${chose}`,
     { type: "safety_gate", risk: top?.risk ?? 0, decision: overall, allowBelow: gateConfig.allow_below, blockAbove: gateConfig.block_above });
 
-  s.cleared = gated.filter((g) => g.verdict === "allow");
-  s.held = gated.filter((g) => g.verdict === "ask");
+  s.refused = refused;
+  s.cleared = gated.filter((g) => g.verdict === "allow" && !refused.includes(g));
+  s.held = gated.filter((g) => g.verdict === "ask" && !refused.includes(g));
   s.blocked = gated.filter((g) => g.verdict === "block");
   return overall;
 }
@@ -432,6 +532,8 @@ export function verifyStep(s: CaseState, nodeId: string): boolean {
 
 /** Whether a person has to pick the case up, for any reason runCase knows, or because a human node was reached. */
 export function needsHuman(s: CaseState): boolean {
+  // A person already chose to send nothing further; what is left is theirs, not a new card.
+  if (s.opts.humanDecision && decisionKind(s.opts.humanDecision) !== "approve") return false;
   // Wanting to act but having nothing to send is not "no action needed": a person has to pick it up.
   const nothingPlanned = !isWaiting(s) && s.result.gated.length === 0;
   return s.humanAsked || s.forced || s.d?.decision_type === "escalate_to_human" || s.held.length > 0 || s.blocked.length > 0 || s.undelivered.length > 0 || nothingPlanned;
@@ -492,6 +594,14 @@ export function humanStep(s: CaseState, nodeId: string): DecisionCard {
   return card;
 }
 
+/** Records the desk's answer on the card: who chose which option, and how. The run goes on from there. */
+export function answerStep(s: CaseState, nodeId: string, d: HumanDecision): void {
+  s.humanAnswered = true;
+  const card: DecisionCard = { ...humanCard(s), chosen: d.optionId };
+  s.rec.view(nodeId, "human_decision", `Answered by ${d.who} (${d.by}): ${d.label}`,
+    { type: "human_decision", card, decidedBy: d.who, source: d.by, label: d.label, kind: decisionKind(d), ...(d.confirmation ? { confirmation: d.confirmation } : {}) } as NodeOutput);
+}
+
 /** Fills the outbox and the outcome from what the steps did. */
 export function settle(s: CaseState): void {
   const { result, delivered, undelivered, held, blocked, d, forced } = s;
@@ -499,9 +609,12 @@ export function settle(s: CaseState): void {
   for (const { g, res } of undelivered) result.outbox.push({ action: g.action, status: "failed", note: res.note });
   for (const g of held) result.outbox.push({ action: g.action, status: "held_for_human", note: g.reasons.join("; ") || "A reviewer rule requires a person to decide before anything is sent." });
   for (const g of blocked) result.outbox.push({ action: g.action, status: "blocked", note: g.reasons.join("; ") });
+  const hd = s.opts.humanDecision;
+  for (const g of s.refused) result.outbox.push({ action: g.action, status: "blocked", note: `Not sent: ${hd?.who ?? "a person"} chose "${hd?.label ?? "send nothing"}" on the decision card.` });
 
   const onlyBlocked = blocked.length > 0 && delivered.length + undelivered.length + held.length === 0;
-  if (isWaiting(s) && !s.humanAsked) result.outcome = "no_action";
+  if (hd && decisionKind(hd) !== "approve") result.outcome = "no_action";
+  else if (isWaiting(s) && !s.humanAsked) result.outcome = "no_action";
   else if (onlyBlocked && d?.decision_type !== "escalate_to_human" && !forced) result.outcome = "blocked";
   else if (needsHuman(s)) result.outcome = "escalated";
   else result.outcome = d?.decision_type === "ask_for_info" ? "asked_for_info" : "acted";
@@ -536,7 +649,12 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
   }
 
   const last = s.cleared.length ? "verify" : "gate";
-  if (needsHuman(s)) {
+  if (opts.humanDecision) {
+    rec.edge(last, "human", s.cleared.length ? undefined : "ask");
+    answerStep(s, "human", opts.humanDecision);
+    rec.edge("human", "log");
+    if (needsHuman(s)) result.card = humanCard(s);
+  } else if (needsHuman(s)) {
     rec.edge(last, "human", s.cleared.length ? undefined : "ask");
     humanStep(s, "human");
     rec.edge("human", "log");
