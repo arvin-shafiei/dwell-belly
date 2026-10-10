@@ -23,10 +23,11 @@ import CameraRig from "./modules/CameraRig";
 import WorkflowDriver from "./modules/WorkflowDriver";
 import Life from "./modules/Life";
 import Transit from "./modules/Transit";
+import Scenarios from "./modules/Scenarios";
 
 const MODULES = {
   Sky, Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs,
-  Traffic, Transit, TrafficLights, DeliveryFleet, Crashes, Responders, Roadworks, Life, CameraRig, WorkflowDriver,
+  Traffic, Transit, TrafficLights, DeliveryFleet, Crashes, Responders, Roadworks, Scenarios, Life, CameraRig, WorkflowDriver,
 };
 
 export default function World() {

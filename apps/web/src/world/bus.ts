@@ -10,7 +10,12 @@ export type WorldEvent =
   // Requests from the UI (demo buttons). The owning module listens and acts.
   | { type: "request:crash"; kind: "car_crash" | "truck_crash" }
   | { type: "request:roadworks" }
-  | { type: "request:breakdown" };
+  | { type: "request:breakdown" }
+  // Scenarios (see scenarios.ts): the HUD fires one; the Scenarios module acts it out in the city and
+  // emits scenario:staged with where it happened; the WorkflowDriver turns it into a workflow case.
+  | { type: "request:scenario"; scenarioId: string; modifiers: import("./scenarios").Modifier[] }
+  | { type: "scenario:staged"; runId: string; scenarioId: string; modifiers: import("./scenarios").Modifier[]; x: number; z: number; vehicleId?: string }
+  | { type: "scenario:resolved"; runId: string; scenarioId: string; outcome: "acted" | "asked_for_info" | "escalated" | "blocked" | "no_action" };
 
 type Handler = (e: WorldEvent) => void;
 const handlers = new Set<Handler>();
