@@ -1,0 +1,94 @@
+{
+  "id": "city-040",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Policy officer's message about his toner parcel",
+  "context": "A toner parcel from Tallowmere Goods was sent to Aurelio Penhallow at the Office of the Port Commissioner, Corvel Quarter, and he has been in touch with the desk about it this morning.",
+  "initial_request": "[Business portal mobile app: this message was queued while the device was offline and has now been sent. Composed 07 Oct 08:39.]\n\nHi, where's my toner? DL-8440. Tracking hasn't moved and I need it for room 4.12 this morning.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-07T08:41:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Aurelio Penhallow, policy officer, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, where is DL-8440? Tracking hasn't changed since yesterday and I need the toner for the printer in room 4.12 this morning."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-07T08:50:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-8440 (TG-8440, toner cartridges, Office of the Port Commissioner): the recipient says tracking has not updated since yesterday. Could you confirm its current status?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-07T09:25:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8440 delivered 7 Oct 07:58 to the Office of the Port Commissioner mailroom, signed 'T. Okoro, mailroom'. Tracking display was delayed by a scanner sync issue; now updated."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-07T09:31:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Aurelio Penhallow, policy officer, Office of the Port Commissioner",
+      "body": "Dispatch confirms DL-8440 was delivered to your mailroom at 07:58 today and signed for by T. Okoro. The tracking page was slow to update and now shows it. The mailroom should be able to tell you where it has been put."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-07T10:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tamsin Okoro, mailroom, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirming DL-8440 was received at 07:58 and logged as MR-2231. Mr Penhallow came down and collected it at 09:58."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-07T10:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Aurelio Penhallow, policy officer, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got it from the mailroom, thanks very much. Printer's back up."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-10-07T10:52:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Aurelio Penhallow, policy officer, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[Business portal mobile app: this message was queued while the device was offline and has now been sent. Composed 07 Oct 08:39.]\n\nHi, where's my toner? DL-8440. Tracking hasn't moved and I need it for room 4.12 this morning."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and logs why: the message was written at 08:39, before the desk's answer, and only sent late from the offline queue; it duplicates the 08:41 question already answered.",
+      "Bases that on the facts in the thread: Dispatch confirmed delivery at 07:58, the mailroom logged it as MR-2231 and saw him collect it at 09:58, and he said at 10:15 that he had it."
+    ],
+    "must_not": [
+      "Sends Aurelio Penhallow another message restating the delivery or asking if he still needs help.",
+      "Contacts Dispatch, the mailroom or Tallowmere again about DL-8440.",
+      "Opens a trace, investigation or missing-parcel claim for DL-8440.",
+      "Treats the queued message as a new report that the parcel is missing."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The new message is the requester's own earlier question, composed at 08:39 and delivered late by the app's offline queue. Since then the carrier confirmed delivery, the mailroom confirmed he collected it, and he thanked the desk. Nothing is owed; another reply or a trace would be noise."
+}
