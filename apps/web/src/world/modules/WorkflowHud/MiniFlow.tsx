@@ -60,11 +60,23 @@ function Steps({ events }: { events: readonly WorkflowEvent[] }) {
   const latest = events.length ? events[events.length - 1] : null;
   const caseId = latest?.caseId ?? null;
   const st = useMemo<Record<string, NodeStatus>>(() => (caseId ? nodeStatuses(events, caseId) : {}), [events, caseId]);
-  const branch = gateBranch(st);
 
   return (
     <div className="mt-2">
       <div className="mb-1.5 truncate text-[11px] text-white/60">{caseId ? `Now: ${caseTitle(caseId)}` : "No case yet"}</div>
+      <FlowPicture st={st} />
+      {latest && <NowLine e={latest} />}
+    </div>
+  );
+}
+
+/**
+ * The playbook drawn small: steps lit by status (green ok, amber a person, red stopped/failed).
+ * `onPick` makes the steps clickable; `picked` outlines one.
+ */
+export function FlowPicture({ st, picked = null, onPick }: { st: Record<string, NodeStatus>; picked?: string | null; onPick?: (nodeId: string) => void }) {
+  const branch = gateBranch(st);
+  return (
       <svg viewBox={`0 0 ${VB_W} ${VB_H}`} className="block h-auto w-full" role="img" aria-label="The steps every case goes through">
         {EDGES.map((e) => {
           const target = st[e.to];
@@ -101,14 +113,21 @@ function Steps({ events }: { events: readonly WorkflowEvent[] }) {
           const s = st[n.id];
           const c = s ? STATUS_COLOR[s] : null;
           return (
-            <g key={n.id} transform={`translate(${p.x},${p.y})`}>
+            <g
+              key={n.id}
+              transform={`translate(${p.x},${p.y})`}
+              onClick={onPick ? () => onPick(n.id) : undefined}
+              style={onPick ? { cursor: "pointer" } : undefined}
+              role={onPick ? "button" : undefined}
+              aria-label={onPick ? n.label : undefined}
+            >
               <rect
                 width={W}
                 height={H}
                 rx={7}
                 fill={c ? `${c}22` : "rgba(16,18,24,0.85)"}
-                stroke={c ?? "rgba(255,255,255,0.16)"}
-                strokeWidth={c ? 1.3 : 1}
+                stroke={picked === n.id ? "#fff" : (c ?? "rgba(255,255,255,0.16)")}
+                strokeWidth={picked === n.id ? 1.8 : c ? 1.3 : 1}
               />
               <text x={7} y={H / 2 + 3} fontSize="8.5" fill={c ? "#fff" : "rgba(255,255,255,0.7)"} fontWeight={c ? 600 : 400}>
                 {n.label}
@@ -118,8 +137,6 @@ function Steps({ events }: { events: readonly WorkflowEvent[] }) {
           );
         })}
       </svg>
-      {latest && <NowLine e={latest} />}
-    </div>
   );
 }
 

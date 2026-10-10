@@ -9,8 +9,8 @@
 import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useWorld } from "../store";
 import { hudLayout, TOPBAR_FALLBACK_H, type Insets } from "./WorkflowHud/layout";
-import { MiniFlow } from "./WorkflowHud/MiniFlow";
-import { AgentQueueList, AgentToggle, CaseFeed, Deliveries, GLASS, HotkeysFooter, IncidentList, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { CasesPanel } from "./WorkflowHud/CasesPanel";
+import { AgentToggle, GLASS, HotkeysFooter } from "./WorkflowHud/parts";
 import { useReviewQueue } from "../../review/useReviewQueue";
 import { RealDecisionToast } from "./WorkflowHud/decision";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
@@ -39,10 +39,9 @@ function AgentNote() {
   );
 }
 
-const OpsPanel = memo(function OpsPanel({ onCollapse }: { onCollapse: () => void }) {
-  const events = useThrottledWorkflow(250);
+const OpsPanel = memo(function OpsPanel({ onCollapse, onDecide }: { onCollapse: () => void; onDecide: () => void }) {
   return (
-    <aside className={`${GLASS} hud-panel flex max-h-full w-full flex-col overflow-hidden`}>
+    <aside className={`${GLASS} hud-panel flex h-full w-full flex-col overflow-hidden`} onPointerDown={(e) => e.stopPropagation()} onWheel={(e) => e.stopPropagation()}>
       <header className="flex items-center justify-between gap-2 border-b border-white/[0.07] px-4 py-2.5">
         <div className="flex min-w-0 items-center gap-2">
           <h2 className="shrink-0 whitespace-nowrap text-[13px] font-semibold text-white">Cases</h2>
@@ -60,13 +59,7 @@ const OpsPanel = memo(function OpsPanel({ onCollapse }: { onCollapse: () => void
         </button>
       </header>
       <AgentNote />
-      <div className="hud-scroll min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-4 pt-3">
-        <MiniFlow events={events} />
-        <AgentQueueList />
-        <IncidentList />
-        <CaseFeed events={events} />
-        <Deliveries />
-      </div>
+      <CasesPanel onDecide={onDecide} />
     </aside>
   );
 });
@@ -146,7 +139,7 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
       </div>
 
       <div className="absolute z-20 flex max-w-[calc(100%-24px)] flex-col items-end" style={{ ...px(L.ops), width: open ? L.ops.width : undefined }}>
-        {open ? <OpsPanel onCollapse={() => setOpen(false)} /> : <CollapsedTab onOpen={() => setOpen(true)} />}
+        {open ? <OpsPanel onCollapse={() => setOpen(false)} onDecide={onReviewOpen} /> : <CollapsedTab onOpen={() => setOpen(true)} />}
       </div>
 
       {scenOpen && (

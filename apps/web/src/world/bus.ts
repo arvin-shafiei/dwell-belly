@@ -30,6 +30,8 @@ export type WorldEvent =
   | { type: "request:cyclist_hit" }
   | { type: "request:roadworks" }
   | { type: "request:breakdown" }
+  // The minimap (or a 3D marker) picked an incident: the side panel selects its case.
+  | { type: "ui:selectIncident"; incidentId: string }
   // Scenarios (see scenarios.ts): the HUD fires one; the Scenarios module acts it out in the city and
   // emits scenario:staged with where it happened; the WorkflowDriver turns it into a workflow case.
   | { type: "request:scenario"; scenarioId: string; modifiers: import("./scenarios").Modifier[] }
