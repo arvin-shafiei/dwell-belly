@@ -1,0 +1,102 @@
+{
+  "id": "city-027",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Recipient writes back after the half marathon that moved her rug is called off",
+  "context": "A Tallowmere Goods rug was due on a Sunday morning on a street that a half marathon was going to close. The recipient had asked to move it.",
+  "initial_request": "Saw the race got cancelled and I've had Plover Arc's email putting the rug back to Sunday morning. That's perfect, I'm in all morning anyway, so please don't change anything else. Thanks for sorting it!",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-30T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Route planning, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "SERVICE NOTICE SN-8427. Calderwick Half Marathon, Sunday 4 October: Linnet Road and Pollard Street closed 07:00–12:30 UTC. Dispatch will move morning bookings on these streets on request."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-01T16:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Wynn Galloway, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My rug (TG-8427) is booked Sunday 9 to 12 and I'm on Linnet Road. Can it move to the afternoon because of the race?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-01T16:40:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Please move DL-8427 (TG-8427, rug) for Wynn Galloway, 41 Linnet Road, from Sunday 4 October 09:00–12:00 UTC to an afternoon slot that day, as the street is closed under SN-8427. Please confirm the slot."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-02T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8427 moved to Sunday 4 October 14:00–17:00 UTC under SN-8427."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-02T08:30:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Wynn Galloway, recipient",
+      "body": "Hi Wynn, Dispatch has moved your rug (DL-8427) to Sunday 4 October, 14:00–17:00 UTC, because of the road closure."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-03T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Route planning, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "UPDATE to SN-8427: the Calderwick Half Marathon has been cancelled by its organisers because of course flooding. No road closures on Sunday 4 October. Every booking moved under SN-8427 has been put back to its original slot and Plover Arc has emailed each recipient. Partner desks need take no action."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-10-03T11:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Wynn Galloway, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8427 is back on its original slot, Sunday 4 October 09:00–12:00 UTC. The afternoon slot has been released. If this no longer suits, reply to this email."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-10-03T12:02:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Wynn Galloway, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Saw the race got cancelled and I've had Plover Arc's email putting the rug back to Sunday morning. That's perfect, I'm in all morning anyway, so please don't change anything else. Thanks for sorting it!"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone.",
+      "Records why nothing is owed: the event was cancelled, Dispatch has already restored DL-8427 to Sunday 4 October 09:00–12:00 UTC and told the recipient directly, and the recipient confirms that slot suits her and asks for no further change."
+    ],
+    "must_not": [
+      "Asks Dispatch to move DL-8427 back to the afternoon or to reconfirm the morning slot.",
+      "Sends the recipient a message restating the booking or thanking her.",
+      "Says the rug has been delivered or promises an exact arrival time."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The reschedule the desk requested is no longer needed: the event was cancelled, the carrier reverted the booking and told the recipient itself, and she has confirmed the original slot works and asked for nothing more. Any message now would be noise, and re-asking for the afternoon slot would undo what she wants."
+}

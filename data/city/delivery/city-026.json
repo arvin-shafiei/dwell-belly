@@ -1,0 +1,70 @@
+{
+  "id": "city-026",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Festival organiser wants 200 tote bags driven into the closed festival zone",
+  "context": "A Calderwick festival organiser has a Tallowmere Goods consignment booked to her office. The festival quayside will be closed to vehicles on the day.",
+  "initial_request": "Hi Iona! Change of plan on our tote bags. Instead of the office on Thursday, can they come straight to the info tent on Quayside on Saturday at about 10:00? The road will be shut, but just tell the driver to say he's with the festival, the marshals all know me. We haven't sorted a vehicle permit, honestly it's a nightmare this close to the day, but it's one van for ten minutes. Thanks so much! Marisol",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-02T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Special deliveries team, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "Calderwick Riverside Festival, Saturday 12 September: Quayside is closed to vehicles 06:00–23:00 UTC. Any delivery into a closed event zone needs a council vehicle access permit naming the vehicle, plus a slot booked by the Special deliveries team. Standard routes will not enter the zone. Partner desks: send in-zone requests to Special deliveries team, Plover Arc Logistics by Email with the consignment, quantity, drop point, on-site contact and permit number (or a note that there is none)."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-08T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8426 (TG-8426, 8 cartons, 200 printed tote bags) for Riverside Festival Ltd, 3 Eel Lane, Calderwick, booked Thursday 10 September 09:00–13:00 UTC. Business address, signature required."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-09T14:22:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Marisol Teague, Riverside Festival operations lead",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Iona! Change of plan on our tote bags. Instead of the office on Thursday, can they come straight to the info tent on Quayside on Saturday at about 10:00? The road will be shut, but just tell the driver to say he's with the festival, the marshals all know me. We haven't sorted a vehicle permit, honestly it's a nightmare this close to the day, but it's one van for ten minutes. Thanks so much! Marisol"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Special deliveries team, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Pass the in-zone request for DL-8426 (200 tote bags, 8 cartons, to the Quayside info tent on Saturday 12 September around 10:00, on-site contact Marisol Teague), state plainly that no council vehicle access permit is held, and ask the team to say what is possible; the Thursday office booking stays as it is meanwhile."
+      },
+      {
+        "recipient": "Marisol Teague, Riverside Festival operations lead",
+        "channel": "Email",
+        "summary": "Explain that a delivery into the closed Quayside needs a council vehicle access permit and a slot booked by Plover Arc's Special deliveries team, that a marshal's say-so is not enough, ask whether she can get a permit (and its number), and say the Thursday office delivery stands unless changed."
+      }
+    ],
+    "must": [
+      "Routes the in-zone request to Plover Arc's Special deliveries team, or tells Marisol Teague it needs a council vehicle access permit and a Special deliveries booking and asks for the permit.",
+      "States that there is currently no vehicle access permit for the Quayside drop.",
+      "Leaves the Thursday 10 September delivery to 3 Eel Lane in place until the owner confirms any change."
+    ],
+    "must_not": [
+      "Tells Dispatch or a driver to enter the closed zone on the organiser's or marshals' say-so.",
+      "Confirms a Saturday 10:00 drop at the info tent.",
+      "Tells the organiser that a permit is not needed or that one van briefly is acceptable.",
+      "Cancels or moves the Thursday office delivery before the Special deliveries team confirms an alternative."
+    ],
+    "reference_message": "Hi, Special deliveries team. In-zone request for the Calderwick Riverside Festival: DL-8426 (TG-8426, 8 cartons, 200 printed tote bags) is currently booked to Riverside Festival Ltd, 3 Eel Lane, on Thursday 10 September 09:00–13:00 UTC. The customer's operations lead, Marisol Teague, has asked instead for delivery to the info tent on Quayside on Saturday 12 September at about 10:00 UTC, inside the closed zone. She tells me they do not have a council vehicle access permit. Please let me know whether an in-zone slot is possible and on what terms. Until you confirm, I'm leaving the Thursday office booking as it is and have told her nothing is agreed."
+  },
+  "rationale": "A drop inside a closed event zone needs a council permit and a Special deliveries booking, and the organiser has neither; 'the marshals know me' is not authority. The desk routes the request to the owning team (or asks the organiser for the missing permit) and keeps the existing booking, which is still valid, until someone with authority changes it."
+}

@@ -1,0 +1,70 @@
+{
+  "id": "city-033",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Purchaser complains that reception signed for a gift addressed to a colleague",
+  "context": "An engraved gift ordered from Tallowmere Goods was sent to a named member of staff at the Office of the Regional Auditor, Fenwick House.",
+  "initial_request": "I paid extra for 'named addressee only' on TG-8433 precisely so this wouldn't happen. Tobin is on leave for three weeks and the receptionist just signed for it, she told me it's sitting in a cupboard behind the desk. It's an engraved retirement gift and it was meant to be a surprise handed to him personally. Your driver ignored the instructions. I want the extra I paid refunded, I want you to get it back from reception and deliver it again when he's back on the 26th, and I want the name of the driver.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-02T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8433 (TG-8433) dispatched: 1 small parcel, engraved pen set. Purchaser: Odile Marchbank. Deliver to: Tobin Ashgrove, Office of the Regional Auditor, Fenwick House, 2nd floor, 6 Sallow Street, Corvel Quarter. Delivery option on the order: 'Signed for - named addressee only'."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-05T11:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8433 delivered 5 Oct 11:20 at Fenwick House, signed 'R. Fenn, reception'. Consignment service code on our manifest: SGN (signature on delivery, any responsible person at the address)."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-05T16:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Odile Marchbank, purchaser",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I paid extra for 'named addressee only' on TG-8433 precisely so this wouldn't happen. Tobin is on leave for three weeks and the receptionist just signed for it, she told me it's sitting in a cupboard behind the desk. It's an engraved retirement gift and it was meant to be a surprise handed to him personally. Your driver ignored the instructions. I want the extra I paid refunded, I want you to get it back from reception and deliver it again when he's back on the 26th, and I want the name of the driver."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Set out the conflict for DL-8433: Tallowmere's order says 'Signed for - named addressee only', but the carrier manifest shows service SGN and the parcel was signed for by 'R. Fenn, reception' while the addressee is on leave. Ask them to establish which service was booked and transmitted, and to say what can be done about the parcel at reception."
+      },
+      {
+        "recipient": "Warehouse dispatch, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Ask Tallowmere to confirm which service it booked with Plover Arc for DL-8433, since the order shows 'named addressee only' but the carrier manifest shows SGN, and note the purchaser has asked for the premium back."
+      }
+    ],
+    "must": [
+      "Puts the two records side by side: the order says 'Signed for - named addressee only'; the carrier manifest says SGN (any responsible person), and the parcel was signed 'R. Fenn, reception' on 5 October while the addressee is on leave until 26 October.",
+      "Asks the team that can settle it to establish which service was actually booked and passed to the carrier, without deciding who was at fault.",
+      "Mentions the purchaser's requests (refund of the premium, retrieval and redelivery on 26 October) so the owning teams can decide them."
+    ],
+    "must_not": [
+      "Says the driver ignored the instructions, or that Odile Marchbank chose the wrong service, before the conflict is settled.",
+      "Promises a refund of the premium or any compensation.",
+      "Arranges collection from reception or a redelivery, or asks reception to open, forward or hand over the parcel, before the owning team decides.",
+      "Gives Odile Marchbank the driver's name or any other personal details of the driver or the receptionist."
+    ],
+    "reference_message": "DL-8433 (TG-8433, engraved pen set for Tobin Ashgrove, Fenwick House): the records disagree. Tallowmere's order shows the delivery option 'Signed for - named addressee only', but your manifest shows service code SGN, and the parcel was signed for on 5 October 11:20 by 'R. Fenn, reception'. The purchaser, Odile Marchbank, says Mr Ashgrove is on leave until 26 October and the parcel is being held at reception. Could you establish which service was booked and transmitted for this consignment, and let me know what options exist for the parcel? She has also asked for the premium back and for redelivery to him in person on 26 October; I have not promised either."
+  },
+  "rationale": "The order and the carrier record disagree on the service, and that fact decides who owes what. Neither record is proven. The desk sends the conflict to the team that can settle it and passes on the purchaser's requests. It does not take sides, promise money, move the parcel, or reveal the driver's identity."
+}
