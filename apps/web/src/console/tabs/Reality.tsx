@@ -1,6 +1,7 @@
 "use client";
-// Console tab: Reality (dashboard-v2). Owned by one agent.
+// Console tab: Reality Test. The unseen cases at 16:30, shown read-only from ANSWERS/. View lives in ../reality/.
+import RealityView from "../reality/RealityView";
 
 export default function RealityTab() {
-  return <div className="p-6 text-sm text-white/60">Coming soon</div>;
+  return <RealityView />;
 }
