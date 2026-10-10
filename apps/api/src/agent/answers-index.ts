@@ -26,6 +26,23 @@ export async function incomplete(casesDir: string, outDir: string): Promise<{ na
   return out;
 }
 
+/**
+ * From each case's trace.json: what the run has spent so far, and the cases that ended in a system
+ * failure worth rerunning (not those handed over because time or the budget ran out).
+ */
+export async function spentAndErrored(casesDir: string, outDir: string): Promise<{ spentUsd: number; errored: string[] }> {
+  let spentUsd = 0;
+  const errored: string[] = [];
+  for (const name of await dirs(casesDir)) {
+    const trace = await readFile(path.join(outDir, name, "trace.json"), "utf8").then(JSON.parse, () => null);
+    const end = Array.isArray(trace?.events) ? trace.events.findLast((e: { kind?: string } | null) => e?.kind === "run_end") : undefined;
+    if (!end) continue;
+    if (typeof end.totalCostUsd === "number" && Number.isFinite(end.totalCostUsd)) spentUsd += end.totalCostUsd;
+    if (end.outcome === "error" && !/^(Time ran out|The run's spending limit)/.test(String(end.error ?? ""))) errored.push(name);
+  }
+  return { spentUsd, errored };
+}
+
 export async function buildIndex(outDir: string): Promise<{ text: string; counts: Record<string, number>; cases: number }> {
   const counts: Record<string, number> = {};
   const rows: string[] = [];
