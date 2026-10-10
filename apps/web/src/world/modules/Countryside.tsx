@@ -84,14 +84,18 @@ function Sails({ built, mat }: { built: Built; mat: MeshStandardMaterial }) {
 
 // --- Trees ----------------------------------------------------------------------------------------
 
+// Trees near the city cast shadows; the thousands out in the far forests don't (shadow pass cost).
+const SHADOW_REACH = 480;
+
 function Trees({ built }: { built: Built }) {
-  const { geos, mats, data } = useMemo(() => {
+  const { geos, mats, near, far } = useMemo(() => {
     const geos = treeGeometries();
     const mats = {
       trunk: new MeshStandardMaterial({ color: "#6b4a32", roughness: 0.9, flatShading: true }),
       crown: new MeshStandardMaterial({ color: "#ffffff", roughness: 0.82, flatShading: true }),
     };
-    return { geos, mats, data: treeMatrices(built.trees) };
+    const isNear = (t: { x: number; z: number }) => Math.abs(t.x) < SHADOW_REACH && Math.abs(t.z) < SHADOW_REACH;
+    return { geos, mats, near: built.trees.filter(isNear), far: built.trees.filter((t) => !isNear(t)) };
   }, [built]);
   useEffect(
     () => () => {
@@ -102,7 +106,22 @@ function Trees({ built }: { built: Built }) {
     },
     [geos, mats],
   );
+  return (
+    <group>
+      <TreeSet trees={near} geos={geos} mats={mats} shadows />
+      <TreeSet trees={far} geos={geos} mats={mats} shadows={false} />
+    </group>
+  );
+}
 
+type TreeGeos = ReturnType<typeof treeGeometries>;
+interface TreeMats {
+  trunk: MeshStandardMaterial;
+  crown: MeshStandardMaterial;
+}
+
+function TreeSet({ trees, geos, mats, shadows }: { trees: Built["trees"]; geos: TreeGeos; mats: TreeMats; shadows: boolean }) {
+  const data = useMemo(() => treeMatrices(trees), [trees]);
   const trunkRef = useRef<InstancedMesh>(null);
   const crownRefs = useRef<(InstancedMesh | null)[]>([]);
   useLayoutEffect(() => {
@@ -124,7 +143,7 @@ function Trees({ built }: { built: Built }) {
 
   return (
     <group>
-      <instancedMesh ref={trunkRef} args={[geos.trunk, mats.trunk, built.trees.length]} castShadow />
+      <instancedMesh ref={trunkRef} args={[geos.trunk, mats.trunk, trees.length]} castShadow={shadows} />
       {geos.crowns.map((g, s) =>
         data.crown[s].length ? (
           <instancedMesh
@@ -133,7 +152,7 @@ function Trees({ built }: { built: Built }) {
               crownRefs.current[s] = m;
             }}
             args={[g, mats.crown, data.crown[s].length / 16]}
-            castShadow
+            castShadow={shadows}
           />
         ) : null,
       )}
@@ -157,8 +176,6 @@ interface Animal {
   scale: number;
 }
 
-const SHEEP_PER_PASTURE = 12;
-const COWS = 9;
 const DUCKS = 3;
 const COW_PARTS = 6; // body, head, 4 legs
 const SHEEP_DARK_PARTS = 5; // head, 4 legs
@@ -177,7 +194,7 @@ const COW_LEGS: [number, number, number][] = [
   [-0.36, 0.42, -0.72],
 ];
 
-function stepAnimal(a: Animal, dt: number, pastures: Built["fields"]["pastures"], rand: () => number) {
+function stepAnimal(a: Animal, dt: number, pastures: Built["pastures"], rand: () => number) {
   if (a.wait > 0) {
     a.wait -= dt;
     a.head = Math.min(1, a.head + dt * 1.5);
@@ -219,8 +236,8 @@ function Animals({ built }: { built: Built }) {
   const { geos, mats, animals, cowColors, cowHeadColors } = useMemo(() => {
     const rand = mulberry32(42);
     const animals: Animal[] = [];
-    built.fields.pastures.forEach((p, pi) => {
-      const n = p.animal === "cow" ? COWS : SHEEP_PER_PASTURE;
+    built.pastures.forEach((p, pi) => {
+      const n = p.count;
       for (let i = 0; i < n; i++) {
         const [x, z] = p.spots[Math.floor(rand() * p.spots.length)];
         animals.push({
@@ -296,7 +313,7 @@ function Animals({ built }: { built: Built }) {
     time.current += dt;
 
     for (const a of animals) {
-      if (dt > 0) stepAnimal(a, dt, built.fields.pastures, rand);
+      if (dt > 0) stepAnimal(a, dt, built.pastures, rand);
     }
 
     sheep.forEach((a, i) => {
@@ -388,6 +405,7 @@ export default function Countryside() {
   useEffect(
     () => () => {
       built.staticGeo.dispose();
+      built.flatGeo.dispose();
       built.rotorGeo.dispose();
       built.sailsGeo.dispose();
       built.waterGeo.dispose();
@@ -400,6 +418,7 @@ export default function Countryside() {
   return (
     <group name="countryside">
       <mesh geometry={built.staticGeo} material={mats.solid} castShadow receiveShadow />
+      <mesh geometry={built.flatGeo} material={mats.solid} receiveShadow />
       <mesh geometry={built.waterGeo} material={mats.water} position={[FARM.pond.x, 0.07, FARM.pond.z]} receiveShadow />
       <Rotors built={built} mat={mats.solid} />
       <Sails built={built} mat={mats.solid} />

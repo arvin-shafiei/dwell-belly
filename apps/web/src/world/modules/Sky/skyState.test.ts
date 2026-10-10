@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { advanceHour, createSkyState, sampleSky, sunDirection, GAME_SECONDS_PER_HOUR } from "./skyState";
+import { advanceHour, createGrade, createSkyState, gradeFor, sampleSky, sunDirection, GAME_SECONDS_PER_HOUR } from "./skyState";
 
 describe("advanceHour", () => {
   it("advances 1 game hour per 20 real seconds", () => {
@@ -82,5 +82,33 @@ describe("sampleSky", () => {
     const z = s.zenith;
     sampleSky(8, s);
     expect(s.zenith).toBe(z);
+  });
+});
+
+describe("gradeFor", () => {
+  it("is most saturated at golden hour, less at noon, least at night and under cloud", () => {
+    const g = createGrade();
+    const golden = gradeFor(18.6, 0, 0.1, g).saturation;
+    const noon = gradeFor(12, 0, 0.1, g).saturation;
+    const night = gradeFor(1, 1, 0.1, g).saturation;
+    const grey = gradeFor(12, 0, 1, g).saturation;
+    expect(golden).toBeGreaterThan(noon);
+    expect(noon).toBeGreaterThan(night);
+    expect(noon).toBeGreaterThan(grey);
+  });
+  it("adds contrast and vignette at night", () => {
+    const g = createGrade();
+    const noon = { ...gradeFor(12, 0, 0, g) };
+    const night = gradeFor(1, 1, 0, g);
+    expect(night.contrast).toBeGreaterThan(noon.contrast);
+    expect(night.vignette).toBeGreaterThan(noon.vignette);
+  });
+  it("is continuous through the day", () => {
+    const a = createGrade();
+    for (let h = 0; h < 24; h += 0.1) {
+      const s1 = gradeFor(h, 0, 0, a).saturation;
+      const s2 = gradeFor(h + 0.1, 0, 0, createGrade()).saturation;
+      expect(Math.abs(s1 - s2)).toBeLessThan(0.03);
+    }
   });
 });

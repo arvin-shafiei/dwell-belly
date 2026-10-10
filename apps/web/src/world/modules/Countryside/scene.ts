@@ -21,8 +21,14 @@ import {
   makeTrees,
   makeTurbines,
   mulberry32,
+  makeAllotments,
+  makeFarmsteads,
+  makeSouthWestFields,
+  type Allotments,
+  type Farmstead,
   type FieldLayout,
   type Hill,
+  type LinePiece,
   type TreeSpot,
   type Turbine,
 } from "./layout";
@@ -68,10 +74,16 @@ const BARN_PROFILE: [number, number][] = [
   [-6, 5],
 ];
 
-function addFields(b: GeoBuilder, t: T, f: FieldLayout, rand: () => number) {
-  for (const s of f.stripes) b.add(t.box, jitter(s.color, rand(), 0.04), s.x, 0, s.z, s.sx, s.h, s.sz);
-  for (const s of f.yard) b.add(t.box, jitter(s.color, rand(), 0.03), s.x, 0, s.z, s.sx, s.h, s.sz);
-  for (const p of f.pieces) {
+/** Crops and yards go in the flat (no shadow casting) builder; hedges and walls in the tall one. */
+function addFields(flat: GeoBuilder, b: GeoBuilder, t: T, f: FieldLayout, rand: () => number) {
+  for (const s of f.stripes) flat.add(t.box, jitter(s.color, rand(), 0.04), s.x, 0, s.z, s.sx, s.h, s.sz);
+  for (const s of f.yard) flat.add(t.box, jitter(s.color, rand(), 0.03), s.x, 0, s.z, s.sx, s.h, s.sz);
+  addPieces(b, t, f.pieces, rand);
+  for (const bale of f.bales) b.add(t.cylC, jitter("#dcb54e", rand(), 0.06), bale.x, 0.85, bale.z, 0.85, 1.3, 0.85, bale.rot, 0, Math.PI / 2);
+}
+
+function addPieces(b: GeoBuilder, t: T, pieces: readonly LinePiece[], rand: () => number) {
+  for (const p of pieces) {
     const ry = p.alongX ? 0 : Math.PI / 2;
     if (p.kind === "hedge") {
       const h = 1.3 + rand() * 0.6;
@@ -81,7 +93,6 @@ function addFields(b: GeoBuilder, t: T, f: FieldLayout, rand: () => number) {
       b.add(t.box, jitter("#a19c90", rand(), 0.2), p.x, 0, p.z, p.len, 0.75 + rand() * 0.2, 0.6, ry + (rand() - 0.5) * 0.04);
     }
   }
-  for (const bale of f.bales) b.add(t.cylC, jitter("#dcb54e", rand(), 0.06), bale.x, 0.85, bale.z, 0.85, 1.3, 0.85, bale.rot, 0, Math.PI / 2);
 }
 
 function addHills(b: GeoBuilder, t: T, hills: readonly Hill[], rand: () => number) {
@@ -99,8 +110,7 @@ function addHills(b: GeoBuilder, t: T, hills: readonly Hill[], rand: () => numbe
   }
 }
 
-function addFarmhouse(b: GeoBuilder, t: T) {
-  const { x, z, rot } = FARM.farmhouse;
+function addFarmhouse(b: GeoBuilder, t: T, x: number = FARM.farmhouse.x, z: number = FARM.farmhouse.z, rot: number = FARM.farmhouse.rot) {
   b.setFrame(x, 0, z, rot);
   b.add(t.box, "#efe4cf", 0, 0, 0, 10, 5.4, 7);
   b.add(t.prism, "#566070", 0, 5.4, 0, 1, 1, 1.0);
@@ -119,8 +129,7 @@ function addFarmhouse(b: GeoBuilder, t: T) {
   b.setFrame();
 }
 
-function addBarn(b: GeoBuilder, t: T) {
-  const { x, z, rot } = FARM.barn;
+function addBarn(b: GeoBuilder, t: T, x: number = FARM.barn.x, z: number = FARM.barn.z, rot: number = FARM.barn.rot) {
   b.setFrame(x, 0, z, rot);
   b.add(t.barnBody, "#b8342a", 0, 0, 0);
   for (let i = 2; i < BARN_PROFILE.length; i++) {
@@ -152,8 +161,7 @@ function addBarn(b: GeoBuilder, t: T) {
   b.setFrame();
 }
 
-function addSilos(b: GeoBuilder, t: T) {
-  const { x, z } = FARM.silo;
+function addSilos(b: GeoBuilder, t: T, x: number = FARM.silo.x, z: number = FARM.silo.z) {
   for (const [ox, oz, r, h] of [
     [0, 0, 3, 15],
     [5.6, -1.5, 2.2, 11],
@@ -201,9 +209,9 @@ function addYardProps(b: GeoBuilder, t: T, rand: () => number) {
   b.add(t.box, "#8a6a48", -324, 0.95, 5, 0.12, 0.15, 15.4);
 }
 
-function addPond(b: GeoBuilder, t: T, rand: () => number) {
+function addPond(flat: GeoBuilder, b: GeoBuilder, t: T, rand: () => number) {
   const { x, z, r } = FARM.pond;
-  b.add(t.cyl12, "#7a6a4e", x, 0, z, r + 1.4, 0.05, r + 1.1);
+  flat.add(t.cyl12, "#7a6a4e", x, 0, z, r + 1.4, 0.05, r + 1.1);
   for (let i = 0; i < 26; i++) {
     const a = rand() * 6.28;
     if (a > 4 && a < 5.4) continue; // open bank on one side
@@ -213,7 +221,7 @@ function addPond(b: GeoBuilder, t: T, rand: () => number) {
   for (let i = 0; i < 6; i++) {
     const a = rand() * 6.28;
     const d = rand() * r * 0.6;
-    b.add(t.cyl8, "#3f8f3a", x + Math.cos(a) * d, 0.1, z + Math.sin(a) * d * 0.8, 0.55, 0.03, 0.55);
+    flat.add(t.cyl8, "#3f8f3a", x + Math.cos(a) * d, 0.1, z + Math.sin(a) * d * 0.8, 0.55, 0.03, 0.55);
   }
 }
 
@@ -343,32 +351,91 @@ export function waterGeometry() {
   return g;
 }
 
+/** A SW farmstead: farmhouse, barn, silos and haystacks around its own yard. */
+function addFarmstead(b: GeoBuilder, t: T, f: Farmstead, rand: () => number) {
+  const c = Math.cos(f.rot);
+  const sn = Math.sin(f.rot);
+  const at = (lx: number, lz: number): [number, number] => [f.x + lx * c + lz * sn, f.z - lx * sn + lz * c];
+  addFarmhouse(b, t, ...at(-9, -7), f.rot + 0.1);
+  addBarn(b, t, ...at(9, 4), f.rot - 0.05);
+  addSilos(b, t, ...at(-2, -15));
+  for (const [lx, lz] of [
+    [-12, 8],
+    [-8, 11],
+  ]) {
+    const [hx, hz] = at(lx, lz);
+    b.add(t.cyl8, "#d4ab48", hx, 0, hz, 2.0, 1.4, 2.0);
+    b.add(t.cone8, jitter("#dcb550", rand(), 0.05), hx, 1.4, hz, 2.3, 3.0, 2.3, rand());
+  }
+}
+
+const ALLOT_VEG = ["#4f9e3a", "#6fb848", "#3d8a3a", "#8fc75a", "#9a4a7a", "#c9a23a"];
+
+function addAllotments(flat: GeoBuilder, b: GeoBuilder, t: T, a: Allotments, rand: () => number) {
+  for (const site of a.sites) {
+    // grass paths under the whole site
+    flat.add(t.box, "#86b85a", (site.minX + site.maxX) / 2, 0, (site.minZ + site.maxZ) / 2, site.maxX - site.minX, 0.04, site.maxZ - site.minZ);
+  }
+  for (const p of a.plots) {
+    flat.add(t.box, jitter("#6e4c30", rand(), 0.08), p.x, 0, p.z, p.w, 0.1, p.d);
+    const veg = ALLOT_VEG[Math.floor(p.crop * ALLOT_VEG.length)];
+    const across = p.rowsAlongX ? p.d : p.w;
+    const n = Math.max(2, Math.floor(across / 1.3));
+    for (let k = 0; k < n; k++) {
+      if (p.shed && k === 0) continue; // the shed sits at the end of the plot
+      const off = -across / 2 + (k + 0.5) * (across / n);
+      const h = 0.18 + ((k * 7 + Math.floor(p.crop * 13)) % 4) * 0.08;
+      if (p.rowsAlongX) flat.add(t.box, jitter(veg, rand(), 0.1), p.x, 0, p.z + off, p.w - 0.6, h, 0.6);
+      else flat.add(t.box, jitter(veg, rand(), 0.1), p.x + off, 0, p.z, 0.6, h, p.d - 0.6);
+    }
+    if (p.shed) {
+      const sx = p.rowsAlongX ? p.x : p.x - p.w / 2 + 1.1;
+      const sz = p.rowsAlongX ? p.z - p.d / 2 + 1.2 : p.z;
+      b.add(t.box, p.shed, sx, 0, sz, 1.8, 1.9, 1.7);
+      b.add(t.boxC, "#3e3a36", sx, 2.05, sz, 2.1, 0.12, 2.0, 0, 0.12);
+      b.add(t.cyl8, "#2f5a3a", sx + 1.25, 0, sz, 0.35, 0.9, 0.35); // water butt
+    } else if (p.crop > 0.6) {
+      // bean poles wigwam
+      b.add(t.cone4, "#8a6a48", p.x, 0.1, p.z, 0.5, 2.0, 0.5, p.crop * 3);
+    }
+  }
+  addPieces(b, t, a.hedges, rand);
+}
+
 export function buildCountryside() {
   const t = templates();
   const rand = mulberry32(99);
   const hills = makeHills();
   const turbines = makeTurbines(hills);
   const fields = makeFields();
-  const trees = [...makeTrees(hills, turbines), ...fields.hedgeTrees];
+  const farmsteads = makeFarmsteads();
+  const sw = makeSouthWestFields(farmsteads);
+  const allotments = makeAllotments();
+  const trees = [...makeTrees(hills, turbines, 23, { extraBoxes: allotments.sites }), ...fields.hedgeTrees, ...sw.hedgeTrees];
 
-  const b = new GeoBuilder();
+  const flat = new GeoBuilder(); // receives shadows only
+  const b = new GeoBuilder(); // casts shadows
   addHills(b, t, hills, rand);
-  addFields(b, t, fields, rand);
+  addFields(flat, b, t, fields, rand);
+  addFields(flat, b, t, sw, rand);
   addFarmhouse(b, t);
   addBarn(b, t);
   addSilos(b, t);
   addYardProps(b, t, rand);
-  addPond(b, t, rand);
+  addPond(flat, b, t, rand);
   addWindmillBody(b, t);
   addTurbineTowers(b, t, turbines);
+  for (const f of farmsteads) addFarmstead(b, t, f, rand);
+  addAllotments(flat, b, t, allotments, rand);
 
   return {
     staticGeo: b.build(),
+    flatGeo: flat.build(),
     rotorGeo: rotorGeometry(t),
     sailsGeo: sailsGeometry(t),
     waterGeo: waterGeometry(),
     turbines,
     trees,
-    fields,
+    pastures: [...fields.pastures, ...sw.pastures],
   };
 }

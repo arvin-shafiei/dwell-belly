@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { edgeKey, getEdge, lanePosition } from "../../roads";
+import { ROAD_NODES, edgeKey, getEdge, getNode, lanePosition, neighbours } from "../../roads";
 import {
+  FREIGHT_NODES,
+  HIGHWAY_NODES,
   IDM,
+  isJunction,
+  turnSpeed,
   advance,
   blockageT,
   idmAccel,
@@ -204,8 +208,11 @@ describe("smoothPose", () => {
 });
 
 describe("pickDestination", () => {
-  it("keeps lorries on the highway ring", () => {
-    for (let i = 0; i < 30; i++) expect(pickDestination("hgv", "h_3", Math.random)).toMatch(/^h_/);
+  it("sends lorries to highway or freight nodes", () => {
+    for (let i = 0; i < 60; i++) {
+      const d = pickDestination("hgv", "h_3", Math.random);
+      expect(HIGHWAY_NODES.has(d) || FREIGHT_NODES.has(d), d).toBe(true);
+    }
   });
   it("never returns the current node", () => {
     for (let i = 0; i < 30; i++) {
@@ -216,7 +223,33 @@ describe("pickDestination", () => {
   it("never sends cars into the depot yard", () => {
     for (let i = 0; i < 100; i++) expect(pickDestination("hatch", "g_0_0", Math.random)).not.toMatch(/^depot/);
   });
+  it("prefers local trips (mostly within 900 m)", () => {
+    let near = 0;
+    for (let i = 0; i < 100; i++) {
+      const d = getNode(pickDestination("saloon", "g_0_0", Math.random));
+      if (Math.hypot(d.x, d.z) <= 900) near++;
+    }
+    expect(near).toBeGreaterThan(90);
+  });
   it("edge lengths are known for the default grid", () => {
     expect(getEdge("g_0_0", "g_1_0")!.length).toBe(40);
+  });
+});
+
+describe("turnSpeed", () => {
+  it("is the limit when going straight, slow for a right angle, crawl for a U-turn", () => {
+    expect(turnSpeed("g_0_0", "g_1_0", "g_2_0", 11)).toBe(11);
+    const right = turnSpeed("g_0_0", "g_1_0", "g_1_1", 11);
+    expect(right).toBeGreaterThan(4);
+    expect(right).toBeLessThan(7.5);
+    expect(turnSpeed("g_0_0", "g_1_0", "g_0_0", 11)).toBeLessThanOrEqual(3.5);
+  });
+});
+
+describe("isJunction", () => {
+  it("is true where three or more roads meet", () => {
+    expect(isJunction("g_0_0")).toBe(true);
+    const quiet = [...ROAD_NODES.keys()].find((id) => neighbours(id).length < 3)!;
+    expect(isJunction(quiet)).toBe(false);
   });
 });

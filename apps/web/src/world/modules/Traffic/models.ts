@@ -119,15 +119,86 @@ function cab(): Piece[] {
   return p;
 }
 
+function estate(): Piece[] {
+  // long roof running to the tailgate, roof rails
+  const p = car({ L: 4.75, W: 1.82, bodyH: 0.62, clearance: 0.3, cabinL: 3.0, cabinH: 0.56, cabinZ: -0.55, wheelR: 0.34, wheelInset: 0.85 });
+  for (const x of [0.7, -0.7]) p.push(box("fixed", 0.06, 0.06, 2.6, x, 0.3 + 0.62 + 0.56 + 0.13, -0.55, TRIM));
+  return p;
+}
+
+function sports(): Piece[] {
+  const p = car({ L: 4.3, W: 1.9, bodyH: 0.48, clearance: 0.2, cabinL: 1.6, cabinH: 0.4, cabinZ: -0.45, wheelR: 0.34, wheelInset: 0.8 });
+  p.push(box("paint", 1.7, 0.06, 0.32, 0, 0.2 + 0.48 + 0.24, -2.0)); // spoiler
+  for (const x of [0.6, -0.6]) p.push(box("fixed", 0.06, 0.2, 0.06, x, 0.2 + 0.48 + 0.1, -2.0, TRIM));
+  return p;
+}
+
+function minibus(): Piece[] {
+  const p = car({ L: 5.6, W: 2.0, bodyH: 1.0, clearance: 0.35, cabinL: 4.3, cabinH: 0.8, cabinZ: -0.55, wheelR: 0.38, wheelInset: 0.95 });
+  p.push(box("paint", 1.9, 0.8, 4.2, 0, 0.35 + 1.0 + 0.8 + 0.18, -0.55)); // high roof
+  return p;
+}
+
+function van(): Piece[] {
+  const W = 2.0;
+  const L = 5.4;
+  const halfL = L / 2;
+  const p: Piece[] = [
+    box("paint", W, 1.95, 3.8, 0, 0.38 + 0.975, -0.8), // load box
+    box("paint", W, 0.8, 1.6, 0, 0.38 + 0.4, 1.9), // bonnet
+    box("fixed", W - 0.1, 0.75, 0.9, 0, 0.38 + 0.8 + 0.38, 1.45, GLASS), // windscreen / cab glass
+    box("paint", W - 0.06, 0.08, 0.9, 0, 0.38 + 1.55 + 0.04 + 0.32, 1.45),
+    box("fixed", W + 0.04, 0.2, 0.16, 0, 0.45, halfL, TRIM),
+    box("fixed", W + 0.04, 0.2, 0.16, 0, 0.45, -halfL, TRIM),
+  ];
+  for (const x of [W / 2 - 0.1, -(W / 2 - 0.1)]) for (const z of [halfL - 0.9, -(halfL - 1.0)]) p.push(wheel(x, z, 0.37));
+  p.push(...lights(W / 2, halfL, -halfL, 0.85));
+  return p;
+}
+
+function moto(): Piece[] {
+  const p: Piece[] = [
+    box("paint", 0.42, 0.42, 1.1, 0, 0.78, 0.1), // tank + fairing
+    box("paint", 0.3, 0.25, 0.6, 0, 0.82, -0.6), // tail
+    box("fixed", 0.46, 0.62, 0.4, 0, 1.3, -0.2, "#2a2d34"), // rider torso
+    box("fixed", 0.32, 0.3, 0.34, 0, 1.78, -0.12, "#e8e8e8"), // helmet
+    box("fixed", 0.6, 0.06, 0.06, 0, 1.08, 0.48, TRIM), // handlebars
+  ];
+  for (const z of [0.72, -0.72]) {
+    const g = new CylinderGeometry(0.32, 0.32, 0.14, 10);
+    g.rotateZ(Math.PI / 2);
+    g.translate(0, 0.32, z);
+    p.push({ part: "fixed", geo: g, color: "#1b1b1e" });
+  }
+  p.push(box("head", 0.16, 0.14, 0.06, 0, 0.9, 0.68));
+  p.push(box("tail", 0.14, 0.08, 0.06, 0, 0.88, -0.92));
+  for (const s of [1, -1]) {
+    const part: Part = s === 1 ? "indL" : "indR";
+    p.push(box(part, 0.08, 0.06, 0.06, s * 0.22, 0.9, 0.62));
+    p.push(box(part, 0.08, 0.06, 0.06, s * 0.16, 0.88, -0.88));
+  }
+  return p;
+}
+
 const SPECS: Record<Archetype, () => Piece[]> = {
   hatch: () => car({ L: 3.8, W: 1.72, bodyH: 0.62, clearance: 0.28, cabinL: 2.0, cabinH: 0.58, cabinZ: -0.3, wheelR: 0.32, wheelInset: 0.65 }),
   saloon: () => car({ L: 4.6, W: 1.8, bodyH: 0.6, clearance: 0.28, cabinL: 2.2, cabinH: 0.55, cabinZ: -0.2, wheelR: 0.33, wheelInset: 0.85 }),
   suv: () => car({ L: 4.7, W: 1.95, bodyH: 0.85, clearance: 0.42, cabinL: 2.9, cabinH: 0.68, cabinZ: -0.35, wheelR: 0.42, wheelInset: 0.85 }),
+  estate,
+  sports,
   cab,
+  minibus,
+  van,
   hgv,
+  moto,
 };
 
-export const HALF_LENGTH: Record<Archetype, number> = { hatch: 1.9, saloon: 2.3, suv: 2.35, cab: 2.25, hgv: 5.9 };
+export const HALF_LENGTH: Record<Archetype, number> = {
+  hatch: 1.9, saloon: 2.3, suv: 2.35, estate: 2.4, sports: 2.15, cab: 2.25, minibus: 2.8, van: 2.75, hgv: 5.9, moto: 1.0,
+};
+export const WIDTH: Record<Archetype, number> = {
+  hatch: 1.72, saloon: 1.8, suv: 1.95, estate: 1.82, sports: 1.9, cab: 1.85, minibus: 2.0, van: 2.0, hgv: 2.5, moto: 0.5,
+};
 
 /** One merged geometry per part (null when the archetype has no pieces for that part). */
 export function buildArchetype(kind: Archetype): Record<Part, BufferGeometry | null> {
@@ -165,6 +236,11 @@ export const PALETTES: Record<Archetype, string[]> = {
   hatch: ["#d6453d", "#2f6db5", "#f2f2f2", "#e8b33a", "#3d8a5a", "#14a3b8", "#9aa3ab", "#f07aa0", "#7fc241"],
   saloon: ["#1f2a44", "#c9ccd1", "#2b2b2b", "#8a1f2b", "#3b5f8a", "#f2f2f2", "#5a6b5a", "#b5352d"],
   suv: ["#2b2b2b", "#f2f2f2", "#4a5568", "#2f4f3a", "#7a3fa0", "#c08a3e", "#9aa3ab"],
+  estate: ["#5b6770", "#f2f2f2", "#2c3e50", "#7d2e2e", "#a8b2a0", "#202020", "#c9a66b"],
+  sports: ["#e01b24", "#ffcc00", "#1c6dd0", "#111111", "#f2f2f2", "#16a34a", "#ff4fa3"],
   cab: ["#141414", "#141414", "#141414", "#1d232c", "#3a1418"],
+  minibus: ["#f2f2f2", "#c9ccd1", "#2f6db5", "#f2c200", "#3d8a5a"],
+  van: ["#f4f4f4", "#f4f4f4", "#c9ccd1", "#2b4c7e", "#1f3d2b", "#8a1f2b", "#d9d4c7"],
+  moto: ["#e01b24", "#111111", "#1c6dd0", "#f2f2f2", "#ffcc00", "#16a34a"],
   hgv: ["#2a5db0", "#c43a2f", "#f2f2f2", "#2f8f4e", "#e3a21a", "#474b52"],
 };
