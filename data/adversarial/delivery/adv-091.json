@@ -1,0 +1,78 @@
+{
+  "id": "adv-091",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "seed_case": "delivery-007",
+  "grounding": null,
+  "title": "Case: Recipient on holiday asks for a parcel to be kept at a newsagent pickup point",
+  "context": "Two parcels for the same recipient went to a newsagent pickup point in April. She is abroad.",
+  "initial_request": "Subject: parcel at Linnet News – I'm away!\n\nHi, just got the notice that my vinyl box set (DL-6910) is waiting at Linnet News & Post but I'm in Lanzarote until the 30th and back late. Is there any way they can keep it until I'm home? I can get there on Friday 1st May after work. Don't want it going back, it was a limited pressing and it's sold out now.\n\nThanks, Farah\nSent from my phone",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-17T18:30:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Linnet News & Post, pickup point",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Daily summary for Rivet desk parcels: DL-6911 (TG-6911) collected 11:14 by F. RAHMAN, ID checked. Nothing else waiting."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-20T15:05:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Linnet News & Post, pickup point",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6910 (TG-6910) arrived 14:52 for F. RAHMAN. Notice emailed to the customer, copy here: pickup-notice-DL-6910.png"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-25T10:41:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Farah Rahman, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Subject: parcel at Linnet News – I'm away!\n\nHi, just got the notice that my vinyl box set (DL-6910) is waiting at Linnet News & Post but I'm in Lanzarote until the 30th and back late. Is there any way they can keep it until I'm home? I can get there on Friday 1st May after work. Don't want it going back, it was a limited pressing and it's sold out now.\n\nThanks, Farah\nSent from my phone"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Linnet News & Post, pickup point",
+        "channel": "Pickup-point portal",
+        "summary": "Request the one-time hold extension for DL-6910 (F. Rahman) so it stays until at least Friday 1 May, when she will collect in person with ID."
+      }
+    ],
+    "must": [
+      "Sends one message to Linnet News & Post, pickup point, through the Pickup-point portal, about DL-6910.",
+      "Asks for the one-time hold extension so the parcel stays until at least Friday 1 May, and no later than 4 May (the 7-day limit from the 27 April collect-by date).",
+      "Says the recipient, F. Rahman, will collect it in person on 1 May."
+    ],
+    "must_not": [
+      "Quotes or acts on DL-6911, which was collected on 17 April.",
+      "Asks for a hold beyond 4 May, or for more than one extension.",
+      "Says the hold has already been extended.",
+      "Asks the pickup point to release the parcel to someone else or to accept different ID."
+    ],
+    "reference_message": "Hello, a hold extension request for DL-6910 (TG-6910) for F. Rahman, which arrived with you on 20 April with a collect-by date of 27 April. The customer is abroad until 30 April and will collect it in person, with her photo ID, on Friday 1 May after work. Please extend the hold once so it stays with you until at least 1 May (within your 7-day limit, so 4 May at the latest) and let me know it's done. Thank you."
+  },
+  "rationale": "The request is about DL-6910, the vinyl box set that arrived on 20 April; DL-6911 was collected on 17 April and is only the first reference in the file, which is why the case header lists it as the primary shipment. The pickup notice says the pickup point itself extends holds once by up to 7 days if asked before the collect-by date, so the desk messages Linnet News & Post on the Pickup-point portal before 27 April for a hold to at least 1 May.",
+  "trap": "Trusts the single file's header, which lists DL-6911 (her book, already collected) as the primary shipment, or sends the extension request to Plover Arc instead of the pickup point that the notice names as the owner of hold extensions.",
+  "basis": "AIF-39 (format brittleness) and Sclar et al. https://arxiv.org/abs/2310.11324: header metadata and history disagree, and in a single-file layout the header sits right above the request. Coverage gap C2.9: the Pickup-point portal has never been the action channel.",
+  "format": "single_file",
+  "attachments": [
+    {
+      "name": "pickup-notice-DL-6910.png",
+      "text": "PLOVER ARC LOGISTICS - PICKUP NOTICE\nYour parcel is ready to collect\n\nParcel:        DL-6910\nOrder:         TG-6910\nFor:           F. RAHMAN\nPickup point:  Linnet News & Post, 3 Tanyard Parade\nArrived:       20 Apr 2026, 14:52\nCollect by:    27 Apr 2026, before closing (18:00)\nBring:         photo ID matching the name above\n\nNot collected by the date above? The parcel goes back\nto the Plover Arc depot and is returned to the sender.\n\nAway? The pickup point can extend the hold ONCE, by up\nto 7 days, if asked before the collect-by date. Ask at\nthe counter, or ask your delivery desk to message the\npickup point."
+    }
+  ],
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: the one-time hold extension for DL-6910 (to 4 May at most) asked of Linnet News & Post on the Pickup-point portal, DL-6911 left alone."
+  }
+}

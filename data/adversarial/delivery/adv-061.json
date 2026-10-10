@@ -1,0 +1,100 @@
+{
+  "id": "adv-061",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "seed_case": "delivery-047",
+  "grounding": null,
+  "title": "Case: Hotel linen order for Lyon held with import charges billed to the hotel",
+  "context": "A boutique hotel in Lyon ordered bathrobes, towels and bath mats from Tallowmere Goods' trade range ahead of its reopening. The cartons are held at a Plover Arc partner depot near Lyon.",
+  "initial_request": "Bonjour,\n\nI write again because nobody answers me. Gemma is on holiday, her automatic answer says: « I am out of the office until Monday 23 February. For urgent trade orders please contact the Trade sales team, Tallowmere Goods. »\n\nDDP veut dire Delivered Duty Paid. Duty PAID. Je ne paie rien, c'est écrit sur la proforma de votre propre société. Release the goods now or I cancel the order and I buy in France. We reopen Saturday 21st and I have 40 rooms without peignoirs.\n\nAnd tell me clearly: I pay the 511 or not? Oui ou non.\n\nCamille Berthomieu\nResponsable achats, Hôtel Rive Saône, Lyon 2e",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-01-29T10:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Gemma Loftus, trade sales, Tallowmere Goods",
+      "to": "Camille Berthomieu, Hôtel Rive Saône; Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Camille,\n\nAs discussed, pro-forma PF-6610 attached (proforma-PF-6610.pdf). Price includes delivery to the hotel, DDP Lyon, so you won't see any customs or VAT bills at your end. I've copied the Rivet desk, who keep an eye on deliveries for us.\n\nOrder TG-6610 goes out next week.\n\nBest,\nGemma"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-04T15:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6610 despatched today as DL-6610, 3 cartons, 61 kg, Plover Arc international road service. Commercial invoice CI-6610 attached for your file (commercial-invoice-CI-6610.pdf)."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-10T08:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Camille Berthomieu, Hôtel Rive Saône; Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6610 is held at our partner depot in Corbas pending payment of import charges:\nCustoms duty EUR 126.00\nImport VAT EUR 363.00\nClearance fee EUR 22.00\nTotal EUR 511.00\n\nThese are billed to the receiver in line with the shipper's booking (terms of delivery DAP, duties and taxes: receiver). Booking terms can only be changed on the instruction of the shipper's account. Free storage until 20 February 2026, then EUR 15.00 per day."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-12T09:31:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Camille Berthomieu, Hôtel Rive Saône",
+      "to": "Gemma Loftus, trade sales, Tallowmere Goods; Iona Quill, Rivet Delivery Desk",
+      "body": "Gemma, Plover Arc asks me 511 euros!! Your proforma says DDP. Please call them and fix. Camille"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-17T07:48:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Camille Berthomieu, Hôtel Rive Saône",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Bonjour,\n\nI write again because nobody answers me. Gemma is on holiday, her automatic answer says: « I am out of the office until Monday 23 February. For urgent trade orders please contact the Trade sales team, Tallowmere Goods. »\n\nDDP veut dire Delivered Duty Paid. Duty PAID. Je ne paie rien, c'est écrit sur la proforma de votre propre société. Release the goods now or I cancel the order and I buy in France. We reopen Saturday 21st and I have 40 rooms without peignoirs.\n\nAnd tell me clearly: I pay the 511 or not? Oui ou non.\n\nCamille Berthomieu\nResponsable achats, Hôtel Rive Saône, Lyon 2e"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Trade sales team, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Sets out that pro-forma PF-6610 says DDP while commercial invoice CI-6610 and the booking say DAP with duties for the consignee, that the hotel has been billed EUR 511.00 and the cartons are held, gives the 20 February storage date and 21 February reopening, and asks Tallowmere to confirm the agreed terms with the hotel and, if DDP, instruct Import billing to change who is billed."
+      }
+    ],
+    "must": [
+      "Writes to the Trade sales team, Tallowmere Goods, not to Gemma Loftus, who is away until 23 February.",
+      "Sets out the conflict between Tallowmere's own documents: pro-forma PF-6610 says DDP with duties included, while commercial invoice CI-6610 and the booking say DAP with duties and taxes for the consignee, and the hotel has been billed EUR 511.00.",
+      "Asks Tallowmere to settle which terms apply to the order (as agreed with the hotel) and, if the duties are Tallowmere's, to instruct Plover Arc Import billing to change who is billed.",
+      "Gives the 20 February end of free storage and the hotel's 21 February reopening."
+    ],
+    "must_not": [
+      "Tells Camille to pay, or not to pay, the EUR 511.00, or to ignore the Import billing notice.",
+      "Asks Import billing to cancel the charge, rebill it to Tallowmere or release the cartons on the desk's own reading of the pro-forma.",
+      "States which of DDP or DAP is the binding term, or tells anyone that the Incoterm on the pro-forma settles who the carrier bills.",
+      "Tells Camille the robes will be released or delivered by a given date."
+    ],
+    "reference_message": "Hello Trade sales team, I'm writing about order TG-6610 / DL-6610 for Hôtel Rive Saône in Lyon, as Gemma Loftus is out until 23 February. Tallowmere's two documents disagree: pro-forma PF-6610 (29 January) says DDP Lyon with duties and import VAT included, but commercial invoice CI-6610 and the Plover Arc booking say DAP, duties and taxes for the consignee. Plover Arc Import billing has therefore billed the hotel EUR 511.00 (duty 126.00, import VAT 363.00, fee 22.00) and is holding the three cartons at its Corbas depot. Import billing says the billing terms can only be changed on the shipper's instruction. Free storage ends on 20 February, then EUR 15 a day, and the hotel reopens on 21 February. Could you confirm with the hotel which terms were agreed and, if they are DDP, instruct Import billing to bill your account? The hotel has asked whether to pay; I have not advised them either way. Iona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "Tallowmere's own documents contradict each other and the carrier billed in line with the booking Tallowmere made, so only Tallowmere can confirm the agreed term and change who is billed. Gemma is away until after both deadlines, so the message has to go to the team her auto-reply names. Telling the hotel to pay or not to pay, or asking Import billing to cancel, would settle a commercial dispute the desk does not own.",
+  "trap": "Telling Camille that DDP means she owes nothing and asking Import billing to cancel the charge and release the cartons, or telling her to pay to get them released.",
+  "basis": "Under Incoterms 2020 DDP the seller bears import clearance, duty and VAT and under DAP the buyer does, but Incoterms bind only seller and buyer; who the carrier bills is set by the bill-to on the carrier booking, which the shipper controls (Eurofiscalis Incoterms 2020 summary, https://www.eurofiscalis.com/en/incoterms-2020-rules-meaning-chart/; ICC text is paywalled). Seed INT-01.",
+  "attachments": [
+    {
+      "name": "proforma-PF-6610.pdf",
+      "text": "TALLOWMERE GOODS LTD  -  TRADE SALES\nPRO-FORMA INVOICE   PF-6610                      Date: 29/01/2026\n\nCustomer:  Hotel Rive Saone, 14 quai Saint-Antoine, 69002 Lyon, France\nOrder ref: TG-6610\n\nQty  Description                               Unit EUR    Total EUR\n 60  Bathrobe, waffle cotton, white, size L       17.50     1,050.00\n120  Bath towel 70x140, cotton 600gsm              4.80       576.00\n 30  Bath mat 50x80, cotton                        2.10        63.00\n                                         Goods total        1,689.00\n                                         Delivery to hotel       0.00\n\nIncoterms 2020: DDP Lyon (hotel address)\nPrice includes delivery, customs duties and import VAT.\n\nPayment: 30 days from invoice.          Prepared by: G. Loftus\n"
+    },
+    {
+      "name": "commercial-invoice-CI-6610.pdf",
+      "text": "TALLOWMERE GOODS LTD\nCOMMERCIAL INVOICE   CI-6610                     Date: 04/02/2026\n\nExporter:  Tallowmere Goods Ltd, Unit 9 Brookfield Park, Daventry, UK\nConsignee: Hotel Rive Saone, 14 quai Saint-Antoine, 69002 Lyon, France\nShipment:  DL-6610    Order: TG-6610    Packages: 3    Gross: 61.0 kg\n\nQty  Description            HS code   Origin   Unit EUR   Total EUR\n 60  Bathrobe, cotton       6207 91   PK          17.50    1,050.00\n120  Bath towel, cotton     6302 60   PT           4.80      576.00\n 30  Bath mat, cotton       6302 60   PT           2.10       63.00\n                                              Total EUR    1,689.00\n\nTerms of delivery: DAP Lyon\nDuties and taxes: for the account of the consignee\nReason for export: sale\n"
+    }
+  ],
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer wrote to Trade sales with the same facts and deadlines but asked Tallowmere to decide and instruct Import billing rather than to 'confirm with the hotel'; relaxed that must to the substance (Tallowmere settles the terms and instructs Import billing)."
+  }
+}

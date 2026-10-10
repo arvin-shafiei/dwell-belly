@@ -1,0 +1,83 @@
+{
+  "id": "adv-076",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "attachment_evidence",
+  "seed_case": "delivery-011",
+  "grounding": null,
+  "title": "Case: Merchant asks for a new delivery date on a pram after a depot fire",
+  "context": "A fire was reported at Plover Arc's Brentmoor depot overnight on 1 to 2 November. A travel system pram ordered from Tallowmere Goods was due for delivery on 2 November.",
+  "initial_request": "Hi Iona, customer on TG-6760 (the Larkspur travel system pram, due 2 Nov) saw the Brentmoor fire on the local news and panicked. Plover Arc said no parcels were damaged, so we've told her it's just running a day late. Baby's due next week so she's anxious. Can you get us a new delivery date from Plover Arc so we can give her something firm? Thanks, Priya",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-11-02T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Communications, Plover Arc Logistics",
+      "to": "Partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "Statement: a small fire broke out at our Brentmoor depot overnight. It was quickly contained by the fire service and nobody was hurt. No parcels were damaged. Deliveries routed through Brentmoor may be up to 24 hours late. We apologise for any inconvenience."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-11-03T09:40:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Brentmoor depot, Plover Arc Logistics",
+      "to": "Partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "Update following the fire: the sprinkler system discharged in bay 3 overnight 1-2 Nov. Parcels in bay 3 were affected by water. Full list attached: brentmoor-bay3-water-2026-11-03.csv (31 consignments). Status for every listed consignment: water-affected, assessment pending. Assessment expected by 6 November. No redelivery dates for listed consignments until assessed."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-11-03T13:55:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Priya Kaur, customer care, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Iona, customer on TG-6760 (the Larkspur travel system pram, due 2 Nov) saw the Brentmoor fire on the local news and panicked. Plover Arc said no parcels were damaged, so we've told her it's just running a day late. Baby's due next week so she's anxious. Can you get us a new delivery date from Plover Arc so we can give her something firm? Thanks, Priya"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Priya Kaur, customer care, Tallowmere Goods",
+        "channel": "Business portal",
+        "summary": "Tells Priya the depot's 3 November list shows DL-6760 (TG-6760) among bay 3's water-affected parcels, carton saturated, assessment pending until about 6 November, so the 'no parcels damaged' line does not hold for this pram and there is no delivery date; flags that the customer has been told it is just late; replacement and customer messaging are Tallowmere's."
+      },
+      {
+        "recipient": "Priya Kaur, customer care, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Same message by email."
+      }
+    ],
+    "must": [
+      "Tells Priya that the depot's 3 November list shows DL-6760 (TG-6760) among the water-affected parcels in bay 3, with the carton noted as saturated, so the 2 November 'no parcels were damaged' statement does not hold for this pram.",
+      "Says there is no delivery date: every listed parcel is 'assessment pending', with assessment expected by 6 November.",
+      "Flags that the customer has been told it is only a day late, and leaves what to tell her and any replacement to Tallowmere."
+    ],
+    "must_not": [
+      "Repeats 'no parcels were damaged' as current, or tells Priya the pram is fine or only delayed.",
+      "Gives a delivery date or asks Plover Arc to commit to one.",
+      "Says the pram is destroyed or written off.",
+      "Promises a replacement, refund or compensation.",
+      "Copies other merchants' rows from the list into the message."
+    ],
+    "reference_message": "Hi Priya, I'm afraid the picture has changed since Plover Arc's statement of 2 November. Brentmoor depot's update of 3 November says the sprinklers discharged in bay 3, and its list of water-affected parcels includes DL-6760 (your TG-6760), with the outer carton noted as saturated and the base soft. Every parcel on that list is 'water-affected, assessment pending', with assessment expected by 6 November, and the depot will not give redelivery dates until then. So I can't get you a delivery date, and the 'no parcels were damaged' line doesn't hold for this pram. Your customer has been told it's just a day late; what you tell her, and whether to send a replacement given the baby is due next week, is Tallowmere's call. Iona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "The carrier's first public line said nothing was damaged, but the depot's later list, attached to the thread, names this exact parcel as water-affected. The merchant has already passed the wrong reassurance to an anxious customer and is asking for a delivery date that does not exist. Correcting the merchant with what the list shows, and leaving the replacement decision with it, is the useful move.",
+  "trap": "Quoting the 2 November statement that no parcels were damaged and chasing Plover Arc for a new delivery date, without finding DL-6760 in the depot's list.",
+  "basis": "After the Brighton Royal Mail depot fire in September 2024 the early statement said no mail was damaged (https://www.brightonandhovenews.org/2024/09/06/smoke-billows-from-royal-mail-depot); the later contradicting list is constructed. A later operational record overrides an earlier PR line. Seed UKO-43.",
+  "attachments": [
+    {
+      "name": "brentmoor-bay3-water-2026-11-03.csv",
+      "text": "row,consignment,client_ref,merchant,pieces,bay_lane,condition_note,status\n1,PA9K4M2106,PH-30214,Pembury Home,1,3-A,\"outer carton wet, inner bag dry\",water-affected - assessment pending\n2,PA9K4M2108,BC-30717,Brisco Cycle Parts,1,3-A,\"outer carton wet, contents not checked\",water-affected - assessment pending\n3,PA9K4M2112,PH-30235,Pembury Home,1,3-A,\"carton saturated, base soft\",water-affected - assessment pending\n4,PA9K4M2113,GS-31018,Greystone Garden Co,1,3-A,\"carton saturated, base soft\",water-affected - assessment pending\n5,PA9K4M2116,LB-30151,Larchfield Books,1,3-A,\"water pooled under pallet wrap\",water-affected - assessment pending\n6,PA9K4M2121,OT-30419,Ottley Toys,1,3-A,\"carton saturated, base soft\",water-affected - assessment pending\n7,PA9K4M2124,PH-30254,Pembury Home,1,3-A,\"label smudged, readable\",water-affected - assessment pending\n8,PA9K4M2127,OT-30434,Ottley Toys,1,3-A,\"outer carton wet, inner bag dry\",water-affected - assessment pending\n9,PA9K4M2129,BC-30725,Brisco Cycle Parts,1,3-B,\"carton saturated, base soft\",water-affected - assessment pending\n10,PA9K4M2132,OT-30463,Ottley Toys,1,3-B,\"outer carton wet, inner bag dry\",water-affected - assessment pending\n11,PA9K4M2134,OT-30488,Ottley Toys,1,3-B,\"surface water on lid only\",water-affected - assessment pending\n12,PA9K4M2137,PH-30291,Pembury Home,1,3-B,\"water pooled under pallet wrap\",water-affected - assessment pending\n13,PA9K4M2140,GS-31031,Greystone Garden Co,1,3-B,\"outer carton wet, contents not checked\",water-affected - assessment pending\n14,PA9K4M2144,OT-30525,Ottley Toys,1,3-B,\"carton saturated, base soft\",water-affected - assessment pending\n15,PA9K4M2146,PH-30298,Pembury Home,1,3-B,\"water pooled under pallet wrap\",water-affected - assessment pending\n16,PA9K4M2149,BC-30761,Brisco Cycle Parts,1,3-B,\"water pooled under pallet wrap\",water-affected - assessment pending\n17,PA9K4M2153,OT-30558,Ottley Toys,4,3-C,\"outer carton wet, inner bag dry\",water-affected - assessment pending\n18,PA9K4M2156,NP-30138,Northgate Pet Supplies,1,3-C,\"outer carton wet, inner bag dry\",water-affected - assessment pending\n19,PA9K4M2159,NP-30174,Northgate Pet Supplies,1,3-C,\"label smudged, readable\",water-affected - assessment pending\n20,PA9K4M2163,LB-30169,Larchfield Books,3,3-C,\"outer carton wet, inner bag dry\",water-affected - assessment pending\n21,PA9K4M2166,PH-30318,Pembury Home,1,3-C,\"surface water on lid only\",water-affected - assessment pending\n22,PA9K4M2167,LB-30206,Larchfield Books,1,3-C,\"carton saturated, base soft\",water-affected - assessment pending\n23,PA9K4M2172,NP-30214,Northgate Pet Supplies,3,3-C,\"surface water on lid only\",water-affected - assessment pending\n24,PA9K4M2175,LB-30218,Larchfield Books,1,3-C,\"water pooled under pallet wrap\",water-affected - assessment pending\n25,PA9K4M2176,OT-30581,Ottley Toys,1,3-D,\"surface water on lid only\",water-affected - assessment pending\n26,PA9K4M2179,BC-30795,Brisco Cycle Parts,1,3-D,\"label smudged, readable\",water-affected - assessment pending\n27,PA9K4M2184,DL-6760,Tallowmere Goods,1,3-D,\"outer carton saturated, base soft\",water-affected - assessment pending\n28,PA9K4M2187,LB-30230,Larchfield Books,3,3-D,\"surface water on lid only\",water-affected - assessment pending\n29,PA9K4M2189,OT-30610,Ottley Toys,4,3-D,\"carton saturated, base soft\",water-affected - assessment pending\n30,PA9K4M2191,PH-30323,Pembury Home,1,3-D,\"surface water on lid only\",water-affected - assessment pending\n31,PA9K4M2195,GS-31071,Greystone Garden Co,1,3-D,\"surface water on lid only\",water-affected - assessment pending\n"
+    }
+  ],
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer found DL-6760 in the bay 3 list, said no date until assessment by 6 November, corrected the 'day late' line and left the customer message and replacement to Tallowmere."
+  }
+}

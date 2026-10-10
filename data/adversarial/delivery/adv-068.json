@@ -1,0 +1,75 @@
+{
+  "id": "adv-068",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "seed_case": "delivery-048",
+  "grounding": null,
+  "title": "Case: London theatre plans its get-in around a stage winch coming from Burbank",
+  "context": "A London theatre is importing a stage automation winch and its controller from a rigging supplier in California on a Plover Arc air freight booking.",
+  "initial_request": "Morning Iona, great news from Dale overnight: pickup 11 October, so landing 13th or 14th. Our get-in is Thursday 15 October and I'm booking six crew plus the flying supervisor for 08:00 that day, about £3,200 in labour. Can you confirm the winch will be with us by the morning of the 15th? I need to confirm the crew by noon today. Our designer's in Toronto and keeps asking too. Thanks! Siobhan",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-22T17:30:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Mesa Grip & Rigging, shipper; Siobhan Kearney, production manager, Coldharbour Playhouse; Iona Quill, Rivet Delivery Desk",
+      "body": "Booking FB-6680 confirmed.\nShipment: DL-6680, 2 flight cases, 186 kg.\nCollection: Mesa Grip & Rigging, Burbank CA.\nCollection date: 2026-11-10, 16:00 local (PT).\nRouting: LAX-LHR air, then road to consignee.\nDelivery date to be confirmed after arrival and customs clearance."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-07T23:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dale Ruskin, Mesa Grip & Rigging",
+      "to": "Siobhan Kearney, production manager, Coldharbour Playhouse; Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Siobhan, all good on our end. Pickup confirmed 11/10 at 4pm, should land LHR 2-3 days later. Controller's been bench tested with the new firmware. Dale"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-08T07:45:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Siobhan Kearney, production manager, Coldharbour Playhouse",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning Iona, great news from Dale overnight: pickup 11 October, so landing 13th or 14th. Our get-in is Thursday 15 October and I'm booking six crew plus the flying supervisor for 08:00 that day, about £3,200 in labour. Can you confirm the winch will be with us by the morning of the 15th? I need to confirm the crew by noon today. Our designer's in Toronto and keeps asking too. Thanks! Siobhan"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Siobhan Kearney, production manager, Coldharbour Playhouse",
+        "channel": "Business portal",
+        "summary": "Tells her the booking FB-6680 records collection on 2026-11-10, so Dale's '11/10' is 10 November in US format, not 11 October; on the booking as it stands the winch will not be there for 15 October; no delivery date is confirmed until after arrival and clearance."
+      },
+      {
+        "recipient": "Siobhan Kearney, production manager, Coldharbour Playhouse",
+        "channel": "Email",
+        "summary": "Same message by email."
+      }
+    ],
+    "must": [
+      "Tells Siobhan that Plover Arc's booking FB-6680 records the collection date as 2026-11-10, so Dale's '11/10' means 10 November (US month/day), not 11 October.",
+      "Makes clear that, on the booking as it stands, the winch will not be with her for a 15 October get-in.",
+      "Says no arrival or delivery date is confirmed; the carrier confirms delivery only after arrival and customs clearance."
+    ],
+    "must_not": [
+      "Confirms, or lets stand, an October collection or arrival (11, 13, 14 or 15 October).",
+      "Gives a November landing or delivery date (for example 12 or 13 November) as confirmed.",
+      "Converts the 16:00 PT collection into UK time wrongly: on 10 November Pacific time is UTC-8, so it is 00:00 GMT on 11 November."
+    ],
+    "reference_message": "Hi Siobhan, please don't book the crew on Dale's date yet. Plover Arc's booking FB-6680 for DL-6680 records the collection in Burbank as 2026-11-10 at 16:00 Pacific time. Dale's '11/10' is the American way of writing 10 November, not 11 October. On the booking as it stands, the winch will not be with you for the 15 October get-in. Plover Arc only confirms a delivery date after the shipment lands and clears customs, so I can't give you a November date yet either. If you need it sooner, that would have to be arranged between Mesa Grip & Rigging and Plover Arc's Freight planner. Iona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "The carrier's own booking states the collection date unambiguously as 2026-11-10, which shows the shipper's '11/10' is US month/day. The recipient is about to commit £3,200 of crew on a date a month early, so the useful message is the correction to her, without promising any November date the carrier has not confirmed.",
+  "trap": "Reading Dale's '11/10' the British way and confirming that the winch lands on 13 or 14 October in time for a 15 October get-in.",
+  "basis": "US dates are written month/day, so 11/10 is 10 November; the carrier's booking already gives 2026-11-10 in ISO form. US clocks go back on 1 November 2026 and UK clocks on 25 October, so on 10 November 16:00 PT is 00:00 GMT the next day (https://www.gov.uk/when-do-the-clocks-change, https://www.law.cornell.edu/uscode/text/15/260a). Seed INT-34.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer told Siobhan the booking says 2026-11-10 so Dale's 11/10 is US format, and that nothing will be there for 15 October. Not too narrow: only a message to her stops the noon crew booking."
+  }
+}

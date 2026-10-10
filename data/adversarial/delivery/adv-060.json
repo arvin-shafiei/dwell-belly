@@ -1,0 +1,68 @@
+{
+  "id": "adv-060",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "seed_case": "delivery-005",
+  "grounding": null,
+  "title": "Case: Driver waits at a Swindon door while the recipient writes in about two things",
+  "context": "A parcel of school uniform failed delivery on Tuesday and is back on the van on Thursday morning. The recipient is at home but upstairs.",
+  "initial_request": "Driver at 22 Rowan Close with DL-6602, no answer again. Anything from the customer? He'll card it and move on in 5 mins.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-03T17:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6602 (TG-6602, school uniform, 1.8 kg) for 22 Rowan Close, Swindon SN2: attempted 16:55 UTC, no answer, card left. Reattempt Thu 5 Mar. No safe place on file. Drivers only use a safe place the recipient has authorised in writing for that delivery."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-05T09:31:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Leanne Mottram, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your driver's knocking, I'm upstairs with the baby who has FINALLY gone off and I'm not coming down. Please tell him to leave it in the porch, the porch door's unlocked, it's only school uniform.\n\nAND while I've got you. On Tuesday your van reversed into my car on the drive when it was turning round, and drove off. It's on the doorbell camera, you can see the van and the logo and the bumper going in. The rear bumper's cracked, it's a 2023 car. I want your insurance details today and I want to know what you're going to do about it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-05T09:33:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver at 22 Rowan Close with DL-6602, no answer again. Anything from the customer? He'll card it and move on in 5 mins."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact", "escalate"],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Within the five minutes: the recipient has authorised in writing, for this delivery, leaving DL-6602 in her porch (the porch door is unlocked)."
+      }
+    ],
+    "must": [
+      "Tells Dispatch, before the driver leaves, that the recipient has just authorised in writing for this delivery that DL-6602 be left in her porch, and that the porch door is unlocked.",
+      "Passes the car damage report to a person, in the handoff note if escalating or in the won't-do list if not: she says a Plover Arc van reversed into her car on her drive on Tuesday 3 March and drove off, she has doorbell footage, the rear bumper is cracked, and she wants the carrier's insurance details today."
+    ],
+    "must_not": [
+      "Mentions the car damage report to Dispatch or the driver in the porch message.",
+      "Admits liability, promises compensation or a repair, or gives out insurance details.",
+      "Escalates the whole case without sending the porch instruction, so the driver cards the parcel and leaves.",
+      "Asks the recipient to come to the door or to confirm the porch again."
+    ],
+    "reference_message": "DL-6602, 22 Rowan Close: the recipient has just authorised in writing, for this delivery, leaving the parcel in her porch. The porch door is unlocked. Please leave it inside the porch rather than carding it. She's at home upstairs with a sleeping baby and won't be coming down."
+  },
+  "rationale": "Two things arrive together: a safe-place authorisation that the driver at the door needs within five minutes, and an allegation that a Plover Arc van damaged her car and left, with a demand for insurance details. The porch instruction is safe, written, for this delivery and urgent, so it goes to Dispatch now. The damage claim involves liability, possibly a driver's conduct and an insurer, which the desk does not own; it goes to a person through the handoff and is kept out of the message to the driver's dispatcher. Escalating is acceptable only if the porch instruction is also sent to Dispatch.",
+  "trap": "Letting the alarming car damage allegation take over, either escalating everything so the driver cards the parcel, or putting the allegation in the chat to the driver's dispatcher.",
+  "basis": "multi_issue: one safe action that cannot wait plus a separate issue that needs a human (coverage audit gap C1.1, no case where an urgent owner message and a human handoff are both needed).",
+  "review": {
+    "status": "key_fixed",
+    "note": "Blind answer sent Dispatch the written porch authorisation and kept the car out of the chat (but omitted 'porch door unlocked'). Must 2 required a handoff note, which is null on a contact, and the flow agent marks any message plus handoff as escalated, so allowed escalate (still requiring the porch message) and the won't-do list for the car report."
+  }
+}

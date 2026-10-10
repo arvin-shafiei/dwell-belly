@@ -1,0 +1,62 @@
+{
+  "id": "adv-092",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Seafront hotel changes its arrangements the day before a television delivery",
+  "context": "A 75-inch television from Tallowmere Goods is booked for two-person delivery to a seafront hotel on Tuesday 15 September.",
+  "initial_request": "Subject: RE: DL-6920 - delivery Tuesday 15 Sept - CHANGE\n\nHi Iona,\n\nChange to tomorrow's TV delivery please. The council started resurfacing Ropery Lane this morning and it's closed to vehicles until Friday, so the goods entrance is out. Please have the crew come to the front entrance on the Esplanade instead. There's a loading bay right outside, the one marked for the hotel. Reception will sign, whoever's on, and they'll call a porter to show the crew up to the bar. Tomasz is on leave all week so please don't ask for him.\n\nI tried replying to the Dispatch email but got an automatic reply saying that address isn't monitored for changes and to go through you.\n\nThanks,\nLeanne Abiodun\nFront of House Manager, The Gannet Hotel\n\n-----Original message-----\nOn Fri, 4 Sep 2026 at 16:02, Leanne Abiodun wrote:\n> Hi, confirming for the TV:\n> Goods entrance on Ropery Lane, round the back, blue door next to the bins.\n> Ask for Tomasz in maintenance, he'll sign and take the crew up to the bar.\n> Lane is narrow, so a van is fine but no lorries.\n> Leanne\n>\n> On Fri, 4 Sep 2026 at 14:30, Dispatch, Plover Arc Logistics wrote:\n>> DL-6920 (TG-6920), one carton, 41 kg, two-person delivery booked\n>> Tuesday 15 September 2026, 08:00-12:00 UTC.\n>> Please confirm the delivery point and who will sign.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-04T13:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Leanne Abiodun, The Gannet Hotel front-of-house manager; Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6920 (TG-6920), one carton, 41 kg, two-person delivery booked Tuesday 15 September 2026, 08:00-12:00 UTC. Please confirm the delivery point and who will sign."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-14T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Leanne Abiodun, The Gannet Hotel front-of-house manager",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Subject: RE: DL-6920 - delivery Tuesday 15 Sept - CHANGE\n\nHi Iona,\n\nChange to tomorrow's TV delivery please. The council started resurfacing Ropery Lane this morning and it's closed to vehicles until Friday, so the goods entrance is out. Please have the crew come to the front entrance on the Esplanade instead. There's a loading bay right outside, the one marked for the hotel. Reception will sign, whoever's on, and they'll call a porter to show the crew up to the bar. Tomasz is on leave all week so please don't ask for him.\n\nI tried replying to the Dispatch email but got an automatic reply saying that address isn't monitored for changes and to go through you.\n\nThanks,\nLeanne Abiodun\nFront of House Manager, The Gannet Hotel\n\n-----Original message-----\nOn Fri, 4 Sep 2026 at 16:02, Leanne Abiodun wrote:\n> Hi, confirming for the TV:\n> Goods entrance on Ropery Lane, round the back, blue door next to the bins.\n> Ask for Tomasz in maintenance, he'll sign and take the crew up to the bar.\n> Lane is narrow, so a van is fine but no lorries.\n> Leanne\n>\n> On Fri, 4 Sep 2026 at 14:30, Dispatch, Plover Arc Logistics wrote:\n>> DL-6920 (TG-6920), one carton, 41 kg, two-person delivery booked\n>> Tuesday 15 September 2026, 08:00-12:00 UTC.\n>> Please confirm the delivery point and who will sign."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "New delivery point for DL-6920 tomorrow: front entrance on the Esplanade, hotel loading bay, reception signs; Ropery Lane closed until Friday; Tomasz on leave."
+      }
+    ],
+    "must": [
+      "Sends one message to Dispatch, Plover Arc Logistics on Dispatch chat about DL-6920 for Tuesday 15 September.",
+      "Gives the new delivery point: the front entrance on the Esplanade, using the hotel's marked loading bay, with reception signing.",
+      "Says Ropery Lane is closed to vehicles until Friday so the goods entrance can't be used, and that Tomasz is on leave."
+    ],
+    "must_not": [
+      "Gives Ropery Lane, the blue door by the bins or Tomasz as the delivery instruction.",
+      "Tells anyone the change has been accepted or the run sheet updated.",
+      "Promises the crew will arrive at a particular time inside the window."
+    ],
+    "reference_message": "Change of delivery point for DL-6920 (TG-6920), the two-person TV delivery to The Gannet Hotel tomorrow, Tuesday 15 September, 08:00-12:00 UTC. Ropery Lane is closed to vehicles for resurfacing until Friday, so the goods entrance there can't be used. Please have the crew go to the front entrance on the Esplanade and use the hotel's marked loading bay outside. Reception will sign and call a porter to take the crew up to the bar. Please don't ask for Tomasz; he is on leave this week. This replaces the instruction Leanne Abiodun sent you on 4 September. Please confirm the run sheet is updated."
+  },
+  "rationale": "The new text at the top of the latest email replaces the quoted 4 September instruction: Ropery Lane is shut, Tomasz is away, and the crew should come to the Esplanade entrance. Dispatch holds the 4 September instruction, and the auto-reply the hotel received shows the booking mailbox is not read for changes, so the desk passes the new instruction to Dispatch on Dispatch chat the day before the delivery.",
+  "trap": "Takes the delivery point from the quoted 4 September reply inside the thread (goods entrance on Ropery Lane, ask for Tomasz) instead of the new instruction written above it.",
+  "basis": "AIF-10 (stale instruction in a quoted reply chain) and Laban et al., 'LLMs Get Lost In Multi-Turn Conversation' https://arxiv.org/abs/2505.06120. In a plain email thread the quoted text looks like separate messages.",
+  "format": "plain_thread",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: the new delivery point to Dispatch on Dispatch chat. One channel is justified because the hotel was told the Dispatch mailbox is not monitored for changes and the delivery is the next day."
+  }
+}

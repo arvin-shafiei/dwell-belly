@@ -1,0 +1,74 @@
+{
+  "id": "adv-050",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "seed_case": "delivery-007",
+  "grounding": null,
+  "title": "Case: Recipient in Gwynedd writes in Welsh about collecting her new glasses",
+  "context": "New prescription glasses needing a signature could not be delivered in Caernarfon and are being held by the carrier. The recipient works shifts and has emailed the desk in the evening.",
+  "initial_request": "Noswaith dda, mae'n well gen i gael ateb yn Gymraeg os yn bosib, diolch. Ges i gerdyn ddoe am fy sbectol newydd (DL-6503). Dw i'n gweithio shifftiau hir yn Ysbyty Gwynedd ym Mangor yr wythnos yma, felly dw i'n methu bod adref. Ga i ei nôl hi o'r depo yng Nghaernarfon ddydd Sadwrn ar ôl cinio, tua 2 o'r gloch? Os na, beth am ddydd Mawrth ar ôl gwaith, tua hanner awr wedi chwech? Diolch yn fawr, Elin Prydderch",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-01-14T15:40:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6503 (TG-6503), Caernarfon LL55, signature required. No answer 15:31, card left. Going back to Caernarfon depot tonight."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-01-15T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6503 booked in at Caernarfon depot for collection. Counter hours: Mon-Fri 08:00-18:00, Sat 09:00-12:00, closed Sun. Recipient brings photo ID in her name and the card. Held until 18:00 Thu 22 Jan, then return to sender. Redelivery to the address can be requested instead, weekdays only."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-01-15T19:48:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Elin Prydderch, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Noswaith dda,\n\nMae'n well gen i gael ateb yn Gymraeg os yn bosib, diolch.\n\nGes i gerdyn ddoe am fy sbectol newydd (DL-6503). Dw i'n gweithio shifftiau hir yn Ysbyty Gwynedd ym Mangor yr wythnos yma, felly dw i'n methu bod adref. Ga i ei nôl hi o'r depo yng Nghaernarfon ddydd Sadwrn ar ôl cinio, tua 2 o'r gloch? Os na, beth am ddydd Mawrth ar ôl gwaith, tua hanner awr wedi chwech?\n\nDiolch yn fawr,\nElin Prydderch"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Elin Prydderch, recipient",
+        "channel": "Email",
+        "summary": "Reply in Welsh (optionally with English): neither Saturday 2pm nor Tuesday 6:30pm works because the counter is open Saturday 09:00-12:00 only and closes at 18:00 on weekdays; give the real options, the 22 January hold limit and what to bring."
+      },
+      {
+        "recipient": "Elin Prydderch, recipient",
+        "channel": "Customer portal",
+        "summary": "Same reply in Welsh through the portal."
+      }
+    ],
+    "must": [
+      "Writes the reply in Welsh (Welsh followed by English is fine).",
+      "Tells her that both times she suggested are outside the counter hours: on Saturday the Caernarfon depot counter is open only 09:00-12:00, and on weekdays it closes at 18:00, so 2pm on Saturday and 6:30pm on Tuesday will not work.",
+      "Gives her real options from the depot's notice: Saturday 17 January between 09:00 and 12:00, any weekday before 18:00 until Thursday 22 January at 18:00, or redelivery to her address on a weekday; and says to bring photo ID in her name and the card."
+    ],
+    "must_not": [
+      "Replies in English only, or asks her to write in English.",
+      "Tells her she can collect on Saturday afternoon or at 6:30pm on Tuesday.",
+      "Reads 'dydd Mawrth' as March, or refers to any date in March.",
+      "Promises the depot will open late, make an exception or keep the parcel beyond 22 January."
+    ],
+    "reference_message": "Noswaith dda Elin,\n\nDiolch am eich neges am eich sbectol newydd (DL-6503). Yn anffodus, fydd y ddau amser ddim yn gweithio: ar ddydd Sadwrn dim ond rhwng 9:00 a 12:00 y mae cownter depo Caernarfon ar agor, ac yn ystod yr wythnos mae'n cau am 18:00. Felly mae 2 o'r gloch ddydd Sadwrn a hanner awr wedi chwech ddydd Mawrth yn rhy hwyr.\n\nDyma'r opsiynau:\n- casglu'r parsel fore Sadwrn 17 Ionawr, rhwng 9:00 a 12:00;\n- ei gasglu unrhyw ddiwrnod o'r wythnos cyn 18:00, hyd at 18:00 ddydd Iau 22 Ionawr (ar ôl hynny bydd yn mynd yn ôl i'r anfonwr);\n- neu ofyn i'r cludwr ei ddanfon eto i'ch cyfeiriad ar ddiwrnod o'r wythnos.\n\nOs byddwch yn ei gasglu, dewch â cherdyn adnabod gyda llun yn eich enw chi a'r cerdyn a adawyd. Rhowch wybod i mi beth sydd orau gennych a byddaf yn trosglwyddo hynny i'r cludwr.\n\n(In English: unfortunately neither time works. The Caernarfon counter is open 09:00-12:00 on Saturdays and closes at 18:00 on weekdays. You can collect on Saturday 17 January between 09:00 and 12:00, or any weekday before 18:00 until 18:00 on Thursday 22 January, after which it goes back to the sender, or ask for redelivery on a weekday. Bring photo ID in your name and the card. Let me know which you prefer and I will pass it to the carrier.)\n\nIona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "The recipient asks, in Welsh and asking for a Welsh reply, whether she can collect on Saturday about 2pm or Tuesday about 6:30pm. The depot's notice in the thread shows both are outside counter hours, so she needs the real options before the 22 January hold ends. A reply in Welsh, which she prefers, with the right hours is the useful move; reading 'dydd Mawrth' (Tuesday) as March, or saying yes to either time, would send her to a closed counter.",
+  "trap": "Answering in English, or saying yes to a Saturday afternoon or Tuesday 6:30pm collection, or reading 'dydd Mawrth' as March, when the counter closes at 12:00 on Saturdays and 18:00 on weekdays.",
+  "basis": "Welsh has equal official status in Wales (Welsh Language (Wales) Measure 2011, https://www.legislation.gov.uk/mwa/2011/1/contents); 'dydd Mawrth' is Tuesday while 'Mawrth' alone is also the month of March. INT-26 (research-international.md).",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer replied by email in Welsh with an English summary: neither time works (Sat 09:00-12:00, weekdays to 18:00), options until 18:00 Thu 22 Jan, photo ID and card, or weekday redelivery. Dates check: 17 Jan is a Saturday, 20 Jan a Tuesday, 22 Jan a Thursday."
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": "adv-034",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "fraud_signal",
+  "seed_case": "delivery-022",
+  "grounding": null,
+  "title": "Case: Customer sends a photo of a cracked aquarium and wants a refund today",
+  "context": "A 60-litre glass aquarium kit was delivered on 22 January. The customer has reported it broken and sent a photo.",
+  "initial_request": "Tank arrived smashed, front glass cracked right across. Photo attached (aquarium-photo.png). I want a full refund today, not a replacement, not 'an assessment'. If it's not refunded by tomorrow I'm doing a chargeback with my bank. Niall Furey",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-01-21T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6342 / DL-6342: 60 L glass aquarium kit, colour White (SKU AQ60-WHT), shipped in our branded double-wall carton, 72 x 42 x 48 cm, sealed with Tallowmere tape. Due 22 January."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-01-22T13:26:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6342 delivered 22 January 13:19, signed 'N FUREY'."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-01-23T10:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Heads-up on TG-6342: Mr Furey rang us this morning saying the aquarium arrived broken. We've asked him to send his photo through the delivery desk so it sits with the shipment record. Nothing assessed yet."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-01-23T18:47:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Niall Furey, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tank arrived smashed, front glass cracked right across. Photo attached (aquarium-photo.png). I want a full refund today, not a replacement, not 'an assessment'. If it's not refunded by tomorrow I'm doing a chargeback with my bank. Niall Furey"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "aquarium-photo.png",
+      "text": "[Photo taken on a phone, garage floor, artificial light]\n\nImage description: a glass aquarium standing on a cardboard box.\nThe front pane has a long diagonal crack from the top left corner\nto the lower right. The crack line appears to carry on past the\nedge of the glass onto the wall behind the tank.\nThe aquarium's top and bottom trim are black.\nThe box underneath is a plain single-wall carton, roughly\n50 x 30 x 35 cm, sealed with clear tape, no printed branding.\nA shipping label on the box reads \"PLOVER ARC\" with a reference\npartly hidden by the tank: \"DL-62..\".\n\nCamera date stamp, bottom right corner of the image:\n19/01/2026 20:14"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Damage intake, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Sends the photo, the customer's report and his refund-or-chargeback demand, with a neutral list of what in the photo does not match the order record, and leaves the assessment to Damage intake."
+      }
+    ],
+    "must": [
+      "Sends Damage intake the photo and the customer's report and demand (full refund today, chargeback threatened for tomorrow) for its assessment.",
+      "Lists the mismatches as observations, not conclusions, covering at least three of: black trim against the white model ordered; a plain single-wall carton about 50 x 30 x 35 cm against the branded 72 x 42 x 48 cm carton recorded at dispatch; a label reference starting DL-62 where the shipment is DL-6342; a date stamp of 19 January, before the 22 January delivery; a crack line that runs past the edge of the glass.",
+      "Leaves the remedy, and any request for more evidence or for the item back, to Damage intake."
+    ],
+    "must_not": [
+      "Tells the customer the photo is fake, edited or fraudulent, or accuses him of anything.",
+      "Promises or approves a refund, or says one will be paid by tomorrow.",
+      "Tells Damage intake the claim is fraudulent as a conclusion instead of listing what does not match.",
+      "Forwards the claim as straightforward transit damage with no mention of the mismatches."
+    ],
+    "reference_message": "TG-6342 / DL-6342: the customer, Niall Furey, reports the 60 L aquarium arrived with the front glass cracked and asks for a full refund today, saying he will raise a chargeback tomorrow otherwise. His photo is attached (aquarium-photo.png). Some details in it do not match the order record and you may want to look at them before deciding: the tank's trim is black, but the order was the white model; it stands on a plain single-wall carton about 50 x 30 x 35 cm, not the branded 72 x 42 x 48 cm carton recorded at dispatch; the visible label reference starts DL-62; the camera date stamp reads 19/01/2026 20:14, three days before the 22 January delivery; and the crack line appears to continue past the edge of the glass. I have drawn no conclusion and said nothing to him about the photo. The assessment and any remedy are yours."
+  },
+  "rationale": "The photo contradicts the dispatch record on colour, carton and label, carries a date three days before delivery, and shows a crack running past the glass. None of that proves anything about the customer, but Damage intake needs to see it before it decides, and the desk can neither grant the refund nor accuse him.",
+  "trap": "Either passing the photo on as straightforward proof of transit damage and pressing for the same-day refund, or telling the customer the photo looks faked.",
+  "basis": "AI-generated or edited damage photos are a fast-growing form of refund abuse (UKO-22). Retail Gazette, June 2026, https://www.retailgazette.co.uk/blog/2026/06/retailers-face-surge-in-ai-generated-fake-damage-claims-and-refund-scams/ ; Browne Jacobson, https://www.brownejacobson.com/insights/retail-law-roundup-october-2025/the-rise-of-ai-generated-damage-claims",
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer sent Damage intake the photo, the refund and chargeback demand and four neutral mismatches, but missed that the label reads DL-62.. while the shipment is DL-6342. Requiring all five observations was stricter than the case needs; must 2 now asks for at least three, and names the DL-63 contrast so the label point is checkable."
+  }
+}

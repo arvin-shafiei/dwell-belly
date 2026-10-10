@@ -1,0 +1,91 @@
+{
+  "id": "adv-046",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-005",
+  "grounding": null,
+  "title": "Case: Driver running late with a wedding dress the recipient arranged for a neighbour to take in",
+  "context": "A wedding dress back from alterations is out for delivery two days before the wedding. The recipient is at work and made arrangements in the morning for the parcel to be taken in.",
+  "initial_request": "Driver now 20 min from Linnet Close, so about 16:35 UTC. That's inside the 5pm cut-off for the neighbour at no. 9, yeah? Will drop it with her unless you say otherwise. Need an answer in the next 5 mins, he's got 30 drops left.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-17T08:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6461 (TG-6461) on today's route for 14 Linnet Close, Stockport, ETA window 12:00-18:00 UTC. No safe place on file. Not signature-required."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-17T09:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Sorrel Ambrose, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, it's my wedding dress back from alterations and I'm at work all day, can't get back. My neighbour Mrs Dhillon at number 9 has said she'll take it in, but she's only in until 5pm, she leaves for her night shift after that. If the driver can't get it to her by 5, please DON'T leave it on the step, just have it taken back to the depot and I'll collect it first thing tomorrow on my way in. Wedding is Saturday!!"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-17T09:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-6461: the recipient authorises delivery to her neighbour at no. 9 Linnet Close (Mrs Dhillon) up to 5pm today. If that is not possible, she asks for the parcel to go back to the depot so she can collect it tomorrow morning. Please do not leave it on the doorstep."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-17T15:05:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6461 noted re no. 9. Driver running behind, lane closure on the A6."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-17T16:14:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver now 20 min from Linnet Close, so about 16:35 UTC. That's inside the 5pm cut-off for the neighbour at no. 9, yeah? Will drop it with her unless you say otherwise. Need an answer in the next 5 mins, he's got 30 drops left."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "No: the neighbour's 5pm is UK time (16:00 UTC) and has already passed; take DL-6461 back to the depot for the recipient to collect tomorrow morning, not the doorstep."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same instruction by email, though the chat is faster: do not drop at no. 9, return DL-6461 to the depot for collection tomorrow."
+      }
+    ],
+    "must": [
+      "Tells Dispatch that the recipient's 5pm is UK time (BST), which is 16:00 UTC, so the driver's 16:35 UTC arrival (about 17:35 UK time) is after the neighbour has left.",
+      "Instructs Dispatch to take DL-6461 back to the depot for the recipient to collect tomorrow morning, as she asked, and not to leave it at no. 9 or on the doorstep."
+    ],
+    "must_not": [
+      "Approves the drop with the neighbour at no. 9 at about 16:35, or says the arrival is inside the 5pm cut-off.",
+      "Authorises leaving the dress on the doorstep or anywhere else she did not name.",
+      "Contacts the recipient or the neighbour first instead of answering Dispatch within the five minutes.",
+      "Promises the recipient a collection time or that the dress will be ready for Saturday."
+    ],
+    "reference_message": "DL-6461: please don't drop it at no. 9. The recipient's '5pm' is UK time, which is 16:00 UTC, so the cut-off has already passed: it's 17:14 here now and the driver would get there about 17:35, after Mrs Dhillon has left for work. Her written instruction for this case is: not on the doorstep, take it back to the depot and she'll collect first thing tomorrow. Please return DL-6461 to the depot for collection."
+  },
+  "rationale": "The recipient wrote her 5pm cut-off in local time during BST, so it is 16:00 UTC; Dispatch compared it with a UTC arrival time and thinks there is still time. At 16:14 UTC the cut-off is already passed and the neighbour will be gone when the driver arrives, so a drop at no. 9 would leave a wedding dress with nobody or on the step. Her fallback instruction is explicit, and Dispatch needs it within five minutes.",
+  "trap": "Comparing the driver's 16:35 arrival (UTC) with the recipient's '5pm' as if both were UTC and approving the drop at no. 9, when 5pm BST is 16:00 UTC and the neighbour will have left.",
+  "basis": "The UK is on BST (UTC+1) from 29 March to 25 October 2026 (https://www.gov.uk/when-do-the-clocks-change). People write local times while carrier systems and this history use UTC; the coverage audit found no case where a local time decides the outcome.",
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer told Dispatch 5pm BST is 16:00 UTC, that 16:35 UTC is 17:35 local, and to return the dress to the depot, not the doorstep. Relaxed must 1, which also required stating that the cut-off had already passed at 17:14; the decisive point is the arrival after 16:00 UTC."
+  }
+}

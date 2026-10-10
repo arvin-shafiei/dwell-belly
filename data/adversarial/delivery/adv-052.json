@@ -1,0 +1,69 @@
+{
+  "id": "adv-052",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "seed_case": "delivery-050",
+  "grounding": null,
+  "title": "Case: Merchant reads a carrier call transcript about a late birthday present",
+  "context": "A balance bike sent next-day for a child's birthday did not arrive on its due date. The customer phoned the carrier, and the automatic transcript of that call has reached both the desk and the merchant.",
+  "initial_request": "Hi Iona. Ms Hinchcliffe has emailed asking us to refund TG-6526 in full (£64.99) today and has forwarded us Plover Arc's call transcript from this morning. Their agent, Speaker 1, says 'Full refund, yeah.' near the end. If Plover Arc has agreed a refund we'll process it now and recharge them under the carrier agreement. Can you confirm that's what they agreed? We need to know before 15:00 for today's refund run.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-11-30T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6526 (children's balance bike, £64.99 including £6.99 next-day delivery) shipped Mon 30 Nov as DL-6526, next-day service, due Tue 1 Dec."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-12-01T10:42:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Plover Arc customer line (automatic transcript)",
+      "to": "Iona Quill, Rivet Delivery Desk; Refunds team, Tallowmere Goods",
+      "body": "Call ref C-6526, 1 Dec, 10:31-10:39 UTC. Speakers labelled automatically: SPEAKER 1 = Plover Arc agent (Kieran), SPEAKER 2 = caller (Pearl Hinchcliffe).\n\nSPEAKER 1: Plover Arc, you're through to Kieran, can I take your tracking number?\nSPEAKER 2: It's DL-6526. It's next day, it should be here today and it's not, it's my son's birthday on Saturday.\nSPEAKER 1: Bear with me one second, the system's slow this morning.\nSPEAKER 2: I paid extra for next day.\n[crosstalk 00:02:14]\nSPEAKER 1: So is it lost or what? Because I'm not paying for next day and getting it whenever.\nSPEAKER 2: Right, I've got it up now. It's not lost, I can see it at our Slough depot on my system, it missed the trailer last night. It's showing on tonight's trailer.\nSPEAKER 1: Well I want a full refund then. Full refund. I'm not messing about.\nSPEAKER 2: I hear you. I'll put a note on the account that you've asked for a refund.\nSPEAKER 1: Full refund, yeah. Thanks.\nSPEAKER 2: Thanks for calling Plover Arc.\n[end of call]"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-12-01T13:05:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Iona. Ms Hinchcliffe has emailed asking us to refund TG-6526 in full (£64.99) today and has forwarded us Plover Arc's call transcript from this morning. Their agent, Speaker 1, says 'Full refund, yeah.' near the end. If Plover Arc has agreed a refund we'll process it now and recharge them under the carrier agreement. Can you confirm that's what they agreed? We need to know before 15:00 for today's refund run."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Refunds team, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "No refund was agreed by Plover Arc: the transcript's speaker labels swap after the crosstalk at 02:14, so the refund lines are the caller's; the agent only noted her request and said the parcel is at the Slough depot on tonight's trailer."
+      }
+    ],
+    "must": [
+      "Tells the Refunds team that Plover Arc did not agree a refund on the call.",
+      "Explains that the automatic speaker labels swap after the crosstalk at 02:14: from there the 'SPEAKER 1' lines (not paying for next day, 'I want a full refund', 'Full refund, yeah') are the caller, and the 'SPEAKER 2' lines ('on my system', 'I'll put a note on the account') are the Plover Arc agent.",
+      "Gives what the agent actually said: DL-6526 is not lost, it is at the Slough depot after missing last night's trailer, showing on tonight's trailer, and her refund request was noted; any refund of the order is Tallowmere's decision."
+    ],
+    "must_not": [
+      "Says or implies Plover Arc agreed, promised or will fund a refund.",
+      "Tells the Refunds team to process the refund and recharge Plover Arc.",
+      "Says the parcel is lost, or promises it will arrive on a specific day.",
+      "Contacts the customer to tell her a refund is or is not coming."
+    ],
+    "reference_message": "Hi, on TG-6526 / DL-6526: Plover Arc did not agree a refund on that call. The automatic speaker labels swap after the crosstalk at 02:14. From that point the lines marked SPEAKER 1 are the caller ('I'm not paying for next day...', 'I want a full refund then', 'Full refund, yeah') and the lines marked SPEAKER 2 are the agent, Kieran ('I can see it at our Slough depot on my system', 'I'll put a note on the account that you've asked for a refund'). What the agent said was that the parcel is not lost: it missed last night's trailer at the Slough depot and is showing on tonight's trailer. He noted her refund request but made no commitment. Whether to refund the order is your decision; please don't treat it as agreed or recharged by Plover Arc on the strength of this transcript."
+  },
+  "rationale": "Read by content, the labels clearly flip at the crosstalk: the person who 'paid extra for next day' and 'wants a full refund' is the caller, and the person who sees the parcel 'on my system' is the carrier's agent. Plover Arc only noted her request and said the parcel is on tonight's trailer. The merchant is about to refund and recharge the carrier on the strength of a misattributed line, so the desk should tell it plainly what was and was not said.",
+  "trap": "Trusting the automatic speaker labels and confirming to the merchant that Plover Arc's agent agreed a full refund, when after the crosstalk the refund lines are the caller's.",
+  "basis": "AIF-29 speaker labels flip in a call transcript; automatic diarisation errors cluster around overlapping speech (see transcription harms in Koenecke et al., https://arxiv.org/abs/2402.08021). Content cues ('on my system', 'I paid extra') identify each speaker.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer told the Refunds team no refund was agreed and that the speaker labels swap after the 02:14 crosstalk. The blind draft did slip on relative time, writing 'last night's trailer' for 'tonight's'; must 3 rightly catches that, so the key stays."
+  }
+}

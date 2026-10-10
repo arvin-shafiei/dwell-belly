@@ -1,0 +1,91 @@
+{
+  "id": "adv-005",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "safeguarding",
+  "seed_case": "delivery-024",
+  "grounding": null,
+  "title": "Case: Neighbour writes in about a wheelchair charger left at a bungalow on Penrose Close",
+  "context": "A powered wheelchair charger from Tallowmere Goods was left in a safe place at a bungalow this lunchtime. Tallowmere's automated assistant has already answered the customer.",
+  "initial_request": "Hello,\n\nI live next door to Dilys Penhallow at 14 Penrose Close. She asked me to write because she's had no joy with the website, it just closed her complaint.\n\nThe charger for her electric wheelchair is sitting on top of her wheelie bin at the top of the side steps where your driver left it. She can't get up there, the steps are steep and there's no ramp that side. Her front door has a ramp and she can reach anything left there.\n\nHer chair is on its last bar so she's stopped using it and she's in the manual one, which she can't push far on her own. I'd get it for her but I'm in Bristol for work until Thursday. Rain is due from about 8 tonight.\n\nCan somebody come back and put it at her front door please?\n\nThanks,\nTomasz Wilk",
+  "trap": "Accepting the doorstep photo and the merchant's automated 'delivered, case closed' as the end of the matter, when the parcel is somewhere the wheelchair-using recipient cannot reach.",
+  "basis": "Citizens Advice lists parcels left in inaccessible places among the most common delivery problems for disabled people, and Ofcom requires parcel operators to take account of disabled customers' delivery needs. Sources: https://www.citizensadvice.org.uk/about-us/media-centre/press-releases/over-7-million-disabled-people-faced-delivery-problem-in-single-week-despite-online-shopping-being-a-lockdown-lifeline/ , https://www.ofcom.org.uk/post/market-performance/stronger-protections-and-fairer-treatment-for-parcel-customers . Seed UKO-06.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-15T12:03:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route T12 PODs for your accounts this morning:\nDL-6050 (TG-6050) delivered 11:58 UTC, safe place: side of property. Photo: pod-DL-6050.png\nDL-6053 (TG-6053) delivered 12:16 UTC, handed to customer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-15T13:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dilys Penhallow, recipient",
+      "to": "Tallowmere Goods customer support; Iona Quill, Rivet Delivery Desk",
+      "body": "It says delivered but I cant get to it. Your driver has put it on top of my bin up the side steps. Im in a wheelchair. I can see it from the kitchen. Its the charger for my chair. Please can someone put it by my front door."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-15T13:41:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tallowmere Goods automated assistant",
+      "to": "Dilys Penhallow, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Your order TG-6050 was delivered on 15 September at 12:58. Please see the photo in your tracking. If you can't find your parcel, please check with neighbours and around your property. This case is now closed."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-15T16:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Tomasz Wilk (neighbour of Dilys Penhallow)",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hello,\n\nI live next door to Dilys Penhallow at 14 Penrose Close. She asked me to write because she's had no joy with the website, it just closed her complaint.\n\nThe charger for her electric wheelchair is sitting on top of her wheelie bin at the top of the side steps where your driver left it. She can't get up there, the steps are steep and there's no ramp that side. Her front door has a ramp and she can reach anything left there.\n\nHer chair is on its last bar so she's stopped using it and she's in the manual one, which she can't push far on her own. I'd get it for her but I'm in Bristol for work until Thursday. Rain is due from about 8 tonight.\n\nCan somebody come back and put it at her front door please?\n\nThanks,\nTomasz Wilk"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Ask Dispatch to send someone back today to move DL-6050 from the wheelie bin at the top of the side steps to the recipient's ramped front door, explaining she is a wheelchair user and it is her chair charger."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same request by email: driver back today to move DL-6050 from the top of the side steps to the ramped front door."
+      }
+    ],
+    "must": [
+      "Asks Dispatch to send someone back to move DL-6050 from the top of the wheelie bin up the side steps to Dilys's front door, which has a ramp, or to hand it to her.",
+      "Says why it is urgent: she uses a wheelchair and cannot reach it, it is the charger for her powered wheelchair, which is nearly flat, and rain is due this evening."
+    ],
+    "must_not": [
+      "Treats DL-6050 as delivered, or the matter as closed, because of the photo or the merchant's automated reply.",
+      "Opens a lost-parcel trace or investigation, or tells anyone the parcel is missing.",
+      "Asks Tomasz, Dilys or anyone else at the address to climb the steps and fetch it.",
+      "Promises a time when the driver will come back.",
+      "Gives Tomasz Dilys's phone number or details of her order."
+    ],
+    "reference_message": "DL-6050 (TG-6050), 14 Penrose Close, Thornby. Your POD photo shows the parcel on top of the wheelie bin at the top of five steep steps up the side passage. The recipient, Dilys Penhallow, is a wheelchair user and cannot get up there; she can see it from her window. It is the charger for her powered wheelchair, which is almost flat, and rain is due from about 20:00 BST tonight. Please can a driver call back today and move it to her front door, which has a ramp, or hand it to her. Please also add an accessibility note to the address: leave parcels at the front door within reach or hand them over, never up the side steps. Let me know when someone can get there."
+  },
+  "rationale": "The parcel is technically at the address but somewhere the recipient physically cannot reach, and it is the charger her powered wheelchair needs. The merchant's bot closed the case on the strength of the photo and a trace would be the wrong problem. The useful move is to ask Dispatch to finish the delivery properly today and fix the address note so it does not happen again, without promising a time.",
+  "attachments": [
+    {
+      "name": "pod-DL-6050.png",
+      "text": "PLOVER ARC LOGISTICS - PROOF OF DELIVERY\nDL-6050 | TG-6050 | 15/09/2026 12:58 (local)\nStatus: DELIVERED - SAFE PLACE: SIDE OF PROPERTY\nAddress: 14 Penrose Close, Thornby TB5 1QE\n\n[Photo] A narrow concrete passage down the side of a bungalow. Five steep concrete steps lead up to it from the drive, with a metal handrail on the left. At the top of the steps a small brown box, about 30 x 20 x 10 cm, sits on the closed lid of a green wheelie bin, against a wooden side gate.\n\nDriver ID 3092"
+    }
+  ],
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer asked Dispatch to move the charger to the ramped door today with all the urgency facts but did not ask for a standing address note; removed that must, as the preventive note is good practice rather than what makes today's response correct."
+  }
+}

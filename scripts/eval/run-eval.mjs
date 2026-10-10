@@ -1,6 +1,6 @@
-// Scores an agent on the public delivery cases and the generated hard cases.
+// Scores an agent on the public delivery cases, the generated hard cases and the adversarial set.
 // Usage: npm run eval -- (--agent flow | --agent baseline | --api http://localhost:4000/api/cases | --traces traces)
-//        [--set all|public|generated] [--ids delivery-024,gen-003] [--limit 10] [--concurrency 6]
+//        [--set all|public|generated|adversarial] [--ids delivery-024,gen-003] [--limit 10] [--concurrency 6]
 //        [--with-context]  public cases keep their title and Context section (these leak the answer)
 // Output: a table on stdout and runs/eval-<time>.json with every decision and verdict.
 import { mkdir, writeFile } from "node:fs/promises";

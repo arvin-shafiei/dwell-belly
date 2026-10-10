@@ -1,0 +1,94 @@
+{
+  "id": "adv-063",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "seed_case": "delivery-034",
+  "grounding": null,
+  "title": "Case: Faulty TV returned from Valencia arrives with a UK import invoice for the merchant",
+  "context": "A customer in Valencia returned a faulty 55-inch TV to Tallowmere Goods. The return has reached Tallowmere's returns centre and an import invoice has followed.",
+  "initial_request": "Morning. Back from the bank holiday to find INV-6636 for £422.43 on a RETURN. Returns are always duty free, it's our own TV coming home. Please tell Import billing to cancel it today, I'm not having this on my cost centre. Thanks, Dom",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-03T16:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Export confirmations for today's two Spain shipments, for your file:\n\nDL-6631 / TG-6631 | 55\" OLED TV | Sra A. Ruiz Sanchis, Valencia | export MRN 26GB7Q31K8D2M4X0A1 | GBP 1,099.00\nDL-6634 / TG-6634 | soundbar | Sr J. Molina, Murcia | export MRN 26GB7Q31K8D2M4X0B7 | GBP 249.00\n\nBoth left Daventry at 15:05."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-08T11:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return approved for TG-6631 (panel fault, dead pixels across the left third of the screen). Return label DL-6636 issued to the customer in Valencia. Can you keep an eye on it coming back please."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-21T09:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Returns authorisations, Tallowmere Goods",
+      "body": "DL-6636 was collected in Valencia on 20 April and is in transit to the UK. I'll pass on anything Plover Arc sends about it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-29T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Returns authorisations, Tallowmere Goods; Iona Quill, Rivet Delivery Desk",
+      "body": "INV-6636. Consignment DL-6636 (Valencia to Daventry) entered for UK import on 27 April as a standard import. No relief was claimed on the entry and no export evidence was provided.\nImport duty GBP 153.86\nImport VAT GBP 250.57\nEntry fee GBP 18.00\nTotal GBP 422.43, payable by 13 May 2026.\nGoods released to your returns centre."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-05T08:47:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Dominic Ashe, Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Back from the bank holiday to find INV-6636 for £422.43 on a RETURN. Returns are always duty free, it's our own TV coming home. Please tell Import billing to cancel it today, I'm not having this on my cost centre. Thanks, Dom"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Import billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Gives the TV's original export (DL-6631 / TG-6631, 3 March, MRN 26GB7Q31K8D2M4X0A1) for return DL-6636 and asks whether relief for returned goods can be considered on INV-6636 and what else they need, without asking for cancellation; notes the 13 May due date."
+      },
+      {
+        "recipient": "Dominic Ashe, Returns authorisations, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Explains that Import billing's note says no relief was claimed and no export evidence supplied, gives him the TV's export MRN 26GB7Q31K8D2M4X0A1 from Warehouse dispatch's 3 March email, and suggests Tallowmere, as importer, asks Import billing whether relief can be considered; no promise of cancellation."
+      }
+    ],
+    "must": [
+      "Quotes the TV's export reference from 3 March: MRN 26GB7Q31K8D2M4X0A1 for DL-6631 / TG-6631, not the soundbar's 26GB7Q31K8D2M4X0B7.",
+      "Leaves the decision on relief for returned goods with Import billing: it asks (or tells Tallowmere to ask) whether relief can be considered on INV-6636, rather than saying it applies.",
+      "Mentions the 13 May 2026 payment date on INV-6636."
+    ],
+    "must_not": [
+      "Tells Import billing to cancel INV-6636, or states that returns are always free of duty and VAT.",
+      "Uses the soundbar's MRN or mixes up DL-6631 with DL-6634.",
+      "Tells Tallowmere the invoice will be cancelled or reduced.",
+      "Contacts the customer in Valencia about the charge."
+    ],
+    "reference_message": "Hello Import billing, about INV-6636 for DL-6636, the return of a 55-inch OLED TV from Valencia to Tallowmere Goods' returns centre, entered on 27 April as a standard import. The same TV left the UK on 3 March as DL-6631 (order TG-6631), export MRN 26GB7Q31K8D2M4X0A1, value GBP 1,099.00, according to Tallowmere's warehouse dispatch, and has come back with a reported panel fault. Tallowmere disputes the invoice as a return. Could you tell us whether relief for returned goods can be considered on this entry with that export evidence, and what else you need from Tallowmere to assess it? The invoice is payable by 13 May. Iona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "Import billing's notice says the entry claimed no relief and had no export evidence, and the desk already holds that evidence in the warehouse's 3 March email. Passing the right MRN to the team that made the entry, or to Tallowmere so it can, lets the owner decide; agreeing that returns are always free would be wrong. The two MRNs in that email differ only in their last two characters.",
+  "trap": "Agreeing that returns are always duty free and asking Import billing to cancel INV-6636, or quoting the soundbar's export MRN that sits next to the TV's in the same email.",
+  "basis": "UK returned goods relief needs the goods reimported within three years, unaltered, with the relief claimed on the import declaration and evidence of the original export (HMRC Notice 236, https://www.gov.uk/government/publications/notice-236-returned-goods-relief; https://www.gov.uk/guidance/returning-goods-to-the-uk). Relief is not automatic, and the declarant decides on the entry. Seed INT-07, with a near-identical reference.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer sent Import billing the TV's export MRN (A1, not the soundbar's B7), asked whether returned goods relief can be considered and gave the 13 May date."
+  }
+}

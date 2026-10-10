@@ -1,0 +1,87 @@
+{
+  "id": "adv-070",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "attachment_evidence",
+  "seed_case": "delivery-024",
+  "grounding": null,
+  "title": "Case: Caller who uses a screen reader asks what her delivery photo shows",
+  "context": "A Tallowmere Goods order to a recipient in Halifax shows as delivered with a doorstep photo. Her customer account carries an accessibility note.",
+  "initial_request": "[15:20:02] Iona Quill: Rivet Delivery Desk, Iona speaking.\n[15:20:05] Margaret Ellery: Hello love, it's Margaret Ellery, 14 Quarry Bank Road. I've had an email saying my parcel's been delivered with a photo, but my reader just says \"image\", so I've no idea what it shows. I've felt all round the step and the ramp and there's nothing there. It's my talking kitchen scales and a label maker from Tallowmere.\n[15:20:31] Iona Quill: Thank you, Mrs Ellery. Let me look at what we have.\n[15:20:34] Margaret Ellery: Could you just tell me what's in the photo? My door's white, the plastic sort, and there's a ramp, no steps. If it's gone somewhere else I'd like to know. You can ring me back on this number or email me, plain email's fine with my reader, no pictures please.\n[15:20:52] (call ends)",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-11T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Customer care, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Accessibility note for Mrs Margaret Ellery, 14 Quarry Bank Road, Halifax HX3 (orders from TG-6700 on): registered blind, uses a screen reader. Please contact her by phone or plain-text email only, no images or PDFs. Delivery investigations, Plover Arc Logistics have this note on file too."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-14T11:58:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery notifications, Plover Arc Logistics",
+      "to": "Margaret Ellery, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Your parcel DL-6700 was delivered at 12:52 and left at your front door. Photo: delivery-photo-DL-6700.png"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-14T14:20:00Z",
+      "stage": "Escalation",
+      "channel": "Call transcript",
+      "from": "Margaret Ellery, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[15:20:02] Iona Quill: Rivet Delivery Desk, Iona speaking.\n[15:20:05] Margaret Ellery: Hello love, it's Margaret Ellery, 14 Quarry Bank Road. I've had an email saying my parcel's been delivered with a photo, but my reader just says \"image\", so I've no idea what it shows. I've felt all round the step and the ramp and there's nothing there. It's my talking kitchen scales and a label maker from Tallowmere.\n[15:20:31] Iona Quill: Thank you, Mrs Ellery. Let me look at what we have.\n[15:20:34] Margaret Ellery: Could you just tell me what's in the photo? My door's white, the plastic sort, and there's a ramp, no steps. If it's gone somewhere else I'd like to know. You can ring me back on this number or email me, plain email's fine with my reader, no pictures please.\n[15:20:52] (call ends)"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Reports that the delivery photo for DL-6700 shows number 41, a dark blue door with two steps and no ramp, while Mrs Ellery lives at 14 with a white door and a ramp and has nothing; asks them to check no. 41, recover the parcel and contact her by phone or plain-text email only."
+      },
+      {
+        "recipient": "Margaret Ellery, recipient",
+        "channel": "Call transcript",
+        "summary": "Calls her back and describes the photo in words (number 41, dark blue door, two steps, no ramp, parcel on the top step, 12:52), says it does not look like her house and that the desk is raising it with the carrier."
+      },
+      {
+        "recipient": "Margaret Ellery, recipient",
+        "channel": "Email",
+        "summary": "Plain-text email with the same description in words and no image."
+      }
+    ],
+    "must": [
+      "Reads the photo correctly: it shows house number 41, a dark blue door, two steps and no ramp, which does not match 14 Quarry Bank Road with its white door and ramp.",
+      "Treats the delivery as unconfirmed and the parcel as possibly at no. 41, and does not say it was delivered to her.",
+      "Anything meant for Mrs Ellery is in plain words she can hear or read with a screen reader: no 'see the photo', no image or PDF.",
+      "If the message goes to the carrier, it asks Delivery investigations to check no. 41 and recover the parcel, and passes on her contact preference (phone or plain-text email)."
+    ],
+    "must_not": [
+      "Tells Mrs Ellery the parcel was delivered to her address or to her front door.",
+      "Sends her the photo, refers her to it, or attaches any image or PDF to a message for her.",
+      "Asks Mrs Ellery to go to number 41 herself to look for the parcel."
+    ],
+    "reference_message": "Hello Delivery investigations, DL-6700 (Tallowmere order for Mrs Margaret Ellery, 14 Quarry Bank Road, Halifax HX3) shows as delivered at 12:52 BST on 14 April and left at the front door. The proof-of-delivery photo shows a different house: brass number 41 above the letterbox, a dark blue door, two stone steps and no ramp, a bay tree, and the parcel on the top step. Mrs Ellery's door is white uPVC with a ramp and no steps, and there is nothing at her door. It looks as if it went to no. 41 rather than no. 14. Please check and recover the parcel and get it to her. Mrs Ellery is registered blind: please contact her by phone or plain-text email only, with no images. Iona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "The photo, which the recipient cannot see, contradicts the delivered scan: it shows number 41 and a door that is nothing like hers, a likely transposition of 14. Either getting the carrier to recover it from no. 41, or telling her in words what the photo shows, is a correct first move; saying it was delivered or pointing her to the image is not.",
+  "trap": "Telling her it was left at her front door as the notification says, or pointing her to the photo she cannot see, without reading that the photo shows number 41.",
+  "basis": "Photo proof of delivery is the norm, but an image is useless to a blind recipient and 14 to 41 is a common transposition. The Equality Act 2010 requires service providers to make reasonable adjustments for disabled people (https://www.gov.uk/guidance/equality-act-2010-guidance). Constructed scenario, seed UKO-07.",
+  "attachments": [
+    {
+      "name": "delivery-photo-DL-6700.png",
+      "text": "PLOVER ARC LOGISTICS  |  PROOF OF DELIVERY PHOTO\nShipment: DL-6700            Route: HX-07\nCaptured: 14/04/2026 12:52:17 BST\nGPS: 53.72418, -1.84906   (accuracy +/- 9 m)\nLabel address: 14 Quarry Bank Road, Halifax HX3\n\n+--------------------------------------------------+\n|  [PHOTO]                                         |\n|  Dark blue composite front door, brass knocker.  |\n|  Brass numerals \"41\" above the letterbox.        |\n|  Two stone steps up to the door. No ramp.        |\n|  Brown parcel, about shoebox size, on top step.  |\n|  Potted bay tree to the left of the door.        |\n+--------------------------------------------------+\n"
+    }
+  ],
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer sent Mrs Ellery a plain-text email describing the photo (41, dark blue door, two steps, no ramp) as not her home and said it was going to Delivery investigations. Key already accepts the carrier or the recipient by call or email, so not too narrow."
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": "adv-094",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "seed_case": "delivery-033",
+  "grounding": null,
+  "title": "Case: Recipient chases a stand mixer return collection that did not happen",
+  "context": "A faulty stand mixer is being returned to Tallowmere Goods. A carrier collection was booked for Monday 2 March.",
+  "initial_request": "Any word? I can't keep staying in. Please not Wednesday, I'm at my sister's all day. Thursday or Friday is fine.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-27T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return approved for TG-6940 (stand mixer, motor fault). Plover Arc collection BP-6940 booked Monday 2 March 2026, 08:00–18:00 UTC, from the customer's home, return shipment DL-6940. Label emailed to the customer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-02T18:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Moira Kilbride, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Nobody came for the mixer. I waited in all day. It's boxed up in the hall with the label on."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-02T18:35:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Collections control, Plover Arc Logistics",
+      "body": "BP-6940 (return of TG-6940, stand mixer, DL-6940) was not collected today; the customer, Moira Kilbride, was in all day with the parcel labelled. Please tell me what happened and rebook."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-02T18:40:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Moira Kilbride, recipient",
+      "body": "I've asked Plover Arc's Collections control what happened and to rebook. I'll tell you as soon as they confirm a new day."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-03T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "BP-6940: missed, the van ran out of driver hours before reaching it. Rebooked Thursday 5 March 2026, 08:00–18:00 UTC, same address, same label, no charge. The customer hasn't been notified; the rebook went through your request so the notice comes to you."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-03T09:02:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Moira Kilbride, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Any word? I can't keep staying in. Please not Wednesday, I'm at my sister's all day. Thursday or Friday is fine."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Moira Kilbride, recipient",
+        "channel": "Customer portal",
+        "summary": "Collection BP-6940 rebooked for Thursday 5 March, 08:00–18:00, same address and label, no charge; missed because the van ran out of driver hours."
+      }
+    ],
+    "must": [
+      "Sends one message to Moira Kilbride on the Customer portal about the return collection BP-6940.",
+      "Tells her the collection is rebooked for Thursday 5 March, 08:00 to 18:00 (UK time is the same as UTC in March), from the same address with the same label, at no charge."
+    ],
+    "must_not": [
+      "Asks Collections control again to rebook or to explain the missed collection.",
+      "Gives a day other than Thursday 5 March, or suggests Wednesday.",
+      "Promises a time inside the 08:00 to 18:00 window.",
+      "Promises a refund or says when the refund will be paid."
+    ],
+    "reference_message": "Hi Moira, sorry about Monday. Plover Arc's Collections control says the van ran out of driver hours before it reached you. They've rebooked the collection (BP-6940) for Thursday 5 March, between 08:00 and 18:00, from the same address, using the label already on the box, at no charge. So nothing is happening on Wednesday and you're fine to be at your sister's."
+  },
+  "rationale": "Collections control has already rebooked BP-6940 for Thursday 5 March, which suits the recipient, and told only the desk. The one thing owed is to pass that on; chasing the carrier again would delay the answer she is asking for.",
+  "trap": "Misses Collections control's rebook among the earlier messages and chases them again, leaving the recipient without the Thursday date the desk already holds.",
+  "basis": "AIF-39 (header formatting: hyphens instead of em dashes in event headings) and Sclar et al. https://arxiv.org/abs/2310.11324. Collections control says the recipient has not been told, so the desk holds the only copy of the new date.",
+  "format": "alt_dash",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: pass the Thursday 5 March rebook to the recipient on the Customer portal."
+  }
+}

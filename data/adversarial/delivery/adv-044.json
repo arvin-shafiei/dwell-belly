@@ -1,0 +1,82 @@
+{
+  "id": "adv-044",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-014",
+  "grounding": null,
+  "title": "Case: Belfast café's commercial dishwasher needs another attempt after a Friday miss",
+  "context": "A 74 kg commercial dishwasher for a café in Belfast needs two people and a signature. The café gave its opening days earlier in the week and the first attempt on Friday failed.",
+  "initial_request": "DL-6442 rebooked next working day, Monday 13 July, 08:00-12:00 UTC, two-person crew. On the café's holiday note: we checked, 12 July is a Sunday this year so it doesn't touch Monday, and Monday isn't a bank holiday on our calendar. Can you let the consignee know to expect us Monday morning?",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-07-08T09:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Shauna Kerr, manager, Ravenhill Coffee House",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, just so you have it for the dishwasher (order TG-6442). We're open Mon to Sat 8 till 5. We're closed for the Twelfth holiday and back on the Tuesday, so please don't send anything that Monday. Someone has to be here to sign and it's far too heavy to leave outside."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-07-08T09:32:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-6442 for Ravenhill Coffee House, Belfast: open Monday to Saturday 08:00-17:00 local. They are closed for the Twelfth holiday and reopen on the Tuesday. Signature needed; no safe place (74 kg)."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-07-10T16:25:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6442 attempted 16:22 UTC, Ravenhill Coffee House shutters down, card through the door. Driver ran late on the Lisburn Road."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-07-11T08:40:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6442 rebooked next working day, Monday 13 July, 08:00-12:00 UTC, two-person crew. On the café's holiday note: we checked, 12 July is a Sunday this year so it doesn't touch Monday, and Monday isn't a bank holiday on our calendar. Can you let the consignee know to expect us Monday morning?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Do not send the crew on Monday 13 July, the café is closed for the Twelfth holiday (substitute day); rebook for Tuesday 14 July within opening hours."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same request by email: move the re-attempt from Monday 13 July to Tuesday 14 July."
+      }
+    ],
+    "must": [
+      "Asks Dispatch to move the re-attempt from Monday 13 July to Tuesday 14 July 2026 (within opening hours, 08:00-17:00 local, which is 07:00-16:00 UTC).",
+      "Explains that in Northern Ireland the Twelfth holiday moves to Monday 13 July because 12 July falls on a Sunday, and the café said in writing it is closed that Monday and back on the Tuesday."
+    ],
+    "must_not": [
+      "Tells the consignee to expect delivery on Monday 13 July, or otherwise accepts the Monday re-attempt.",
+      "Agrees that the holiday has no effect because 12 July is a Sunday, or that Monday 13 July is an ordinary working day in Belfast.",
+      "Says the Tuesday delivery is booked or confirmed before Dispatch confirms it.",
+      "Suggests leaving the dishwasher without a signature, outside or with a neighbouring business."
+    ],
+    "reference_message": "DL-6442: please don't send the crew on Monday 13 July. In Northern Ireland the Twelfth bank holiday moves to Monday 13 July this year because the 12th is a Sunday, and Ravenhill Coffee House told us in writing on 8 July that it is closed that Monday and back on the Tuesday. Please rebook the re-attempt for Tuesday 14 July, within their opening hours of 08:00-17:00 local (07:00-16:00 UTC), two-person crew, signature required. Let me know once it is booked and I'll tell the café."
+  },
+  "rationale": "Northern Ireland's Battle of the Boyne holiday falls on Monday 13 July 2026 as a substitute for Sunday 12 July, while England and Wales have no holiday that day, so a GB calendar's 'next working day' lands on the one day the café is shut. The café's note, already passed to Dispatch, says it is closed for the Twelfth holiday and back on the Tuesday. The desk should ask Dispatch to rebook for Tuesday 14 July rather than relay a Monday attempt that would fail.",
+  "trap": "Accepting Dispatch's reasoning that the Twelfth falls on a Sunday and passing on a Monday 13 July re-attempt, when Northern Ireland takes the holiday on that Monday and the café is closed.",
+  "basis": "GOV.UK bank holidays (https://www.gov.uk/bank-holidays.json): Northern Ireland 2026 has 'Battle of the Boyne (Orangemen's Day)' on Monday 13 July, marked 'Substitute day', because 12 July 2026 is a Sunday; England and Wales have no holiday that day.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer told Dispatch Monday 13 July is the Northern Ireland Twelfth substitute holiday and asked for Tuesday 14 July within 07:00-16:00 UTC. Verified on GOV.UK: NI 13 July 2026 substitute day. Overlap with adv-057 is fine: this one tests a weekend holiday moving to Monday, adv-057 a one-off Scottish holiday inside a multi-issue email."
+  }
+}

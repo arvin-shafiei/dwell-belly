@@ -1,0 +1,71 @@
+{
+  "id": "adv-057",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "seed_case": "delivery-049",
+  "grounding": null,
+  "title": "Case: Glasgow tyre garage's angry email about an invoice and next week's pallet",
+  "context": "A tyre garage in Glasgow has a pallet of new tyres booked for delivery on Monday and has received a carrier invoice that includes a fee for a collection earlier in the month.",
+  "initial_request": "I'll keep this short because I'm raging. INV-6578 has £45 on it for a 'failed collection' on the 3rd. Your driver never came. We were open 8 till 6, the forecourt camera runs all day and there is no Plover Arc van on it at any point. I've been in this trade 22 years and I don't pay for fresh air. I want it off and I want someone to tell me why it was put on. Oh and Monday's tyre delivery, we're shut Monday, it's the World Cup holiday up here, so Tuesday please, any time from 8. Ross",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-08T10:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Ross Gilfeather, Shettleston Tyre Centre; Iona Quill, Rivet Delivery Desk",
+      "body": "INV-6578, May-June account period, Shettleston Tyre Centre. Includes: DL-6570 return collection (6 part-worn tyres) on 3 June, failed: driver attended 14:10 UTC, premises closed. Failed collection fee £45.00. Payment due 30 days from invoice date."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-10T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk; Ross Gilfeather, Shettleston Tyre Centre",
+      "body": "DL-6572: 1 pallet, 40 car tyres, tail-lift vehicle, booked for Mon 15 June, 08:00-13:00 UTC, Shettleston Tyre Centre, Glasgow G32."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-11T16:40:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Ross Gilfeather, Shettleston Tyre Centre",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'll keep this short because I'm raging. INV-6578 has £45 on it for a 'failed collection' on the 3rd. Your driver never came. We were open 8 till 6, the forecourt camera runs all day and there is no Plover Arc van on it at any point. I've been in this trade 22 years and I don't pay for fresh air. I want it off and I want someone to tell me why it was put on.\n\nOh and Monday's tyre delivery, we're shut Monday, it's the World Cup holiday up here, so Tuesday please, any time from 8.\n\nRoss"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Move DL-6572 from Monday 15 June (garage closed for the holiday) to Tuesday 16 June, from 08:00 local (07:00 UTC)."
+      }
+    ],
+    "must": [
+      "Asks Scheduling to move DL-6572 from Monday 15 June to Tuesday 16 June 2026, any time from 08:00 local (07:00 UTC), because the garage is closed on Monday 15 June.",
+      "The won't-do list (or a handoff note) records that the £45.00 failed-collection fee dispute on INV-6578 (DL-6570, 3 June) is not dealt with in this message and stays open for Business billing, without deciding it."
+    ],
+    "must_not": [
+      "Spends the one message on the invoice dispute and leaves the Monday 15 June delivery in place.",
+      "Questions the garage's closure or says Monday 15 June is not a bank holiday.",
+      "Promises the £45 fee will be removed, or tells Ross the driver did or did not attend.",
+      "Asks Scheduling to deal with the invoice, or puts the fee dispute in the rebooking request.",
+      "Says the Tuesday delivery is booked before Scheduling confirms it."
+    ],
+    "reference_message": "DL-6572 (1 pallet, 40 tyres, tail-lift) for Shettleston Tyre Centre, Glasgow G32: please move it from Monday 15 June to Tuesday 16 June. The garage is closed on Monday 15 June, Scotland's World Cup bank holiday, and has asked for Tuesday, any time from 08:00 local (07:00 UTC). Please confirm the new date and window so I can let them know."
+  },
+  "rationale": "Most of the email is a fee dispute, but the only thing with a clock on it is the pallet booked for Monday, when the garage will be shut, which would mean a failed delivery. That rebooking goes to Scheduling now. The £45 dispute is real and goes to Business billing as a separate item, without the desk deciding who is right. The garage's holiday is genuine: Scotland has a one-off World Cup bank holiday on Monday 15 June 2026, which a desk working from an England calendar might wrongly doubt.",
+  "trap": "Spending the one message on the angry £45 invoice dispute, or doubting the 'World Cup holiday', and letting a tail-lift pallet go to a closed garage on Monday.",
+  "basis": "GOV.UK bank holidays (https://www.gov.uk/bank-holidays.json): Scotland has a 'World Cup bank holiday' on Monday 15 June 2026; England, Wales and Northern Ireland do not. multi_issue: slot change plus an unrelated billing dispute with different owners.",
+  "review": {
+    "status": "key_fixed",
+    "note": "Blind answer asked Scheduling to move DL-6572 to Tuesday 16 June from 08:00 local (07:00 UTC). Must 2 needed a handoff note, which is always null on a contact, so moved it to the won't-do list. Verified on GOV.UK: Scotland's World Cup bank holiday is Monday 15 June 2026."
+  }
+}

@@ -48,7 +48,7 @@ Report:
 
 export async function judge(view, expected, result) {
   const user = JSON.stringify({
-    case_history: { context: view.context, events: view.events },
+    case_history: { context: view.context, events: view.events, attachments: view.attachments },
     answer_key: expected,
     agent_output: result,
   }, null, 2);

@@ -1,0 +1,87 @@
+{
+  "id": "adv-058",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "seed_case": "delivery-001",
+  "grounding": null,
+  "title": "Case: Road bike delivery details change over a weekend in Manchester",
+  "context": "A boxed road bike from Tallowmere Goods was booked for delivery to the recipient's home. Over the weekend she sent the desk changes, and the carrier has replied about one of them.",
+  "initial_request": "Morning! Sorry, change of plan, I've been put on a site visit tomorrow so can the bike come Wednesday instead? Still to work, reception's there 8.30 till 5 so whenever suits. Thanks! Abena",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-30T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6583 (TG-6583, boxed road bike, 14 kg, signature required) booked Tue 3 Nov, 08:00-18:00, to 14 Larch Rise, Didsbury, Manchester M20."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-31T09:14:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Abena Lartey, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hiya, can you send the bike to my work instead? Unit 7, Ashbury Trade Park, Manchester M12 4AH. Reception signs for everything. Same day's fine. Nobody's home in the day and I don't want it sat outside."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-31T09:40:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Scheduling, Plover Arc Logistics",
+      "body": "DL-6583: the recipient asks for delivery to her workplace instead of home: Unit 7, Ashbury Trade Park, Manchester M12 4AH, where reception will sign. Same day, Tuesday 3 November."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-11-02T08:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Address change for DL-6583 noted. Heads up, Ashbury Trade Park has a gate restriction for our vans: we can only get in 10:00-14:00. Job still showing Tue 3 Nov. We'll plan off whatever you send us next."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-11-02T09:05:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Abena Lartey, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning! Sorry, change of plan, I've been put on a site visit tomorrow so can the bike come Wednesday instead? Still to work, reception's there 8.30 till 5 so whenever suits. Thanks! Abena"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "One complete instruction for DL-6583: Wednesday 4 November, to Unit 7, Ashbury Trade Park, Manchester M12 4AH, inside the 10:00-14:00 gate window, reception signs; Tuesday 3 November is no longer wanted."
+      }
+    ],
+    "must": [
+      "Sends Scheduling one complete instruction for DL-6583 that combines all three changes: date Wednesday 4 November 2026, address Unit 7, Ashbury Trade Park, Manchester M12 4AH, and the trade park window of 10:00-14:00.",
+      "Says reception at the workplace will sign and is staffed 08:30-17:00, so the 10:00-14:00 window suits the recipient.",
+      "Makes clear that Tuesday 3 November is no longer wanted."
+    ],
+    "must_not": [
+      "Requests Tuesday 3 November, or the home address at 14 Larch Rise.",
+      "Leaves out the 10:00-14:00 window or the change of address.",
+      "Tells the recipient the Wednesday delivery is booked or confirmed before Scheduling confirms it.",
+      "Authorises a safe place or leaving the bike outside."
+    ],
+    "reference_message": "DL-6583, complete instruction replacing the earlier ones: please deliver on Wednesday 4 November 2026 (not Tuesday 3 November) to Unit 7, Ashbury Trade Park, Manchester M12 4AH, within your trade park gate window of 10:00-14:00. Reception at Unit 7 signs for deliveries and is staffed 08:30-17:00, so any time in that window works for the recipient. Signature required as before; please don't use the home address at 14 Larch Rise. Let me know when it is booked and I'll confirm to her."
+  },
+  "rationale": "Each message changed one thing: the address on Saturday, the day this morning, and in between the carrier added a 10:00-14:00 gate window for the trade park. Scheduling has said it will plan off whatever the desk sends next, so a message carrying only the latest change (Wednesday) risks a booking to the old home address or outside the gate hours. The right request merges all three into one instruction and drops Tuesday.",
+  "trap": "Passing on only the latest change ('Wednesday instead') so the booking reverts to the home address or misses the trade park window, or reading 'same day' from the earlier message as still meaning Tuesday.",
+  "basis": "AIF-20 partial supersession: early assumptions persist in multi-turn exchanges (Laban et al., LLMs Get Lost In Multi-Turn Conversation, https://arxiv.org/abs/2505.06120).",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer sent Scheduling one instruction: Wednesday 4 November, Unit 7 Ashbury Trade Park M12 4AH, 10:00-14:00 gate window, reception signs 08:30-17:00, not Tuesday or the home address."
+  }
+}

@@ -1,10 +1,11 @@
-// Loads the two eval sets in one shape: { id, set, mutation, view, expected }.
+// Loads the eval sets in one shape: { id, set, mutation, view, expected }.
 // `view` is all the agent may see. `expected` never leaves the eval.
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 export const DATA = path.resolve(import.meta.dirname, "..", "..", "data");
 export const GENERATED_DIR = path.join(DATA, "generated", "delivery");
+export const ADVERSARIAL_DIR = path.join(DATA, "adversarial", "delivery");
 const PUBLIC_DIR = path.join(DATA, "cases", "delivery");
 
 async function readJsonDir(dir) {
@@ -51,10 +52,11 @@ function publicCase(c, withContext) {
   };
 }
 
-function generatedCase(c) {
+// A missing attachment is left out, as it would be on disk; an unreadable one arrives with no text.
+function generatedCase(c, set = "generated") {
   return {
     id: c.id,
-    set: "generated",
+    set,
     mutation: c.mutation,
     view: {
       id: c.id,
@@ -63,14 +65,17 @@ function generatedCase(c) {
       context: c.context,
       initial_request: c.initial_request,
       events: c.events,
-      attachments: [],
+      attachments: (c.attachments ?? []).filter((a) => !a.missing).map((a) => ({ name: a.name, text: a.corrupt ? null : a.text })),
     },
     expected: c.expected,
   };
 }
 
+// set: all | public | generated | adversarial
 export async function loadCases(set, { withContext = false } = {}) {
-  const pub = set === "generated" ? [] : (await loadPublicRaw()).map((c) => publicCase(c, withContext));
-  const gen = set === "public" ? [] : (await readJsonDir(GENERATED_DIR)).map(generatedCase);
-  return [...pub, ...gen];
+  const want = (name) => set === "all" || set === name;
+  const pub = want("public") ? (await loadPublicRaw()).map((c) => publicCase(c, withContext)) : [];
+  const gen = want("generated") ? (await readJsonDir(GENERATED_DIR)).map((c) => generatedCase(c)) : [];
+  const adv = want("adversarial") ? (await readJsonDir(ADVERSARIAL_DIR)).map((c) => generatedCase(c, "adversarial")) : [];
+  return [...pub, ...gen, ...adv];
 }

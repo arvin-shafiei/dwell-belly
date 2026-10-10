@@ -1,0 +1,75 @@
+{
+  "id": "adv-069",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "seed_case": "delivery-022",
+  "grounding": null,
+  "title": "Case: Poznań distributor writes about a pallet of washing machines delivered on Monday",
+  "context": "A UK appliance wholesaler sent a pallet of four washing machines by road to a distributor in Poznań on a Plover Arc freight booking.",
+  "initial_request": "Dzień dobry,\n\ndotyczy przesyłki DL-6690 (CMR-6690), dostarczonej w poniedziałek 10.08.\nPrzy dostawie opakowania były w porządku, dlatego podpisaliśmy list przewozowy CMR bez uwag. Wczoraj przy rozpakowywaniu stwierdziliśmy uszkodzenia ukryte: w dwóch pralkach pęknięta obudowa bębna i wgniecione tylne panele. Mamy zdjęcia.\n\nWartość faktury: 12.450,00 zł. Waga brutto: 312,5 kg.\n\nProszę o potwierdzenie pełnego odszkodowania.\nDziś jest święto, ale jestem w biurze do 14:00.\n\nKrzysztof Wilk\nAGD-Serwis Warta sp. z o.o., Poznań\n\n--- Automatic translation (Freight portal) ---\nGood morning,\nregarding shipment DL-6690 (CMR-6690), delivered on Monday 10.08.\nAt delivery the packaging was fine, so we signed the CMR consignment note without comments. Yesterday when unpacking we found no visible damage: in two washing machines a cracked drum housing and dented rear panels. We have photos.\nInvoice value: PLN 12.45. Gross weight: 3,125 kg.\nPlease confirm a full refund.\nToday is a holiday, but I am in the office until 14:00.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-08-10T10:05:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Ashgrove Appliance Wholesale, shipper; Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6690 delivered Poznań 10 Aug 11:58 local (CEST). 1 pallet, 4 cartons, gross 312.5 kg. CMR-6690 signed by consignee \"K. Wilk\", no reservations entered.\n-- Freight planner, Plover Arc Logistics. Damage and loss on freight: Delivery investigations, Plover Arc Logistics."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-08-12T13:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Hannah Corbett, Ashgrove Appliance Wholesale",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks for confirming delivery of DL-6690. For your file, our invoice to AGD-Serwis Warta is PLN 12,450.00 for the four units. Any issues from them, let us know. Hannah"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-08-15T07:41:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Krzysztof Wilk, AGD-Serwis Warta sp. z o.o.",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dzień dobry,\n\ndotyczy przesyłki DL-6690 (CMR-6690), dostarczonej w poniedziałek 10.08.\nPrzy dostawie opakowania były w porządku, dlatego podpisaliśmy list przewozowy CMR bez uwag. Wczoraj przy rozpakowywaniu stwierdziliśmy uszkodzenia ukryte: w dwóch pralkach pęknięta obudowa bębna i wgniecione tylne panele. Mamy zdjęcia.\n\nWartość faktury: 12.450,00 zł. Waga brutto: 312,5 kg.\n\nProszę o potwierdzenie pełnego odszkodowania.\nDziś jest święto, ale jestem w biurze do 14:00.\n\nKrzysztof Wilk\nAGD-Serwis Warta sp. z o.o., Poznań\n\n--- Automatic translation (Freight portal) ---\nGood morning,\nregarding shipment DL-6690 (CMR-6690), delivered on Monday 10.08.\nAt delivery the packaging was fine, so we signed the CMR consignment note without comments. Yesterday when unpacking we found no visible damage: in two washing machines a cracked drum housing and dented rear panels. We have photos.\nInvoice value: PLN 12.45. Gross weight: 3,125 kg.\nPlease confirm a full refund.\nToday is a holiday, but I am in the office until 14:00."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "In English, reports concealed damage to two of four washing machines on DL-6690 found on unpacking on 14 August and reported in writing on 15 August, after delivery on 10 August with the CMR signed clean; gives PLN 12,450.00 and 312.5 kg; flags the portal translation errors; asks them to register it now as written notice and tell the consignee what they need; no compensation confirmed."
+      },
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Freight portal",
+        "summary": "Same report through the Freight portal."
+      }
+    ],
+    "must": [
+      "Reports to Delivery investigations, in English, concealed damage to two of the four washing machines (cracked drum housings, dented rear panels) found on unpacking on 14 August and reported in writing on 15 August, after delivery on 10 August with the CMR signed without reservations.",
+      "Uses the correct figures: invoice value PLN 12,450.00 and gross weight 312.5 kg.",
+      "Asks them to register the consignee's message as written notice of damage now and to tell him what evidence they need, noting he has photos."
+    ],
+    "must_not": [
+      "Confirms full compensation, a refund or any amount to anyone.",
+      "Quotes a liability figure (for example 8.33 SDR per kg times the weight) or says the claim is limited, valid or out of time.",
+      "Uses the portal translation's errors as fact: 'no visible damage', PLN 12.45, 3,125 kg, or a refund request (quoting them only to flag them as mistranslations is fine)."
+    ],
+    "reference_message": "Hello Delivery investigations, please register a damage report for DL-6690 (CMR-6690): a pallet of four washing machines from Ashgrove Appliance Wholesale (UK) to AGD-Serwis Warta sp. z o.o. in Poznań, delivered by road on Monday 10 August and signed for on the CMR by K. Wilk without reservations. The consignee wrote to us in Polish through the Freight portal on Saturday 15 August: when unpacking on 14 August they found concealed damage to two of the machines (cracked drum housings and dented rear panels), and they have photos. Invoice value PLN 12,450.00; gross weight 312.5 kg. Please note the portal's automatic translation of his message is wrong in several places (it says 'no visible damage', 'PLN 12.45' and '3,125 kg', and 'refund' where he asks for compensation). Please treat his message of 15 August as written notice of damage, and let him know, in Polish if you can, what evidence you need. I have not confirmed anything about compensation. Iona Quill, Rivet Delivery Desk"
+  },
+  "rationale": "The consignee has given written notice of concealed damage on a road consignment and the carrier's claims owner needs it registered now with the right facts. The portal's translation inverts 'hidden damage', shrinks the invoice a thousandfold and inflates the weight tenfold, so acting on the English layer would mislead the owner. Compensation is the carrier's decision, and the desk should quote no figure.",
+  "trap": "Trusting the portal's English: reading 'no visible damage' as nothing to report, using PLN 12.45 and 3,125 kg, or confirming full compensation or quoting a CMR limit.",
+  "basis": "Under CMR Article 30, where damage is not apparent the consignee must send written reservations within 7 days of delivery, Sundays and public holidays excepted; late notice shifts the burden of proof rather than barring the claim (wording unverified this session). Liability is capped at 8.33 SDR per kg of gross weight (1978 Protocol, https://treaties.un.org/doc/Publication/UNTS/Volume%201208/volume-1208-I-19487-English.pdf). Polish writes 12.450,00 for twelve thousand four hundred and fifty, and 15 August is a Polish public holiday. The key needs none of the law, only the correct figures and routing. Seed INT-09.",
+  "review": {
+    "status": "key_fixed",
+    "note": "Blind answer matched routing, figures and dates. Must_not 3 as written would have failed the reference message itself, which quotes the mistranslations to flag them; reworded it to prohibit using them as fact."
+  }
+}

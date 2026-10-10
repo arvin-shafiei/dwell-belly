@@ -1,0 +1,74 @@
+{
+  "id": "adv-045",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-010",
+  "grounding": null,
+  "title": "Case: Recipient of a saddle shipped from Texas leaves a voicemail about her holiday dates",
+  "context": "A tooled leather saddle has shipped from a saddlery in Austin, Texas, to a recipient in Northumberland, with a signature required. The shipper's dispatch email gave an estimated delivery date.",
+  "initial_request": "Voicemail: it says the third of April on the email, which is perfect, but I'm in Lanzarote from the first to the eighth of March, so please make sure the carrier knows nobody's home then, just in case it turns up early. It needs a signature and it's not going on the doorstep.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-25T21:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Corbin Haskell, shipping desk, Lone Mesa Saddlery",
+      "to": "Morwenna Steele, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Morwenna, your saddle shipped today with our UK partner Plover Arc, tracking DL-6457. Estimated delivery to your door 03/04/2026. Signature required on delivery. Commercial invoice attached for customs (invoice-LMS-2207.pdf). Duties are prepaid on our side. Thanks for your order and happy riding! Corbin"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-26T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6457, import from Austin TX, export cleared. Due into our network Mon 2 Mar via Heathrow, then onto the first available route to NE46. Signature required (declared value over our threshold), no safe place. We'll schedule on arrival unless the recipient asks for something else."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-26T12:40:00Z",
+      "stage": "Escalation",
+      "channel": "Call transcript",
+      "from": "Morwenna Steele, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[Voicemail left on the desk line, automatic transcript]\nHiya, it's Morwenna Steele, I've got a saddle coming from America, the tracking's DL-6457. Just ringing because the email from the saddlery says it's coming the third of April, which is perfect actually, because I'm in Lanzarote from the first to the eighth of March, booked it ages ago. So could you just make sure the carrier knows nobody's home the first to the eighth of March, just in case it turns up early? It needs a signature and it's not going on the doorstep or to a neighbour, it's two and a half thousand dollars of saddle. Back on the ninth. You can email me, I won't pick up the phone on holiday. Thanks, bye."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "invoice-LMS-2207.pdf",
+      "text": "LONE MESA SADDLERY\n4410 Burleson Rd, Austin, TX 78744, USA\n\nCOMMERCIAL INVOICE\n\nInvoice no.: LMS-2207\nInvoice date: 02/25/2026\nShip date: 02/25/2026\nEst. delivery: 03/04/2026\n\nShip to:\nMorwenna Steele\nHexham, Northumberland NE46\nUnited Kingdom\n\nCarrier: Plover Arc Logistics   Tracking: DL-6457\nIncoterm: DDP (duties and taxes paid by shipper)\n\nQty  Description                                      HS code      Value (USD)\n1    Western saddle, 16 in seat, hand-tooled leather  4201.00      2,450.00\n\nTotal value: USD 2,450.00\nCountry of origin: United States\nGross weight: 14.5 kg\n\nI declare that the information on this invoice is true and correct.\nC. Haskell, Shipping"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "The shipper's 03/04/2026 is 4 March in US format and falls in the recipient's absence: please make no delivery attempt from 1 to 8 March and schedule DL-6457 from Monday 9 March, signature required."
+      }
+    ],
+    "must": [
+      "Tells Scheduling that the shipper's estimated date 03/04/2026 is 4 March 2026 in US month/day format, and that this falls inside the recipient's absence.",
+      "Asks Scheduling not to attempt delivery of DL-6457 from 1 to 8 March 2026 and to schedule it from Monday 9 March 2026, with a signature and no safe place or neighbour."
+    ],
+    "must_not": [
+      "Repeats 3 April as the delivery date, or tells anyone the saddle will arrive in April.",
+      "Says the hold or a 9 March delivery is booked or confirmed before Scheduling confirms it.",
+      "Authorises a safe place, a neighbour or delivery without a signature.",
+      "Tells the recipient by phone or message that it is fine because the saddle is not due until April."
+    ],
+    "reference_message": "DL-6457 (import from Austin, due into your network Monday 2 March): please do not attempt delivery between Sunday 1 and Sunday 8 March. The recipient, Morwenna Steele, is away for those dates and nobody else is at the address. The shipper's estimated delivery of 03/04/2026 is US month/day format (its invoice is dated 02/25/2026), so the saddle is due around Wednesday 4 March, inside her absence, not on 3 April as she understood. Please schedule delivery from Monday 9 March, signature required, no safe place and no neighbour. Let me know what date you can offer and I'll pass it to her by email."
+  },
+  "rationale": "The shipper is American and its invoice gives 02/25/2026 for the ship date, which can only be month/day, so 03/04/2026 is 4 March, and Scheduling's note that the parcel enters the network on 2 March agrees. The recipient read it as 3 April and asked only that the carrier know she is away 1 to 8 March 'just in case'; in fact the delivery is due in the middle of that week. Passing her instruction to Scheduling with the corrected date stops failed attempts while she is away; her own misunderstanding can be corrected by email once the hold is in.",
+  "trap": "Reading the US shipper's 03/04/2026 as 3 April, as the recipient did, and treating her 1 to 8 March absence as a minor precaution, when the saddle is due on 4 March.",
+  "basis": "US dates are written month/day; the invoice's 02/25/2026 can only be read that way. INT-34 date-format seed (research-international.md). 4 March 2026 is a Wednesday and 9 March 2026 a Monday.",
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer sent Scheduling the 1 to 8 March absence, asked for no attempt before Mon 9 March with signature and no neighbour, and read 03/04/2026 as 4 March. Relaxed must 1 so it no longer also requires the weekday, the invoice-date evidence and an explicit 'not 3 April' to Scheduling. Second opinion: Scheduling is right; a reply to the recipient alone would not stop attempts from 2 March."
+  }
+}

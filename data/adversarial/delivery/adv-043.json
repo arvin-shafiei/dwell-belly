@@ -1,0 +1,89 @@
+{
+  "id": "adv-043",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-041",
+  "grounding": null,
+  "title": "Case: Overnight drop of two storage arrays at a Wakefield data centre",
+  "context": "Two crated storage arrays are going to a data centre that only receives heavy kit in a short overnight window. The carrier's night trunk can deliver over the weekend of 24 to 25 October.",
+  "initial_request": "DL-6436 booked on the night trunk: arrive Pennine Edge 25 Oct 01:00-02:00 UTC, Dock 2, gate meet by site security. Please confirm to the consignee that it's all set. We lock the trunk plan at 12:00 UTC Friday.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-19T10:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6436: 2 pallets, crated storage arrays, 640 kg total, for Pennine Edge Data Centre, Wakefield. Consignee wants an out-of-hours drop. Our night trunk can do Saturday night into Sunday morning, 24-25 Oct. Can you get the exact window from the consignee? Booking system is UTC only."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-19T10:20:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Nkechi Arbuthnot, receiving coordinator, Pennine Edge Data Centre",
+      "body": "Plover Arc can deliver DL-6436 (two pallets of crated storage arrays) overnight on Saturday 24 into Sunday 25 October. Please tell me the window in which your loading bay is staffed to receive them, and which dock to use."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-20T08:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Nkechi Arbuthnot, receiving coordinator, Pennine Edge Data Centre",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks. The bay is only staffed for kit deliveries during our Sunday change window, 1am to 2am on the 25th. Dock 2. Our security officer will meet the driver at the main gate and escort him in. Nobody else on site can sign for kit like this, so it has to be inside that hour or we can't take it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-20T09:00:00Z",
+      "stage": "Agent action",
+      "channel": "Freight portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "DL-6436: the consignee's window is 1am to 2am on Sunday 25 October, Dock 2. Their security officer meets the driver at the main gate. Nobody else can sign, so delivery must be inside that hour."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-22T14:10:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6436 booked on the night trunk: arrive Pennine Edge 25 Oct 01:00-02:00 UTC, Dock 2, gate meet by site security. Please confirm to the consignee that it's all set. We lock the trunk plan at 12:00 UTC Friday."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Nkechi Arbuthnot, receiving coordinator, Pennine Edge Data Centre",
+        "channel": "Business portal",
+        "summary": "Explain that 1am to 2am happens twice on 25 October, say the carrier has booked 01:00-02:00 UTC (the second, GMT, hour) and ask which hour the bay is staffed before the plan locks at 12:00 UTC Friday."
+      }
+    ],
+    "must": [
+      "Tells the consignee that UK clocks go back at 2am BST on Sunday 25 October, so local 1am to 2am happens twice that night.",
+      "Gives both readings in UTC: the first hour (BST) is 00:00-01:00 UTC and the second hour (GMT) is 01:00-02:00 UTC, and says the carrier's current booking, 01:00-02:00 UTC, is the second one.",
+      "Asks the consignee to confirm which of the two hours the bay and security officer are staffed, before the plan locks at 12:00 UTC on Friday 23 October."
+    ],
+    "must_not": [
+      "Confirms to the consignee that the delivery is all set for 1am to 2am without raising that the hour happens twice.",
+      "Tells the Freight planner to move the booking to 00:00-01:00 UTC, or to keep 01:00-02:00 UTC, before the consignee has said which hour.",
+      "Converts '1am to 2am' into a single UTC window and presents it as certain.",
+      "Says the delivery is confirmed or guaranteed to arrive inside the window."
+    ],
+    "reference_message": "Hello Nkechi, a check on DL-6436 before the carrier locks its plan at 12:00 UTC on Friday. The UK clocks go back at 2am BST on Sunday 25 October, so 1am to 2am happens twice that night: first as BST, which is 00:00-01:00 UTC, and again an hour later as GMT, which is 01:00-02:00 UTC. Plover Arc has currently booked the driver for 01:00-02:00 UTC at Dock 2, which is the second of the two hours. Could you confirm which hour your security officer and the bay are staffed: the first (00:00-01:00 UTC) or the second (01:00-02:00 UTC)? I will pass your answer straight to the carrier."
+  },
+  "rationale": "The consignee's '1am to 2am on the 25th' falls exactly in the hour that repeats when UK clocks go back, and only one person on site can sign. The planner booked 01:00-02:00 UTC, the second occurrence, while the desk had forwarded the local time without converting it. Neither reading can be assumed, so the desk must ask the consignee which hour they mean, giving both in UTC, before the plan locks.",
+  "trap": "Telling the consignee the 01:00-02:00 UTC booking matches their '1am to 2am' window, when on 25 October that local hour happens twice and the booking is only the second, GMT, occurrence.",
+  "basis": "UK clocks go back at 02:00 BST on Sunday 25 October 2026 (https://www.gov.uk/when-do-the-clocks-change), so local 01:00 to 01:59 occurs first as BST (00:00-01:00 UTC) and again as GMT (01:00-02:00 UTC). AIF-24 timezone and DST errors.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer asked Nkechi which of the two 1am-2am hours she meant, gave both in UTC, said the booking is the second (GMT) hour and gave the Friday 12:00 UTC lock. Second opinion: the key is right; only the consignee can resolve the repeated hour, and the clock-change times are correct."
+  }
+}
