@@ -221,6 +221,8 @@ export interface CaseState {
   humanAnswered: boolean;
   /** Messages a person chose not to send (a rejecting humanDecision). Never delivered. */
   refused: GatedAction[];
+  /** Held messages an approving humanDecision released. In a graph they go out on the branch after the human step. */
+  released: Set<GatedAction>;
 }
 
 export function openCase(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result: RunResult): CaseState {
@@ -236,7 +238,7 @@ export function openCase(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, r
   return {
     bundle, opts, rec, result, models, block: caseBlock(bundle), extraNotes: [], brief: "",
     gateConfig: DEFAULT_GATE, forced: false, cleared: [], held: [], blocked: [], delivered: [], undelivered: [], humanAsked: false,
-    humanAnswered: false, refused: [],
+    humanAnswered: false, refused: [], released: new Set(),
   };
 }
 
@@ -476,8 +478,13 @@ export async function gateStep(s: CaseState, nodeId: string, node: GateNodeConfi
   if (hd && decisionKind(hd) === "approve") {
     // The person's approval answers "ask": a held message the chosen option names goes out. A
     // blocked message never does, and the critic and hard rules above have already run.
-    gated = gated.map((g) => g.verdict === "ask" && implementsOption(hd, g)
-      ? { ...g, verdict: "allow" as const, worst: null, reasons: [`Approved by ${hd.who} (${hd.by}): ${hd.label}`] } : g);
+    s.released = new Set();
+    gated = gated.map((g) => {
+      if (g.verdict !== "ask" || !implementsOption(hd, g)) return g;
+      const ok: GatedAction = { ...g, verdict: "allow", worst: null, reasons: [`Approved by ${hd.who} (${hd.by}): ${hd.label}`] };
+      s.released.add(ok);
+      return ok;
+    });
     s.forced = gated.some((g) => g.verdict === "ask" && g.reasons[0] === PANEL_HOLD);
   } else if (hd) {
     // The person chose to send nothing further: whatever the gate would allow or hold stays unsent.

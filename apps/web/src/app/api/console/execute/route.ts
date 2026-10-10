@@ -9,7 +9,8 @@ import type { ExecutionVoice, HumanDecision } from "@/console/types";
 // and waits for the trace (up to 5 minutes). The row shows as "running" in the list meanwhile.
 // Voice re-runs: `parentExecutionId` adds the parent's sent messages as desk events and links the new row,
 // `extraEvents` are appended on the case's own timeline, and `humanDecision` goes to the agent API as a
-// trusted input (apps/api reads it once run.ts RunOptions.humanDecision lands; until then it is ignored there).
+// trusted input: apps/api treats the card's human step as answered (RunOptions.humanDecision), and any
+// message the chosen option implies still passes the safety gate.
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {

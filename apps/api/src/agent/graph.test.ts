@@ -176,40 +176,47 @@ test("on the default flow a held message takes the ask exit to the human card, w
 });
 
 // Two branches, each with its own gate: the damage gate is lenient, the missing-parcel gate strict.
+// A strict tree, as the Architect now builds flows: every branch has its own human, action and logs.
 const n = (id: string, type: NodeType, config?: Record<string, unknown>): FlowNode => ({ id, type, runs_on: ["code"], ...(config ? { config } : {}) });
 const e = (from: string, to: string, when?: string): FlowEdge => (when ? { from, to, when } : { from, to });
-const twoGates: Flow = {
-  id: "two-gates", name: "Two gates", business: "test",
+const branch = (name: string, gate: { allow_below: number; block_above: number }) => ({
   nodes: [
-    n("ingest", "ingest"), n("triage", "triage"),
-    n("plan_damage", "planner"), n("gate_damage", "safety_gate", { allow_below: 0.5, block_above: 0.9 }),
-    n("plan_parcel", "planner"), n("gate_parcel", "safety_gate", { allow_below: 0.1, block_above: 0.3 }),
-    n("human", "human_decision"), n("action", "action"), n("log", "case_log"), n("log_held", "case_log"),
+    n(`plan_${name}`, "planner"), n(`gate_${name}`, "safety_gate", gate), n(`action_${name}`, "action"), n(`log_${name}_done`, "case_log"),
+    n(`human_${name}`, "human_decision"), n(`action_${name}_approved`, "action"), n(`log_${name}_approved`, "case_log"),
+    n(`log_${name}_held`, "case_log"), n(`log_${name}_blocked`, "case_log"),
   ],
   edges: [
-    e("ingest", "triage"),
-    e("triage", "plan_damage", "damage"), e("triage", "plan_parcel", "missing_parcel"),
-    e("plan_damage", "gate_damage"), e("plan_parcel", "gate_parcel"),
-    e("gate_damage", "action", "allow"), e("gate_damage", "human", "ask"), e("gate_damage", "log", "block"),
-    e("gate_parcel", "action", "allow"), e("gate_parcel", "human", "ask"), e("gate_parcel", "log", "block"),
-    e("human", "log_held", "fallback"), e("human", "action", "approve"), e("action", "log"),
+    e(`plan_${name}`, `gate_${name}`),
+    e(`gate_${name}`, `action_${name}`, "allow"), e(`gate_${name}`, `human_${name}`, "ask"), e(`gate_${name}`, `log_${name}_blocked`, "block"),
+    e(`action_${name}`, `log_${name}_done`),
+    e(`human_${name}`, `action_${name}_approved`, "approve"), e(`human_${name}`, `log_${name}_held`, "fallback"),
+    e(`action_${name}_approved`, `log_${name}_approved`),
   ],
+});
+const damageBranch = branch("damage", { allow_below: 0.5, block_above: 0.9 });
+const parcelBranch = branch("parcel", { allow_below: 0.1, block_above: 0.3 });
+const twoGates: Flow = {
+  id: "two-gates", name: "Two gates", business: "test",
+  nodes: [n("ingest", "ingest"), n("triage", "triage"), ...damageBranch.nodes, ...parcelBranch.nodes],
+  edges: [e("ingest", "triage"), e("triage", "plan_damage", "damage"), e("triage", "plan_parcel", "missing_parcel"), ...damageBranch.edges, ...parcelBranch.edges],
 };
+const triageAs = (caseType: "damage" | "lost_or_misdelivered" | "cold_chain" | "other") =>
+  ({ triage: async () => ({ caseType, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) });
+const consistent = { ...understanding, conflicts: [] };
 
 test("a branching flow sends damage and missing-parcel cases down different gates with their own thresholds", async () => {
   assert.deepEqual(validateFlow(twoGates, { strictBranches: true }), []);
   // The same message at risk 0.25: under the damage gate's 0.5 it is allowed, over the parcel gate's 0.1 it is held.
   const replies = { understand: [understanding], decide: [decision, decision], critic: [{ actions: [scores(0.25)] }, { actions: [scores(0.25)] }] };
-  const triageAs = (caseType: "damage" | "lost_or_misdelivered") => ({ triage: async () => ({ caseType, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) });
 
   const damage = await runFlowGraph(bundle, { flow: twoGates, models: fake(replies), mode: "practice", runId: "t", judge: triageAs("damage") });
-  assert.deepEqual(edges(damage), ["ingest>triage", "triage>plan_damage:damage", "plan_damage>gate_damage", "gate_damage>action:allow", "action>log"]);
+  assert.deepEqual(edges(damage), ["ingest>triage", "triage>plan_damage:damage", "plan_damage>gate_damage", "gate_damage>action_damage:allow", "action_damage>log_damage_done"]);
   const g1 = gateOut(damage, "gate_damage");
   assert.deepEqual(g1 && { d: g1.decision, a: g1.allowBelow, b: g1.blockAbove }, { d: "allow", a: 0.5, b: 0.9 });
   assert.equal(damage.outcome, "acted");
 
   const parcel = await runFlowGraph(bundle, { flow: twoGates, models: fake(replies), mode: "practice", runId: "t", judge: triageAs("lost_or_misdelivered") });
-  assert.deepEqual(edges(parcel), ["ingest>triage", "triage>plan_parcel:missing_parcel", "plan_parcel>gate_parcel", "gate_parcel>human:ask", "human>log_held:fallback"]);
+  assert.deepEqual(edges(parcel), ["ingest>triage", "triage>plan_parcel:missing_parcel", "plan_parcel>gate_parcel", "gate_parcel>human_parcel:ask", "human_parcel>log_parcel_held:fallback"]);
   const g2 = gateOut(parcel, "gate_parcel");
   assert.deepEqual(g2 && { d: g2.decision, a: g2.allowBelow, b: g2.blockAbove }, { d: "ask", a: 0.1, b: 0.3 });
   assert.equal(parcel.outcome, "escalated");
@@ -229,24 +236,35 @@ test("without Jev the analysis's own case type is matched to a similar branch la
   assert.equal(matchesCaseType("Customs", "customs_and_charges"), true);
 });
 
-test("the Architect's branching example routes a missing-parcel case through its clash branch", async () => {
-  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice", runId: "t",
-    judge: { triage: async () => ({ caseType: "lost_or_misdelivered" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) } });
-  assert.deepEqual(edges(r), [
-    "ingest>history", "history>group", "group>triage:single", "triage>clash_parcel:missing_parcel", "clash_parcel>planner_investigation:clash",
-    "planner_investigation>gate", "gate>action:allow", "action>verify", "verify>log:ok",
+test("the Architect's tree routes a missing-parcel case by its clash check, each way to its own gate or log", async () => {
+  const opts = (u: Understanding) => ({ flow: BRANCHING_EXAMPLE, models: fake({ understand: [u], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice" as const, runId: "t", judge: triageAs("lost_or_misdelivered") });
+  const agree = await runFlowGraph(bundle, opts(consistent));
+  assert.deepEqual(edges(agree), [
+    "ingest>history", "history>triage", "triage>clash_parcel:missing_parcel", "clash_parcel>planner_parcel:consistent",
+    "planner_parcel>gate_parcel", "gate_parcel>action_parcel:allow", "action_parcel>log_parcel_done",
   ]);
-  assert.equal(r.outcome, "acted");
-  assert.equal(r.trace.flowId, "branching-incident");
+  assert.equal(gateOut(agree, "gate_parcel")?.allowBelow, 0.25);
+  assert.equal(agree.outcome, "acted");
+  assert.equal(agree.trace.flowId, "branching-incident");
+
+  // Conflicting accounts end at their own log before any plan: nothing is sent and a person gets a card.
+  const clash = await runFlowGraph(bundle, opts(understanding));
+  assert.deepEqual(edges(clash).slice(-1), ["clash_parcel>log_parcel_clash:clash"]);
+  assert.equal(ran(clash).includes("planner_parcel"), false);
+  assert.equal(clash.outcome, "escalated");
+  assert.equal(clash.outbox.length, 0);
+  assert.ok(clash.card);
 });
 
 test("a verify failure takes the retry edge once, then the failed edge", async () => {
   const transport = failingTransport(/./);
-  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [{ ...understanding, conflicts: [] }], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice", runId: "t",
-    transports: [transport], judge: { triage: async () => ({ caseType: "other" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) } });
+  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [consistent], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice", runId: "t",
+    transports: [transport], judge: triageAs("damage") });
   const hops = edges(r);
-  assert.deepEqual(hops.slice(hops.indexOf("gate>action:allow")), ["gate>action:allow", "action>verify", "verify>action:retry", "action>verify", "verify>human_failed:failed", "human_failed>log_held"]);
-  assert.equal(ran(r).filter((id) => id === "action").length, 2);
+  assert.deepEqual(hops.slice(hops.indexOf("gate_damage>action_damage:allow")), [
+    "gate_damage>action_damage:allow", "action_damage>verify_damage", "verify_damage>action_damage:retry", "action_damage>verify_damage", "verify_damage>log_damage_failed:failed",
+  ]);
+  assert.equal(ran(r).filter((id) => id === "action_damage").length, 2);
   // The retry really sent again: two tries on the first action, two more on the retry, none after.
   assert.equal(transport.calls.length, 4);
   assert.equal(r.outcome, "escalated");
@@ -257,31 +275,43 @@ test("a verify failure takes the retry edge once, then the failed edge", async (
 test("a retry that succeeds takes the ok edge", async () => {
   let n = 0;
   const flaky: Transport = { name: "flaky", channels: "*", live: false, async send() { n += 1; return n <= 2 ? { ok: false, error: "down" } : { ok: true, ref: "r-1" }; } };
-  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [{ ...understanding, conflicts: [] }], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice", runId: "t",
-    transports: [flaky], judge: { triage: async () => ({ caseType: "other" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) } });
+  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [consistent], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice", runId: "t",
+    transports: [flaky], judge: triageAs("damage") });
   const hops = edges(r);
-  assert.deepEqual(hops.slice(hops.indexOf("gate>action:allow")), ["gate>action:allow", "action>verify", "verify>action:retry", "action>verify", "verify>log:ok"]);
+  assert.deepEqual(hops.slice(hops.indexOf("gate_damage>action_damage:allow")), [
+    "gate_damage>action_damage:allow", "action_damage>verify_damage", "verify_damage>action_damage:retry", "action_damage>verify_damage", "verify_damage>log_damage_done:ok",
+  ]);
   assert.equal(r.outcome, "acted");
   assert.deepEqual(r.outbox.map((o) => o.status), ["recorded"]);
 });
 
 test("a human decision with nobody answering takes the fallback edge", async () => {
-  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [{ ...understanding, conflicts: [] }], decide: [decision, decision], critic: [{ actions: [scores(0.5)] }, { actions: [scores(0.5)] }] }), mode: "practice", runId: "t",
-    judge: { triage: async () => ({ caseType: "other" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) } });
+  const r = await runFlowGraph(bundle, { flow: twoGates, models: fake({ understand: [consistent], decide: [decision, decision], critic: [{ actions: [scores(0.6)] }, { actions: [scores(0.6)] }] }), mode: "practice", runId: "t",
+    judge: triageAs("damage") });
   const hops = edges(r);
-  assert.deepEqual(hops.slice(hops.indexOf("planner>gate")), ["planner>gate", "gate>human:ask", "human>log_held:fallback"]);
+  assert.deepEqual(hops.slice(hops.indexOf("plan_damage>gate_damage")), ["plan_damage>gate_damage", "gate_damage>human_damage:ask", "human_damage>log_damage_held:fallback"]);
   assert.equal(r.outcome, "escalated");
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
-  const human = nodeEnd(r, "human")?.output;
-  assert.equal(human?.type, "human_decision");
+  assert.equal(nodeEnd(r, "human_damage")?.output?.type, "human_decision");
   assert.ok(r.card?.fallback);
 });
 
+test("a human step with nobody answering and no fallback edge ends its path there: nothing approved goes out", async () => {
+  // The Architect's tree gives its gate humans only approve and reject exits.
+  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [consistent], decide: [decision, decision], critic: [{ actions: [scores(0.5)] }, { actions: [scores(0.5)] }] }), mode: "practice", runId: "t",
+    judge: triageAs("damage") });
+  assert.deepEqual(edges(r).slice(-1), ["gate_damage>human_damage:ask"]);
+  assert.equal(ran(r).includes("action_damage_approved"), false);
+  assert.equal(r.outcome, "escalated");
+  assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
+  assert.ok(r.card);
+});
+
 test("a panel that forces a human before planning ends at the held log with a card and nothing sent", async () => {
-  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [{ ...understanding, conflicts: [] }] }), mode: "practice", runId: "t", panel: flaggedPanel,
-    judge: { triage: async () => ({ caseType: "other" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) } });
+  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [consistent] }), mode: "practice", runId: "t", panel: flaggedPanel,
+    judge: triageAs("cold_chain") });
   const hops = edges(r);
-  assert.deepEqual(hops.slice(hops.indexOf("triage>perspectives:other")), ["triage>perspectives:other", "perspectives>human_hold:force_human", "human_hold>log_held:fallback"]);
+  assert.deepEqual(hops.slice(hops.indexOf("triage>perspectives_cold:cold_chain")), ["triage>perspectives_cold:cold_chain", "perspectives_cold>human_cold:force_human", "human_cold>log_cold_held"]);
   assert.equal(r.outcome, "escalated");
   assert.equal(r.outbox.length, 0);
   assert.equal(r.card?.whyStopped?.reason, "rule_requires_person");

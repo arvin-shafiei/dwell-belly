@@ -75,12 +75,12 @@ const bundle = fromView({ id: "delivery-024", title: "Case 024", events });
 
 const approve: HumanDecision = { optionId: "option-1", label: "Approve the message to Delivery investigations, Plover Arc Logistics", by: "tap", who: "Mina Okafor, desk manager" };
 const reject: HumanDecision = { optionId: "option-2", label: "Send nothing", by: "voice", who: "Mina Okafor, desk manager", confirmation: "Send nothing, confirmed." };
-const triageOther = { triage: async () => ({ caseType: "other" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) };
+const triageDamage = { triage: async () => ({ caseType: "damage" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) };
 
 const RUNNERS: [string, (o: RunOptions) => Promise<RunResult>][] = [
   ["runCase", (o) => runCase(bundle, o)],
   ["runFlowGraph on the default flow", (o) => runFlowGraph(bundle, o)],
-  ["runFlowGraph on the branching example", (o) => runFlowGraph(bundle, { ...o, flow: BRANCHING_EXAMPLE, judge: triageOther })],
+  ["runFlowGraph on the branching example", (o) => runFlowGraph(bundle, { ...o, flow: BRANCHING_EXAMPLE, judge: triageDamage })],
 ];
 const opts = (models: Models, humanDecision?: HumanDecision): RunOptions => ({ flow, models, mode: "demo", runId: "t", ...(humanDecision ? { humanDecision } : {}) });
 const humanEnd = (r: RunResult) => r.trace.events.filter((e): e is Extract<TraceEvent, { kind: "node_end" }> => e.kind === "node_end")
@@ -136,14 +136,14 @@ test("a rejection sends nothing, even a message the gate would allow, and the ca
     assert.equal(out?.card.chosen, "option-2", name);
     assert.equal(out?.source, "voice", name);
   }
-  const r = await runFlowGraph(bundle, { ...opts(fake({ decide: [decision()], critic: [{ actions: [scores(0.05)] }] }), reject), flow: BRANCHING_EXAMPLE, judge: triageOther });
-  assert.ok(edges(r).includes("human>log:reject"), edges(r).join(" "));
-  assert.equal(edges(r).includes("gate>action:allow"), false);
+  const r = await runFlowGraph(bundle, { ...opts(fake({ decide: [decision()], critic: [{ actions: [scores(0.05)] }] }), reject), flow: BRANCHING_EXAMPLE, judge: triageDamage });
+  assert.ok(edges(r).includes("human_damage>log_damage_rejected:reject"), edges(r).join(" "));
+  assert.equal(edges(r).includes("gate_damage>action_damage:allow"), false);
 });
 
 test("an approval takes the approve edge out of the human step", async () => {
-  const r = await runFlowGraph(bundle, { ...opts(fake({ decide: [decision(), decision()], critic: [{ actions: [scores(0.5)] }, { actions: [scores(0.5)] }] }), approve), flow: BRANCHING_EXAMPLE, judge: triageOther });
-  assert.ok(edges(r).includes("human>action:approve"), edges(r).join(" "));
+  const r = await runFlowGraph(bundle, { ...opts(fake({ decide: [decision(), decision()], critic: [{ actions: [scores(0.5)] }, { actions: [scores(0.5)] }] }), approve), flow: BRANCHING_EXAMPLE, judge: triageDamage });
+  assert.ok(edges(r).includes("human_damage>action_damage_approved:approve"), edges(r).join(" "));
   assert.equal(r.outcome, "acted");
 });
 

@@ -116,6 +116,8 @@ interface Step {
   caseType?: string;
   /** The node was already done and had nothing new to do; the walk does not continue from it. */
   joined?: boolean;
+  /** Human step: with no edge for its result, the path ends here (the card's safe fallback) instead of failing. */
+  endIfUnmatched?: boolean;
 }
 
 function choose(node: FlowNode, out: FlowEdge[], step: Step): FlowEdge[] {
@@ -135,6 +137,7 @@ function choose(node: FlowNode, out: FlowEdge[], step: Step): FlowEdge[] {
   if (plain.length) return plain;
   // A node with no branches of its own and a single labelled edge: there is only one way on.
   if (!step.results && step.caseType === undefined && out.length === 1) return out;
+  if (step.endIfUnmatched) return [];
   const found = step.caseType ?? step.results?.join(" / ") ?? "a result";
   throw new FlowError(`no edge out of "${node.id}" matches "${found}" and it has no unlabelled edge (edges: ${out.map((e) => `${e.to}${e.when ? ` when ${e.when}` : ""}`).join(", ")})`);
 }
@@ -142,12 +145,12 @@ function choose(node: FlowNode, out: FlowEdge[], step: Step): FlowEdge[] {
 /** Which gate exits fire: one per kind of verdict among the messages, as runCase acts on them. */
 function gateExits(s: CaseState): string[] {
   const fired: string[] = [];
-  if (s.cleared.length) fired.push("allow");
+  if (s.cleared.some((g) => !s.released.has(g))) fired.push("allow");
   const nothingPlanned = !isWaiting(s) && s.result.gated.length === 0;
   if (s.held.length || s.forced || s.d?.decision_type === "escalate_to_human" || nothingPlanned) fired.push("ask");
   if (s.blocked.length) fired.push("block");
   // A person has already answered this case's card: the ask exit carries that answer to the human step.
-  if (s.opts.humanDecision && !fired.includes("ask")) fired.splice(s.cleared.length ? 1 : 0, 0, "ask");
+  if (s.opts.humanDecision && !fired.includes("ask")) fired.splice(fired[0] === "allow" ? 1 : 0, 0, "ask");
   // Waiting with nothing to send: nothing is stopped, and the action step will find nothing to do.
   return fired.length ? fired : ["allow"];
 }
@@ -174,7 +177,7 @@ export async function runFlowGraph(bundle: CaseBundle, opts: GraphOptions): Prom
       if (from !== firstLog) rec.edge(from, firstLog, "error");
       if (!logs.includes(firstLog)) logs.push(firstLog);
     }
-    if (!logs.length) logs.push(firstLog);
+    // A path can also end at a human step whose flow gives no edge for the safe fallback; no log is invented for it.
     const why = state && result.outcome !== "error" && result.card && !state.humanAsked ? "; card raised at the case log" : "";
     for (const id of logs) rec.view(id, "case_log", `outcome: ${result.outcome}${why}`);
   };
@@ -191,7 +194,7 @@ async function walk(s: CaseState, flow: Flow, opts: GraphOptions, logs: string[]
   if (!start) throw new FlowError("the flow has no ingest node to start from");
 
   const cap = opts.stepCap ?? DEFAULT_STEP_CAP;
-  const queue: { id: string; retry: boolean }[] = [{ id: start.id, retry: false }];
+  const queue: { id: string; retry: boolean; fromHuman: boolean }[] = [{ id: start.id, retry: false, fromHuman: false }];
   const ranBefore = new Set<string>();
   const retried = new Set<string>();
   const handed = new Set<GatedAction>();
@@ -210,7 +213,7 @@ async function walk(s: CaseState, flow: Flow, opts: GraphOptions, logs: string[]
     rec.at(node.id);
     if (steps >= cap) throw new FlowError(`stopped after ${cap} steps: the flow loops without reaching a case log`);
     steps++;
-    const step = await runNode(s, node, item.retry, { ranBefore, retried, handed, outs, opts });
+    const step = await runNode(s, node, item, { ranBefore, retried, handed, outs, opts });
     ranBefore.add(node.id);
     if (step.joined) continue;
     for (const e of choose(node, outs.get(node.id) ?? [], step)) {
@@ -222,9 +225,10 @@ async function walk(s: CaseState, flow: Flow, opts: GraphOptions, logs: string[]
         continue;
       }
       const retry = labelOf(e) === "retry" || (SIMILAR.retry.includes(labelOf(e)) && byId.get(e.from)?.type === "verify");
+      const fromHuman = node.type === "human_decision";
       const pending = queue.find((q) => q.id === e.to);
-      if (pending) pending.retry ||= retry;
-      else queue.push({ id: e.to, retry });
+      if (pending) { pending.retry ||= retry; pending.fromHuman ||= fromHuman; }
+      else queue.push({ id: e.to, retry, fromHuman });
     }
   }
 }
@@ -237,7 +241,7 @@ interface WalkMemory {
   opts: GraphOptions;
 }
 
-async function runNode(s: CaseState, node: FlowNode, viaRetry: boolean, m: WalkMemory): Promise<Step> {
+async function runNode(s: CaseState, node: FlowNode, via: { retry: boolean; fromHuman: boolean }, m: WalkMemory): Promise<Step> {
   const { rec, opts } = s;
   const config = node.config ?? {};
   switch (node.type) {
@@ -303,17 +307,19 @@ async function runNode(s: CaseState, node: FlowNode, viaRetry: boolean, m: WalkM
       if (answer) {
         // Trusted: from the desk through the API body. Route by the option id, its label, then its kind.
         answerStep(s, node.id, answer);
-        return { results: [norm(answer.optionId), norm(answer.label), decisionKind(answer)] };
+        return { results: [norm(answer.optionId), norm(answer.label), decisionKind(answer)], endIfUnmatched: true };
       }
       s.humanAsked = true;
       humanStep(s, node.id);
       // Nobody answers during a run: the card's safe fallback stands, and held messages stay held.
-      return { results: ["fallback"] };
+      return { results: ["fallback"], endIfUnmatched: true };
     }
 
     case "action": {
       // Only gate-cleared messages, each handed over once; a retry resends what was not delivered.
-      const toSend = viaRetry ? s.undelivered.splice(0).map((x) => x.g) : s.cleared.filter((g) => !m.handed.has(g));
+      // Messages a person approved go out only on a branch that comes from the human step.
+      const toSend = via.retry ? s.undelivered.splice(0).map((x) => x.g)
+        : s.cleared.filter((g) => !m.handed.has(g) && (via.fromHuman || !s.released.has(g)));
       if (!toSend.length && m.ranBefore.has(node.id)) return { results: null, joined: true };
       if (!toSend.length) {
         rec.begin(node.id, "action");
