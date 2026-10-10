@@ -3,13 +3,17 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Older stylesheets still name the previous fonts; they all resolve to the two current ones. */
+  --font-geist-sans: var(--font-ui);
+  --font-inter: var(--font-ui);
+  --font-geist-mono: var(--font-code);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-code);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,12 +31,13 @@ body {
 
 /* ---- Rivet desk console ("/") — additive; the /city page does not use these. ---- */
 @theme inline {
-  --color-rv-canvas: #1f1f23;
-  --color-rv-sidebar: #18181b;
-  --color-rv-panel: #26262b;
-  --color-rv-card: #2a2a30;
-  --color-rv-raised: #33333a;
-  --color-rv-line: #36363e;
+  /* Surfaces are translucent so the backdrop shows through them, blurred (see "glass" below). */
+  --color-rv-canvas: rgba(23, 23, 27, 0.42);
+  --color-rv-sidebar: rgba(20, 20, 24, 0.62);
+  --color-rv-panel: rgba(40, 40, 47, 0.52);
+  --color-rv-card: rgba(44, 44, 52, 0.46);
+  --color-rv-raised: rgba(62, 62, 72, 0.6);
+  --color-rv-line: rgba(255, 255, 255, 0.09);
   --color-rv-orange: #ff6a1a;
   --color-rv-orange-hi: #ff8443;
   --color-rv-green: #3ecf8e;
@@ -40,15 +45,47 @@ body {
   --color-rv-amber: #f5a524;
   --color-rv-blue: #5aa9ff;
   --color-rv-violet: #a78bfa;
-  --font-console: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-console: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
 }
 
 .console-root {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-feature-settings: "cv11", "ss01";
-  background: #1f1f23;
-  color: #e7e7ea;
+  font-family: var(--font-ui), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: -0.005em;
+  /* A still, low-contrast backdrop: two soft pools of light for the glass to pick up. No motion. */
+  background:
+    radial-gradient(900px 620px at 10% -10%, rgba(255, 106, 26, 0.22), transparent 60%),
+    radial-gradient(1000px 720px at 98% 0%, rgba(90, 169, 255, 0.16), transparent 58%),
+    radial-gradient(1200px 800px at 60% 112%, rgba(62, 207, 142, 0.10), transparent 60%),
+    #17171b;
+  background-attachment: fixed;
+  color: #e9e9ee;
   color-scheme: dark;
+}
+
+/* Glass: every console surface blurs what is behind it and carries a hairline of light along its
+   top edge. The workflow canvas is left out: blurring dozens of moving nodes makes panning stutter. */
+.console-root :is(.bg-rv-card, .bg-rv-panel, .bg-rv-sidebar, .bg-rv-raised, .bg-rv-canvas):not(.react-flow *) {
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+}
+.console-root :is(.bg-rv-card, .bg-rv-panel):not(.react-flow *) {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 18px 40px -24px rgba(0, 0, 0, 0.7);
+}
+/* Inside the canvas the same surfaces stay solid, so nodes read clearly over the dot grid. */
+.console-root .react-flow :is(.bg-rv-card, .bg-rv-panel, .bg-rv-raised) {
+  background-color: #2a2a31;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .console-root :is(.bg-rv-card, .bg-rv-panel, .bg-rv-sidebar, .bg-rv-raised) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: #26262b;
+  }
+}
+
+.console-root :is(code, kbd, pre, .font-mono) {
+  font-family: var(--font-code), ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: -0.01em;
 }
 
 .console-root .tabular,
@@ -58,7 +95,7 @@ body {
 
 /* n8n-like dotted canvas background (for workflow canvases and empty areas). */
 .rv-dotgrid {
-  background-color: #1f1f23;
+  background-color: transparent;
   background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
   background-size: 20px 20px;
 }
