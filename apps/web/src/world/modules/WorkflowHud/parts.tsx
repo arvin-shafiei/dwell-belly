@@ -26,9 +26,14 @@ export function useNow(intervalMs: number) {
 
 /** Ticking wall clock in ms (Date.now), for budget windows. */
 export function useEpochNow(intervalMs: number) {
-  const [now, setNow] = useState(() => Date.now());
+  // The clock is first read after mount, not while rendering: Next prerenders this component, and a
+  // time read during render would be frozen into the page. Until that first read the value is 0,
+  // and callers show nothing time-based.
+  const [now, setNow] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), intervalMs);
+    const tick = () => setNow(Date.now());
+    tick();
+    const id = setInterval(tick, intervalMs);
     return () => clearInterval(id);
   }, [intervalMs]);
   return now;
@@ -93,8 +98,8 @@ function BudgetChip({ editable }: { editable: boolean }) {
   const setMax = useWorld((s) => s.setAgentBudgetMax);
   const [open, setOpen] = useState(false);
   const now = useEpochNow(5000);
-  const left = budgetLeft(b, now);
-  const next = nextSlotAt(b, now);
+  const left = now ? budgetLeft(b, now) : b.maxPerWindow;
+  const next = now ? nextSlotAt(b, now) : null;
   const title = `${cents(b.spentUsd) || "0¢"} spent. ${left} of ${b.maxPerWindow} cases left for this 10 minutes${
     next ? `, more in ${Math.ceil((next - now) / 60_000)} min` : ""
   }.${editable ? " Click to change." : ""}`;
@@ -161,7 +166,7 @@ export const AgentQueueList = memo(function AgentQueueList() {
   const online = useWorld((s) => s.agentOnline);
   const b = useWorld((s) => s.agentBudget);
   const now = useEpochNow(5000);
-  if (!queue.length) return null;
+  if (!queue.length || !now) return null;
   const next = nextSlotAt(b, now);
   const why = online !== true ? "Paused: offline" : next ? `More in ${Math.max(1, Math.ceil((next - now) / 60_000))} min` : "Next up";
   return (
