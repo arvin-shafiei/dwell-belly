@@ -76,6 +76,22 @@ test("handleNote: an English note is left as it is", async () => {
   assert.equal(res.language, "English");
 });
 
+test("noteKeyterms adds the case's place and person names to its references and times", async () => {
+  const { noteKeyterms } = await import("./notes.ts");
+  const terms = noteKeyterms("From: Fen Orlo, route driver\nI am at 7 Sedgeglass Mews for DL-003. The pedestrian gate is shut.\n\nFrom: Dispatch\nPlease contact recipient Elva Kesh. The driver can wait until 10:00 UTC.");
+  for (const t of ["DL-003", "10:00", "Sedgeglass Mews", "Elva Kesh", "Fen Orlo"]) assert.ok(terms.some((x) => x.includes(t)), `missing ${t}: ${terms}`);
+  assert.ok(terms.length <= 100);
+});
+
+test("handleNote: transcribes with the place and person names too", async () => {
+  let seen: string[] = [];
+  await handleNote(
+    { mode: "demo", source: "live_human", from: "Driver", n: 3, at: "t", audio: new Uint8Array([1]), filename: "n.webm", caseText: "From: Fen Orlo\nI am at 7 Sedgeglass Mews." },
+    { transcribe: async (_a, opts) => { seen = opts.keyterms ?? []; return ok(); } },
+  );
+  assert.ok(seen.some((t) => t.includes("Sedgeglass Mews")), `keyterms: ${seen}`);
+});
+
 test("handleNote: empty transcription → 422", async () => {
   const res = await handleNote(
     { mode: "demo", source: "live_human", from: "Driver", n: 3, at: "t", audio: new Uint8Array([1]), filename: "n.webm" },

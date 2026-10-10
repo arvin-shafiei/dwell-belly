@@ -10,6 +10,21 @@ import { keepsDetails, type TranslateFn } from "./translate.ts";
 
 export const UNCLEAR_BELOW = 0.6;
 
+// Place and person names: "7 Sedgeglass Mews", "Elva Kesh". Voice notes only; the batch runner keeps
+// caseKeyterms as it is.
+const NAME = /\b(?:\d+\s)?[A-Z][a-z]+(?:\s[A-Z][a-z]+){1,2}\b/g;
+const MAX_TERMS = 100;
+
+/** The case's references, times and senders (caseKeyterms) plus its place and person names. */
+export function noteKeyterms(caseText: string): string[] {
+  const terms = caseKeyterms(caseText);
+  for (const name of caseText.match(NAME) ?? []) {
+    if (terms.length >= MAX_TERMS) break;
+    if (!terms.includes(name)) terms.push(name);
+  }
+  return terms;
+}
+
 export function noteToEvent(note: {
   n: number;
   at: string;
@@ -55,7 +70,7 @@ export async function handleNote(
   const caseText = input.caseText ?? "";
   const heard = await deps.transcribe(input.audio, {
     filename: input.filename || "voice-note.webm",
-    keyterms: caseKeyterms(caseText),
+    keyterms: noteKeyterms(caseText),
     languageCode: input.languageCode === "auto" ? undefined : input.languageCode,
   });
   if (!heard.ok) return { ok: false, status: /nothing heard/i.test(heard.error) ? 422 : 502, error: heard.error };
