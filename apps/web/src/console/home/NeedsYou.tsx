@@ -35,7 +35,7 @@ export default function NeedsYou({
     return (
       <div className="rounded-xl border border-white/[0.07] bg-rv-card">
         <EmptyState icon={<IconCheck size={20} />} title="Nothing waits for you">
-          Rivet asks here when a case needs a person.
+          Hamyway City asks here when a case needs a person.
         </EmptyState>
       </div>
     );

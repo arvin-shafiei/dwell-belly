@@ -1,10 +1,10 @@
 <div align="center">
 
-# Rivet
+# Hamyway City
 
 ### A delivery escalation desk that knows when to stop.
 
-Rivet reads a delivery problem the way a coordinator would, works out who owns the decision, and takes **one well-aimed next step**, or hands it to a person with everything they need to decide in one read.
+Hamyway City reads a delivery problem the way a coordinator would, works out who owns the decision, and takes **one well-aimed next step**, or hands it to a person with everything they need to decide in one read.
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
@@ -14,7 +14,7 @@ Rivet reads a delivery problem the way a coordinator would, works out who owns t
 [![three.js](https://img.shields.io/badge/three.js-3D%20city-049EF4?logo=threedotjs&logoColor=white)](https://threejs.org)
 [![Node 22.18+](https://img.shields.io/badge/node-%E2%89%A522.18-339933?logo=nodedotjs&logoColor=white)](#quickstart)
 
-<img src="docs/media/hero.gif" alt="Rivet: a case comes in, the agent decides, the safety check clears the message, and the decision appears in the console" width="900">
+<img src="docs/media/hero.gif" alt="Hamyway City: a case comes in, the agent decides, the safety check clears the message, and the decision appears in the console" width="900">
 
 **[▶ Watch the 60-second demo](demo/rivet-demo.mp4)** · [full 2-minute cut](demo/rivet-demo-full.mp4) · [Quickstart](#quickstart) · [Architecture](#architecture) · [Evidence](#evidence) · [Limitations](#known-limitations)
 
@@ -26,7 +26,7 @@ Rivet reads a delivery problem the way a coordinator would, works out who owns t
 
 ## At a glance
 
-Rivet reads a delivery problem the way a coordinator would (emails, portal messages, call transcripts, attachments), works out who owns the decision, and takes the next step: one well-aimed message to the right team, a question for the missing fact, nothing at all when nothing is owed, or a handover to a person with everything they need to decide in one read.
+Hamyway City reads a delivery problem the way a coordinator would (emails, portal messages, call transcripts, attachments), works out who owns the decision, and takes the next step: one well-aimed message to the right team, a question for the missing fact, nothing at all when nothing is owed, or a handover to a person with everything they need to decide in one read.
 
 | | |
 |---|---|
@@ -58,7 +58,7 @@ Rivet reads a delivery problem the way a coordinator would (emails, portal messa
 
 A delivery desk sits between customers, a carrier and a merchant, and controls almost nothing itself: dispatch books, the merchant refunds, the carrier investigates, safety staff rule on hazards. The work is coordination, and the failures are familiar:
 
-| | Failure | What Rivet does instead |
+| | Failure | What Hamyway City does instead |
 |---|---|---|
 | ⚖️ | Stories clash (the scan says delivered, the customer says nothing came) and someone picks a side. | Names the clash and asks the owner of the record to check it. |
 | 📭 | A request bounces or lands in the wrong queue, and is reported as done. | Reports messages as *recorded*, never as delivered or confirmed. |
@@ -189,7 +189,7 @@ The Desk Caller opens every call with: *"Hi, this is the delivery desk assistant
 4. Run `npm run dev`, open the console at `http://localhost:3000`, run any delivery case and use the Voice strip on its execution: a voice note from the driver, a call to whoever the agent chose to phone, and approve by voice when the case stops for a person. Each one re-runs the case.
 5. A driver can speak any language: pick "Speaks: Any language" on the voice note. The language is detected, the note keeps their words, says which language it was and carries an English machine translation (dropped if it loses any reference, time or number), and the desk works on it in English.
 6. After every call, each line the voice agent said is checked by the safety gate with the whole call as context. Anything it should not have said (a refund promise, say) is flagged in the call box and added to the case, so the next run corrects it.
-7. **Take calls.** Tick "📞 Take calls" (next to Run the agent on New case, or Run again on a run). When a run decides a phone call is the right move, the call pops up as soon as it finishes ("Rivet is calling Elva Kesh, the recipient", with the agent's reason) and the run reads "Calling Elva Kesh…". **Take call** and you answer as that person; what was said goes back into the case, which runs again. **Don't take it** and the case runs again knowing nobody answered, so the agent picks a fallback. Unticked (and always in the batch runner and the Reality Test), the run is fully automatic and a call is only recorded in the outbox like any other message. Runs that need no call show no voice at all. Driver voice notes and voicemails come in on New case as attached recordings, in any language.
+7. **Take calls.** Tick "📞 Take calls" (next to Run the agent on New case, or Run again on a run). When a run decides a phone call is the right move, the call pops up as soon as it finishes ("Hamyway City is calling Elva Kesh, the recipient", with the agent's reason) and the run reads "Calling Elva Kesh…". **Take call** and you answer as that person; what was said goes back into the case, which runs again. **Don't take it** and the case runs again knowing nobody answered, so the agent picks a fallback. Unticked (and always in the batch runner and the Reality Test), the run is fully automatic and a call is only recorded in the outbox like any other message. Runs that need no call show no voice at all. Driver voice notes and voicemails come in on New case as attached recordings, in any language.
 
 Code: `apps/api/src/voice/`, `apps/api/src/app/api/voice/` and `apps/web/src/voice/`. Tests: `npm run test:voice`, `npm run test:agent` and `npm test -w web`.
 
@@ -559,7 +559,7 @@ The test set is in `data/generated/delivery/`: 243 hard cases with answer keys (
 
 **The arithmetic, for a desk to fill in.** At the measured $0.054 a case, 10,000 escalations a month is about $540 of model spend. What that replaces depends on what a coordinator's first touch costs the desk today, which we have not measured and do not assume.
 
-**What a pilot would be.** Two weeks in shadow mode on one desk's escalation inbox: Rivet drafts the next step for every case into its outbox, and coordinators send, edit or reject each draft. Nothing goes out without a person. Measures: the share of drafts sent unchanged, the number of drafts a coordinator had to stop for a prohibited promise (target zero), and time from escalation to first action. Steps people approve every time become the first candidates to run without review.
+**What a pilot would be.** Two weeks in shadow mode on one desk's escalation inbox: Hamyway City drafts the next step for every case into its outbox, and coordinators send, edit or reject each draft. Nothing goes out without a person. Measures: the share of drafts sent unchanged, the number of drafts a coordinator had to stop for a prohibited promise (target zero), and time from escalation to first action. Steps people approve every time become the first candidates to run without review.
 
 **What stands between today and that pilot.** No real mailbox, portal or queue is behind the outbox yet. Decisions people make are recorded but do not yet feed back into how careful the agent is. Only delivery cases have been run. The scores above are single runs on 48 cases against answer keys we wrote. Each of these is in [Known limitations](#known-limitations) or [What we would build next](#what-we-would-build-next).
 

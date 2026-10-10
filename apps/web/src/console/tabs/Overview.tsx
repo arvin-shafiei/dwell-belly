@@ -35,7 +35,7 @@ export default function OverviewTab() {
     <div className="h-full overflow-y-auto">
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-8 px-6 py-8">
         <p className="text-[15px] leading-relaxed text-white/60">
-          Rivet handles delivery problems: it reads the messages, checks the stories, and sends the right message, or
+          Hamyway City handles delivery problems: it reads the messages, checks the stories, and sends the right message, or
           asks a person.
         </p>
 

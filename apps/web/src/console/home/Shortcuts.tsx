@@ -47,7 +47,7 @@ export default function Shortcuts() {
   const { navigate } = useConsole();
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-      <Tile icon={IconExecutions} title="New case" line="Give Rivet a problem to handle" onClick={() => navigate("intake")} />
+      <Tile icon={IconExecutions} title="New case" line="Give Hamyway City a problem to handle" onClick={() => navigate("intake")} />
       <Tile icon={IconWorkflow} title="Practice a playbook" line="Try the steps on test cases" onClick={() => navigate("workflows")} />
       <Tile
         icon={IconCity}

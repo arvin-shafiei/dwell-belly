@@ -231,7 +231,7 @@ function Ring({ execution }: { execution: ExecutionRecord }) {
     <section className="rounded-xl border border-[#ff6a1a]/50 bg-[#ff6a1a]/10 p-4" aria-live="polite">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <div className="text-[17px] font-semibold text-white">📞 Rivet is calling {who}{role ? `, the ${role}` : ""}</div>
+          <div className="text-[17px] font-semibold text-white">📞 Hamyway City is calling {who}{role ? `, the ${role}` : ""}</div>
           {row.action.purpose && <p className="mt-1 text-[14px] text-white/70">Why: {row.action.purpose}</p>}
           <p className="mt-1 text-[14px] text-white/70">Take it and you answer as {who}; when you hang up, the case runs again with what was said. Don&apos;t take it and the case runs again knowing nobody answered.</p>
         </div>

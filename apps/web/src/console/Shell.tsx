@@ -333,7 +333,7 @@ function Sidebar({
     >
       <div className={cx("flex h-14 shrink-0 items-center gap-2.5", collapsed ? "justify-center" : "px-3.5")}>
         <RivetMark size={26} />
-        {!collapsed && <div className="text-[15px] font-semibold text-white">Rivet</div>}
+        {!collapsed && <div className="text-[15px] font-semibold text-white">Hamyway City</div>}
       </div>
 
       <ul className="flex flex-col gap-0.5 px-2 pt-2">

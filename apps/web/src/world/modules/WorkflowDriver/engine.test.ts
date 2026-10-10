@@ -64,7 +64,7 @@ describe("incident cases", () => {
     engine.advance(10);
     const c = engine.cases()[0];
     expect(c.id).toBe("CASE-0001");
-    expect(c.title).toBe("Roadworks closed King St: 6 Rivet deliveries on affected routes");
+    expect(c.title).toBe("Roadworks closed King St: 6 Hamyway City deliveries on affected routes");
     expect(events[0]).toMatchObject({ caseId: "CASE-0001", nodeId: "ingest", status: "start" });
   });
 
@@ -110,7 +110,7 @@ describe("incident cases", () => {
       const nodes = nodesOf(events);
       expect(nodes[0]).toBe("ingest");
       expect(nodes[nodes.length - 1]).toBe("log");
-      expect(engine.cases()[0].title).toMatch(/: 5 Rivet deliveries on affected routes$/);
+      expect(engine.cases()[0].title).toMatch(/: 5 Hamyway City deliveries on affected routes$/);
     },
   );
 

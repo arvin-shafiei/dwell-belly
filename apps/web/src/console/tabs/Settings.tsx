@@ -24,7 +24,7 @@ import { createVersion, listVersions } from "../workflows/api";
 import { Button, ErrorState, IconImport, Panel, Skeleton, StatusDot, cx, formatCount, useConsole } from "../ui";
 import pkg from "../../../package.json";
 
-const README_URL = "https://github.com/arvin-shafiei/dwell-belly#readme";
+const README_URL = "https://github.com/arvin-shafiei/hamyway-city#readme";
 
 export default function SettingsTab() {
   return (
@@ -271,7 +271,7 @@ function AboutSection() {
     <Panel title="About">
       <div className="flex flex-col gap-3 text-[13px]">
         <div className="text-white/75">
-          Rivet {pkg.version}
+          Hamyway City {pkg.version}
           {info.data?.commit && <span className="ml-2 text-[12px] text-white/40">build {info.data.commit}</span>}
         </div>
         <div className="flex gap-4">

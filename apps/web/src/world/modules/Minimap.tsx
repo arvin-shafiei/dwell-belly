@@ -79,7 +79,7 @@ const DOT: Record<VehicleKind, DotStyle> = {
 };
 
 const LEGEND: { label: string; style: DotStyle }[] = [
-  { label: "Rivet van / truck", style: DOT.van },
+  { label: "Hamyway City van / truck", style: DOT.van },
   { label: "Police", style: DOT.police },
   { label: "Ambulance", style: DOT.ambulance },
   { label: "Fire", style: DOT.fire },

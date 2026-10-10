@@ -72,7 +72,7 @@ describe("request timeouts", () => {
 describe("plain errors", () => {
   it("network failure", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => Promise.reject(new TypeError("Failed to fetch"))));
-    await expect(request("GET", "/x")).rejects.toMatchObject({ message: "Can't reach Rivet right now.", kind: "network" });
+    await expect(request("GET", "/x")).rejects.toMatchObject({ message: "Can't reach Hamyway City right now.", kind: "network" });
   });
 
   it("server error hides the server's words but keeps them in detail", async () => {

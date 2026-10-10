@@ -41,7 +41,7 @@ export default function HowItWorksTab() {
     <div className="h-full overflow-y-auto">
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-8 px-6 py-8">
         <p className="text-[15px] leading-relaxed text-white/60">
-          Rivet reads a delivery problem, checks the facts, plans a reply and checks it is safe before anything goes out.
+          Hamyway City reads a delivery problem, checks the facts, plans a reply and checks it is safe before anything goes out.
           When it is not sure, a person decides.
         </p>
 

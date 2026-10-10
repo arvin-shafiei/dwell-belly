@@ -52,13 +52,13 @@ Captions are burned in, bottom third, white on a dark band, at most 9 words each
 | Time | Tab and exact clicks | On screen | Caption |
 |---|---|---|---|
 | **0:00–0:07** | Tab 1 (`/city`). It's already running. Before recording, click **Camera tour** in the console's City tab, or let the city's own camera move. Don't click anything else. | The 3D city: vans, drivers, an incident flaring up. Any voice bubble from a simulated persona shows its **SIMULATED** tag. | `A delivery desk: calls, emails, stories that clash.` Corner tag for the full 7 s: `Visualisation (replays agent traces). Not the agent.` |
-| **0:07–0:09** | Cmd+2 (Tab 2). | Case runs list, with `delivery-013` selected. | `Rivet: the desk agent that knows when to stop.` |
+| **0:07–0:09** | Cmd+2 (Tab 2). | Case runs list, with `delivery-013` selected. | `Hamyway City: the desk agent that knows when to stop.` |
 | **0:09–0:20** | Hover the conflict line in **Steps** ("Do the stories match?": *1 conflict: whether the recipient was reachable at the attempt*). Then scroll so the message card is visible (To: Tracking support, Plover Arc Logistics · Email). Hover **Right ✓**. | The clash row, the message to the owning team, the safety check row "2 of 2 messages cleared", and **Right ✓**. | `Scan says "failed attempt". She says she was home.` → (at 0:14) `It asks the carrier to review. Picks no side.` |
 | **0:20–0:22** | Cmd+3 (Tab 3). | `gen-1201` opens. | `A harder one.` |
 | **0:22–0:36** | Scroll slowly to the card **A person needs to decide** ("Asked: Rivet Delivery Desk supervisor"): the line saying why it stopped → the three option tiles, each with what it would send. Click **▸ More** (on the toggle, **never on an option tile**: a tile re-runs the case with a paid call). Hold for 2 s on "What would settle it:" and "If nobody answers:". | The card: "The recipient is reported deceased and his daughter asks to redirect or cancel his parcel… only a named supervisor can sign off." Deadline 16:00 UTC, 4 Mar. One holding reply recorded, with no promise in it. | `Recipient has died. Daughter asks for a redirect.` → (0:28) `It won't decide that. A supervisor will.` → (0:33) `One kind reply. No promise. Clear options.` |
 | **0:36–0:44** | Cmd+4 (Tab 4, `gen-1103`). Point at the empty outbox / "nothing sent" and the decision row. | The FYI-only message from the freight planner, decision **no action**, and zero messages. | `"FYI only." So it sends nothing.` |
 | **0:44–0:54** | Cmd+5 (Results), then Cmd+6 (`eval/results.md`, "All cases" table, the Run 4 column, "current code"). Hold the zoom on these rows: Passing, Sent a message when nothing was owed, Sent a message when a person had to decide, Broke a must-never rule. | Results grid rows with ✓ and ✗, then the table. | `48 tested cases: 46 right, mean score 0.92.` → (0:49) `Never messaged when a person had to decide (0 of 5).` → (0:52) `50 of 50 practice cases in 165 s, $2.70.` |
-| **0:54–1:00** | Stay on the table or cut to Tab 2. | Still frame. | `Most agents answer. Rivet knows who decides, and when to stop.` |
+| **0:54–1:00** | Stay on the table or cut to Tab 2. | Still frame. | `Most agents answer. Hamyway City knows who decides, and when to stop.` |
 
 **On-screen numbers allowed, and their source:** "46 of 48 passing, mean 0.92" (Run 4), "0 of 5", "0 of 3", "0 of 48 must-never rules broken" (Run 4), "50 of 50 in 165 s, $2.70 (about $0.054 per case)" all come from `eval/results.md`. "2 of 2 messages cleared", "Right, 1.0", 37 s and $0.056 come from run `5881d315…`. Say "no must-never rule broken in the latest run" (Run 4, 0 of 48), not "never breaks a rule": Run 3 had 2 breaks, which don't recur in Run 4. The two Run 4 fails are escalations where the judge scored the extra message (`gen-1201`, `gen-904`). That includes our "asked a person" case, so don't show a pass mark for `gen-1201`.
 
@@ -70,7 +70,7 @@ Record this one first, and use it if the city stutters, the GPU struggles or any
 
 | Time | Tab and exact clicks | On screen | Caption |
 |---|---|---|---|
-| **0:00–0:07** | `http://localhost:3000/` (**Home**). Don't click anything. | Big plain totals, "Real cases only", Recent cases. | `A delivery desk: calls, emails, stories that clash.` → `Rivet decides who owns it, and when to stop.` |
+| **0:00–0:07** | `http://localhost:3000/` (**Home**). Don't click anything. | Big plain totals, "Real cases only", Recent cases. | `A delivery desk: calls, emails, stories that clash.` → `Hamyway City decides who owns it, and when to stop.` |
 | **0:07–1:00** | Same as Take A from 0:07. | | |
 
 **If the gen-1103 run is missing or sent something:** in either take, replace 0:36–0:44 with Tab 6 (`eval/results.md`) zoomed on the row "Sent a message when nothing was owed: 0% (0 of 3)" (the same in all four runs), captioned `When nothing is owed, it sends nothing (0 of 3).` Then go straight to Results.

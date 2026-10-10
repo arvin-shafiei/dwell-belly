@@ -72,7 +72,7 @@ describe("FleetSim", () => {
     emit({ type: "request:breakdown" });
     const inc = useWorld.getState().incidents.find((i) => i.kind === "breakdown")!;
     expect(inc).toBeTruthy();
-    expect(inc.note).toMatch(/^Rivet van V-\d+ broke down on /);
+    expect(inc.note).toMatch(/^Hamyway City van V-\d+ broke down on /);
     expect(useWorld.getState().blocked[inc.edgeKey]).toBe(inc.note);
     expect(events.some((e) => e.type === "incident:created" && e.incidentId === inc.id)).toBe(true);
     const broken = [...sim.vans.values()].find((v) => v.incidentId === inc.id)!;
