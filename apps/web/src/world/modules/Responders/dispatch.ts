@@ -35,8 +35,33 @@ export const GAP_M: Record<UnitRole, number> = { tow: 5.5, police: 10, ambulance
 
 /** Seconds after the call before each unit leaves base (so units from one base don't overlap). */
 export const LEAVE_DELAY_S: Record<UnitRole, number> = { police: 0, ambulance: 0.4, fire: 2.2, tow: 2.5 };
+/** Extra delay per repeat of the same role (pileups send two of some). */
+export const REPEAT_DELAY_S = 3;
+/** Extra parking gap per repeat, so a second unit stuck on the same side doesn't park inside the first. */
+export const REPEAT_GAP_M = 6;
 
-const HANDLED: ReadonlySet<IncidentKind> = new Set<IncidentKind>(["car_crash", "truck_crash", "breakdown"]);
+/** Leave delays for a dispatch list: base delay per role plus REPEAT_DELAY_S for each repeat. */
+export function leaveDelays(roles: readonly UnitRole[]): number[] {
+  const seen: Partial<Record<UnitRole, number>> = {};
+  return roles.map((r) => {
+    const nth = seen[r] ?? 0;
+    seen[r] = nth + 1;
+    return LEAVE_DELAY_S[r] + nth * REPEAT_DELAY_S;
+  });
+}
+
+/** Number of tow trucks the incident needs on scene before clearing can start. */
+export function towsRequired(kind: IncidentKind) {
+  return planDispatch(kind).filter((r) => r === "tow").length;
+}
+
+/** Seconds every tow must have been on scene before "clearing". */
+export function towWorkSeconds(kind: IncidentKind) {
+  return kind === "pileup" ? 10 : 8;
+}
+
+// Roadworks are owned by Roadworks; plane_crash / emergency_landing by Airport.
+const HANDLED: ReadonlySet<IncidentKind> = new Set<IncidentKind>(["car_crash", "truck_crash", "pileup", "breakdown"]);
 
 export function shouldHandle(kind: IncidentKind) {
   return HANDLED.has(kind);
@@ -44,6 +69,8 @@ export function shouldHandle(kind: IncidentKind) {
 
 export function planDispatch(kind: IncidentKind): UnitRole[] {
   if (!shouldHandle(kind)) return [];
+  // Multi-vehicle pileup: everything, doubled up (second wave listed after the first, so it leaves later).
+  if (kind === "pileup") return ["police", "ambulance", "fire", "tow", "police", "ambulance", "tow"];
   const roles: UnitRole[] = ["police"];
   if (kind === "car_crash" || kind === "truck_crash") roles.push("ambulance");
   if (kind === "truck_crash") roles.push("fire");
@@ -84,6 +111,7 @@ export function planApproach(
   role: UnitRole,
   blocked: ReadonlySet<string>,
   avoidSide?: Side,
+  extraGap = 0,
 ): Approach | null {
   const e = ROAD_EDGES.get(inc.edgeKey);
   if (!e || !ROAD_EDGES.size) return null;
@@ -102,7 +130,7 @@ export function planApproach(
     }
     if (!path) continue;
     const wreckT = side === "a" ? tW : 1 - tW;
-    const stopT = Math.max(0.04, wreckT - GAP_M[role] / e.length);
+    const stopT = Math.max(0.04, wreckT - (GAP_M[role] + extraGap) / e.length);
     options.push({
       route: { nodes: [...path, other], stopT },
       side,
@@ -128,4 +156,21 @@ export function planReturn(from: string, to: string, base: string, blocked: Read
   }
   if (!path) return null;
   return { nodes: [from, ...path], stopT: 1 };
+}
+
+/**
+ * Other roads closed by the same incident (a pileup can block two adjacent edges). Crashes doesn't
+ * record the second edge on the Incident, so match blocked edges that touch the incident edge and
+ * carry the same reason (Crashes uses the incident note as the reason).
+ */
+export function companionEdges(incEdge: string, note: string, blocked: Readonly<Record<string, string>>): string[] {
+  const e = ROAD_EDGES.get(incEdge);
+  if (!e || !note) return [];
+  const out: string[] = [];
+  for (const [k, reason] of Object.entries(blocked)) {
+    if (k === incEdge || reason !== note) continue;
+    const [a, b] = k.split("|");
+    if (a === e.a || a === e.b || b === e.a || b === e.b) out.push(k);
+  }
+  return out;
 }

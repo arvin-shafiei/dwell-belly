@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { PLACES, ROAD_EDGES, edgeKey, getNode } from "../../roads";
-import { BASE, incidentT, planApproach, planDispatch, planReturn, shouldHandle } from "./dispatch";
+import {
+  BASE,
+  companionEdges,
+  incidentT,
+  leaveDelays,
+  planApproach,
+  planDispatch,
+  planReturn,
+  shouldHandle,
+  towsRequired,
+  towWorkSeconds,
+} from "./dispatch";
 
 const key = edgeKey("g_0_0", "g_1_0");
 const mid = { edgeKey: key, x: 20, z: 0 };
@@ -24,6 +35,34 @@ describe("planDispatch", () => {
     expect(planDispatch("roadworks")).toEqual([]);
     expect(shouldHandle("roadworks")).toBe(false);
     expect(shouldHandle("car_crash")).toBe(true);
+  });
+  it("sends a doubled-up response to a pileup", () => {
+    const roles = planDispatch("pileup");
+    const count = (r: string) => roles.filter((x) => x === r).length;
+    expect(count("police")).toBe(2);
+    expect(count("ambulance")).toBe(2);
+    expect(count("fire")).toBe(1);
+    expect(count("tow")).toBe(2);
+    expect(shouldHandle("pileup")).toBe(true);
+    expect(towsRequired("pileup")).toBe(2);
+    expect(towWorkSeconds("pileup")).toBe(10);
+    expect(towsRequired("car_crash")).toBe(1);
+    expect(towWorkSeconds("truck_crash")).toBe(8);
+  });
+  it("leaves airport incidents to the Airport module", () => {
+    expect(shouldHandle("plane_crash")).toBe(false);
+    expect(shouldHandle("emergency_landing")).toBe(false);
+    expect(planDispatch("plane_crash")).toEqual([]);
+    expect(planDispatch("emergency_landing")).toEqual([]);
+  });
+  it("staggers repeated roles", () => {
+    const roles = planDispatch("pileup");
+    const d = leaveDelays(roles);
+    const firstPolice = d[roles.indexOf("police")];
+    const secondPolice = d[roles.lastIndexOf("police")];
+    expect(secondPolice).toBeGreaterThan(firstPolice);
+    expect(d[roles.lastIndexOf("tow")]).toBeGreaterThan(d[roles.indexOf("tow")]);
+    expect(new Set(d.map((x, i) => `${roles[i]}${x}`)).size).toBe(roles.length);
   });
   it("bases units at the right places", () => {
     expect(BASE.police).toBe(PLACES.policeStation);
@@ -92,6 +131,24 @@ describe("planApproach", () => {
     expect(ap).not.toBeNull();
     expect(ap!.route.nodes.length).toBeGreaterThanOrEqual(2);
     expect(a).toBeTruthy();
+  });
+});
+
+describe("pileup helpers", () => {
+  it("adds extra gap for a repeat unit", () => {
+    const blocked = new Set([key]);
+    const p1 = planApproach(BASE.police, mid, "police", blocked)!;
+    const p2 = planApproach(BASE.police, mid, "police", blocked, undefined, 6)!;
+    expect(p2.side).toBe(p1.side);
+    expect(p2.route.stopT).toBeLessThan(p1.route.stopT);
+  });
+  it("finds the adjacent edge closed by the same incident", () => {
+    const second = edgeKey("g_1_0", "g_2_0");
+    const unrelated = edgeKey("g_1_0", "g_1_1");
+    const far = edgeKey("g_3_3", "g_3_2");
+    const blocked = { [key]: "Pileup on X", [second]: "Pileup on X", [unrelated]: "Roadworks", [far]: "Pileup on X" };
+    expect(companionEdges(key, "Pileup on X", blocked)).toEqual([second]);
+    expect(companionEdges(key, "", blocked)).toEqual([]);
   });
 });
 

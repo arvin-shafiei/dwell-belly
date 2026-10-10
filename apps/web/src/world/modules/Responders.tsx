@@ -11,11 +11,15 @@ import { registerVehicle, type VehicleEntry } from "../registry";
 import { blockedSet, useWorld, type Incident, type IncidentKind } from "../store";
 import {
   BASE,
-  LEAVE_DELAY_S,
+  companionEdges,
+  leaveDelays,
   planApproach,
   planDispatch,
   planReturn,
+  REPEAT_GAP_M,
   shouldHandle,
+  towsRequired,
+  towWorkSeconds,
   type Route,
   type Side,
   type UnitRole,
@@ -35,6 +39,7 @@ type Mode = "waiting" | "enroute" | "parked" | "returning" | "gone";
 interface Unit {
   id: string;
   role: UnitRole;
+  nth: number; // 0 for the first unit of this role at the scene, 1 for a second (pileups)
   incidentId: string;
   base: string;
   mode: Mode;
@@ -65,6 +70,7 @@ interface Scene {
   id: string;
   kind: IncidentKind;
   edgeKey: string;
+  note: string;
   x: number;
   z: number;
   life: Life;
@@ -107,12 +113,24 @@ export default function Responders() {
       if (!ROAD_EDGES.has(inc.edgeKey)) return;
       handled.current.add(inc.id);
       const now = sim.current;
-      const scene: Scene = { id: inc.id, kind: inc.kind, edgeKey: inc.edgeKey, x: inc.x, z: inc.z, life: newLife(now), units: [] };
-      for (const role of planDispatch(inc.kind)) {
+      const scene: Scene = {
+        id: inc.id,
+        kind: inc.kind,
+        edgeKey: inc.edgeKey,
+        note: inc.note,
+        x: inc.x,
+        z: inc.z,
+        life: newLife(now, { towsRequired: towsRequired(inc.kind), towWorkS: towWorkSeconds(inc.kind) }),
+        units: [],
+      };
+      const roles = planDispatch(inc.kind);
+      const delays = leaveDelays(roles);
+      roles.forEach((role, idx) => {
         unitSeq += 1;
         scene.units.push({
           id: `${role.toUpperCase()}-${unitSeq}`,
           role,
+          nth: roles.slice(0, idx).filter((r) => r === role).length,
           incidentId: inc.id,
           base: BASE[role],
           mode: "waiting",
@@ -122,7 +140,7 @@ export default function Responders() {
           cur: { seg: 0, t: 0 },
           side: null,
           anchor: BASE[role],
-          retryAt: now + LEAVE_DELAY_S[role],
+          retryAt: now + delays[idx],
           departAt: 0,
           speed: 0,
           park: 0,
@@ -137,7 +155,7 @@ export default function Responders() {
           door: [0, 0],
           post: [0, 0],
         });
-      }
+      });
       scenes.current.set(inc.id, scene);
       refreshList();
     },
@@ -242,9 +260,12 @@ export default function Responders() {
   }
 
   function planOut(u: Unit, scene: Scene, now: number) {
-    const police = scene.units.find((o) => o.role === "police");
-    const avoid = u.role === "tow" && police?.side ? police.side : undefined;
-    const ap = planApproach(u.anchor, scene, u.role, blockedSet(), avoid);
+    // Spread units over both ends of the road: the tow avoids the (first) police car's end, and a
+    // second unit of a role (pileups) avoids the first one's end.
+    const police = scene.units.find((o) => o.role === "police" && o.nth === 0);
+    const firstSame = u.nth > 0 ? scene.units.find((o) => o.role === u.role && o.nth === 0) : undefined;
+    const avoid = firstSame?.side ?? (u.role === "tow" && police?.side ? police.side : undefined) ?? undefined;
+    const ap = planApproach(u.anchor, scene, u.role, blockedSet(), avoid, u.nth * REPEAT_GAP_M);
     if (ap) {
       u.route = ap.route;
       u.side = ap.side;
@@ -295,9 +316,10 @@ export default function Responders() {
         // lifecycle
         const stored = world.incidents.find((i) => i.id === scene.id);
         const anyArrived = scene.units.some((u) => u.mode === "parked");
-        const towArrived = scene.units.some((u) => u.role === "tow" && u.mode === "parked");
+        let towsArrived = 0;
+        for (const u of scene.units) if (u.role === "tow" && u.mode === "parked") towsArrived++;
         const externallyCleared = !stored || (stored.status === "cleared" && scene.life.phase !== "cleared" && scene.life.phase !== "done");
-        for (const act of stepLife(scene.life, { anyArrived, towArrived, externallyCleared }, now)) {
+        for (const act of stepLife(scene.life, { anyArrived, towsArrived, externallyCleared }, now)) {
           try {
             if (act === "set_responding") world.updateIncident(scene.id, { status: "responding" });
             else if (act === "set_clearing") world.updateIncident(scene.id, { status: "clearing" });
@@ -305,10 +327,12 @@ export default function Responders() {
               for (const u of scene.units) if (u.role === "tow") startReturn(u, now, 0);
               listChanged = true;
             } else if (act === "set_cleared") {
+              // a pileup may also close an adjacent road (same reason); reopen it too
+              const closed = [scene.edgeKey, ...companionEdges(scene.edgeKey, scene.note, useWorld.getState().blocked)];
               world.updateIncident(scene.id, { status: "cleared" });
-              world.unblockEdge(scene.edgeKey);
+              for (const k of closed) world.unblockEdge(k);
               emit({ type: "incident:cleared", incidentId: scene.id });
-              emit({ type: "road:reopened", edgeKey: scene.edgeKey });
+              for (const k of closed) emit({ type: "road:reopened", edgeKey: k });
             } else if (act === "release_units") {
               for (const u of scene.units) startReturn(u, now, u.role === "police" ? 1.6 : u.role === "ambulance" ? 0.4 : 0.9);
               listChanged = true;

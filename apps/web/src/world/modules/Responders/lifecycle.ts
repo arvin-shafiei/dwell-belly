@@ -12,16 +12,18 @@ export interface Life {
   clearingAt: number | null;
   clearedAt: number | null;
   towReleased: boolean;
+  towsRequired: number; // tows that must all be on scene
+  towWorkS: number; // seconds the last required tow must have worked
 }
 
 export interface LifeInput {
   anyArrived: boolean; // at least one unit is parked at the scene
-  towArrived: boolean; // the tow truck is parked at the scene
+  towsArrived: number; // tow trucks parked at the scene right now
   externallyCleared: boolean; // someone else cleared/removed the incident
 }
 
 export const TIMING = {
-  towWorkS: 8, // tow on scene this long -> "clearing"
+  towWorkS: 8, // default: tow on scene this long -> "clearing" (pileups override per Life)
   towDepartS: 1.6, // after "clearing", the tow hooks the wreck and drives off
   clearAfterS: 5, // after "clearing" -> "cleared"
   returnDelayS: 1.8, // after "cleared", the rest pack up and go
@@ -30,8 +32,17 @@ export const TIMING = {
 
 const reached = (now: number, due: number) => now + 1e-6 >= due;
 
-export function newLife(now: number): Life {
-  return { phase: "enroute", dispatchedAt: now, towArrivedAt: null, clearingAt: null, clearedAt: null, towReleased: false };
+export function newLife(now: number, opts: { towsRequired?: number; towWorkS?: number } = {}): Life {
+  return {
+    phase: "enroute",
+    dispatchedAt: now,
+    towArrivedAt: null,
+    clearingAt: null,
+    clearedAt: null,
+    towReleased: false,
+    towsRequired: Math.max(1, opts.towsRequired ?? 1),
+    towWorkS: opts.towWorkS ?? TIMING.towWorkS,
+  };
 }
 
 /** Advance the lifecycle to `now`. Mutates `life`; returns actions to apply, each emitted once. */
@@ -49,12 +60,13 @@ export function stepLife(life: Life, input: LifeInput, now: number): LifeAction[
     out.push("set_responding");
   }
 
-  if (input.towArrived && life.towArrivedAt === null) life.towArrivedAt = now;
+  // the clock starts once ALL required tows are on scene
+  if (input.towsArrived >= life.towsRequired && life.towArrivedAt === null) life.towArrivedAt = now;
 
   if (life.phase === "enroute" || life.phase === "responding") {
     // Stage times are scheduled from when the previous stage was due, so a long frame catches up.
     const due = Math.min(
-      life.towArrivedAt !== null ? life.towArrivedAt + TIMING.towWorkS : Infinity,
+      life.towArrivedAt !== null ? life.towArrivedAt + life.towWorkS : Infinity,
       life.dispatchedAt + TIMING.giveUpS,
     );
     if (reached(now, due)) {
