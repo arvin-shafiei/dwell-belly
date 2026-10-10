@@ -799,7 +799,7 @@ Everything said by voice goes through the same pipeline and the same gate as wri
 ## I3. Wiring
 
 - **Server:** `apps/api/src/voice/` holds the policy, the ElevenLabs client, notes, the re-run builder, sessions and tools. The routes are `POST /api/voice/note`, `POST /api/voice/session` (returns a WebRTC token; the key stays on the server) and `POST /api/voice/tools/:tool` (always answers within 2.5 s).
-- **The agent, "Desk Caller":** created by `scripts/voice/create-agent.mjs`. It runs `claude-haiku-4-5`, has defaults for all 10 dynamic variables, and four client tools: `submit_decision`, `propose_commitment`, `record_fact` and `request_human`. Its first message: "Hi, this is the delivery desk assistant, an AI. This call is recorded for the case log. Are you safe to talk?"
+- **The agent, "Desk Caller":** created by `scripts/voice/create-agent.mjs`. It runs `claude-haiku-4-5`, has defaults for all 10 dynamic variables, and four client tools: `submit_decision`, `propose_commitment`, `record_fact` and `request_human`. Its first message: "Hi, is this {{callee_name}}? It's the Rivet delivery desk, I'm the AI assistant. This call is recorded." It answers in the caller's last language (the `language_detection` system tool plus 10 language presets), collects facts and requests with `record_fact`, and never books or promises anything itself.
 - **Browser:** `@elevenlabs/react` 1.15.2, inside `<ConversationProvider>`, over WebRTC. The components `VoiceNoteButton`, `CallDrawer` and `ApproveByVoice` mount in the console's Executions tab. Voice nodes are drawn as an overlay on the n8n canvas; `default-incident.json` is unchanged.
 - **No updates during a call.** A re-run takes 30 to 150 s, so calls use what was known before the call and re-run after hang-up.
 
@@ -1042,6 +1042,8 @@ This table is the reallocation.
 ---
 
 ## Changelog
+
+- **1.14 (15:45):** live calls follow the caller's language, switching whenever they do; the Desk Caller prompt makes calls natural and stops unchecked promises, case details to the wrong person and repeat questions to a driver; driver voice notes default to Any language.
 
 - **1.13:** intake records the evidence, owner, scope and current state of constraints across fleet/route, recipient, site access, goods, commercial, identity/authority, tools/channels and shared incidents. Planning intersects current verified customer requirements with confirmed feasibility under safety and authority restrictions, instead of ranking one actor above every other owner. Console follow-ups persist the cumulative evidence input, retain earlier replies and recorded requests, and reject parent histories from another case/dataset; trusted human approvals are not carried into later actions. Older imported runs without saved inputs still fall back to the source case and cannot recover missing historical replies. Four additional unreviewed calibration states and `npm run eval:chain` exercise sequential changes, access restrictions and goods clearance. This adds continuity on an explicit follow-up, not an automatic reply listener, scheduler or proof of real delivery completion.
 

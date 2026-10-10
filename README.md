@@ -148,7 +148,7 @@ Voice is a channel the agent chooses, not a separate app. Everything said by voi
 | Flow | What happens |
 |---|---|
 | **Voice note** (a driver who can't type) | ElevenLabs speech-to-text, then a case event marked as the speaker's claim, stamped on the case's own timeline. The case re-runs with the desk's earlier messages included, so nothing is sent twice. |
-| **Agent calls someone** (demo mode) | A browser call (WebRTC) with the "Desk Caller" ElevenLabs agent. Every promise it wants to make goes through `propose_commitment`: the gate's hard rules, then Jev's per-boundary scores against the flow's thresholds, within 2.5 s. Anything short of a clear allow is denied with a fixed sentence. The transcript becomes claim events. |
+| **Agent calls someone** (demo mode) | A browser call (WebRTC) with the "Desk Caller" ElevenLabs agent. It answers in the caller's language and follows them if they switch (English plus Spanish, Polish, Portuguese, Romanian, French, Italian, German, Arabic, Hindi and Turkish). It collects facts and requests and never books or promises anything itself. If a caller insists on a promise, it checks the sentence with `propose_commitment` first (the gate's hard rules, then Jev's per-boundary scores, within 2.5 s; anything short of a clear allow is denied with a fixed sentence), and after hang-up every line it said goes through the gate again. The transcript becomes claim events. |
 | **Approve by voice** | The agent reads a decision card to the desk manager, reads their choice back, and records it. |
 | **Audio files in a case** (any mode) | Transcribed into claim documents when `ELEVENLABS_API_KEY` is set; otherwise listed as not transcribed. At most 3 per case. |
 
