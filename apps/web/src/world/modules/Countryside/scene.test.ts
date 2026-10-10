@@ -6,7 +6,10 @@ describe("buildCountryside", () => {
     const b = buildCountryside();
     const pos = b.staticGeo.getAttribute("position");
     expect(pos.count).toBeGreaterThan(10000);
-    expect(pos.count).toBeLessThan(400000);
+    expect(pos.count).toBeLessThan(500000);
+    expect(b.flatGeo.getAttribute("position").count).toBeLessThan(400000);
+    expect(b.trees.length).toBeLessThanOrEqual(8000);
+    expect(b.pastures.length).toBeGreaterThanOrEqual(5);
     expect(b.staticGeo.getAttribute("color").count).toBe(pos.count);
     expect(Number.isFinite(b.staticGeo.boundingSphere!.radius)).toBe(true);
     const m = treeMatrices(b.trees);

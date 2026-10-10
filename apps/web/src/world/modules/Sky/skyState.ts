@@ -155,3 +155,41 @@ export function sampleSky(hour: number, out: SkyState): SkyState {
   out.keyDir.copy(_blend).normalize();
   return out;
 }
+
+// ---------- Colour grade (post-processing) ----------
+
+export interface Grade {
+  saturation: number; // HueSaturation (-1..1)
+  contrast: number; // BrightnessContrast (-1..1)
+  brightness: number;
+  vignette: number; // Vignette darkness
+}
+
+export function createGrade(): Grade {
+  return { saturation: 0, contrast: 0, brightness: 0, vignette: 0.4 };
+}
+
+function bump(h: number, centre: number, width: number) {
+  const d = Math.abs(h - centre) / width;
+  return d >= 1 ? 0 : 1 - d * d * (3 - 2 * d);
+}
+
+/** How "golden hour" it is (0..1): sunrise around 06:50, sunset around 18:40. */
+export function goldenness(hour: number) {
+  const h = ((hour % 24) + 24) % 24;
+  return Math.max(bump(h, 6.9, 1.3), bump(h, 18.6, 1.5));
+}
+
+/**
+ * Cinematic grade: warm, saturated, a touch of contrast at golden hour; cool, contrasty, slightly desaturated
+ * at night (so emissives pop); flat and muted under heavy cloud.
+ */
+export function gradeFor(hour: number, night: number, cover: number, out: Grade): Grade {
+  const g = goldenness(hour);
+  const overcast = Math.max(0, cover - 0.3) / 0.7;
+  out.saturation = 0.08 + 0.14 * g - 0.12 * night - 0.18 * overcast;
+  out.contrast = 0.04 + 0.08 * g + 0.1 * night - 0.04 * overcast;
+  out.brightness = 0.01 * g - 0.015 * overcast;
+  out.vignette = 0.38 + 0.12 * g + 0.17 * night + 0.05 * overcast;
+  return out;
+}

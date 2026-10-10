@@ -1,6 +1,8 @@
-// Pure layout for the Countryside module: fields, hedgerows, walls, farm props, hills, pastures,
-// and the tree scatter across all open land. Seeded, so the city looks the same every load.
-import { HIGHWAY_RING, WATER_X, ZONES, inBox, type Box } from "../../config";
+// Pure layout for the Countryside module: fields, hedgerows, walls, farmsteads, hills, pastures,
+// allotments, forests and the tree scatter across all open land. Seeded, so the city looks the
+// same every load. Everything that must avoid roads checks the live road graph at load (district
+// roads are merged into it), plus the motorway polyline in case its nodes aren't in yet.
+import { HIGHWAY_RING, MOTORWAY, RIVER, WATER_X, WORLD_SIZE, ZONES, inBox, type Box } from "../../config";
 import { ROAD_EDGES, ROAD_NODES } from "../../roads";
 
 export function mulberry32(seed: number) {
@@ -27,14 +29,20 @@ export function distToSegment(px: number, pz: number, ax: number, az: number, bx
   return Math.sqrt(qx * qx + qz * qz);
 }
 
-/** Every road edge as a centre-line segment, computed once. */
-export const ROAD_SEGS: Seg[] = [...ROAD_EDGES.values()].map((e) => {
-  const a = ROAD_NODES.get(e.a)!;
-  const b = ROAD_NODES.get(e.b)!;
-  return [a.x, a.z, b.x, b.z];
-});
+const polylineSegs = (pts: readonly [number, number][]): Seg[] =>
+  pts.slice(1).map((p, i) => [pts[i][0], pts[i][1], p[0], p[1]]);
 
-export function roadDistance(x: number, z: number, segs: readonly Seg[] = ROAD_SEGS) {
+/** Every road edge as a centre-line segment (plus the motorway polyline), computed once. */
+export const ROAD_SEGS: Seg[] = [
+  ...[...ROAD_EDGES.values()].map((e): Seg => {
+    const a = ROAD_NODES.get(e.a)!;
+    const b = ROAD_NODES.get(e.b)!;
+    return [a.x, a.z, b.x, b.z];
+  }),
+  ...polylineSegs(MOTORWAY.points),
+];
+
+export function roadDistanceExact(x: number, z: number, segs: readonly Seg[] = ROAD_SEGS) {
   let best = Infinity;
   for (let i = 0; i < segs.length; i++) {
     const s = segs[i];
@@ -42,6 +50,63 @@ export function roadDistance(x: number, z: number, segs: readonly Seg[] = ROAD_S
     if (d < best) best = d;
   }
   return best;
+}
+
+// Spatial hash so the big-world scatter stays fast however many district roads there are.
+// Distances up to REACH are exact; beyond that roadDistance() may return Infinity ("far").
+const CELL = 32;
+const REACH = 30;
+const cellKey = (ix: number, iz: number) => (ix + 1000) * 4096 + (iz + 1000);
+const roadCells = new Map<number, number[]>();
+ROAD_SEGS.forEach((s, i) => {
+  const x0 = Math.floor((Math.min(s[0], s[2]) - REACH) / CELL);
+  const x1 = Math.floor((Math.max(s[0], s[2]) + REACH) / CELL);
+  const z0 = Math.floor((Math.min(s[1], s[3]) - REACH) / CELL);
+  const z1 = Math.floor((Math.max(s[1], s[3]) + REACH) / CELL);
+  for (let ix = x0; ix <= x1; ix++)
+    for (let iz = z0; iz <= z1; iz++) {
+      // skip cells the segment doesn't come within REACH of
+      const cx = (ix + 0.5) * CELL;
+      const cz = (iz + 0.5) * CELL;
+      if (distToSegment(cx, cz, s[0], s[1], s[2], s[3]) > REACH + CELL * 0.71) continue;
+      const k = cellKey(ix, iz);
+      const list = roadCells.get(k);
+      if (list) list.push(i);
+      else roadCells.set(k, [i]);
+    }
+});
+
+/** Distance to the nearest road centre line. Exact up to 30 m; may be Infinity when farther. */
+export function roadDistance(x: number, z: number) {
+  const list = roadCells.get(cellKey(Math.floor(x / CELL), Math.floor(z / CELL)));
+  if (!list) return Infinity;
+  let best = Infinity;
+  for (let i = 0; i < list.length; i++) {
+    const s = ROAD_SEGS[list[i]];
+    const d = distToSegment(x, z, s[0], s[1], s[2], s[3]);
+    if (d < best) best = d;
+  }
+  return best;
+}
+
+const RIVER_SEGS = polylineSegs(RIVER.points);
+/** River channel half-width plus a 15 m bank margin. */
+export const RIVER_CLEAR = RIVER.width / 2 + 15;
+export function riverDistance(x: number, z: number) {
+  return roadDistanceExact(x, z, RIVER_SEGS);
+}
+
+export const WORLD_HALF = WORLD_SIZE / 2 - 10;
+
+/** Land that belongs to nobody's zone: in the world, out of the sea, off the river and its banks. */
+export function openLand(x: number, z: number) {
+  return (
+    Math.abs(x) <= WORLD_HALF &&
+    Math.abs(z) <= WORLD_HALF &&
+    x <= WATER_X - 10 &&
+    !inAirport(x, z) &&
+    riverDistance(x, z) >= RIVER_CLEAR
+  );
 }
 
 // --- Static farm features (positions checked against roads in layout.test.ts) ------------------
@@ -62,7 +127,10 @@ export const FARM = {
   tractor: { x: -303, z: 14, rot: 0.9 },
 } as const;
 
-/** Wind turbine spots: four in the fields, two up on the western hills. */
+/** Far south-west farmland, between Old Town / Southbank and the motorway. */
+export const FARMLAND_SW: Box = { minX: -862, maxX: -452, minZ: 296, maxZ: 742 };
+
+/** Wind turbine spots: four in the old fields, two on the western hills, three in the SW farmland. */
 export const TURBINE_SPOTS: [number, number][] = [
   [-352, -110],
   [-350, -58],
@@ -70,24 +138,48 @@ export const TURBINE_SPOTS: [number, number][] = [
   [-350, 110],
   [-385, -175],
   [-382, 182],
-];
-
-/** Exclusion circles for crops and trees (farm buildings, pond, windmill, turbines). */
-export const FARM_EXCLUSIONS: Circle[] = [
-  ...TURBINE_SPOTS.map(([x, z]) => ({ x, z, r: 3 })),
-  { x: FARM.yard.x, z: FARM.yard.z, r: FARM.yard.r },
-  { x: FARM.pond.x, z: FARM.pond.z, r: FARM.pond.r + 3 },
-  { x: FARM.windmill.x, z: FARM.windmill.z, r: 7 },
+  [-842, 420],
+  [-842, 520],
+  [-842, 620],
 ];
 
 /** The airport (runway along x) plus a 20 m clear margin: no trees, hills or props in here. */
 export const AIRPORT_MARGIN = 20;
-export const inAirport = (x: number, z: number, pad = 0) => inBox(ZONES.airport, x, z, AIRPORT_MARGIN + pad);
+export function inAirport(x: number, z: number, pad = 0) {
+  return inBox(ZONES.airport, x, z, AIRPORT_MARGIN + pad);
+}
 
 /** Tall props (wind turbines) must stay out of the airport's quadrant. */
 export const tallPropAllowed = (x: number, z: number) => !(x < -200 && z < -200);
 
-// --- Hills along the far west edge ---------------------------------------------------------------
+// every zone except ours; the airport is handled separately with a wider margin
+const OTHER_ZONES: Box[] = Object.entries(ZONES)
+  .filter(([name]) => name !== "countryside" && name !== "airport")
+  .map(([, b]) => b);
+
+const inOtherZone = (x: number, z: number, margin: number) => OTHER_ZONES.some((b) => inBox(b, x, z, margin));
+
+/** Farmsteads in the SW farmland. Candidates are dropped if a road or zone gets in the way. */
+export interface Farmstead {
+  x: number;
+  z: number;
+  rot: number;
+}
+const FARMSTEAD_CANDIDATES: Farmstead[] = [
+  { x: -760, z: 400, rot: 0.3 },
+  { x: -560, z: 660, rot: -0.4 },
+  { x: -640, z: 500, rot: 1.2 },
+  { x: -520, z: 380, rot: 0.1 },
+];
+const FARMSTEAD_R = 24;
+
+export function makeFarmsteads(): Farmstead[] {
+  return FARMSTEAD_CANDIDATES.filter(
+    (f) => roadDistanceExact(f.x, f.z) > FARMSTEAD_R + 6 && !inOtherZone(f.x, f.z, FARMSTEAD_R) && openLand(f.x, f.z),
+  ).slice(0, 3);
+}
+
+// --- Hills along the far west edge of the old countryside --------------------------------------
 
 /** An ellipsoid hill centred on the ground: horizontal radius r, peak height h. */
 export interface Hill {
@@ -95,6 +187,20 @@ export interface Hill {
   z: number;
   r: number;
   h: number;
+}
+
+function circleTouchesBox(x: number, z: number, r: number, b: Box, m: number) {
+  const cx = Math.max(b.minX - m, Math.min(x, b.maxX + m));
+  const cz = Math.max(b.minZ - m, Math.min(z, b.maxZ + m));
+  return (x - cx) ** 2 + (z - cz) ** 2 < r * r;
+}
+
+function hillAllowed(h: Hill) {
+  if (circleTouchesBox(h.x, h.z, h.r, ZONES.airport, AIRPORT_MARGIN)) return false;
+  if (OTHER_ZONES.some((b) => circleTouchesBox(h.x, h.z, h.r, b, 6))) return false;
+  if (circleTouchesBox(h.x, h.z, h.r, FARMLAND_SW, 0)) return false;
+  if (roadDistanceExact(h.x, h.z) < h.r + 3) return false;
+  return riverDistance(h.x, h.z) > h.r + RIVER_CLEAR;
 }
 
 export function makeHills(seed = 7): Hill[] {
@@ -105,23 +211,15 @@ export function makeHills(seed = 7): Hill[] {
     const r = 26 + rand() * 18;
     const x = -357 - r - rand() * 10;
     const h = { x, z, r, h: 9 + rand() * 13 };
-    if (!hillTouchesAirport(h)) hills.push(h);
+    if (hillAllowed(h)) hills.push(h);
   }
-  // back row: bigger, further out, a backdrop past the world edge
+  // back row: bigger, further out
   for (let z = -440; z <= 440; z += 60 + rand() * 25) {
     const r = 50 + rand() * 30;
     const h = { x: -400 - r * 0.45 - rand() * 20, z, r, h: 22 + rand() * 20 };
-    if (!hillTouchesAirport(h)) hills.push(h);
+    if (hillAllowed(h)) hills.push(h);
   }
   return hills;
-}
-
-function hillTouchesAirport(h: Hill) {
-  const b = ZONES.airport;
-  const m = AIRPORT_MARGIN;
-  const cx = Math.max(b.minX - m, Math.min(h.x, b.maxX + m));
-  const cz = Math.max(b.minZ - m, Math.min(h.z, b.maxZ + m));
-  return (h.x - cx) ** 2 + (h.z - cz) ** 2 < h.r * h.r;
 }
 
 export function hillHeight(hills: readonly Hill[], x: number, z: number) {
@@ -144,11 +242,13 @@ export interface Turbine {
 }
 
 export function makeTurbines(hills: readonly Hill[]): Turbine[] {
-  return TURBINE_SPOTS.map(([x, z], i) => ({
+  return TURBINE_SPOTS.filter(
+    ([x, z]) => roadDistanceExact(x, z) > 10 && tallPropAllowed(x, z) && !inAirport(x, z, 20) && openLand(x, z),
+  ).map(([x, z], i) => ({
     x,
     z,
     y: Math.max(0, hillHeight(hills, x, z) - 0.6),
-    scale: i >= 4 ? 1.1 : 1,
+    scale: (x < -380 && Math.abs(z) > 150) || x < -800 ? 1.1 : 1,
     phase: i * 1.7,
   }));
 }
@@ -208,12 +308,19 @@ export interface TreeSpot {
   shade: number; // 0..1 colour variation
 }
 
+export interface Pasture {
+  box: Box;
+  animal: "sheep" | "cow";
+  count: number;
+  spots: [number, number][];
+}
+
 export interface FieldLayout {
   plots: Plot[];
   stripes: Stripe[];
   pieces: LinePiece[];
   hedgeTrees: TreeSpot[];
-  pastures: { box: Box; animal: "sheep" | "cow"; spots: [number, number][] }[];
+  pastures: Pasture[];
   bales: { x: number; z: number; rot: number }[];
   yard: Stripe[];
 }
@@ -237,34 +344,46 @@ function runs(from: number, to: number, step: number, ok: (t: number) => boolean
   return out;
 }
 
-export function makeFields(seed = 11): FieldLayout {
-  const rand = mulberry32(seed);
-  const cs = ZONES.countryside;
-  const plotW = 26;
-  const plotD = 35;
-  const gap = 4;
-  const cols = 4;
-  const rows = 6;
+interface FieldOpts {
+  region: Box;
+  plotW: number;
+  plotD: number;
+  gap: number;
+  exclusions: Circle[];
+  /** extra land check (zones, river) */
+  landOk: (x: number, z: number) => boolean;
+  pastures: { animal: "sheep" | "cow"; count: number }[];
+  yard?: Circle;
+  pieceLen: number;
+  seed: number;
+}
+
+function layFields(o: FieldOpts): FieldLayout {
+  const rand = mulberry32(o.seed);
+  const { region, plotW, plotD, gap } = o;
+  const cols = Math.floor((region.maxX - region.minX - 4 + gap) / (plotW + gap));
+  const rows = Math.floor((region.maxZ - region.minZ - 4 + gap) / (plotD + gap));
   const clear = (x: number, z: number, roadPad = 7) =>
-    roadDistance(x, z) >= roadPad && !inCircles(FARM_EXCLUSIONS, x, z);
+    roadDistance(x, z) >= roadPad && !inCircles(o.exclusions, x, z) && o.landOk(x, z);
 
   const crops: Crop[] = ["wheat", "rapeseed", "barley", "veg", "ploughed", "wheat", "grass", "rapeseed", "barley"];
   const plots: Plot[] = [];
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++) {
-      const minX = cs.minX + 2 + c * (plotW + gap);
-      const minZ = cs.minZ + 2 + r * (plotD + gap);
+      const minX = region.minX + 2 + c * (plotW + gap);
+      const minZ = region.minZ + 2 + r * (plotD + gap);
       let okArea = 0;
       for (let x = minX + 1; x < minX + plotW; x += 2) for (let z = minZ + 1; z < minZ + plotD; z += 2) if (clear(x, z)) okArea++;
       plots.push({ minX, maxX: minX + plotW, minZ, maxZ: minZ + plotD, crop: crops[Math.floor(rand() * crops.length)], okArea });
     }
+  const fullArea = Math.ceil(plotW / 2) * Math.ceil(plotD / 2);
 
-  // Pastures: the three emptiest-of-roads plots that are fully clear
+  // Pastures: the emptiest-of-roads plots (fully clear ones first)
   const ranked = [...plots].sort((a, b) => b.okArea - a.okArea);
-  const pastureIdx = ranked.slice(0, 3);
+  const pastureIdx = ranked.slice(0, o.pastures.length);
   pastureIdx.forEach((p) => (p.crop = "grass"));
   // one harvested field with round bales
-  const stubble = ranked.find((p) => !pastureIdx.includes(p) && p.okArea > 120);
+  const stubble = ranked.find((p) => !pastureIdx.includes(p) && p.okArea > fullArea * 0.55);
   if (stubble) stubble.crop = "stubble";
 
   const stripes: Stripe[] = [];
@@ -300,43 +419,37 @@ export function makeFields(seed = 11): FieldLayout {
   // Hedges and walls on grid lines in the gaps between plots
   const pieces: LinePiece[] = [];
   const hedgeTrees: TreeSpot[] = [];
-  const lineX = (x: number, z0: number, z1: number, kind: LinePiece["kind"]) => {
-    for (const [a, b] of runs(z0, z1, 2.5, (t) => clear(x, t, 6.5))) {
-      for (let t = a; t <= b; t += 2.5) {
-        pieces.push({ x, z: t, len: 2.6, alongX: false, kind });
-        if (kind === "hedge" && rand() < 0.07)
-          hedgeTrees.push({ x, y: 0, z: t, species: 0, scale: 0.9 + rand() * 0.5, rot: rand() * 6.28, shade: rand() });
+  const L = o.pieceLen;
+  const line = (alongX: boolean, fixed: number, t0: number, t1: number, kind: LinePiece["kind"]) => {
+    for (const [a, b] of runs(t0, t1, L, (t) => (alongX ? clear(t, fixed, 6.5) : clear(fixed, t, 6.5)))) {
+      for (let t = a; t <= b; t += L) {
+        const [x, z] = alongX ? [t, fixed] : [fixed, t];
+        pieces.push({ x, z, len: L + 0.1, alongX, kind });
+        if (kind === "hedge" && rand() < 0.07 * (L / 2.5))
+          hedgeTrees.push({ x, y: 0, z, species: 0, scale: 0.9 + rand() * 0.5, rot: rand() * 6.28, shade: rand() });
       }
     }
   };
-  const lineZ = (z: number, x0: number, x1: number, kind: LinePiece["kind"]) => {
-    for (const [a, b] of runs(x0, x1, 2.5, (t) => clear(t, z, 6.5))) {
-      for (let t = a; t <= b; t += 2.5) {
-        pieces.push({ x: t, z, len: 2.6, alongX: true, kind });
-        if (kind === "hedge" && rand() < 0.07)
-          hedgeTrees.push({ x: t, y: 0, z, species: 0, scale: 0.9 + rand() * 0.5, rot: rand() * 6.28, shade: rand() });
-      }
-    }
-  };
+  const g2 = gap / 2;
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++) {
       const p = plots[r * cols + c];
       const isPasture = pastureIdx.includes(p);
       const kind = (): LinePiece["kind"] => (isPasture || rand() < 0.3 ? "wall" : "hedge");
-      lineX(p.minX - gap / 2, p.minZ - gap / 2, p.maxZ + gap / 2, kind());
-      lineZ(p.minZ - gap / 2, p.minX - gap / 2, p.maxX + gap / 2, kind());
-      if (c === cols - 1) lineX(p.maxX + gap / 2, p.minZ - gap / 2, p.maxZ + gap / 2, kind());
-      if (r === rows - 1) lineZ(p.maxZ + gap / 2, p.minX - gap / 2, p.maxX + gap / 2, kind());
+      line(false, p.minX - g2, p.minZ - g2, p.maxZ + g2, kind());
+      line(true, p.minZ - g2, p.minX - g2, p.maxX + g2, kind());
+      if (c === cols - 1) line(false, p.maxX + g2, p.minZ - g2, p.maxZ + g2, kind());
+      if (r === rows - 1) line(true, p.maxZ + g2, p.minX - g2, p.maxX + g2, kind());
     }
 
-  const pastures = pastureIdx.map((p, i) => {
+  const pastures: Pasture[] = pastureIdx.map((p, i) => {
     const spots: [number, number][] = [];
     for (let k = 0; k < 400 && spots.length < 60; k++) {
       const x = p.minX + 2 + rand() * (p.maxX - p.minX - 4);
       const z = p.minZ + 2 + rand() * (p.maxZ - p.minZ - 4);
       if (clear(x, z, 8)) spots.push([x, z]);
     }
-    return { box: { minX: p.minX, maxX: p.maxX, minZ: p.minZ, maxZ: p.maxZ }, animal: (i === 1 ? "cow" : "sheep") as "sheep" | "cow", spots };
+    return { box: { minX: p.minX, maxX: p.maxX, minZ: p.minZ, maxZ: p.maxZ }, ...o.pastures[i], spots };
   });
 
   const bales: FieldLayout["bales"] = [];
@@ -349,42 +462,202 @@ export function makeFields(seed = 11): FieldLayout {
 
   // Gravel farmyard inside the yard circle, kept off the lanes
   const yard: Stripe[] = [];
-  const Y = FARM.yard;
-  for (let z = Y.z - Y.r + 1; z < Y.z + Y.r; z += 2) {
-    for (const [a, b] of runs(Y.x - Y.r, Y.x + Y.r, 1, (x) => (x - Y.x) ** 2 + (z - Y.z) ** 2 < Y.r * Y.r && roadDistance(x, z) >= 5.5)) {
-      if (b - a < 1) continue;
-      yard.push({ x: (a + b) / 2, z, sx: b - a + 1, sz: 2, h: 0.05, color: "#b49d72" });
+  const Y = o.yard;
+  if (Y)
+    for (let z = Y.z - Y.r + 1; z < Y.z + Y.r; z += 2) {
+      for (const [a, b] of runs(Y.x - Y.r, Y.x + Y.r, 1, (x) => (x - Y.x) ** 2 + (z - Y.z) ** 2 < Y.r * Y.r && roadDistance(x, z) >= 5.5)) {
+        if (b - a < 1) continue;
+        yard.push({ x: (a + b) / 2, z, sx: b - a + 1, sz: 2, h: 0.05, color: "#b49d72" });
+      }
     }
-  }
 
-  return { plots, stripes, pieces, hedgeTrees, pastures, bales, yard };
+  return { plots, stripes, pieces, hedgeTrees, pastures: pastures.filter((p) => p.spots.length > 10), bales, yard };
 }
 
-// --- Tree scatter across all open land ----------------------------------------------------------
+const turbineCircles = (r: number): Circle[] => TURBINE_SPOTS.map(([x, z]) => ({ x, z, r }));
 
-// every other module's zone (new zones are picked up automatically); the airport gets a wider margin
-const OTHER_ZONES: Box[] = Object.entries(ZONES)
-  .filter(([name]) => name !== "countryside" && name !== "airport")
-  .map(([, b]) => b);
+/** Exclusion circles for crops and trees in the old countryside (farm, pond, windmill, turbines). */
+export const FARM_EXCLUSIONS: Circle[] = [
+  ...turbineCircles(3),
+  { x: FARM.yard.x, z: FARM.yard.z, r: FARM.yard.r },
+  { x: FARM.pond.x, z: FARM.pond.z, r: FARM.pond.r + 3 },
+  { x: FARM.windmill.x, z: FARM.windmill.z, r: 7 },
+];
 
-export function makeTrees(hills: readonly Hill[], turbines: readonly Turbine[], seed = 23, max = 2600): TreeSpot[] {
+/** The original countryside zone's fields. */
+export function makeFields(seed = 11): FieldLayout {
+  return layFields({
+    region: ZONES.countryside,
+    plotW: 26,
+    plotD: 35,
+    gap: 4,
+    exclusions: FARM_EXCLUSIONS,
+    landOk: () => true,
+    pastures: [
+      { animal: "sheep", count: 12 },
+      { animal: "cow", count: 9 },
+      { animal: "sheep", count: 12 },
+    ],
+    yard: FARM.yard,
+    pieceLen: 2.5,
+    seed,
+  });
+}
+
+/** Bigger fields across the far south-west farmland, around a few farmsteads. */
+export function makeSouthWestFields(farmsteads: readonly Farmstead[], seed = 31): FieldLayout {
+  const f = layFields({
+    region: FARMLAND_SW,
+    plotW: 38,
+    plotD: 46,
+    gap: 5,
+    exclusions: [...turbineCircles(3), ...farmsteads.map((s) => ({ x: s.x, z: s.z, r: FARMSTEAD_R }))],
+    landOk: (x, z) => !inOtherZone(x, z, 6) && openLand(x, z),
+    pastures: [
+      { animal: "sheep", count: 10 },
+      { animal: "cow", count: 8 },
+      { animal: "sheep", count: 10 },
+    ],
+    pieceLen: 4,
+    seed,
+  });
+  // gravel yards around each farmstead
+  for (const s of farmsteads) {
+    const R = FARMSTEAD_R - 4;
+    for (let z = s.z - R + 1; z < s.z + R; z += 2)
+      for (const [a, b] of runs(s.x - R, s.x + R, 1, (x) => (x - s.x) ** 2 + (z - s.z) ** 2 < R * R && roadDistance(x, z) >= 5.5))
+        if (b - a >= 1) f.yard.push({ x: (a + b) / 2, z, sx: b - a + 1, sz: 2, h: 0.05, color: "#b49d72" });
+  }
+  return f;
+}
+
+// --- Allotments on the city fringe --------------------------------------------------------------
+
+export interface AllotmentPlot {
+  x: number;
+  z: number;
+  w: number; // along x
+  d: number; // along z
+  crop: number; // 0..1, picks a veg colour
+  shed: string | null; // shed colour, or none
+  rowsAlongX: boolean;
+}
+
+export interface Allotments {
+  sites: Box[];
+  plots: AllotmentPlot[];
+  hedges: LinePiece[];
+}
+
+const ALLOTMENT_SITES: [number, number][] = [
+  [-300, 185],
+  [-420, 190],
+  [-165, -300],
+  [150, 300],
+];
+
+export function makeAllotments(seed = 53): Allotments {
+  const rand = mulberry32(seed);
+  const W = 50;
+  const D = 34;
+  const sites: Box[] = [];
+  const plots: AllotmentPlot[] = [];
+  const hedges: LinePiece[] = [];
+  const sheds = ["#3f7f5a", "#4f6fa0", "#8a5a3a", "#b04a3a", "#6b8f3a", "#d8c9a8"];
+  const ok = (x: number, z: number) =>
+    roadDistance(x, z) >= 7.5 && !inOtherZone(x, z, 4) && !inBox(ZONES.countryside, x, z, 4) && openLand(x, z);
+  for (const [cx, cz] of ALLOTMENT_SITES) {
+    const site = { minX: cx - W / 2, maxX: cx + W / 2, minZ: cz - D / 2, maxZ: cz + D / 2 };
+    const before = plots.length;
+    for (let x = site.minX + 3; x + 5 <= site.maxX - 2; x += 6.2)
+      for (let z = site.minZ + 3; z + 9 <= site.maxZ - 2; z += 10.4) {
+        const pc: [number, number][] = [
+          [x, z],
+          [x + 5, z],
+          [x, z + 9],
+          [x + 5, z + 9],
+          [x + 2.5, z + 4.5],
+        ];
+        if (!pc.every(([px, pz]) => ok(px, pz))) continue;
+        plots.push({
+          x: x + 2.5,
+          z: z + 4.5,
+          w: 5,
+          d: 9,
+          crop: rand(),
+          shed: rand() < 0.35 ? sheds[Math.floor(rand() * sheds.length)] : null,
+          rowsAlongX: rand() < 0.5,
+        });
+      }
+    if (plots.length - before < 6) {
+      plots.length = before;
+      continue;
+    }
+    sites.push(site);
+    // a low hedge round the site, gapped where roads pass
+    const edge = (alongX: boolean, fixed: number, t0: number, t1: number) => {
+      for (const [a, b] of runs(t0, t1, 3, (t) => (alongX ? ok(t, fixed) : ok(fixed, t))))
+        for (let t = a; t <= b; t += 3) hedges.push({ x: alongX ? t : fixed, z: alongX ? fixed : t, len: 3.1, alongX, kind: "hedge" });
+    };
+    edge(true, site.minZ, site.minX, site.maxX);
+    edge(true, site.maxZ, site.minX, site.maxX);
+    edge(false, site.minX, site.minZ, site.maxZ);
+    edge(false, site.maxX, site.minZ, site.maxZ);
+  }
+  return { sites, plots, hedges };
+}
+
+// --- Forests and the tree scatter across all open land ------------------------------------------
+
+export interface Forest {
+  name: string;
+  x: number;
+  z: number;
+  rx: number;
+  rz: number;
+  conifer: number; // share of conifers
+}
+
+export const FORESTS: Forest[] = [
+  { name: "west", x: -992, z: 40, rx: 92, rz: 430, conifer: 0.7 }, // far west, beyond Old Town and the motorway
+  { name: "south", x: -260, z: 935, rx: 340, rz: 120, conifer: 0.55 }, // far south, beyond the motorway
+  { name: "northwest", x: -700, z: -400, rx: 190, rz: 122, conifer: 0.75 }, // between the airport and the river
+];
+
+export interface TreeOpts {
+  max?: number;
+  extraBoxes?: Box[];
+}
+
+export function makeTrees(hills: readonly Hill[], turbines: readonly Turbine[], seed = 23, opts: TreeOpts = {}): TreeSpot[] {
+  const max = opts.max ?? 7600;
   const rand = mulberry32(seed);
   const R = HIGHWAY_RING;
   const trees: TreeSpot[] = [];
   const cell = 4;
-  const grid = new Set<string>();
-  const key = (x: number, z: number) => `${Math.floor(x / cell)},${Math.floor(z / cell)}`;
+  const grid = new Set<number>();
+  const key = (cx: number, cz: number) => (cx + 1000) * 4096 + (cz + 1000);
   const crowded = (x: number, z: number) => {
     const cx = Math.floor(x / cell);
     const cz = Math.floor(z / cell);
-    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) if (grid.has(`${cx + i},${cz + j}`)) return true;
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) if (grid.has(key(cx + i, cz + j))) return true;
     return false;
   };
-  const turbineCircles: Circle[] = turbines.map((t) => ({ x: t.x, z: t.z, r: 5 }));
+  const tCircles: Circle[] = turbines.map((t) => ({ x: t.x, z: t.z, r: 5 }));
+  const reserved = [FARMLAND_SW, ...(opts.extraBoxes ?? [])];
+  const cs = ZONES.countryside;
+  const allowed = (x: number, z: number) =>
+    openLand(x, z) &&
+    !inBox(cs, x, z, 2) &&
+    !inOtherZone(x, z, 8) &&
+    !reserved.some((b) => inBox(b, x, z, 3)) &&
+    !inCircles(tCircles, x, z) &&
+    !inCircles(FARM_EXCLUSIONS, x, z) &&
+    roadDistance(x, z) >= 9;
   const place = (x: number, z: number, species: TreeSpot["species"], scale: number) => {
     const y = Math.max(0, hillHeight(hills, x, z) - 0.6);
     trees.push({ x, y, z, species, scale, rot: rand() * Math.PI * 2, shade: rand() });
-    grid.add(key(x, z));
+    grid.add(key(Math.floor(x / cell), Math.floor(z / cell)));
   };
 
   // 1. Verge line just inside the highway ring
@@ -394,27 +667,41 @@ export function makeTrees(hills: readonly Hill[], turbines: readonly Turbine[], 
       const tt = t + (rand() - 0.5) * 2;
       const [x, z] =
         side === 0 ? [tt, -inset] : side === 1 ? [inset, tt] : side === 2 ? [tt, inset] : [-inset, tt];
-      if (roadDistance(x, z) < 9 || inBox(ZONES.downtown, x, z, 8) || inAirport(x, z) || crowded(x, z)) continue;
+      if (roadDistance(x, z) < 9 || inBox(ZONES.downtown, x, z, 8) || !openLand(x, z) || crowded(x, z)) continue;
+      if (reserved.some((b) => inBox(b, x, z, 3))) continue;
       place(x, z, rand() < 0.55 ? 2 : 0, 0.85 + rand() * 0.3);
     }
   }
 
-  // 2. Clumpy woodland + scattered singles outside the ring
-  const cs = ZONES.countryside;
-  for (let i = 0; i < 40000 && trees.length < max; i++) {
-    const x = -398 + rand() * 796;
-    const z = -398 + rand() * 796;
-    if (x > WATER_X - 10) continue;
+  // 2. Dense forests on the outer edges: a jittered 7 m grid inside a wobbly ellipse
+  for (const f of FORESTS) {
+    for (let gx = f.x - f.rx; gx <= f.x + f.rx; gx += 7)
+      for (let gz = f.z - f.rz; gz <= f.z + f.rz; gz += 7) {
+        if (trees.length >= max) break;
+        const x = gx + (rand() - 0.5) * 5;
+        const z = gz + (rand() - 0.5) * 5;
+        const ang = Math.atan2((z - f.z) / f.rz, (x - f.x) / f.rx);
+        const wobble = 0.82 + 0.12 * Math.sin(ang * 3 + f.x) + 0.08 * Math.sin(ang * 7 + f.z);
+        const d = Math.hypot((x - f.x) / f.rx, (z - f.z) / f.rz);
+        if (d > wobble) continue;
+        if (d > wobble - 0.12 && rand() < 0.5) continue; // ragged edge
+        if (rand() < 0.06) continue; // clearings
+        if (crowded(x, z) || !allowed(x, z)) continue;
+        place(x, z, rand() < f.conifer ? 1 : rand() < 0.85 ? 0 : 2, 0.85 + rand() * 0.55);
+      }
+  }
+
+  // 3. Clumpy woodland + scattered singles over all other open land outside the ring
+  for (let i = 0; i < 160000 && trees.length < max; i++) {
+    const x = -WORLD_HALF + rand() * WORLD_HALF * 2;
+    const z = -WORLD_HALF + rand() * WORLD_HALF * 2;
     if (Math.abs(x) < R + 9 && Math.abs(z) < R + 9) continue;
-    if (inBox(cs, x, z, 2)) continue;
-    if (OTHER_ZONES.some((b) => inBox(b, x, z, 8)) || inAirport(x, z)) continue;
     const n = 0.5 + 0.5 * Math.sin(x * 0.029 + Math.sin(z * 0.021) * 2.2) * Math.cos(z * 0.026 - 1.1 + Math.sin(x * 0.013));
-    if (rand() > 0.04 + 0.9 * n * n * n) continue;
-    if (crowded(x, z) || inCircles(turbineCircles, x, z) || inCircles(FARM_EXCLUSIONS, x, z)) continue;
-    if (roadDistance(x, z) < 9) continue;
+    if (rand() > 0.02 + 0.75 * n * n * n) continue;
+    if (crowded(x, z) || !allowed(x, z)) continue;
     const onHill = hillHeight(hills, x, z) > 1;
     const r = rand();
-    const species: TreeSpot["species"] = onHill || z < -300 ? (r < 0.65 ? 1 : 0) : r < 0.6 ? 0 : r < 0.85 ? 1 : 2;
+    const species: TreeSpot["species"] = onHill || z < -700 ? (r < 0.65 ? 1 : 0) : r < 0.6 ? 0 : r < 0.85 ? 1 : 2;
     place(x, z, species, 0.75 + rand() * 0.6);
   }
   return trees;
