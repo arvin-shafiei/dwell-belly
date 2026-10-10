@@ -2,14 +2,14 @@
 // spawned with a dummy key and a deadline or budget that is already spent, so no case calls a model.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import type { Flow } from "../lib/flow.ts";
-import { OUTPUT_FILES, spentAndErrored } from "./answers-index.ts";
+import { incomplete, isCaseFolder, OUTPUT_FILES, spentAndErrored } from "./answers-index.ts";
 import { Budget, caseTimeout, metered, OUT_OF_BUDGET, OUT_OF_TIME, outOfBudget, outOfTime, parseBudget, parseDeadline, progressLine, throttled } from "./batch.ts";
-import { fromView } from "./load.ts";
+import { fromView, loadFolder } from "./load.ts";
 import { chosenModels, CHEAP_MODELS, DEFAULT_MODELS, type Models } from "./models.ts";
 import { renderAnswer } from "./report.ts";
 import { runCase } from "./run.ts";
@@ -162,7 +162,7 @@ test("the cheap profile decides on Sonnet and reads on Haiku; the default is unc
 
 function runCli(args: string[]): Promise<{ code: number; out: string }> {
   return new Promise((resolve) => {
-    const env = { ...process.env, ANTHROPIC_API_KEY: "sk-dummy-no-network", TYPESAFE_API_KEY: "", ELEVENLABS_API_KEY: "", REALITY_DEADLINE: "", REALITY_BUDGET_USD: "", REALITY_PROFILE: "" };
+    const env: NodeJS.ProcessEnv = { ...process.env, ANTHROPIC_API_KEY: "sk-dummy-no-network", TYPESAFE_API_KEY: "", ELEVENLABS_API_KEY: "", REALITY_DEADLINE: "", REALITY_BUDGET_USD: "", REALITY_PROFILE: "" };
     delete env.ANTHROPIC_AUTH_TOKEN;
     const child = spawn(process.execPath, [path.join(import.meta.dirname, "cli.ts"), ...args], { env });
     let out = "";
@@ -213,4 +213,38 @@ test("a batch with no budget left hands every case to a person and notes the bud
   const runlog = await readFile(path.join(out, "RUNLOG.md"), "utf8");
   assert.match(runlog, /Budget reached at \d\d:\d\d:\d\d: 2 case\(s\) were handed to a person/);
   assert.match(runlog, /not analysed: budget reached/);
+});
+
+test("folders a macOS zip leaves behind are not cases: no run, no answer, not counted as incomplete", async () => {
+  const cases = await caseFolders(1);
+  await mkdir(path.join(cases, "__MACOSX", "1"), { recursive: true });
+  await writeFile(path.join(cases, "__MACOSX", "1", "._email.txt"), "resource fork");
+  await mkdir(path.join(cases, ".hidden"));
+  const out = await mkdtemp(path.join(tmpdir(), "answers-"));
+  const { code, out: log } = await runCli([cases, out, "--budget-usd", "0"]);
+  assert.equal(code, 0, log);
+  assert.match(log, /^1 cases,/m);
+  assert.deepEqual((await readdir(out, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name), ["1"]);
+  assert.deepEqual(await incomplete(cases, out), []);
+  assert.equal(isCaseFolder({ name: "__MACOSX", isDirectory: () => true }), false);
+  assert.equal(isCaseFolder({ name: ".git", isDirectory: () => true }), false);
+  assert.equal(isCaseFolder({ name: "12", isDirectory: () => true }), true);
+  assert.equal(isCaseFolder({ name: "12", isDirectory: () => false }), false);
+});
+
+test("an unreadable subfolder is listed as unreadable and the rest of the case is still read", { skip: process.getuid?.() === 0 }, async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), "case-"));
+  await writeFile(path.join(dir, "email.txt"), "Parcel DL-9 is late.");
+  await mkdir(path.join(dir, "locked"));
+  await writeFile(path.join(dir, "locked", "note.txt"), "secret");
+  await chmod(path.join(dir, "locked"), 0o000);
+  try {
+    const bundle = await loadFolder(dir);
+    assert.deepEqual(bundle.documents.map((d) => d.name), ["email.txt"]);
+    assert.deepEqual(bundle.unreadable, ["locked/ (folder could not be read: EACCES)"]);
+  } finally {
+    await chmod(path.join(dir, "locked"), 0o755);
+  }
+  // The case folder itself still has to be readable.
+  await assert.rejects(loadFolder(path.join(dir, "missing")), /ENOENT/);
 });

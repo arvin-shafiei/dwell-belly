@@ -13,7 +13,7 @@ import { validateFlow } from "./architect.ts";
 import { historyStore, record } from "./history.ts";
 import * as judge from "./judge.ts";
 import { loadFolder } from "./load.ts";
-import { writeIndex } from "./answers-index.ts";
+import { isCaseFolder, writeIndex } from "./answers-index.ts";
 import { Budget, caseTimeout, metered, outOfBudget, outOfTime, parseBudget, parseDeadline, progressLine, SOFT_STOP_MS, throttled } from "./batch.ts";
 import { chosenModels, claude } from "./models.ts";
 import { renderAnswer, renderReasoning } from "./report.ts";
@@ -83,7 +83,7 @@ async function main() {
   const runId = `${new Date().toISOString()}-${values.mode}`;
   const mode = values.mode === "practice" ? "practice" : "reality";
 
-  const names = (await readdir(casesDir, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name)
+  const names = (await readdir(casesDir, { withFileTypes: true })).filter(isCaseFolder).map((e) => e.name)
     .sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
   if (names.length === 0) throw new Error(`No case folders found in ${casesDir}`);
   await mkdir(outDir, { recursive: true });

@@ -12,7 +12,9 @@ const OUTCOME_WORDS: Record<string, string> = {
 };
 const cell = (s: string) => s.replace(/\|/g, "/").replace(/\s+/g, " ").trim();
 const byNumber = (a: string, b: string) => a.localeCompare(b, "en", { numeric: true });
-const dirs = async (dir: string) => (await readdir(dir, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name).sort(byNumber);
+/** A folder that holds a case: not a hidden folder, and not the __MACOSX folder a macOS zip leaves behind. */
+export const isCaseFolder = (e: { name: string; isDirectory(): boolean }) => e.isDirectory() && !e.name.startsWith(".") && e.name !== "__MACOSX";
+const dirs = async (dir: string) => (await readdir(dir, { withFileTypes: true })).filter(isCaseFolder).map((e) => e.name).sort(byNumber);
 const exists = (file: string) => stat(file).then((s) => s.size > 0, () => false);
 
 /** Case folders that are missing one or more output files, with the files they lack. */
