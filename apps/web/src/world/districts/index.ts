@@ -7,6 +7,7 @@ import { southbank } from "./southbank";
 import { oldTown } from "./oldTown";
 import { shoreditch } from "./shoreditch";
 import { hampstead } from "./hampstead";
+import { government } from "./government";
 import { bridges } from "./bridges";
 
-export const DISTRICTS = { motorway, containerTerminal, industrial, southbank, oldTown, shoreditch, hampstead, bridges };
+export const DISTRICTS = { motorway, containerTerminal, industrial, southbank, oldTown, shoreditch, hampstead, government, bridges };

@@ -2,6 +2,7 @@
 // Every vehicle drives on this graph. Blocked edges (crashes, roadworks) are avoided by findPath.
 import { BLOCK, GRID_HALF, HIGHWAY_RING, LANE_OFFSET, type ZoneName } from "./config";
 import { DISTRICTS } from "./districts";
+import { GOV_DELIVERY_NODES } from "./districts/government";
 
 export type RoadKind = "street" | "highway" | "ramp" | "country";
 
@@ -181,6 +182,8 @@ export const PLACES = {
 export const DELIVERY_STOPS: readonly string[] = [
   ...[...nodes.values()].filter((n) => n.zone === "suburbs").map((n) => n.id),
   g(-2, -2), g(2, -1), g(1, 2), g(-3, 1), g(3, 3), g(0, -3), "farm_n", "farm_s", "dock_n", "airport_cargo",
+  // Government quarter mailrooms (secure deliveries; where tricky cases happen).
+  ...GOV_DELIVERY_NODES.filter((id) => nodes.has(id)),
 ];
 
 /**
