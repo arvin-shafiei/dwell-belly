@@ -15,7 +15,7 @@
     "index:cases": "node scripts/eval/index-cases.mjs",
     "validate:cases": "node scripts/eval/validate-cases.mjs",
     "answer": "node --env-file-if-exists=apps/api/.env.local apps/api/src/agent/cli.ts",
-    "test:agent": "node --test apps/api/src/agent/agent.test.ts"
+    "test:agent": "node --test apps/api/src/agent/*.test.ts"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

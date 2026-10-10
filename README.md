@@ -51,7 +51,21 @@ Each case gets `ANSWERS/<case>/ANSWER.md`, `REASONING.md` and `trace.json`, and 
 | Act | `run.ts` | Cleared messages go to a sandbox outbox. No live system is connected, so nothing is reported as confirmed |
 | Report | `report.ts` | Renders the answer files from the run result |
 
-A case that fails at any step still gets an `ANSWER.md` saying where it failed and that it was handed to a person. `npm run test:agent` runs the flow against a scripted fake model (no key needed).
+A case that fails at any step still gets an `ANSWER.md` saying where it failed and that it was handed to a person. `npm run test:agent` runs the flow and every module against scripted fakes (no key needed).
+
+Also in `apps/api/src/agent/`:
+
+| File | What it does | Used by the flow? |
+|---|---|---|
+| `clock.ts` | Case time and time left to each deadline, worked out in code | Yes, in the planner's brief |
+| `jev.ts`, `judge.ts` | Jev triage, clash score and per-message risk | Triage and clash when `TYPESAFE_API_KEY` is set. The gate's critic stays on Claude unless the gate node config sets `"critic": "jev"` |
+| `outbox.ts` | Delivery with timeout, one retry and alternate channels; says exactly what was and was not accepted | Yes. The default transport is a sandbox that reaches nobody and says so |
+| `tools.ts` | Finds a tool manifest shipped with a case and can call it over HTTP | Tools are listed in the answer, never called automatically |
+| `history.ts` | Case store, grouping of related cases, open promises, the learner's threshold suggestions | The runner records every run to `<outDir>/case-history.jsonl`. Nothing reads it back during a batch, so cases stay independent |
+| `architect.ts`, `selftest.ts` | Builds a flow from a business description and validates it; runs generated cases through a flow | `POST /api/architect` |
+| `watch.ts`, `replan.ts` | Order-event checks and greedy drop reassignment, on events the caller supplies (the practice data has no order stream) | `POST /api/watch`. Replan is a greedy heuristic, not an optimiser |
+
+Voice: an event may carry `source` (`live_human`, `simulated_persona`, `audio_attachment`). Events voiced by a simulated persona are dropped from the evidence unless a request sets `mode: "demo"`, so they cannot enter a scored run.
 
 Other scripts: `npm run build`, `npm run lint`, `npm run data` (rebuild parsed cases).
 

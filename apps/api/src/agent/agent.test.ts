@@ -4,6 +4,7 @@ import path from "node:path";
 import { test } from "node:test";
 import type { Flow } from "../lib/flow.ts";
 import { hardRules } from "./gate.ts";
+import { failingTransport } from "./outbox.ts";
 import { fromView, loadFolder } from "./load.ts";
 import type { Models } from "./models.ts";
 import { renderAnswer, renderReasoning } from "./report.ts";
@@ -229,4 +230,51 @@ test("the trace carries no text from the case files", async () => {
   const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })));
   const start = r.trace.events[0];
   assert.equal(start.kind === "run_start" && JSON.stringify(start.inputs).includes("No parcel here"), false);
+});
+
+test("a message no transport will take is reported as not delivered and goes to a human", async () => {
+  const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), transports: [failingTransport(/./)] });
+  assert.equal(r.outcome, "escalated");
+  assert.deepEqual(r.outbox.map((o) => o.status), ["failed"]);
+  const answer = renderAnswer(r);
+  assert.match(answer, /Not delivered: every channel failed/);
+  assert.equal(/Recorded in sandbox outbox/.test(answer), false);
+  const end = r.trace.events.at(-1);
+  assert.equal(end?.kind === "run_end" ? end.nextAction : "not a run_end", undefined);
+});
+
+test("Jev's quick judgements are used when present and the flow survives them failing", async () => {
+  const jevUsage = { model: "jev", latencyMs: 1, tokensIn: 5, tokensOut: 0, costUsd: 0 };
+  const judge = {
+    triage: async () => ({ caseType: "lost_or_misdelivered" as const, urgency: "high" as const, urgencyScore: 1.8, usage: jevUsage }),
+    clash: async () => { throw new Error("jev down"); },
+  };
+  const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), judge });
+  assert.equal(r.outcome, "acted");
+  const triaged = r.trace.events.find((e) => e.kind === "node_end" && e.nodeId === "triage");
+  assert.match(triaged?.kind === "node_end" ? triaged.summary : "", /lost_or_misdelivered · high/);
+  assert.equal(r.trace.events.filter((e) => e.kind === "model_call" && e.runner === "jev").length, 1);
+});
+
+test("the planner is given the case time and the deadlines worked out in code", async () => {
+  let brief = "";
+  const models = fake({ understand: [{ ...understanding, deadlines: ["return to sender at 2026-02-25 16:00 UTC"] }], decide: [decision], critic: [{ actions: [scores(0)] }] });
+  const spy: Models = { async structured(call) { if ((call.schema as unknown) === Decision) brief = call.user; return models.structured(call); } };
+  await runCase(bundle, opts(spy));
+  const clock = brief.match(/<clock>([\s\S]*?)<\/clock>/)?.[1] ?? "";
+  assert.match(clock, /2026-02-25/);
+  assert.match(clock, /return to sender/);
+  assert.match(clock, /6 ?h/i);
+});
+
+test("events voiced by a simulated persona never reach the evidence unless asked for", () => {
+  const view = { id: "v", events: [
+    { n: 1, timestamp: "2026-02-25T09:00:00Z", stage: "Context", channel: "Call transcript", from: "Driver", to: "Desk", body: "Left it in the porch.", source: "simulated_persona" as const },
+    { n: 2, timestamp: "2026-02-25T09:10:00Z", stage: "Escalation", channel: "Call transcript", from: "Recipient", to: "Desk", body: "Nothing here.", source: "live_human" as const },
+  ] };
+  const scored = fromView(view);
+  assert.equal(scored.documents[0].text.includes("porch"), false);
+  assert.match(scored.documents[0].text, /voice: live human/);
+  assert.match(scored.unreadable.join(), /1 event\(s\) voiced by a simulated persona/);
+  assert.equal(fromView(view, { allowSimulated: true }).documents[0].text.includes("porch"), true);
 });

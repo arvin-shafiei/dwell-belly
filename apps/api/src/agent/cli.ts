@@ -6,10 +6,13 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import type { Flow } from "../lib/flow.ts";
 import { runPanel } from "../lib/panel.ts";
+import { historyStore, record } from "./history.ts";
+import * as judge from "./judge.ts";
 import { loadFolder } from "./load.ts";
 import { claude } from "./models.ts";
 import { renderAnswer, renderReasoning } from "./report.ts";
 import { runCase } from "./run.ts";
+import { findTools } from "./tools.ts";
 
 const FLOW_FILE = path.resolve(import.meta.dirname, "..", "..", "flows", "default-incident.json");
 const RETRY_PAUSE_MS = 20_000;
@@ -38,7 +41,9 @@ async function main() {
 
   const flow: Flow = JSON.parse(await readFile(FLOW_FILE, "utf8"));
   const models = claude();
-  const panel = process.env.TYPESAFE_API_KEY ? runPanel : undefined;
+  const jev = Boolean(process.env.TYPESAFE_API_KEY);
+  const panel = jev ? runPanel : undefined;
+  const quick = jev ? judge : undefined;
   const runId = `${new Date().toISOString()}-${values.mode}`;
   const mode = values.mode === "practice" ? "practice" : "reality";
 
@@ -48,6 +53,7 @@ async function main() {
   await mkdir(outDir, { recursive: true });
   console.log(`${names.length} cases, ${values.concurrency} at a time, mode ${mode}, Jev panel ${panel ? "on" : "off (no key)"}`);
 
+  const store = historyStore(path.join(outDir, "case-history.jsonl"));
   const lines = new Map<string, string>();
   const failed = new Set<string>();
 
@@ -63,7 +69,14 @@ async function main() {
         const ended = Array.isArray(prior?.events) ? prior.events.findLast((e: { kind?: string } | null) => e?.kind === "run_end") : undefined;
         if (ended && ended.outcome !== "error") { lines.set(name, `| ${name} | kept from an earlier run | ${ended.outcome} | | |`); return; }
       }
-      const result = await runCase(await loadFolder(path.join(casesDir, name)), { flow, models, panel, mode, runId });
+      const bundle = await loadFolder(path.join(casesDir, name));
+      // Tools shipped with a case are recorded, not called: a manifest is case content, and an
+      // unknown endpoint is not somewhere to send a customer's details unprompted.
+      const found = await findTools(path.join(casesDir, name)).catch(() => ({ tools: [], unparsed: [] }));
+      if (found.tools.length) bundle.tools = found.tools.map((t) => ({ name: t.name, description: t.description }));
+      const result = await runCase(bundle, { flow, models, panel, judge: quick, mode, runId });
+      // The history lets later runs group related cases and chase promises. Losing a line of it must not lose the answer.
+      await record(store, result, new Date()).catch(() => {});
       // Render everything first, so the three files describe one and the same state.
       const files = { "ANSWER.md": renderAnswer(result), "REASONING.md": renderReasoning(result), "trace.json": JSON.stringify(result.trace, null, 1) };
       await mkdir(dir, { recursive: true });
