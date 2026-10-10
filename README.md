@@ -16,7 +16,7 @@ Hamyway City reads a delivery problem the way a coordinator would, works out who
 
 <img src="docs/media/hero.gif" alt="Hamyway City: a case comes in, the agent decides, the safety check clears the message, and the decision appears in the console" width="900">
 
-**[▶ Watch the 60-second demo](demo/rivet-demo.mp4)** · [full 2-minute cut](demo/rivet-demo-full.mp4) · [Quickstart](#quickstart) · [Architecture](#architecture) · [Evidence](#evidence) · [Limitations](#known-limitations)
+**[▶ Watch the demo](demo/)** · [Quickstart](#quickstart) · [Architecture](#architecture) · [Evidence](#evidence) · [Limitations](#known-limitations)
 
 <sub>Built for the Real-World Agents Hackathon, 10 October 2026 · Delivery & Logistics track</sub>
 
