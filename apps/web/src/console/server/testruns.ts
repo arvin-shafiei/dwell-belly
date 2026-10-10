@@ -1,0 +1,268 @@
+// Test runs: one workflow version over a scenario set, each case run through the agent API (the same
+// path as Execute, with the version's flow) and scored by the team's judge (scripts/eval/score.mjs).
+// POST returns at once; cases run in the background, 3 at a time, and progress is saved after each.
+import { randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import type { ScenarioSetId, TestRun, TestRunCase } from "../types";
+import { buildView, listCasesWithMutation, type CaseWithMutation } from "./catalogue";
+import { getDb, repoRoot, type SqlValue } from "./db";
+import { evalModules, ensureJudgeKey, type AgentResult, type EvalCase, type Expected, type Judgement, type Verdict } from "./evalModules";
+import { agentHealthy, agentUrl, execute } from "./execute";
+import { resolveSet, SET_LABELS } from "./scenarios";
+import { fixtureExpected, scoreFixture, summarise, toTestCase, type FixtureRubric } from "./scoring";
+import { getVersion } from "./versions";
+
+export const CONCURRENCY = 3;
+
+export class TestRunError extends Error {
+  constructor(message: string, readonly status: number, readonly problems?: string[]) {
+    super(message);
+  }
+}
+
+// ---------- bookkeeping (pure apart from the callbacks; tested) ----------
+
+export function queuedCase(c: Pick<CaseWithMutation, "id" | "dataset">): TestRunCase {
+  return { caseId: c.id, dataset: c.dataset, executionId: null, status: "queued", score: null, breakdown: null, mustNotBroken: [], verdict: null, expected: null, got: null, costUsd: null, durationMs: null };
+}
+
+/**
+ * Runs every queued case with at most `concurrency` in flight. A case that throws becomes an "error"
+ * case and the rest carry on. Once `isCancelled()` is true no new case starts; cases already running
+ * finish and are recorded. `onUpdate` is called after every state change with the full list.
+ */
+export async function runCases(opts: {
+  cases: TestRunCase[];
+  concurrency: number;
+  runOne: (c: TestRunCase) => Promise<TestRunCase>;
+  onUpdate: (cases: TestRunCase[]) => void;
+  isCancelled: () => boolean;
+}): Promise<"done" | "cancelled"> {
+  const cases = opts.cases;
+  let next = 0;
+  const worker = async () => {
+    while (next < cases.length && !opts.isCancelled()) {
+      const i = next++;
+      cases[i] = { ...cases[i], status: "running" };
+      opts.onUpdate(cases);
+      try {
+        cases[i] = await opts.runOne(cases[i]);
+      } catch (err) {
+        cases[i] = { ...cases[i], status: "error", verdict: `error: ${err instanceof Error ? err.message : String(err)}` };
+      }
+      opts.onUpdate(cases);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(opts.concurrency, cases.length)) }, worker));
+  return opts.isCancelled() ? "cancelled" : "done";
+}
+
+// ---------- storage ----------
+
+function toRun(r: Record<string, SqlValue>): TestRun {
+  return {
+    id: String(r.id),
+    workflowId: String(r.workflow_id),
+    version: Number(r.version),
+    set: String(r.scenario_set) as ScenarioSetId,
+    filter: r.filter === null ? null : String(r.filter),
+    status: String(r.status) as TestRun["status"],
+    startedAt: String(r.started_at),
+    finishedAt: r.finished_at === null ? null : String(r.finished_at),
+    cases: JSON.parse(String(r.cases)) as TestRunCase[],
+    summary: JSON.parse(String(r.summary)) as TestRun["summary"],
+  };
+}
+
+function saveRun(run: TestRun) {
+  getDb().prepare(`INSERT INTO test_runs (id, workflow_id, version, scenario_set, filter, status, started_at, finished_at, cases, summary)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(id) DO UPDATE SET status = excluded.status, finished_at = excluded.finished_at, cases = excluded.cases, summary = excluded.summary`)
+    .run(run.id, run.workflowId, run.version, run.set, run.filter, run.status, run.startedAt, run.finishedAt, JSON.stringify(run.cases), JSON.stringify(run.summary));
+}
+
+const g = globalThis as unknown as { __consoleTestRuns?: Map<string, { cancelled: boolean }> };
+const active = (g.__consoleTestRuns ??= new Map());
+
+/** A "running" run that this server process is not running was cut off by a restart. */
+function settleOrphan(run: TestRun): TestRun {
+  if (run.status !== "running" || active.has(run.id)) return run;
+  const cases = run.cases.map((c) => (c.status === "running" || c.status === "queued"
+    ? { ...c, status: "error" as const, verdict: "interrupted: the console server restarted during the run" }
+    : c));
+  const settled: TestRun = { ...run, status: "error", finishedAt: run.finishedAt ?? new Date().toISOString(), cases, summary: summarise(cases) };
+  saveRun(settled);
+  return settled;
+}
+
+export function getTestRun(id: string): TestRun | null {
+  const row = getDb().prepare("SELECT * FROM test_runs WHERE id = ?").get(id);
+  return row ? settleOrphan(toRun(row)) : null;
+}
+
+export function listTestRuns(workflowId?: string | null): Omit<TestRun, "cases">[] {
+  const db = getDb();
+  const rows = workflowId
+    ? db.prepare("SELECT * FROM test_runs WHERE workflow_id = ? ORDER BY started_at DESC LIMIT 200").all(workflowId)
+    : db.prepare("SELECT * FROM test_runs ORDER BY started_at DESC LIMIT 200").all();
+  return rows.map((r) => {
+    const { cases: _cases, ...rest } = settleOrphan(toRun(r));
+    void _cases;
+    return rest;
+  });
+}
+
+export function cancelTestRun(id: string): boolean {
+  const run = getTestRun(id);
+  if (!run) return false;
+  const handle = active.get(id);
+  if (handle) handle.cancelled = true;
+  if (run.status === "running") saveRun({ ...run, status: "cancelled" });
+  return true;
+}
+
+// ---------- scoring one case ----------
+
+interface CaseContext {
+  view: unknown;
+  expected: Expected;
+  fixture: boolean;
+}
+
+async function contextFor(c: TestRunCase, evalCases: Map<string, EvalCase>): Promise<CaseContext> {
+  if (c.dataset === "fixtures") {
+    const n = c.caseId.replace(/^fixture-/, "");
+    const rubric = JSON.parse(await readFile(path.join(repoRoot(), "docs", "stress-test", "fixtures", n, "rubric.json"), "utf8")) as FixtureRubric;
+    const built = await buildView(c.caseId, "fixtures");
+    return { view: built?.view ?? null, expected: fixtureExpected(rubric), fixture: true };
+  }
+  const ec = evalCases.get(c.caseId);
+  if (!ec) throw new Error(`no answer key for ${c.caseId} in scripts/eval/cases.mjs`);
+  return { view: ec.view, expected: ec.expected, fixture: false };
+}
+
+function recordVerdictOnExecution(executionId: string, v: Verdict, note: string | null) {
+  getDb().prepare("UPDATE executions SET eval_pass = ?, eval_score = ?, eval_notes = ? WHERE id = ?")
+    .run(v.pass ? 1 : 0, v.score, note, executionId);
+}
+
+// ---------- start ----------
+
+export interface StartBody {
+  workflowId?: unknown;
+  version?: unknown;
+  set?: unknown;
+  filter?: unknown;
+  caseIds?: unknown;
+  limit?: unknown;
+}
+
+async function validateWithAgent(flow: unknown): Promise<string[]> {
+  const res = await fetch(`${agentUrl()}/api/architect`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ flow }),
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!res.ok) throw new TestRunError(`agent API refused the flow check (${res.status})`, 502);
+  const body = (await res.json()) as { problems?: string[] };
+  return Array.isArray(body.problems) ? body.problems : [];
+}
+
+export async function startTestRun(body: StartBody): Promise<TestRun> {
+  const workflowId = typeof body.workflowId === "string" && body.workflowId ? body.workflowId : null;
+  if (!workflowId) throw new TestRunError("workflowId is required", 400);
+  const set = body.set as ScenarioSetId;
+  if (typeof set !== "string" || !(set in SET_LABELS)) throw new TestRunError(`set must be one of ${Object.keys(SET_LABELS).join(", ")}`, 400);
+  const version = await getVersion(workflowId, body.version === undefined || body.version === null ? null : Number(body.version));
+  if (!version) throw new TestRunError(`no version ${String(body.version ?? "")} of ${workflowId}`, 404);
+  const filter = typeof body.filter === "string" && body.filter.trim() ? body.filter.trim() : null;
+  const caseIds = Array.isArray(body.caseIds) ? body.caseIds.filter((x): x is string => typeof x === "string")
+    : typeof body.caseIds === "string" ? body.caseIds.split(",") : null;
+  let picked: CaseWithMutation[];
+  try {
+    picked = resolveSet({ set, filter, caseIds, limit: body.limit }, await listCasesWithMutation());
+  } catch (err) {
+    throw new TestRunError(err instanceof Error ? err.message : String(err), 400);
+  }
+  if (!ensureJudgeKey()) throw new TestRunError("no ANTHROPIC_API_KEY for the judge (set it in apps/api/.env.local)", 503);
+  if (!(await agentHealthy())) throw new TestRunError(`the agent API at ${agentUrl()} is not answering`, 503);
+  const problems = await validateWithAgent(version.flow);
+  if (problems.length) throw new TestRunError(`version ${version.version} of ${workflowId} is not a valid flow`, 422, problems);
+  const ev = await evalModules();
+  const evalCases = new Map((await ev.loadCases("all")).map((c) => [c.id, c]));
+
+  const run: TestRun = {
+    id: randomUUID(),
+    workflowId,
+    version: version.version,
+    set,
+    filter: set === "custom" ? picked.map((c) => c.id).join(",") : filter,
+    status: "running",
+    startedAt: new Date().toISOString(),
+    finishedAt: null,
+    cases: picked.map(queuedCase),
+    summary: summarise([]),
+  };
+  run.summary = summarise(run.cases);
+  saveRun(run);
+  const handle = { cancelled: false };
+  active.set(run.id, handle);
+
+  const runOne = async (c: TestRunCase): Promise<TestRunCase> => {
+    const ctx = await contextFor(c, evalCases);
+    const exec = await execute({ caseId: c.caseId, dataset: c.dataset, workflowId, flow: version.flow });
+    const base = { caseId: c.caseId, dataset: c.dataset, executionId: exec.id };
+    let result: AgentResult | null = null;
+    let agentError: string | null = null;
+    if (exec.trace) {
+      try {
+        result = ev.traceToResult(exec.trace);
+      } catch (err) {
+        agentError = err instanceof Error ? err.message : String(err);
+      }
+    } else {
+      agentError = exec.error ?? "the agent API returned no trace";
+    }
+    let judgement: Judgement | null = null;
+    let judgeError: string | null = null;
+    if (result && result.outcome !== "error") {
+      try {
+        judgement = await ev.judge(ctx.view, ctx.expected, result);
+      } catch (err) {
+        judgeError = err instanceof Error ? err.message : String(err);
+      }
+    }
+    const verdict = result ? (ctx.fixture ? scoreFixture(result, judgement, ev.PASS_AT) : ev.scoreCase(ctx.expected, result, judgement)) : null;
+    const scored = toTestCase(base, { result, agentError, judgement, judgeError, verdict, expected: ctx.expected, costUsd: exec.costUsd, durationMs: exec.durationMs });
+    if (verdict?.completed && (scored.status === "passed" || scored.status === "failed")) {
+      recordVerdictOnExecution(exec.id, verdict, scored.verdict);
+    }
+    return scored;
+  };
+
+  void runCases({
+    cases: run.cases,
+    concurrency: CONCURRENCY,
+    runOne,
+    isCancelled: () => handle.cancelled,
+    onUpdate: (cases) => {
+      run.cases = cases;
+      run.summary = summarise(cases);
+      if (handle.cancelled) run.status = "cancelled";
+      saveRun(run);
+    },
+  }).then((end) => {
+    run.status = end === "cancelled" ? "cancelled" : "done";
+    run.finishedAt = new Date().toISOString();
+    run.summary = summarise(run.cases);
+    saveRun(run);
+  }).catch(() => {
+    run.status = "error";
+    run.finishedAt = new Date().toISOString();
+    saveRun(run);
+  }).finally(() => active.delete(run.id));
+
+  return run;
+}

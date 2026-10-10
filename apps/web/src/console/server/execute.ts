@@ -4,7 +4,7 @@
 // `extraEvents` (voice notes, call transcripts) are appended on the case's own timeline, and
 // `humanDecision` is passed through as a trusted input. Any voice input runs in "demo" mode (PRD I2).
 import { randomUUID } from "node:crypto";
-import type { CaseViewEvent, DecisionCard, ExecutionVoice, HumanDecision, OutboxEntry } from "../types";
+import type { CaseViewEvent, DecisionCard, ExecutionVoice, Flow, HumanDecision, OutboxEntry } from "../types";
 import { buildView } from "./catalogue";
 import { summariseTrace, isTrace } from "./mapping";
 import { buildRerun } from "./rerun";
@@ -32,6 +32,8 @@ export interface ExecuteInput {
   voice?: ExecutionVoice | null;
   mode?: "practice" | "demo" | null;
   elapsedMs?: number | null;
+  /** Run on this exact flow (a workflow version under test) instead of the saved workflow. */
+  flow?: Flow | null;
 }
 
 /** The JSON body for apps/api POST /api/cases: the case view plus `mode` and `humanDecision` when set. */
@@ -105,8 +107,8 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
   };
   upsertExecution(base);
 
-  const saved = getWorkflow(base.workflowId);
-  const edited = saved?.source === "db" ? saved : null;
+  const saved = input.flow ? null : getWorkflow(base.workflowId);
+  const flow = input.flow ?? (saved?.source === "db" ? saved.flow : null);
 
   try {
     const res = await fetch(`${agentUrl()}/api/cases`, {
@@ -114,7 +116,7 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
       headers: { "content-type": "application/json" },
       // A workflow edited in the console runs as edited: the agent API validates the flow and
       // refuses an unsound one. An untouched workflow is left to the API's own flow file.
-      body: JSON.stringify(edited ? { ...request.body, flow: edited.flow } : { ...request.body, flowId: base.workflowId }),
+      body: JSON.stringify(flow ? { ...request.body, flow } : { ...request.body, flowId: base.workflowId }),
       signal: AbortSignal.timeout(RUN_TIMEOUT_MS),
     });
     const text = await res.text();

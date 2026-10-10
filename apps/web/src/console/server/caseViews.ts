@@ -59,9 +59,13 @@ interface RawGenerated {
   context?: string;
   initial_request?: string;
   events: ViewEvent[];
+  attachments?: { name: string; text?: string | null; missing?: boolean; corrupt?: boolean }[];
 }
 
-/** Generated (and grounded) case, data/generated/delivery/*.json. Mirrors generatedCase() in cases.mjs. */
+/**
+ * Generated, grounded or adversarial case (data/generated/delivery, data/adversarial/delivery).
+ * Mirrors generatedCase() in cases.mjs: a missing attachment is left out, a corrupt one has no text.
+ */
 export function generatedView(c: RawGenerated): CaseView {
   return {
     id: c.id,
@@ -70,7 +74,7 @@ export function generatedView(c: RawGenerated): CaseView {
     context: c.context ?? null,
     initial_request: c.initial_request ?? null,
     events: c.events,
-    attachments: [],
+    attachments: (c.attachments ?? []).filter((a) => !a.missing).map((a) => ({ name: a.name, text: a.corrupt ? null : (a.text as string | null) })),
   };
 }
 
