@@ -59,12 +59,12 @@ function montageShot(opts: { clip?: string; stills: string[]; cap?: Cap; sim?: b
 export const HeroGif: React.FC = () => {
   const { durationInFrames } = useVideoConfig();
   const shots = [
-    montageShot({ clip: "city-flyover", stills: ["city-aerial", "city-night"], cap: { kicker: "Rivet", text: "The delivery desk that knows when to stop." }, sim: true }),
+    montageShot({ clip: "city-flyover", stills: ["city-aerial", "city-night"], cap: { kicker: "Hamyway City", text: "The delivery desk that knows when to stop." }, sim: true }),
     montageShot({ stills: ["case-run-detail", "console-home"], camKey: "case-sent", cap: { kicker: "Case run", text: "Reads the case, takes one well-aimed step." } }),
     montageShot({ stills: ["playbooks-tree", "playbooks-ai-builder"], cap: { kicker: "Playbooks", text: "The AI builds the decision tree." } }),
     montageShot({ stills: ["case-run-voice", "decisions"], camKey: "voice-card", cap: { kicker: "Decisions", text: "When unsure, a person decides." } }),
   ].filter((x): x is Shot => x !== null);
-  if (!shots.length) return <Missing text="Rivet" />;
+  if (!shots.length) return <Missing text="Hamyway City" />;
   const xf = 6;
   const placed = layout(shots, durationInFrames - xf);
   return (

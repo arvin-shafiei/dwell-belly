@@ -125,7 +125,7 @@ export const SceneTitle: React.FC = () => {
       <AbsoluteFill style={{ justifyContent: "center", paddingLeft: 160 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 30, transform: `translateY(${(1 - a) * 40}px)`, opacity: Math.min(1, a) }}>
           <div style={{ width: 54, height: 54, background: K.orange, transform: `rotate(${(1 - a) * 90}deg)` }} />
-          <div style={{ fontSize: 190, fontWeight: 700, letterSpacing: -6, lineHeight: 1 }}>Rivet</div>
+          <div style={{ fontSize: 180, fontWeight: 700, letterSpacing: -6, lineHeight: 1 }}>Hamyway City</div>
         </div>
         <Kinetic text="The delivery desk that knows *when to stop.*" at={10} size={66} weight={560} style={{ marginTop: 34 }} />
         <div style={{ height: 4, background: K.orange, width: 900 * line, marginTop: 30 }} />

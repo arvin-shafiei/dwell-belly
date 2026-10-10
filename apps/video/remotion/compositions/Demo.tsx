@@ -91,7 +91,7 @@ export const Demo: React.FC<DemoProps> = ({ audio, audioVolume }) => {
               <AbsoluteFill style={{ background: "linear-gradient(90deg, rgba(17,17,19,0.82) 0%, rgba(17,17,19,0.45) 55%, rgba(17,17,19,0.1) 100%)" }} />
               <SimTag />
               <Sequence from={6}>
-                <TitleBlock title="Rivet" line="The delivery desk that knows when to stop." />
+                <TitleBlock title="Hamyway City" line="The delivery desk that knows when to stop." />
               </Sequence>
             </AbsoluteFill>
           ),
@@ -105,7 +105,7 @@ export const Demo: React.FC<DemoProps> = ({ audio, audioVolume }) => {
       </AbsoluteFill>
     ),
   };
-  const hook = layout(hookCity ? [{ ...hookText, weight: 2.4 }, { ...hookCity, weight: 3.6 }] : [{ ...hookText, weight: 3 }, { ...textCard(3, ["Rivet", "The delivery desk that knows when to stop."]) }], s(6), 0);
+  const hook = layout(hookCity ? [{ ...hookText, weight: 2.4 }, { ...hookCity, weight: 3.6 }] : [{ ...hookText, weight: 3 }, { ...textCard(3, ["Hamyway City", "The delivery desk that knows when to stop."]) }], s(6), 0);
 
   // 6-20 s: a real case run.
   const caseRun = layout(
@@ -175,7 +175,7 @@ export const Demo: React.FC<DemoProps> = ({ audio, audioVolume }) => {
         weight: 2.3,
         render: () => (
           <AbsoluteFill style={{ backgroundColor: C.ink }}>
-            <TitleBlock title="Rivet" line={`${ONE_LINER.replace(/^Rivet: t/, "T")}.`} small={REPO_URL} />
+            <TitleBlock title="Hamyway City" line={`${ONE_LINER.replace(/^Hamyway City: t/, "T")}.`} small={REPO_URL} />
           </AbsoluteFill>
         ),
       },

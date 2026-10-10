@@ -20,7 +20,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(here, "../../..");
 const DEMO_OUT = join(REPO, "demo", "rivet-demo-v1.mp4");
 const V2_OUT = join(REPO, "demo", "rivet-demo-full.mp4");
-const CUT_OUT = join(REPO, "demo", "rivet-demo.mp4");
+const CUT_OUT = process.env.CUT_OUT || join(REPO, "demo", "rivet-demo.mp4");
 const V2_MAX = 60 * 1024 * 1024;
 const MB = 1024 * 1024;
 // 50 MB is the hard limit for committing without LFS; the PRD (H1) asks for under 30 MB.
