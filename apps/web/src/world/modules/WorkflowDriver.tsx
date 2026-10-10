@@ -66,6 +66,8 @@ export default function WorkflowDriver() {
       backgroundMinMs: 45_000,
       backgroundMaxMs: 75_000,
       firstCaseNo: nextCaseNo(),
+      // The human desk needs an operational deadline, not a six-second demo timer.
+      humanTimeoutMs: 15 * 60_000,
       idPrefix: `wf${Date.now().toString(36)}`,
       onCaseDone: (c) => {
         if (c.scenarioId && c.runId && c.outcome) {

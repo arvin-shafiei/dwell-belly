@@ -7,6 +7,7 @@ import { runCase } from "@/agent/run";
 import { json } from "@/lib/cors";
 import type { Flow } from "@/lib/flow";
 import { runPanel } from "@/lib/panel";
+import { saveReviewRecord } from "@/lib/review-record";
 
 // POST /api/cases  body: a case view { id, title?, context?, events[], attachments?, mode? }
 // Runs it through the incident flow and returns the trace the 2D and 3D views replay.
@@ -27,7 +28,10 @@ export async function POST(req: Request) {
     mode: demo ? "demo" : "practice",
     runId: `api-${new Date().toISOString()}`,
   });
-  return json({ trace: result.trace, outcome: result.outcome, outbox: result.outbox, card: result.card ?? null });
+  let reviewWarning: string | undefined;
+  try { await saveReviewRecord(result); }
+  catch { reviewWarning = "The decision card could not be saved to the human review queue. Keep this response for handover."; }
+  return json({ trace: result.trace, outcome: result.outcome, outbox: result.outbox, card: result.card ?? null, ...(reviewWarning && { reviewWarning }) });
 }
 
 export function GET() {

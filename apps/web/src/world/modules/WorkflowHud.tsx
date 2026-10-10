@@ -4,7 +4,8 @@
 import { memo, useState } from "react";
 import { useWorld } from "../store";
 import { MiniFlow } from "./WorkflowHud/MiniFlow";
-import { CaseFeed, DecisionToast, Deliveries, GLASS, HotkeysFooter, IncidentList, AgentToggle, TopBar, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { CaseFeed, Deliveries, GLASS, HotkeysFooter, IncidentList, AgentToggle, TopBar, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { useReviewQueue } from "../../review/useReviewQueue";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
 
 // The Minimap sits at bottom-4 left-4 (240px); bottom overlays start right of it.
@@ -83,10 +84,12 @@ function CollapsedTab({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-export default function WorkflowHud() {
+export default function WorkflowHud({ onReviewOpen }: { onReviewOpen: () => void }) {
   const [open, setOpen] = useState(true);
   const [scenOpen, setScenOpen] = useState(false);
   const cov = useScenarioCoverage();
+  const { tasks } = useReviewQueue();
+  const reviewTasks = tasks.filter((task) => task.status === "pending");
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none font-sans text-white antialiased">
       <style>{STYLES}</style>
@@ -99,7 +102,10 @@ export default function WorkflowHud() {
               <TourBadge />
             </>
           }
-          extra={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
+          extra={<div className="flex items-center gap-2">
+            <button type="button" onClick={onReviewOpen} className="pointer-events-auto whitespace-nowrap rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] font-medium text-amber-100 transition hover:bg-amber-400/20 focus-visible:outline-2 focus-visible:outline-amber-300">Human review{reviewTasks.length > 0 && <span className="ml-2 font-mono">{reviewTasks.length}</span>}</button>
+            <ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />
+          </div>}
         />
       </div>
 
@@ -117,7 +123,10 @@ export default function WorkflowHud() {
         className="absolute bottom-16 flex justify-center"
         style={{ left: MINIMAP_CLEAR, right: open ? 404 : 12 }}
       >
-        <DecisionToast />
+        {reviewTasks.length > 0 && <button type="button" onClick={onReviewOpen} className={`${GLASS} flex max-w-sm items-center gap-3 border-amber-400/30 px-4 py-3 text-left text-xs transition hover:bg-[#15171d]/90`}>
+          <span className="h-2 w-2 shrink-0 rounded-full bg-amber-300" />
+          <span><strong className="block font-medium text-amber-100">{reviewTasks.length} case{reviewTasks.length === 1 ? "" : "s"} need a person</strong><span className="mt-1 block text-[10px] text-white/55">Open the decision queue →</span></span>
+        </button>}
       </div>
 
       <div className="absolute bottom-3 flex justify-center" style={{ left: MINIMAP_CLEAR, right: open ? 404 : 12 }}>

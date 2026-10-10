@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Flow } from "../../../api/src/lib/flow";
+import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
@@ -17,6 +18,7 @@ export default function Home() {
     <main className="mx-auto max-w-3xl p-8 font-sans">
       <h1 className="text-2xl font-semibold">Delivery Ops Control Room</h1>
       <p className="mt-2 text-zinc-500">Flowchart UI goes here (React Flow).</p>
+      <nav className="mt-5 flex gap-3 text-sm" aria-label="Operations views"><Link className="rounded-lg border border-amber-500/40 px-4 py-2 hover:bg-amber-500/10" href="/review">Human review →</Link><Link className="rounded-lg border border-zinc-500/30 px-4 py-2 hover:bg-zinc-500/10" href="/city">City simulation →</Link></nav>
       <Suspense fallback={<p className="mt-6 text-zinc-500">Loading flows…</p>}>
         <FlowList />
       </Suspense>

@@ -32,6 +32,7 @@ export interface DecisionCard {
   safe: string; // auto-picked after humanTimeoutMs; always undoable
   chosen?: string;
   auto?: boolean; // true when nobody answered in time
+  deadlineAt?: number; // engine time, shared by the HUD and human review desk
 }
 
 export interface Case {
@@ -448,7 +449,7 @@ export class WorkflowEngine {
   /** Answer a waiting decision card (from the HUD). Returns false if the case isn't waiting. */
   decide(caseId: string, option: string): boolean {
     const r = this.active.find((x) => x.c.id === caseId);
-    if (!r || r.c.state !== "awaiting_human") return false;
+    if (!r || r.c.state !== "awaiting_human" || r.choice !== undefined || !r.c.decision?.options.includes(option) || this.t >= r.until) return false;
     r.choice = option;
     return true;
   }
@@ -587,6 +588,7 @@ export class WorkflowEngine {
         if (s.nodeId === "human") {
           r.phase = "await";
           r.until = this.t + this.o.humanTimeoutMs;
+          r.c.decision!.deadlineAt = r.until;
           r.c.state = "awaiting_human";
           return;
         }
