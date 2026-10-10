@@ -4,7 +4,7 @@
 // produces an answer handing the case to a person.
 import type { Flow } from "../lib/flow.ts";
 import { runPanel, type PanelResult, type PanelRule } from "../lib/panel.ts";
-import type { DecisionCard, NextAction, NodeOutput, Outcome, Trace, TraceEvent } from "../lib/trace.ts";
+import type { DecisionCard, NextAction, NodeOutput, Outcome, StopReason, Trace, TraceEvent } from "../lib/trace.ts";
 import { caseNow, clockBrief, deadlines } from "./clock.ts";
 import { gate, type GateConfig } from "./gate.ts";
 import type { clash, messageRisk, triage } from "./judge.ts";
@@ -270,14 +270,35 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
       ...undelivered.map(({ g }) => `to ${g.action.recipient}: could not be delivered on any channel`),
     ].join(" | ");
     const stopped = held.length + blocked.length + undelivered.length;
+    // Why the agent stopped, most binding reason first. A person reads this line before anything else.
+    const forcedNote = forced ? rules && result.panel?.seats.flatMap((seat) => seat.raised.map((q) => rules[`${seat.id}.${q}`]))
+      .find((rule) => rule?.effect === "force_human")?.note : undefined;
+    const firstStopped = [...held, ...blocked][0];
+    const whyStopped: { reason: StopReason; line: string } =
+      forced ? { reason: "rule_requires_person", line: forcedNote ?? "A configured rule requires a person to decide before anything is sent." }
+      : d.decision_type === "escalate_to_human" ? { reason: "agent_judged_unsafe", line: h?.why_a_person || d.why }
+      : firstStopped ? { reason: "message_too_risky", line: `The safety check stopped the message to ${firstStopped.action.recipient}: ${firstStopped.reasons.join("; ") || "it could not be checked"}.` }
+      : undelivered.length ? { reason: "delivery_failed", line: `The message to ${undelivered[0].g.action.recipient} was cleared but could not be delivered on any channel.` }
+      : { reason: "no_clear_action", line: `The agent judged that something should be done but found no message it could safely send: ${d.why}` };
+    // The planner picks the decisive statements when it escalates. Otherwise take the two sides of
+    // the first conflict, and failing that the statements made by whoever owns the decision.
+    const sides = u.conflicts[0]?.between.toLowerCase() ?? "";
+    const fromAnalysis = u.claims.filter((c) => sides.includes(c.who.toLowerCase().split(",")[0])).concat(u.claims.filter((c) => c.who === u.decision_owner));
+    const evidence = (h?.key_evidence?.length ? h.key_evidence : fromAnalysis.length ? fromAnalysis : u.claims).slice(0, 3);
+    const heldOptions = [
+      ...held.map((g) => ({ label: `Approve the message to ${g.action.recipient}`, effect: `Sends the drafted message to ${g.action.recipient} via ${g.action.channel}: ${g.action.purpose}`, undoable: false })),
+      ...(held.length ? [{ label: "Send nothing", effect: "The drafted message is discarded and the case stays open with the desk.", undoable: true }] : []),
+    ];
     const card: DecisionCard = result.card = {
       routeTo: h?.route_to ?? "desk supervisor",
       summary: h?.summary ?? (stopped ? `${stopped} message(s) did not go out (${stoppedLine})` : d.why),
+      whyStopped,
+      evidence,
+      alreadyDone: delivered.map(({ g }) => `Message recorded for ${g.action.recipient} via ${g.action.channel}: ${g.action.purpose}`),
       clash: h?.clash || u.conflicts[0]?.about,
       tried: u.commitments.map((c) => `${c.what} (${c.status})`).slice(0, 5),
       // A blocked message is never offered for approval; only held ones are.
-      options: (h?.options ?? held.map((g) => `Approve the message to ${g.action.recipient}`)).slice(0, 3)
-        .map((label, i) => ({ id: `option-${i + 1}`, label, undoable: true })),
+      options: (h?.options?.length ? h.options : heldOptions).slice(0, 3).map((o, i) => ({ id: `option-${i + 1}`, ...o })),
       wouldChangeMyMind: h?.would_change_my_mind ?? "",
       deadlineMins: u.urgency === "high" ? 15 : 60,
       fallback: h?.safe_fallback ?? (stopped ? "Hold the stopped messages; send nothing further." : "Take no further action until a person at the desk has decided."),

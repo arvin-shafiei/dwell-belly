@@ -25,7 +25,7 @@ ${UNTRUSTED}
 The four decisions:
 - act: send one or more messages that move the case forward, such as a request to the team that owns the decision.
 - ask_for_info: something needed to act safely is missing; ask the party who has it for exactly that and nothing more.
-- escalate_to_human: a person at the desk must decide before the desk commits to anything. Use this for legal or regulator threats, injury or welfare concerns, allegations against a named person, incompatible instructions from two owners, requests from police or press, or anything where the right owner cannot be identified. Fill in the handover so that person can decide in one read.
+- escalate_to_human: a person at the desk must decide before the desk commits to anything. Use this for legal or regulator threats, injury or welfare concerns, allegations against a named person, incompatible instructions from two owners, requests from police or press, or anything where the right owner cannot be identified. Fill in the handover so that person can decide in one read, without opening the case: say first why this is not a decision for an agent to take alone, give only the two or three statements it turns on, and for each option say exactly what would happen if they pick it.
 - wait_no_action: nobody is owed a message right now. The matter is resolved and acknowledged, or an owner has committed to answer by a time that has not passed, or the message is a duplicate, a courtesy copy or an FYI. Sending anything would be noise or would restate something unconfirmed.
 
 Principles:
