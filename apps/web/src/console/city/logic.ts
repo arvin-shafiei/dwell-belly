@@ -1,41 +1,62 @@
-// Pure helpers for the console City tab: control catalogues, connection state, formatting, filters.
+// Pure helpers for the console City tab: the few plain controls, connection state, and plain sentences
+// for what's happening in the city (docs/plans/ui-simplify-brief.md).
 import type { CityCommand, CityTelemetry } from "../../world/controlChannel";
+import type { Modifier } from "../../world/scenarios";
+import { plainNode } from "../../ui/plain";
 
-export type WeatherChoice = Extract<CityCommand, { type: "weather" }>["weather"];
+export type WeatherChoice = "clear" | "overcast" | "rain" | "storm";
 export type InjectEvent = Extract<CityCommand, { type: "inject" }>["event"];
 
 export const WEATHERS: { id: WeatherChoice; label: string }[] = [
-  { id: "auto", label: "Auto" },
-  { id: "clear", label: "Clear" },
-  { id: "overcast", label: "Overcast" },
-  { id: "drizzle", label: "Drizzle" },
+  { id: "clear", label: "Sunny" },
+  { id: "overcast", label: "Cloudy" },
   { id: "rain", label: "Rain" },
   { id: "storm", label: "Storm" },
 ];
 
-export const TIME_PRESETS: { label: string; hour: number }[] = [
-  { label: "Dawn", hour: 6 },
-  { label: "Noon", hour: 12 },
-  { label: "Golden", hour: 18.5 },
-  { label: "Night", hour: 22.5 },
+export type TimeChoice = "day" | "evening" | "night";
+export const TIMES: { id: TimeChoice; label: string; hour: number }[] = [
+  { id: "day", label: "Day", hour: 12 },
+  { id: "evening", label: "Evening", hour: 18.5 },
+  { id: "night", label: "Night", hour: 22.5 },
 ];
 
-export const SPEEDS = [1, 3, 10, 30] as const;
-
-export const INJECTORS: { event: InjectEvent; label: string; hint: string; tone: "red" | "amber" | "blue" }[] = [
-  { event: "car_crash", label: "Car crash", hint: "Two cars, one lane blocked", tone: "red" },
-  { event: "truck_crash", label: "Truck crash", hint: "Rivet truck, road closed", tone: "red" },
-  { event: "pileup", label: "Pileup", hint: "Multi-vehicle, major closure", tone: "red" },
-  { event: "roadworks", label: "Roadworks", hint: "Crew closes a road", tone: "amber" },
-  { event: "breakdown", label: "Van breakdown", hint: "Delivery van stalls", tone: "amber" },
-  { event: "emergency_landing", label: "Emergency landing", hint: "Airport, responders roll", tone: "amber" },
-  { event: "plane_crash", label: "Plane crash", hint: "Cargo jet down in town", tone: "red" },
-  { event: "chase", label: "Police chase", hint: "Pursuit through downtown", tone: "blue" },
+export type SpeedChoice = "normal" | "fast";
+export const SPEEDS: { id: SpeedChoice; label: string; scale: number }[] = [
+  { id: "normal", label: "Normal", scale: 1 },
+  { id: "fast", label: "Fast", scale: 10 },
 ];
 
-/** Telemetry counts as live if a snapshot arrived within this window (city posts every 1 s). */
+export const HAPPENINGS: { event: InjectEvent; label: string }[] = [
+  { event: "car_crash", label: "Car crash" },
+  { event: "truck_crash", label: "Truck crash" },
+  { event: "roadworks", label: "Roadworks" },
+  { event: "breakdown", label: "Van breaks down" },
+  { event: "emergency_landing", label: "Plane emergency" },
+];
+
+/** Which weather button is lit for the city's current weather (drizzle counts as rain). */
+export function weatherBucket(w: string | undefined): WeatherChoice | null {
+  if (w === "clear" || w === "overcast" || w === "rain" || w === "storm") return w;
+  if (w === "drizzle") return "rain";
+  return null;
+}
+
+export function timeBucket(h: number | undefined): TimeChoice | null {
+  if (h == null || !Number.isFinite(h)) return null;
+  const x = ((h % 24) + 24) % 24;
+  if (x >= 6 && x < 17) return "day";
+  if (x >= 17 && x < 20.5) return "evening";
+  return "night";
+}
+
+export function speedBucket(scale: number | undefined): SpeedChoice | null {
+  if (scale == null) return null;
+  return scale > 1 ? "fast" : "normal";
+}
+
+/** Telemetry counts as connected if a snapshot arrived within this window (city posts every 1 s). */
 export const STALE_MS = 3000;
-
 export type LinkState = "waiting" | "live" | "stale";
 
 export function linkState(last: CityTelemetry | null, now: number): LinkState {
@@ -43,44 +64,109 @@ export function linkState(last: CityTelemetry | null, now: number): LinkState {
   return now - last.at <= STALE_MS ? "live" : "stale";
 }
 
-/** 17.5 -> "17:30". */
-export function formatHour(h: number): string {
-  const wrapped = ((h % 24) + 24) % 24;
-  let hh = Math.floor(wrapped);
-  let mm = Math.round((wrapped - hh) * 60);
-  if (mm === 60) {
-    mm = 0;
-    hh = (hh + 1) % 24;
+export const LINK_WORDS: Record<LinkState, string> = { live: "Connected", stale: "Not connected", waiting: "Connecting…" };
+
+// ------------------------------------------------------------------ what's happening
+
+const KIND: Record<string, string> = {
+  car_crash: "Car crash",
+  truck_crash: "Truck crash",
+  pileup: "Pile-up",
+  roadworks: "Roadworks",
+  breakdown: "Van broke down",
+  plane_crash: "Plane crash",
+  emergency_landing: "Plane emergency",
+};
+
+const PHASE: Record<string, Record<string, string>> = {
+  crash: { active: "help is coming", responding: "police on the way", clearing: "being cleared" },
+  roadworks: { active: "road closed", responding: "crew at work", clearing: "almost done" },
+  breakdown: { active: "van stopped", responding: "tow truck on the way", clearing: "being towed" },
+  plane: { active: "crews on the way", responding: "crews at the scene", clearing: "being cleared" },
+};
+
+function family(kind: string) {
+  if (kind === "roadworks") return "roadworks";
+  if (kind === "breakdown") return "breakdown";
+  if (kind === "plane_crash" || kind === "emergency_landing") return "plane";
+  return "crash";
+}
+
+/** First capitalised place name after "on"/"at" in a note: "...ran a red on King St and..." -> "King St". */
+export function placeFrom(note: string): string | null {
+  const m = /\b(?:on|at|near) (?:the )?((?:[A-Z][\w'’.-]*)(?: (?:[A-Z][\w'’.-]*|of|the))*)/.exec(note);
+  if (!m) return null;
+  return m[1].replace(/ (?:of|the)$/, "");
+}
+
+/** "Truck crash on King St, police on the way". */
+export function incidentSentence(i: { kind: string; status: string; note: string }): string {
+  const what = KIND[i.kind] ?? "Something happened";
+  const place = i.kind === "emergency_landing" ? "the airport" : placeFrom(i.note);
+  const phase = PHASE[family(i.kind)][i.status] ?? (i.status === "cleared" ? "all clear" : "");
+  return `${what}${place ? `${i.kind === "emergency_landing" ? " at" : " on"} ${place}` : ""}${phase ? `, ${phase}` : ""}`;
+}
+
+// ------------------------------------------------------------------ cases
+
+export interface CaseRow {
+  caseId: string;
+  title: string; // "Case 42"
+  status: string; // plain status word
+  tone: "working" | "done" | "person" | "stopped";
+  live: boolean; // from the real agent
+}
+
+const EXTRA_STEPS: Record<string, string> = { human: "Ask a person", log: "Done" };
+const stepName = (id: string) => EXTRA_STEPS[id] ?? plainNode(id);
+
+/** Latest status per case, newest case first. Never shows the raw step summaries. */
+export function caseRows(workflow: CityTelemetry["workflow"], max = 6): CaseRow[] {
+  const latest = new Map<string, CityTelemetry["workflow"][number]>();
+  const live = new Set<string>();
+  for (const e of workflow) {
+    latest.delete(e.caseId); // re-insert so Map order = last activity
+    latest.set(e.caseId, e);
+    if (e.source === "agent") live.add(e.caseId);
   }
-  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+  const rows: CaseRow[] = [];
+  for (const [caseId, e] of latest) {
+    let status: string;
+    let tone: CaseRow["tone"];
+    if (e.status === "error") [status, tone] = ["Something went wrong", "stopped"];
+    else if (e.status === "block") [status, tone] = ["Stopped", "stopped"];
+    else if (e.status === "ask") [status, tone] = ["Needs a person", "person"];
+    else if (e.status === "ok" && (e.nodeId === "case_log" || e.nodeId === "log")) [status, tone] = ["Done", "done"];
+    else if (e.status === "ok" && e.nodeId === "action") [status, tone] = ["Sent", "done"];
+    else [status, tone] = [`${stepName(e.nodeId).replace(/\?$/, "")}…`, "working"];
+    const n = /(\d+)\s*$/.exec(caseId);
+    rows.push({ caseId, title: n ? `Case ${Number(n[1])}` : "Case", status, tone, live: live.has(caseId) });
+  }
+  return rows.reverse().slice(0, max);
 }
 
-/**
- * REAL: the real agent's trace, a live human, a real audio attachment or a case file.
- * SIMULATED: the mock engine (no source / "mock") and simulated personas.
- */
-const REAL_SOURCES = new Set(["agent", "live_human", "audio_attachment", "case_file"]);
-export function sourceTag(source: string | undefined): "REAL" | "SIMULATED" {
-  return source && REAL_SOURCES.has(source) ? "REAL" : "SIMULATED";
-}
+// ------------------------------------------------------------------ practice cases
 
-/** Case-insensitive match on id, title, scene and where. Empty query returns everything. */
-export function filterScenarios<T extends { id: string; title: string; scene: string; where: string }>(list: readonly T[], q: string): T[] {
+export const TWISTS: Record<Modifier, string> = {
+  conflicting_stories: "Stories don't match",
+  failed_action: "Sending fails",
+  missing_context: "Missing details",
+  noise: "Extra noise",
+  needs_human: "Needs a person",
+  out_of_policy: "Asks for too much",
+  prompt_injection: "Tries to trick it",
+  privacy_request: "Asks for private info",
+  repeat_complaint: "Asked before",
+  cascade: "Many at once",
+  time_pressure: "Deadline soon",
+  do_nothing: "Already handled",
+};
+
+/** Case-insensitive match on id and title. Empty query returns everything. */
+export function filterScenarios<T extends { id: string; title: string }>(list: readonly T[], q: string): T[] {
   const needle = q.trim().toLowerCase();
   if (!needle) return [...list];
-  return list.filter((s) => `${s.id} ${s.title} ${s.scene} ${s.where}`.toLowerCase().includes(needle));
-}
-
-/** Delivery bars: each status with its share of the total (0..1). */
-export function deliveryBars(d: CityTelemetry["deliveries"]) {
-  const order: (keyof CityTelemetry["deliveries"])[] = ["en_route", "loading", "delayed", "delivered", "failed"];
-  const total = order.reduce((n, k) => n + d[k], 0);
-  return order.map((k) => ({ key: k, count: d[k], share: total ? d[k] / total : 0 }));
-}
-
-/** Vehicle kinds sorted by count, largest first. */
-export function vehicleRows(v: Record<string, number>) {
-  return Object.entries(v).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  return list.filter((s) => `${s.id} ${s.title}`.toLowerCase().includes(needle));
 }
 
 export function isTelemetry(m: unknown): m is CityTelemetry {

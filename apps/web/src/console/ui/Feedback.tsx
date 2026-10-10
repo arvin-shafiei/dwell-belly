@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx";
-import { Code } from "./Badge";
 import { IconAlert, IconInbox } from "./icons";
 
 export function Spinner({ size = 14, className }: { size?: number; className?: string }) {
@@ -57,18 +56,18 @@ export function EmptyState({
   );
 }
 
-/** The standard "nothing has run yet" message, used across tabs so the wording is identical. */
+/** The standard "nothing yet" message, used across tabs so the wording is identical. */
 export function NoRunsYet({ action, compact }: { action?: ReactNode; compact?: boolean }) {
   return (
-    <EmptyState title="No runs yet" action={action} compact={compact}>
-      No runs yet. Run <Code>npm run answer</Code> or press <span className="font-medium text-white/80">Execute</span>.
+    <EmptyState title="No cases yet" action={action} compact={compact}>
+      Press <span className="font-medium text-white/80">Run a case</span> to start.
     </EmptyState>
   );
 }
 
 /** Inline error box with optional retry. */
 export function ErrorState({
-  title = "Couldn't load data",
+  title = "Couldn't load this",
   error,
   onRetry,
   compact,

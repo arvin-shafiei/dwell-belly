@@ -36,6 +36,8 @@ export interface Kpis {
   datasets: DatasetKpi[];
   /** rows excluded because they are simulated. */
   simulatedExcluded: number;
+  /** tested cases per outcome ("acted", "escalated", ...); rows without a decision are not counted. */
+  outcomes: Record<string, number>;
 }
 
 const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
@@ -68,7 +70,11 @@ export function computeKpis(rows: readonly EvidenceRow[], recordedCriticalFailur
     .map((d) => ({ ...d, passRate: d.evaluated ? d.passed / d.evaluated : null }))
     .sort((a, b) => b.cases - a.cases || b.known - a.known || a.dataset.localeCompare(b.dataset));
 
+  const outcomes: Record<string, number> = {};
+  for (const r of real) if (r.decision) outcomes[r.decision] = (outcomes[r.decision] ?? 0) + 1;
+
   return {
+    outcomes,
     known: nonSim.length,
     cases: real.length,
     evaluated: evaluatedRows.length,

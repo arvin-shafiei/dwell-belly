@@ -1,6 +1,7 @@
 "use client";
-// The console app shell: n8n-style slim left sidebar, header bar with the Execute slot, and
-// `?tab=` routing. Must render inside <Suspense> (uses useSearchParams; Next 16 rule).
+// The console app shell: slim left sidebar (Home, Playbooks, Case runs, Results, City), a header
+// with the page title and its one primary button, and `?tab=` routing. Must render inside
+// <Suspense> (uses useSearchParams; Next 16 rule). Visible words follow ui-simplify-brief.md.
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, useSyncExternalStore, type ComponentType } from "react";
@@ -143,22 +144,21 @@ export default function Shell() {
       <div className="console-root flex h-dvh min-h-0 w-full overflow-hidden">
         <Sidebar tab={tab} hrefFor={hrefFor} collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-[52px] shrink-0 items-center gap-3 border-b border-white/[0.07] bg-rv-canvas px-4">
-            <div className="flex min-w-0 flex-1 items-center gap-2 text-[13px]">
-              <h1 className="shrink-0 text-[15px] font-semibold text-white">{TAB_TITLES[tab]}</h1>
-              <span className="shrink-0 text-white/20" aria-hidden="true">
-                /
-              </span>
-              <WorkflowLabel
-                name={wf?.name ?? null}
-                active={wf?.active ?? false}
-                loading={workflows.loading}
-                unavailable={!!workflows.error && !workflows.data}
-                href={hrefFor("workflows")}
-              />
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-white/[0.07] bg-rv-canvas px-5">
+            <div className="flex min-w-0 flex-1 items-baseline gap-3">
+              <h1 className="shrink-0 text-[17px] font-semibold text-white">{TAB_TITLES[tab]}</h1>
+              {tab !== "overview" && wf?.name && (
+                <Link
+                  href={hrefFor("workflows")}
+                  title="Open playbook"
+                  className="truncate text-[13px] text-white/45 hover:text-white/80"
+                >
+                  Playbook: {wf.name}
+                </Link>
+              )}
             </div>
             <ReviewEntry onOpen={() => setReviewOpen(true)} />
-            {/* Execute slot: tabs portal their primary actions here via <HeaderActions>. */}
+            {/* The page's one primary button goes here via <HeaderActions>. */}
             <div ref={setHeaderSlot} className="flex shrink-0 items-center gap-2" />
           </header>
           <main className="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-rv-canvas">
@@ -168,39 +168,6 @@ export default function Shell() {
       </div>
       {reviewOpen && <ReviewDrawer onClose={closeReview} source="agent" />}
     </ConsoleContext.Provider>
-  );
-}
-
-function WorkflowLabel({
-  name,
-  active,
-  loading,
-  unavailable,
-  href,
-}: {
-  name: string | null;
-  active: boolean;
-  loading: boolean;
-  unavailable: boolean;
-  href: string;
-}) {
-  if (loading) return <span className="text-white/35">Loading workflow…</span>;
-  if (!name)
-    return <span className="truncate text-white/40">{unavailable ? "Workflows unavailable" : "No workflow"}</span>;
-  return (
-    <Link
-      href={href}
-      className="flex min-w-0 items-center gap-2 rounded px-1.5 py-0.5 text-white/75 hover:bg-white/[0.05] hover:text-white"
-      title="Open in Workflows"
-    >
-      <IconWorkflow size={14} className="shrink-0 text-rv-orange" />
-      <span className="truncate">{name}</span>
-      {active && (
-        <span className="shrink-0 rounded bg-rv-green/12 px-1.5 py-px text-[10px] font-semibold tracking-wide text-rv-green uppercase">
-          Active
-        </span>
-      )}
-    </Link>
   );
 }
 
@@ -216,24 +183,15 @@ function Sidebar({
   onToggle: () => void;
 }) {
   const status = useStatus({ pollMs: 5000 });
-  const up = status.data?.agentApi === true;
-  const known = status.data !== undefined;
-  const consoleDown = !!status.error && !known;
-  const tone = status.loading ? "neutral" : consoleDown ? "red" : up ? "green" : "red";
-  const statusText = status.loading
-    ? "Checking agent API…"
-    : consoleDown
-      ? "Console API unavailable"
-      : up
-        ? "Agent API online"
-        : "Agent API offline";
-  const statusTitle = [
-    statusText,
-    status.data?.agentUrl,
-    status.error && known ? `Last check failed: ${status.error}` : status.error,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  // Live = the agent answers. Anything else (checking, console down, agent down) is not Live.
+  const live = status.data?.agentApi === true;
+  const checking = status.loading;
+  const statusText = checking ? "Checking" : live ? "Live" : "Offline";
+  const statusTitle = checking
+    ? "Checking the agent"
+    : live
+      ? "The agent is on and answering."
+      : "The agent is off. Cases can't run right now.";
 
   return (
     <nav
@@ -243,14 +201,9 @@ function Sidebar({
         collapsed ? "w-[60px]" : "w-[196px]",
       )}
     >
-      <div className={cx("flex h-[52px] shrink-0 items-center gap-2.5", collapsed ? "justify-center" : "px-3.5")}>
+      <div className={cx("flex h-14 shrink-0 items-center gap-2.5", collapsed ? "justify-center" : "px-3.5")}>
         <RivetMark size={26} />
-        {!collapsed && (
-          <div className="min-w-0 leading-tight">
-            <div className="text-[14px] font-semibold tracking-tight text-white">Rivet</div>
-            <div className="text-[10.5px] text-white/40">Desk console</div>
-          </div>
-        )}
+        {!collapsed && <div className="text-[15px] font-semibold text-white">Rivet</div>}
       </div>
 
       <ul className="flex flex-col gap-0.5 px-2 pt-2">
@@ -265,7 +218,7 @@ function Sidebar({
                 aria-current={on ? "page" : undefined}
                 title={collapsed ? TAB_TITLES[id] : undefined}
                 className={cx(
-                  "relative flex h-9 items-center gap-3 rounded-md text-[13px] transition-colors",
+                  "relative flex h-10 items-center gap-3 rounded-md text-sm transition-colors",
                   collapsed ? "justify-center" : "px-2.5",
                   on ? "bg-rv-orange/[0.12] font-medium text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white",
                 )}
@@ -287,7 +240,7 @@ function Sidebar({
           title="Open 3D city ↗"
           aria-label="Open 3D city ↗"
           className={cx(
-            "flex h-9 items-center gap-3 rounded-md text-[13px] text-white/60 hover:bg-white/[0.05] hover:text-white",
+            "flex h-10 items-center gap-3 rounded-md text-sm text-white/60 hover:bg-white/[0.05] hover:text-white",
             collapsed ? "justify-center" : "px-2.5",
           )}
         >
@@ -299,36 +252,26 @@ function Sidebar({
           role="status"
           aria-label={statusText}
           className={cx(
-            "flex h-9 items-center gap-3 rounded-md text-[12px] text-white/55",
+            "flex h-9 items-center gap-2 rounded-md text-[13px] font-medium",
             collapsed ? "justify-center" : "px-2.5",
+            live ? "text-rv-green" : checking ? "text-white/45" : "text-rv-red",
           )}
         >
-          <span className="flex w-[18px] justify-center">
-            <StatusDot tone={tone} pulse={status.loading} />
-          </span>
-          {!collapsed && (
-            <span className="min-w-0 leading-tight">
-              <span className="block truncate">{statusText}</span>
-              {status.data?.agentUrl && (
-                <span className="block truncate font-mono text-[10.5px] text-white/30">
-                  {status.data.agentUrl.replace(/^https?:\/\//, "")}
-                </span>
-              )}
-            </span>
-          )}
+          {!collapsed && <span>{statusText}</span>}
+          <StatusDot tone={checking ? "neutral" : live ? "green" : "red"} pulse={checking} />
         </div>
         <button
           type="button"
           onClick={onToggle}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? "Show menu" : "Hide menu"}
+          title={collapsed ? "Show menu" : "Hide menu"}
           className={cx(
             "flex h-8 items-center gap-3 rounded-md text-[12px] text-white/40 hover:bg-white/[0.05] hover:text-white/80",
             collapsed ? "justify-center" : "px-2.5",
           )}
         >
           {collapsed ? <IconChevronRight size={16} /> : <IconChevronLeft size={16} />}
-          {!collapsed && <span>Collapse</span>}
+          {!collapsed && <span>Hide menu</span>}
         </button>
       </div>
     </nav>

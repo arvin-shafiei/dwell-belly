@@ -14,9 +14,8 @@ const code = Spline_Sans_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Rivet · Desk console", template: "%s · Rivet" },
-  description:
-    "Rivet desk console: workflows, executions and evidence for the delivery escalation agent",
+  title: { default: "Rivet", template: "%s · Rivet" },
+  description: "Rivet handles delivery problems and asks a person when it should.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

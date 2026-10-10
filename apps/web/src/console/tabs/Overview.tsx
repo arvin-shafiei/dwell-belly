@@ -1,194 +1,149 @@
 "use client";
-// Console tab: Overview. Headline KPIs from real evidence (GET /api/console/evidence) + status,
-// the most recent executions, and coverage per dataset. Real data only (PRD J0): simulated rows
-// are excluded from KPIs and any simulated execution carries a SIMULATED badge.
+// Console tab: Overview, shown as "Home". Big plain numbers from real results
+// (GET /api/console/evidence), a short list of recent cases (GET /api/console/executions?limit=8)
+// and one button: "Run a case". Words follow docs/plans/ui-simplify-brief.md (via @/ui/plain).
+// Honesty: city-made (simulated) cases never count in the numbers and are labelled "Practice case".
 import { useMemo } from "react";
-import { consoleApi, useAction, useEvidence, useExecutions, useStatus, type ExecutionSummary } from "../useApi";
+import { cents, plainOutcome, plainStatus } from "@/ui/plain";
+import { useEvidence, useExecutions, type ExecutionSummary } from "../useApi";
 import {
-  Button,
-  DatasetBadge,
   ErrorState,
-  ExecStatusBadge,
   ExecuteButton,
   HeaderActions,
-  IconAlert,
-  IconCases,
-  IconClock,
-  IconCoin,
-  IconExecutions,
-  IconImport,
-  IconTarget,
-  KpiCard,
-  Meter,
   NoRunsYet,
-  Panel,
-  PassBadge,
   RealBadge,
   SimulatedBadge,
   Skeleton,
+  StatusDot,
   computeKpis,
+  cx,
   formatCount,
-  formatDuration,
-  formatPct,
   formatRelative,
   formatTimestamp,
-  formatUsd,
-  humanize,
+  stripCaseNo,
   useConsole,
+  type Tone,
 } from "../ui";
 
 const POLL_MS = 5000;
 
+/** Outcomes that mean a person had to step in (the agent asked for one, or the safety check stopped it). */
+const NEEDS_PERSON = ["escalated", "blocked"];
+
 export default function OverviewTab() {
   const evidence = useEvidence({ pollMs: POLL_MS });
   const executions = useExecutions({ limit: 8 }, { pollMs: POLL_MS });
-  const status = useStatus({ pollMs: POLL_MS });
-  const importer = useAction(consoleApi.importRuns);
 
-  // The contract has no critical-failure count yet; read it if the server adds one.
-  const recordedCritical = (evidence.data?.totals as { criticalFailures?: number } | undefined)?.criticalFailures;
-  const kpis = useMemo(
-    () => computeKpis(evidence.data?.rows ?? [], recordedCritical),
-    [evidence.data, recordedCritical],
-  );
+  const kpis = useMemo(() => computeKpis(evidence.data?.rows ?? []), [evidence.data]);
+  const sent = kpis.outcomes.acted ?? 0;
+  const needPerson = NEEDS_PERSON.reduce((a, k) => a + (kpis.outcomes[k] ?? 0), 0);
+  const recent = (executions.data?.executions ?? []).slice(0, 6);
 
-  const execList = executions.data?.executions ?? [];
-  const noRuns = !evidence.loading && !executions.loading && kpis.cases === 0 && execList.length === 0;
-  const kpiLoading = evidence.loading;
-
-  async function doImport() {
-    const r = await importer.run();
-    if (r) {
-      evidence.reload();
-      executions.reload();
-      status.reload();
-    }
-  }
-
-  const executionCount = status.data?.counts?.executions;
+  const loading = evidence.loading || executions.loading;
+  const nothingYet = !loading && kpis.cases === 0 && recent.length === 0;
 
   return (
     <div className="h-full overflow-y-auto">
       <HeaderActions>
-        <Button
-          variant="secondary"
-          icon={<IconImport size={15} />}
-          loading={importer.pending}
-          onClick={doImport}
-          title="Rescan ANSWERS/, runs/ and examples/ into the console database"
-        >
-          Import runs
-        </Button>
         <ExecuteButton />
       </HeaderActions>
 
-      <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-4 p-5">
-        {importer.error && <ErrorState title="Import failed" error={importer.error} onRetry={doImport} />}
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-10 px-6 py-10">
         {evidence.error && !evidence.data && (
-          <ErrorState title="Evidence unavailable" error={evidence.error} onRetry={evidence.reload} />
+          <ErrorState title="Couldn't load the results" error={evidence.error} onRetry={evidence.reload} />
         )}
 
-        <div className="flex items-center gap-2">
-          <h2 className="text-[13px] font-semibold text-white/85">Agent performance</h2>
-          <RealBadge title="Computed from runner outputs and eval results only. Simulated runs are excluded." />
-          {kpis.simulatedExcluded > 0 && (
-            <span className="text-xs text-white/40">
-              {formatCount(kpis.simulatedExcluded)} simulated rows excluded
-            </span>
-          )}
-          {evidence.updatedAt && (
-            <span className="ml-auto text-[11px] text-white/30 tabular">
-              Updated {new Date(evidence.updatedAt).toLocaleTimeString("en-GB")}
-            </span>
-          )}
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">
-          <KpiCard
-            label="Cases tested"
-            icon={<IconCases size={14} />}
-            loading={kpiLoading}
-            value={kpis.cases ? formatCount(kpis.cases) : null}
-            sub={
-              kpis.cases
-                ? `of ${formatCount(kpis.known)} known${
-                    typeof executionCount === "number" ? ` · ${formatCount(executionCount)} executions` : ""
-                  }`
-                : kpis.known
-                  ? `${formatCount(kpis.known)} known, none run yet`
-                  : "No runs yet"
-            }
-          />
-          <KpiCard
-            label="Pass rate"
-            icon={<IconTarget size={14} />}
-            loading={kpiLoading}
-            value={formatPct(kpis.passRate)}
-            tone={kpis.passRate === null ? "default" : kpis.passRate >= 0.85 ? "good" : kpis.passRate >= 0.7 ? "warn" : "bad"}
-            sub={
-              kpis.evaluated
-                ? `${formatCount(kpis.passed)} of ${formatCount(kpis.evaluated)} evaluated`
-                : kpis.cases
-                  ? "Not evaluated yet"
-                  : "No eval results"
-            }
-          />
-          <KpiCard
-            label="Critical failures"
-            icon={<IconAlert size={14} />}
-            loading={kpiLoading}
-            value={kpis.criticalFailures === null ? null : formatCount(kpis.criticalFailures)}
-            tone={kpis.criticalFailures === null ? "default" : kpis.criticalFailures === 0 ? "good" : "bad"}
-            sub={
-              kpis.criticalFailures === null
-                ? "No runs yet"
-                : typeof recordedCritical === "number"
-                  ? "From fixture rubrics"
-                  : "None recorded"
-            }
-          />
-          <KpiCard
-            label="Avg cost / case"
-            icon={<IconCoin size={14} />}
-            loading={kpiLoading}
-            value={kpis.avgCostUsd === null ? null : formatUsd(kpis.avgCostUsd)}
-            sub={kpis.avgCostUsd === null ? "No cost recorded" : `${formatUsd(kpis.totalCostUsd)} total`}
-          />
-          <KpiCard
-            label="Avg time / case"
-            icon={<IconClock size={14} />}
-            loading={kpiLoading}
-            value={kpis.avgDurationMs === null ? null : formatDuration(kpis.avgDurationMs)}
-            sub={kpis.avgDurationMs === null ? "No timings recorded" : "Wall clock per run"}
-          />
-        </div>
-
-        {noRuns && !evidence.error && kpis.known === 0 ? (
-          <Panel>
-            <NoRunsYet action={<ExecuteHint />} />
-          </Panel>
-        ) : (
-          <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-            <RecentExecutions
-              loading={executions.loading}
-              error={executions.data ? undefined : executions.error}
-              onRetry={executions.reload}
-              rows={execList}
-              now={executions.updatedAt ?? 0}
-            />
-            <Coverage loading={evidence.loading} datasets={kpis.datasets} />
+        {nothingYet && !evidence.error ? (
+          <div className="rounded-xl border border-white/[0.07] bg-rv-card py-10">
+            <NoRunsYet />
           </div>
+        ) : (
+          <>
+            <section aria-label="Totals">
+              <div className="mb-4 flex items-center gap-2">
+                <RealBadge />
+                <span className="text-[13px] text-white/40">Real cases only</span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                <BigNumber loading={evidence.loading} value={formatCount(kpis.cases)} word={kpis.cases === 1 ? "case handled" : "cases handled"} />
+                <BigNumber loading={evidence.loading} value={formatCount(sent)} word="sent" tone="green" />
+                <BigNumber
+                  loading={evidence.loading}
+                  value={formatCount(needPerson)}
+                  word="needed a person"
+                  tone={needPerson > 0 ? "amber" : undefined}
+                />
+                <BigNumber
+                  loading={evidence.loading}
+                  value={kpis.avgCostUsd === null ? "—" : `Avg ${cents(kpis.avgCostUsd)}`}
+                  word="per case"
+                />
+              </div>
+            </section>
+
+            <section aria-label="Recent cases">
+              <h2 className="mb-3 text-[15px] font-semibold text-white/90">Recent cases</h2>
+              <RecentCases
+                rows={recent}
+                loading={executions.loading}
+                error={executions.data ? undefined : executions.error}
+                onRetry={executions.reload}
+                now={executions.updatedAt ?? 0}
+              />
+            </section>
+          </>
         )}
       </div>
     </div>
   );
 }
 
-function ExecuteHint() {
-  return <span className="text-xs text-white/40">Execute is in the top-right corner.</span>;
+function BigNumber({
+  value,
+  word,
+  tone,
+  loading,
+}: {
+  value: string;
+  word: string;
+  tone?: "green" | "amber";
+  loading?: boolean;
+}) {
+  return (
+    <div className="rounded-xl border border-white/[0.07] bg-rv-card px-6 py-6">
+      {loading ? (
+        <Skeleton className="h-10 w-24" />
+      ) : (
+        <div
+          className={cx(
+            "tabular text-[40px] leading-none font-semibold tracking-tight",
+            tone === "green" ? "text-rv-green" : tone === "amber" ? "text-rv-amber" : "text-white",
+          )}
+        >
+          {value}
+        </div>
+      )}
+      <div className="mt-3 text-[15px] text-white/60">{word}</div>
+    </div>
+  );
 }
 
-function RecentExecutions({
+/** One plain word for where a case ended up. */
+function caseResult(r: ExecutionSummary): { label: string; tone: Tone } {
+  if (r.status !== "success") return { label: plainStatus(r.status), tone: r.status === "running" ? "blue" : "red" };
+  const label = plainOutcome(r.outcome);
+  const tone: Tone =
+    r.outcome === "acted"
+      ? "green"
+      : r.outcome && NEEDS_PERSON.includes(r.outcome)
+        ? "amber"
+        : r.outcome === "error"
+          ? "red"
+          : "neutral";
+  return { label, tone };
+}
+
+function RecentCases({
   rows,
   loading,
   error,
@@ -196,130 +151,58 @@ function RecentExecutions({
   now,
 }: {
   rows: ExecutionSummary[];
-  /** Reference time for "5m ago" (time of the last poll; keeps render pure). */
-  now: number;
   loading: boolean;
   error?: string;
   onRetry: () => void;
+  /** Reference time for "5m ago" (time of the last poll; keeps render pure). */
+  now: number;
 }) {
   const { navigate } = useConsole();
-  return (
-    <Panel
-      flush
-      title="Recent executions"
-      subtitle="Latest 8 runs across all datasets"
-      actions={
-        <Button size="sm" variant="ghost" onClick={() => navigate("executions")} icon={<IconExecutions size={14} />}>
-          View all
-        </Button>
-      }
-    >
-      {loading ? (
-        <div className="flex flex-col gap-2 p-4">
-          {Array.from({ length: 5 }, (_, i) => (
-            <Skeleton key={i} className="h-8 w-full" />
-          ))}
-        </div>
-      ) : error ? (
-        <ErrorState compact title="Executions unavailable" error={error} onRetry={onRetry} />
-      ) : rows.length === 0 ? (
+  if (loading)
+    return (
+      <div className="flex flex-col gap-2">
+        {Array.from({ length: 4 }, (_, i) => (
+          <Skeleton key={i} className="h-14 w-full" />
+        ))}
+      </div>
+    );
+  if (error) return <ErrorState title="Couldn't load recent cases" error={error} onRetry={onRetry} />;
+  if (rows.length === 0)
+    return (
+      <div className="rounded-xl border border-white/[0.07] bg-rv-card">
         <NoRunsYet compact />
-      ) : (
-        <ul className="divide-y divide-white/[0.05]">
-          {rows.map((r) => (
-            <li key={r.id}>
-              <button
-                type="button"
-                onClick={() => navigate("executions", { id: r.id })}
-                className="grid w-full grid-cols-[100px_minmax(0,1fr)_auto_72px_72px_68px] items-center gap-3 px-4 py-2.5 text-left text-[13px] hover:bg-white/[0.03]"
-              >
-                <ExecStatusBadge status={r.status} />
-                <span className="flex min-w-0 items-center gap-2">
-                  <span className="truncate font-mono text-[12px] text-white/90">{r.caseId}</span>
-                  <DatasetBadge dataset={r.dataset} />
-                  {r.simulated && <SimulatedBadge />}
-                  <span className="hidden truncate text-white/45 2xl:inline">{humanize(r.outcome)}</span>
-                </span>
-                <PassBadge pass={r.eval?.pass ?? null} score={r.eval?.score} />
-                <span className="text-right text-xs text-white/60 tabular">{formatDuration(r.durationMs)}</span>
-                <span className="text-right text-xs text-white/60 tabular">{formatUsd(r.costUsd)}</span>
-                <span className="text-right text-xs text-white/40 tabular" title={formatTimestamp(r.startedAt)}>
-                  {formatRelative(r.startedAt, now)}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </Panel>
-  );
-}
+      </div>
+    );
 
-function Coverage({
-  datasets,
-  loading,
-}: {
-  datasets: ReturnType<typeof computeKpis>["datasets"];
-  loading: boolean;
-}) {
-  const { navigate } = useConsole();
   return (
-    <Panel
-      title="Coverage by dataset"
-      subtitle="Cases tested of known, and eval pass rate"
-      actions={
-        <Button size="sm" variant="ghost" onClick={() => navigate("evidence")}>
-          Evidence grid
-        </Button>
-      }
-    >
-      {loading ? (
-        <div className="flex flex-col gap-3">
-          {Array.from({ length: 4 }, (_, i) => (
-            <Skeleton key={i} className="h-9 w-full" />
-          ))}
-        </div>
-      ) : datasets.length === 0 ? (
-        <p className="py-6 text-center text-[13px] text-white/45">No evidence yet.</p>
-      ) : (
-        <ul className="flex flex-col gap-3.5">
-          {datasets.map((d) => (
-            <li key={d.dataset}>
-              <button
-                type="button"
-                onClick={() => navigate("evidence", { dataset: d.dataset })}
-                className="w-full rounded text-left"
-              >
-                <div className="mb-1.5 flex items-center gap-2 text-[13px]">
-                  <DatasetBadge dataset={d.dataset} />
-                  <span className="text-white/50 tabular">
-                    {formatCount(d.cases)}
-                    <span className="text-white/30"> / {formatCount(d.known)} tested</span>
-                  </span>
-                  <span className="ml-auto text-white/85 tabular">
-                    {d.evaluated ? formatPct(d.passRate) : <span className="text-white/35">not evaluated</span>}
-                  </span>
-                </div>
-                {d.evaluated > 0 ? (
-                  <Meter
-                    ratio={d.passRate}
-                    tone={d.passRate === null ? "green" : d.passRate >= 0.85 ? "green" : d.passRate >= 0.7 ? "amber" : "red"}
-                  />
-                ) : (
-                  <Meter ratio={d.known ? d.cases / d.known : 0} tone="orange" />
-                )}
-                <div className="mt-1 text-[11px] text-white/35 tabular">
-                  {d.evaluated > 0
-                    ? `${formatCount(d.passed)}/${formatCount(d.evaluated)} passed`
-                    : d.cases > 0
-                      ? "Run, awaiting eval"
-                      : "Not run yet"}
-                </div>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </Panel>
+    <ul className="overflow-hidden rounded-xl border border-white/[0.07] bg-rv-card">
+      {rows.map((r, i) => {
+        const title = (r as { title?: string | null }).title;
+        const res = caseResult(r);
+        return (
+          <li key={r.id} className={cx(i > 0 && "border-t border-white/[0.05]")}>
+            <button
+              type="button"
+              onClick={() => navigate("executions", { id: r.id })}
+              className="flex w-full items-center gap-4 px-5 py-3.5 text-left hover:bg-white/[0.03]"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="truncate text-[15px] text-white/90">{title ? stripCaseNo(title) : r.caseId}</span>
+                  {r.simulated && <SimulatedBadge />}
+                </span>
+                <span className="mt-0.5 block truncate text-xs text-white/35" title={formatTimestamp(r.startedAt)}>
+                  {r.caseId} · {formatRelative(r.startedAt, now)}
+                </span>
+              </span>
+              <span className="flex shrink-0 items-center gap-2 text-sm text-white/80">
+                <StatusDot tone={res.tone} pulse={r.status === "running"} />
+                {res.label}
+              </span>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
