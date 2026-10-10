@@ -20,7 +20,7 @@ import { useConsoleNav } from "./nav";
 import { VOICE_LOADERS, registeredVoiceComponent } from "./voiceComponents";
 import { Badge, getJson } from "./ui";
 import {
-  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noteRerun, type VoiceComponentName,
+  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noteCaseText, noteRerun, type VoiceComponentName,
 } from "./voiceSlots";
 
 // The voice components' props are owned by the voice layer; the slots pass the documented shapes.
@@ -94,10 +94,20 @@ function Loaded({ name, label, props }: { name: VoiceComponentName; label: strin
   return C ? createElement(C, props) : <VoiceNotConnected label={label} />;
 }
 
+/** Shown while the voice component loads (it is fetched on first use). */
+function VoiceLoading({ label }: { label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1 text-[11px] text-white/40 ring-1 ring-inset ring-white/10">
+      <MicIcon />
+      {label} · loading…
+    </span>
+  );
+}
+
 /** Renders the named voice component if present, else the placeholder. */
 function Slot({ name, label, props }: { name: VoiceComponentName; label: string; props: Record<string, unknown> }) {
   const client = useIsClient();
-  const placeholder = <VoiceNotConnected label={label} />;
+  const placeholder = <VoiceLoading label={label} />;
   if (!client) return placeholder;
   return (
     <SlotBoundary label={label}>
@@ -109,7 +119,7 @@ function Slot({ name, label, props }: { name: VoiceComponentName; label: string;
 }
 
 function NoteButton({ execution, from = "Driver", onEvent }: { execution: ExecutionRecord; from?: string; onEvent: (e: CaseViewEvent) => void }) {
-  return <Slot name="VoiceNoteButton" label="Voice note" props={{ caseId: execution.caseId, from, onEvent }} />;
+  return <Slot name="VoiceNoteButton" label="Voice note" props={{ caseId: execution.caseId, caseText: noteCaseText(execution), from, onEvent }} />;
 }
 
 function CallDrawer({
