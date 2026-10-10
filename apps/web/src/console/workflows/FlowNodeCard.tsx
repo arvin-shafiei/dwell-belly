@@ -18,6 +18,10 @@ export type CardData = {
   problems?: string[];
   /** Just placed by "Make a playbook": play the appear animation. */
   appear?: boolean;
+  /** The step "Make a playbook" placed last: highlighted while the draft builds. */
+  fresh?: boolean;
+  /** On the path from the start to the selected step. */
+  onPath?: boolean;
   /** Shown as part of suggested changes. */
   diff?: { mark: DiffMark; change?: NodeChange };
   /** The step is drawn more than once in the tree (display-time unmerge). */
@@ -57,7 +61,7 @@ function carefulWord(change: NodeChange): string | null {
 }
 
 function FlowNodeCardImpl({ data, selected }: NodeProps<CardNode>) {
-  const { node, run, dimmed, problems, appear, diff, shared, loops } = data;
+  const { node, run, dimmed, problems, appear, fresh, onPath, diff, shared, loops } = data;
   const mark = diff?.mark ?? null;
   const bad = !!problems?.length;
   const meta = metaFor(node.type);
@@ -68,29 +72,33 @@ function FlowNodeCardImpl({ data, selected }: NodeProps<CardNode>) {
       : mark === "removed" ? "#ef4444"
       : mark === "changed" ? "#f59e0b"
       : bad || run?.status === "error" ? "#ef4444"
-      : selected ? "#ff6a1a" : "#3a3a42";
+      : selected || fresh ? "#ff6a1a" : onPath ? "#ff6a1a99" : "#3a3a42";
   const title = nodeTitle(node);
   const change = mark === "changed" && diff?.change ? carefulWord(diff.change) : null;
 
   return (
     <div
-      className={`relative rounded-xl bg-[#2a2a30] text-white transition-opacity ${dimmed ? "opacity-35" : ""} ${appear ? "wf-appear" : ""} ${diff && !mark ? "opacity-50" : ""}`}
-      style={{ width: CARD_W, height: tall ? GATE_H : CARD_H, border: `1.5px ${mark === "removed" ? "dashed" : "solid"} ${border}` }}
+      className={`relative rounded-xl text-white transition-[opacity,box-shadow] ${selected ? "bg-[#33302e]" : "bg-[#2a2a30]"} ${dimmed ? "opacity-35" : ""} ${appear ? "wf-appear" : ""} ${fresh ? "wf-fresh" : ""} ${diff && !mark ? "opacity-50" : ""}`}
+      style={{
+        width: CARD_W, height: tall ? GATE_H : CARD_H,
+        border: `${selected || fresh ? 2 : 1.5}px ${mark === "removed" ? "dashed" : "solid"} ${border}`,
+        boxShadow: selected ? "0 0 0 4px rgba(255,106,26,0.18)" : undefined,
+      }}
       title={bad ? problems!.join("\n") : undefined}
     >
       <Handle type="target" position={Position.Left} id="in" className="wf-handle" />
 
-      <div className="flex h-full items-center gap-3 px-3.5">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white/[0.06]" style={{ color: meta.color }}>
+      <div className="flex h-full items-center gap-2.5 px-3">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/[0.07]" style={{ color: meta.color }}>
           <Icon name={meta.icon} size={20} />
         </div>
-        <div className={`min-w-0 flex-1 ${tall ? "pr-16" : "pr-3"}`}>
-          <div className={`line-clamp-2 text-[15px] font-semibold leading-snug ${mark === "removed" ? "text-white/50 line-through" : ""}`}>
+        <div className={`min-w-0 flex-1 ${tall ? "pr-[74px]" : "pr-2"}`}>
+          <div className={`line-clamp-2 text-[17px] font-semibold leading-[1.22] tracking-[-0.005em] ${mark === "removed" ? "text-white/50 line-through" : "text-white"}`}>
             {title}
           </div>
-          {mark && <div className="mt-0.5 text-[11px]" style={{ color: border }}>{MARK_TEXT[mark]}{change ? ` · ${change}` : ""}</div>}
-          {!mark && shared?.stub && <div className="mt-0.5 text-[11px] text-white/40">Continues elsewhere ↗</div>}
-          {!mark && loops && loops.length > 0 && <div className="mt-0.5 text-[11px] text-white/40">↺ Tries again once</div>}
+          {mark && <div className="mt-0.5 text-[12px] font-medium" style={{ color: border }}>{MARK_TEXT[mark]}{change ? ` · ${change}` : ""}</div>}
+          {!mark && shared?.stub && <div className="mt-0.5 text-[12px] text-white/50">Continues elsewhere ↗</div>}
+          {!mark && loops && loops.length > 0 && <div className="mt-0.5 text-[12px] text-white/50">↺ Tries again once</div>}
         </div>
       </div>
 
@@ -106,7 +114,7 @@ function FlowNodeCardImpl({ data, selected }: NodeProps<CardNode>) {
           return (
             <div key={o}>
               <span
-                className="pointer-events-none absolute right-3 -translate-y-1/2 text-[11px] font-medium"
+                className="pointer-events-none absolute right-3 -translate-y-1/2 text-[12px] font-semibold"
                 style={{ top, color: EXIT_COLORS[o] ?? "#cbd5e1" }}
               >
                 {plainWhen(o)}

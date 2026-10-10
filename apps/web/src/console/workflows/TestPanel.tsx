@@ -58,17 +58,17 @@ function CaseRow({ c, selected, onClick }: { c: TestRunCase; selected: boolean; 
   const icon =
     c.status === "queued" ? <span className="block h-4 w-4 rounded-full border-2 border-white/20" />
       : c.status === "running" ? <span className="wf-spin block h-4 w-4 rounded-full border-2 border-[#ff6a1a] border-t-transparent" />
-      : c.status === "passed" ? <span className="text-[16px] font-bold leading-none text-[#4ade80]">✓</span>
-      : <span className="text-[16px] font-bold leading-none text-[#f87171]">✗</span>;
+      : c.status === "passed" ? <span className="text-[18px] font-bold leading-none text-[#4ade80]" aria-label="Right">✓</span>
+      : <span className="text-[18px] font-bold leading-none text-[#f87171]" aria-label="Wrong">✗</span>;
   return (
     <button
       type="button" onClick={onClick} disabled={!c.executionId}
       title={c.executionId ? "Show this case on the playbook" : undefined}
       className={`flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left ${selected ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"} disabled:cursor-default`}
     >
-      <span className="mt-0.5 grid w-4 shrink-0 place-items-center">{icon}</span>
+      <span className="mt-0.5 grid w-5 shrink-0 place-items-center">{icon}</span>
       <span className="min-w-0 flex-1">
-        <span className="line-clamp-2 block text-[13px] leading-snug text-white/85">{caseSentence(c)}</span>
+        <span className="line-clamp-2 block text-[14px] leading-snug text-white/90">{caseSentence(c)}</span>
         <span className="block text-[11px] text-white/30">{c.caseId}</span>
       </span>
     </button>
@@ -350,10 +350,10 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
 
         {/* Main action */}
         {running ? (
-          <Btn variant="outline" className="h-10 w-full justify-center text-[14px]" onClick={() => void cancel()}>Stop</Btn>
+          <Btn variant="outline" className="h-12 w-full justify-center text-[15px]" onClick={() => void cancel()}>Stop</Btn>
         ) : (
           <Btn
-            variant="primary" className="h-10 w-full justify-center text-[14px]"
+            variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold"
             disabled={disabled || (setId === "custom" && !custom.length)}
             onClick={() => { const b = body(); if (b) void runTest(b); }}
           >
@@ -369,9 +369,13 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
         {poll.phase === "starting" && <div className="text-[13px] text-white/60">Starting…</div>}
         {run && (
           <div>
-            <div className="text-[28px] font-semibold leading-tight tabular-nums text-white">
-              {running ? <>{progress} of {run.cases.length} done</> : <>{run.summary.passed} of {run.summary.total} right</>}
+            <div
+              aria-live="polite"
+              className={`text-[40px] font-semibold leading-none tracking-tight tabular-nums ${running ? "text-white" : run.summary.total > 0 && run.summary.passed === run.summary.total ? "text-[#4ade80]" : "text-white"}`}
+            >
+              {running ? <>{progress} of {run.cases.length} <span className="text-[22px] font-medium text-white/50">done</span></> : <>{run.summary.passed} of {run.summary.total} <span className="text-[22px] font-medium text-white/60">right</span></>}
             </div>
+            {running && <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10"><div className="h-full bg-[#ff6a1a] transition-[width] duration-500" style={{ width: `${run.cases.length ? (progress / run.cases.length) * 100 : 0}%` }} /></div>}
             {poll.phase === "cancelled" && <div className="text-[12px] text-white/45">Stopped early</div>}
             {!running && run.summary.costUsd > 0 && <div className="text-[11px] text-white/30">{cents(run.summary.costUsd)}</div>}
             <div className="mt-2 space-y-0.5">
@@ -387,7 +391,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
 
         {/* Improve */}
         {finishedRun && failures > 0 && !proposal && !autoRunning && (
-          <Btn variant="primary" className="h-10 w-full justify-center text-[14px]" disabled={improving || !!blocked} onClick={() => void improve(finishedRun)}>
+          <Btn variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold" disabled={improving || !!blocked} onClick={() => void improve(finishedRun)}>
             {improving ? "Looking at what went wrong…" : "Improve it"}
           </Btn>
         )}
@@ -423,9 +427,9 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
         )}
 
         {accepted && !running && !autoRunning && (
-          <div className="space-y-2 rounded-lg bg-[#22c55e]/[0.07] px-3 py-3">
-            <div className="text-[13px] text-white/85">Saved. Try the same cases again?</div>
-            <Btn variant="primary" onClick={() => void retest()}>Practice again</Btn>
+          <div className="space-y-2.5 rounded-lg bg-[#22c55e]/[0.07] px-3 py-3">
+            <div className="text-[13.5px] text-white/85">Version {accepted.version} saved. Try the same cases again?</div>
+            <Btn variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold" onClick={() => void retest()}>Practice again</Btn>
           </div>
         )}
 
@@ -441,7 +445,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
 
         {/* Getting better? */}
         <div>
-          <div className="mb-1.5 text-[13px] font-semibold text-white/80">Getting better?</div>
+          <div className="mb-1.5 text-[14px] font-semibold text-white/85">Getting better?</div>
           <LearningCurve points={curve} current={version} />
         </div>
 

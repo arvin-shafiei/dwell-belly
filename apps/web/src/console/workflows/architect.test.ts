@@ -3,7 +3,7 @@ import type { Flow } from "../types";
 import flowJson from "../../../../api/flows/default-incident.json";
 import {
   architectDescription, buildRequest, explainFlow, nameFrom, problemsByNode, revealFrame, revealOrder,
-  slugify, usageTotals, validateRequest,
+  safetyLine, safetySummary, slugify, usageTotals, validateRequest,
 } from "./architect";
 
 const flow = flowJson as Flow;
@@ -85,5 +85,38 @@ describe("explanation and problems", () => {
     expect(slugify("!!!")).toBe("flow");
     expect(nameFrom("frozen food, cold-chain vans")).toBe("Frozen food, cold-chain vans");
     expect(nameFrom("x".repeat(80)).length).toBeLessThanOrEqual(49);
+  });
+});
+
+describe("safety summary", () => {
+  const n = (id: string, type: string) => ({ id, type, runs_on: [] }) as unknown as Flow["nodes"][number];
+  it("the default playbook checks safety on every path", () => {
+    const s = safetySummary(flow);
+    expect(s).toEqual({ steps: flow.nodes.length, gates: 1, everyPath: true });
+    expect(safetyLine(s)).toBe(`${flow.nodes.length} steps · checks safety on every path`);
+  });
+  it("a branch that sends without the check is caught", () => {
+    const f = structuredClone(flow);
+    f.edges.push({ from: "triage", to: "action", when: "urgent" });
+    const s = safetySummary(f);
+    expect(s.everyPath).toBe(false);
+    expect(safetyLine(s)).toBe(`${f.nodes.length} steps · some paths skip the safety check`);
+  });
+  it("a retry loop back past the check does not count as skipping it", () => {
+    const f = structuredClone(flow);
+    f.edges.push({ from: "verify", to: "planner", when: "retry" });
+    expect(safetySummary(f).everyPath).toBe(true);
+  });
+  it("with nothing that sends, every end must be behind a check", () => {
+    const ok = { nodes: [n("a", "ingest"), n("g", "safety_gate"), n("l", "case_log")], edges: [{ from: "a", to: "g" }, { from: "g", to: "l", when: "allow" }] };
+    expect(safetySummary(ok).everyPath).toBe(true);
+    const bad = { nodes: [...ok.nodes, n("x", "verify")], edges: [...ok.edges, { from: "a", to: "x" }] };
+    expect(safetySummary(bad).everyPath).toBe(false);
+  });
+  it("no gate, or no steps, is never safe", () => {
+    const f = { nodes: [n("a", "ingest"), n("s", "action")], edges: [{ from: "a", to: "s" }] };
+    expect(safetySummary(f)).toEqual({ steps: 2, gates: 0, everyPath: false });
+    expect(safetyLine(safetySummary(f))).toBe("2 steps · no safety check");
+    expect(safetySummary({ nodes: [], edges: [] }).everyPath).toBe(false);
   });
 });

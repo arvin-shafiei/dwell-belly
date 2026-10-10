@@ -244,3 +244,15 @@ export function retestBody(run: Pick<TestRun, "workflowId" | "cases">, version: 
     limit: Math.min(20, Math.max(1, run.cases.length)),
   };
 }
+
+const SET_IDS: ScenarioSetId[] = ["quick", "fixtures", "adversarial", "generated", "city", "custom"];
+
+/** Deep link into Practice (`?panel=practice&set=<id>[&filter=<pattern>]`), e.g. from Results'
+ *  "Run more cases". Null when the link does not ask for the Practice panel. */
+export function practiceLink(params: URLSearchParams | null | undefined): { set: ScenarioSetId | null; filter: string | null } | null {
+  if (params?.get("panel") !== "practice") return null;
+  const raw = params.get("set");
+  const set = raw && (SET_IDS as string[]).includes(raw) ? (raw as ScenarioSetId) : null;
+  const filter = params.get("filter")?.trim() || null;
+  return { set, filter };
+}

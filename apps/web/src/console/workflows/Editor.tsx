@@ -14,7 +14,7 @@ import {
 } from "./api";
 import { ArchitectPanel } from "./ArchitectPanel";
 import { cents, plainFailure, plainOutcome } from "../../ui/plain";
-import { nameFrom, problemsByNode, revealFrame, revealOrder, slugify, type ArchitectUsage } from "./architect";
+import { nameFrom, problemsByNode, revealFrame, revealOrder, safetyLine, safetySummary, slugify, type ArchitectUsage } from "./architect";
 import { WorkflowMenu } from "./WorkflowMenu";
 import { TestPanel } from "./TestPanel";
 import { diffCount, diffFlows, edgeMark, latestVersion, nodeMark, type FlowDiff } from "./testing";
@@ -37,6 +37,7 @@ import { BranchEdge, type BranchEdgeType } from "./BranchEdge";
 import { metaFor, nodeTitle } from "./nodeTypes";
 import { DND_MIME, Palette } from "./Palette";
 import { buildOverlay, pairKey, replayDelays } from "./status";
+import { READ_ZOOM, cardCentre, pathTo, startViewport } from "./view";
 
 const nodeTypes = { card: FlowNodeCard };
 const edgeTypes = { branch: BranchEdge };
@@ -128,6 +129,7 @@ function EditorInner() {
   const [check, setCheck] = useState<{ sig: string; problems: string[]; state: "ok" | "problems" | "unavailable"; msg?: string } | null>(null);
   const [validating, setValidating] = useState(false);
   const [versionsTick, setVersionsTick] = useState(0);
+  const [viewReq, setViewReq] = useState(0);
 
   const doc = hist?.present ?? null;
   const current = draft?.record ?? records?.find((r) => r.id === currentId) ?? null;
@@ -148,8 +150,8 @@ function EditorInner() {
     setDraft(null);
     setReveal(null);
     setCheck(null);
-    requestAnimationFrame(() => rf.fitView({ padding: 0.2, duration: 0 }));
-  }, [rf]);
+    setViewReq((n) => n + 1); // open readable at the start step (applied once the canvas has the tree)
+  }, []);
 
   useEffect(() => {
     let live = true;
@@ -223,6 +225,37 @@ function EditorInner() {
     const m = new Map((display?.edges ?? []).map((e) => [e.id, edgeKey(e.edge)]));
     return (id: string): string | null => m.get(id) ?? null;
   }, [display]);
+
+  // ---------- camera ----------
+  // A whole playbook only fits at a zoom too small to read, so it opens at a reading zoom on the
+  // start step; "Show all" fits everything.
+  const goStart = useCallback((duration = 0) => {
+    const r = wrapRef.current?.getBoundingClientRect();
+    const v = display && r ? startViewport(display, positions, { width: r.width, height: r.height }) : null;
+    if (v) void rf.setViewport(v, { duration });
+    return !!v;
+  }, [display, positions, rf]);
+  const showAll = useCallback(() => { void rf.fitView({ padding: 0.15, duration: 450 }); }, [rf]);
+  const appliedView = useRef(0);
+  useEffect(() => {
+    if (!viewReq || appliedView.current === viewReq || !display) return;
+    const raf = requestAnimationFrame(() => { if (goStart()) appliedView.current = viewReq; });
+    return () => cancelAnimationFrame(raf);
+  }, [viewReq, display, goStart]);
+
+  // While "Make a playbook" places a draft, the camera follows each new step at a reading zoom.
+  const newest = reveal && reveal.count > 0 ? reveal.order[reveal.count - 1] : null;
+  useEffect(() => {
+    if (!newest || !display) return;
+    const c = cardCentre(display, positions, newest);
+    if (c) void rf.setCenter(c.x, c.y, { zoom: READ_ZOOM, duration: 300 });
+  }, [newest, display, positions, rf]);
+
+  // The path from the start to the selected step, drawn in the accent colour.
+  const selPath = useMemo(
+    () => (display && sel?.kind === "node" && !overlay && !diffView && !reveal ? pathTo(display, sel.id) : null),
+    [display, sel, overlay, diffView, reveal],
+  );
 
   // ---------- edits ----------
   const commit = useCallback((fn: (d: FlowDoc) => FlowDoc, coalesce?: string) => {
@@ -401,15 +434,9 @@ function EditorInner() {
       const t = setTimeout(() => { setReveal(null); rf.fitView({ padding: 0.2, duration: 450 }); }, 350);
       return () => clearTimeout(t);
     }
-    const t = setTimeout(() => setReveal((r) => (r ? { ...r, count: r.count + 1 } : r)), reveal.count === 0 ? 120 : 260);
+    const t = setTimeout(() => setReveal((r) => (r ? { ...r, count: r.count + 1 } : r)), reveal.count === 0 ? 150 : 380);
     return () => clearTimeout(t);
   }, [reveal, rf]);
-  const revealCount = reveal?.count ?? null;
-  useEffect(() => {
-    if (!revealCount) return;
-    const t = setTimeout(() => rf.fitView({ padding: 0.35, duration: 220, maxZoom: 1.1 }), 40);
-    return () => clearTimeout(t);
-  }, [revealCount, rf]);
 
   // ---------- workflow list actions ----------
   const switchTo = useCallback((w: WorkflowRecord) => { open(w); setParamsRef.current?.({ workflow: w.id }); }, [open]);
@@ -543,13 +570,15 @@ function EditorInner() {
           dimmed: !!overlay && !run,
           problems: diffView ? undefined : nodeProblems?.byNode[d.nodeId],
           appear: !!reveal,
+          fresh: !!reveal && d.id === newest,
+          onPath: !!selPath?.nodes.has(d.id),
           diff: diffView ? { mark: nodeMark(diffView.diff, d.nodeId), change: diffView.diff.changedNodes.get(d.nodeId) } : undefined,
           shared: d.occurrences > 1 ? { count: d.occurrences, stub: d.stub } : undefined,
           loops: d.loops.map((e) => `${e.when ?? "loop"} → ${label(e.to)}`),
         },
       };
     });
-  }, [doc, display, positions, overlay, sel, dims, reveal, nodeProblems, diffView]);
+  }, [doc, display, positions, overlay, sel, dims, reveal, nodeProblems, diffView, newest, selPath]);
 
   const rfEdges: Edge[] = useMemo(() => {
     if (!doc || !display) return [];
@@ -561,6 +590,8 @@ function EditorInner() {
         const taken = !!overlay?.taken.has(pairKey(de.edge.from, de.edge.to));
         const mark = diffView ? edgeMark(diffView.diff, de.edge) : null;
         const r = routes.get(de.id);
+        const onPath = !!selPath?.edges.has(de.id);
+        const fresh = !!reveal && de.target === newest;
         return {
           id: de.id,
           type: "branch",
@@ -574,13 +605,17 @@ function EditorInner() {
           animated: taken || mark === "added",
           className: diffView
             ? mark === "added" ? "wf-diff-added" : mark === "removed" ? "wf-diff-removed" : "wf-faded"
-            : overlay ? (taken ? "wf-taken" : "wf-faded") : undefined,
-          zIndex: taken || mark ? 1 : 0,
+            : overlay ? (taken ? "wf-taken" : "wf-faded")
+            : selPath ? (onPath ? "wf-path" : "wf-faded")
+            : fresh ? "wf-edge-new" : undefined,
+          zIndex: taken || mark || onPath ? 1 : 0,
           data: {
             when: de.edge.when,
             trunk: r ? r.trunkX - r.sx : undefined,
-            plain: !overlay && !diffView,
-            labelTone: diffView ? (mark === "added" ? "added" : mark === "removed" ? "removed" : "faded") : overlay ? (taken ? "taken" : "faded") : undefined,
+            plain: !overlay && !diffView && !selPath && !fresh,
+            labelTone: diffView ? (mark === "added" ? "added" : mark === "removed" ? "removed" : "faded")
+              : overlay ? (taken ? "taken" : "faded")
+              : selPath && !onPath ? "faded" : undefined,
           },
         };
       });
@@ -599,7 +634,10 @@ function EditorInner() {
       }
     }
     return res;
-  }, [doc, display, routes, overlay, sel, reveal, diffView]);
+  }, [doc, display, routes, overlay, sel, reveal, diffView, newest, selPath]);
+
+  // Result banner for a new playbook, once every step is placed. Computed from the real flow.
+  const draftSafety = useMemo(() => (draft && !reveal && doc ? safetySummary(doc.flow) : null), [draft, reveal, doc]);
 
   const selNode: FlowNode | null = sel?.kind === "node" ? doc?.flow.nodes.find((n) => n.id === sel.id) ?? null : null;
   const selEdge = sel?.kind === "edge" ? doc?.flow.edges.find((e) => edgeKey(e) === sel.key) ?? null : null;
@@ -786,8 +824,6 @@ function EditorInner() {
             connectionRadius={28}
             minZoom={0.08}
             maxZoom={2}
-            fitView
-            fitViewOptions={{ padding: 0.2 }}
             proOptions={{ hideAttribution: true }}
           >
             <Background variant={BackgroundVariant.Dots} gap={20} size={1.4} color="#3b3b44" bgColor="#1f1f23" />
@@ -804,6 +840,25 @@ function EditorInner() {
               style={{ width: 168, height: 110 }}
             />
           </ReactFlow>
+          <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex items-start justify-between gap-3 px-3">
+            <div className="pointer-events-auto flex overflow-hidden rounded-lg border border-white/10 bg-[#19191d]/90 shadow-lg backdrop-blur">
+              <button type="button" onClick={() => goStart(400)} title="Back to the first step, readable" className="px-3 py-1.5 text-[12.5px] font-medium text-white/80 hover:bg-white/[0.07] hover:text-white">
+                Start
+              </button>
+              <button type="button" onClick={showAll} title="Fit the whole playbook on screen" className="border-l border-white/10 px-3 py-1.5 text-[12.5px] font-medium text-white/80 hover:bg-white/[0.07] hover:text-white">
+                Show all
+              </button>
+            </div>
+            {draftSafety && (
+              <div
+                className={`pointer-events-auto flex items-center gap-2 rounded-lg border px-3.5 py-2 text-[14px] font-semibold shadow-lg backdrop-blur ${draftSafety.everyPath ? "border-[#22c55e]/40 bg-[#0f2417]/90 text-[#4ade80]" : "border-[#f59e0b]/40 bg-[#2a1f0c]/90 text-[#fcd34d]"}`}
+                role="status"
+              >
+                <Icon name={draftSafety.everyPath ? "check" : "shield"} size={15} strokeWidth={draftSafety.everyPath ? 3 : 2} />
+                {safetyLine(draftSafety)}
+              </div>
+            )}
+          </div>
         </div>
         <div className={drawer && !(selNode || selEdge) ? "flex h-full w-[380px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]" : "hidden"}>
           <div className="flex shrink-0 gap-1 border-b border-white/10 px-2 pt-1.5">
@@ -819,7 +874,7 @@ function EditorInner() {
           {mounted.ai && (
             <div className={drawer === "ai" ? "flex min-h-0 flex-1" : "hidden"}>
               <ArchitectPanel
-                draft={draft ? { description: draft.description, revealing: !!reveal } : null}
+                draft={draft ? { description: draft.description, revealing: !!reveal, placed: reveal ? { count: reveal.count, total: reveal.order.length } : null } : null}
                 onDraft={startDraft}
                 onAccept={() => void doSave()}
                 onDiscard={discardDraft}
