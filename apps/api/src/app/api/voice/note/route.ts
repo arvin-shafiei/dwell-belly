@@ -10,7 +10,7 @@ const SOURCES: VoiceSource[] = ["live_human", "simulated_persona", "audio_attach
 
 // POST /api/voice/note: multipart (an "audio" file plus fields), or a JSON body sent as text/plain so
 // the browser needs no CORS preflight. Fields: mode, source, from, n, at, transcript for a typed note,
-// caseId or caseText (the case's references guide transcription), and languageCode (default "en").
+// caseId or caseText (the case's references guide transcription), and languageCode (default "en"; "auto" lets the transcriber detect the language).
 // Returns { event } to append to the case, or { error } with 400, 403, 422 or 502.
 export async function POST(req: Request) {
   let fields: Record<string, unknown>;
@@ -54,5 +54,5 @@ export async function POST(req: Request) {
     },
     { transcribe },
   );
-  return res.ok ? json({ event: res.event }) : json({ error: res.error }, { status: res.status });
+  return res.ok ? json({ event: res.event, ...(res.language ? { language: res.language } : {}) }) : json({ error: res.error }, { status: res.status });
 }
