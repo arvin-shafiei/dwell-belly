@@ -196,3 +196,28 @@ describe("scenario autoplay pacing", () => {
     expect(agentIdle({ agentOnline: null, agentQueue: [], agentRunning: 0 })).toBe(false);
   });
 });
+
+describe("CityAgentLink + shared SQLite budget", () => {
+  it("a case the server refuses as over budget goes back to the front of the queue and waits 15 s", async () => {
+    const h = harness();
+    h.link.incident("inc-1");
+    expect(h.pending).toHaveLength(1);
+    h.pending.splice(0, 1)[0].reject(Object.assign(new Error("over budget"), { overBudget: true }));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(h.queue.map((q) => q.incidentId)).toEqual(["inc-1"]);
+    h.link.pump();
+    expect(h.pending).toHaveLength(0); // held
+    h.state.now += 15_001;
+    h.link.pump();
+    expect(h.pending).toHaveLength(1);
+  });
+
+  it("replayed lines carry the console execution id", async () => {
+    const h = harness();
+    h.link.incident("inc-1");
+    const p = h.pending.splice(0, 1)[0];
+    p.resolve({ trace: traceFor(p.id, 1), card: null, outbox: null, executionId: "ex-7" } as AgentRunResult);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(h.pushed.filter((e) => e.executionId === "ex-7").length).toBeGreaterThan(0);
+  });
+});

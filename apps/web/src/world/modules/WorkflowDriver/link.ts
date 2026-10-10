@@ -1,4 +1,5 @@
-// The city's only workflow path: every case goes to the REAL agent API. No mock, no fallback.
+// The city's only workflow path: every case goes to the REAL agent API through the console
+// (POST /api/console/city/cases, recorded in SQLite as origin "city"; agentBridge.runCityCase). No mock, no fallback.
 //   incident:created  -> synthetic incident case (backendLink.buildIncidentCase)
 //   delivery:delayed  -> grouped per cause over 20 s -> one synthetic delay case (backendLink.buildDelayCase)
 //   scenario:staged   -> the public case's messages (+ modifier messages marked simulated_persona)
@@ -16,7 +17,10 @@ export type HudEvent = Omit<WorkflowEvent, "id" | "t">;
 type CaseView = { id: string; events: ViewEvent[]; mode?: "demo" | "practice"; context?: string | null };
 
 export interface LinkDeps {
-  runAgent: (view: CaseView) => Promise<AgentRunResult>;
+  /** Runs a case; rejects with `{ overBudget: true }` when the shared budget is full (the case waits). */
+  runAgent: (view: CaseView, label: string) => Promise<AgentRunResult & { executionId?: string }>;
+  /** Follow an execution that was already running before a refresh (agentBridge.followExecution). */
+  follow?: (executionId: string) => Promise<AgentRunResult & { executionId?: string }>;
   push: (e: HudEvent) => void;
   emit: (e: WorldEvent) => void;
   /** setTimeout. */
@@ -53,6 +57,8 @@ export class CityAgentLink {
   /** runIds already replayed (city and console), so nothing is shown twice. */
   readonly replayedRuns = new Set<string>();
   dropped = 0;
+  /** No new starts before this (Date.now()), after the server said over budget. */
+  private holdUntil = 0;
 
   constructor(private d: LinkDeps) {
     this.delays = new DelayGrouper(d.delayWindowMs ?? 20_000);
@@ -63,7 +69,10 @@ export class CityAgentLink {
   }
 
   snapshot(): { queue: QueuedCase[]; running: number } {
-    return { queue: this.queue.map((j) => ({ id: j.id, label: j.label, kind: j.kind, enqueuedAt: j.enqueuedAt, synthetic: j.synthetic })), running: this.running };
+    return {
+      queue: this.queue.map((j) => ({ id: j.id, label: j.label, kind: j.kind, enqueuedAt: j.enqueuedAt, synthetic: j.synthetic, ...(j.incidentId ? { incidentId: j.incidentId } : {}) })),
+      running: this.running,
+    };
   }
 
   private changed() {
@@ -84,13 +93,19 @@ export class CityAgentLink {
 
   /** Start queued cases while the agent is online, a slot is free and the budget allows. Call on a timer too. */
   pump() {
-    while (this.queue.length && this.running < this.maxConcurrent && this.d.online()) {
+    while (this.queue.length && this.running < this.maxConcurrent && this.d.online() && this.d.now() >= this.holdUntil) {
       if (!this.d.claim()) break;
       const job = this.queue.shift()!;
       this.running++;
       job
         .start()
-        .catch(() => {})
+        .catch((e: unknown) => {
+          // The shared (SQLite) budget is full: back to the front of the queue, retry in 15 s.
+          if ((e as { overBudget?: boolean } | null)?.overBudget) {
+            this.queue.unshift(job);
+            this.holdUntil = this.d.now() + 15_000;
+          }
+        })
         .finally(() => {
           this.running--;
           this.pump();
@@ -104,19 +119,26 @@ export class CityAgentLink {
     this.replayedRuns.add(result.trace.runId);
     rememberReplay({ caseLabel, trace: result.trace, card: result.card, outbox: result.outbox, origin: meta.origin, executionId });
     const timed = traceToTimedEvents(result.trace, caseLabel, meta);
-    for (const t of timed) this.d.schedule(() => this.d.push(t.event), t.atMs);
+    for (const t of timed) {
+      const event = executionId ? { ...t.event, executionId } : t.event;
+      this.d.schedule(() => this.d.push(event), t.atMs);
+    }
     return timed.length ? timed[timed.length - 1].atMs : 0;
   }
 
   /** Run one view on the agent and replay it; errors become one labelled error line (no invented outcome). */
-  private async runCase(view: CaseView, caseId: string, tag: Pick<HudEvent, "origin" | "synthetic">, startLine: string): Promise<AgentRunResult | null> {
+  private async runCase(view: CaseView, caseId: string, tag: Pick<HudEvent, "origin" | "synthetic">, startLine: string): Promise<(AgentRunResult & { executionId?: string }) | null> {
     const base = { source: "agent" as const, ...tag };
     this.d.push({ caseId, nodeId: "ingest", status: "start", summary: startLine, ...base });
     try {
-      const result = await this.d.runAgent(view);
+      const result = await this.d.runAgent(view, caseId);
       this.d.onSpend(result.trace);
       return result;
-    } catch {
+    } catch (e) {
+      if ((e as { overBudget?: boolean } | null)?.overBudget) {
+        this.d.push({ caseId, nodeId: "ingest", status: "start", summary: "Waiting: the city's agent budget is used up for now.", ...base });
+        throw e;
+      }
       this.d.push({ caseId, nodeId: "log", status: "error", summary: "Couldn't reach the agent. Nothing was sent.", ...base });
       return null;
     }
@@ -131,13 +153,13 @@ export class CityAgentLink {
     const no = this.seq.inc;
     const label = `INC-${String(no).padStart(3, "0")} · ${inc.kind.replace("_", " ")}`;
     this.enqueue({
-      label, kind: "incident", synthetic: true,
+      label, kind: "incident", synthetic: true, incidentId,
       start: async () => {
         // Built when it starts, so the deliveries are current.
         const { view, affected } = buildIncidentCase(this.d.incident(incidentId) ?? inc, this.d.deliveries(), { now: new Date(this.d.now()), seq: no, positions: this.d.positions() });
         const dls = affected.map((d) => d.id).join(", ");
         const r = await this.runCase(view, label, { origin: "city_incident", synthetic: true }, `Practice case from the city${dls ? ` (${dls})` : ""}. Waiting for the answer…`);
-        if (r) this.replay(r, label, { origin: "city_incident", synthetic: true });
+        if (r) this.replay(r, label, { origin: "city_incident", synthetic: true }, r.executionId);
       },
     });
   }
@@ -157,7 +179,7 @@ export class CityAgentLink {
         start: async () => {
           const { view } = buildDelayCase(g.reason, g.ids, this.d.deliveries(), { now: new Date(this.d.now()), seq: no });
           const r = await this.runCase(view, label, { origin: "city_incident", synthetic: true }, `${g.ids.length} late, cause: ${g.reason}. Waiting for the answer…`);
-          if (r) this.replay(r, label, { origin: "city_incident", synthetic: true });
+          if (r) this.replay(r, label, { origin: "city_incident", synthetic: true }, r.executionId);
         },
       });
     }
@@ -183,10 +205,24 @@ export class CityAgentLink {
       start: async () => {
         const r = await this.runCase(toCaseView(scenario, ev.modifiers), label, tag, "Waiting for the answer…");
         if (!r) return;
-        const last = this.replay(r, label, tag);
+        const last = this.replay(r, label, tag, r.executionId);
         this.d.schedule(() => this.d.emit({ type: "scenario:resolved", runId: ev.runId, scenarioId: ev.scenarioId, outcome: outcomeOf(r.trace) }), last + 200);
       },
     });
+  }
+
+  /** A city case still running in the console when the page was refreshed: follow it and replay it. */
+  resume(executionId: string, label: string) {
+    const follow = this.d.follow;
+    if (!follow) return;
+    const tag = { origin: "city_incident" as const, synthetic: true };
+    void follow(executionId)
+      .then((r) => {
+        if (this.replayedRuns.has(r.trace.runId)) return;
+        this.d.onSpend(r.trace);
+        this.replay(r, label, tag, executionId);
+      })
+      .catch(() => this.d.push({ caseId: label, nodeId: "log", status: "error", summary: "Couldn't reach the agent. Nothing was sent.", source: "agent", ...tag, executionId }));
   }
 
   /** A finished console execution (already run): replay it, and act its scene out if it has one. */
