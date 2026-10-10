@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { deadlineLabel, taskFromTrace } from "./model";
+import { plainOwner } from "../ui/plain";
+import { deadlineLabel, keyEvidence, shortLine, taskFromTrace } from "./model";
 
 import { fixtureTrace } from "./test-fixtures";
 
@@ -41,5 +42,15 @@ describe("human review trace adapter", () => {
   it("keeps simulated traces labelled and rejects incomplete cards", () => {
     expect(taskFromTrace({ ...fixtureTrace("demo"), synthetic: true }, "2026-10-10T12:00:00Z", "test-id")?.simulated).toBe(true);
     expect(taskFromTrace({ events: [] }, "2026-10-10T12:00:00Z", "test-id")).toBeNull();
+  });
+  it("shows plain words, never ids or leaks", () => {
+    expect(plainOwner("desk_duty_supervisor")).toBe("Desk supervisor");
+    expect(plainOwner("Claims team")).toBe("Claims team");
+    expect(shortLine("Check the trace for missed_or_failed_delivery. Then ask.")).not.toMatch(/trace|_/);
+    expect(shortLine("one two three four five six", 3)).toBe("one two three…");
+    const task = taskFromTrace(fixtureTrace(), "2026-10-10T12:00:00Z", "test-id")!;
+    const lines = keyEvidence({ ...task, evidence: [{ who: "Customer", says: "It broke.", basis: "x" }, { who: "Driver", says: "Fine.", basis: "y" }] });
+    expect(lines).toHaveLength(2);
+    expect(keyEvidence(task)[0]).toMatch(/^The stories don't match: Carrier scan says intact/);
   });
 });

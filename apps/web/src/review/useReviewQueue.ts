@@ -52,7 +52,7 @@ export function useReviewQueue() {
           clearTimeout(pending.timer);
           requests.current.delete(message.requestId);
           if (message.ok === true) pending.resolve();
-          else pending.reject(new Error(typeof message.error === "string" ? message.error : "The simulation did not accept the decision"));
+          else pending.reject(new Error(typeof message.error === "string" ? message.error : "The city didn't take that choice"));
         }
       };
       link.postMessage({ type: "queue:request" } satisfies ReviewMessage);
@@ -61,19 +61,19 @@ export function useReviewQueue() {
     return () => {
       clearTimeout(initialLoad); clearInterval(timer); clearInterval(clock); window.removeEventListener("focus", focus);
       channel.current?.close(); channel.current = null;
-      for (const request of pending.values()) { clearTimeout(request.timer); request.reject(new Error("The review desk was closed")); }
+      for (const request of pending.values()) { clearTimeout(request.timer); request.reject(new Error("Closed")); }
       pending.clear();
     };
   }, [refresh]);
 
   const decide = useCallback(async (task: ReviewTask, optionId: string, who: string, note: string) => {
     if (task.origin === "city") {
-      if (!channel.current) throw new Error("Open the city simulation in this browser to decide this case");
+      if (!channel.current) throw new Error("Open the city in this browser to decide this case");
       const requestId = crypto.randomUUID();
       await new Promise<void>((resolve, reject) => {
         const timer = setTimeout(() => {
           requests.current.delete(requestId);
-          reject(new Error("The city did not confirm your decision. Check that the simulation is still open."));
+          reject(new Error("The city didn't answer. Check the city is still open."));
         }, 5000);
         requests.current.set(requestId, { resolve, reject, timer });
         channel.current!.postMessage({ type: "decision:request", requestId, taskId: task.id, optionId, who, note } satisfies ReviewMessage);

@@ -90,14 +90,14 @@ export async function registerTrace(value: unknown, root = repoRoot()): Promise<
 
 export async function decideTask(id: string, value: unknown, root = repoRoot()): Promise<ReviewTask> {
   const body = record(value);
-  if (!body || typeof body.optionId !== "string" || typeof body.who !== "string" || !body.who.trim()) throw new ReviewError("Choose an option and enter your name", 400);
+  if (!body || typeof body.optionId !== "string" || typeof body.who !== "string" || !body.who.trim()) throw new ReviewError("Pick a choice and add your name", 400);
   if (body.who.length > 120 || (typeof body.note === "string" && body.note.length > 2000)) throw new ReviewError("Name or note is too long", 400);
   const task = (await listTasks(root)).tasks.find((t) => t.id === id);
-  if (!task) throw new ReviewError("This decision card is no longer available", 404);
-  if (task.mode === "reality") throw new ReviewError("Reality Test results are read-only", 409);
-  if (task.status !== "pending") throw new ReviewError("Someone has already recorded a decision on this card", 409);
+  if (!task) throw new ReviewError("This case is no longer waiting", 404);
+  if (task.mode === "reality") throw new ReviewError("Test day results are view only", 409);
+  if (task.status !== "pending") throw new ReviewError("Someone already decided this case", 409);
   const option = task.options.find((o) => o.id === body.optionId);
-  if (!option) throw new ReviewError("Choose an option from this decision card", 400);
+  if (!option) throw new ReviewError("Pick one of the choices", 400);
   const decision: ReviewDecision = {
     optionId: option.id, optionLabel: option.label, who: body.who.trim(),
     note: typeof body.note === "string" ? body.note.trim() : "", at: new Date().toISOString(), execution: "pending",

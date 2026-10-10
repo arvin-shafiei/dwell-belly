@@ -1,3 +1,4 @@
+import { scrubLeaks } from "../ui/plain";
 import type { ReviewDecision, ReviewTask } from "./types";
 
 export function record(value: unknown): Record<string, unknown> | null {
@@ -50,19 +51,19 @@ export function taskFromTrace(value: unknown, receivedAt: string, id: string, re
   const chosen = str(human?.optionId, str(card.chosen));
   const choice = options.find((o) => o.id === chosen);
   const decision: ReviewDecision | null = choice ? {
-    optionId: choice.id, optionLabel: choice.label, who: str(human?.who, "Previously recorded"),
-    note: "Read from the agent trace", at: receivedAt, execution: "pending",
+    optionId: choice.id, optionLabel: choice.label, who: str(human?.who, "Someone earlier"),
+    note: "", at: receivedAt, execution: "pending",
   } : null;
   return {
     id, caseId: str(trace.caseId), runId: str(trace.runId), cardId: str(card.cardId, id),
     title: str(segment.find((e) => e.kind === "run_start")?.title, str(trace.caseId)),
-    summary: str(card.summary), routeTo: str(card.routeTo), mustDecide: str(record(card.whyStopped)?.line, str(card.mustDecide, "Choose the next step. The agent has held this case for a person.")),
+    summary: str(card.summary), routeTo: str(card.routeTo), mustDecide: str(record(card.whyStopped)?.line, str(card.mustDecide, "Choose what happens next.")),
     evidence: Array.isArray(card.evidence) ? card.evidence.flatMap((value) => {
       const item = record(value);
       return item && str(item.who) && str(item.says) ? [{ who: str(item.who), says: str(item.says), basis: str(item.basis) }] : [];
     }) : [],
     clash: str(card.clash) || null, tried: strings(card.alreadyDone).length ? strings(card.alreadyDone) : strings(card.tried), wouldChangeMyMind: str(card.wouldChangeMyMind), options,
-    fallback: str(card.fallback, fallbackOption?.label ?? "Hold this case and send nothing further until the owning team decides."),
+    fallback: str(card.fallback, fallbackOption?.label ?? "Hold the case and send nothing until the team decides."),
     receivedAt, deadlineAt: new Date(Date.parse(receivedAt) + deadlineMins * 60_000).toISOString(),
     urgency: triage?.urgency === "high" || triage?.urgency === "low" ? triage.urgency : "medium",
     risk: typeof gate?.risk === "number" ? gate.risk : null,
@@ -88,4 +89,20 @@ export function sortTasks(tasks: ReviewTask[]): ReviewTask[] {
   return [...tasks].sort((a, b) =>
     Number(a.status !== "pending") - Number(b.status !== "pending") ||
     urgency[a.urgency] - urgency[b.urgency] || Date.parse(a.deadlineAt) - Date.parse(b.deadlineAt) || a.id.localeCompare(b.id));
+}
+
+/** One short readable line for the decision view: scrubbed, first sentence, at most `words` words. */
+export function shortLine(text: string | null | undefined, words = 15): string {
+  const clean = scrubLeaks(text);
+  if (!clean) return "";
+  const first = clean.match(/^.+?[.!?](?=\s|$)/)?.[0] ?? clean;
+  const list = first.split(/\s+/);
+  return list.length > words ? `${list.slice(0, words).join(" ").replace(/[,;:.]$/, "")}…` : first;
+}
+
+/** At most two short evidence lines; the rest of the card lives under "Details". */
+export function keyEvidence(task: ReviewTask): string[] {
+  const lines = task.evidence.map((e) => shortLine(`${scrubLeaks(e.who)}: ${e.says}`, 14));
+  if (task.clash) lines.push(`The stories don't match: ${shortLine(task.clash, 10)}`);
+  return lines.filter(Boolean).slice(0, 2);
 }

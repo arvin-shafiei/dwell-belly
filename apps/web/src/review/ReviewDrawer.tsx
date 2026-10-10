@@ -8,7 +8,7 @@ export default function ReviewDrawer({ onClose, source }: { onClose: () => void;
     const previous = document.activeElement;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    panel.current?.querySelector<HTMLButtonElement>("button[aria-label='Close human review']")?.focus();
+    panel.current?.querySelector<HTMLButtonElement>("button[aria-label='Close decisions']")?.focus();
     function keyboard(event: KeyboardEvent) {
       if (event.key === "Escape") { event.preventDefault(); onClose(); }
       if (event.key !== "Tab") return;
@@ -25,6 +25,6 @@ export default function ReviewDrawer({ onClose, source }: { onClose: () => void;
     };
   }, [onClose]);
   return <div className="review-drawer-backdrop" onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-    <div className="review-drawer" ref={panel} role="dialog" aria-modal="true" aria-label="Human intervention dashboard"><HumanDesk embedded onClose={onClose} initialSource={source} /></div>
+    <div className="review-drawer" ref={panel} role="dialog" aria-modal="true" aria-label="Decisions"><HumanDesk embedded onClose={onClose} initialSource={source} /></div>
   </div>;
 }

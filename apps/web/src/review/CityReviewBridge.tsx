@@ -30,10 +30,10 @@ export default function CityReviewBridge() {
       const option = task?.options.find((o) => o.id === message.optionId);
       const ok = Boolean(task && option && engine.decide(task.caseId, option.label));
       if (ok && task && option) decisions.set(task.id, {
-        optionId: option.id, optionLabel: option.label, who: typeof message.who === "string" ? message.who : "Simulation reviewer",
+        optionId: option.id, optionLabel: option.label, who: typeof message.who === "string" ? message.who : "Someone",
         note: typeof message.note === "string" ? message.note : "", at: new Date().toISOString(), execution: "simulation",
       });
-      channel.postMessage({ type: "decision:result", requestId: message.requestId, ok, ...(!ok && { error: "This simulated case has already moved on. Refresh the queue." }) } satisfies ReviewMessage);
+      channel.postMessage({ type: "decision:result", requestId: message.requestId, ok, ...(!ok && { error: "This case has moved on. Refresh." }) } satisfies ReviewMessage);
       publish();
     };
     publish();

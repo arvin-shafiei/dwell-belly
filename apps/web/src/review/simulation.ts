@@ -1,4 +1,5 @@
 import type { WorkflowEngine } from "../world/modules/WorkflowDriver/engine";
+import { plainStep } from "../ui/plain";
 import type { ReviewTask } from "./types";
 
 /** This adapter is explicitly simulated; it never writes to the real runner's files. */
@@ -17,14 +18,14 @@ export function simulationTasks(engine: WorkflowEngine, sessionId: string, now: 
       : /damag|refund|claim|replacement/i.test(`${c.title} ${priority}`) ? "Claims team" : "Depot manager";
     return [{
       id: `simulation:${sessionId}:${c.id}`, caseId: c.id, runId: sessionId, cardId: `simulation:${sessionId}:${c.id}`,
-      title: c.title, summary: step("planner") || c.title, mustDecide: card.reason ?? "The simulated agent paused at its safety gate. Choose what it should do next.", evidence: [],
-      routeTo: card.routeTo ?? inferredOwner, clash: c.clash ? step("clash") : null,
-      tried: [step("history"), step("group"), step("missing_info"), step("action")].filter(Boolean),
-      wouldChangeMyMind: step("missing_info") || "Confirmation from the owning delivery team.",
+      title: c.title, summary: (step("planner") && plainStep("planner", step("planner"))) || c.title, mustDecide: card.reason ?? "The safety check held this case. Choose what happens next.", evidence: [],
+      routeTo: card.routeTo ?? inferredOwner, clash: c.clash ? step("clash").replace(/^(?:clash\w*:\s*)?\d+\s+conflicts?:\s*/i, "") || "The sources disagree." : null,
+      tried: ["history", "group", "missing_info", "action"].flatMap((n) => step(n) ? [plainStep(n, step(n)) ?? ""] : []).filter(Boolean),
+      wouldChangeMyMind: step("missing_info") || "Word from the delivery team.",
       options, fallback: card.safe,
       receivedAt: new Date(now - (engine.now - c.createdAt)).toISOString(), deadlineAt,
       urgency, risk: c.risk, status: chosen ? "resolved" : "pending",
-      decision: chosen ? { optionId: chosen.id, optionLabel: chosen.label, who: card.auto ? "Simulation fallback" : "Simulation reviewer", note: "", at: new Date(now).toISOString(), execution: "simulation" } : null,
+      decision: chosen ? { optionId: chosen.id, optionLabel: chosen.label, who: card.auto ? "Nobody (time ran out)" : "Someone", note: "", at: new Date(now).toISOString(), execution: "simulation" } : null,
       simulated: true, mode: "demo", origin: "city", messages: [],
       timeline: c.steps.map((s) => ({ node: s.nodeId, summary: s.summary, status: s.status })), costUsd: c.costUsd, durationMs: null,
     } satisfies ReviewTask];
