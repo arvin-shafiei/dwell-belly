@@ -302,7 +302,10 @@ export const triageStart = (s: CaseState) => timed(quick(s, s.opts.judge?.triage
 export function triageEnd(s: CaseState, nodeId: string, triaged: Timed<Awaited<ReturnType<typeof triage>>>): { caseType: string; urgency: string } {
   const u = understood(s);
   const fast = triaged.value;
-  const caseType = fast?.caseType ?? u.case_type;
+  // The quick check sorts by the delivery problem underneath, so a solicitor's letter about a lost
+  // parcel comes back as "lost". When the analysis itself names a formal matter, that is the kind.
+  const formal = /solicitor|legal|court|tribunal|regulator|ombudsman|police|journalist|press enquiry|subject access|data[- ]protection|gdpr/i.test(u.case_type);
+  const caseType = formal ? "formal_request" : fast?.caseType ?? u.case_type;
   const urgency = fast?.urgency ?? u.urgency;
   s.rec.done(nodeId, "triage", { calls: fast ? [{ runner: "jev", usage: fast.usage }] : [], latencyMs: triaged.ms,
     summary: `${caseType} · ${urgency}`,
@@ -357,7 +360,7 @@ export function clashEnd(s: CaseState, nodeId: string, clashScored: Timed<Awaite
     summary: u.conflicts.length ? `${u.conflicts.length} conflict: ${u.conflicts[0].about}` : clashed ? "sources may conflict" : "no conflict",
     output: { type: "clash_check", clash: clashed, p: scored?.p ?? 1, claims: u.claims.slice(0, 6).map((c) => ({ who: c.who, says: c.says })) } });
   s.rec.explain([
-    ...u.conflicts.slice(0, 2).map((c) => `${c.between} disagree about ${c.about}. What would settle it: ${c.what_would_settle_it}`),
+    ...u.conflicts.slice(0, 2).map((c) => `Disagreement between ${c.between}: ${c.about.replace(/[.\s]+$/, "")}. What would settle it: ${c.what_would_settle_it}`),
     u.conflicts.length ? "Neither side is treated as proven." : clashed ? "A quick check suggests two sources may contradict each other." : "The sources agree with each other.",
     ...u.missing_info.slice(0, 2).map((m) => `Missing: ${m.what} (held by ${m.who_has_it}).`),
   ]);
@@ -590,7 +593,7 @@ export function verifyStep(s: CaseState, nodeId: string): boolean {
   s.rec.view(nodeId, "verify", undelivered.length ? `${undelivered.length} message(s) not delivered` : "accepted by the outbox; receipt and reply unverified",
     { type: "verify", ok: undelivered.length === 0, p: 1, note: `${checks.map((c) => c.note).join(" ")}${awaiting ? ` Waiting for: ${awaiting}` : ""}`.slice(0, 600) });
   s.rec.explain([
-    undelivered.length ? `${undelivered.length} message(s) were not accepted by any channel.` : "The outbox accepted every message. Receipt and replies are not yet confirmed.",
+    undelivered.length ? `${undelivered.length} message(s) were not accepted by any channel.` : "Every message was recorded. Receipt and replies are not yet confirmed.",
     ...(s.d?.waiting_for ?? []).slice(0, 3).map((w) => `Now waiting for: ${w.what}, from ${w.from}${w.by.trim() ? `, by ${w.by}` : ""}.`),
   ]);
   return undelivered.length === 0;
@@ -659,7 +662,7 @@ export function humanStep(s: CaseState, nodeId: string): DecisionCard {
   s.rec.view(nodeId, "human_decision", `Card for ${card.routeTo}; no human available, fallback logged`, { type: "human_decision", card });
   s.rec.explain([
     card.whyStopped ? `Why a person is needed: ${card.whyStopped.line}` : null,
-    `Handed to: ${card.routeTo}.`,
+    `This goes to ${card.routeTo.replace(/[.\s]+$/, "")}.`,
     ...card.options.slice(0, 3).map((o) => `Option: ${o.label}${o.undoable ? "" : " (cannot be undone)"}`),
     `Nobody was available during this run. Meanwhile: ${card.fallback}`,
   ]);

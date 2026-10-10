@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ExecutionRecord, OutboxEntry } from "../types";
-import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noteRerun } from "./voiceSlots";
+import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noteCaseText, noteRerun } from "./voiceSlots";
 
 const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
 const ex = { id: "e1", caseId: "delivery-003", dataset: "public", workflowId: "default-incident", title: "Case 003" } as ExecutionRecord & { title: string };
@@ -10,6 +10,14 @@ describe("voice slots", () => {
   it("offers a call only on call or phone channels", () => {
     expect(callableRows([row("Email"), row("Phone call"), row("Call"), row("SMS")]).map((r) => r.action.channel)).toEqual(["Phone call", "Call"]);
     expect(callableRows(null)).toEqual([]);
+  });
+  it("gives a voice note the run's own messages, so a pasted case still guides transcription", () => {
+    const run = { ...ex, trace: { events: [{ kind: "run_start", inputs: [
+      { n: 1, channel: "Driver chat", from: "Fen Orlo, route driver", excerpt: "I am at 7 Sedgeglass Mews for DL-003." },
+      { n: 2, channel: "Dispatch chat", from: "Dispatch", excerpt: "Contact Elva Kesh." },
+    ] }] } } as unknown as ExecutionRecord;
+    expect(noteCaseText(run)).toBe("From: Fen Orlo, route driver\nI am at 7 Sedgeglass Mews for DL-003.\n\nFrom: Dispatch\nContact Elva Kesh.");
+    expect(noteCaseText(ex)).toBe("");
   });
   it("treats a callback route as a phone channel", () => {
     expect(callableRows([row("Verified order callback route"), row("Callback"), row("Email")]).map((r) => r.action.channel))

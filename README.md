@@ -183,6 +183,7 @@ The Desk Caller opens every call with: *"Hi, this is the delivery desk assistant
 3. Check it with `node --env-file=apps/api/.env.local scripts/voice/smoke.mjs`, and measure accuracy with `scripts/voice/accuracy.mjs`.
 4. Run `npm run dev`, open the console at `http://localhost:3000`, run any delivery case and use the Voice strip on its execution: a voice note from the driver, a call to whoever the agent chose to phone, and approve by voice when the case stops for a person. Each one re-runs the case.
 5. A driver can speak any language: pick "Speaks: Any language" on the voice note. The language is detected, the note keeps their words, says which language it was and carries an English machine translation (dropped if it loses any reference, time or number), and the desk works on it in English.
+6. After every call, each line the voice agent said is checked by the safety gate with the whole call as context. Anything it should not have said (a refund promise, say) is flagged in the call box and added to the case, so the next run corrects it.
 
 Code: `apps/api/src/voice/`, `apps/api/src/app/api/voice/` and `apps/web/src/voice/`. Tests: `npm run test:voice`, `npm run test:agent` and `npm test -w web`.
 

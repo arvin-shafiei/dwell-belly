@@ -43,6 +43,14 @@ export function cardOpen(card: DecisionCard | null | undefined): card is Decisio
   return Boolean(card && !card.chosen && card.options?.length);
 }
 
+/** The run's own messages as "From: sender" blocks, so a voice note on a pasted case (which the server
+ * cannot look up by id) still has the case's references and names to guide transcription. */
+export function noteCaseText(e: ExecutionRecord): string {
+  const start = (e.trace?.events ?? []).find((x) => x.kind === "run_start");
+  if (!start || start.kind !== "run_start") return "";
+  return start.inputs.map((i) => `From: ${i.from}\n${i.excerpt}`).join("\n\n").slice(0, 8000);
+}
+
 export function noteRerun(e: ExecutionRecord, event: CaseViewEvent): ExecuteRequest {
   return { caseId: e.caseId, dataset: e.dataset, workflowId: e.workflowId, parentExecutionId: e.id, extraEvents: [event], voice: { trigger: "note" } };
 }

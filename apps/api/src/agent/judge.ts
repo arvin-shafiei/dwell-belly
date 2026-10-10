@@ -18,6 +18,7 @@ export const CASE_TYPES = {
   customs_and_charges: "Customs holds, duties, import paperwork or charges demanded before release",
   billing: "Invoices, refunds, credits or disputed fees for the delivery service itself",
   safety: "A current physical risk to a person: a leak, a hazard, an injury, unsafe food or medicine",
+  formal_request: "A solicitor, court, regulator, ombudsman, police, journalist or data-protection request or complaint, whatever the delivery problem behind it",
   other: "None of the above fits",
 } as const;
 export type CaseType = keyof typeof CASE_TYPES;
