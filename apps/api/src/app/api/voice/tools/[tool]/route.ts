@@ -5,7 +5,7 @@ import type { GateConfig } from "@/agent/gate";
 import { json } from "@/lib/cors";
 import type { Flow } from "@/lib/flow";
 import { voiceAllowed } from "@/voice/policy";
-import { checkCommitment, DENIAL, recordFact, requestHuman, submitDecision, TOOL_BUDGET_MS, type CallState } from "@/voice/tools";
+import { checkCommitment, DENIAL, recordFact, requestHuman, submitDecision, TOOL_BUDGET_MS, transcriptToEvents, type CallState } from "@/voice/tools";
 
 const DEFAULT_GATE: GateConfig = { allow_below: 0.3, block_above: 0.8 };
 
@@ -26,7 +26,7 @@ type ToolReply = { result: string; [k: string]: unknown };
 // with the denial wording on anything unexpected, so the voice agent is never left waiting or silent.
 export async function POST(req: Request, { params }: { params: Promise<{ tool: string }> }) {
   const { tool } = await params;
-  let body: { state?: CallState; args?: Record<string, string> };
+  let body: { state?: CallState; args?: Record<string, string>; lines?: { role: "user" | "agent"; message: string }[] };
   try {
     body = JSON.parse(await req.text());
   } catch {
@@ -54,6 +54,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ tool: s
         return { result: "Noted.", event: recordFact(state, { field: String(args.field ?? ""), value: String(args.value ?? ""), speaker_role: String(args.speaker_role ?? "") }) };
       case "request_human":
         return { result: "I'll pass this to a person at the desk. Thank you, goodbye.", event: requestHuman(state, { reason: String(args.reason ?? "") }) };
+      case "finish":
+        // Not an agent tool: the browser sends the finished call's transcript to turn it into case events.
+        return { result: "ok", events: transcriptToEvents(Array.isArray(body.lines) ? body.lines : [], state) };
       default:
         return { result: DENIAL, error: `unknown tool ${tool}` };
     }

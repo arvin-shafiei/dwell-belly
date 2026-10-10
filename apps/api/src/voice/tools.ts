@@ -8,8 +8,9 @@ import type { messageRisk as MessageRisk } from "../agent/judge.ts";
 import type { Understanding } from "../agent/types.ts";
 import type { DecisionCard } from "../lib/trace.ts";
 import type { VoiceMode, VoiceSource } from "./policy.ts";
+import { DENIAL } from "./wording.ts";
 
-export const DENIAL = "I can't promise that. The team that owns this decides, and I'll pass your request on.";
+export { DENIAL } from "./wording.ts";
 export const TOOL_BUDGET_MS = 2500;
 const JEV_TIMEOUT_MS = 1000;
 
