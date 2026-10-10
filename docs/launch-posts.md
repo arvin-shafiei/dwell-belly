@@ -8,6 +8,6 @@ Draft by 16:00, publish at 16:50, paste both links into `SUBMISSION.md`, and ope
 
 [MISSING]
 
-## X draft (280 characters)
+## X post
 
-[MISSING]
+Published: https://x.com/fluffyfluffycow/status/2108933209635590497
