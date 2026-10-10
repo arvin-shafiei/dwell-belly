@@ -4,9 +4,10 @@
 // happens. When the call ends, the transcript and anything recorded become case events.
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useRef, useState } from "react";
-import { callTool, DENIAL, openSession, type CallStateInput, type HumanDecision, type SessionRequest, type ViewEvent } from "./api";
+import { auditTranscript, callTool, DENIAL, openSession, type CallStateInput, type HumanDecision, type SessionRequest, type ViewEvent } from "./api";
 import { createInflight } from "./inflight";
 import { micErrorMessage, transcriptReducer, type Line } from "./transcript";
+import { auditLine } from "./audit";
 import { callStatusWord } from "./callStatus";
 
 export interface CallResult { callId: string; events: ViewEvent[]; decision?: HumanDecision }
@@ -39,6 +40,7 @@ function CallInner({ request, state, simulated = false, label = "Start call", on
   const finished = useRef(true);
   const inflight = useRef(createInflight());
   const [finishing, setFinishing] = useState(false);
+  const [audit, setAudit] = useState<ReturnType<typeof auditLine>>(null);
 
   // A client tool handler: asks our API and returns its answer (always a string) to the voice agent.
   const tool = (name: string) => (params: Record<string, unknown>): Promise<string> => {
@@ -72,6 +74,7 @@ function CallInner({ request, state, simulated = false, label = "Start call", on
     setLines((linesRef.current = []));
     setChecks([]);
     setDecided(null);
+    setAudit(null);
     extra.current = [];
     decision.current = undefined;
     try {
@@ -103,7 +106,10 @@ function CallInner({ request, state, simulated = false, label = "Start call", on
       const recorded = [...extra.current];
       const chosen = decision.current;
       const done = await callTool("finish", current, {}, { lines });
-      onDone({ callId: current.callId, events: [...(done.events ?? []), ...recorded], decision: chosen });
+      // The transcript is safe; now every line the agent said is checked. A failed check adds no event.
+      const checked = await auditTranscript(current, lines);
+      setAudit(auditLine(checked));
+      onDone({ callId: current.callId, events: [...(done.events ?? []), ...recorded, ...(checked?.event ? [checked.event] : [])], decision: chosen });
     } finally {
       setFinishing(false);
     }
@@ -138,6 +144,9 @@ function CallInner({ request, state, simulated = false, label = "Start call", on
             </li>
           ))}
         </ul>
+      )}
+      {audit && (
+        <p className={audit.tone === "ok" ? "text-emerald-300" : audit.tone === "bad" ? "text-red-300" : "text-amber-300"}>{audit.text}</p>
       )}
       <ol className="flex max-h-64 flex-col gap-1 overflow-y-auto">
         {lines.map((l, i) => (
