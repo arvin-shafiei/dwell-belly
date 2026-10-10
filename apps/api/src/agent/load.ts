@@ -71,7 +71,7 @@ export async function loadFolder(dir: string): Promise<CaseBundle> {
 }
 
 export type EventSource = "live_human" | "simulated_persona" | "audio_attachment";
-interface ViewEvent {
+export interface ViewEvent {
   n: number; timestamp: string; stage: string | null; channel: string | null; from: string | null; to: string | null; body: string;
   /** Set on events that came in by voice. Absent means an ordinary written message. */
   source?: EventSource;
