@@ -15,11 +15,15 @@ export function traceToResult(trace) {
   const outputOf = (type) => events.findLast((e) => e.kind === "node_end" && e.output?.type === type)?.output;
   const card = outputOf("human_decision")?.card;
   const next = end.nextAction;
+  const ingest = outputOf("ingest");
+  const planner = outputOf("planner");
   return {
     outcome: end.outcome,
     nextAction: next ? { recipient: next.recipient, channel: next.channel, message: next.message } : null,
     handoff: card ? `Route to ${card.routeTo}: ${card.summary}. Fallback: ${card.fallback}` : (end.error ?? null),
     wontDo: outputOf("planner")?.wontDo ?? [],
+    ...(Array.isArray(ingest?.decisionGroups) ? { decisionGroups: ingest.decisionGroups } : {}),
+    ...(Array.isArray(planner?.waitingFor) ? { waitingFor: planner.waitingFor } : {}),
   };
 }
 

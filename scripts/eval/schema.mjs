@@ -70,6 +70,8 @@ export const AgentResult = z.object({
   wontDo: z.array(z.string()),
   // Every message that went out, the first included. Absent when the agent only reports one.
   messages: z.array(z.object({ recipient: z.string(), channel: z.string(), message: z.string() })).optional(),
+  decisionGroups: z.array(z.string()).optional(),
+  waitingFor: z.array(z.object({ what: z.string(), from: z.string(), by: z.string() })).optional(),
 });
 
 export const Judgement = z.object({

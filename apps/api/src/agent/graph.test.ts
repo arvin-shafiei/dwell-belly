@@ -195,10 +195,11 @@ const branch = (name: string, gate: { allow_below: number; block_above: number }
 });
 const damageBranch = branch("damage", { allow_below: 0.5, block_above: 0.9 });
 const parcelBranch = branch("parcel", { allow_below: 0.1, block_above: 0.3 });
+const otherBranch = branch("other", { allow_below: 0.3, block_above: 0.8 });
 const twoGates: Flow = {
   id: "two-gates", name: "Two gates", business: "test",
-  nodes: [n("ingest", "ingest"), n("triage", "triage"), ...damageBranch.nodes, ...parcelBranch.nodes],
-  edges: [e("ingest", "triage"), e("triage", "plan_damage", "damage"), e("triage", "plan_parcel", "missing_parcel"), ...damageBranch.edges, ...parcelBranch.edges],
+  nodes: [n("ingest", "ingest"), n("triage", "triage"), ...damageBranch.nodes, ...parcelBranch.nodes, ...otherBranch.nodes],
+  edges: [e("ingest", "triage"), e("triage", "plan_damage", "damage"), e("triage", "plan_parcel", "missing_parcel"), e("triage", "plan_other", "other"), ...damageBranch.edges, ...parcelBranch.edges, ...otherBranch.edges],
 };
 const triageAs = (caseType: "damage" | "lost_or_misdelivered" | "cold_chain" | "other") =>
   ({ triage: async () => ({ caseType, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) });
@@ -236,7 +237,25 @@ test("without Jev the analysis's own case type is matched to a similar branch la
   assert.equal(matchesCaseType("Customs", "customs_and_charges"), true);
 });
 
-test("the Architect's tree routes a missing-parcel case by its clash check, each way to its own gate or log", async () => {
+test("an unfamiliar compound case reaches the general planner with all its decision groups", async () => {
+  const compound = { ...understanding, case_type: "unexpected combined incident", decision_groups: ["conflicting_evidence", "multi_issue", "hazard", "unfamiliar"] };
+  const users: string[] = [];
+  const models = fake({ understand: [compound], decide: [decision], critic: [{ actions: [scores(0)] }] });
+  const wrapped: Models = { async structured(call) { users.push(call.user); return models.structured(call); } };
+  const r = await runFlowGraph(bundle, { flow: twoGates, models: wrapped, mode: "practice", runId: "unfamiliar" });
+  assert.equal(r.outcome, "acted");
+  assert.equal(r.card, undefined, "overlapping or unfamiliar patterns do not themselves force human review");
+  assert.ok(edges(r).includes("triage>plan_other:other"));
+  assert.deepEqual(r.understanding?.decision_groups, compound.decision_groups);
+  assert.match(users[1], /Resolve conflicting accounts/);
+  assert.match(users[1], /Separate overlapping issues and dependencies/);
+  assert.match(users[1], /Route a real hazard/);
+  assert.match(users[1], /Reason through an unfamiliar exception/);
+  const ingest = r.trace.events.find((e) => e.kind === "node_end" && e.nodeId === "ingest");
+  assert.deepEqual(ingest?.kind === "node_end" && ingest.output && "decisionGroups" in ingest.output && ingest.output.decisionGroups, compound.decision_groups);
+});
+
+test("the Architect's tree routes both conflicting and consistent accounts through their own planner and gate", async () => {
   const opts = (u: Understanding) => ({ flow: BRANCHING_EXAMPLE, models: fake({ understand: [u], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice" as const, runId: "t", judge: triageAs("lost_or_misdelivered") });
   const agree = await runFlowGraph(bundle, opts(consistent));
   assert.deepEqual(edges(agree), [
@@ -247,13 +266,13 @@ test("the Architect's tree routes a missing-parcel case by its clash check, each
   assert.equal(agree.outcome, "acted");
   assert.equal(agree.trace.flowId, "branching-incident");
 
-  // Conflicting accounts end at their own log before any plan: nothing is sent and a person gets a card.
+  // A conflict can be sent to its owner automatically; it does not end at a log before planning.
   const clash = await runFlowGraph(bundle, opts(understanding));
-  assert.deepEqual(edges(clash).slice(-1), ["clash_parcel>log_parcel_clash:clash"]);
+  assert.ok(edges(clash).includes("clash_parcel>planner_parcel_clash:clash"));
   assert.equal(ran(clash).includes("planner_parcel"), false);
-  assert.equal(clash.outcome, "escalated");
-  assert.equal(clash.outbox.length, 0);
-  assert.ok(clash.card);
+  assert.equal(clash.outcome, "acted");
+  assert.equal(clash.outbox.length, 1);
+  assert.equal(clash.card, undefined);
 });
 
 test("a verify failure takes the retry edge once, then the failed edge", async () => {
@@ -307,14 +326,14 @@ test("a human step with nobody answering and no fallback edge ends its path ther
   assert.ok(r.card);
 });
 
-test("a panel that forces a human before planning ends at the held log with a card and nothing sent", async () => {
-  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [consistent] }), mode: "practice", runId: "t", panel: flaggedPanel,
+test("the Architect's flagged panel branch still plans and checks independent safe coordination", async () => {
+  const r = await runFlowGraph(bundle, { flow: BRANCHING_EXAMPLE, models: fake({ understand: [consistent], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice", runId: "t", panel: flaggedPanel,
     judge: triageAs("cold_chain") });
   const hops = edges(r);
-  assert.deepEqual(hops.slice(hops.indexOf("triage>perspectives_cold:cold_chain")), ["triage>perspectives_cold:cold_chain", "perspectives_cold>human_cold:force_human", "human_cold>log_cold_held"]);
-  assert.equal(r.outcome, "escalated");
-  assert.equal(r.outbox.length, 0);
-  assert.equal(r.card?.whyStopped?.reason, "rule_requires_person");
+  assert.ok(hops.includes("perspectives_cold>planner_cold"));
+  assert.equal(r.outcome, "acted");
+  assert.equal(r.outbox.length, 1);
+  assert.equal(r.card, undefined);
 });
 
 const branchy = (triageEdges: FlowEdge[]): Flow => ({

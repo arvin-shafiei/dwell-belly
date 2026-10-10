@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.12, 10 Oct 2026, 15:05 BST. **Owner of this doc:** Oriol.
+**Version:** 1.13, 10 Oct 2026. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -272,6 +272,8 @@ case folder / live message / voice note / call transcript
 The trace still emits a `node_start`/`node_end` per SPEC step, so the flowchart and the city can show every named step.
 
 **Models:** Claude for all three calls. Jev (TypeSafe) is optional, behind a flag, for the panel and quick scores, with a Claude Haiku fallback. No case may depend on Jev being up.
+
+**Decision patterns:** intake identifies multiple applicable groups from the actual evidence (authority, identity/privacy, missing or conflicting evidence, failed actions, safety, changed instructions, waits, deadlines, communication, restrictions, shared incidents, disrupted capacity, chained prerequisites and overlapping issues). The planner receives general guidance for those groups plus an unfamiliar-case fallback; a group never grants authority or automatically requires a human. Disruption follows a conditional recovery sequence: check viable capacity or routes, obtain current confirmed alternatives, get the recipient's choice, then request an owner booking. Future steps with unmet prerequisites stay in `waiting_for`, not the actions sent now. This is planning guidance, not a persistent dependency scheduler. `npm run learn:cases` records each public, generated, adversarial, city and fixture case's source-key decisions and learnings in an offline catalogue. That catalogue and case-specific answers are never runtime inputs. The Architect uses the same general guidance and every topic-routing triage must provide an `other` or unlabelled fallback. This improves reasoning coverage; it is not evidence of evaluation success or a persistent order lifecycle.
 
 ## D2. Behaviour rules
 
@@ -1040,6 +1042,10 @@ This table is the reallocation.
 ---
 
 ## Changelog
+
+- **1.13:** intake records the evidence, owner, scope and current state of constraints across fleet/route, recipient, site access, goods, commercial, identity/authority, tools/channels and shared incidents. Planning intersects current verified customer requirements with confirmed feasibility under safety and authority restrictions, instead of ranking one actor above every other owner. Console follow-ups persist the cumulative evidence input, retain earlier replies and recorded requests, and reject parent histories from another case/dataset; trusted human approvals are not carried into later actions. Older imported runs without saved inputs still fall back to the source case and cannot recover missing historical replies. Four additional unreviewed calibration states and `npm run eval:chain` exercise sequential changes, access restrictions and goods clearance. This adds continuity on an explicit follow-up, not an automatic reply listener, scheduler or proof of real delivery completion.
+
+- **1.9:** add reproducible case-learning catalogue, overlapping decision groups for intake and planning, shared guidance for the Architect and validation requiring unfamiliar-case, missing-evidence and conflict branches to reach a planner. The worked example now plans safe requests for those cases and reviewer flags; compact broad paths avoid multiplying every issue combination into a separate subtree. Malformed or truncated Architect output gets one compact retry with safety checks retained. Three synthetic chained-disruption cases test failed recovery, invalidated rescheduling and outstanding safety clearance. Source-key coverage remains separate from execution results; conditional plans are not a persistent dependency scheduler.
 
 - **1.7 (13:05):** voice accuracy. Measured on 14 real case messages in 3 accents, reference-heavy messages had 22% word errors and wrong reference digits (`DL-6010` heard as `DL6210`). Fixes: case-aware transcription (the case's references as Scribe keyterms, English for live notes, audio events off), a mis-hearing flag for references the case does not contain, word-level confidence for `[unclear transcription]`, and the Desk Caller reads references back. Result: reference-heavy word errors 5.1%, critical details kept 97.2%, mis-heard references 0 (`scripts/voice/accuracy.mjs`).
 - **1.8 (13:30):** voice lives in the console only. The `/voice-bench` dev page is removed; the Executions Voice strip has the note, call and approve-by-voice buttons. A "callback" channel now counts as a phone channel, so the agent's callback-route messages get a call button.

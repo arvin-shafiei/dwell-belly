@@ -76,6 +76,15 @@ test("the default flow has no problems", () => {
   assert.deepEqual(validateFlow(base), []);
 });
 
+test("topic-routing workflows require a fallback before they can be saved or built", () => {
+  const narrow = variant((f) => { f.edges.find((e) => e.from === "triage")!.when = "damage"; });
+  has(validateFlow(narrow), /triage "triage" needs an "other" or unlabelled fallback/);
+  narrow.edges.find((e) => e.from === "triage")!.when = "other";
+  assert.deepEqual(validateFlow(narrow), []);
+  narrow.edges.find((e) => e.from === "triage")!.to = "log";
+  has(validateFlow(narrow), /unfamiliar-case fallback must reach a planner/);
+});
+
 test("every node type of the default flow is a known type", () => {
   for (const n of base.nodes) assert.ok(NODE_TYPES.includes(n.type), n.type);
 });
@@ -322,7 +331,7 @@ test("the branching example is a strict tree and passes the strict check", () =>
   const flow = branchy();
   assert.deepEqual(strict(flow), []);
   assert.deepEqual(validateFlow(flow), []);
-  assert.ok(flow.nodes.length >= 25 && flow.nodes.length <= 40, `${flow.nodes.length} nodes`);
+  assert.ok(flow.nodes.length >= 25 && flow.nodes.length <= 70, `${flow.nodes.length} nodes`);
   for (const [id, n] of incoming(flow)) assert.equal(n, id === "ingest" ? 0 : 1, `${id} has ${n} incoming edges`);
   // Each verify has at most one retry edge, and it goes back to the action feeding that verify.
   for (const e of flow.edges.filter((x) => x.when === "retry")) {
@@ -339,19 +348,37 @@ test("the branching example keeps every kind of decision point", () => {
   const labelsOf = (type: string) => new Set(flow.edges.filter((e) => typeOf(flow, e.from) === type).map((e) => e.when));
   const expect: Record<string, string[]> = {
     triage: ["damage", "missing_parcel", "cold_chain", "other"],
-    missing_info: ["missing", "complete"],
     clash_check: ["clash", "consistent"],
-    perspectives: ["force_human", "brief"],
     safety_gate: ["allow", "ask", "block"],
     human_decision: ["approve", "reject"],
     verify: ["ok", "retry", "failed"],
   };
   for (const [type, labels] of Object.entries(expect)) for (const l of labels) assert.ok(labelsOf(type).has(l), `${type}: ${l}`);
+  assert.equal(outOf(flow, "info_damage").length, 1);
+  assert.equal(typeOf(flow, outOf(flow, "info_damage")[0].to), "planner");
+  assert.equal(outOf(flow, "perspectives_cold").length, 1);
+  assert.equal(typeOf(flow, outOf(flow, "perspectives_cold")[0].to), "planner");
   // Every gate has all three exits.
   for (const g of flow.nodes.filter((n) => n.type === "safety_gate")) {
     assert.deepEqual(outOf(flow, g.id).map((e) => e.when).sort(), ["allow", "ask", "block"], g.id);
   }
   assert.ok(flow.nodes.filter((n) => n.type === "case_log").length >= 10);
+});
+
+test("missing evidence and conflicting accounts cannot end a generated branch before safe planning", () => {
+  const missing = branchy((f) => { const edge = f.edges.find((e) => e.from === "info_damage")!; edge.when = "missing"; edge.to = "log_other"; });
+  has(validateFlow(missing), /missing_info "info_damage" "missing" branch must reach a planner/);
+  const clash = branchy((f) => { f.edges.find((e) => e.from === "clash_parcel" && e.when === "clash")!.to = "log_parcel_clash"; });
+  has(validateFlow(clash), /clash_check "clash_parcel" "clash" branch must reach a planner/);
+});
+
+test("a truncated or malformed Architect reply gets one compact retry without removing safety checks", async () => {
+  const models = fake([new Error("Failed to parse structured output: unterminated JSON"), draftOf(tree)]);
+  const result = await buildFlow("A delivery desk", models);
+  assert.equal(result.ok, true);
+  assert.equal(models.prompts.length, 2);
+  assert.match(models.prompts[1], /compact flow with at most three broad topic branches/);
+  assert.match(models.prompts[1], /Keep every safety boundary/);
 });
 
 test("every node of the branching example has a distinct descriptive name", () => {

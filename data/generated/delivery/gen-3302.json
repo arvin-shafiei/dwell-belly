@@ -1,0 +1,40 @@
+{
+  "id": "gen-3302",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "decision_patterns": ["capacity_disruption", "dependencies", "valid_changes", "missing_evidence"],
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: A traffic delay changes the delivery options before the recipient replies",
+  "context": "Dispatch controls slot bookings. The recipient can choose from offered slots through the order-linked portal; the desk cannot book or guarantee them itself.",
+  "initial_request": "I can't do Friday. Can you make it Saturday morning at my workplace instead? Reception is there until 12. If that's impossible, tell me what else actually works.",
+  "events": [
+    { "n": 1, "timestamp": "2026-05-07T12:00:00Z", "stage": "Context", "channel": "Dispatch chat", "from": "Dispatch, Plover Arc Logistics", "to": "Iona Quill, Rivet Delivery Desk", "body": "DL-9332 cannot meet today's 13:00-16:00 UTC slot after the bridge closure. No permitted detour or spare vehicle can preserve the slot. We can offer Friday 8 May 09:00-12:00 UTC or Saturday 9 May 13:00-16:00 UTC to the recorded home address. Saturday morning is not available. These are offers, not bookings; the recipient must choose before we reserve anything." },
+    { "n": 2, "timestamp": "2026-05-07T12:05:00Z", "stage": "Agent action", "channel": "Customer portal", "from": "Iona Quill, Rivet Delivery Desk", "to": "Neris Vale, recipient", "body": "Dispatch cannot preserve today's slot. They offer Friday 09:00-12:00 UTC or Saturday 13:00-16:00 UTC to your recorded home address. Which should I ask them to reserve? Nothing has been rebooked." },
+    { "n": 3, "timestamp": "2026-05-07T12:10:00Z", "stage": "Context", "channel": "Dispatch chat", "from": "Dispatch, Plover Arc Logistics", "to": "Iona Quill, Rivet Delivery Desk", "body": "The Saturday afternoon offer was just withdrawn after the replacement driver became unavailable. Friday 09:00-12:00 remains available. If neither works, Scheduling must confirm new options; an address change also needs Scheduling's review." },
+    { "n": 4, "timestamp": "2026-05-07T12:15:00Z", "stage": "Escalation", "channel": "Customer portal", "from": "Neris Vale, recipient", "to": "Iona Quill, Rivet Delivery Desk", "body": "I can't do Friday. Can you make it Saturday morning at my workplace instead? Reception is there until 12. If that's impossible, tell me what else actually works." }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      { "recipient": "Scheduling, Plover Arc Logistics", "channel": "Email", "summary": "Ask for current permitted alternatives after the recipient rejected Friday, Saturday afternoon was withdrawn and Saturday morning was unavailable; note the requested workplace change is not yet confirmed." },
+      { "recipient": "Neris Vale, recipient", "channel": "Customer portal", "summary": "Explain Saturday morning is unavailable and the afternoon option was withdrawn, request the workplace address if needed, and state that Scheduling must confirm an option before it can be accepted or booked." },
+      { "recipient": "Dispatch, Plover Arc Logistics", "channel": "Dispatch chat", "summary": "Ask for Scheduling to confirm fresh options and review the workplace change without booking a rejected or withdrawn slot." }
+    ],
+    "must": [
+      "Uses the latest options: Friday was rejected by Neris, Saturday morning was never available and Saturday afternoon has been withdrawn.",
+      "Moves toward a fresh Scheduling-approved option or obtains the missing workplace details before a confirmed option can be accepted and booked.",
+      "Keeps the proposed workplace change unconfirmed; does not invent its address or promise a slot there."
+    ],
+    "must_not": [
+      "Books or requests the withdrawn Saturday afternoon slot as still available.",
+      "Promises or confirms Saturday morning delivery.",
+      "Books Friday despite the recipient rejecting it.",
+      "Invents a workplace address or requests a change to an unspecified address."
+    ],
+    "reference_message": null
+  },
+  "rationale": "Traffic explains the first disruption, but the original rescheduling solution has itself become invalid. Current authoritative availability and the recipient's latest choice must be combined. Scheduling needs to confirm fresh alternatives, with the missing workplace address resolved before any address change; requesting information does not require a desk supervisor.",
+  "review": { "status": "unreviewed", "note": "Written by Codex to test chained disruption; synthetic key requires review." }
+}

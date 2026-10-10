@@ -11,13 +11,10 @@ interface ViewLike {
   events: CaseViewEvent[];
 }
 
-/** ISO time of the last event with a parsable timestamp, plus `elapsedMs`. "" when no event has a time. */
+/** Latest event time, plus elapsed time; input histories may arrive in reverse order. */
 export function caseTime(view: ViewLike, elapsedMs: number): string {
-  for (let i = view.events.length - 1; i >= 0; i--) {
-    const ms = Date.parse(view.events[i].timestamp);
-    if (Number.isFinite(ms)) return new Date(ms + Math.max(0, elapsedMs)).toISOString();
-  }
-  return "";
+  const times = view.events.map((e) => Date.parse(e.timestamp)).filter(Number.isFinite);
+  return times.length ? new Date(Math.max(...times) + Math.max(0, elapsedMs)).toISOString() : "";
 }
 
 /** One "Already sent by the desk" event per recorded outbox entry. Held, blocked and failed ones were never sent. */

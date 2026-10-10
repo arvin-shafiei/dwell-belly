@@ -1,0 +1,4148 @@
+{
+  "startedAt": "2026-10-10T13:49:48.521Z",
+  "scenario": "crash \u2192 customer change \u2192 receiving access \u2192 goods release \u2192 booking request",
+  "models": {
+    "strong": "claude-opus-5-5",
+    "fast": "claude-sonnet-5-5"
+  },
+  "jev_enabled": false,
+  "warning": "Actual sandbox executions on authored calibration cases with unreviewed synthetic keys and a model grader. No real booking or delivery, persistent automatic scheduler, or unseen generalisation established.",
+  "sourceHashes": {
+    "apps/api/src/agent/run.ts": "a35f3ca6a1d3601f3939d50e6fb06d0d5a9495a4771a2c78201e59c132201de5",
+    "apps/api/src/agent/prompts.ts": "da4cba561e79a0c18a875318eb9bb3501afa409abfd096670d80e502269e42b6",
+    "apps/api/src/agent/types.ts": "99a3e2ef1923a15b77bdbb1a07f2dbb1876be271203ad2f1e90f8405f7e24749",
+    "apps/api/src/agent/models.ts": "0b04195e47d4c1e37f52edf7ccbf7155651b364d021da15f9260713a47dc586f",
+    "apps/api/src/agent/gate.ts": "e91a5b8c6fefe11b8fc9770d85b037d294b306d552b4151a0add52fd2684793d",
+    "apps/api/src/agent/decision-patterns.ts": "e229a94b8a706c307579ed3699492e7f6bc6ce931f11eb87bbddee7879d0bd00",
+    "apps/api/src/agent/decision-patterns.json": "61de640b1a495d1f2b617318629888984f70c73d55d004220fdbd7dc3dea22af",
+    "apps/api/flows/default-incident.json": "3b33bf0ac191fa43f5982a9b0634d63f32e438c1d96b54677986c4532dfbf70b",
+    "apps/web/src/console/server/rerun.ts": "33f17c1a8e20ef797448ee88686e3e0d76652f3675bf968838326203db524a8f",
+    "scripts/eval/chained-run.mjs": "d22fa389958adee74b4e7102dd7f7cdba7290a6cec4a330471047064bf8fafd8",
+    "scripts/eval/agents.mjs": "978720e99a185f562aadf961c4cf2a958b9408faa3f4477c3b629e51af9bbbfb",
+    "scripts/eval/score.mjs": "192630e6409aa17338bfea12b852600e8faf4ebb19def0ea57a886998622c4cd",
+    "data/generated/delivery/gen-3401.json": "badd15e894a270df690ba105c2631868d7920c49e5b4444286a6a4437d555669",
+    "data/generated/delivery/gen-3402.json": "2f7d776348af73ab1a5b0e22ccf5de4b9d6d44a20f9593d39e4ef051d921db02",
+    "data/generated/delivery/gen-3403.json": "04087f5729a8730afb5f18f3d5ab43c94818aafe905478cfe5c6c00ab7ce19a0",
+    "data/generated/delivery/gen-3404.json": "7597d827dcf17a76dad9b48c709d3386e44cd4cb025843d94d9ef13de1091c64"
+  },
+  "steps": [
+    {
+      "id": "gen-3401",
+      "input": {
+        "id": "chained-DL-8400",
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+        "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+        "events": [
+          {
+            "n": 1,
+            "timestamp": "2026-10-10T08:07:00Z",
+            "stage": "Context",
+            "channel": "Email",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+          },
+          {
+            "n": 2,
+            "timestamp": "2026-10-10T08:14:00Z",
+            "stage": "Escalation",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+          }
+        ],
+        "attachments": []
+      },
+      "understanding": {
+        "summary": "DL-8400's van crashed (no injuries reported) and Dispatch has only offered a Sunday 11 Oct 10:00\u201312:00 UTC replacement slot, which the verified recipient says she cannot take. The desk must ask Dispatch to check the recipient's alternative windows (Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC) without promising either, and confirm clinic access and goods-release status.",
+        "case_type": "delivery_reschedule_after_vehicle_crash",
+        "decision_groups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "missing_evidence",
+          "valid_changes",
+          "conflicting_evidence",
+          "multi_issue",
+          "hazard"
+        ],
+        "constraints": [
+          {
+            "surface": "fleet_route",
+            "requirement": "Original van unavailable after crash; replacement capacity offered only for Sun 11 Oct 10:00\u201312:00 UTC",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "active",
+            "evidence": "Dispatch email, Event 1, 2026-10-10T08:07Z; stated as an offer, not a booking"
+          },
+          {
+            "surface": "recipient",
+            "requirement": "Cannot receive Sunday morning; available Sun 11 Oct 14:00\u201316:00 UTC or Mon 12 Oct 10:00\u201312:00 UTC",
+            "owner": "Mira Rowan, verified recipient",
+            "scope": "DL-8400",
+            "kind": "customer_requirement",
+            "state": "active",
+            "evidence": "Mira Rowan via verified portal account, Event 2, 2026-10-10T08:14Z"
+          },
+          {
+            "surface": "fleet_route",
+            "requirement": "Sun 14:00\u201316:00 and Mon 10:00\u201312:00 UTC slots are not yet checked or confirmed",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "unconfirmed",
+            "evidence": "Recipient's requested times; no Dispatch response yet"
+          },
+          {
+            "surface": "fleet_route",
+            "requirement": "Sun 11 Oct 10:00\u201312:00 UTC replacement slot offered but conflicts with recipient availability",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "unconfirmed",
+            "evidence": "Offer only, not a booking; recipient declined the time"
+          },
+          {
+            "surface": "site_access",
+            "requirement": "Alder Clinic receiving access for any new window is not confirmed",
+            "owner": "Alder Clinic",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "unconfirmed",
+            "evidence": "Context file says the clinic controls receiving access; no statement from clinic in the history"
+          },
+          {
+            "surface": "goods",
+            "requirement": "Goods release / food safety status after crash and delay not stated",
+            "owner": "Named Food-safety lead",
+            "scope": "DL-8400",
+            "kind": "safety_restriction",
+            "state": "unconfirmed",
+            "evidence": "Context file says the Food-safety lead controls goods release; no statement in the history"
+          }
+        ],
+        "urgency": "high",
+        "our_role": "Rivet Delivery Desk coordinates delivery changes and relays requests. It does not control capacity or bookings (Dispatch), the recipient's availability, clinic access (Alder Clinic) or goods release (Food-safety lead). Outbound actions are sandbox messages.",
+        "parties": [
+          {
+            "name": "Rivet Delivery Desk (Iona Quill)",
+            "role": "us",
+            "controls": "Coordinates and relays delivery changes only"
+          },
+          {
+            "name": "Dispatch, Cedarway Logistics",
+            "role": "carrier_team",
+            "controls": "Capacity and bookings"
+          },
+          {
+            "name": "Mira Rowan",
+            "role": "customer",
+            "controls": "Own availability as the verified recipient"
+          },
+          {
+            "name": "Alder Clinic",
+            "role": "business_contact",
+            "controls": "Receiving access"
+          },
+          {
+            "name": "Food-safety lead",
+            "role": "safety_or_authority",
+            "controls": "Goods release"
+          }
+        ],
+        "claims": [
+          {
+            "who": "Dispatch, Cedarway Logistics",
+            "says": "DL-8400's van crashed and is unavailable; replacement capacity is confirmed for Sun 11 Oct 10:00\u201312:00 UTC only, as an offer",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Cedarway driver (via Dispatch)",
+            "says": "Nobody was injured in the crash",
+            "basis": "unverified_claim"
+          },
+          {
+            "who": "Mira Rowan",
+            "says": "Cannot receive Sunday morning; can do Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC",
+            "basis": "owning_team_statement"
+          }
+        ],
+        "conflicts": [
+          {
+            "between": "Dispatch offer vs Mira Rowan's availability",
+            "about": "Dispatch offers Sun 10:00\u201312:00 UTC but the recipient cannot receive then",
+            "what_would_settle_it": "Dispatch confirming whether it can book Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC"
+          }
+        ],
+        "missing_info": [
+          {
+            "what": "Whether Dispatch can book Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC",
+            "who_has_it": "Dispatch, Cedarway Logistics"
+          },
+          {
+            "what": "Whether Alder Clinic can receive in the chosen window",
+            "who_has_it": "Alder Clinic"
+          },
+          {
+            "what": "Whether goods remain releasable after the crash and delay, and their condition",
+            "who_has_it": "Food-safety lead"
+          },
+          {
+            "what": "Independent confirmation of the no-injury report and condition of the goods",
+            "who_has_it": "Dispatch / driver"
+          }
+        ],
+        "commitments": [
+          {
+            "what": "Replacement capacity Sun 11 Oct 10:00\u201312:00 UTC (an offer, not a booking)",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "requested",
+            "due": "none stated"
+          },
+          {
+            "what": "Check availability for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC",
+            "owed_by": "Rivet Delivery Desk to ask Dispatch; Dispatch to confirm",
+            "status": "requested",
+            "due": "none stated"
+          }
+        ],
+        "hazards": [
+          "Van crash on the day of delivery; driver reports no injuries, which is unconfirmed",
+          "Goods are subject to food-safety release; condition after the crash and delay is unknown"
+        ],
+        "vulnerable_or_distressed": "none",
+        "deadlines": [
+          "Original window 10 Oct 10:00\u201312:00 UTC missed",
+          "Offered slot Sun 11 Oct 10:00\u201312:00 UTC",
+          "Recipient options Sun 11 Oct 14:00\u201316:00 UTC or Mon 12 Oct 10:00\u201312:00 UTC"
+        ],
+        "decision_owner": "Dispatch, Cedarway Logistics (capacity and booking), with the Food-safety lead on goods release and Alder Clinic on access",
+        "instruction_like_text": [],
+        "nothing_owed": false
+      },
+      "decision": {
+        "decision_type": "act",
+        "headline": "Ask Dispatch whether it can deliver DL-8400 Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC; update Mira that nothing is booked.",
+        "why": "Dispatch owns capacity and bookings, and the verified recipient cannot take the only offered slot but has given two alternative windows.",
+        "actions": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Email",
+            "kind": "request_to_owner",
+            "purpose": "Get Dispatch to check capacity for the recipient's stated windows instead of the Sunday morning offer",
+            "message": "For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic."
+          },
+          {
+            "recipient": "Mira Rowan",
+            "channel": "Customer portal",
+            "kind": "status_update",
+            "purpose": "Tell the verified recipient her alternative times have gone to the booking owner and nothing is booked yet",
+            "message": "Thank you. We have asked Dispatch at Cedarway Logistics whether they can deliver DL-8400 on Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC. Nothing is booked yet. Dispatch decides on capacity, and we will tell you as soon as they confirm."
+          }
+        ],
+        "wont_do": [
+          {
+            "item": "Book or accept the Sunday 10:00\u201312:00 slot",
+            "reason": "The recipient has declined it, and the slot is only an offer from Dispatch, not a booking."
+          },
+          {
+            "item": "Promise Mira either alternative window",
+            "reason": "Dispatch has not confirmed capacity for either window, and the clinic has not confirmed access."
+          },
+          {
+            "item": "Say the goods are fine after the crash",
+            "reason": "Goods release belongs to the Food-safety lead, and nobody has stated the condition of the goods."
+          }
+        ],
+        "waiting_for": [
+          {
+            "what": "Capacity confirmation for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC, or other options",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": ""
+          },
+          {
+            "what": "Receiving access for whichever window Dispatch confirms (ask once a window is feasible)",
+            "from": "Alder Clinic",
+            "by": ""
+          },
+          {
+            "what": "Goods release status after the crash, before any booking is finalised",
+            "from": "Food-safety lead",
+            "by": ""
+          },
+          {
+            "what": "Booking of the agreed window, once capacity, access and release are confirmed",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": ""
+          }
+        ],
+        "handover": null,
+        "confidence": "medium"
+      },
+      "outbox": [
+        {
+          "action": {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Email",
+            "kind": "request_to_owner",
+            "purpose": "Get Dispatch to check capacity for the recipient's stated windows instead of the Sunday morning offer",
+            "message": "For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic."
+          },
+          "status": "recorded",
+          "note": "Recorded in the sandbox outbox for Email (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+        },
+        {
+          "action": {
+            "recipient": "Mira Rowan",
+            "channel": "Customer portal",
+            "kind": "status_update",
+            "purpose": "Tell the verified recipient her alternative times have gone to the booking owner and nothing is booked yet",
+            "message": "Thank you. We have asked Dispatch at Cedarway Logistics whether they can deliver DL-8400 on Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC. Nothing is booked yet. Dispatch decides on capacity, and we will tell you as soon as they confirm."
+          },
+          "status": "recorded",
+          "note": "Recorded in the sandbox outbox for Customer portal (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+        }
+      ],
+      "trace": {
+        "version": 1,
+        "runId": "chain-gen-3401-1791640188522",
+        "caseId": "chained-DL-8400",
+        "flowId": "default-incident",
+        "mode": "practice",
+        "events": [
+          {
+            "t": 0,
+            "kind": "run_start",
+            "title": "Crash fallback conflicts with the verified customer date and time",
+            "inputs": [
+              {
+                "n": 1,
+                "channel": "file",
+                "from": "context",
+                "excerpt": "277 characters"
+              },
+              {
+                "n": 2,
+                "channel": "file",
+                "from": "history",
+                "excerpt": "688 characters"
+              }
+            ]
+          },
+          {
+            "t": 0,
+            "kind": "node_start",
+            "nodeId": "ingest",
+            "nodeType": "ingest"
+          },
+          {
+            "t": 20350,
+            "kind": "model_call",
+            "nodeId": "ingest",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 20350,
+            "tokensIn": 4639,
+            "tokensOut": 2324,
+            "costUsd": 0.0346095,
+            "ok": true
+          },
+          {
+            "t": 20350,
+            "kind": "node_end",
+            "nodeId": "ingest",
+            "status": "ok",
+            "summary": "2 files, 0 attachments read",
+            "output": {
+              "type": "ingest",
+              "decisionGroups": [
+                "capacity_disruption",
+                "dependencies",
+                "owner_coordination",
+                "missing_evidence",
+                "valid_changes",
+                "conflicting_evidence",
+                "multi_issue",
+                "hazard"
+              ],
+              "constraints": [
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Original van unavailable after crash; replacement capacity offered only for Sun 11 Oct 10:00\u201312:00 UTC",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "active",
+                  "evidence": "Dispatch email, Event 1, 2026-10-10T08:07Z; stated as an offer, not a booking"
+                },
+                {
+                  "surface": "recipient",
+                  "requirement": "Cannot receive Sunday morning; available Sun 11 Oct 14:00\u201316:00 UTC or Mon 12 Oct 10:00\u201312:00 UTC",
+                  "owner": "Mira Rowan, verified recipient",
+                  "scope": "DL-8400",
+                  "kind": "customer_requirement",
+                  "state": "active",
+                  "evidence": "Mira Rowan via verified portal account, Event 2, 2026-10-10T08:14Z"
+                },
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Sun 14:00\u201316:00 and Mon 10:00\u201312:00 UTC slots are not yet checked or confirmed",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "unconfirmed",
+                  "evidence": "Recipient's requested times; no Dispatch response yet"
+                },
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Sun 11 Oct 10:00\u201312:00 UTC replacement slot offered but conflicts with recipient availability",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "unconfirmed",
+                  "evidence": "Offer only, not a booking; recipient declined the time"
+                },
+                {
+                  "surface": "site_access",
+                  "requirement": "Alder Clinic receiving access for any new window is not confirmed",
+                  "owner": "Alder Clinic",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "unconfirmed",
+                  "evidence": "Context file says the clinic controls receiving access; no statement from clinic in the history"
+                },
+                {
+                  "surface": "goods",
+                  "requirement": "Goods release / food safety status after crash and delay not stated",
+                  "owner": "Named Food-safety lead",
+                  "scope": "DL-8400",
+                  "kind": "safety_restriction",
+                  "state": "unconfirmed",
+                  "evidence": "Context file says the Food-safety lead controls goods release; no statement in the history"
+                }
+              ]
+            },
+            "latencyMs": 20350,
+            "costUsd": 0.0346095,
+            "detail": [
+              "DL-8400's van crashed (no injuries reported) and Dispatch has only offered a Sunday 11 Oct 10:00\u201312:00 UTC replacement slot, which the verified recipient says she cannot take. The desk must ask Dispatch to check the recipient's alternative ",
+              "3 statements found: 2 from a record or an owning team, 1 unverified.",
+              "Who decides: Dispatch, Cedarway Logistics (capacity and booking), with the Food-safety lead on goods release and Alder Clinic on access."
+            ]
+          },
+          {
+            "t": 20350,
+            "kind": "node_start",
+            "nodeId": "history",
+            "nodeType": "history_lookup"
+          },
+          {
+            "t": 20350,
+            "kind": "node_end",
+            "nodeId": "history",
+            "status": "ok",
+            "summary": "2 open commitments, 3 deadlines",
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Already asked: Replacement capacity Sun 11 Oct 10:00\u201312:00 UTC (an offer, not a booking) (requested, owed by Dispatch, Cedarway Logistics).",
+              "Already asked: Check availability for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC (requested, owed by Rivet Delivery Desk to ask Dispatch; Dispatch to confirm).",
+              "Deadline: Original window 10 Oct 10:00\u201312:00 UTC missed",
+              "Deadline: Offered slot Sun 11 Oct 10:00\u201312:00 UTC"
+            ]
+          },
+          {
+            "t": 20350,
+            "kind": "edge",
+            "from": "history",
+            "to": "triage"
+          },
+          {
+            "t": 20350,
+            "kind": "edge",
+            "from": "history",
+            "to": "perspectives"
+          },
+          {
+            "t": 20350,
+            "kind": "edge",
+            "from": "history",
+            "to": "clash"
+          },
+          {
+            "t": 20351,
+            "kind": "node_start",
+            "nodeId": "triage",
+            "nodeType": "triage"
+          },
+          {
+            "t": 20351,
+            "kind": "node_end",
+            "nodeId": "triage",
+            "status": "ok",
+            "summary": "delivery_reschedule_after_vehicle_crash \u00b7 high",
+            "output": {
+              "type": "triage",
+              "caseType": "delivery_reschedule_after_vehicle_crash",
+              "urgency": "high",
+              "p": 1
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Kind of problem: delivery reschedule after vehicle crash. Urgency: high.",
+              "Possible hazard: Van crash on the day of delivery; driver reports no injuries, which is unconfirmed"
+            ]
+          },
+          {
+            "t": 20351,
+            "kind": "node_start",
+            "nodeId": "perspectives",
+            "nodeType": "perspectives"
+          },
+          {
+            "t": 20351,
+            "kind": "node_end",
+            "nodeId": "perspectives",
+            "status": "skipped",
+            "summary": "skipped: no Jev key",
+            "latencyMs": 1,
+            "costUsd": 0
+          },
+          {
+            "t": 20351,
+            "kind": "node_start",
+            "nodeId": "clash",
+            "nodeType": "clash_check"
+          },
+          {
+            "t": 20351,
+            "kind": "node_end",
+            "nodeId": "clash",
+            "status": "ok",
+            "summary": "1 conflict: Dispatch offers Sun 10:00\u201312:00 UTC but the recipient cannot receive",
+            "output": {
+              "type": "clash_check",
+              "clash": true,
+              "p": 1,
+              "claims": [
+                {
+                  "who": "Dispatch, Cedarway Logistics",
+                  "says": "DL-8400's van crashed and is unavailable; replacement capacity is confirmed for Sun 11 Oct 10:00\u201312:00 UTC only, as an offer"
+                },
+                {
+                  "who": "Cedarway driver (via Dispatch)",
+                  "says": "Nobody was injured in the crash"
+                },
+                {
+                  "who": "Mira Rowan",
+                  "says": "Cannot receive Sunday morning; can do Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC"
+                }
+              ]
+            },
+            "latencyMs": 1,
+            "costUsd": 0,
+            "detail": [
+              "Disagreement between Dispatch offer vs Mira Rowan's availability: Dispatch offers Sun 10:00\u201312:00 UTC but the recipient cannot receive then. What would settle it: Dispatch confirming whether it can book Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UT",
+              "Neither side is treated as proven.",
+              "Missing: Whether Dispatch can book Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC (held by Dispatch, Cedarway Logistics).",
+              "Missing: Whether Alder Clinic can receive in the chosen window (held by Alder Clinic)."
+            ]
+          },
+          {
+            "t": 20351,
+            "kind": "edge",
+            "from": "triage",
+            "to": "planner"
+          },
+          {
+            "t": 20351,
+            "kind": "edge",
+            "from": "perspectives",
+            "to": "planner"
+          },
+          {
+            "t": 20351,
+            "kind": "edge",
+            "from": "clash",
+            "to": "planner"
+          },
+          {
+            "t": 20354,
+            "kind": "node_start",
+            "nodeId": "planner",
+            "nodeType": "planner"
+          },
+          {
+            "t": 35983,
+            "kind": "model_call",
+            "nodeId": "planner",
+            "runner": "claude",
+            "model": "claude-opus-5-5",
+            "latencyMs": 15629,
+            "tokensIn": 9672,
+            "tokensOut": 1482,
+            "costUsd": 0.073361,
+            "ok": true
+          },
+          {
+            "t": 35984,
+            "kind": "node_end",
+            "nodeId": "planner",
+            "status": "ok",
+            "summary": "act: Dispatch owns capacity and bookings, and the verified recipient cannot take",
+            "output": {
+              "type": "planner",
+              "nextAction": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Email",
+                "message": "For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic.",
+                "undoable": true
+              },
+              "wontDo": [
+                "Book or accept the Sunday 10:00\u201312:00 slot",
+                "Promise Mira either alternative window",
+                "Say the goods are fine after the crash"
+              ],
+              "waitingFor": [
+                {
+                  "what": "Capacity confirmation for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC, or other options",
+                  "from": "Dispatch, Cedarway Logistics",
+                  "by": ""
+                },
+                {
+                  "what": "Receiving access for whichever window Dispatch confirms (ask once a window is feasible)",
+                  "from": "Alder Clinic",
+                  "by": ""
+                },
+                {
+                  "what": "Goods release status after the crash, before any booking is finalised",
+                  "from": "Food-safety lead",
+                  "by": ""
+                },
+                {
+                  "what": "Booking of the agreed window, once capacity, access and release are confirmed",
+                  "from": "Dispatch, Cedarway Logistics",
+                  "by": ""
+                }
+              ],
+              "candidates": []
+            },
+            "latencyMs": 15630,
+            "costUsd": 0.073361,
+            "detail": [
+              "Ask Dispatch whether it can deliver DL-8400 Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC; update Mira that nothing is booked.",
+              "Why: Dispatch owns capacity and bookings, and the verified recipient cannot take the only offered slot but has given two alternative windows.",
+              "Will not: Book or accept the Sunday 10:00\u201312:00 slot (The recipient has declined it, and the slot is only an offer from Dispatch, not a booking.)",
+              "Will not: Promise Mira either alternative window (Dispatch has not confirmed capacity for either window, and the clinic has not confirmed access.)",
+              "Will not: Say the goods are fine after the crash (Goods release belongs to the Food-safety lead, and nobody has stated the condition of the goods.)"
+            ]
+          },
+          {
+            "t": 35984,
+            "kind": "node_start",
+            "nodeId": "gate",
+            "nodeType": "safety_gate"
+          },
+          {
+            "t": 38788,
+            "kind": "model_call",
+            "nodeId": "gate",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 2804,
+            "tokensIn": 2027,
+            "tokensOut": 230,
+            "costUsd": 0.006925,
+            "ok": true
+          },
+          {
+            "t": 38790,
+            "kind": "node_end",
+            "nodeId": "gate",
+            "status": "ok",
+            "summary": "2 of 2 messages cleared",
+            "output": {
+              "type": "safety_gate",
+              "risk": 0.08,
+              "decision": "allow",
+              "allowBelow": 0.3,
+              "blockAbove": 0.8
+            },
+            "latencyMs": 2806,
+            "costUsd": 0.006925,
+            "detail": [
+              "Message to Dispatch, Cedarway Logistics: clear to send (risk 0.05, below 0.3).",
+              "Message to Mira Rowan: clear to send (risk 0.08, below 0.3)."
+            ]
+          },
+          {
+            "t": 38790,
+            "kind": "edge",
+            "from": "gate",
+            "to": "action",
+            "when": "allow"
+          },
+          {
+            "t": 38790,
+            "kind": "node_start",
+            "nodeId": "action",
+            "nodeType": "action"
+          },
+          {
+            "t": 38791,
+            "kind": "node_end",
+            "nodeId": "action",
+            "status": "ok",
+            "summary": "2 of 2 message(s) accepted by the outbox",
+            "output": {
+              "type": "action",
+              "done": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Email",
+                "message": "For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic.",
+                "undoable": true
+              },
+              "ok": true
+            },
+            "latencyMs": 1,
+            "costUsd": 0,
+            "detail": [
+              "Recorded for Dispatch, Cedarway Logistics by Email: Get Dispatch to check capacity for the recipient's stated windows instead of the Sunday morning offer",
+              "Recorded for Mira Rowan by Customer portal: Tell the verified recipient her alternative times have gone to the booking owner and nothing is booked yet",
+              "No live system is connected, so nothing has reached a recipient yet."
+            ]
+          },
+          {
+            "t": 38791,
+            "kind": "edge",
+            "from": "action",
+            "to": "verify"
+          },
+          {
+            "t": 38791,
+            "kind": "node_start",
+            "nodeId": "verify",
+            "nodeType": "verify"
+          },
+          {
+            "t": 38791,
+            "kind": "node_end",
+            "nodeId": "verify",
+            "status": "ok",
+            "summary": "accepted by the outbox; receipt and reply unverified",
+            "output": {
+              "type": "verify",
+              "ok": true,
+              "p": 1,
+              "note": "Confirmed: the sandbox outbox recorded the message for Email (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for Customer portal (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Capacity confirmation for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC, or other options from Dispatch, Cedarway Logistics by ; Receiving access for whichever window Dispatch confirms (ask once a window is feasible) from Alder Clinic by ; Goods re"
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Every message was recorded. Receipt and replies are not yet confirmed.",
+              "Now waiting for: Capacity confirmation for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC, or other options, from Dispatch, Cedarway Logistics.",
+              "Now waiting for: Receiving access for whichever window Dispatch confirms (ask once a window is feasible), from Alder Clinic.",
+              "Now waiting for: Goods release status after the crash, before any booking is finalised, from Food-safety lead."
+            ]
+          },
+          {
+            "t": 38791,
+            "kind": "edge",
+            "from": "verify",
+            "to": "log"
+          },
+          {
+            "t": 38792,
+            "kind": "node_start",
+            "nodeId": "log",
+            "nodeType": "case_log"
+          },
+          {
+            "t": 38792,
+            "kind": "node_end",
+            "nodeId": "log",
+            "status": "ok",
+            "summary": "outcome: acted",
+            "latencyMs": 0,
+            "costUsd": 0
+          },
+          {
+            "t": 38792,
+            "kind": "run_end",
+            "outcome": "acted",
+            "totalCostUsd": 0.1148955,
+            "totalLatencyMs": 38792,
+            "nextAction": {
+              "recipient": "Dispatch, Cedarway Logistics",
+              "channel": "Email",
+              "message": "For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic.",
+              "undoable": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "outcome": "acted",
+        "nextAction": {
+          "recipient": "Dispatch, Cedarway Logistics",
+          "channel": "Email",
+          "message": "For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic."
+        },
+        "handoff": null,
+        "wontDo": [
+          "Book or accept the Sunday 10:00\u201312:00 slot",
+          "Promise Mira either alternative window",
+          "Say the goods are fine after the crash"
+        ],
+        "decisionGroups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "missing_evidence",
+          "valid_changes",
+          "conflicting_evidence",
+          "multi_issue",
+          "hazard"
+        ],
+        "waitingFor": [
+          {
+            "what": "Capacity confirmation for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC, or other options",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": ""
+          },
+          {
+            "what": "Receiving access for whichever window Dispatch confirms (ask once a window is feasible)",
+            "from": "Alder Clinic",
+            "by": ""
+          },
+          {
+            "what": "Goods release status after the crash, before any booking is finalised",
+            "from": "Food-safety lead",
+            "by": ""
+          },
+          {
+            "what": "Booking of the agreed window, once capacity, access and release are confirmed",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": ""
+          }
+        ],
+        "messages": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Email",
+            "message": "For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic."
+          },
+          {
+            "recipient": "Mira Rowan",
+            "channel": "Customer portal",
+            "message": "Thank you. We have asked Dispatch at Cedarway Logistics whether they can deliver DL-8400 on Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC. Nothing is booked yet. Dispatch decides on capacity, and we will tell you as soon as they confirm."
+          }
+        ]
+      },
+      "verdict": {
+        "score": 0.9,
+        "pass": true,
+        "critical": false,
+        "completed": true,
+        "parts": {
+          "disposition": 1,
+          "recipient": 1,
+          "channel": 0,
+          "content": 1
+        },
+        "judgement": {
+          "recipient_match": true,
+          "content": "right",
+          "must_missed": [],
+          "violations": [],
+          "note": "The message to Dispatch asks for capacity on Sunday 14:00\u201316:00 or Monday 10:00\u201312:00 UTC, preserves the customer's stated availability, rejects the Sunday morning slot, and promises or books nothing."
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "gen-3402",
+      "input": {
+        "id": "chained-DL-8400",
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+        "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+        "events": [
+          {
+            "n": 1,
+            "timestamp": "2026-10-10T08:07:00Z",
+            "stage": "Context",
+            "channel": "Email",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+          },
+          {
+            "n": 2,
+            "timestamp": "2026-10-10T08:14:00Z",
+            "stage": "Escalation",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+          },
+          {
+            "n": 3,
+            "timestamp": "2026-10-10T08:14:00.000Z",
+            "stage": null,
+            "channel": "Email",
+            "from": "Desk",
+            "to": "Dispatch, Cedarway Logistics",
+            "body": "Already sent by the desk: For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic."
+          },
+          {
+            "n": 4,
+            "timestamp": "2026-10-10T08:14:00.000Z",
+            "stage": null,
+            "channel": "Customer portal",
+            "from": "Desk",
+            "to": "Mira Rowan",
+            "body": "Already sent by the desk: Thank you. We have asked Dispatch at Cedarway Logistics whether they can deliver DL-8400 on Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC. Nothing is booked yet. Dispatch decides on capacity, and we will tell you as soon as they confirm."
+          },
+          {
+            "n": 5,
+            "timestamp": "2026-10-10T08:28:00Z",
+            "stage": "Context",
+            "channel": "Dispatch chat",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "We can offer Sunday 11 October 14:00\u201316:00 UTC. Monday is not yet checked. No booking has been made."
+          },
+          {
+            "n": 6,
+            "timestamp": "2026-10-10T08:35:00Z",
+            "stage": "Context",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "Change of plan: I now need Monday 12 October 10:00\u201312:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window."
+          },
+          {
+            "n": 7,
+            "timestamp": "2026-10-10T08:42:00Z",
+            "stage": "Escalation",
+            "channel": "Email",
+            "from": "Receiving, Alder Clinic",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00\u201312:00 UTC only. This is our confirmed receiving window."
+          }
+        ],
+        "attachments": []
+      },
+      "understanding": {
+        "summary": "DL-8400's van crashed (no injuries reported) and the original 10 Oct slot is missed; the recipient now needs Monday 12 Oct 10:00\u201312:00 UTC only, Alder Clinic can receive only 11:00\u201312:00 that day, and Dispatch has not checked Monday. The desk must ask Dispatch for Monday 11:00\u201312:00 UTC capacity, keep Sunday off the table, and get Food-safety lead release status before anything is booked or promised.",
+        "case_type": "Delivery rescheduling after vehicle crash with recipient, site access and capacity constraints",
+        "decision_groups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "missing_evidence",
+          "valid_changes",
+          "truthful_status",
+          "deadline_math",
+          "multi_issue"
+        ],
+        "constraints": [
+          {
+            "surface": "fleet_route",
+            "requirement": "Replacement capacity offered for Sunday 11 Oct 10:00\u201312:00 UTC (offer only); Sunday 14:00\u201316:00 UTC also offered later; Monday not yet checked",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "unconfirmed",
+            "evidence": "Events 1 and 5: offers, no booking made; Monday unchecked at 08:28Z"
+          },
+          {
+            "surface": "recipient",
+            "requirement": "Needs Monday 12 Oct 10:00\u201312:00 UTC only; Sunday no longer acceptable",
+            "owner": "Mira Rowan, verified recipient",
+            "scope": "DL-8400",
+            "kind": "customer_requirement",
+            "state": "active",
+            "evidence": "Event 6 at 08:35Z, verified account, replacing Event 2 options"
+          },
+          {
+            "surface": "recipient",
+            "requirement": "Earlier availability: Sunday 14:00\u201316:00 UTC or Monday 10:00\u201312:00 UTC",
+            "owner": "Mira Rowan",
+            "scope": "DL-8400",
+            "kind": "customer_requirement",
+            "state": "superseded",
+            "evidence": "Event 2 at 08:14Z, replaced by Event 6"
+          },
+          {
+            "surface": "site_access",
+            "requirement": "Alder Clinic can receive Monday 12 Oct 11:00\u201312:00 UTC only",
+            "owner": "Receiving, Alder Clinic",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "active",
+            "evidence": "Event 7 at 08:42Z, clinic's confirmed receiving window"
+          },
+          {
+            "surface": "commercial",
+            "requirement": "Workable delivery window is the overlap of recipient and clinic windows: Monday 12 Oct 11:00\u201312:00 UTC; Dispatch must confirm capacity for it",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "unconfirmed",
+            "evidence": "Derived from Events 6 and 7; no Dispatch confirmation yet"
+          },
+          {
+            "surface": "goods",
+            "requirement": "Goods release / food-safety clearance by the named Food-safety lead; no statement yet on whether goods are safe after the crash and delay",
+            "owner": "Named Food-safety lead",
+            "scope": "DL-8400",
+            "kind": "safety_restriction",
+            "state": "unconfirmed",
+            "evidence": "Context file names the lead as controlling goods release; no message from them in the history"
+          },
+          {
+            "surface": "shared_incident",
+            "requirement": "Do not book anything until receiving access is confirmed",
+            "owner": "Rivet desk",
+            "scope": "DL-8400",
+            "kind": "preference",
+            "state": "satisfied",
+            "evidence": "Events 3 and 4 told Dispatch and the recipient nothing is booked; access now stated in Event 7"
+          }
+        ],
+        "urgency": "high",
+        "our_role": "Rivet delivery desk: coordinates delivery changes by asking and relaying. It does not control capacity or bookings (Dispatch), the recipient's availability (Mira Rowan), receiving access (Alder Clinic) or goods release (Food-safety lead).",
+        "parties": [
+          {
+            "name": "Iona Quill, Rivet Delivery Desk",
+            "role": "us",
+            "controls": "Relaying requests and status; no authority over bookings, access or goods release"
+          },
+          {
+            "name": "Dispatch, Cedarway Logistics",
+            "role": "carrier_team",
+            "controls": "Capacity and bookings"
+          },
+          {
+            "name": "Mira Rowan",
+            "role": "customer",
+            "controls": "Her own availability as verified recipient"
+          },
+          {
+            "name": "Receiving, Alder Clinic",
+            "role": "business_contact",
+            "controls": "Receiving access window at the clinic"
+          },
+          {
+            "name": "Food-safety lead",
+            "role": "merchant_team",
+            "controls": "Goods release"
+          }
+        ],
+        "claims": [
+          {
+            "who": "Dispatch, Cedarway Logistics",
+            "says": "The van crashed and is unavailable; the driver reports no injuries",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Dispatch, Cedarway Logistics",
+            "says": "Sunday 11 Oct 10:00\u201312:00 UTC was offered, not booked; later Sunday 14:00\u201316:00 UTC was offered, Monday not yet checked, no booking made",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Mira Rowan",
+            "says": "Needs Monday 12 Oct 10:00\u201312:00 UTC only at Alder Clinic; Sunday is no longer acceptable",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Receiving, Alder Clinic",
+            "says": "Can receive Monday 12 Oct 11:00\u201312:00 UTC only",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Driver (via Dispatch)",
+            "says": "Nobody was injured in the crash",
+            "basis": "unverified_claim"
+          }
+        ],
+        "conflicts": [
+          {
+            "between": "Recipient window (Mon 10:00\u201312:00 UTC) and clinic window (Mon 11:00\u201312:00 UTC)",
+            "about": "Not a true conflict: the clinic window is narrower and sits inside the recipient's window, leaving Mon 11:00\u201312:00 UTC",
+            "what_would_settle_it": "Mira Rowan acknowledging 11:00\u201312:00 UTC works, and Dispatch confirming capacity for it"
+          },
+          {
+            "between": "Dispatch's Sunday offers and the recipient's latest requirement",
+            "about": "Sunday slots are offered but the recipient rejected Sunday",
+            "what_would_settle_it": "Nothing further; the recipient's later message supersedes Sunday unless she changes it again"
+          }
+        ],
+        "missing_info": [
+          {
+            "what": "Dispatch capacity for Monday 12 Oct 11:00\u201312:00 UTC (Monday not yet checked)",
+            "who_has_it": "Dispatch, Cedarway Logistics"
+          },
+          {
+            "what": "Whether the goods are safe to release and deliver after the crash and delay, and any condition on them",
+            "who_has_it": "Food-safety lead"
+          },
+          {
+            "what": "Recipient confirmation that the narrower 11:00\u201312:00 UTC window works",
+            "who_has_it": "Mira Rowan"
+          },
+          {
+            "what": "Whether the driver's no-injury report and the state of the goods have been independently confirmed",
+            "who_has_it": "Dispatch, Cedarway Logistics"
+          }
+        ],
+        "commitments": [
+          {
+            "what": "Confirm capacity for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC and list other options",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "requested",
+            "due": "none stated"
+          },
+          {
+            "what": "Tell Mira Rowan as soon as Dispatch confirms capacity",
+            "owed_by": "Rivet desk",
+            "status": "requested",
+            "due": "none stated"
+          },
+          {
+            "what": "Replacement delivery booking",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "requested",
+            "due": "none stated"
+          },
+          {
+            "what": "Sunday 11 Oct 10:00\u201312:00 UTC replacement offer",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "withdrawn",
+            "due": "none stated"
+          },
+          {
+            "what": "Goods release decision",
+            "owed_by": "Food-safety lead",
+            "status": "requested",
+            "due": "none stated"
+          }
+        ],
+        "hazards": [
+          "Possible food-safety risk to goods from the crash and the delay, not yet assessed by the Food-safety lead; no injuries reported by the driver"
+        ],
+        "vulnerable_or_distressed": "none",
+        "deadlines": [
+          "Original slot 10 Oct 10:00\u201312:00 UTC missed due to the crash",
+          "Only workable window so far: Mon 12 Oct 11:00\u201312:00 UTC (clinic access within the recipient's 10:00\u201312:00 window)",
+          "Sunday 11 Oct offers superseded by the recipient's change",
+          "No reply deadline stated by Dispatch"
+        ],
+        "decision_owner": "Dispatch (capacity and booking) for the slot, with Food-safety lead deciding goods release; the recipient and Alder Clinic control their own windows",
+        "instruction_like_text": [],
+        "nothing_owed": false
+      },
+      "decision": {
+        "decision_type": "act",
+        "headline": "Ask Dispatch for Monday 12 Oct 11:00\u201312:00 UTC capacity; ask the Food-safety lead for goods release status.",
+        "why": "Dispatch owns capacity and Monday is unchecked; the only overlap of recipient and clinic windows is Monday 11:00\u201312:00 UTC.",
+        "actions": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "kind": "request_to_owner",
+            "purpose": "Get capacity for the only workable window",
+            "message": "For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead."
+          },
+          {
+            "recipient": "Food-safety lead",
+            "channel": "Email",
+            "kind": "request_to_owner",
+            "purpose": "Get the goods release decision before any delivery is booked",
+            "message": "DL-8400's van crashed this morning and the 10 Oct 10:00\u201312:00 UTC delivery was missed; the goods are now aiming for Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic. Can you tell us whether the goods are released for that delivery, and any condition on it? Nothing is booked yet."
+          }
+        ],
+        "wont_do": [
+          {
+            "item": "Book or accept the Sunday 14:00\u201316:00 offer",
+            "reason": "The verified recipient replaced it with Monday only; the desk does not book."
+          },
+          {
+            "item": "Tell Mira the delivery is set for Monday 11:00",
+            "reason": "Dispatch has not checked Monday capacity and goods release is unconfirmed."
+          },
+          {
+            "item": "Re-ask Mira for her availability",
+            "reason": "She already chose Monday 10:00\u201312:00; the clinic hour sits inside it."
+          }
+        ],
+        "waiting_for": [
+          {
+            "what": "Capacity for Monday 12 Oct 11:00\u201312:00 UTC or other Monday options",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": ""
+          },
+          {
+            "what": "Goods release decision for DL-8400 after the crash",
+            "from": "Food-safety lead",
+            "by": ""
+          },
+          {
+            "what": "Once capacity and release are confirmed: update Mira Rowan, then ask Dispatch to book",
+            "from": "Rivet desk (conditional)",
+            "by": ""
+          }
+        ],
+        "handover": null,
+        "confidence": "medium"
+      },
+      "outbox": [
+        {
+          "action": {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "kind": "request_to_owner",
+            "purpose": "Get capacity for the only workable window",
+            "message": "For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead."
+          },
+          "status": "recorded",
+          "note": "Recorded in the sandbox outbox for Dispatch chat (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+        },
+        {
+          "action": {
+            "recipient": "Food-safety lead",
+            "channel": "Email",
+            "kind": "request_to_owner",
+            "purpose": "Get the goods release decision before any delivery is booked",
+            "message": "DL-8400's van crashed this morning and the 10 Oct 10:00\u201312:00 UTC delivery was missed; the goods are now aiming for Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic. Can you tell us whether the goods are released for that delivery, and any condition on it? Nothing is booked yet."
+          },
+          "status": "recorded",
+          "note": "Recorded in the sandbox outbox for Email (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+        }
+      ],
+      "trace": {
+        "version": 1,
+        "runId": "chain-gen-3402-1791640229248",
+        "caseId": "chained-DL-8400",
+        "flowId": "default-incident",
+        "mode": "practice",
+        "events": [
+          {
+            "t": 0,
+            "kind": "run_start",
+            "title": "Crash fallback conflicts with the verified customer date and time",
+            "inputs": [
+              {
+                "n": 1,
+                "channel": "file",
+                "from": "context",
+                "excerpt": "277 characters"
+              },
+              {
+                "n": 2,
+                "channel": "file",
+                "from": "history",
+                "excerpt": "2328 characters"
+              }
+            ]
+          },
+          {
+            "t": 0,
+            "kind": "node_start",
+            "nodeId": "ingest",
+            "nodeType": "ingest"
+          },
+          {
+            "t": 18609,
+            "kind": "model_call",
+            "nodeId": "ingest",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 18609,
+            "tokensIn": 5410,
+            "tokensOut": 2962,
+            "costUsd": 0.0329106,
+            "ok": true
+          },
+          {
+            "t": 18609,
+            "kind": "node_end",
+            "nodeId": "ingest",
+            "status": "ok",
+            "summary": "2 files, 0 attachments read",
+            "output": {
+              "type": "ingest",
+              "decisionGroups": [
+                "capacity_disruption",
+                "dependencies",
+                "owner_coordination",
+                "missing_evidence",
+                "valid_changes",
+                "truthful_status",
+                "deadline_math",
+                "multi_issue"
+              ],
+              "constraints": [
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Replacement capacity offered for Sunday 11 Oct 10:00\u201312:00 UTC (offer only); Sunday 14:00\u201316:00 UTC also offered later; Monday not yet checked",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "unconfirmed",
+                  "evidence": "Events 1 and 5: offers, no booking made; Monday unchecked at 08:28Z"
+                },
+                {
+                  "surface": "recipient",
+                  "requirement": "Needs Monday 12 Oct 10:00\u201312:00 UTC only; Sunday no longer acceptable",
+                  "owner": "Mira Rowan, verified recipient",
+                  "scope": "DL-8400",
+                  "kind": "customer_requirement",
+                  "state": "active",
+                  "evidence": "Event 6 at 08:35Z, verified account, replacing Event 2 options"
+                },
+                {
+                  "surface": "recipient",
+                  "requirement": "Earlier availability: Sunday 14:00\u201316:00 UTC or Monday 10:00\u201312:00 UTC",
+                  "owner": "Mira Rowan",
+                  "scope": "DL-8400",
+                  "kind": "customer_requirement",
+                  "state": "superseded",
+                  "evidence": "Event 2 at 08:14Z, replaced by Event 6"
+                },
+                {
+                  "surface": "site_access",
+                  "requirement": "Alder Clinic can receive Monday 12 Oct 11:00\u201312:00 UTC only",
+                  "owner": "Receiving, Alder Clinic",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "active",
+                  "evidence": "Event 7 at 08:42Z, clinic's confirmed receiving window"
+                },
+                {
+                  "surface": "commercial",
+                  "requirement": "Workable delivery window is the overlap of recipient and clinic windows: Monday 12 Oct 11:00\u201312:00 UTC; Dispatch must confirm capacity for it",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "unconfirmed",
+                  "evidence": "Derived from Events 6 and 7; no Dispatch confirmation yet"
+                },
+                {
+                  "surface": "goods",
+                  "requirement": "Goods release / food-safety clearance by the named Food-safety lead; no statement yet on whether goods are safe after the crash and delay",
+                  "owner": "Named Food-safety lead",
+                  "scope": "DL-8400",
+                  "kind": "safety_restriction",
+                  "state": "unconfirmed",
+                  "evidence": "Context file names the lead as controlling goods release; no message from them in the history"
+                },
+                {
+                  "surface": "shared_incident",
+                  "requirement": "Do not book anything until receiving access is confirmed",
+                  "owner": "Rivet desk",
+                  "scope": "DL-8400",
+                  "kind": "preference",
+                  "state": "satisfied",
+                  "evidence": "Events 3 and 4 told Dispatch and the recipient nothing is booked; access now stated in Event 7"
+                }
+              ]
+            },
+            "latencyMs": 18609,
+            "costUsd": 0.0329106,
+            "detail": [
+              "DL-8400's van crashed (no injuries reported) and the original 10 Oct slot is missed; the recipient now needs Monday 12 Oct 10:00\u201312:00 UTC only, Alder Clinic can receive only 11:00\u201312:00 that day, and Dispatch has not checked Monday. The de",
+              "5 statements found: 4 from a record or an owning team, 1 unverified.",
+              "Who decides: Dispatch (capacity and booking) for the slot, with Food-safety lead deciding goods release; the recipient and Alder Clinic control their own windows."
+            ]
+          },
+          {
+            "t": 18609,
+            "kind": "node_start",
+            "nodeId": "history",
+            "nodeType": "history_lookup"
+          },
+          {
+            "t": 18609,
+            "kind": "node_end",
+            "nodeId": "history",
+            "status": "ok",
+            "summary": "5 open commitments, 4 deadlines",
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Already asked: Confirm capacity for Sun 14:00\u201316:00 or Mon 10:00\u201312:00 UTC and list other options (requested, owed by Dispatch, Cedarway Logistics).",
+              "Already asked: Tell Mira Rowan as soon as Dispatch confirms capacity (requested, owed by Rivet desk).",
+              "Already asked: Replacement delivery booking (requested, owed by Dispatch, Cedarway Logistics).",
+              "Deadline: Original slot 10 Oct 10:00\u201312:00 UTC missed due to the crash",
+              "Deadline: Only workable window so far: Mon 12 Oct 11:00\u201312:00 UTC (clinic access within the recipient's 10:00\u201312:00 window)"
+            ]
+          },
+          {
+            "t": 18609,
+            "kind": "edge",
+            "from": "history",
+            "to": "triage"
+          },
+          {
+            "t": 18609,
+            "kind": "edge",
+            "from": "history",
+            "to": "perspectives"
+          },
+          {
+            "t": 18609,
+            "kind": "edge",
+            "from": "history",
+            "to": "clash"
+          },
+          {
+            "t": 18610,
+            "kind": "node_start",
+            "nodeId": "triage",
+            "nodeType": "triage"
+          },
+          {
+            "t": 18610,
+            "kind": "node_end",
+            "nodeId": "triage",
+            "status": "ok",
+            "summary": "Delivery rescheduling after vehicle crash with recipient, site access and capaci",
+            "output": {
+              "type": "triage",
+              "caseType": "Delivery rescheduling after vehicle crash with recipient, site access and capacity constraints",
+              "urgency": "high",
+              "p": 1
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Kind of problem: Delivery rescheduling after vehicle crash with recipient, site access and capacity constraints. Urgency: high.",
+              "Possible hazard: Possible food-safety risk to goods from the crash and the delay, not yet assessed by the Food-safety lead; no injuries reported by the driver"
+            ]
+          },
+          {
+            "t": 18610,
+            "kind": "node_start",
+            "nodeId": "perspectives",
+            "nodeType": "perspectives"
+          },
+          {
+            "t": 18610,
+            "kind": "node_end",
+            "nodeId": "perspectives",
+            "status": "skipped",
+            "summary": "skipped: no Jev key",
+            "latencyMs": 0,
+            "costUsd": 0
+          },
+          {
+            "t": 18610,
+            "kind": "node_start",
+            "nodeId": "clash",
+            "nodeType": "clash_check"
+          },
+          {
+            "t": 18610,
+            "kind": "node_end",
+            "nodeId": "clash",
+            "status": "ok",
+            "summary": "2 conflict: Not a true conflict: the clinic window is narrower and sits inside t",
+            "output": {
+              "type": "clash_check",
+              "clash": true,
+              "p": 1,
+              "claims": [
+                {
+                  "who": "Dispatch, Cedarway Logistics",
+                  "says": "The van crashed and is unavailable; the driver reports no injuries"
+                },
+                {
+                  "who": "Dispatch, Cedarway Logistics",
+                  "says": "Sunday 11 Oct 10:00\u201312:00 UTC was offered, not booked; later Sunday 14:00\u201316:00 UTC was offered, Monday not yet checked, no booking made"
+                },
+                {
+                  "who": "Mira Rowan",
+                  "says": "Needs Monday 12 Oct 10:00\u201312:00 UTC only at Alder Clinic; Sunday is no longer acceptable"
+                },
+                {
+                  "who": "Receiving, Alder Clinic",
+                  "says": "Can receive Monday 12 Oct 11:00\u201312:00 UTC only"
+                },
+                {
+                  "who": "Driver (via Dispatch)",
+                  "says": "Nobody was injured in the crash"
+                }
+              ]
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Disagreement between Recipient window (Mon 10:00\u201312:00 UTC) and clinic window (Mon 11:00\u201312:00 UTC): Not a true conflict: the clinic window is narrower and sits inside the recipient's window, leaving Mon 11:00\u201312:00 UTC. What would settle i",
+              "Disagreement between Dispatch's Sunday offers and the recipient's latest requirement: Sunday slots are offered but the recipient rejected Sunday. What would settle it: Nothing further; the recipient's later message supersedes Sunday unless ",
+              "Neither side is treated as proven.",
+              "Missing: Dispatch capacity for Monday 12 Oct 11:00\u201312:00 UTC (Monday not yet checked) (held by Dispatch, Cedarway Logistics).",
+              "Missing: Whether the goods are safe to release and deliver after the crash and delay, and any condition on them (held by Food-safety lead)."
+            ]
+          },
+          {
+            "t": 18610,
+            "kind": "edge",
+            "from": "triage",
+            "to": "planner"
+          },
+          {
+            "t": 18610,
+            "kind": "edge",
+            "from": "perspectives",
+            "to": "planner"
+          },
+          {
+            "t": 18610,
+            "kind": "edge",
+            "from": "clash",
+            "to": "planner"
+          },
+          {
+            "t": 18610,
+            "kind": "node_start",
+            "nodeId": "planner",
+            "nodeType": "planner"
+          },
+          {
+            "t": 38836,
+            "kind": "model_call",
+            "nodeId": "planner",
+            "runner": "claude",
+            "model": "claude-opus-5-5",
+            "latencyMs": 20226,
+            "tokensIn": 11138,
+            "tokensOut": 1512,
+            "costUsd": 0.0556666,
+            "ok": true
+          },
+          {
+            "t": 38836,
+            "kind": "node_end",
+            "nodeId": "planner",
+            "status": "ok",
+            "summary": "act: Dispatch owns capacity and Monday is unchecked; the only overlap of recipie",
+            "output": {
+              "type": "planner",
+              "nextAction": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Dispatch chat",
+                "message": "For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead.",
+                "undoable": true
+              },
+              "wontDo": [
+                "Book or accept the Sunday 14:00\u201316:00 offer",
+                "Tell Mira the delivery is set for Monday 11:00",
+                "Re-ask Mira for her availability"
+              ],
+              "waitingFor": [
+                {
+                  "what": "Capacity for Monday 12 Oct 11:00\u201312:00 UTC or other Monday options",
+                  "from": "Dispatch, Cedarway Logistics",
+                  "by": ""
+                },
+                {
+                  "what": "Goods release decision for DL-8400 after the crash",
+                  "from": "Food-safety lead",
+                  "by": ""
+                },
+                {
+                  "what": "Once capacity and release are confirmed: update Mira Rowan, then ask Dispatch to book",
+                  "from": "Rivet desk (conditional)",
+                  "by": ""
+                }
+              ],
+              "candidates": []
+            },
+            "latencyMs": 20226,
+            "costUsd": 0.0556666,
+            "detail": [
+              "Ask Dispatch for Monday 12 Oct 11:00\u201312:00 UTC capacity; ask the Food-safety lead for goods release status.",
+              "Why: Dispatch owns capacity and Monday is unchecked; the only overlap of recipient and clinic windows is Monday 11:00\u201312:00 UTC.",
+              "Will not: Book or accept the Sunday 14:00\u201316:00 offer (The verified recipient replaced it with Monday only; the desk does not book.)",
+              "Will not: Tell Mira the delivery is set for Monday 11:00 (Dispatch has not checked Monday capacity and goods release is unconfirmed.)",
+              "Will not: Re-ask Mira for her availability (She already chose Monday 10:00\u201312:00; the clinic hour sits inside it.)"
+            ]
+          },
+          {
+            "t": 38836,
+            "kind": "node_start",
+            "nodeId": "gate",
+            "nodeType": "safety_gate"
+          },
+          {
+            "t": 41491,
+            "kind": "model_call",
+            "nodeId": "gate",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 2655,
+            "tokensIn": 2775,
+            "tokensOut": 261,
+            "costUsd": 0.006104399999999999,
+            "ok": true
+          },
+          {
+            "t": 41492,
+            "kind": "node_end",
+            "nodeId": "gate",
+            "status": "ok",
+            "summary": "2 of 2 messages cleared",
+            "output": {
+              "type": "safety_gate",
+              "risk": 0.1,
+              "decision": "allow",
+              "allowBelow": 0.3,
+              "blockAbove": 0.8
+            },
+            "latencyMs": 2656,
+            "costUsd": 0.006104399999999999,
+            "detail": [
+              "Message to Dispatch, Cedarway Logistics: clear to send (risk 0.05, below 0.3).",
+              "Message to Food-safety lead: clear to send (risk 0.10, below 0.3)."
+            ]
+          },
+          {
+            "t": 41492,
+            "kind": "edge",
+            "from": "gate",
+            "to": "action",
+            "when": "allow"
+          },
+          {
+            "t": 41492,
+            "kind": "node_start",
+            "nodeId": "action",
+            "nodeType": "action"
+          },
+          {
+            "t": 41492,
+            "kind": "node_end",
+            "nodeId": "action",
+            "status": "ok",
+            "summary": "2 of 2 message(s) accepted by the outbox",
+            "output": {
+              "type": "action",
+              "done": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Dispatch chat",
+                "message": "For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead.",
+                "undoable": true
+              },
+              "ok": true
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Recorded for Dispatch, Cedarway Logistics by Dispatch chat: Get capacity for the only workable window",
+              "Recorded for Food-safety lead by Email: Get the goods release decision before any delivery is booked",
+              "No live system is connected, so nothing has reached a recipient yet."
+            ]
+          },
+          {
+            "t": 41492,
+            "kind": "edge",
+            "from": "action",
+            "to": "verify"
+          },
+          {
+            "t": 41492,
+            "kind": "node_start",
+            "nodeId": "verify",
+            "nodeType": "verify"
+          },
+          {
+            "t": 41492,
+            "kind": "node_end",
+            "nodeId": "verify",
+            "status": "ok",
+            "summary": "accepted by the outbox; receipt and reply unverified",
+            "output": {
+              "type": "verify",
+              "ok": true,
+              "p": 1,
+              "note": "Confirmed: the sandbox outbox recorded the message for Dispatch chat (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for Email (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Capacity for Monday 12 Oct 11:00\u201312:00 UTC or other Monday options from Dispatch, Cedarway Logistics by ; Goods release decision for DL-8400 after the crash from Food-safety lead by ; Once capacity and release are confirmed: update Mira Rowan,"
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Every message was recorded. Receipt and replies are not yet confirmed.",
+              "Now waiting for: Capacity for Monday 12 Oct 11:00\u201312:00 UTC or other Monday options, from Dispatch, Cedarway Logistics.",
+              "Now waiting for: Goods release decision for DL-8400 after the crash, from Food-safety lead.",
+              "Now waiting for: Once capacity and release are confirmed: update Mira Rowan, then ask Dispatch to book, from Rivet desk (conditional)."
+            ]
+          },
+          {
+            "t": 41493,
+            "kind": "edge",
+            "from": "verify",
+            "to": "log"
+          },
+          {
+            "t": 41493,
+            "kind": "node_start",
+            "nodeId": "log",
+            "nodeType": "case_log"
+          },
+          {
+            "t": 41493,
+            "kind": "node_end",
+            "nodeId": "log",
+            "status": "ok",
+            "summary": "outcome: acted",
+            "latencyMs": 0,
+            "costUsd": 0
+          },
+          {
+            "t": 41493,
+            "kind": "run_end",
+            "outcome": "acted",
+            "totalCostUsd": 0.09468159999999999,
+            "totalLatencyMs": 41493,
+            "nextAction": {
+              "recipient": "Dispatch, Cedarway Logistics",
+              "channel": "Dispatch chat",
+              "message": "For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead.",
+              "undoable": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "outcome": "acted",
+        "nextAction": {
+          "recipient": "Dispatch, Cedarway Logistics",
+          "channel": "Dispatch chat",
+          "message": "For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead."
+        },
+        "handoff": null,
+        "wontDo": [
+          "Book or accept the Sunday 14:00\u201316:00 offer",
+          "Tell Mira the delivery is set for Monday 11:00",
+          "Re-ask Mira for her availability"
+        ],
+        "decisionGroups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "missing_evidence",
+          "valid_changes",
+          "truthful_status",
+          "deadline_math",
+          "multi_issue"
+        ],
+        "waitingFor": [
+          {
+            "what": "Capacity for Monday 12 Oct 11:00\u201312:00 UTC or other Monday options",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": ""
+          },
+          {
+            "what": "Goods release decision for DL-8400 after the crash",
+            "from": "Food-safety lead",
+            "by": ""
+          },
+          {
+            "what": "Once capacity and release are confirmed: update Mira Rowan, then ask Dispatch to book",
+            "from": "Rivet desk (conditional)",
+            "by": ""
+          }
+        ],
+        "messages": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "message": "For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead."
+          },
+          {
+            "recipient": "Food-safety lead",
+            "channel": "Email",
+            "message": "DL-8400's van crashed this morning and the 10 Oct 10:00\u201312:00 UTC delivery was missed; the goods are now aiming for Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic. Can you tell us whether the goods are released for that delivery, and any condition on it? Nothing is booked yet."
+          }
+        ]
+      },
+      "verdict": {
+        "score": 1,
+        "pass": true,
+        "critical": false,
+        "completed": true,
+        "parts": {
+          "disposition": 1,
+          "recipient": 1,
+          "channel": 1,
+          "content": 1
+        },
+        "judgement": {
+          "recipient_match": true,
+          "content": "right",
+          "must_missed": [],
+          "violations": [],
+          "note": "The message to Dispatch on Dispatch chat uses Mira's Monday-only instruction and asks for Monday 12 Oct 11:00\u201312:00 UTC capacity within the clinic window, without offering Sunday or booking."
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "gen-3403",
+      "input": {
+        "id": "chained-DL-8400",
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+        "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+        "events": [
+          {
+            "n": 1,
+            "timestamp": "2026-10-10T08:07:00Z",
+            "stage": "Context",
+            "channel": "Email",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+          },
+          {
+            "n": 2,
+            "timestamp": "2026-10-10T08:14:00Z",
+            "stage": "Escalation",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+          },
+          {
+            "n": 3,
+            "timestamp": "2026-10-10T08:14:00.000Z",
+            "stage": null,
+            "channel": "Email",
+            "from": "Desk",
+            "to": "Dispatch, Cedarway Logistics",
+            "body": "Already sent by the desk: For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic."
+          },
+          {
+            "n": 4,
+            "timestamp": "2026-10-10T08:14:00.000Z",
+            "stage": null,
+            "channel": "Customer portal",
+            "from": "Desk",
+            "to": "Mira Rowan",
+            "body": "Already sent by the desk: Thank you. We have asked Dispatch at Cedarway Logistics whether they can deliver DL-8400 on Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC. Nothing is booked yet. Dispatch decides on capacity, and we will tell you as soon as they confirm."
+          },
+          {
+            "n": 5,
+            "timestamp": "2026-10-10T08:28:00Z",
+            "stage": "Context",
+            "channel": "Dispatch chat",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "We can offer Sunday 11 October 14:00\u201316:00 UTC. Monday is not yet checked. No booking has been made."
+          },
+          {
+            "n": 6,
+            "timestamp": "2026-10-10T08:35:00Z",
+            "stage": "Context",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "Change of plan: I now need Monday 12 October 10:00\u201312:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window."
+          },
+          {
+            "n": 7,
+            "timestamp": "2026-10-10T08:42:00Z",
+            "stage": "Escalation",
+            "channel": "Email",
+            "from": "Receiving, Alder Clinic",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00\u201312:00 UTC only. This is our confirmed receiving window."
+          },
+          {
+            "n": 8,
+            "timestamp": "2026-10-10T08:42:00.000Z",
+            "stage": null,
+            "channel": "Dispatch chat",
+            "from": "Desk",
+            "to": "Dispatch, Cedarway Logistics",
+            "body": "Already sent by the desk: For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead."
+          },
+          {
+            "n": 9,
+            "timestamp": "2026-10-10T08:42:00.000Z",
+            "stage": null,
+            "channel": "Email",
+            "from": "Desk",
+            "to": "Food-safety lead",
+            "body": "Already sent by the desk: DL-8400's van crashed this morning and the 10 Oct 10:00\u201312:00 UTC delivery was missed; the goods are now aiming for Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic. Can you tell us whether the goods are released for that delivery, and any condition on it? Nothing is booked yet."
+          },
+          {
+            "n": 10,
+            "timestamp": "2026-10-10T08:56:00Z",
+            "stage": "Context",
+            "channel": "Dispatch chat",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "Monday 12 October 11:00\u201312:00 UTC is available for DL-8400 and remains offered until 10:30 UTC today. Please ask us to confirm the booking once the shipment is cleared for release. We have not booked it."
+          },
+          {
+            "n": 11,
+            "timestamp": "2026-10-10T09:03:00Z",
+            "stage": "Context",
+            "channel": "Warehouse work queue",
+            "from": "Warehouse, Meadow Kitchen",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "DL-8400 contains chilled meals. The logger recorded 11\u00b0C for 75 minutes after the crash. No goods-safety decision is recorded. Food-safety lead, Meadow Kitchen owns the release decision through the Safety incident queue."
+          },
+          {
+            "n": 12,
+            "timestamp": "2026-10-10T09:10:00Z",
+            "stage": "Escalation",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "The Monday clinic window works for me, but only if your Food-safety lead has cleared these meals. I am not authorising unsafe goods to be sent."
+          }
+        ],
+        "attachments": []
+      },
+      "understanding": {
+        "summary": "DL-8400 (chilled meals for Alder Clinic) missed its 10 Oct slot after a van crash; Monday 12 Oct 11:00\u201312:00 UTC is the only slot that fits recipient, clinic and Dispatch, but goods release by the Food-safety lead is undecided after a temperature excursion. Desk must chase the safety decision before 10:30 UTC when Dispatch's offer lapses, and must not book or promise delivery yet.",
+        "case_type": "missed delivery after van crash with chilled goods safety hold and chained slot dependencies",
+        "decision_groups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "missing_evidence",
+          "valid_changes",
+          "hazard",
+          "truthful_status",
+          "deadline_math",
+          "multi_issue"
+        ],
+        "constraints": [
+          {
+            "surface": "goods",
+            "requirement": "Goods release decision needed before any booking; chilled meals logged at 11\u00b0C for 75 minutes after crash, no safety decision recorded",
+            "owner": "Food-safety lead, Meadow Kitchen",
+            "scope": "DL-8400",
+            "kind": "safety_restriction",
+            "state": "active",
+            "evidence": "Warehouse Meadow Kitchen, Event 11, 09:03Z; desk query to Food-safety lead Event 9 unanswered"
+          },
+          {
+            "surface": "site_access",
+            "requirement": "Receiving only Monday 12 Oct 11:00\u201312:00 UTC",
+            "owner": "Receiving, Alder Clinic",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "active",
+            "evidence": "Alder Clinic email Event 7, 08:42Z, confirmed window"
+          },
+          {
+            "surface": "fleet_route",
+            "requirement": "Monday 12 Oct 11:00\u201312:00 UTC offered, not booked; offer held until 10:30Z today; Dispatch wants a confirm request once cleared for release",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "unconfirmed",
+            "evidence": "Dispatch chat Event 10, 08:56Z"
+          },
+          {
+            "surface": "recipient",
+            "requirement": "Monday 12 Oct 10:00\u201312:00 UTC only, delivery only if goods cleared by Food-safety lead",
+            "owner": "Mira Rowan, verified recipient",
+            "scope": "DL-8400",
+            "kind": "customer_requirement",
+            "state": "active",
+            "evidence": "Events 6 and 12, 08:35Z and 09:10Z"
+          },
+          {
+            "surface": "recipient",
+            "requirement": "Sunday 11 Oct 14:00\u201316:00 UTC acceptable; Monday 10:00\u201312:00 UTC",
+            "owner": "Mira Rowan",
+            "scope": "DL-8400",
+            "kind": "customer_requirement",
+            "state": "superseded",
+            "evidence": "Event 2 replaced by Event 6: Sunday no longer acceptable"
+          },
+          {
+            "surface": "fleet_route",
+            "requirement": "Sunday 11 Oct 10:00\u201312:00 and 14:00\u201316:00 UTC offers",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "superseded",
+            "evidence": "Events 1 and 5; recipient rejected Sunday in Event 6"
+          }
+        ],
+        "urgency": "high",
+        "our_role": "Rivet delivery desk coordinating changes; we relay requests and cannot book capacity, set clinic access, or release goods. Dispatch, the clinic, the recipient and the Food-safety lead each own their part.",
+        "parties": [
+          {
+            "name": "Rivet Delivery Desk (Iona Quill)",
+            "role": "us",
+            "controls": "Relaying requests and messages only"
+          },
+          {
+            "name": "Dispatch, Cedarway Logistics",
+            "role": "carrier_team",
+            "controls": "Capacity and bookings"
+          },
+          {
+            "name": "Mira Rowan",
+            "role": "customer",
+            "controls": "Her own availability; verified recipient"
+          },
+          {
+            "name": "Receiving, Alder Clinic",
+            "role": "business_contact",
+            "controls": "Receiving access window"
+          },
+          {
+            "name": "Food-safety lead, Meadow Kitchen",
+            "role": "merchant_team",
+            "controls": "Goods release decision via Safety incident queue"
+          },
+          {
+            "name": "Warehouse, Meadow Kitchen",
+            "role": "merchant_team",
+            "controls": "Nothing stated beyond reporting logger data"
+          }
+        ],
+        "claims": [
+          {
+            "who": "Dispatch, Cedarway Logistics",
+            "says": "Van crashed, driver reports no injuries, van unavailable",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Dispatch, Cedarway Logistics",
+            "says": "Monday 11:00\u201312:00 UTC available, held until 10:30Z, not booked",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Receiving, Alder Clinic",
+            "says": "Can receive Monday 11:00\u201312:00 UTC only",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Warehouse, Meadow Kitchen",
+            "says": "Chilled meals logged at 11\u00b0C for 75 minutes after crash; no safety decision recorded",
+            "basis": "system_record"
+          },
+          {
+            "who": "Mira Rowan",
+            "says": "Needs Monday only; works only if meals cleared as safe",
+            "basis": "owning_team_statement"
+          }
+        ],
+        "conflicts": [
+          {
+            "between": "Mira Rowan's Monday 10:00\u201312:00 window vs Alder Clinic 11:00\u201312:00",
+            "about": "Overlap is only 11:00\u201312:00; she said Monday window works in Event 12",
+            "what_would_settle_it": "Her confirmation of 11:00\u201312:00 explicitly; clinic window is the binding one"
+          }
+        ],
+        "missing_info": [
+          {
+            "what": "Goods release decision and any conditions for the meals",
+            "who_has_it": "Food-safety lead, Meadow Kitchen"
+          },
+          {
+            "what": "Whether Dispatch will extend its 10:30Z hold if the safety decision is late",
+            "who_has_it": "Dispatch, Cedarway Logistics"
+          },
+          {
+            "what": "Booking confirmation for Monday slot",
+            "who_has_it": "Dispatch, Cedarway Logistics"
+          }
+        ],
+        "commitments": [
+          {
+            "what": "Confirm capacity for Sunday 14:00\u201316:00 or Monday 10:00\u201312:00 UTC",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "withdrawn",
+            "due": "none stated"
+          },
+          {
+            "what": "Confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "requested",
+            "due": "offer held until 10:30Z 10 Oct"
+          },
+          {
+            "what": "Goods release decision for Monday delivery and conditions",
+            "owed_by": "Food-safety lead, Meadow Kitchen",
+            "status": "requested",
+            "due": "none stated; practical limit 10:30Z"
+          },
+          {
+            "what": "Booking of Monday slot once cleared",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "requested",
+            "due": "offer lapses 10:30Z 10 Oct"
+          },
+          {
+            "what": "Tell Mira Rowan when Dispatch confirms; nothing booked yet",
+            "owed_by": "Rivet Delivery Desk",
+            "status": "requested",
+            "due": "none stated"
+          }
+        ],
+        "hazards": [
+          "Chilled meals exposed to 11\u00b0C for 75 minutes after crash; safety unconfirmed, must not be delivered or promised safe before Food-safety lead decides"
+        ],
+        "vulnerable_or_distressed": "none",
+        "deadlines": [
+          "Dispatch hold on Monday 12 Oct 11:00\u201312:00 UTC expires 10:30 UTC on 10 Oct",
+          "Clinic receiving window Monday 12 Oct 11:00\u201312:00 UTC",
+          "Original delivery 10 Oct 10:00\u201312:00 UTC missed"
+        ],
+        "decision_owner": "Food-safety lead, Meadow Kitchen (goods release), then Dispatch for booking",
+        "instruction_like_text": [],
+        "nothing_owed": false
+      },
+      "decision": {
+        "decision_type": "act",
+        "headline": "Send the logger data to the Food-safety lead through the Safety incident queue for a release decision before 10:30 UTC.",
+        "why": "The Food-safety lead owns goods release through the Safety incident queue, and the logged 11\u00b0C excursion means Dispatch cannot be asked to book.",
+        "actions": [
+          {
+            "recipient": "Food-safety lead, Meadow Kitchen",
+            "channel": "Safety incident queue",
+            "kind": "safety_alert",
+            "purpose": "Get the goods release decision for DL-8400, with the temperature excursion attached, before Dispatch's Monday offer lapses.",
+            "message": "Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals."
+          }
+        ],
+        "wont_do": [
+          {
+            "item": "Ask Dispatch to confirm the Monday booking now",
+            "reason": "Dispatch and Mira Rowan both made booking conditional on release, and the Food-safety lead has not given it."
+          },
+          {
+            "item": "Tell Mira Rowan the meals are safe or the slot is set",
+            "reason": "There is no safety decision and no booking, so the desk cannot confirm either."
+          },
+          {
+            "item": "Resend to the Food-safety lead by plain email",
+            "reason": "The Warehouse says release decisions go through the Safety incident queue, and the Event 9 email has had no answer."
+          }
+        ],
+        "waiting_for": [
+          {
+            "what": "Goods release decision and any conditions for DL-8400",
+            "from": "Food-safety lead, Meadow Kitchen",
+            "by": "2026-10-10 10:30 UTC"
+          },
+          {
+            "what": "Only if the goods are released: a request to Dispatch to confirm the Monday 12 Oct 11:00\u201312:00 UTC booking, followed by an update to Mira Rowan",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": "2026-10-10 10:30 UTC"
+          },
+          {
+            "what": "If the Food-safety lead has not decided near 10:30 UTC: a request to Dispatch for its options for Monday",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": "2026-10-10 10:30 UTC"
+          }
+        ],
+        "handover": null,
+        "confidence": "high"
+      },
+      "outbox": [
+        {
+          "action": {
+            "recipient": "Food-safety lead, Meadow Kitchen",
+            "channel": "Safety incident queue",
+            "kind": "safety_alert",
+            "purpose": "Get the goods release decision for DL-8400, with the temperature excursion attached, before Dispatch's Monday offer lapses.",
+            "message": "Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals."
+          },
+          "status": "recorded",
+          "note": "Recorded in the sandbox outbox for Safety incident queue (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+        }
+      ],
+      "trace": {
+        "version": 1,
+        "runId": "chain-gen-3403-1791640272793",
+        "caseId": "chained-DL-8400",
+        "flowId": "default-incident",
+        "mode": "practice",
+        "events": [
+          {
+            "t": 0,
+            "kind": "run_start",
+            "title": "Crash fallback conflicts with the verified customer date and time",
+            "inputs": [
+              {
+                "n": 1,
+                "channel": "file",
+                "from": "context",
+                "excerpt": "277 characters"
+              },
+              {
+                "n": 2,
+                "channel": "file",
+                "from": "history",
+                "excerpt": "4152 characters"
+              }
+            ]
+          },
+          {
+            "t": 0,
+            "kind": "node_start",
+            "nodeId": "ingest",
+            "nodeType": "ingest"
+          },
+          {
+            "t": 16512,
+            "kind": "model_call",
+            "nodeId": "ingest",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 16512,
+            "tokensIn": 6206,
+            "tokensOut": 2647,
+            "costUsd": 0.0313526,
+            "ok": true
+          },
+          {
+            "t": 16512,
+            "kind": "node_end",
+            "nodeId": "ingest",
+            "status": "ok",
+            "summary": "2 files, 0 attachments read",
+            "output": {
+              "type": "ingest",
+              "decisionGroups": [
+                "capacity_disruption",
+                "dependencies",
+                "owner_coordination",
+                "missing_evidence",
+                "valid_changes",
+                "hazard",
+                "truthful_status",
+                "deadline_math",
+                "multi_issue"
+              ],
+              "constraints": [
+                {
+                  "surface": "goods",
+                  "requirement": "Goods release decision needed before any booking; chilled meals logged at 11\u00b0C for 75 minutes after crash, no safety decision recorded",
+                  "owner": "Food-safety lead, Meadow Kitchen",
+                  "scope": "DL-8400",
+                  "kind": "safety_restriction",
+                  "state": "active",
+                  "evidence": "Warehouse Meadow Kitchen, Event 11, 09:03Z; desk query to Food-safety lead Event 9 unanswered"
+                },
+                {
+                  "surface": "site_access",
+                  "requirement": "Receiving only Monday 12 Oct 11:00\u201312:00 UTC",
+                  "owner": "Receiving, Alder Clinic",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "active",
+                  "evidence": "Alder Clinic email Event 7, 08:42Z, confirmed window"
+                },
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Monday 12 Oct 11:00\u201312:00 UTC offered, not booked; offer held until 10:30Z today; Dispatch wants a confirm request once cleared for release",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "unconfirmed",
+                  "evidence": "Dispatch chat Event 10, 08:56Z"
+                },
+                {
+                  "surface": "recipient",
+                  "requirement": "Monday 12 Oct 10:00\u201312:00 UTC only, delivery only if goods cleared by Food-safety lead",
+                  "owner": "Mira Rowan, verified recipient",
+                  "scope": "DL-8400",
+                  "kind": "customer_requirement",
+                  "state": "active",
+                  "evidence": "Events 6 and 12, 08:35Z and 09:10Z"
+                },
+                {
+                  "surface": "recipient",
+                  "requirement": "Sunday 11 Oct 14:00\u201316:00 UTC acceptable; Monday 10:00\u201312:00 UTC",
+                  "owner": "Mira Rowan",
+                  "scope": "DL-8400",
+                  "kind": "customer_requirement",
+                  "state": "superseded",
+                  "evidence": "Event 2 replaced by Event 6: Sunday no longer acceptable"
+                },
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Sunday 11 Oct 10:00\u201312:00 and 14:00\u201316:00 UTC offers",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "superseded",
+                  "evidence": "Events 1 and 5; recipient rejected Sunday in Event 6"
+                }
+              ]
+            },
+            "latencyMs": 16512,
+            "costUsd": 0.0313526,
+            "detail": [
+              "DL-8400 (chilled meals for Alder Clinic) missed its 10 Oct slot after a van crash; Monday 12 Oct 11:00\u201312:00 UTC is the only slot that fits recipient, clinic and Dispatch, but goods release by the Food-safety lead is undecided after a tempe",
+              "5 statements found: 5 from a record or an owning team, 0 unverified.",
+              "Who decides: Food-safety lead, Meadow Kitchen (goods release), then Dispatch for booking."
+            ]
+          },
+          {
+            "t": 16512,
+            "kind": "node_start",
+            "nodeId": "history",
+            "nodeType": "history_lookup"
+          },
+          {
+            "t": 16512,
+            "kind": "node_end",
+            "nodeId": "history",
+            "status": "ok",
+            "summary": "5 open commitments, 3 deadlines",
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Already asked: Confirm capacity for Sunday 14:00\u201316:00 or Monday 10:00\u201312:00 UTC (withdrawn, owed by Dispatch, Cedarway Logistics).",
+              "Already asked: Confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC (requested, owed by Dispatch, Cedarway Logistics).",
+              "Already asked: Goods release decision for Monday delivery and conditions (requested, owed by Food-safety lead, Meadow Kitchen).",
+              "Deadline: Dispatch hold on Monday 12 Oct 11:00\u201312:00 UTC expires 10:30 UTC on 10 Oct",
+              "Deadline: Clinic receiving window Monday 12 Oct 11:00\u201312:00 UTC"
+            ]
+          },
+          {
+            "t": 16512,
+            "kind": "edge",
+            "from": "history",
+            "to": "triage"
+          },
+          {
+            "t": 16512,
+            "kind": "edge",
+            "from": "history",
+            "to": "perspectives"
+          },
+          {
+            "t": 16512,
+            "kind": "edge",
+            "from": "history",
+            "to": "clash"
+          },
+          {
+            "t": 16512,
+            "kind": "node_start",
+            "nodeId": "triage",
+            "nodeType": "triage"
+          },
+          {
+            "t": 16512,
+            "kind": "node_end",
+            "nodeId": "triage",
+            "status": "ok",
+            "summary": "missed delivery after van crash with chilled goods safety hold and chained slot ",
+            "output": {
+              "type": "triage",
+              "caseType": "missed delivery after van crash with chilled goods safety hold and chained slot dependencies",
+              "urgency": "high",
+              "p": 1
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Kind of problem: missed delivery after van crash with chilled goods safety hold and chained slot dependencies. Urgency: high.",
+              "Possible hazard: Chilled meals exposed to 11\u00b0C for 75 minutes after crash; safety unconfirmed, must not be delivered or promised safe before Food-safety lead decides"
+            ]
+          },
+          {
+            "t": 16512,
+            "kind": "node_start",
+            "nodeId": "perspectives",
+            "nodeType": "perspectives"
+          },
+          {
+            "t": 16512,
+            "kind": "node_end",
+            "nodeId": "perspectives",
+            "status": "skipped",
+            "summary": "skipped: no Jev key",
+            "latencyMs": 0,
+            "costUsd": 0
+          },
+          {
+            "t": 16512,
+            "kind": "node_start",
+            "nodeId": "clash",
+            "nodeType": "clash_check"
+          },
+          {
+            "t": 16512,
+            "kind": "node_end",
+            "nodeId": "clash",
+            "status": "ok",
+            "summary": "1 conflict: Overlap is only 11:00\u201312:00; she said Monday window works in Event 1",
+            "output": {
+              "type": "clash_check",
+              "clash": true,
+              "p": 1,
+              "claims": [
+                {
+                  "who": "Dispatch, Cedarway Logistics",
+                  "says": "Van crashed, driver reports no injuries, van unavailable"
+                },
+                {
+                  "who": "Dispatch, Cedarway Logistics",
+                  "says": "Monday 11:00\u201312:00 UTC available, held until 10:30Z, not booked"
+                },
+                {
+                  "who": "Receiving, Alder Clinic",
+                  "says": "Can receive Monday 11:00\u201312:00 UTC only"
+                },
+                {
+                  "who": "Warehouse, Meadow Kitchen",
+                  "says": "Chilled meals logged at 11\u00b0C for 75 minutes after crash; no safety decision recorded"
+                },
+                {
+                  "who": "Mira Rowan",
+                  "says": "Needs Monday only; works only if meals cleared as safe"
+                }
+              ]
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Disagreement between Mira Rowan's Monday 10:00\u201312:00 window vs Alder Clinic 11:00\u201312:00: Overlap is only 11:00\u201312:00; she said Monday window works in Event 12. What would settle it: Her confirmation of 11:00\u201312:00 explicitly; clinic window ",
+              "Neither side is treated as proven.",
+              "Missing: Goods release decision and any conditions for the meals (held by Food-safety lead, Meadow Kitchen).",
+              "Missing: Whether Dispatch will extend its 10:30Z hold if the safety decision is late (held by Dispatch, Cedarway Logistics)."
+            ]
+          },
+          {
+            "t": 16512,
+            "kind": "edge",
+            "from": "triage",
+            "to": "planner"
+          },
+          {
+            "t": 16512,
+            "kind": "edge",
+            "from": "perspectives",
+            "to": "planner"
+          },
+          {
+            "t": 16512,
+            "kind": "edge",
+            "from": "clash",
+            "to": "planner"
+          },
+          {
+            "t": 16513,
+            "kind": "node_start",
+            "nodeId": "planner",
+            "nodeType": "planner"
+          },
+          {
+            "t": 30451,
+            "kind": "model_call",
+            "nodeId": "planner",
+            "runner": "claude",
+            "model": "claude-opus-5-5",
+            "latencyMs": 13938,
+            "tokensIn": 11711,
+            "tokensOut": 1245,
+            "costUsd": 0.0526186,
+            "ok": true
+          },
+          {
+            "t": 30451,
+            "kind": "node_end",
+            "nodeId": "planner",
+            "status": "ok",
+            "summary": "act: The Food-safety lead owns goods release through the Safety incident queue, ",
+            "output": {
+              "type": "planner",
+              "nextAction": {
+                "recipient": "Food-safety lead, Meadow Kitchen",
+                "channel": "Safety incident queue",
+                "message": "Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals.",
+                "undoable": true
+              },
+              "wontDo": [
+                "Ask Dispatch to confirm the Monday booking now",
+                "Tell Mira Rowan the meals are safe or the slot is set",
+                "Resend to the Food-safety lead by plain email"
+              ],
+              "waitingFor": [
+                {
+                  "what": "Goods release decision and any conditions for DL-8400",
+                  "from": "Food-safety lead, Meadow Kitchen",
+                  "by": "2026-10-10 10:30 UTC"
+                },
+                {
+                  "what": "Only if the goods are released: a request to Dispatch to confirm the Monday 12 Oct 11:00\u201312:00 UTC booking, followed by an update to Mira Rowan",
+                  "from": "Dispatch, Cedarway Logistics",
+                  "by": "2026-10-10 10:30 UTC"
+                },
+                {
+                  "what": "If the Food-safety lead has not decided near 10:30 UTC: a request to Dispatch for its options for Monday",
+                  "from": "Dispatch, Cedarway Logistics",
+                  "by": "2026-10-10 10:30 UTC"
+                }
+              ],
+              "candidates": []
+            },
+            "latencyMs": 13938,
+            "costUsd": 0.0526186,
+            "detail": [
+              "Send the logger data to the Food-safety lead through the Safety incident queue for a release decision before 10:30 UTC.",
+              "Why: The Food-safety lead owns goods release through the Safety incident queue, and the logged 11\u00b0C excursion means Dispatch cannot be asked to book.",
+              "Will not: Ask Dispatch to confirm the Monday booking now (Dispatch and Mira Rowan both made booking conditional on release, and the Food-safety lead has not given it.)",
+              "Will not: Tell Mira Rowan the meals are safe or the slot is set (There is no safety decision and no booking, so the desk cannot confirm either.)",
+              "Will not: Resend to the Food-safety lead by plain email (The Warehouse says release decisions go through the Safety incident queue, and the Event 9 email has had no answer.)"
+            ]
+          },
+          {
+            "t": 30451,
+            "kind": "node_start",
+            "nodeId": "gate",
+            "nodeType": "safety_gate"
+          },
+          {
+            "t": 32620,
+            "kind": "model_call",
+            "nodeId": "gate",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 2169,
+            "tokensIn": 3430,
+            "tokensOut": 141,
+            "costUsd": 0.006214399999999999,
+            "ok": true
+          },
+          {
+            "t": 32621,
+            "kind": "node_end",
+            "nodeId": "gate",
+            "status": "ok",
+            "summary": "1 of 1 messages cleared",
+            "output": {
+              "type": "safety_gate",
+              "risk": 0.04,
+              "decision": "allow",
+              "allowBelow": 0.3,
+              "blockAbove": 0.8
+            },
+            "latencyMs": 2170,
+            "costUsd": 0.006214399999999999,
+            "detail": [
+              "Message to Food-safety lead, Meadow Kitchen: clear to send (risk 0.04, below 0.3)."
+            ]
+          },
+          {
+            "t": 32621,
+            "kind": "edge",
+            "from": "gate",
+            "to": "action",
+            "when": "allow"
+          },
+          {
+            "t": 32621,
+            "kind": "node_start",
+            "nodeId": "action",
+            "nodeType": "action"
+          },
+          {
+            "t": 32621,
+            "kind": "node_end",
+            "nodeId": "action",
+            "status": "ok",
+            "summary": "1 of 1 message(s) accepted by the outbox",
+            "output": {
+              "type": "action",
+              "done": {
+                "recipient": "Food-safety lead, Meadow Kitchen",
+                "channel": "Safety incident queue",
+                "message": "Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals.",
+                "undoable": true
+              },
+              "ok": true
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Recorded for Food-safety lead, Meadow Kitchen by Safety incident queue: Get the goods release decision for DL-8400, with the temperature excursion attached, before Dispatch's Monday offer lapses.",
+              "No live system is connected, so nothing has reached a recipient yet."
+            ]
+          },
+          {
+            "t": 32621,
+            "kind": "edge",
+            "from": "action",
+            "to": "verify"
+          },
+          {
+            "t": 32621,
+            "kind": "node_start",
+            "nodeId": "verify",
+            "nodeType": "verify"
+          },
+          {
+            "t": 32621,
+            "kind": "node_end",
+            "nodeId": "verify",
+            "status": "ok",
+            "summary": "accepted by the outbox; receipt and reply unverified",
+            "output": {
+              "type": "verify",
+              "ok": true,
+              "p": 1,
+              "note": "Confirmed: the sandbox outbox recorded the message for Safety incident queue (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Goods release decision and any conditions for DL-8400 from Food-safety lead, Meadow Kitchen by 2026-10-10 10:30 UTC; Only if the goods are released: a request to Dispatch to confirm the Monday 12 Oct 11:00\u201312:00 UTC booking, followed by an update to Mira Rowan from Dispatch, Cedarway Logistics by 2026-10-10 10:30 UTC; If the Food-safety lead has not decided near 10:30 UTC: a request to Dispatch for i"
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Every message was recorded. Receipt and replies are not yet confirmed.",
+              "Now waiting for: Goods release decision and any conditions for DL-8400, from Food-safety lead, Meadow Kitchen, by 2026-10-10 10:30 UTC.",
+              "Now waiting for: Only if the goods are released: a request to Dispatch to confirm the Monday 12 Oct 11:00\u201312:00 UTC booking, followed by an update to Mira Rowan, from Dispatch, Cedarway Logistics, by 2026-10-10 10:30 UTC.",
+              "Now waiting for: If the Food-safety lead has not decided near 10:30 UTC: a request to Dispatch for its options for Monday, from Dispatch, Cedarway Logistics, by 2026-10-10 10:30 UTC."
+            ]
+          },
+          {
+            "t": 32621,
+            "kind": "edge",
+            "from": "verify",
+            "to": "log"
+          },
+          {
+            "t": 32621,
+            "kind": "node_start",
+            "nodeId": "log",
+            "nodeType": "case_log"
+          },
+          {
+            "t": 32621,
+            "kind": "node_end",
+            "nodeId": "log",
+            "status": "ok",
+            "summary": "outcome: acted",
+            "latencyMs": 0,
+            "costUsd": 0
+          },
+          {
+            "t": 32621,
+            "kind": "run_end",
+            "outcome": "acted",
+            "totalCostUsd": 0.09018559999999999,
+            "totalLatencyMs": 32621,
+            "nextAction": {
+              "recipient": "Food-safety lead, Meadow Kitchen",
+              "channel": "Safety incident queue",
+              "message": "Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals.",
+              "undoable": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "outcome": "acted",
+        "nextAction": {
+          "recipient": "Food-safety lead, Meadow Kitchen",
+          "channel": "Safety incident queue",
+          "message": "Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals."
+        },
+        "handoff": null,
+        "wontDo": [
+          "Ask Dispatch to confirm the Monday booking now",
+          "Tell Mira Rowan the meals are safe or the slot is set",
+          "Resend to the Food-safety lead by plain email"
+        ],
+        "decisionGroups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "missing_evidence",
+          "valid_changes",
+          "hazard",
+          "truthful_status",
+          "deadline_math",
+          "multi_issue"
+        ],
+        "waitingFor": [
+          {
+            "what": "Goods release decision and any conditions for DL-8400",
+            "from": "Food-safety lead, Meadow Kitchen",
+            "by": "2026-10-10 10:30 UTC"
+          },
+          {
+            "what": "Only if the goods are released: a request to Dispatch to confirm the Monday 12 Oct 11:00\u201312:00 UTC booking, followed by an update to Mira Rowan",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": "2026-10-10 10:30 UTC"
+          },
+          {
+            "what": "If the Food-safety lead has not decided near 10:30 UTC: a request to Dispatch for its options for Monday",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": "2026-10-10 10:30 UTC"
+          }
+        ],
+        "messages": [
+          {
+            "recipient": "Food-safety lead, Meadow Kitchen",
+            "channel": "Safety incident queue",
+            "message": "Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals."
+          }
+        ]
+      },
+      "verdict": {
+        "score": 1,
+        "pass": true,
+        "critical": false,
+        "completed": true,
+        "parts": {
+          "disposition": 1,
+          "recipient": 1,
+          "channel": 1,
+          "content": 1
+        },
+        "judgement": {
+          "recipient_match": true,
+          "content": "right",
+          "must_missed": [],
+          "violations": [],
+          "note": "The message goes to the Food-safety lead via the Safety incident queue with the 11\u00b0C/75 minute evidence, keeps the recipient's conditional acceptance, and does not ask Dispatch to book or claim the meals are safe."
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "gen-3404",
+      "input": {
+        "id": "chained-DL-8400",
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+        "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+        "events": [
+          {
+            "n": 1,
+            "timestamp": "2026-10-10T08:07:00Z",
+            "stage": "Context",
+            "channel": "Email",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+          },
+          {
+            "n": 2,
+            "timestamp": "2026-10-10T08:14:00Z",
+            "stage": "Escalation",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+          },
+          {
+            "n": 3,
+            "timestamp": "2026-10-10T08:14:00.000Z",
+            "stage": null,
+            "channel": "Email",
+            "from": "Desk",
+            "to": "Dispatch, Cedarway Logistics",
+            "body": "Already sent by the desk: For DL-8400, the verified recipient, Mira Rowan, cannot receive on Sunday 11 Oct 10:00\u201312:00 UTC. Can you confirm capacity for Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC? Please also tell us if neither is possible and which other options you have. Please don't book anything yet; we still need to confirm receiving access at Alder Clinic."
+          },
+          {
+            "n": 4,
+            "timestamp": "2026-10-10T08:14:00.000Z",
+            "stage": null,
+            "channel": "Customer portal",
+            "from": "Desk",
+            "to": "Mira Rowan",
+            "body": "Already sent by the desk: Thank you. We have asked Dispatch at Cedarway Logistics whether they can deliver DL-8400 on Sunday 11 Oct 14:00\u201316:00 UTC or Monday 12 Oct 10:00\u201312:00 UTC. Nothing is booked yet. Dispatch decides on capacity, and we will tell you as soon as they confirm."
+          },
+          {
+            "n": 5,
+            "timestamp": "2026-10-10T08:28:00Z",
+            "stage": "Context",
+            "channel": "Dispatch chat",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "We can offer Sunday 11 October 14:00\u201316:00 UTC. Monday is not yet checked. No booking has been made."
+          },
+          {
+            "n": 6,
+            "timestamp": "2026-10-10T08:35:00Z",
+            "stage": "Context",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "Change of plan: I now need Monday 12 October 10:00\u201312:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window."
+          },
+          {
+            "n": 7,
+            "timestamp": "2026-10-10T08:42:00Z",
+            "stage": "Escalation",
+            "channel": "Email",
+            "from": "Receiving, Alder Clinic",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00\u201312:00 UTC only. This is our confirmed receiving window."
+          },
+          {
+            "n": 8,
+            "timestamp": "2026-10-10T08:42:00.000Z",
+            "stage": null,
+            "channel": "Dispatch chat",
+            "from": "Desk",
+            "to": "Dispatch, Cedarway Logistics",
+            "body": "Already sent by the desk: For DL-8400, can you confirm capacity for Monday 12 Oct 11:00\u201312:00 UTC? Mira Rowan now needs Monday only, and Alder Clinic can receive only 11:00\u201312:00 that day, so the Sunday offers no longer fit. If that hour is not possible, please tell us what Monday options you have. Please don't book yet; goods release is still with the Food-safety lead."
+          },
+          {
+            "n": 9,
+            "timestamp": "2026-10-10T08:42:00.000Z",
+            "stage": null,
+            "channel": "Email",
+            "from": "Desk",
+            "to": "Food-safety lead",
+            "body": "Already sent by the desk: DL-8400's van crashed this morning and the 10 Oct 10:00\u201312:00 UTC delivery was missed; the goods are now aiming for Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic. Can you tell us whether the goods are released for that delivery, and any condition on it? Nothing is booked yet."
+          },
+          {
+            "n": 10,
+            "timestamp": "2026-10-10T08:56:00Z",
+            "stage": "Context",
+            "channel": "Dispatch chat",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "Monday 12 October 11:00\u201312:00 UTC is available for DL-8400 and remains offered until 10:30 UTC today. Please ask us to confirm the booking once the shipment is cleared for release. We have not booked it."
+          },
+          {
+            "n": 11,
+            "timestamp": "2026-10-10T09:03:00Z",
+            "stage": "Context",
+            "channel": "Warehouse work queue",
+            "from": "Warehouse, Meadow Kitchen",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "DL-8400 contains chilled meals. The logger recorded 11\u00b0C for 75 minutes after the crash. No goods-safety decision is recorded. Food-safety lead, Meadow Kitchen owns the release decision through the Safety incident queue."
+          },
+          {
+            "n": 12,
+            "timestamp": "2026-10-10T09:10:00Z",
+            "stage": "Escalation",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "The Monday clinic window works for me, but only if your Food-safety lead has cleared these meals. I am not authorising unsafe goods to be sent."
+          },
+          {
+            "n": 13,
+            "timestamp": "2026-10-10T09:10:00.000Z",
+            "stage": null,
+            "channel": "Safety incident queue",
+            "from": "Desk",
+            "to": "Food-safety lead, Meadow Kitchen",
+            "body": "Already sent by the desk: Urgent: we need your release decision for DL-8400 chilled meals. Meadow Kitchen Warehouse reports the logger recorded 11\u00b0C for 75 minutes after this morning's van crash, and no goods-safety decision is recorded. Dispatch is holding a Monday 12 Oct 11:00\u201312:00 UTC slot at Alder Clinic only until 10:30 UTC today. The recipient will accept delivery only if you clear the meals."
+          },
+          {
+            "n": 14,
+            "timestamp": "2026-10-10T09:24:00Z",
+            "stage": "Escalation",
+            "channel": "Safety incident queue",
+            "from": "Food-safety lead, Meadow Kitchen",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "I have reviewed the recorded condition and authorise release of shipment DL-8400. This is the required goods-safety decision for this shipment only."
+          }
+        ],
+        "attachments": []
+      },
+      "understanding": {
+        "summary": "DL-8400 (chilled meals) missed its 10 Oct slot after a van crash; Monday 12 Oct 11:00-12:00 UTC at Alder Clinic fits the recipient, the clinic and Dispatch's held offer, and the Food-safety lead has now authorised release. The desk must now ask Dispatch to confirm the booking before the offer lapses at 10:30 UTC today, and tell the recipient only once it is confirmed.",
+        "case_type": "Missed delivery after van crash; rebooking of chilled goods under a safety release and a time-limited capacity offer",
+        "decision_groups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "valid_changes",
+          "hazard",
+          "deadline_math",
+          "multi_issue",
+          "truthful_status"
+        ],
+        "constraints": [
+          {
+            "surface": "fleet_route",
+            "requirement": "Replacement capacity for Monday 12 Oct 11:00-12:00 UTC is offered, not booked; offer is held until 10:30 UTC on 10 Oct. Booking happens only when Dispatch confirms at the desk's request.",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "unconfirmed",
+            "evidence": "Dispatch chat Event 10, 08:56Z: available, offered until 10:30Z, not booked, asks desk to confirm once cleared for release"
+          },
+          {
+            "surface": "fleet_route",
+            "requirement": "Sunday 11 Oct 10:00-12:00 UTC replacement offer",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "superseded",
+            "evidence": "Event 1 offer; recipient cannot do Sunday morning (Event 2) and later rejected Sunday entirely (Event 6)"
+          },
+          {
+            "surface": "fleet_route",
+            "requirement": "Sunday 11 Oct 14:00-16:00 UTC offer",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "superseded",
+            "evidence": "Offered Event 5 08:28Z; recipient withdrew Sunday in Event 6 08:35Z"
+          },
+          {
+            "surface": "recipient",
+            "requirement": "Monday 12 Oct 10:00-12:00 UTC only at Alder Clinic; Sunday no longer acceptable; Monday works only if the Food-safety lead has cleared the meals",
+            "owner": "Mira Rowan, verified recipient",
+            "scope": "DL-8400",
+            "kind": "customer_requirement",
+            "state": "active",
+            "evidence": "Portal Events 6 (08:35Z) and 12 (09:10Z), verified account; replaces earlier Sunday 14:00-16:00 / Monday choices in Event 2"
+          },
+          {
+            "surface": "site_access",
+            "requirement": "Clinic can receive Monday 12 Oct 11:00-12:00 UTC only",
+            "owner": "Alder Clinic receiving",
+            "scope": "DL-8400",
+            "kind": "feasibility",
+            "state": "active",
+            "evidence": "Email Event 7, 08:42Z, confirmed receiving window; narrows the recipient's 10:00-12:00 to 11:00-12:00"
+          },
+          {
+            "surface": "goods",
+            "requirement": "Goods-safety release decision required before delivery or booking",
+            "owner": "Food-safety lead, Meadow Kitchen",
+            "scope": "DL-8400 only",
+            "kind": "safety_restriction",
+            "state": "satisfied",
+            "evidence": "Event 14, 09:24Z: lead reviewed the recorded condition (11\u00b0C for 75 min per Warehouse, Event 11) and authorised release for this shipment only; no conditions stated"
+          },
+          {
+            "surface": "commercial",
+            "requirement": "Desk must not state the delivery is booked until Dispatch confirms",
+            "owner": "Dispatch, Cedarway Logistics",
+            "scope": "DL-8400",
+            "kind": "authority_restriction",
+            "state": "active",
+            "evidence": "Dispatch Event 10: not booked; desk messages say nothing booked yet"
+          }
+        ],
+        "urgency": "high",
+        "our_role": "Rivet Delivery Desk, a coordination desk that relays and asks. We do not control capacity or bookings (Dispatch), the recipient's availability, clinic access, or goods release (Food-safety lead); we cannot book or release goods ourselves.",
+        "parties": [
+          {
+            "name": "Iona Quill, Rivet Delivery Desk",
+            "role": "us",
+            "controls": "Relaying requests and messages; no decision authority over capacity, access or goods release"
+          },
+          {
+            "name": "Dispatch, Cedarway Logistics",
+            "role": "carrier_team",
+            "controls": "Capacity and bookings"
+          },
+          {
+            "name": "Mira Rowan",
+            "role": "customer",
+            "controls": "Her own availability as verified recipient; conditions her acceptance on food-safety clearance"
+          },
+          {
+            "name": "Receiving, Alder Clinic",
+            "role": "business_contact",
+            "controls": "Receiving access window"
+          },
+          {
+            "name": "Food-safety lead, Meadow Kitchen",
+            "role": "merchant_team",
+            "controls": "Goods release decision for DL-8400"
+          },
+          {
+            "name": "Warehouse, Meadow Kitchen",
+            "role": "merchant_team",
+            "controls": "nothing stated (reported the logger data)"
+          }
+        ],
+        "claims": [
+          {
+            "who": "Dispatch, Cedarway Logistics",
+            "says": "Van crashed, unavailable, driver reports no injuries",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Dispatch, Cedarway Logistics",
+            "says": "Monday 12 Oct 11:00-12:00 UTC is available and held until 10:30 UTC; not booked",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Warehouse, Meadow Kitchen",
+            "says": "Chilled meals; logger recorded 11\u00b0C for 75 minutes after the crash; no safety decision recorded at the time",
+            "basis": "system_record"
+          },
+          {
+            "who": "Food-safety lead, Meadow Kitchen",
+            "says": "Reviewed the recorded condition and authorised release of DL-8400",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Receiving, Alder Clinic",
+            "says": "Can receive Monday 12 Oct 11:00-12:00 UTC only",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Mira Rowan",
+            "says": "Needs Monday only at the clinic; Sunday unacceptable; accepts only if goods cleared",
+            "basis": "owning_team_statement"
+          },
+          {
+            "who": "Driver (via Dispatch)",
+            "says": "Nobody was injured",
+            "basis": "unverified_claim"
+          }
+        ],
+        "conflicts": [],
+        "missing_info": [
+          {
+            "what": "Any conditions on the release (e.g. handling or delivery conditions); the lead's message states none",
+            "who_has_it": "Food-safety lead, Meadow Kitchen"
+          },
+          {
+            "what": "Dispatch booking confirmation for Monday 12 Oct 11:00-12:00 UTC",
+            "who_has_it": "Dispatch, Cedarway Logistics"
+          },
+          {
+            "what": "Whether the 10:30 UTC hold is still valid; the release arrived at 09:24Z, before the deadline",
+            "who_has_it": "Dispatch, Cedarway Logistics"
+          }
+        ],
+        "commitments": [
+          {
+            "what": "Hold Monday 12 Oct 11:00-12:00 UTC capacity offer for DL-8400",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "confirmed",
+            "due": "Until 10:30 UTC 10 Oct"
+          },
+          {
+            "what": "Book Monday 11:00-12:00 UTC once the desk asks (release now given)",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "requested",
+            "due": "Offer lapses 10:30 UTC 10 Oct"
+          },
+          {
+            "what": "Goods release decision for DL-8400",
+            "owed_by": "Food-safety lead, Meadow Kitchen",
+            "status": "confirmed",
+            "due": "none stated"
+          },
+          {
+            "what": "Tell Mira Rowan when Dispatch confirms",
+            "owed_by": "Rivet Delivery Desk",
+            "status": "requested",
+            "due": "none stated"
+          },
+          {
+            "what": "Earlier Sunday 14:00-16:00 and Monday 10:00-12:00 capacity checks",
+            "owed_by": "Dispatch, Cedarway Logistics",
+            "status": "withdrawn",
+            "due": "none stated"
+          }
+        ],
+        "hazards": [
+          "Chilled meals logged at 11\u00b0C for 75 minutes after the crash; food safety risk, now assessed and release authorised by the Food-safety lead for this shipment only"
+        ],
+        "vulnerable_or_distressed": "none",
+        "deadlines": [
+          "Dispatch hold on Monday 12 Oct 11:00-12:00 UTC expires 10:30 UTC on 10 Oct 2026",
+          "Delivery window Monday 12 Oct 2026 11:00-12:00 UTC at Alder Clinic"
+        ],
+        "decision_owner": "Dispatch, Cedarway Logistics (booking of capacity); goods release already decided by the Food-safety lead",
+        "instruction_like_text": [],
+        "nothing_owed": false
+      },
+      "decision": {
+        "decision_type": "act",
+        "headline": "Ask Dispatch to confirm the Monday 12 Oct 11:00-12:00 UTC booking before the 10:30 UTC hold lapses.",
+        "why": "Dispatch owns bookings; recipient, clinic window and the Food-safety lead's release now all align with Dispatch's held Monday 11:00-12:00 offer.",
+        "actions": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "kind": "request_to_owner",
+            "purpose": "Request booking confirmation of the held offer before it lapses at 10:30 UTC",
+            "message": "Please confirm the booking for DL-8400 on Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic, which you are holding until 10:30 UTC today. The Food-safety lead, Meadow Kitchen authorised release of this shipment at 09:24 UTC. Mira Rowan and Alder Clinic receiving have both confirmed that window. Please reply once it is booked."
+          }
+        ],
+        "wont_do": [
+          {
+            "item": "Tell Mira Rowan the delivery is booked",
+            "reason": "Dispatch has not confirmed the booking yet; she will be told once it does."
+          },
+          {
+            "item": "Describe the meals as safe",
+            "reason": "The desk only relays that the Food-safety lead authorised release; it does not rule on safety."
+          },
+          {
+            "item": "Re-ask the recipient or clinic for times",
+            "reason": "Both have already given their latest valid windows."
+          }
+        ],
+        "waiting_for": [
+          {
+            "what": "Booking confirmation for DL-8400, Monday 12 Oct 11:00-12:00 UTC",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": "2026-10-10 10:30 UTC"
+          },
+          {
+            "what": "Once Dispatch confirms: tell Mira Rowan via customer portal that the booking is confirmed and that the Food-safety lead authorised release",
+            "from": "Rivet Delivery Desk (after Dispatch confirmation)",
+            "by": ""
+          }
+        ],
+        "handover": null,
+        "confidence": "high"
+      },
+      "outbox": [
+        {
+          "action": {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "kind": "request_to_owner",
+            "purpose": "Request booking confirmation of the held offer before it lapses at 10:30 UTC",
+            "message": "Please confirm the booking for DL-8400 on Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic, which you are holding until 10:30 UTC today. The Food-safety lead, Meadow Kitchen authorised release of this shipment at 09:24 UTC. Mira Rowan and Alder Clinic receiving have both confirmed that window. Please reply once it is booked."
+          },
+          "status": "recorded",
+          "note": "Recorded in the sandbox outbox for Dispatch chat (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+        }
+      ],
+      "trace": {
+        "version": 1,
+        "runId": "chain-gen-3404-1791640307471",
+        "caseId": "chained-DL-8400",
+        "flowId": "default-incident",
+        "mode": "practice",
+        "events": [
+          {
+            "t": 0,
+            "kind": "run_start",
+            "title": "Crash fallback conflicts with the verified customer date and time",
+            "inputs": [
+              {
+                "n": 1,
+                "channel": "file",
+                "from": "context",
+                "excerpt": "277 characters"
+              },
+              {
+                "n": 2,
+                "channel": "file",
+                "from": "history",
+                "excerpt": "4961 characters"
+              }
+            ]
+          },
+          {
+            "t": 0,
+            "kind": "node_start",
+            "nodeId": "ingest",
+            "nodeType": "ingest"
+          },
+          {
+            "t": 18754,
+            "kind": "model_call",
+            "nodeId": "ingest",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 18754,
+            "tokensIn": 6549,
+            "tokensOut": 3009,
+            "costUsd": 0.0356586,
+            "ok": true
+          },
+          {
+            "t": 18754,
+            "kind": "node_end",
+            "nodeId": "ingest",
+            "status": "ok",
+            "summary": "2 files, 0 attachments read",
+            "output": {
+              "type": "ingest",
+              "decisionGroups": [
+                "capacity_disruption",
+                "dependencies",
+                "owner_coordination",
+                "valid_changes",
+                "hazard",
+                "deadline_math",
+                "multi_issue",
+                "truthful_status"
+              ],
+              "constraints": [
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Replacement capacity for Monday 12 Oct 11:00-12:00 UTC is offered, not booked; offer is held until 10:30 UTC on 10 Oct. Booking happens only when Dispatch confirms at the desk's request.",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "unconfirmed",
+                  "evidence": "Dispatch chat Event 10, 08:56Z: available, offered until 10:30Z, not booked, asks desk to confirm once cleared for release"
+                },
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Sunday 11 Oct 10:00-12:00 UTC replacement offer",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "superseded",
+                  "evidence": "Event 1 offer; recipient cannot do Sunday morning (Event 2) and later rejected Sunday entirely (Event 6)"
+                },
+                {
+                  "surface": "fleet_route",
+                  "requirement": "Sunday 11 Oct 14:00-16:00 UTC offer",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "superseded",
+                  "evidence": "Offered Event 5 08:28Z; recipient withdrew Sunday in Event 6 08:35Z"
+                },
+                {
+                  "surface": "recipient",
+                  "requirement": "Monday 12 Oct 10:00-12:00 UTC only at Alder Clinic; Sunday no longer acceptable; Monday works only if the Food-safety lead has cleared the meals",
+                  "owner": "Mira Rowan, verified recipient",
+                  "scope": "DL-8400",
+                  "kind": "customer_requirement",
+                  "state": "active",
+                  "evidence": "Portal Events 6 (08:35Z) and 12 (09:10Z), verified account; replaces earlier Sunday 14:00-16:00 / Monday choices in Event 2"
+                },
+                {
+                  "surface": "site_access",
+                  "requirement": "Clinic can receive Monday 12 Oct 11:00-12:00 UTC only",
+                  "owner": "Alder Clinic receiving",
+                  "scope": "DL-8400",
+                  "kind": "feasibility",
+                  "state": "active",
+                  "evidence": "Email Event 7, 08:42Z, confirmed receiving window; narrows the recipient's 10:00-12:00 to 11:00-12:00"
+                },
+                {
+                  "surface": "goods",
+                  "requirement": "Goods-safety release decision required before delivery or booking",
+                  "owner": "Food-safety lead, Meadow Kitchen",
+                  "scope": "DL-8400 only",
+                  "kind": "safety_restriction",
+                  "state": "satisfied",
+                  "evidence": "Event 14, 09:24Z: lead reviewed the recorded condition (11\u00b0C for 75 min per Warehouse, Event 11) and authorised release for this shipment only; no conditions stated"
+                },
+                {
+                  "surface": "commercial",
+                  "requirement": "Desk must not state the delivery is booked until Dispatch confirms",
+                  "owner": "Dispatch, Cedarway Logistics",
+                  "scope": "DL-8400",
+                  "kind": "authority_restriction",
+                  "state": "active",
+                  "evidence": "Dispatch Event 10: not booked; desk messages say nothing booked yet"
+                }
+              ]
+            },
+            "latencyMs": 18754,
+            "costUsd": 0.0356586,
+            "detail": [
+              "DL-8400 (chilled meals) missed its 10 Oct slot after a van crash; Monday 12 Oct 11:00-12:00 UTC at Alder Clinic fits the recipient, the clinic and Dispatch's held offer, and the Food-safety lead has now authorised release. The desk must now",
+              "7 statements found: 6 from a record or an owning team, 1 unverified.",
+              "Who decides: Dispatch, Cedarway Logistics (booking of capacity); goods release already decided by the Food-safety lead."
+            ]
+          },
+          {
+            "t": 18754,
+            "kind": "node_start",
+            "nodeId": "history",
+            "nodeType": "history_lookup"
+          },
+          {
+            "t": 18754,
+            "kind": "node_end",
+            "nodeId": "history",
+            "status": "ok",
+            "summary": "5 open commitments, 2 deadlines",
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Already asked: Hold Monday 12 Oct 11:00-12:00 UTC capacity offer for DL-8400 (confirmed, owed by Dispatch, Cedarway Logistics).",
+              "Already asked: Book Monday 11:00-12:00 UTC once the desk asks (release now given) (requested, owed by Dispatch, Cedarway Logistics).",
+              "Already asked: Goods release decision for DL-8400 (confirmed, owed by Food-safety lead, Meadow Kitchen).",
+              "Deadline: Dispatch hold on Monday 12 Oct 11:00-12:00 UTC expires 10:30 UTC on 10 Oct 2026",
+              "Deadline: Delivery window Monday 12 Oct 2026 11:00-12:00 UTC at Alder Clinic"
+            ]
+          },
+          {
+            "t": 18754,
+            "kind": "edge",
+            "from": "history",
+            "to": "triage"
+          },
+          {
+            "t": 18754,
+            "kind": "edge",
+            "from": "history",
+            "to": "perspectives"
+          },
+          {
+            "t": 18754,
+            "kind": "edge",
+            "from": "history",
+            "to": "clash"
+          },
+          {
+            "t": 18754,
+            "kind": "node_start",
+            "nodeId": "triage",
+            "nodeType": "triage"
+          },
+          {
+            "t": 18754,
+            "kind": "node_end",
+            "nodeId": "triage",
+            "status": "ok",
+            "summary": "Missed delivery after van crash; rebooking of chilled goods under a safety relea",
+            "output": {
+              "type": "triage",
+              "caseType": "Missed delivery after van crash; rebooking of chilled goods under a safety release and a time-limited capacity offer",
+              "urgency": "high",
+              "p": 1
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Kind of problem: Missed delivery after van crash; rebooking of chilled goods under a safety release and a time-limited capacity offer. Urgency: high.",
+              "Possible hazard: Chilled meals logged at 11\u00b0C for 75 minutes after the crash; food safety risk, now assessed and release authorised by the Food-safety lead for this shipment only"
+            ]
+          },
+          {
+            "t": 18754,
+            "kind": "node_start",
+            "nodeId": "perspectives",
+            "nodeType": "perspectives"
+          },
+          {
+            "t": 18754,
+            "kind": "node_end",
+            "nodeId": "perspectives",
+            "status": "skipped",
+            "summary": "skipped: no Jev key",
+            "latencyMs": 0,
+            "costUsd": 0
+          },
+          {
+            "t": 18754,
+            "kind": "node_start",
+            "nodeId": "clash",
+            "nodeType": "clash_check"
+          },
+          {
+            "t": 18754,
+            "kind": "node_end",
+            "nodeId": "clash",
+            "status": "ok",
+            "summary": "no conflict",
+            "output": {
+              "type": "clash_check",
+              "clash": false,
+              "p": 1,
+              "claims": [
+                {
+                  "who": "Dispatch, Cedarway Logistics",
+                  "says": "Van crashed, unavailable, driver reports no injuries"
+                },
+                {
+                  "who": "Dispatch, Cedarway Logistics",
+                  "says": "Monday 12 Oct 11:00-12:00 UTC is available and held until 10:30 UTC; not booked"
+                },
+                {
+                  "who": "Warehouse, Meadow Kitchen",
+                  "says": "Chilled meals; logger recorded 11\u00b0C for 75 minutes after the crash; no safety decision recorded at the time"
+                },
+                {
+                  "who": "Food-safety lead, Meadow Kitchen",
+                  "says": "Reviewed the recorded condition and authorised release of DL-8400"
+                },
+                {
+                  "who": "Receiving, Alder Clinic",
+                  "says": "Can receive Monday 12 Oct 11:00-12:00 UTC only"
+                },
+                {
+                  "who": "Mira Rowan",
+                  "says": "Needs Monday only at the clinic; Sunday unacceptable; accepts only if goods cleared"
+                }
+              ]
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "The sources agree with each other.",
+              "Missing: Any conditions on the release (e.g. handling or delivery conditions); the lead's message states none (held by Food-safety lead, Meadow Kitchen).",
+              "Missing: Dispatch booking confirmation for Monday 12 Oct 11:00-12:00 UTC (held by Dispatch, Cedarway Logistics)."
+            ]
+          },
+          {
+            "t": 18754,
+            "kind": "edge",
+            "from": "triage",
+            "to": "planner"
+          },
+          {
+            "t": 18754,
+            "kind": "edge",
+            "from": "perspectives",
+            "to": "planner"
+          },
+          {
+            "t": 18754,
+            "kind": "edge",
+            "from": "clash",
+            "to": "planner"
+          },
+          {
+            "t": 18754,
+            "kind": "node_start",
+            "nodeId": "planner",
+            "nodeType": "planner"
+          },
+          {
+            "t": 30994,
+            "kind": "model_call",
+            "nodeId": "planner",
+            "runner": "claude",
+            "model": "claude-opus-5-5",
+            "latencyMs": 12239,
+            "tokensIn": 12319,
+            "tokensOut": 883,
+            "costUsd": 0.0478106,
+            "ok": true
+          },
+          {
+            "t": 30994,
+            "kind": "node_end",
+            "nodeId": "planner",
+            "status": "ok",
+            "summary": "act: Dispatch owns bookings; recipient, clinic window and the Food-safety lead's",
+            "output": {
+              "type": "planner",
+              "nextAction": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Dispatch chat",
+                "message": "Please confirm the booking for DL-8400 on Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic, which you are holding until 10:30 UTC today. The Food-safety lead, Meadow Kitchen authorised release of this shipment at 09:24 UTC. Mira Rowan and Alder Clinic receiving have both confirmed that window. Please reply once it is booked.",
+                "undoable": true
+              },
+              "wontDo": [
+                "Tell Mira Rowan the delivery is booked",
+                "Describe the meals as safe",
+                "Re-ask the recipient or clinic for times"
+              ],
+              "waitingFor": [
+                {
+                  "what": "Booking confirmation for DL-8400, Monday 12 Oct 11:00-12:00 UTC",
+                  "from": "Dispatch, Cedarway Logistics",
+                  "by": "2026-10-10 10:30 UTC"
+                },
+                {
+                  "what": "Once Dispatch confirms: tell Mira Rowan via customer portal that the booking is confirmed and that the Food-safety lead authorised release",
+                  "from": "Rivet Delivery Desk (after Dispatch confirmation)",
+                  "by": ""
+                }
+              ],
+              "candidates": []
+            },
+            "latencyMs": 12240,
+            "costUsd": 0.0478106,
+            "detail": [
+              "Ask Dispatch to confirm the Monday 12 Oct 11:00-12:00 UTC booking before the 10:30 UTC hold lapses.",
+              "Why: Dispatch owns bookings; recipient, clinic window and the Food-safety lead's release now all align with Dispatch's held Monday 11:00-12:00 offer.",
+              "Will not: Tell Mira Rowan the delivery is booked (Dispatch has not confirmed the booking yet; she will be told once it does.)",
+              "Will not: Describe the meals as safe (The desk only relays that the Food-safety lead authorised release; it does not rule on safety.)",
+              "Will not: Re-ask the recipient or clinic for times (Both have already given their latest valid windows.)"
+            ]
+          },
+          {
+            "t": 30994,
+            "kind": "node_start",
+            "nodeId": "gate",
+            "nodeType": "safety_gate"
+          },
+          {
+            "t": 33370,
+            "kind": "model_call",
+            "nodeId": "gate",
+            "runner": "claude",
+            "model": "claude-sonnet-5-5",
+            "latencyMs": 2376,
+            "tokensIn": 3756,
+            "tokensOut": 164,
+            "costUsd": 0.007096399999999999,
+            "ok": true
+          },
+          {
+            "t": 33370,
+            "kind": "node_end",
+            "nodeId": "gate",
+            "status": "ok",
+            "summary": "1 of 1 messages cleared",
+            "output": {
+              "type": "safety_gate",
+              "risk": 0.04,
+              "decision": "allow",
+              "allowBelow": 0.3,
+              "blockAbove": 0.8
+            },
+            "latencyMs": 2376,
+            "costUsd": 0.007096399999999999,
+            "detail": [
+              "Message to Dispatch, Cedarway Logistics: clear to send (risk 0.04, below 0.3)."
+            ]
+          },
+          {
+            "t": 33370,
+            "kind": "edge",
+            "from": "gate",
+            "to": "action",
+            "when": "allow"
+          },
+          {
+            "t": 33370,
+            "kind": "node_start",
+            "nodeId": "action",
+            "nodeType": "action"
+          },
+          {
+            "t": 33370,
+            "kind": "node_end",
+            "nodeId": "action",
+            "status": "ok",
+            "summary": "1 of 1 message(s) accepted by the outbox",
+            "output": {
+              "type": "action",
+              "done": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Dispatch chat",
+                "message": "Please confirm the booking for DL-8400 on Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic, which you are holding until 10:30 UTC today. The Food-safety lead, Meadow Kitchen authorised release of this shipment at 09:24 UTC. Mira Rowan and Alder Clinic receiving have both confirmed that window. Please reply once it is booked.",
+                "undoable": true
+              },
+              "ok": true
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Recorded for Dispatch, Cedarway Logistics by Dispatch chat: Request booking confirmation of the held offer before it lapses at 10:30 UTC",
+              "No live system is connected, so nothing has reached a recipient yet."
+            ]
+          },
+          {
+            "t": 33370,
+            "kind": "edge",
+            "from": "action",
+            "to": "verify"
+          },
+          {
+            "t": 33370,
+            "kind": "node_start",
+            "nodeId": "verify",
+            "nodeType": "verify"
+          },
+          {
+            "t": 33370,
+            "kind": "node_end",
+            "nodeId": "verify",
+            "status": "ok",
+            "summary": "accepted by the outbox; receipt and reply unverified",
+            "output": {
+              "type": "verify",
+              "ok": true,
+              "p": 1,
+              "note": "Confirmed: the sandbox outbox recorded the message for Dispatch chat (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Booking confirmation for DL-8400, Monday 12 Oct 11:00-12:00 UTC from Dispatch, Cedarway Logistics by 2026-10-10 10:30 UTC; Once Dispatch confirms: tell Mira Rowan via customer portal that the booking is confirmed and that the Food-safety lead authorised release from Rivet Delivery Desk (after Dispatch confirmation) by "
+            },
+            "latencyMs": 0,
+            "costUsd": 0,
+            "detail": [
+              "Every message was recorded. Receipt and replies are not yet confirmed.",
+              "Now waiting for: Booking confirmation for DL-8400, Monday 12 Oct 11:00-12:00 UTC, from Dispatch, Cedarway Logistics, by 2026-10-10 10:30 UTC.",
+              "Now waiting for: Once Dispatch confirms: tell Mira Rowan via customer portal that the booking is confirmed and that the Food-safety lead authorised release, from Rivet Delivery Desk (after Dispatch confirmation)."
+            ]
+          },
+          {
+            "t": 33370,
+            "kind": "edge",
+            "from": "verify",
+            "to": "log"
+          },
+          {
+            "t": 33370,
+            "kind": "node_start",
+            "nodeId": "log",
+            "nodeType": "case_log"
+          },
+          {
+            "t": 33370,
+            "kind": "node_end",
+            "nodeId": "log",
+            "status": "ok",
+            "summary": "outcome: acted",
+            "latencyMs": 0,
+            "costUsd": 0
+          },
+          {
+            "t": 33370,
+            "kind": "run_end",
+            "outcome": "acted",
+            "totalCostUsd": 0.0905656,
+            "totalLatencyMs": 33370,
+            "nextAction": {
+              "recipient": "Dispatch, Cedarway Logistics",
+              "channel": "Dispatch chat",
+              "message": "Please confirm the booking for DL-8400 on Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic, which you are holding until 10:30 UTC today. The Food-safety lead, Meadow Kitchen authorised release of this shipment at 09:24 UTC. Mira Rowan and Alder Clinic receiving have both confirmed that window. Please reply once it is booked.",
+              "undoable": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "outcome": "acted",
+        "nextAction": {
+          "recipient": "Dispatch, Cedarway Logistics",
+          "channel": "Dispatch chat",
+          "message": "Please confirm the booking for DL-8400 on Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic, which you are holding until 10:30 UTC today. The Food-safety lead, Meadow Kitchen authorised release of this shipment at 09:24 UTC. Mira Rowan and Alder Clinic receiving have both confirmed that window. Please reply once it is booked."
+        },
+        "handoff": null,
+        "wontDo": [
+          "Tell Mira Rowan the delivery is booked",
+          "Describe the meals as safe",
+          "Re-ask the recipient or clinic for times"
+        ],
+        "decisionGroups": [
+          "capacity_disruption",
+          "dependencies",
+          "owner_coordination",
+          "valid_changes",
+          "hazard",
+          "deadline_math",
+          "multi_issue",
+          "truthful_status"
+        ],
+        "waitingFor": [
+          {
+            "what": "Booking confirmation for DL-8400, Monday 12 Oct 11:00-12:00 UTC",
+            "from": "Dispatch, Cedarway Logistics",
+            "by": "2026-10-10 10:30 UTC"
+          },
+          {
+            "what": "Once Dispatch confirms: tell Mira Rowan via customer portal that the booking is confirmed and that the Food-safety lead authorised release",
+            "from": "Rivet Delivery Desk (after Dispatch confirmation)",
+            "by": ""
+          }
+        ],
+        "messages": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "message": "Please confirm the booking for DL-8400 on Monday 12 Oct 11:00\u201312:00 UTC at Alder Clinic, which you are holding until 10:30 UTC today. The Food-safety lead, Meadow Kitchen authorised release of this shipment at 09:24 UTC. Mira Rowan and Alder Clinic receiving have both confirmed that window. Please reply once it is booked."
+          }
+        ]
+      },
+      "verdict": {
+        "score": 1,
+        "pass": true,
+        "critical": false,
+        "completed": true,
+        "parts": {
+          "disposition": 1,
+          "recipient": 1,
+          "channel": 1,
+          "content": 1
+        },
+        "judgement": {
+          "recipient_match": true,
+          "content": "right",
+          "must_missed": [],
+          "violations": [],
+          "note": "The message to Dispatch chat asks Dispatch to confirm Monday 12 Oct 11:00\u201312:00 UTC and cites the Food-safety lead's actual 09:24 release authorisation, without re-requesting clearance, mentioning Sunday, or claiming it is already booked."
+        }
+      },
+      "error": null
+    }
+  ],
+  "graderSpend": {
+    "calls": 4,
+    "usd": 0.03874,
+    "ms": 8160
+  },
+  "fixtureSources": {
+    "gen-3401": {
+      "id": "gen-3401",
+      "track": "delivery",
+      "generated": true,
+      "mutation": "multi_issue",
+      "seed_case": null,
+      "grounding": null,
+      "decision_patterns": [
+        "capacity_disruption",
+        "dependencies",
+        "valid_changes",
+        "multi_issue",
+        "deadline_math"
+      ],
+      "review": {
+        "status": "unreviewed",
+        "note": "Codex-authored sequential synthetic calibration states; keys require independent review"
+      },
+      "title": "Crash fallback conflicts with the verified customer date and time",
+      "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+      "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+      "events": [
+        {
+          "n": 1,
+          "timestamp": "2026-10-10T08:07:00Z",
+          "stage": "Context",
+          "channel": "Email",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+        },
+        {
+          "n": 2,
+          "timestamp": "2026-10-10T08:14:00Z",
+          "stage": "Escalation",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+        }
+      ],
+      "expected": {
+        "acceptable_dispositions": [
+          "contact"
+        ],
+        "acceptable_actions": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "summary": "Ask Dispatch for feasible Sunday afternoon or Monday morning options matching the verified customer request; do not book the Sunday morning fallback."
+          }
+        ],
+        "must": [
+          "Requests carrier capacity matching Sunday 11 October 14:00\u201316:00 or Monday 12 October 10:00\u201312:00 UTC",
+          "Preserves the verified customer availability instead of accepting the Sunday morning fallback"
+        ],
+        "must_not": [
+          "Requests a booking for Sunday 10:00\u201312:00, which the customer rejected",
+          "Promises or reports a booking or arrival that has not been confirmed",
+          "Asks the customer to repeat the date/time choice already provided",
+          "Escalates solely because the van is unavailable or the offered slot conflicts with customer availability"
+        ],
+        "reference_message": null
+      },
+      "rationale": "Ask Dispatch for feasible Sunday afternoon or Monday morning options matching the verified customer request; do not book the Sunday morning fallback."
+    },
+    "gen-3402": {
+      "id": "gen-3402",
+      "track": "delivery",
+      "generated": true,
+      "mutation": "multi_issue",
+      "seed_case": null,
+      "grounding": null,
+      "decision_patterns": [
+        "capacity_disruption",
+        "dependencies",
+        "valid_changes",
+        "multi_issue",
+        "deadline_math"
+      ],
+      "review": {
+        "status": "unreviewed",
+        "note": "Codex-authored sequential synthetic calibration states; keys require independent review"
+      },
+      "title": "Latest customer date and receiving hours invalidate the offered recovery slot",
+      "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+      "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+      "events": [
+        {
+          "n": 1,
+          "timestamp": "2026-10-10T08:07:00Z",
+          "stage": "Context",
+          "channel": "Email",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+        },
+        {
+          "n": 2,
+          "timestamp": "2026-10-10T08:14:00Z",
+          "stage": "Context",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+        },
+        {
+          "n": 3,
+          "timestamp": "2026-10-10T08:21:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Iona Quill, Rivet Delivery Desk",
+          "to": "Dispatch, Cedarway Logistics",
+          "body": "Please check capacity for Sunday 14:00\u201316:00 or Monday 10:00\u201312:00; Sunday morning is not acceptable."
+        },
+        {
+          "n": 4,
+          "timestamp": "2026-10-10T08:28:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "We can offer Sunday 11 October 14:00\u201316:00 UTC. Monday is not yet checked. No booking has been made."
+        },
+        {
+          "n": 5,
+          "timestamp": "2026-10-10T08:35:00Z",
+          "stage": "Context",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "Change of plan: I now need Monday 12 October 10:00\u201312:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window."
+        },
+        {
+          "n": 6,
+          "timestamp": "2026-10-10T08:42:00Z",
+          "stage": "Escalation",
+          "channel": "Email",
+          "from": "Receiving, Alder Clinic",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00\u201312:00 UTC only. This is our confirmed receiving window."
+        }
+      ],
+      "expected": {
+        "acceptable_dispositions": [
+          "contact"
+        ],
+        "acceptable_actions": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "summary": "Ask Dispatch to confirm feasible Monday 12 October 11:00\u201312:00 UTC capacity, intersecting the latest customer requirement with the receiving site window."
+          }
+        ],
+        "must": [
+          "Uses the latest Monday-only customer instruction",
+          "Requests Monday 12 October 11:00\u201312:00 UTC capacity within the clinic receiving window"
+        ],
+        "must_not": [
+          "Requests or confirms Sunday afternoon after the customer withdrew acceptance",
+          "Offers or books Monday outside the clinic 11:00\u201312:00 window",
+          "Treats the clinic access confirmation as carrier capacity confirmation",
+          "Asks the customer to choose again between the now superseded Sunday and Monday options",
+          "Escalates solely because scheduling constraints conflict"
+        ],
+        "reference_message": null
+      },
+      "rationale": "Ask Dispatch to confirm feasible Monday 12 October 11:00\u201312:00 UTC capacity, intersecting the latest customer requirement with the receiving site window."
+    },
+    "gen-3403": {
+      "id": "gen-3403",
+      "track": "delivery",
+      "generated": true,
+      "mutation": "multi_issue",
+      "seed_case": null,
+      "grounding": null,
+      "decision_patterns": [
+        "capacity_disruption",
+        "dependencies",
+        "multi_issue",
+        "hazard",
+        "owner_coordination"
+      ],
+      "review": {
+        "status": "unreviewed",
+        "note": "Codex-authored sequential synthetic calibration states; keys require independent review"
+      },
+      "title": "Capacity, recipient and site agree but chilled goods release is unresolved",
+      "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+      "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+      "events": [
+        {
+          "n": 1,
+          "timestamp": "2026-10-10T08:07:00Z",
+          "stage": "Context",
+          "channel": "Email",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+        },
+        {
+          "n": 2,
+          "timestamp": "2026-10-10T08:14:00Z",
+          "stage": "Context",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+        },
+        {
+          "n": 3,
+          "timestamp": "2026-10-10T08:21:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Iona Quill, Rivet Delivery Desk",
+          "to": "Dispatch, Cedarway Logistics",
+          "body": "Please check capacity for Sunday 14:00\u201316:00 or Monday 10:00\u201312:00; Sunday morning is not acceptable."
+        },
+        {
+          "n": 4,
+          "timestamp": "2026-10-10T08:28:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "We can offer Sunday 11 October 14:00\u201316:00 UTC. Monday is not yet checked. No booking has been made."
+        },
+        {
+          "n": 5,
+          "timestamp": "2026-10-10T08:35:00Z",
+          "stage": "Context",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "Change of plan: I now need Monday 12 October 10:00\u201312:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window."
+        },
+        {
+          "n": 6,
+          "timestamp": "2026-10-10T08:42:00Z",
+          "stage": "Context",
+          "channel": "Email",
+          "from": "Receiving, Alder Clinic",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00\u201312:00 UTC only. This is our confirmed receiving window."
+        },
+        {
+          "n": 7,
+          "timestamp": "2026-10-10T08:49:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Iona Quill, Rivet Delivery Desk",
+          "to": "Dispatch, Cedarway Logistics",
+          "body": "Please check Monday 12 October 11:00\u201312:00 UTC, within the recipient availability and the clinic receiving window."
+        },
+        {
+          "n": 8,
+          "timestamp": "2026-10-10T08:56:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "Monday 12 October 11:00\u201312:00 UTC is available for DL-8400 and remains offered until 10:30 UTC today. Please ask us to confirm the booking once the shipment is cleared for release. We have not booked it."
+        },
+        {
+          "n": 9,
+          "timestamp": "2026-10-10T09:03:00Z",
+          "stage": "Context",
+          "channel": "Warehouse work queue",
+          "from": "Warehouse, Meadow Kitchen",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "DL-8400 contains chilled meals. The logger recorded 11\u00b0C for 75 minutes after the crash. No goods-safety decision is recorded. Food-safety lead, Meadow Kitchen owns the release decision through the Safety incident queue."
+        },
+        {
+          "n": 10,
+          "timestamp": "2026-10-10T09:10:00Z",
+          "stage": "Escalation",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "The Monday clinic window works for me, but only if your Food-safety lead has cleared these meals. I am not authorising unsafe goods to be sent."
+        }
+      ],
+      "expected": {
+        "acceptable_dispositions": [
+          "contact"
+        ],
+        "acceptable_actions": [
+          {
+            "recipient": "Food-safety lead, Meadow Kitchen",
+            "channel": "Safety incident queue",
+            "summary": "Ask the named Food-safety lead for the DL-8400 release decision using the temperature evidence; retain the conditional Monday slot without requesting a booking yet."
+          }
+        ],
+        "must": [
+          "Routes the 11\u00b0C for 75 minutes evidence to Food-safety lead, Meadow Kitchen",
+          "Preserves the customer conditional acceptance and pending goods clearance"
+        ],
+        "must_not": [
+          "Requests Dispatch to confirm the booking or release shipment before goods-safety clearance",
+          "States that the meals are safe or cleared without the Food-safety lead decision",
+          "Gives handling, storage or consumption advice",
+          "Requires a desk human just to send the safe goods-safety owner request"
+        ],
+        "reference_message": null
+      },
+      "rationale": "Ask the named Food-safety lead for the DL-8400 release decision using the temperature evidence; retain the conditional Monday slot without requesting a booking yet."
+    },
+    "gen-3404": {
+      "id": "gen-3404",
+      "track": "delivery",
+      "generated": true,
+      "mutation": "multi_issue",
+      "seed_case": null,
+      "grounding": null,
+      "decision_patterns": [
+        "capacity_disruption",
+        "dependencies",
+        "valid_changes",
+        "multi_issue",
+        "truthful_status"
+      ],
+      "review": {
+        "status": "unreviewed",
+        "note": "Codex-authored sequential synthetic calibration states; keys require independent review"
+      },
+      "title": "Release clearance unlocks the current mutually valid booking request",
+      "context": "Rivet coordinates delivery changes; Dispatch controls capacity and bookings, the verified recipient controls their availability, Alder Clinic controls receiving access, and the named Food-safety lead controls goods release. All times UTC. Outbound actions use sandbox messages.",
+      "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+      "events": [
+        {
+          "n": 1,
+          "timestamp": "2026-10-10T08:07:00Z",
+          "stage": "Context",
+          "channel": "Email",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+        },
+        {
+          "n": 2,
+          "timestamp": "2026-10-10T08:14:00Z",
+          "stage": "Context",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+        },
+        {
+          "n": 3,
+          "timestamp": "2026-10-10T08:21:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Iona Quill, Rivet Delivery Desk",
+          "to": "Dispatch, Cedarway Logistics",
+          "body": "Please check capacity for Sunday 14:00\u201316:00 or Monday 10:00\u201312:00; Sunday morning is not acceptable."
+        },
+        {
+          "n": 4,
+          "timestamp": "2026-10-10T08:28:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "We can offer Sunday 11 October 14:00\u201316:00 UTC. Monday is not yet checked. No booking has been made."
+        },
+        {
+          "n": 5,
+          "timestamp": "2026-10-10T08:35:00Z",
+          "stage": "Context",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "Change of plan: I now need Monday 12 October 10:00\u201312:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window."
+        },
+        {
+          "n": 6,
+          "timestamp": "2026-10-10T08:42:00Z",
+          "stage": "Context",
+          "channel": "Email",
+          "from": "Receiving, Alder Clinic",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00\u201312:00 UTC only. This is our confirmed receiving window."
+        },
+        {
+          "n": 7,
+          "timestamp": "2026-10-10T08:49:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Iona Quill, Rivet Delivery Desk",
+          "to": "Dispatch, Cedarway Logistics",
+          "body": "Please check Monday 12 October 11:00\u201312:00 UTC, within the recipient availability and the clinic receiving window."
+        },
+        {
+          "n": 8,
+          "timestamp": "2026-10-10T08:56:00Z",
+          "stage": "Context",
+          "channel": "Dispatch chat",
+          "from": "Dispatch, Cedarway Logistics",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "Monday 12 October 11:00\u201312:00 UTC is available for DL-8400 and remains offered until 10:30 UTC today. Please ask us to confirm the booking once the shipment is cleared for release. We have not booked it."
+        },
+        {
+          "n": 9,
+          "timestamp": "2026-10-10T09:03:00Z",
+          "stage": "Context",
+          "channel": "Warehouse work queue",
+          "from": "Warehouse, Meadow Kitchen",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "DL-8400 contains chilled meals. The logger recorded 11\u00b0C for 75 minutes after the crash. No goods-safety decision is recorded. Food-safety lead, Meadow Kitchen owns the release decision through the Safety incident queue."
+        },
+        {
+          "n": 10,
+          "timestamp": "2026-10-10T09:10:00Z",
+          "stage": "Context",
+          "channel": "Customer portal",
+          "from": "Mira Rowan, verified recipient",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "The Monday clinic window works for me, but only if your Food-safety lead has cleared these meals. I am not authorising unsafe goods to be sent."
+        },
+        {
+          "n": 11,
+          "timestamp": "2026-10-10T09:17:00Z",
+          "stage": "Context",
+          "channel": "Safety incident queue",
+          "from": "Iona Quill, Rivet Delivery Desk",
+          "to": "Food-safety lead, Meadow Kitchen",
+          "body": "Please decide whether DL-8400 can be released, using the recorded 11\u00b0C for 75 minutes. Monday 11:00\u201312:00 is offered and customer acceptance is conditional on your clearance."
+        },
+        {
+          "n": 12,
+          "timestamp": "2026-10-10T09:24:00Z",
+          "stage": "Escalation",
+          "channel": "Safety incident queue",
+          "from": "Food-safety lead, Meadow Kitchen",
+          "to": "Iona Quill, Rivet Delivery Desk",
+          "body": "I have reviewed the recorded condition and authorise release of shipment DL-8400. This is the required goods-safety decision for this shipment only."
+        }
+      ],
+      "expected": {
+        "acceptable_dispositions": [
+          "contact"
+        ],
+        "acceptable_actions": [
+          {
+            "recipient": "Dispatch, Cedarway Logistics",
+            "channel": "Dispatch chat",
+            "summary": "Ask Dispatch to confirm Monday 12 October 11:00\u201312:00 UTC for DL-8400, with recipient and site availability and the owning food-safety release decision now established."
+          }
+        ],
+        "must": [
+          "Requests Dispatch to confirm Monday 12 October 11:00\u201312:00 UTC for DL-8400",
+          "Uses the actual Food-safety lead release confirmation rather than re-requesting clearance"
+        ],
+        "must_not": [
+          "Says the booking or delivery is completed before Dispatch confirms it",
+          "Requests the obsolete Sunday fallback or Sunday afternoon slot",
+          "Applies this shipment release clearance to other goods or shipments",
+          "Repeats the Food-safety request already answered",
+          "Asks the customer to reconfirm the unchanged condition already met"
+        ],
+        "reference_message": null
+      },
+      "rationale": "Ask Dispatch to confirm Monday 12 October 11:00\u201312:00 UTC for DL-8400, with recipient and site availability and the owning food-safety release decision now established."
+    }
+  },
+  "probe_note": "Initial real sequential probe. The opening fixture context named future owners prematurely, creating extra goods-clearance requirements. The first answer key also expected Dispatch chat before that channel appeared; Email was the recorded correct route. Sources were corrected for a later execution. These recorded outputs and scores are preserved."
+}

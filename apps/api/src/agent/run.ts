@@ -6,6 +6,7 @@ import type { Flow } from "../lib/flow.ts";
 import { runPanel, type PanelResult, type PanelRule } from "../lib/panel.ts";
 import type { DecisionCard, NextAction, NodeOutput, Outcome, StopReason, Trace, TraceEvent } from "../lib/trace.ts";
 import { caseNow, clockBrief, deadlines } from "./clock.ts";
+import { decisionGuidance } from "./decision-patterns.ts";
 import { gate, type GateConfig } from "./gate.ts";
 import type { clash, messageRisk, triage } from "./judge.ts";
 import { bundleText } from "./load.ts";
@@ -274,7 +275,8 @@ export async function ingestStep(s: CaseState, nodeId: string): Promise<void> {
   const res = await s.models.structured({ system: UNDERSTAND_SYSTEM, user: s.block, schema: Understanding, media: bundle.media });
   rec.call("claude", res.usage);
   s.u = s.result.understanding = res.output;
-  rec.end(`${bundle.documents.length} files, ${bundle.media.length} attachments read`);
+  rec.end(`${bundle.documents.length} files, ${bundle.media.length} attachments read`,
+    { type: "ingest", decisionGroups: res.output.decision_groups ?? [], constraints: res.output.constraints ?? [] });
   const u = res.output;
   const onRecord = u.claims.filter((c) => c.basis !== "unverified_claim").length;
   rec.explain([
@@ -422,6 +424,7 @@ export async function planStep(s: CaseState, nodeId: string, stances: Stance[]):
   const notes = [...(result.panel?.ok ? result.panel.notes : []), ...s.extraNotes];
   const brief = s.brief = [
     `<analysis>\n${JSON.stringify(u, null, 1)}\n</analysis>`,
+    `<decision_guidance>\nThese general patterns must be checked against this case, not treated as its answer.\n${decisionGuidance(u.decision_groups)}\n</decision_guidance>`,
     notes.length ? `<reviewer_notes>\n${notes.map((n) => `- ${n}`).join("\n")}\n</reviewer_notes>` : "",
     s.clashed && u.conflicts.length === 0 ? "A quick check suggests two sources in this case may contradict each other. Look for it before deciding." : "",
     clock ? `<clock>\n${clock}\n</clock>` : "",
@@ -453,8 +456,8 @@ export async function planStep(s: CaseState, nodeId: string, stances: Stance[]):
   const d = s.d = decided.output;
   const first = planned(s)[0];
   rec.end(`${d.decision_type}: ${d.why}`, first
-    ? { type: "planner", nextAction: toNext(first), wontDo: d.wont_do.map((w) => w.item), candidates: summariseCandidates(result) }
-    : { type: "planner", wontDo: d.wont_do.map((w) => w.item), candidates: summariseCandidates(result) });
+    ? { type: "planner", nextAction: toNext(first), wontDo: d.wont_do.map((w) => w.item), waitingFor: d.waiting_for, candidates: summariseCandidates(result) }
+    : { type: "planner", wontDo: d.wont_do.map((w) => w.item), waitingFor: d.waiting_for, candidates: summariseCandidates(result) });
   rec.explain([
     d.headline,
     `Why: ${d.why}`,

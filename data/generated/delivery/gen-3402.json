@@ -1,0 +1,104 @@
+{
+  "id": "gen-3402",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "seed_case": null,
+  "grounding": null,
+  "decision_patterns": [
+    "capacity_disruption",
+    "dependencies",
+    "valid_changes",
+    "multi_issue",
+    "deadline_math"
+  ],
+  "review": {
+    "status": "unreviewed",
+    "note": "Codex-authored sequential synthetic calibration states; keys require independent review"
+  },
+  "title": "Latest customer date and receiving hours invalidate the offered recovery slot",
+  "context": "Rivet is the delivery coordination desk. Use the stated owners and restrictions in this case. All times UTC. Actions use sandbox messages.",
+  "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-10T08:07:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Cedarway Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-10T08:14:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Mira Rowan, verified recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-10T08:21:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Cedarway Logistics",
+      "body": "Please check capacity for Sunday 14:00\u201316:00 or Monday 10:00\u201312:00; Sunday morning is not acceptable."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-10T08:28:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Cedarway Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We can offer Sunday 11 October 14:00\u201316:00 UTC. Monday is not yet checked. No booking has been made."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-10T08:35:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Mira Rowan, verified recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Change of plan: I now need Monday 12 October 10:00\u201312:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-10T08:42:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Receiving, Alder Clinic",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00\u201312:00 UTC only. This is our confirmed receiving window."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Cedarway Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Ask Dispatch to confirm feasible Monday 12 October 11:00\u201312:00 UTC capacity, intersecting the latest customer requirement with the receiving site window."
+      }
+    ],
+    "must": [
+      "Uses the latest Monday-only customer instruction",
+      "Requests Monday 12 October 11:00\u201312:00 UTC capacity within the clinic receiving window"
+    ],
+    "must_not": [
+      "Requests or confirms Sunday afternoon after the customer withdrew acceptance",
+      "Offers or books Monday outside the clinic 11:00\u201312:00 window",
+      "Treats the clinic access confirmation as carrier capacity confirmation",
+      "Asks the customer to choose again between the now superseded Sunday and Monday options",
+      "Escalates solely because scheduling constraints conflict",
+      "Introduces a goods-safety release hold before any evidence identifies an applicable goods-safety restriction"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Ask Dispatch to confirm feasible Monday 12 October 11:00\u201312:00 UTC capacity, intersecting the latest customer requirement with the receiving site window."
+}

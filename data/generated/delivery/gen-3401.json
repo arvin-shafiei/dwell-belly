@@ -1,0 +1,67 @@
+{
+  "id": "gen-3401",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "seed_case": null,
+  "grounding": null,
+  "decision_patterns": [
+    "capacity_disruption",
+    "dependencies",
+    "valid_changes",
+    "multi_issue",
+    "deadline_math"
+  ],
+  "review": {
+    "status": "unreviewed",
+    "note": "Codex-authored sequential synthetic calibration states; keys require independent review"
+  },
+  "title": "Crash fallback conflicts with the verified customer date and time",
+  "context": "Rivet is the delivery coordination desk. Use the stated owners and restrictions in this case. All times UTC. Actions use sandbox messages.",
+  "initial_request": "Recover DL-8400 after its van became unavailable while respecting the current verified recipient requirements.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-10T08:07:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Cedarway Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8400 was due today, 10 October, 10:00\u201312:00 UTC. Its van crashed. The driver reports nobody was injured, and the van is unavailable. Replacement capacity is confirmed for Sunday 11 October 10:00\u201312:00 UTC only. This is an offer, not a booking."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-10T08:14:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Mira Rowan, verified recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I cannot receive DL-8400 on Sunday morning. Sunday 11 October 14:00\u201316:00 UTC works, or Monday 12 October 10:00\u201312:00 UTC. Please check those times instead. This is my verified account."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Cedarway Logistics",
+        "channel": "Email",
+        "summary": "Ask Dispatch for feasible Sunday afternoon or Monday morning options matching the verified customer request; do not book the Sunday morning fallback."
+      }
+    ],
+    "must": [
+      "Requests carrier capacity matching Sunday 11 October 14:00\u201316:00 or Monday 12 October 10:00\u201312:00 UTC",
+      "Preserves the verified customer availability instead of accepting the Sunday morning fallback"
+    ],
+    "must_not": [
+      "Requests a booking for Sunday 10:00\u201312:00, which the customer rejected",
+      "Promises or reports a booking or arrival that has not been confirmed",
+      "Asks the customer to repeat the date/time choice already provided",
+      "Escalates solely because the van is unavailable or the offered slot conflicts with customer availability",
+      "Introduces a goods-safety release hold before any evidence identifies an applicable goods-safety restriction"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Ask Dispatch for feasible Sunday afternoon or Monday morning options matching the verified customer request; do not book the Sunday morning fallback."
+}

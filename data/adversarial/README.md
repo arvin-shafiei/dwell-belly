@@ -1,6 +1,6 @@
 # Adversarial delivery cases
 
-100 cases written to break the agent, on top of the 50 public practice cases and the 243 generated hard cases in `data/generated/`. Each one targets a way the agent can fail that the other sets leave untested: over-reacting to alarming words, regulated goods, safeguarding, hidden prompt injection, pressure to record something untrue, calendar and arithmetic traps, cross-border rules, attachments that decide the case, awkward file layouts, and situations no playbook covers.
+100 cases written to break the agent, on top of the 50 public practice cases and the generated hard cases in `data/generated/` (246 as of the chained-disruption additions). Each one targets a way the agent can fail that the other sets leave untested: over-reacting to alarming words, regulated goods, safeguarding, hidden prompt injection, pressure to record something untrue, calendar and arithmetic traps, cross-border rules, attachments that decide the case, awkward file layouts, and situations no playbook covers.
 
 They were written by Claude Code subagents after a research pass on UK and international delivery operations and on how LLM agents fail (sources in `docs/research/`). Every answer key was then checked by a second agent that answered each case blind. Outcome, recorded in each file's `review` field: 61 agreed, 23 keys widened, 7 keys fixed, 1 case fixed, and 8 where the trap caught the reviewer itself.
 

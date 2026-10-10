@@ -1,0 +1,60 @@
+{
+  "base_commit": "d2ec609a1579bda99743bb4e4de0b2587043dc69",
+  "execution_state": "Uncommitted feature-branch source; the execution modules and inputs are pinned by SHA-256 below, not by the base commit",
+  "command": "npm run eval -- --agent flow --set all --ids gen-3301,gen-3302,gen-3303,adv-081,gen-1101,gen-901 --concurrency 2",
+  "evidence_source": "runs/eval-2026-10-10T13-19-25-983Z.json",
+  "limitations": [
+    "Internal model judging against synthetic development keys; not official unseen Reality Test results",
+    "Actions recorded in sandbox, not sent to recipients",
+    "Snapshot decisions from supplied histories, not an autonomous multi-update order lifecycle",
+    "All six passed the 0.7 threshold without prohibited-action failures; no-action and legal controls had partial content credit",
+    "Eval spend field counts grader calls only, not the agent model cost"
+  ],
+  "sha256": {
+    "apps/api/src/agent/run.ts": "b00f56e7fdc02f520ddd913dd7cf95285bc5e158882b0bb052b6696b1917d0a6",
+    "apps/api/src/agent/prompts.ts": "4b12045301881ac66b923b2ec2d56b4d1ed6ae474aa64f551fb300441047558b",
+    "apps/api/src/agent/types.ts": "1d4887466717e4ae57ae0915c59f72d3ce8d139981316143bbe8e2f8ffd2679f",
+    "apps/api/src/agent/models.ts": "a7a87dd4b4d17eab7fddae17c969d6946934f763245b600e2482d9d8cdacac35",
+    "apps/api/src/agent/decision-patterns.json": "61de640b1a495d1f2b617318629888984f70c73d55d004220fdbd7dc3dea22af",
+    "apps/api/src/agent/decision-patterns.ts": "96245db1c2e162e49a70ff0d505486dd9f2476e9fff711281a748369c1df743d",
+    "scripts/eval/agents.mjs": "978720e99a185f562aadf961c4cf2a958b9408faa3f4477c3b629e51af9bbbfb",
+    "scripts/eval/schema.mjs": "894707ad7dde293ba0eca87a312e7c54d76d58bc8781eb3344ea6a3d1b9c9e7c",
+    "scripts/eval/score.mjs": "192630e6409aa17338bfea12b852600e8faf4ebb19def0ea57a886998622c4cd",
+    "scripts/eval/run-eval.mjs": "e84b7ec210eaf603e8a5e532e2e67d8b5c9ad8a501c5445936282674841f5a87",
+    "data/generated/delivery/gen-1101.json": "c6906eeb8b89f3a05338b776a106788d6600be18b9a6aeb1d5c0ed2daea96530",
+    "data/generated/delivery/gen-3301.json": "0af7ca789963e68445fd258b1f482f1c692d43e2b9d9257c7da99130db22fcb9",
+    "data/generated/delivery/gen-3302.json": "61be13aeb7828e30437234914e776591a670ffe0efc7a2deae7ef5d1665cd8ac",
+    "data/generated/delivery/gen-3303.json": "dbdf61a851a57e372a612e57101a5d68f5560baea5a6ee894294f55b587658fa",
+    "data/generated/delivery/gen-901.json": "c467f8c29a25ed48270c2a09f5c86cab09b0740763d914f3ad42378472352523",
+    "data/adversarial/delivery/adv-081.json": "104c7c3864759df0b1d63f992836080c6ec737d8f5acc4c2651009aafed24fea"
+  },
+  "configured_models": {
+    "strong": "claude-opus-5-5",
+    "fast": "claude-sonnet-5-5"
+  },
+  "jev_enabled": false,
+  "architect_check": {
+    "description": "A last-mile delivery coordination desk for ordinary and chilled parcels. Dispatch controls vehicle allocation and bookings. The merchant safety owner decides whether temperature-exposed goods may proceed. Use broad recovery paths for crashes, unavailable vehicles and traffic delays, while handling changed availability and chained issues. Include safe owner requests, missing-information questions and a general path for unfamiliar cases. Incident handling only, no order telemetry monitoring.",
+    "generated_workflow": "architect-flow.json",
+    "execution": "architect-run.json",
+    "case_source": "data/generated/delivery/gen-3303.json",
+    "case_input_fields": [
+      "id",
+      "title",
+      "context",
+      "events"
+    ],
+    "additional_input": {
+      "attachments": [],
+      "mode": "practice",
+      "flow": "The flow property of architect-flow.json"
+    },
+    "result": "Valid 67-node graph; safety request and Warehouse update recorded in sandbox, no Dispatch go-ahead and no human card; not model-scored",
+    "sha256": {
+      "apps/api/src/agent/architect.ts": "7aa2ee06012e5cffab5a5bbd72738543f00cfff7917855207cc1345409b18f79",
+      "apps/api/src/agent/graph.ts": "17d77b0fbdb18dd5162bb932b761f4a4b256c44efa104ca6bd51c91d937c79f6",
+      "apps/api/src/app/api/architect/route.ts": "cc8272a3c44c5b470a45d5d6bba8ccdb66ee7576dba4349bd05b13dad3c7f2b5",
+      "apps/api/src/app/api/cases/route.ts": "5e030af050d58539b565709663d88821ebfd5edf9bf2ea63353be13e7939dec7"
+    }
+  }
+}
