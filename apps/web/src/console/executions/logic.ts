@@ -133,6 +133,9 @@ export function cardOf(output: unknown): DecisionCard | null {
   return {
     routeTo: String(c.routeTo ?? ""),
     summary: String(c.summary ?? ""),
+    whyStopped: c.whyStopped && typeof c.whyStopped === "object" ? c.whyStopped : undefined,
+    evidence: Array.isArray(c.evidence) ? c.evidence : undefined,
+    alreadyDone: Array.isArray(c.alreadyDone) ? c.alreadyDone.map(String) : undefined,
     clash: c.clash,
     tried: Array.isArray(c.tried) ? c.tried.map(String) : [],
     options: Array.isArray(c.options) ? c.options : [],
@@ -227,5 +230,59 @@ export function traceTotals(trace: Trace | null | undefined): { calls: number; t
     tokensIn: calls.reduce((s, c) => s + (c.tokensIn || 0), 0),
     tokensOut: calls.reduce((s, c) => s + (c.tokensOut || 0), 0),
     costUsd: calls.reduce((s, c) => s + (c.costUsd || 0), 0),
+  };
+}
+
+// ---- Decision card view model ----------------------------------------------------------
+
+export type Tone = "muted" | "ok" | "err" | "warn" | "accent" | "info";
+export type Basis = NonNullable<DecisionCard["evidence"]>[number]["basis"];
+
+const STOP_REASON: Record<string, { label: string; tone: Tone }> = {
+  rule_requires_person: { label: "Rule requires a person", tone: "info" },
+  agent_judged_unsafe: { label: "Agent judged unsafe", tone: "warn" },
+  message_too_risky: { label: "Message too risky", tone: "err" },
+  delivery_failed: { label: "Delivery failed", tone: "err" },
+  no_clear_action: { label: "No clear action", tone: "muted" },
+};
+
+export const BASIS: Record<Basis, { label: string; style: "solid" | "blue" | "dashed" }> = {
+  system_record: { label: "system record", style: "solid" },
+  owning_team_statement: { label: "owning team", style: "blue" },
+  unverified_claim: { label: "unverified claim", style: "dashed" },
+};
+
+export interface CardView {
+  /** Coloured reason chip + one line. Falls back to the summary (and clash) for older cards. */
+  headline: { chip: { label: string; tone: Tone } | null; line: string };
+  /** Shown under the headline when the headline came from whyStopped. */
+  summary: string | null;
+  clash: string | null;
+  evidence: { who: string; says: string; basis: Basis; label: string; style: "solid" | "blue" | "dashed" }[];
+  /** ✓ list: alreadyDone, or the older `tried` list. */
+  done: { title: string; items: string[] };
+  options: { id: string; label: string; effect: string | null; undoable: boolean; chosen: boolean }[];
+}
+
+export function cardView(card: DecisionCard): CardView {
+  const ws = card.whyStopped;
+  const reason = ws?.reason ? STOP_REASON[ws.reason] ?? { label: String(ws.reason).replaceAll("_", " "), tone: "muted" as Tone } : null;
+  const hasWs = !!(ws && (ws.line || reason));
+  const evidence = (card.evidence ?? [])
+    .filter((e) => e && (e.says || e.who))
+    .map((e) => {
+      const b = BASIS[e.basis] ?? BASIS.unverified_claim;
+      return { who: String(e.who ?? ""), says: String(e.says ?? ""), basis: (BASIS[e.basis] ? e.basis : "unverified_claim") as Basis, ...b };
+    });
+  const useDone = Array.isArray(card.alreadyDone);
+  return {
+    headline: hasWs ? { chip: reason, line: ws?.line || card.summary } : { chip: null, line: card.summary },
+    summary: hasWs && card.summary && card.summary !== ws?.line ? card.summary : null,
+    clash: card.clash || null,
+    evidence,
+    done: useDone ? { title: "Already done", items: card.alreadyDone! } : { title: "Already tried", items: card.tried ?? [] },
+    options: (card.options ?? []).map((o) => ({
+      id: o.id, label: o.label, effect: o.effect || null, undoable: o.undoable !== false, chosen: card.chosen === o.id,
+    })),
   };
 }

@@ -4,7 +4,7 @@
 import { useState } from "react";
 import type { Trace } from "../types";
 import type { DecisionCard, NextAction } from "../../../../api/src/lib/trace";
-import { buildTimeline, fmtCost, fmtDuration, fmtTokens, gateBar, type GateInfo, type TimelineItem } from "./logic";
+import { buildTimeline, cardView, fmtCost, fmtDuration, fmtTokens, gateBar, type CardView, type GateInfo, type TimelineItem } from "./logic";
 import { Badge, C } from "./ui";
 
 type NodeItem = Extract<TimelineItem, { kind: "node" }>;
@@ -59,7 +59,28 @@ export function GateBar({ gate }: { gate: GateInfo }) {
   );
 }
 
+function BasisQuote({ e }: { e: CardView["evidence"][number] }) {
+  const ring =
+    e.style === "solid" ? "border border-solid border-white/25 bg-white/[0.04]"
+    : e.style === "blue" ? "border border-solid border-[#6aa7ff]/50 bg-[#6aa7ff]/[0.06]"
+    : "border border-dashed border-[#f5b83d]/60 bg-[#f5b83d]/[0.05]";
+  const chip =
+    e.style === "solid" ? "bg-white/85 text-[#1f1f23]"
+    : e.style === "blue" ? "bg-[#6aa7ff]/20 text-[#6aa7ff]"
+    : "border border-dashed border-[#f5b83d]/70 text-[#f5b83d]";
+  return (
+    <li className={`rounded-md px-2.5 py-1.5 ${ring}`}>
+      <div className="flex items-center gap-2">
+        <span className="min-w-0 truncate text-[11px] font-medium text-white/85">{e.who}</span>
+        <span className={`ml-auto shrink-0 rounded px-1.5 py-px text-[9px] font-semibold uppercase tracking-wide ${chip}`}>{e.label}</span>
+      </div>
+      <q className="mt-0.5 block text-xs leading-relaxed text-white/70 before:content-['“'] after:content-['”']">{e.says}</q>
+    </li>
+  );
+}
+
 export function DecisionCardView({ card }: { card: DecisionCard }) {
+  const v = cardView(card);
   return (
     <div className="mt-2 overflow-hidden rounded-lg bg-[#2a2a30] ring-1 ring-[#f5b83d]/40">
       <div className="flex items-center justify-between gap-2 bg-[#f5b83d]/10 px-3 py-1.5">
@@ -69,39 +90,63 @@ export function DecisionCardView({ card }: { card: DecisionCard }) {
           {card.deadlineMins ? <> · within {card.deadlineMins} min</> : null}
         </span>
       </div>
-      <div className="space-y-2 p-3 text-xs text-white/75">
-        {card.summary && <p className="leading-relaxed text-white/90">{card.summary}</p>}
-        {card.clash && (
+      <div className="space-y-2.5 p-3 text-xs text-white/75">
+        {(v.headline.chip || v.headline.line) && (
+          <div className="flex flex-wrap items-start gap-2">
+            {v.headline.chip && <Badge tone={v.headline.chip.tone}>{v.headline.chip.label}</Badge>}
+            {v.headline.line && <p className="min-w-0 flex-1 text-[13px] font-medium leading-snug text-white">{v.headline.line}</p>}
+          </div>
+        )}
+        {v.summary && <p className="leading-relaxed text-white/70">{v.summary}</p>}
+        {v.clash && (
           <p>
             <span className="text-white/45">Clash: </span>
-            {card.clash}
+            {v.clash}
           </p>
         )}
-        {card.tried.length > 0 && (
+        {v.evidence.length > 0 && (
           <div>
-            <div className="text-white/45">Already tried</div>
-            <ul className="mt-0.5 list-disc pl-5">
-              {card.tried.map((t, i) => (
-                <li key={i}>{t}</li>
+            <div className="mb-1 text-white/45">Evidence</div>
+            <ul className="space-y-1">
+              {v.evidence.map((e, i) => (
+                <BasisQuote key={i} e={e} />
               ))}
             </ul>
           </div>
         )}
-        {card.options.length > 0 && (
+        {v.done.items.length > 0 && (
+          <div>
+            <div className="mb-0.5 text-white/45">{v.done.title}</div>
+            <ul className="space-y-0.5">
+              {v.done.items.map((t, i) => (
+                <li key={i} className="flex gap-1.5">
+                  <span className="text-[#3ecf8e]">✓</span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {v.options.length > 0 && (
           <div>
             <div className="mb-1 text-white/45">Options</div>
-            <div className="flex flex-wrap gap-1.5">
-              {card.options.map((o) => (
-                <span
+            <ul className="space-y-1">
+              {v.options.map((o) => (
+                <li
                   key={o.id}
-                  className={`inline-flex items-center gap-1 rounded-md px-2 py-1 ring-1 ring-inset ${card.chosen === o.id ? "bg-[#ff6a1a]/15 text-white ring-[#ff6a1a]/60" : "bg-white/5 ring-white/10"}`}
+                  className={`rounded-md px-2.5 py-1.5 ring-1 ring-inset ${o.chosen ? "bg-[#ff6a1a]/15 ring-[#ff6a1a]/60" : "bg-white/5 ring-white/10"}`}
                 >
-                  {o.label}
-                  {!o.undoable && <span className="text-[9px] uppercase text-[#ff5c5c]/80">not undoable</span>}
-                  {card.chosen === o.id && <span className="text-[9px] uppercase text-[#ff6a1a]">chosen</span>}
-                </span>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="font-medium text-white/90">{o.label}</span>
+                    <span className="ml-auto flex gap-1">
+                      {o.chosen && <Badge tone="accent">chosen</Badge>}
+                      <Badge tone={o.undoable ? "ok" : "err"}>{o.undoable ? "undoable" : "irreversible"}</Badge>
+                    </span>
+                  </div>
+                  {o.effect && <p className="mt-0.5 text-[11px] leading-relaxed text-white/55">{o.effect}</p>}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         )}
         {card.wouldChangeMyMind && (
