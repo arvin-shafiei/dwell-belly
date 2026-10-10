@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { loadFolder } from "./load.ts";
+import { caseKeyterms, withReferenceCheck } from "../voice/references.ts";
 
 async function caseFolder(files: Record<string, Uint8Array | string>): Promise<string> {
   const dir = await mkdtemp(path.join(tmpdir(), "voice-case-"));
@@ -38,6 +39,8 @@ test("audio is transcribed with the case's references as keyterms, even when it 
   try {
     let keyterms: string[] | undefined;
     const bundle = await loadFolder(dir, {
+      keyterms: caseKeyterms,
+      checkReferences: withReferenceCheck,
       transcribe: async (_audio, _name, opts) => {
         keyterms = opts?.keyterms;
         return { ok: true, text: "At the gate with DL6210 now.", language: "en", confidence: 0.9 };

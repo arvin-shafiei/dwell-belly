@@ -89,10 +89,25 @@ Voice is a channel the agent chooses, not a separate app. Everything said by voi
 - Simulated voices are refused outside demo mode, and a run that heard one is marked `synthetic`.
 - The ElevenLabs key stays on the server; the browser gets a short-lived call token.
 
+**Accuracy.** Speech-to-text is case-aware:
+- The case's own references, times and people are sent to ElevenLabs Scribe as keyterms.
+- Live notes are transcribed in English.
+- Any reference in a transcript that doesn't exist in the case is flagged as a possible mis-hearing, for the agent to confirm rather than act on.
+- On calls, the agent reads references back before relying on them.
+
+`node --env-file=apps/api/.env.local scripts/voice/accuracy.mjs` measures this on 14 real case messages spoken in 3 accents (American, Australian, British). Last run, 10 Oct:
+
+| | Before (no case context) | Case-aware |
+|---|---|---|
+| Word error rate, ordinary messages | 0.0% | 0.0% |
+| Word error rate, reference-heavy messages | 22.0% | 5.1% |
+| Critical details kept (references, times, numbers) | 76.4% | 97.2% (the 2 misses were digits written as words) |
+| Mis-heard reference codes | 3 | 0 |
+
 **Setup:**
 1. Put `ELEVENLABS_API_KEY` in `apps/api/.env.local`.
 2. Run `node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs` and add the printed `ELEVENLABS_AGENT_ID` to the same file.
-3. Check it with `node --env-file=apps/api/.env.local scripts/voice/smoke.mjs`.
+3. Check it with `node --env-file=apps/api/.env.local scripts/voice/smoke.mjs`, and measure accuracy with `scripts/voice/accuracy.mjs`.
 4. Try everything at `http://localhost:3000/voice-bench` (unlinked dev page).
 
 Code: `apps/api/src/voice/`, `apps/api/src/app/api/voice/` and `apps/web/src/voice/`. Tests: `npm run test:voice`, `npm run test:agent` and `npm test -w web`.

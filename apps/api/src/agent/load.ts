@@ -4,7 +4,6 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import type { CaseBundle } from "./types.ts";
-import { caseKeyterms, withReferenceCheck } from "../voice/references.ts";
 
 const TEXT = new Set([".md", ".txt", ".csv", ".json", ".eml", ".html", ".log", ".yaml", ".yml", ".tsv", ""]);
 const MEDIA: Record<string, string> = {
@@ -38,7 +37,18 @@ async function walk(dir: string): Promise<string[]> {
   return out.sort();
 }
 
-export async function loadFolder(dir: string, options: { transcribe?: TranscribeFn } = {}): Promise<CaseBundle> {
+/**
+ * Optional audio support, supplied by the caller (the voice layer) so this module has no runtime
+ * dependencies: `keyterms` picks the case's references to guide transcription, and `checkReferences`
+ * marks references a transcript contains that the case does not.
+ */
+export interface AudioOptions {
+  transcribe?: TranscribeFn;
+  keyterms?: (caseText: string) => string[];
+  checkReferences?: (transcript: string, caseText: string) => string;
+}
+
+export async function loadFolder(dir: string, options: AudioOptions = {}): Promise<CaseBundle> {
   const bundle: CaseBundle = { id: path.basename(dir), title: path.basename(dir), documents: [], media: [], unreadable: [] };
   const files = await walk(dir);
   let textBudget = MAX_CASE_CHARS;
@@ -80,7 +90,7 @@ export async function loadFolder(dir: string, options: { transcribe?: Transcribe
     }
   }
   const caseText = bundle.documents.map((d) => d.text).join("\n");
-  const keyterms = caseKeyterms(caseText);
+  const keyterms = options.keyterms?.(caseText) ?? [];
   for (const { file, name } of audioQueue) {
     try {
       if (!options.transcribe) { bundle.unreadable.push(`${name} (audio, not transcribed: no speech-to-text key)`); continue; }
@@ -91,7 +101,7 @@ export async function loadFolder(dir: string, options: { transcribe?: Transcribe
       const heard = await options.transcribe(new Uint8Array(await readFile(file)), name, { keyterms }).catch(() => null);
       if (!heard || !heard.ok) { bundle.unreadable.push(`${name} (audio, transcription failed)`); continue; }
       // A recording is the speaker's account of events, never a record, whoever the speaker is.
-      const checked = withReferenceCheck(heard.text, caseText);
+      const checked = options.checkReferences?.(heard.text, caseText) ?? heard.text;
       const body = heard.confidence < UNCLEAR_BELOW ? `[unclear transcription] ${checked}` : checked;
       const text = `Audio attachment transcribed automatically. What follows is a claim by the speaker, not a record.\n\n${body}`;
       const take = Math.min(text.length, MAX_TEXT_CHARS, textBudget);

@@ -15,6 +15,7 @@ import { renderAnswer, renderReasoning } from "./report.ts";
 import { runCase, savedResult } from "./run.ts";
 import { findTools } from "./tools.ts";
 import { transcribe } from "../voice/elevenlabs.ts";
+import { caseKeyterms, withReferenceCheck } from "../voice/references.ts";
 
 const FLOW_FILE = path.resolve(import.meta.dirname, "..", "..", "flows", "default-incident.json");
 const RETRY_PAUSE_MS = 20_000;
@@ -86,7 +87,7 @@ async function main() {
         if (ended && ended.outcome !== "error") { lines.set(name, `| ${name} | kept from an earlier run | ${ended.outcome} | | |`); return; }
       }
       if (refused) throw new Error(`not attempted: the model account refused an earlier case (${refused})`);
-      const bundle = await loadFolder(path.join(casesDir, name), { transcribe: transcribeAudio });
+      const bundle = await loadFolder(path.join(casesDir, name), { transcribe: transcribeAudio, keyterms: caseKeyterms, checkReferences: withReferenceCheck });
       // Tools shipped with a case are recorded, not called: a manifest is case content, and an
       // unknown endpoint is not somewhere to send a customer's details unprompted.
       const found = await findTools(path.join(casesDir, name)).catch(() => ({ tools: [], unparsed: [] }));
