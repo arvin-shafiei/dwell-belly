@@ -150,25 +150,45 @@ export function stsFrameGeometry() {
   const span = l1 - l0;
   for (const sz of [-1, 1]) {
     p.push([box(span + 1.3, 1.9, 1.6, (l0 + l1) / 2, top, sz * hz), STS_TEAL]);
-    p.push([box(span, 0.9, 0.9, (l0 + l1) / 2, 15, sz * hz), STS_TEAL]); // above the straddle carriers
+    p.push([box(span, 0.9, 0.9, (l0 + l1) / 2, 18, sz * hz), STS_TEAL]); // above the straddle carriers
   }
-  // boom: backreach -> outreach over the ship
+  // boom: the fixed backreach over the apron; the outreach is a separate hinged mesh (stsBoomGeometry)
   const x0 = 306;
-  const x1 = 394;
-  for (const sz of [-1, 1]) p.push([box(x1 - x0, 2.2, 0.9, (x0 + x1) / 2, by, sz * 1.7), WHITE]);
-  for (let x = x0 + 2; x < x1; x += 6) p.push([box(0.4, 0.4, 3.4, x, by + 1.2, 0), WHITE]);
-  p.push([box(1.6, 3.2, 4.4, x1, by, 0), WHITE]);
+  const hx = STS_HINGE_X;
+  for (const sz of [-1, 1]) p.push([box(hx - x0, 2.2, 0.9, (x0 + hx) / 2, by, sz * 1.7), WHITE]);
+  for (let x = x0 + 2; x < hx; x += 6) p.push([box(0.4, 0.4, 3.4, x, by + 1.2, 0), WHITE]);
   p.push([box(12, 4.5, 7, 312, by + 3.4, 0), WHITE]);
   p.push([box(12.1, 0.9, 7.1, 312, by + 3, 0), ORANGE]);
   const apex: [number, number] = [(l0 + l1) / 2, 50];
   for (const sz of [-1, 1]) {
     for (const lx of STS.legX) p.push([beam([lx, by, sz * 4.6], [apex[0], apex[1], sz * 1.2], 1.0), WHITE]);
-    p.push([beam([apex[0], apex[1], sz * 1.2], [x1 - 1, by + 1, sz * 1.7], 0.35), WHITE]);
     p.push([beam([apex[0], apex[1], sz * 1.2], [x0 + 3, by + 1, sz * 1.7], 0.35), WHITE]);
-    p.push([beam([apex[0], apex[1] - 6, sz * 1.4], [362, by + 1, sz * 1.7], 0.3), WHITE]);
   }
   p.push([box(2, 1.4, 3.8, apex[0], apex[1] + 0.4, 0), ORANGE]);
   return mergeColored(p);
+}
+
+/** Hinge of the outreach boom (world x; y = boom girder centre). */
+export const STS_HINGE_X = 341;
+export const STS_BOOM_LEN = 54;
+/** Outreach boom, local origin at the hinge, extending along +x (rotate about z to raise it). */
+export function stsBoomGeometry() {
+  const p: Part[] = [];
+  const L = STS_BOOM_LEN;
+  for (const sz of [-1, 1]) p.push([box(L, 2.2, 0.9, L / 2, 0, sz * 1.7), WHITE]);
+  for (let x = 2; x < L; x += 6) p.push([box(0.4, 0.4, 3.4, x, 1.2, 0), WHITE]);
+  p.push([box(1.6, 3.2, 4.4, L, 0, 0), WHITE]);
+  p.push([box(1.7, 0.6, 4.5, L, 1.5, 0), ORANGE]);
+  // tie bars riding on the boom (the forestays' lower ends)
+  for (const sz of [-1, 1]) p.push([beam([L - 2, 1, sz * 1.7], [L * 0.45, 7, sz * 1.4], 0.3), WHITE]);
+  return mergeColored(p);
+}
+/** A small floodlight box under a spreader head. */
+export function spreaderLampGeometry() {
+  const parts = [box(0.9, 0.25, 0.9, -3.5, -0.15, 0), box(0.9, 0.25, 0.9, 3.5, -0.15, 0)];
+  const m = mergeGeometries(parts.map((g) => g.toNonIndexed()), false)!;
+  for (const g of parts) g.dispose();
+  return m;
 }
 export function stsTrolleyGeometry() {
   const y = STS.boomY - 0.8;
@@ -184,21 +204,24 @@ export function stsTrolleyGeometry() {
 // Straddle carrier + reach stacker (local, forward +z)
 // =====================================================================================================
 export function straddleGeometry() {
+  // a 1-over-3 straddle carrier: ~15 m tall, spreader travels up to ~11 m
   const Y = "#f0b21b";
   const p: Part[] = [];
+  const top = 13.2;
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
-      p.push([box(0.6, 8.6, 0.7, sx * 2.2, 5.1, sz * 3.6), Y]);
+      p.push([box(0.6, top - 1, 0.7, sx * 2.2, (top - 1) / 2 + 0.6, sz * 3.6), Y]);
       p.push([box(0.9, 1.2, 1.6, sx * 2.2, 0.6, sz * 3.6), "#222"]);
     }
-    p.push([box(0.7, 1.1, 8.4, sx * 2.2, 9.6, 0), Y]);
+    p.push([box(0.7, 1.1, 8.4, sx * 2.2, top, 0), Y]);
     p.push([box(0.5, 0.8, 7.6, sx * 2.2, 1.6, 0), Y]);
-    p.push([box(1.4, 1.8, 3.2, sx * 2.2, 11, -1.4), "#d8d8d2"]);
+    p.push([box(0.4, 0.4, 7.6, sx * 2.2, top * 0.55, 0), Y]);
+    p.push([box(1.4, 1.8, 3.2, sx * 2.2, top + 1.4, -1.4), "#d8d8d2"]);
   }
-  for (const sz of [-1, 1]) p.push([box(5.1, 0.8, 0.8, 0, 9.8, sz * 3.6), Y]);
-  p.push([box(1.8, 2.0, 1.8, -2.2, 11.3, 3.2), "#eeeeea"]);
-  p.push([box(1.85, 0.8, 1.85, -2.2, 11.6, 3.2), "#23313f"]);
-  p.push([box(0.4, 0.4, 0.4, 2.2, 12.3, 3.6), ORANGE]);
+  for (const sz of [-1, 1]) p.push([box(5.1, 0.8, 0.8, 0, top + 0.2, sz * 3.6), Y]);
+  p.push([box(1.8, 2.0, 1.8, -2.2, top + 1.7, 3.2), "#eeeeea"]);
+  p.push([box(1.85, 0.8, 1.85, -2.2, top + 2.0, 3.2), "#23313f"]);
+  p.push([box(0.4, 0.4, 0.4, 2.2, top + 0.9, 3.6), ORANGE]);
   return mergeColored(p);
 }
 
