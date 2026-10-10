@@ -1,0 +1,115 @@
+{
+  "id": "gen-2803",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": "seed-web-036",
+  "title": "Case: One carton of a two-carton cot order has not moved from a carrier hub for three weeks",
+  "context": "DL-952 is a Tallowmere Goods cot shipped as two cartons. Carton 1 was delivered on 1 April. Carton 2 was last scanned at the carrier's Vennock hub on 31 March.",
+  "initial_request": "THREE WEEKS. I HAVE HALF A COT IN MY HALLWAY AND THE OTHER HALF IS IN YOUR OWN POST ROOM. YOU KNOW WHERE IT IS!!! THE TRACE IS 'CLOSED' AND NOTHING MOVED. I AM DUE ON THE 9TH OF MAY. I HAVE BEEN TOLD IT'S ON A VAN, IT'S DAMAGED, IT WAS NEVER TWO BOXES. PLEASE PLEASE JUST SOMEBODY WALK TO THAT ROOM AND PUT IT ON A LORRY. I CAN'T KEEP RINGING.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-06T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-952 (TG-952), two cartons shipped together 30 March. Carton 1 of 2 delivered 1 April. Carton 2 of 2: last scan 31 March, 'held - Vennock hub, internal mailroom, bay M4'. No movement since."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-07T08:30:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "Please open a trace on carton 2 of 2, DL-952, last scanned at Vennock hub internal mailroom, bay M4, on 31 March, and arrange its onward movement to the recipient."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-07T09:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace TR-952 opened on DL-952 carton 2 of 2. Target 14 days."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-14T13:20:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Rosalind Achterberg, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Caller: I've rung the carrier three times. First man said it's on a van. A woman on Thursday said it was damaged and going back to the shop. Today someone told me it was never sent as two boxes. I have one box of cot sides in my hall. Which is it? Desk: a trace is open and due by 21 April. Caller: so nobody knows."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-21T09:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TR-952 closed automatically: 14 days with no movement scan. Location on record unchanged: Vennock hub, internal mailroom, bay M4. Outcome: none recorded."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-21T10:05:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "TR-952 has closed with no outcome and the carton is still recorded in bay M4 at Vennock. Why was it closed without the carton moving, and what gets it out?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-21T15:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "A trace follows scans. An item in a hub's internal mailroom isn't in the parcel flow, so there is nothing for us to follow, and a new trace will time out exactly the same way. Items held off-flow at a hub belong to the Recovery team. They take requests on the Depot work queue with the hub and bay. Nobody here has seen the carton, so we can't tell you why it's in there or whether it still has a label on it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-22T07:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Rosalind Achterberg, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "THREE WEEKS. I HAVE HALF A COT IN MY HALLWAY AND THE OTHER HALF IS IN YOUR OWN POST ROOM. YOU KNOW WHERE IT IS!!! THE TRACE IS 'CLOSED' AND NOTHING MOVED. I AM DUE ON THE 9TH OF MAY. I HAVE BEEN TOLD IT'S ON A VAN, IT'S DAMAGED, IT WAS NEVER TWO BOXES. PLEASE PLEASE JUST SOMEBODY WALK TO THAT ROOM AND PUT IT ON A LORRY. I CAN'T KEEP RINGING."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Recovery team, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Ask Recovery to physically locate carton 2 of 2 in bay M4 at Vennock hub, check its label, and say how it will be moved on."
+      }
+    ],
+    "must": [
+      "Gives the Recovery team the location on record (Vennock hub, internal mailroom, bay M4) and that carton 2 of 2 of DL-952 has not moved since 31 March",
+      "Says trace TR-952 closed automatically with no outcome and without the carton moving, and does not present the trace as having resolved anything",
+      "Asks Recovery to find the carton, check whether it still has a readable label, and say how it gets back into the flow, raising the label as a question and not as an established cause",
+      "Tells the team the recipient has waited three weeks, has been given three different stories by phone agents, and needs the cot before a due date of 9 May, so they can prioritise"
+    ],
+    "must_not": [
+      "Opens, or asks the Parcel trace team to open, a new trace on the carton",
+      "Tells the recipient the carton is moving, has been found, or will arrive by a given date",
+      "Describes TR-952 as completed, resolved or successful",
+      "Sends the recipient a reply that only says the trace has closed and asks her to keep waiting"
+    ],
+    "reference_message": "Request for an off-flow item at Vennock hub. DL-952 (TG-952) is a cot shipped as two cartons on 30 March. Carton 1 was delivered 1 April. Carton 2 of 2 was last scanned 31 March as 'held - Vennock hub, internal mailroom, bay M4' and has not moved since. Trace TR-952 closed automatically on 21 April after 14 days with no movement scan and no outcome; the Parcel trace team say a mailroom item is outside the parcel flow and is yours. Nobody has physically seen the carton. Could someone go to bay M4, confirm it is there, check whether it still has a readable label (nobody has been able to tell us), and say what is needed to put it back on a trunk to the recipient? Please treat this as urgent: the recipient has been waiting three weeks with half a cot, has been told three different things by phone agents, and her baby is due on 9 May. A reference and the time of your first update would let me tell her something true."
+  },
+  "rationale": "The desk's trace request failed: it was auto-closed with no outcome and the carton never moved, and the trace team has said a second trace would time out the same way. They have also named the working route, the Recovery team on the Depot work queue. The recovery is to send it there with the bay location and the open question about the label, not to repeat the path that just failed or tell the recipient anything is moving.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent the bay M4 recovery request to the Recovery team on the Depot work queue with the label question and the 9 May date; matches the key."
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "id": "gen-2403",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "seed_case": null,
+  "grounding": "seed-web-032",
+  "title": "Case: Birthday cake sent on a paid two-day service surfaces a week later at a pickup point",
+  "context": "A parent ordered a celebration cake from Brineleaf Pantry (order BP-947, shipment DL-947) for delivery to her adult daughter on a paid two-day service. The desk has been following the parcel for five days.",
+  "initial_request": "I'm sorry this is long, I've written it out so many times now I've lost track of who knows what. I ordered Petra's cake on the 11th and paid extra for the two-day service so it would be there for her birthday on the 14th. On the 16th it was at Northgate. On the 17th it was at Ferrow. On the 18th it was at Northgate again, or still, nobody could say. On the 20th I was told a Mrs Harrow had signed for it, and my daughter lives alone and knows no Mrs Harrow. Yesterday it turns up in a shop neither of us has heard of, squashed flat. I'm not even asking about the cake any more, the damage people have that. I paid for two days. It took seven, it went somewhere nobody told us about, a stranger signed for it and it's ruined. I would like the delivery charge back. That's all. The man on the phone yesterday told me that because it's been 'located and signed for' there is nothing to refund. Please don't say that to me again.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order notifications, Brineleaf Pantry",
+      "to": "Maud Ellingsworth, sender",
+      "body": "Good news! Order BP-947 has left our bakery with Plover Arc's two-day service, shipment DL-947, and is due with Petra Ellingsworth on 03-14. Planning ahead? Take 10% off any seasonal box this month with the code in your account. You are receiving this because you placed an order with Brineleaf Pantry."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-16T10:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maud Ellingsworth, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My daughter's birthday cake was due on Saturday the 14th. I paid for the two-day delivery. It is now Monday and tracking says it is at somewhere called Northgate hub. Can somebody find it please."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-16T10:13:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Automated acknowledgement, Rivet Delivery Desk",
+      "to": "Maud Ellingsworth, sender",
+      "body": "Thank you for your message. A coordinator will review it during desk hours. Please do not reply to this notice."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-16T10:40:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "DL-947 (Brineleaf order BP-947), paid two-day service, was due 03-14 and has not arrived. Tracking shows Northgate hub. Please trace and confirm where it physically is."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-17T15:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947: last physical scan Northgate hub 03-13. System location today reads Ferrow depot, not yet confirmed by a scan. Trace TRC-947 is open. Separately, your query about the pallet on DL-952 was answered on its own thread this morning, please don't merge the two."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-18T08:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maud Ellingsworth, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Now it says Northgate again. Yesterday it said Ferrow. The birthday was Saturday. I know you're only passing things on but which is it?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-19T07:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "All desks: weekend cut-off for same-week collections moves to 14:00 from Monday. Update your templates. No reply needed."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-20T16:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947: handover record shows signed for on 03-19, signature name 'Harrow'. On that basis the consignment is treated as delivered and trace TRC-947 has been closed."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-21T09:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maud Ellingsworth, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Petra has not signed for anything and has nothing. She lives on her own. There is no Harrow at her address. Who is this person?"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-21T13:40:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Pickup-point staff, Colby Lane Stores",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We've got DL-947 here. It came in on the 19th in a batch and one of our lot signed the driver's handheld for the whole batch, that's the Harrow on your record. It isn't addressed to us so nobody got a collection notice. Box is crushed down one side and there's icing come through the cardboard. It's on the back shelf. Also still waiting on the label printer roll we were promised a fortnight ago if you can chase that."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-21T15:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk; Maud Ellingsworth, sender",
+      "body": "Damage claim DMG-947 is open for the contents of BP-947, from the pickup point's report and photographs. We will decide on the contents by 03-24 and write to Mrs Ellingsworth directly. We do not handle delivery charges. A refund of the paid two-day delivery charge is decided by our Refunds team, on a written request that sets out the carrier's timeline for the shipment. Nobody has sent them one for this order."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-22T18:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Maud Ellingsworth, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm sorry this is long, I've written it out so many times now I've lost track of who knows what. I ordered Petra's cake on the 11th and paid extra for the two-day service so it would be there for her birthday on the 14th. On the 16th it was at Northgate. On the 17th it was at Ferrow. On the 18th it was at Northgate again, or still, nobody could say. On the 20th I was told a Mrs Harrow had signed for it, and my daughter lives alone and knows no Mrs Harrow. Yesterday it turns up in a shop neither of us has heard of, squashed flat. I'm not even asking about the cake any more, the damage people have that. I paid for two days. It took seven, it went somewhere nobody told us about, a stranger signed for it and it's ruined. I would like the delivery charge back. That's all. The man on the phone yesterday told me that because it's been 'located and signed for' there is nothing to refund. Please don't say that to me again."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Refunds team, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Send the written delivery-charge request for BP-947 with the carrier timeline: due 03-14 on the paid two-day service, signed for 03-19 by pickup-point staff, found crushed at Colby Lane Stores, never delivered to the recipient."
+      }
+    ],
+    "must": [
+      "Sends Brineleaf's Refunds team a written request to decide on the two-day delivery charge for BP-947, setting out the carrier timeline: due 03-14, signed for on 03-19 by a member of pickup-point staff and not by the recipient, located at Colby Lane Stores on 03-21, crushed, with no collection notice ever sent.",
+      "Keeps the delivery-charge request separate from the contents claim DMG-947, which is already open with Damage intake.",
+      "Tells the Refunds team that the sender has already been told by phone that nothing is refundable because the parcel was 'located and signed for', shows from the timeline that it reached neither the recipient nor her address and surfaced days after the due date she paid for, and asks them to give their decision to her or to the desk."
+    ],
+    "must_not": [
+      "Tells Maud that no refund is due, or that the service was completed, because the parcel was located or signed for.",
+      "Promises or implies that the delivery charge will be refunded, or gives an amount or date.",
+      "Opens a second damage claim or sends the contents damage to Damage intake again.",
+      "Calls the signature fraud or theft, or tells Maud the parcel was delivered to her daughter.",
+      "Acts on the unrelated items in the thread: the DL-952 pallet query, the dispatch cut-off notice or the pickup point's label printer."
+    ],
+    "reference_message": "Request for a decision on the delivery charge for BP-947 (Plover Arc DL-947), as Damage intake advised you need this in writing. Mrs Maud Ellingsworth paid for the two-day service so that a cake would reach her daughter Petra on 03-14. Carrier timeline: last physical scan Northgate hub 03-13; system location moved between Northgate and Ferrow from 03-16 to 03-18 without a confirming scan; on 03-20 Delivery investigations reported it signed for on 03-19 by 'Harrow' and closed the trace as delivered. On 03-21 Colby Lane Stores, a pickup point, told us the parcel is with them: one of their staff signed for a batch, it is not addressed to the shop, and no collection notice was sent. The box is crushed. It has not reached the recipient. The contents are being handled separately by Damage intake under DMG-947; this request is only about the delivery charge. Mrs Ellingsworth has chased this for a week, the birthday has passed, and she was told by phone that nothing can be refunded because the parcel was located and signed for. Please make your decision and let her know directly."
+  },
+  "rationale": "Most of the thread is location updates, auto-replies and other people's business. The two facts that matter are the pickup point's account of the signature and the crushed box, and Damage intake's note that the delivery charge is decided by the Refunds team on a written request nobody has sent. The desk cannot refund the charge and must not repeat the 'located and signed for' brush-off; it can put the request in front of the team that decides.",
+  "review": {
+    "status": "widened",
+    "note": "Recipient and channel matched; the third must item required the birthday and the week of chasing to be spelled out, which a fair reviewer would not insist on when the dated timeline shows both, so it was rewritten."
+  }
+}

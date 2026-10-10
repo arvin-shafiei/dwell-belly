@@ -1,0 +1,142 @@
+{
+  "id": "gen-3210",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": null,
+  "grounding": "seed-web-126",
+  "title": "Case: Returned wall panels, refund paid less return carriage",
+  "context": "Ansel Whitcombe ordered 14 cartons of wall panels from Tallowmere Goods (TG-933) and sent them back under return RA-4406 (return shipment DL-933).",
+  "initial_request": "The return page now reads 'closed, change of mind', and I gather the position was that nothing can be altered once a refund has gone out. I don't accept that. A refund having been paid doesn't change what the listing said. To be exact about it: the listing says white; these were off-white. It says satin finish; these were matt. And they were rough to the touch, which nobody would take 'satin' to mean. Colour, finish, texture. I'm not asking for a favour. I'm asking for the reason to be recorded correctly and for the 96.00 to follow from that. Please tell me what happens next.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-01T09:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ansel Whitcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The panels aren't right for the room. I'd like to send them back. Please get a return set up quickly, I need the hallway clear by the weekend. If I have to pay the carriage to get it moving, fine, I'll pay it."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-01T11:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return RA-4406 authorised for TG-933, 14 cartons. Reason code: change of mind. Under that code the customer pays return carriage; 96.00 will be deducted from the refund."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-02T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Return label team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Labels issued for RA-4406. Return shipment DL-933, Plover Arc collection 3 October."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-03T14:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-933 collected 13:55, 14 cartons."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-06T10:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "RA-4406 received at the warehouse, 14 cartons, unopened bar one. Passed to Refunds team."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-07T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-933 refunded today less 96.00 return carriage as per reason code. Return closed."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-10-08T08:35:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ansel Whitcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I've seen the refund. I should have been clearer at the start and I'm correcting that now: I did not change my mind. The listing describes the panels as 'white, satin finish'. What arrived was off-white, matt and rough to the touch. I've uploaded a screenshot of the listing and four photographs to the order. I only said I'd pay the carriage because I needed them out of the hall. I'm asking for the return reason to be looked at again."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-10-08T09:00:00Z",
+      "stage": "Agent action",
+      "channel": "Warehouse work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Returns authorisations, Tallowmere Goods",
+      "body": "TG-933: the customer says the goods were not as described and asks for the return reason to be reviewed. He has uploaded evidence to the order."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-10-09T13:15:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-933: reason code can't be changed once the refund has been issued. Refund is out, return is closed."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-10-10T08:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correction to yesterday's work-queue reply on TG-933, which was wrong. A reason code can be reviewed for 30 days after the refund where the customer gives evidence that the item differed from its listing. We can see his uploads on the order. A review only starts on a written request to this team by Email that quotes the return number and states the specific differences claimed; the work-queue note did neither. Who bears the return carriage follows from the outcome and is for us and Refunds team to decide."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-10-10T10:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ansel Whitcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The return page now reads 'closed, change of mind', and I gather the position was that nothing can be altered once a refund has gone out. I don't accept that. A refund having been paid doesn't change what the listing said. To be exact about it: the listing says white; these were off-white. It says satin finish; these were matt. And they were rough to the touch, which nobody would take 'satin' to mean. Colour, finish, texture. I'm not asking for a favour. I'm asking for the reason to be recorded correctly and for the 96.00 to follow from that. Please tell me what happens next."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Returns authorisations, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Written request to review the reason code on return RA-4406 (TG-933), stating the specific differences claimed between the listing and the goods, and asking for the carriage decision to follow."
+      }
+    ],
+    "must": [
+      "Sends Returns authorisations a written review request by Email that quotes return number RA-4406",
+      "States the specific differences he claims: listed as white with a satin finish; received off-white, matt and rough to the touch, with the listing screenshot and photographs already uploaded to the order",
+      "Asks the team to review the reason code and decide the return carriage with Refunds team, without stating what the outcome should be"
+    ],
+    "must_not": [
+      "Tells Ansel Whitcombe, or accepts, that the reason cannot be changed because the refund has been issued or the return is closed",
+      "Treats his first message (that he would pay the carriage, or that the panels were just not right for the room) as his settled position",
+      "Promises or implies that the 96.00 will be refunded or that the reason code will be changed",
+      "States as fact that the panels were misdescribed",
+      "Resubmits the request on the Warehouse work queue without the return number and the specific differences"
+    ],
+    "reference_message": "Written request for a reason-code review, return RA-4406, order TG-933 (Ansel Whitcombe, 14 cartons of wall panels; return shipment DL-933, refunded 7 October less 96.00 return carriage under 'change of mind'). The customer says this was not a change of mind and asks for the reason to be reviewed as item not as described. Specific differences claimed: (1) colour: listed as white, received off-white; (2) finish: listed as satin finish, received matt; (3) texture: received rough to the touch, which he says is inconsistent with a satin finish. Evidence: a screenshot of the listing and four photographs, uploaded by him to the order on 8 October, which you have confirmed you can see. He says his first message, offering to pay carriage, was only to get the cartons collected quickly. The request is within 30 days of the refund. Please review the reason code and, with Refunds team, decide where the return carriage falls, and tell me the outcome and timing. I have promised him no result."
+  },
+  "rationale": "Two things in the thread were later corrected: the customer's first, hurried description of why he was returning the panels, and the team's reply that a reason code cannot change after refund. The latest valid position is Returns authorisations' own correction, which says a review starts on a written Email quoting the return number and the specific differences. His escalation supplies those differences, so the desk should send exactly that request and promise no outcome.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer emails Returns authorisations the written review request quoting RA-4406 and the three claimed differences, and promises no outcome."
+  }
+}

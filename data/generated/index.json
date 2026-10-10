@@ -1449,5 +1449,1494 @@
     "seed_case": null,
     "grounding": null,
     "file": "generated/delivery/gen-1210.json"
+  },
+  {
+    "id": "gen-2101",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Signature-required laptop not delivered in its booked afternoon slot",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-005",
+    "file": "generated/delivery/gen-2101.json"
+  },
+  {
+    "id": "gen-2102",
+    "mutation": "no_action_needed",
+    "title": "Case: Potted plants delivered in crushed boxes with soil spilled",
+    "events": 6,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-017",
+    "file": "generated/delivery/gen-2102.json"
+  },
+  {
+    "id": "gen-2103",
+    "mutation": "failed_action",
+    "title": "Case: Damaged display cabinet still with the recipient ten days after the claim was opened",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-029",
+    "file": "generated/delivery/gen-2103.json"
+  },
+  {
+    "id": "gen-2104",
+    "mutation": "needs_human",
+    "title": "Case: Envelope of original civil documents not located after a closed trace",
+    "events": 6,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-041",
+    "file": "generated/delivery/gen-2104.json"
+  },
+  {
+    "id": "gen-2105",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Two-day sample shipment arrived two days after its estimated date",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-053",
+    "file": "generated/delivery/gen-2105.json"
+  },
+  {
+    "id": "gen-2106",
+    "mutation": "superseded_request",
+    "title": "Case: Weekly food box allocated to an address another household member put on the account",
+    "events": 9,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-065",
+    "file": "generated/delivery/gen-2106.json"
+  },
+  {
+    "id": "gen-2107",
+    "mutation": "unusual_exception",
+    "title": "Case: Driver at a joinery workshop with a single machine pallet still on the vehicle",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-077",
+    "file": "generated/delivery/gen-2107.json"
+  },
+  {
+    "id": "gen-2108",
+    "mutation": "noise",
+    "title": "Case: Grocery order marked delivered with a doorstep photo the customer disputes",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-090",
+    "file": "generated/delivery/gen-2108.json"
+  },
+  {
+    "id": "gen-2109",
+    "mutation": "conflicting_information",
+    "title": "Case: Two of five insured cartons of ceramics outstanding six weeks after a cross-city shipment",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-102",
+    "file": "generated/delivery/gen-2109.json"
+  },
+  {
+    "id": "gen-2110",
+    "mutation": "needs_human",
+    "title": "Case: Eleven boxes of household effects delivered to the foot of a recipient's front steps",
+    "events": 7,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-114",
+    "file": "generated/delivery/gen-2110.json"
+  },
+  {
+    "id": "gen-2111",
+    "mutation": "failed_action",
+    "title": "Case: Recipient holding two boxes of items he did not order in place of a sideboard",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-127",
+    "file": "generated/delivery/gen-2111.json"
+  },
+  {
+    "id": "gen-2201",
+    "mutation": "conflicting_information",
+    "title": "Case: Third boxed set in a fortnight fails to reach the same recipient after a could-not-deliver notice",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-006",
+    "file": "generated/delivery/gen-2201.json"
+  },
+  {
+    "id": "gen-2202",
+    "mutation": "failed_action",
+    "title": "Case: Armchair held at a pickup point after two logged attempts the recipient disputes",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-018",
+    "file": "generated/delivery/gen-2202.json"
+  },
+  {
+    "id": "gen-2203",
+    "mutation": "conflicting_information",
+    "title": "Case: Evening delivery to a secured building returned to depot without an attempt",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-030",
+    "file": "generated/delivery/gen-2203.json"
+  },
+  {
+    "id": "gen-2204",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Parcel of supplements and pain tablets held at import, then released with storage charges",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-042",
+    "file": "generated/delivery/gen-2204.json"
+  },
+  {
+    "id": "gen-2205",
+    "mutation": "unusual_exception",
+    "title": "Case: Recipient's parcels keep going to the same house on a similarly named street",
+    "events": 6,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-054",
+    "file": "generated/delivery/gen-2205.json"
+  },
+  {
+    "id": "gen-2206",
+    "mutation": "needs_human",
+    "title": "Case: Meal-kit customer disputes a charge after a cancelled box was delivered anyway",
+    "events": 5,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-066",
+    "file": "generated/delivery/gen-2206.json"
+  },
+  {
+    "id": "gen-2207",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Pallet of paving and greenhouse staging at a house with a long gravel drive",
+    "events": 4,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-078",
+    "file": "generated/delivery/gen-2207.json"
+  },
+  {
+    "id": "gen-2208",
+    "mutation": "needs_human",
+    "title": "Case: Evening grocery order shows as cancelled after the recipient waited for five hours",
+    "events": 6,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-091",
+    "file": "generated/delivery/gen-2208.json"
+  },
+  {
+    "id": "gen-2209",
+    "mutation": "superseded_request",
+    "title": "Case: Booked home collection logged as attempted with the freight not ready",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-103",
+    "file": "generated/delivery/gen-2209.json"
+  },
+  {
+    "id": "gen-2210",
+    "mutation": "no_action_needed",
+    "title": "Case: Recipient writes again about a gashed box of knitwear that arrived smelling of smoke",
+    "events": 6,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-115",
+    "file": "generated/delivery/gen-2210.json"
+  },
+  {
+    "id": "gen-2211",
+    "mutation": "conflicting_information",
+    "title": "Case: Recliner ordered on 24 December with tracking that has not moved since the label was created",
+    "events": 4,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-128",
+    "file": "generated/delivery/gen-2211.json"
+  },
+  {
+    "id": "gen-2301",
+    "mutation": "conflicting_information",
+    "title": "Case: Parcel addressed to a pickup point is travelling back to the merchant after one attempt",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-007",
+    "file": "generated/delivery/gen-2301.json"
+  },
+  {
+    "id": "gen-2302",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Timed next-day delivery logged as no answer and redirected to a pickup point",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-019",
+    "file": "generated/delivery/gen-2302.json"
+  },
+  {
+    "id": "gen-2303",
+    "mutation": "failed_action",
+    "title": "Case: Repaired machine part at the destination depot with an incomplete address on the label",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-031",
+    "file": "generated/delivery/gen-2303.json"
+  },
+  {
+    "id": "gen-2304",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Recipient disputes the signed delivery sheet for a parcel he says never arrived",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-043",
+    "file": "generated/delivery/gen-2304.json"
+  },
+  {
+    "id": "gen-2305",
+    "mutation": "needs_human",
+    "title": "Case: Express overnight documents delivered two days after the booked date",
+    "events": 5,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-055",
+    "file": "generated/delivery/gen-2305.json"
+  },
+  {
+    "id": "gen-2306",
+    "mutation": "unusual_exception",
+    "title": "Case: Meal kit box charged and delivered to an account holder's former address",
+    "events": 5,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-067",
+    "file": "generated/delivery/gen-2306.json"
+  },
+  {
+    "id": "gen-2307",
+    "mutation": "safety_hazard",
+    "title": "Case: Driver will not tail-lift a pallet at a building site",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-079",
+    "file": "generated/delivery/gen-2307.json"
+  },
+  {
+    "id": "gen-2308",
+    "mutation": "safety_hazard",
+    "title": "Case: Grocery order arrives with heavy items on light ones and household and food items bagged together",
+    "events": 4,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-092",
+    "file": "generated/delivery/gen-2308.json"
+  },
+  {
+    "id": "gen-2309",
+    "mutation": "no_action_needed",
+    "title": "Case: Two-person furniture delivery arrived two days before the date the recipient was given",
+    "events": 7,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-104",
+    "file": "generated/delivery/gen-2309.json"
+  },
+  {
+    "id": "gen-2310",
+    "mutation": "missing_context",
+    "title": "Case: Recipient of a personal-effects import queries a fee on his invoice",
+    "events": 4,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-117",
+    "file": "generated/delivery/gen-2310.json"
+  },
+  {
+    "id": "gen-2311",
+    "mutation": "needs_human",
+    "title": "Case: Three flat-pack tables delivered in twenty-six cartons without fixings or instructions",
+    "events": 8,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-129",
+    "file": "generated/delivery/gen-2311.json"
+  },
+  {
+    "id": "gen-2401",
+    "mutation": "unusual_exception",
+    "title": "Case: Resident is holding five parcels addressed to other households after one doorstep drop",
+    "events": 6,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-008",
+    "file": "generated/delivery/gen-2401.json"
+  },
+  {
+    "id": "gen-2402",
+    "mutation": "superseded_request",
+    "title": "Case: Bookcase for a flat in a newly opened block has failed delivery twice",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-020",
+    "file": "generated/delivery/gen-2402.json"
+  },
+  {
+    "id": "gen-2403",
+    "mutation": "noise",
+    "title": "Case: Birthday cake sent on a paid two-day service surfaces a week later at a pickup point",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-032",
+    "file": "generated/delivery/gen-2403.json"
+  },
+  {
+    "id": "gen-2404",
+    "mutation": "conflicting_information",
+    "title": "Case: International parcel has produced four out-for-delivery notices and no delivery",
+    "events": 9,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-044",
+    "file": "generated/delivery/gen-2404.json"
+  },
+  {
+    "id": "gen-2405",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Recipient who cleared customs himself is invoiced by the carrier before release",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-056",
+    "file": "generated/delivery/gen-2405.json"
+  },
+  {
+    "id": "gen-2406",
+    "mutation": "conflicting_information",
+    "title": "Case: Weekly food box is confirmed for an address the subscriber left in December",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-068",
+    "file": "generated/delivery/gen-2406.json"
+  },
+  {
+    "id": "gen-2407",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Shop owner wants four pallets taken through to the stockroom while the driver is unloading",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-080",
+    "file": "generated/delivery/gen-2407.json"
+  },
+  {
+    "id": "gen-2408",
+    "mutation": "no_action_needed",
+    "title": "Case: Family grocery order arrives short and damaged and the customer has doorbell footage",
+    "events": 5,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-093",
+    "file": "generated/delivery/gen-2408.json"
+  },
+  {
+    "id": "gen-2409",
+    "mutation": "failed_action",
+    "title": "Case: Shipper asks for the measurements behind two dimension adjustments on a delivered shipment",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-105",
+    "file": "generated/delivery/gen-2409.json"
+  },
+  {
+    "id": "gen-2410",
+    "mutation": "needs_human",
+    "title": "Case: One of two pieces on an international shipment has not arrived",
+    "events": 7,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-118",
+    "file": "generated/delivery/gen-2410.json"
+  },
+  {
+    "id": "gen-2501",
+    "mutation": "conflicting_information",
+    "title": "Case: Rural recipient cannot find a parcel that the tracker and a delivery photo show as delivered",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-009",
+    "file": "generated/delivery/gen-2501.json"
+  },
+  {
+    "id": "gen-2502",
+    "mutation": "superseded_request",
+    "title": "Case: Timed delivery of a birthday gift missed its one-hour slot and the parcel is back at the depot",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-021",
+    "file": "generated/delivery/gen-2502.json"
+  },
+  {
+    "id": "gen-2503",
+    "mutation": "conflicting_information",
+    "title": "Case: Recipient queries a late fee on an import charges invoice that reached him after its due date",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-033",
+    "file": "generated/delivery/gen-2503.json"
+  },
+  {
+    "id": "gen-2504",
+    "mutation": "failed_action",
+    "title": "Case: Shipper's claim on a next-day service that took four days has been closed a second time",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-045",
+    "file": "generated/delivery/gen-2504.json"
+  },
+  {
+    "id": "gen-2505",
+    "mutation": "no_action_needed",
+    "title": "Case: Business account holder copies the desk on an overdue-invoice exchange with Business billing",
+    "events": 6,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-057",
+    "file": "generated/delivery/gen-2505.json"
+  },
+  {
+    "id": "gen-2506",
+    "mutation": "needs_human",
+    "title": "Case: Recipient says she will refuse a chilled meal box from a subscription she reports cancelling months ago",
+    "events": 6,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-069",
+    "file": "generated/delivery/gen-2506.json"
+  },
+  {
+    "id": "gen-2507",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Exporter is invoiced for import VAT on a parcel delivered abroad five months ago",
+    "events": 4,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-081",
+    "file": "generated/delivery/gen-2507.json"
+  },
+  {
+    "id": "gen-2508",
+    "mutation": "noise",
+    "title": "Case: Evening grocery order shows as signed for and the recipient says nobody came",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-094",
+    "file": "generated/delivery/gen-2508.json"
+  },
+  {
+    "id": "gen-2509",
+    "mutation": "unusual_exception",
+    "title": "Case: Crate collected after its freight booking was cancelled comes back two weeks later with a return charge",
+    "events": 5,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-106",
+    "file": "generated/delivery/gen-2509.json"
+  },
+  {
+    "id": "gen-2510",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Consignee wants to collect a pallet that has been sitting at the local depot for two days",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-119",
+    "file": "generated/delivery/gen-2510.json"
+  },
+  {
+    "id": "gen-2601",
+    "mutation": "failed_action",
+    "title": "Case: Resident of a block of flats reports another parcel left outside the rear of the building",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-010",
+    "file": "generated/delivery/gen-2601.json"
+  },
+  {
+    "id": "gen-2602",
+    "mutation": "conflicting_information",
+    "title": "Case: Shipper of a glass lampshade sent abroad writes about the replies to his damage claim",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-022",
+    "file": "generated/delivery/gen-2602.json"
+  },
+  {
+    "id": "gen-2603",
+    "mutation": "superseded_request",
+    "title": "Case: Shipper writes again about a parcel of home-baked biscuits on its way back from abroad",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-034",
+    "file": "generated/delivery/gen-2603.json"
+  },
+  {
+    "id": "gen-2604",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Fourth-floor tenant asks about the delivery of three furniture cartons",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-046",
+    "file": "generated/delivery/gen-2604.json"
+  },
+  {
+    "id": "gen-2605",
+    "mutation": "conflicting_information",
+    "title": "Case: Recipient asks why an inbound international parcel was sent back to the shipper",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-058",
+    "file": "generated/delivery/gen-2605.json"
+  },
+  {
+    "id": "gen-2606",
+    "mutation": "needs_human",
+    "title": "Case: Shipper questions extra payment requests received before a booked pallet collection",
+    "events": 7,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-070",
+    "file": "generated/delivery/gen-2606.json"
+  },
+  {
+    "id": "gen-2607",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Data recovery lab writes about the import invoice on a client's hard drive",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-082",
+    "file": "generated/delivery/gen-2607.json"
+  },
+  {
+    "id": "gen-2608",
+    "mutation": "unusual_exception",
+    "title": "Case: Customer complains about two click-and-collect grocery orders on consecutive days",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-095",
+    "file": "generated/delivery/gen-2608.json"
+  },
+  {
+    "id": "gen-2609",
+    "mutation": "needs_human",
+    "title": "Case: Shipper disputes a re-weigh adjustment charged after delivery of six cartons",
+    "events": 8,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-107",
+    "file": "generated/delivery/gen-2609.json"
+  },
+  {
+    "id": "gen-2610",
+    "mutation": "no_action_needed",
+    "title": "Case: Shop writes in after a week of collection attempts on its first freight booking",
+    "events": 7,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-120",
+    "file": "generated/delivery/gen-2610.json"
+  },
+  {
+    "id": "gen-2701",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Chilled birthday dessert box for the buyer's wife is rolled to the next day's route",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-011",
+    "file": "generated/delivery/gen-2701.json"
+  },
+  {
+    "id": "gen-2702",
+    "mutation": "conflicting_information",
+    "title": "Case: Two logged delivery attempts on a hedge trimmer that the recipient says never happened",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-023",
+    "file": "generated/delivery/gen-2702.json"
+  },
+  {
+    "id": "gen-2703",
+    "mutation": "failed_action",
+    "title": "Case: Overdue walking boots show as delivered to a pickup point the recipient says he never chose",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-035",
+    "file": "generated/delivery/gen-2703.json"
+  },
+  {
+    "id": "gen-2704",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Business shipper disputes three import duty invoices raised against its account",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-047",
+    "file": "generated/delivery/gen-2704.json"
+  },
+  {
+    "id": "gen-2705",
+    "mutation": "noise",
+    "title": "Case: Bookcase ordered for a chosen Thursday keeps going out for delivery earlier in the week",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-059",
+    "file": "generated/delivery/gen-2705.json"
+  },
+  {
+    "id": "gen-2706",
+    "mutation": "needs_human",
+    "title": "Case: Restored motor scooter damaged on the tail-lift during a subcontracted pallet collection",
+    "events": 8,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-071",
+    "file": "generated/delivery/gen-2706.json"
+  },
+  {
+    "id": "gen-2707",
+    "mutation": "unusual_exception",
+    "title": "Case: Unopened coffee grinder sent back to the merchant's overseas returns centre is on its way back to the customer",
+    "events": 7,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-083",
+    "file": "generated/delivery/gen-2707.json"
+  },
+  {
+    "id": "gen-2708",
+    "mutation": "safety_hazard",
+    "title": "Case: Fortnightly chilled and frozen grocery order handed over at a different house number",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-096",
+    "file": "generated/delivery/gen-2708.json"
+  },
+  {
+    "id": "gen-2709",
+    "mutation": "no_action_needed",
+    "title": "Case: Pallet of kiln shelves returned to depot after the carrier reported the destination address could not be found",
+    "events": 6,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-108",
+    "file": "generated/delivery/gen-2709.json"
+  },
+  {
+    "id": "gen-2710",
+    "mutation": "conflicting_information",
+    "title": "Case: Two pallets of reclaimed oak flooring unaccounted for five weeks after the collection date",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-121",
+    "file": "generated/delivery/gen-2710.json"
+  },
+  {
+    "id": "gen-2801",
+    "mutation": "needs_human",
+    "title": "Case: A recipient with four outstanding parcels writes to the desk after losing access to the carrier's support channels",
+    "events": 5,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-012",
+    "file": "generated/delivery/gen-2801.json"
+  },
+  {
+    "id": "gen-2802",
+    "mutation": "conflicting_information",
+    "title": "Case: A handset is missing from a carton the recipient collected from a pickup point",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-024",
+    "file": "generated/delivery/gen-2802.json"
+  },
+  {
+    "id": "gen-2803",
+    "mutation": "failed_action",
+    "title": "Case: One carton of a two-carton cot order has not moved from a carrier hub for three weeks",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-036",
+    "file": "generated/delivery/gen-2803.json"
+  },
+  {
+    "id": "gen-2804",
+    "mutation": "superseded_request",
+    "title": "Case: A couple who waited in for an armchair were recorded as not at home",
+    "events": 9,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-048",
+    "file": "generated/delivery/gen-2804.json"
+  },
+  {
+    "id": "gen-2805",
+    "mutation": "conflicting_information",
+    "title": "Case: A recipient logged that he was home five minutes after tracking recorded a no-answer attempt",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-060",
+    "file": "generated/delivery/gen-2805.json"
+  },
+  {
+    "id": "gen-2806",
+    "mutation": "unusual_exception",
+    "title": "Case: A tractor moved by a subcontracted haulier was offloaded at a services yard and shows as delivered",
+    "events": 6,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-072",
+    "file": "generated/delivery/gen-2806.json"
+  },
+  {
+    "id": "gen-2807",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: A seller asks about postage and import charges on a barometer coming back from a buyer abroad",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-085",
+    "file": "generated/delivery/gen-2807.json"
+  },
+  {
+    "id": "gen-2808",
+    "mutation": "noise",
+    "title": "Case: A grocery customer writes at length about items swapped in her weekly order",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-097",
+    "file": "generated/delivery/gen-2808.json"
+  },
+  {
+    "id": "gen-2809",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Household cartons booked door to door from overseas were collected from the depot by the recipient",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-109",
+    "file": "generated/delivery/gen-2809.json"
+  },
+  {
+    "id": "gen-2810",
+    "mutation": "no_action_needed",
+    "title": "Case: A crated workbench past its delivery date keeps going out on a vehicle and coming back",
+    "events": 6,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-122",
+    "file": "generated/delivery/gen-2810.json"
+  },
+  {
+    "id": "gen-2901",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: A framing workshop's carton has two different statuses in two days and the owner is angry at the route driver",
+    "events": 5,
+    "dispositions": [
+      "escalate",
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-013",
+    "file": "generated/delivery/gen-2901.json"
+  },
+  {
+    "id": "gen-2902",
+    "mutation": "conflicting_information",
+    "title": "Case: A recipient gets home to find no parcel after a delivery scan made while she was out",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-025",
+    "file": "generated/delivery/gen-2902.json"
+  },
+  {
+    "id": "gen-2903",
+    "mutation": "superseded_request",
+    "title": "Case: A signature parcel is marked missed on the day the recipient paid to move it to",
+    "events": 11,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-037",
+    "file": "generated/delivery/gen-2903.json"
+  },
+  {
+    "id": "gen-2904",
+    "mutation": "failed_action",
+    "title": "Case: An overnight document envelope fails twice on a street that is being dug up",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-049",
+    "file": "generated/delivery/gen-2904.json"
+  },
+  {
+    "id": "gen-2905",
+    "mutation": "conflicting_information",
+    "title": "Case: An imported order is held and the recipient keeps getting payment texts",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-061",
+    "file": "generated/delivery/gen-2905.json"
+  },
+  {
+    "id": "gen-2906",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: A joinery firm is invoiced extra for a pallet three weeks after it was delivered",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-073",
+    "file": "generated/delivery/gen-2906.json"
+  },
+  {
+    "id": "gen-2907",
+    "mutation": "safety_hazard",
+    "title": "Case: A frozen festive dinner box arrives two days after its booked date",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-086",
+    "file": "generated/delivery/gen-2907.json"
+  },
+  {
+    "id": "gen-2908",
+    "mutation": "no_action_needed",
+    "title": "Case: A meal kit arrives in the evening with a crushed corner and the recipient writes again next morning",
+    "events": 6,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-098",
+    "file": "generated/delivery/gen-2908.json"
+  },
+  {
+    "id": "gen-2909",
+    "mutation": "needs_human",
+    "title": "Case: Household effects shipped overseas arrive after eight months with several items broken",
+    "events": 9,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-110",
+    "file": "generated/delivery/gen-2909.json"
+  },
+  {
+    "id": "gen-2910",
+    "mutation": "noise",
+    "title": "Case: A crated van engine has not arrived two days after its delivery date",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-123",
+    "file": "generated/delivery/gen-2910.json"
+  },
+  {
+    "id": "gen-3001",
+    "mutation": "safety_hazard",
+    "title": "Case: Recipient with a labelled parcel box writes again about a parcel shown as delivered and about a driver at her door the day before",
+    "events": 6,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-014",
+    "file": "generated/delivery/gen-3001.json"
+  },
+  {
+    "id": "gen-3002",
+    "mutation": "failed_action",
+    "title": "Case: Customer writes after a wrongly forwarded parcel is collected from him and his ticket shows closed",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-026",
+    "file": "generated/delivery/gen-3002.json"
+  },
+  {
+    "id": "gen-3003",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Long-standing business account writes about fourteen late overnight consignments",
+    "events": 5,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-038",
+    "file": "generated/delivery/gen-3003.json"
+  },
+  {
+    "id": "gen-3004",
+    "mutation": "noise",
+    "title": "Case: Resident at 3 Sedge Lane writes about a box shown as delivered three days earlier",
+    "events": 10,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-050",
+    "file": "generated/delivery/gen-3004.json"
+  },
+  {
+    "id": "gen-3005",
+    "mutation": "conflicting_information",
+    "title": "Case: Recipient of an import parcel addressed to a shopping arcade asks to add her shop name",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-062",
+    "file": "generated/delivery/gen-3005.json"
+  },
+  {
+    "id": "gen-3006",
+    "mutation": "needs_human",
+    "title": "Case: Shipper of two pallets writes about a proof of delivery and a protection claim",
+    "events": 6,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-074",
+    "file": "generated/delivery/gen-3006.json"
+  },
+  {
+    "id": "gen-3007",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Customer who paid for express chilled delivery on 23 December learns the booking shows a different date",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-087",
+    "file": "generated/delivery/gen-3007.json"
+  },
+  {
+    "id": "gen-3008",
+    "mutation": "safety_hazard",
+    "title": "Case: Meal kit customer reports the state of a sealed pack found on unpacking",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-099",
+    "file": "generated/delivery/gen-3008.json"
+  },
+  {
+    "id": "gen-3009",
+    "mutation": "failed_action",
+    "title": "Case: Customer who shipped personal boxes writes again with a numbered list",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-111",
+    "file": "generated/delivery/gen-3009.json"
+  },
+  {
+    "id": "gen-3010",
+    "mutation": "no_action_needed",
+    "title": "Case: Merchant writes about packing photos on a freight damage claim while the portal shows documents awaited",
+    "events": 7,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-124",
+    "file": "generated/delivery/gen-3010.json"
+  },
+  {
+    "id": "gen-3101",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Recipient at a remote address writes about a third order running two weeks behind",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-015",
+    "file": "generated/delivery/gen-3101.json"
+  },
+  {
+    "id": "gen-3102",
+    "mutation": "failed_action",
+    "title": "Case: Parcel for collection at a corner shop has shown the same status for ten days",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-027",
+    "file": "generated/delivery/gen-3102.json"
+  },
+  {
+    "id": "gen-3103",
+    "mutation": "conflicting_information",
+    "title": "Case: Recipient waiting at home asks whether an international parcel is arriving today",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-039",
+    "file": "generated/delivery/gen-3103.json"
+  },
+  {
+    "id": "gen-3104",
+    "mutation": "no_action_needed",
+    "title": "Case: Account holder writes about collection fees on a business account",
+    "events": 9,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-051",
+    "file": "generated/delivery/gen-3104.json"
+  },
+  {
+    "id": "gen-3105",
+    "mutation": "superseded_request",
+    "title": "Case: Third delivery attempt for a turntable after two logged as recipient absent",
+    "events": 9,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-063",
+    "file": "generated/delivery/gen-3105.json"
+  },
+  {
+    "id": "gen-3106",
+    "mutation": "needs_human",
+    "title": "Case: Recipient of a subcontracted pallet delivery writes after the balance on delivery was settled late",
+    "events": 6,
+    "dispositions": [
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-075",
+    "file": "generated/delivery/gen-3106.json"
+  },
+  {
+    "id": "gen-3107",
+    "mutation": "safety_hazard",
+    "title": "Case: First grocery order with frozen and chilled lines delivered by a stand-in driver",
+    "events": 5,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-088",
+    "file": "generated/delivery/gen-3107.json"
+  },
+  {
+    "id": "gen-3108",
+    "mutation": "noise",
+    "title": "Case: City-centre framing workshop has a boxed order waiting for collection since Monday",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-100",
+    "file": "generated/delivery/gen-3108.json"
+  },
+  {
+    "id": "gen-3109",
+    "mutation": "unusual_exception",
+    "title": "Case: Six-carton household move held at the export hub with one carton unaccounted for",
+    "events": 6,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-112",
+    "file": "generated/delivery/gen-3109.json"
+  },
+  {
+    "id": "gen-3110",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Recipient wants to send back a 27 kg office chair she cannot use",
+    "events": 8,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-125",
+    "file": "generated/delivery/gen-3110.json"
+  },
+  {
+    "id": "gen-3201",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Recipient who collected a garden bench from the depot himself writes about the costs",
+    "events": 7,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-016",
+    "file": "generated/delivery/gen-3201.json"
+  },
+  {
+    "id": "gen-3202",
+    "mutation": "conflicting_information",
+    "title": "Case: Sewing machine ten days late, one delivery attempt, recipient still without it",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-028",
+    "file": "generated/delivery/gen-3202.json"
+  },
+  {
+    "id": "gen-3203",
+    "mutation": "failed_action",
+    "title": "Case: Delivery photo shows a house the recipient does not recognise",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-040",
+    "file": "generated/delivery/gen-3203.json"
+  },
+  {
+    "id": "gen-3204",
+    "mutation": "noise",
+    "title": "Case: Twelve-piece return collection from a fourth-floor flat, several visits so far",
+    "events": 12,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-052",
+    "file": "generated/delivery/gen-3204.json"
+  },
+  {
+    "id": "gen-3205",
+    "mutation": "conflicting_information",
+    "title": "Case: Premium timed collection, sender still has the parcel five days on",
+    "events": 7,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-064",
+    "file": "generated/delivery/gen-3205.json"
+  },
+  {
+    "id": "gen-3206",
+    "mutation": "no_action_needed",
+    "title": "Case: Three-pallet freight collection from a joinery yard after a change of haulier",
+    "events": 8,
+    "dispositions": [
+      "no_action"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-076",
+    "file": "generated/delivery/gen-3206.json"
+  },
+  {
+    "id": "gen-3207",
+    "mutation": "safety_hazard",
+    "title": "Case: Grocery order with chilled and frozen items, recipient disputed the delivered scan",
+    "events": 6,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-089",
+    "file": "generated/delivery/gen-3207.json"
+  },
+  {
+    "id": "gen-3208",
+    "mutation": "out_of_policy_demand",
+    "title": "Case: Surcharge on a pallet delivered to a home address",
+    "events": 7,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-101",
+    "file": "generated/delivery/gen-3208.json"
+  },
+  {
+    "id": "gen-3209",
+    "mutation": "unusual_exception",
+    "title": "Case: Collection instructions for six boxes going overseas from a third-floor flat",
+    "events": 6,
+    "dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-113",
+    "file": "generated/delivery/gen-3209.json"
+  },
+  {
+    "id": "gen-3210",
+    "mutation": "superseded_request",
+    "title": "Case: Returned wall panels, refund paid less return carriage",
+    "events": 11,
+    "dispositions": [
+      "contact"
+    ],
+    "seed_case": null,
+    "grounding": "seed-web-126",
+    "file": "generated/delivery/gen-3210.json"
   }
 ]

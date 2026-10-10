@@ -1,0 +1,85 @@
+{
+  "id": "gen-2607",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "out_of_policy_demand",
+  "seed_case": null,
+  "grounding": "seed-web-082",
+  "title": "Case: Data recovery lab writes about the import invoice on a client's hard drive",
+  "context": "Halden Byte Recovery received a client's failed hard drive from overseas on DL-992 on 22 May. Import billing raised invoice IB-30417 on 29 May.",
+  "initial_request": "Right. So the name can't be changed without the broker and the tax can't be looked at without a 'query'. Here's your query then. It's a dead ten-year-old hard drive. The client posted it to us so we can try to get his files off it, and it goes back to him when we're done. New, a decade ago, it was about 60. Either he panicked and wrote the value of his data on the form or somebody at your end made a number up, I don't know which and I'm past caring. We are not Halden Bight Marine, we've never heard of them. We'll pay the 14.00 clearance fee today, happily. Cancel the VAT and send a new invoice in our name for the fee. Or don't, and we'll do what we do every single time this happens: pay the fee and listen to your collections people ring us for four months until they get bored. Up to you. DL-992.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-01T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-992 delivered 22 May. Invoice IB-30417 raised 29 May: import VAT calculated on a customs value of 1,850.00, plus clearance fee 14.00. Billed to Halden Bight Marine Ltd as importer. Value and importer are taken from the customs entry. We have not looked at the sender's paperwork behind the entry."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-02T10:25:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Roisin Makepeace, business receiving coordinator, Halden Byte Recovery",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Invoice IB-30417 has turned up here addressed to Halden Bight Marine Ltd. That isn't us. We're Halden Byte Recovery Ltd. Same street, different company, presumably. Whose invoice is this?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-02T10:50:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Import billing, Plover Arc Logistics",
+      "body": "IB-30417 / DL-992: the consignee, Halden Byte Recovery Ltd, says the invoice is addressed to a different company, Halden Bight Marine Ltd. Please check the importer name."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-03T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The name on IB-30417 follows the entry lodged by the customs broker. We cannot change importer or value without an amended entry from the broker, and we do not cancel tax on request. What we can do: log a query. A logged query must state each disputed element and what the customer says the correct position is; we then check the sender's declaration and go to the broker if an amendment is warranted. Reminder cycle starts 12 Jun unless the invoice is under a logged query. Queries to us by Email."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-04T09:05:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Roisin Makepeace, business receiving coordinator, Halden Byte Recovery",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Right. So the name can't be changed without the broker and the tax can't be looked at without a 'query'. Here's your query then. It's a dead ten-year-old hard drive. The client posted it to us so we can try to get his files off it, and it goes back to him when we're done. New, a decade ago, it was about 60. Either he panicked and wrote the value of his data on the form or somebody at your end made a number up, I don't know which and I'm past caring. We are not Halden Bight Marine, we've never heard of them. We'll pay the 14.00 clearance fee today, happily. Cancel the VAT and send a new invoice in our name for the fee. Or don't, and we'll do what we do every single time this happens: pay the fee and listen to your collections people ring us for four months until they get bored. Up to you. DL-992."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Import billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Log a query on IB-30417 stating the disputed value and importer name with the lab's stated position, and ask them to check the sender's declaration."
+      }
+    ],
+    "must": [
+      "Logs a query on IB-30417 with Import billing by Email, stating each disputed element: the customs value of 1,850.00 and the importer name Halden Bight Marine Ltd",
+      "Gives the lab's position as the lab's statement, not as fact: a failed ten-year-old drive worth about 60 new, sent in for data recovery and to be returned to the client, and the correct company is Halden Byte Recovery Ltd",
+      "Asks Import billing to check what value and description the sender declared and whether a broker amendment is warranted, and says the lab is willing to pay the 14.00 clearance fee"
+    ],
+    "must_not": [
+      "Tells the lab the VAT is cancelled, reduced or will be, or that a corrected invoice will be issued",
+      "Tells the lab it must pay IB-30417 in full, or that the value stands, before the sender's declaration has been checked",
+      "Presents the lab's figure of 60 or its account of the drive as an established customs value",
+      "Tells the lab it may pay only the fee and disregard the rest, or that collections contact will not happen",
+      "Replies to the lab with nothing more than the line that tax is not cancelled on request"
+    ],
+    "reference_message": "Query for logging on IB-30417 / DL-992, as set out in your note of 3 June. Disputed element 1, customs value: the invoice uses 1,850.00. The consignee says the item is a failed hard drive about ten years old, worth roughly 60 when new, sent by an overseas client for data recovery and to be returned to him afterwards. They suggest the declared figure may reflect the value of the data, or an error; that is their account and I have not seen the sender's paperwork. Disputed element 2, importer: the invoice names Halden Bight Marine Ltd. The consignee is Halden Byte Recovery Ltd and says it has no connection with that company. Please check the description and value the sender declared and whether an amended entry from the broker is warranted on either point, including whether goods in for repair and return should have been entered differently. The consignee is willing to pay the 14.00 clearance fee now. Please confirm the query is logged so the 12 June reminder cycle does not start while it is open. I have told them nothing about the outcome."
+  },
+  "rationale": "The lab demands that the VAT be cancelled and the invoice reissued, and offers the desk an easy out: do nothing and let collections chase. Import billing has said exactly what it will accept, a logged query stating each disputed element and the customer's position, and that it then checks the sender's declaration. The desk can neither cancel tax on the lab's word nor insist on payment of a value nobody has checked; it logs the query properly.",
+  "review": { "status": "agreed", "note": "Coordinator logged the query on IB-30417 with Import billing by Email, stating both disputed elements as the lab's position, matching the key." }
+}

@@ -1,0 +1,107 @@
+{
+  "id": "gen-2111",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": "seed-web-127",
+  "title": "Case: Recipient holding two boxes of items he did not order in place of a sideboard",
+  "context": "A customer who ordered a sideboard from Tallowmere Goods received two boxes of unrelated items. He has been calling the merchant about returning them.",
+  "initial_request": "Nine days. Still got two boxes of somebody's parasol bases in my front room. Four calls and every one ends with resolution team, three to five days. No label. No collection. No sideboard. I gave up waiting and opened a dispute with my card company yesterday for the full amount, their ref is CB-58831. Come and get the boxes or don't. I'm past caring which.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-08T10:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Desmond Varga-Lyle, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ordered an oak sideboard, order TG-971. What turned up is two boxes of patio parasol bases. Not mine, never ordered them. I want them collected and my money back."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-08T10:35:00Z",
+      "stage": "Agent action",
+      "channel": "Warehouse work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Return label team, Tallowmere Goods",
+      "body": "Wrong items delivered under DL-971 / order TG-971: the customer ordered an oak sideboard and received two boxes of parasol bases. Please issue a return label or arrange a collection and confirm to the customer, Desmond Varga-Lyle."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-08T10:38:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Desmond Varga-Lyle, recipient",
+      "body": "I have asked Tallowmere's Return label team to issue a label or arrange a collection for the two boxes and to confirm to you. Refunds are decided by Tallowmere and not by me."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-10T12:00:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Desmond Varga-Lyle, recipient",
+      "body": "Refunds: A refund can't start until the return has been authorised and the goods are back with us or collected. I'll pass it to the resolution team and they'll reply within three to five working days. Varga-Lyle: That is what the last person said on Monday. Refunds: I do understand. Three to five working days."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-15T09:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Desmond Varga-Lyle, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Third call this morning. Same sentence. Three to five working days."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-16T07:00:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Return label team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ticket WQ-2290 closed. We cannot issue a label or book a collection without a returns authorisation number. No RA exists for TG-971. RAs are issued by Returns authorisations, requests by Email only. Any refund already made or payment dispute open on the order must be stated on the request."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-17T08:22:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Desmond Varga-Lyle, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Nine days. Still got two boxes of somebody's parasol bases in my front room. Four calls and every one ends with resolution team, three to five days. No label. No collection. No sideboard. I gave up waiting and opened a dispute with my card company yesterday for the full amount, their ref is CB-58831. Come and get the boxes or don't. I'm past caring which."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Returns authorisations, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Request a returns authorisation for the wrong items under TG-971, stating that the earlier label request was closed with nothing arranged and that a card dispute for the full amount was opened on 16 June."
+      }
+    ],
+    "must": [
+      "Requests a returns authorisation for the wrong items from Returns authorisations by Email, with order TG-971 and shipment DL-971.",
+      "States on the request that the customer opened a card dispute for the full amount on 16 June (CB-58831), so the return and any refund are handled with it in view.",
+      "Says the 8 June label request (WQ-2290) was closed with no label or collection, so nothing has been arranged, and does not present it as in progress.",
+      "Tells Returns authorisations he has held the wrong goods for nine days and made four calls that each ended with the same three-to-five-day promise, so they prioritise it and contact him directly."
+    ],
+    "must_not": [
+      "Asks for a collection, label or refund without mentioning the open card dispute.",
+      "Tells Desmond a collection or label has been arranged, or that a refund is on its way.",
+      "Advises him to withdraw, keep or pursue the card dispute, or says how it will be decided.",
+      "Sends the request to the Return label team or the Warehouse work queue again.",
+      "Tells Desmond that a resolution team will be in touch, or gives him another number of days to wait."
+    ],
+    "reference_message": "Please issue a returns authorisation for order TG-971 / shipment DL-971. The customer, Desmond Varga-Lyle, ordered an oak sideboard and on 8 June received two boxes of patio parasol bases that he did not order. He wants them collected. I sent a label and collection request to the Return label team the same day. That ticket (WQ-2290) was closed on 16 June because no RA exists, so no label or collection has been arranged at any point. As your process requires, please note that he opened a dispute with his card issuer on 16 June for the full order amount, their reference CB-58831. I have not advised him on it. Please take it into account when you decide the return and refund, so the goods and the money are dealt with together. He has had the wrong goods in his home for nine days and has called four times, each call ending with a promise of a reply in three to five working days. Please contact him directly with the RA and the collection arrangement, and copy me."
+  },
+  "rationale": "The desk's label request failed because nobody had issued a returns authorisation, and the closure notice names Returns authorisations by Email as the route and requires any payment dispute to be stated. The customer has just disclosed one. A collection arranged without that fact risks the goods going back while the chargeback also pays out, or neither happening. The message also has to be honest that nine days of promises produced nothing.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer requests the RA from Returns authorisations by Email, declares the card dispute and is honest about the closed label ticket."
+  }
+}

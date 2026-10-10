@@ -1,0 +1,83 @@
+{
+  "id": "gen-2408",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": "seed-web-093",
+  "title": "Case: Family grocery order arrives short and damaged and the customer has doorbell footage",
+  "context": "A household of seven received Brineleaf Pantry order BP-939 (shipment DL-939) with items missing and others damaged. Brineleaf's chat support declined any credit. The desk took the case up yesterday evening.",
+  "initial_request": "Just so you have it for your notes, as you asked: I've uploaded the doorbell clip through their link. Got the green tick and a confirmation email with DMG-939 on it. Thank you for getting someone to actually look at it. I'm still disappointed that after eleven years I had to be passed about before anyone would, but that's one for them, not you. No need to reply, I'll wait for their answer tomorrow.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-08-22T18:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marguerite Oyelaran, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our weekly shop (BP-939) came this afternoon. Missing: both trays of chicken, the flour, the big tub of yoghurt and the rice. Damaged: a dozen eggs smashed and a bottle of oil split all over the cereal boxes. I went on Brineleaf's chat and was told they can't credit anything because the delivery is done by Plover Arc and I should take it up with them. I ordered from Brineleaf, not from a van company. I have the doorbell camera footage of the whole drop: three crates carried up, not five, and one of them dropped on the step. Nobody has asked to see it. There are seven of us to feed this week and I've been a customer for eleven years."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-08-22T18:50:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Damage intake, Brineleaf Pantry",
+      "body": "Order BP-939 / DL-939, delivered today. The customer, Marguerite Oyelaran, reports five lines missing (two trays of chicken, flour, a large yoghurt, rice) and damage to eggs, a bottle of oil and cereal. Your chat support told her no credit was possible and to contact the carrier. Her order is with Brineleaf. She has doorbell footage of the drop which she says shows three crates delivered, not five, and one dropped; nobody has asked her for it. She is feeding a household of seven this week and has been a customer for eleven years. Please review and tell her how to send the footage."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-08-23T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk; Marguerite Oyelaran, recipient",
+      "body": "Reopened as DMG-939. The chat reply was wrong: missing and damaged items on a Brineleaf order are ours to assess whoever drove the van. Mrs Oyelaran, we have sent you an upload link for the footage. Once we have it we will decide on the missing and damaged lines by 12:00 UTC on 08-24 and write to you directly. Given the size of the shortfall we have marked it priority."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-08-23T09:20:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Marguerite Oyelaran, recipient",
+      "body": "Brineleaf's Damage intake have reopened this as DMG-939 and have said plainly that you should not have been sent to the carrier. They've emailed you a link to upload the footage and will decide on the missing and damaged items by 12:00 UTC tomorrow. That decision is theirs and I can't tell you what it will be. If you let me know once the footage is uploaded I'll note it on the case."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-08-23T14:40:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marguerite Oyelaran, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just so you have it for your notes, as you asked: I've uploaded the doorbell clip through their link. Got the green tick and a confirmation email with DMG-939 on it. Thank you for getting someone to actually look at it. I'm still disappointed that after eleven years I had to be passed about before anyone would, but that's one for them, not you. No need to reply, I'll wait for their answer tomorrow."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone.",
+      "Identifies the message as the update the desk asked for, with no request in it, and notes that the customer said no reply is needed.",
+      "Records the state of the case: DMG-939 is open with Damage intake, the footage is uploaded, and their decision is due by 12:00 UTC on 08-24.",
+      "Notes when the desk next looks: after 12:00 UTC on 08-24, following up with Damage intake if she has not had their decision by then, so she is not left waiting a second time."
+    ],
+    "must_not": [
+      "Chases Damage intake before the 12:00 UTC 08-24 time they gave.",
+      "Forwards the footage or the complaint again, or opens a second claim.",
+      "Tells Marguerite that a credit, refund or replacement is coming.",
+      "Refers Marguerite to Plover Arc or suggests she take the matter up with the carrier.",
+      "Sends Marguerite a reply or acknowledgement after she has said none is needed."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The customer is reporting back as the desk asked, makes no request, and says not to reply. Damage intake own the decision, have the footage, have marked it priority and have given a time that has not passed. Another message from the desk would either be noise or would risk implying an outcome the desk does not control; the right thing is to log it and check back at the stated time.",
+  "review": {
+    "status": "widened",
+    "note": "Disposition matched; the fourth must item required the log to restate the household of seven and the earlier brush-off, which is stricter than fair for a no-action note, so it now requires only the check-back time and the follow-up condition."
+  }
+}

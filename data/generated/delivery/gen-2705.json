@@ -1,0 +1,152 @@
+{
+  "id": "gen-2705",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "seed_case": null,
+  "grounding": "seed-web-059",
+  "title": "Case: Bookcase ordered for a chosen Thursday keeps going out for delivery earlier in the week",
+  "context": "A Tallowmere Goods bookcase was ordered with the merchant's pick-your-day option. The recipient is working away from home for part of the week and has written to the desk several times.",
+  "initial_request": "Morning. Guess what is 'out for delivery today'. It's WEDNESDAY. I am in a hotel 140 miles away until tonight, which, again, is the entire reason I paid for pick your day and picked Thursday. Colm's at his daughter's today so there isn't even anybody to wave at the poor driver. I've picked Thursday on three texts now, three! And I've just read the small print at the bottom of this one which says after three goes it gets sent back?? So it'll be on its way back to the warehouse on the one day this week I'm actually standing in my own hall. Please can someone make Thursday mean Thursday. Sorry for the essay. The lamp really is nice though.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-04T16:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order confirmations, Tallowmere Goods (automated)",
+      "to": "Philippa Dunmore, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks for your order TG-987! Item: Alderby 5-shelf bookcase (2 boxes). Delivery option: Pick Your Day - Thursday 10 September. Carrier: Plover Arc Logistics, DL-987. WEEKEND OFFER: 15% off all garden furniture with code PATIO15 until Sunday midnight. Love your order? Tag us for a chance to win a GBP 50 voucher. You are receiving this email because you placed an order with Tallowmere Goods."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-07T11:42:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Philippa Dunmore, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi! Bit confused. My neighbour Colm has just rung me to say a Plover Arc van turned up with my bookcase this morning. It's Monday! I picked Thursday on purpose because I'm working away till Wednesday night, that's the whole point of the pick your day thing, I paid extra for it. Colm told the driver Thursday and the driver said fine. Then I got a text with a link to rearrange so I picked Thursday on that too. So hopefully sorted, just flagging. Also the lamp from my other order (TG-981) came Saturday and it's gorgeous, tell whoever packs them they did a lovely job."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-07T11:43:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Rivet Delivery Desk portal (automated)",
+      "to": "Philippa Dunmore, recipient",
+      "body": "Thanks for your message. We aim to reply within 4 working hours. Did you know you can track every parcel in one place in the portal? This is an automated reply; please do not respond to it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-07T12:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-987 (Tallowmere TG-987) was attempted this morning. The recipient, Philippa Dunmore, says the order was placed for delivery on Thursday 10 September and that she has rearranged to Thursday through the text link. Can you confirm what date DL-987 is booked for?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-07T13:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-987 is on next-available service. There is no booked date on it. Attempt 1 logged failed today. A rearrangement from the text link only moves the next attempt; the route planner offers the parcel again the following morning if there is van space. We don't set booked dates, that is Scheduling. If Scheduling put a booked date on it, the planner drops it from earlier routes by itself and it waits at the depot. Separately, DL-981 for the same customer was delivered Saturday, signed for."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-09-08T10:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Philippa Dunmore, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "He's been AGAIN. Tuesday. Colm says it was the same lad, Colm told him Thursday again and the lad said 'it just comes up on my list, mate'. Which, fair enough, not his fault. Got another text, picked Thursday again. That's twice now. Different question while I'm here, is there any way to get the cardboard taken away afterwards? The lamp box was enormous and I've nowhere to put it. Not urgent!!"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-09-08T10:16:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Rivet Delivery Desk portal (automated)",
+      "to": "Philippa Dunmore, recipient",
+      "body": "Thanks for your message. We aim to reply within 4 working hours. Did you know you can track every parcel in one place in the portal? This is an automated reply; please do not respond to it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-09-08T10:40:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Warehouse dispatch, Tallowmere Goods",
+      "body": "TG-987 / DL-987: the customer chose Pick Your Day, Thursday 10 September, but the carrier shows next-available service with no booked date and has attempted delivery on Monday and Tuesday. What delivery date was the order sent to the carrier with?"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-09-08T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-987: customer chose Pick Your Day, Thursday 10 Sept, at checkout. On our manifest the date went into the delivery notes text ('Deliver Thurs 10/9 only') and not into the booked-date field. It is a known fault with pick-your-day orders this month. We can't amend a manifest once the carrier has the parcel. Scheduling at Plover Arc can set a booked date on their side if asked. On the cardboard, we don't offer packaging take-back, sorry."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-09-08T17:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-987: 2 failed attempts. Goes out again tomorrow under next-available. Standard rule applies, a third failed attempt returns the parcel to the merchant on the next trunk. Also for your records, the customer satisfaction survey for DL-981 has been sent to the recipient, nothing needed from you."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-09-09T07:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Notifications, Plover Arc Logistics (automated)",
+      "to": "Philippa Dunmore, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Good news! Your parcel DL-987 is out for delivery today between 09:00 and 13:00. Not going to be in? Use the link in your text message to rearrange. How did we do last time? Rate your delivery of DL-981 in 30 seconds and help us improve."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-09-09T07:35:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Philippa Dunmore, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Guess what is 'out for delivery today'. It's WEDNESDAY. I am in a hotel 140 miles away until tonight, which, again, is the entire reason I paid for pick your day and picked Thursday. Colm's at his daughter's today so there isn't even anybody to wave at the poor driver. I've picked Thursday on three texts now, three! And I've just read the small print at the bottom of this one which says after three goes it gets sent back?? So it'll be on its way back to the warehouse on the one day this week I'm actually standing in my own hall. Please can someone make Thursday mean Thursday. Sorry for the essay. The lamp really is nice though."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask Scheduling to put a booked date of Thursday 10 September on DL-987 before today's 09:00-13:00 attempt, and to say whether the early attempts count toward return."
+      }
+    ],
+    "must": [
+      "Asks Scheduling to set a booked date of Thursday 10 September on DL-987.",
+      "Gives the cause from the history: Tallowmere's Warehouse dispatch confirms the customer chose Thursday 10 September and that the date went into the delivery notes text and not the booked-date field, so the carrier has it as next-available.",
+      "Flags the urgency: it is out for delivery today between 09:00 and 13:00 with nobody at the address, this would be the third failed attempt, and a third failure returns it to the merchant. Asks whether the early attempts will count.",
+      "Tells Scheduling that this is the third early attempt and that she has rearranged to Thursday three times through the text link without effect."
+    ],
+    "must_not": [
+      "Tells the recipient to be at home, or to arrange for someone to be in, today or earlier than Thursday because the parcel is already local.",
+      "Tells the recipient to use the text link to rearrange again.",
+      "Tells the recipient that Thursday is now booked or that the parcel will not be returned, before Scheduling confirms.",
+      "Spends the message on the cardboard take-back, the lamp order DL-981 or the survey.",
+      "Asks Tallowmere's Warehouse dispatch to amend the manifest, which they have said they cannot do."
+    ],
+    "reference_message": "Urgent request on DL-987 (Tallowmere TG-987), which is out for delivery today between 09:00 and 13:00. Please set a booked date of Thursday 10 September on it. The customer, Philippa Dunmore, chose Pick Your Day, Thursday 10 September, at checkout. Tallowmere's Warehouse dispatch confirm that on their manifest the date went into the delivery notes text ('Deliver Thurs 10/9 only') and not the booked-date field, so you have it as next-available. It was attempted on Monday and Tuesday and logged failed both times. She is working away until tonight and nobody is at the address today, so today's run would be a third failed attempt, and the depot says a third failure returns it to the merchant. Dispatch tell me a booked date takes it off earlier routes automatically. She has rearranged to Thursday three times through the text link and it has come out early each time. Could you also tell me whether the attempts made before her chosen day count toward the return limit? I have not told her Thursday is confirmed."
+  },
+  "rationale": "Under the chatter, three facts decide it: the merchant confirms Thursday was chosen but sat in a notes field, Dispatch says only Scheduling can set a booked date and that doing so pulls the parcel from earlier routes, and the depot says a third failed attempt, due this morning at an empty house, sends it back. The lamp, the cardboard, the survey and the marketing text need nothing. Asking her to be in earlier or to click the link again repeats what has already failed three times.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked Scheduling by Email to set the Thursday 10 September booked date before today's third attempt and ignored the lamp, cardboard and survey noise, which matches the key."
+  }
+}

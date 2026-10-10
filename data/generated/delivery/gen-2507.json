@@ -1,0 +1,78 @@
+{
+  "id": "gen-2507",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "out_of_policy_demand",
+  "seed_case": null,
+  "grounding": "seed-web-081",
+  "title": "Case: Exporter is invoiced for import VAT on a parcel delivered abroad five months ago",
+  "context": "Brock & Tern Looms exports on a Plover Arc shipper account. DL-917, a tabletop loom, was delivered to a consumer abroad on 3 April, shipped with import VAT payable by the recipient.",
+  "initial_request": "To summarise the business model as I understand it: you paid a tax bill for a stranger, handed her the goods anyway, failed to collect for five months, and have now remembered that I exist. The shipment went out recipient-pays. It says so on the booking. The VAT on RB-917 is more than I made on the loom, and I have roughly no chance of recovering it from a private buyer overseas in September for something she received in April. Nobody will tell me which term this rests on. So: I'd like the desk to confirm in writing by Friday that RB-917 was raised in error and has been cancelled. Failing that I stop paying the account and take the looms elsewhere.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-14T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Rebill notice RB-917 has been raised to shipper account Brock & Tern Looms for import VAT on DL-917, delivered 3 April, shipped duties-payable-by-recipient. We paid the VAT to customs at clearance and the parcel was delivered. The recipient's invoice is unpaid after three reminders, so the charge has been transferred to the shipper account. The notice does not cite the clause relied on. Import billing's terms desk can supply it and reviews disputed rebills on written request."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-14T13:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Halvard Brock, shipper",
+      "body": "RB-917 is valid under our terms of carriage. Please settle within 14 days."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-15T08:20:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Halvard Brock, shipper",
+      "to": "Business billing, Plover Arc Logistics",
+      "body": "Which term? That is the second time of asking."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-15T10:05:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Halvard Brock, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "To summarise the business model as I understand it: you paid a tax bill for a stranger, handed her the goods anyway, failed to collect for five months, and have now remembered that I exist. The shipment went out recipient-pays. It says so on the booking. The VAT on RB-917 is more than I made on the loom, and I have roughly no chance of recovering it from a private buyer overseas in September for something she received in April. Nobody will tell me which term this rests on. So: I'd like the desk to confirm in writing by Friday that RB-917 was raised in error and has been cancelled. Failing that I stop paying the account and take the looms elsewhere."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Import billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Written request for Import billing to review disputed rebill RB-917, cite the clause it relies on, and answer the shipper before his Friday deadline."
+      }
+    ],
+    "must": [
+      "Asks Import billing to review RB-917 as a disputed rebill and to cite the specific clause that transfers the unpaid import VAT to the shipper.",
+      "Passes on the shipper's position and deadline: shipped recipient-pays, delivered 3 April before the VAT was collected, he has asked twice for the term without an answer, and he wants a written answer by Friday.",
+      "Leaves the liability decision with Import billing and gives no view on whether the charge is valid."
+    ],
+    "must_not": [
+      "Tells the shipper RB-917 is an error, is cancelled, or should not have been raised because the shipment was recipient-pays.",
+      "Tells the shipper the charge is valid or that he is liable, as the desk's own conclusion.",
+      "Advises him to withhold payment, or to pursue the overseas recipient, or shares the recipient's contact details.",
+      "Promises a credit, a waiver or a decision by Friday."
+    ],
+    "reference_message": "Written request to review a disputed rebill: RB-917, shipper account Brock & Tern Looms, import VAT on DL-917. The shipment went out duties-payable-by-recipient and was delivered on 3 April; your notice says the VAT was paid to customs at clearance, the recipient did not pay after three reminders, and the charge was transferred to the shipper. The shipper, Halvard Brock, disputes it. He has asked Business billing twice which term the transfer rests on and has been told only that it is 'valid under our terms'; your notice does not cite the clause either. Please review RB-917, cite the specific clause relied on, and send him and me a written answer. He has asked for one by Friday and says he will stop paying the account otherwise; he also says the VAT exceeds his margin on the order. I have given him no view on whether the charge is valid or will be withdrawn. That decision is yours."
+  },
+  "rationale": "The shipper wants the desk to declare the rebill an error and cancel it, which the desk cannot do, and the carrier's terms may well make the shipper liable. What is actually missing is the clause and a reasoned decision, and Import billing has said its terms desk supplies both on written request. The desk routes the dispute there with his deadline and takes no side.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent the written dispute and clause request to Import billing by Email with the Friday deadline and took no view on liability, matching the key."
+  }
+}

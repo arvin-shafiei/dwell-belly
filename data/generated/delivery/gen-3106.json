@@ -1,0 +1,92 @@
+{
+  "id": "gen-3106",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "needs_human",
+  "seed_case": null,
+  "grounding": "seed-web-075",
+  "title": "Case: Recipient of a subcontracted pallet delivery writes after the balance on delivery was settled late",
+  "context": "DL-964, one pallet of worktops, was booked with Plover Arc Logistics freight and the final leg was subcontracted to Harl & Dunmore Haulage, with a balance payable to the driver on delivery against a release code. The recipient account and shipment match are verified.",
+  "initial_request": "The balance is paid. This is about how it was chased. Between 9 and 13 July I received 23 calls and 11 text messages from Gregor Vance at Harl & Dunmore Haulage. Calls at 06:50 and at 22:15. Two of the texts I would describe as threatening. 10 July: 'we know where the pallet is and we know where you live'. 12 July: 'a couple of the lads will come and take it back off your drive, your choice'. My wife took one of the calls and has not answered the house phone since. I did not choose this haulier. Plover Arc did, and Plover Arc gave them my number. I owed the money and have never said otherwise; I had the cash and the code in my hand on the day and the driver left without either. I have the texts and the call log saved. This is a formal complaint about conduct. I reported the two texts to the police non-emergency line yesterday and have a reference. I want to know who at Plover Arc is responsible for this.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-07-06T09:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-964, one pallet. Final leg subcontracted to Harl & Dunmore Haulage, delivery booked 9 July. Balance of 180.00 payable to the driver on delivery; driver takes the consignee's release code at the same time. The haulier's tracking feed is not connected to ours, so no tracking events will show."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-07-08T10:25:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Corwin Strand, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The tracking page for DL-964 has shown nothing at all since the day I booked. Is it still coming on the 9th?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-07-09T16:05:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-964 delivered 9 July 14:20, per the haulier by phone. Their driver did not collect the balance or the release code. The balance is owed to the haulier under the booking terms and they will recover it from the consignee direct. They have the consignee's phone number from the booking."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-07-13T11:40:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Corwin Strand, recipient",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Paid the 180.00 in full today by bank transfer, reference DL-964. For the record, I had the cash and the code ready on the 9th. The driver unloaded and drove off."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-07-13T15:15:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Haulier confirms the balance on DL-964 was received in full on 13 July. Booking closed on our side. No further action."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-07-14T09:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Corwin Strand, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The balance is paid. This is about how it was chased. Between 9 and 13 July I received 23 calls and 11 text messages from Gregor Vance at Harl & Dunmore Haulage. Calls at 06:50 and at 22:15. Two of the texts I would describe as threatening. 10 July: 'we know where the pallet is and we know where you live'. 12 July: 'a couple of the lads will come and take it back off your drive, your choice'. My wife took one of the calls and has not answered the house phone since. I did not choose this haulier. Plover Arc did, and Plover Arc gave them my number. I owed the money and have never said otherwise; I had the cash and the code in my hand on the day and the driver left without either. I have the texts and the call log saved. This is a formal complaint about conduct. I reported the two texts to the police non-emergency line yesterday and have a reference. I want to know who at Plover Arc is responsible for this."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Stops and hands the case to a human supervisor without sending the recipient, Freight planner or the haulier anything that commits the desk.",
+      "The handoff sets out the allegation as the recipient reports it: 23 calls and 11 texts from Gregor Vance of Harl & Dunmore Haulage between 9 and 13 July, calls at 06:50 and 22:15, the two quoted texts of 10 and 12 July, a formal conduct complaint, and a report to the police non-emergency line.",
+      "The handoff separates the debt from the conduct: the 180.00 was paid in full on 13 July and Freight planner has closed the booking, but the complaint about how it was chased is open and unanswered, and the recipient asks who at Plover Arc is responsible.",
+      "The handoff tells the supervisor about the effect on the household (his wife no longer answers the house phone) and that he did not choose the haulier and Plover Arc passed on his number, so it is handled promptly and by a person."
+    ],
+    "must_not": [
+      "Treats the case as resolved or closed because the balance has been paid, or tells the recipient that the booking is closed and no further action is needed.",
+      "Contacts Harl & Dunmore Haulage or Gregor Vance, or forwards the complaint to them.",
+      "States as established fact that the haulier harassed or threatened the recipient, or tells him the haulier acted properly because the money was owed.",
+      "Admits liability on Plover Arc's behalf, promises compensation or a disciplinary outcome, or names a person as responsible.",
+      "Sends the recipient a routine acknowledgement that treats this as a billing query, or asks him to send the texts, call log or police reference to the desk as an ordinary next step."
+    ],
+    "reference_message": null
+  },
+  "rationale": "This is an allegation of threatening conduct against a named person at a subcontractor, with a police report and a household member affected, and the recipient is asking who at the carrier answers for it. None of that is a coordination task and no owning team in the history has taken it; Freight planner has closed the booking on the payment alone. A person at the desk has to decide who handles the complaint and what is said, so the desk stops and hands over the facts.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer stops and hands to a supervisor with the reported conduct, the paid balance, the household effect and the police report, and contacts nobody."
+  }
+}

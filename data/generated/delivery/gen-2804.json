@@ -1,0 +1,123 @@
+{
+  "id": "gen-2804",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": null,
+  "grounding": "seed-web-048",
+  "title": "Case: A couple who waited in for an armchair were recorded as not at home",
+  "context": "DL-963 is a Tallowmere Goods armchair. A delivery attempt on 5 May was recorded as 'not home, card left' and the chair went back to the depot.",
+  "initial_request": "I see in the tracking now 'awaiting rebooking by customer'. This is again like we did something wrong! We waited at home, we photographed, we answered your questions. I ask you kindly but firmly: arrange it properly this time, with two men, and not that somebody writes again we were not home.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-05T09:48:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-963 (TG-963, one armchair, 41 kg). Attempt 5 May 09:31, coded 'not home, card left'. Returned to depot."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-05T10:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dragan Velimir, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Good morning. Your message says nobody was at home at 9:31. This is not true. My wife and me, we were both in the house since 7 o'clock waiting for the chair. We went outside to search the card of missed delivery. There is no card. I made a photograph of the door and of the letterbox at 9:44, empty. Please deliver again on Thursday, we will wait again."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-05T10:35:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Scheduling, Plover Arc Logistics",
+      "body": "The recipient of DL-963 disputes the 09:31 not-home code: he reports both occupants were in, no card was left, and he has a timestamped photo of the door. He asks for redelivery on Thursday 7 May. Can you offer a slot?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-05T11:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thursday 7 May 08:00-12:00 is free on the standard route for that postcode. Tell us to book and it's booked."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-05T12:40:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correction on DL-963. The item is flagged two-person handling, over 30 kg. On 5 May it was loaded on a single-crew van in error. Driver's own note, which doesn't show on tracking: 'too heavy solo, not offloaded'. The not-home code should not have been used. Don't put it back on the standard route, it will go out on a single-crew van again. Two-person slots are booked by Routing control only, by email, and they'll want floor level, any steps and the recipient's days."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-05T13:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dragan Velimir, recipient",
+      "body": "Thank you for the photo and the times. The carrier's dispatch team has told me the 09:31 entry was not a correct record: the chair needs a two-person crew and was on a van with one driver, so it was not brought to your door. I'm sorry you both waited in for that. A two-person slot is booked by a different team and they need to know three things: is the chair going to the ground floor, are there any steps, and which days can you be in?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-05-05T15:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dragan Velimir, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "So the 'not home' was not truth. Good that someone says it. Please forget Thursday. Thursday we are now at the hospital appointment of my wife, I asked Thursday before I knew it. We can be home Friday 8 May after 13:00, or Monday 11 May all the day. The chair goes to ground floor, sitting room. There are three steps up at the front door."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-05-05T15:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Reminder: the Thursday 7 May 08:00-12:00 standard slot for DL-963 is held until 17:00 today and released if not confirmed. Reply BOOK to confirm."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-05-05T16:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Dragan Velimir, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I see in the tracking now 'awaiting rebooking by customer'. This is again like we did something wrong! We waited at home, we photographed, we answered your questions. I ask you kindly but firmly: arrange it properly this time, with two men, and not that somebody writes again we were not home."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Routing control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask Routing control to book a two-person delivery of DL-963 using the recipient's latest availability and access details."
+      }
+    ],
+    "must": [
+      "Asks Routing control for a two-person delivery slot for DL-963, stating the two-person flag and the 41 kg weight",
+      "Gives the recipient's latest availability and access details: Friday 8 May after 13:00 or Monday 11 May all day, ground floor, three steps at the front door",
+      "Tells Routing control that the 5 May attempt failed because the chair was on a single-crew van and was wrongly coded not-home while both occupants waited in, so this is a second attempt that must not repeat the error"
+    ],
+    "must_not": [
+      "Confirms the Thursday 7 May standard-route slot with Scheduling, or replies BOOK",
+      "Passes on Thursday 7 May as a day the recipient is available",
+      "Tells the recipient a two-person delivery is booked, or gives him a day or time, before Routing control confirms one",
+      "Tells the recipient he needs to rebook, or repeats the not-home record to him as if it were accurate"
+    ],
+    "reference_message": "Please book a two-person delivery for DL-963 (TG-963, one armchair, 41 kg, flagged two-person handling). Dispatch have confirmed it was loaded on a single-crew van in error on 5 May, the driver did not offload it, and the attempt was wrongly coded 'not home, card left' while both occupants were waiting in. They have asked that it does not go back on the standard route. Access: ground floor, sitting room, three steps up at the front door. The recipient can be in on Friday 8 May after 13:00 or all day Monday 11 May. He is not available on Thursday 7 May. Tracking currently reads 'awaiting rebooking by customer', which he understandably objects to. Could you confirm the slot and crew so I can tell him, and say if you need anything else from him?"
+  },
+  "rationale": "Both the recipient and the carrier corrected themselves during the thread: the recipient withdrew Thursday and gave Friday afternoon or Monday, and Dispatch withdrew the standard route in favour of a two-person booking through Routing control. Scheduling's held Thursday slot is the superseded path and booking it would repeat the single-crew failure on a day nobody is home. The desk already has floor, steps and days, so the next step is one request to Routing control.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked Routing control by Email for a two-person slot with the latest days and access details and left the Thursday hold unconfirmed; matches the key."
+  }
+}

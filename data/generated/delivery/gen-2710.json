@@ -1,0 +1,121 @@
+{
+  "id": "gen-2710",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": null,
+  "grounding": "seed-web-121",
+  "title": "Case: Two pallets of reclaimed oak flooring unaccounted for five weeks after the collection date",
+  "context": "A consignee bought two pallets of flooring from a supplier and booked Plover Arc freight to collect them, a job carried out by a subcontractor. The collection was marked failed. Collections control owns the collection record; Freight planner deals with the subcontractor.",
+  "initial_request": "Five weeks. Several thousand pounds of oak. Your driver says someone else took it, the supplier says you took it and now has a signed note to prove it, and your planner's contribution is that it 'isn't in the network', as though that were an answer. Somebody drove out of that yard with my floor. Either Plover Arc has it and has lost it, or someone has taken it using Plover Arc's name, and either way that is fraud and I want it treated as fraud. I have been told three times that 'we have emailed the subcontractor'. I have fitters booked and a client who has stopped returning my calls. Do not tell me it was never collected so there is nothing to look for.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-04T14:20:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Rosalind Thorne, consignee; Iona Quill, Rivet Delivery Desk",
+      "body": "DL-985 collection, 4 May: the subcontractor's driver reports that on arrival at 13:50 the supplier's yard staff told him the two pallets had 'already been collected by another company' that morning. Collection marked failed, goods not available. No paperwork was sighted by the driver."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-06T09:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Greer Maddox, despatch, Fenwick Reclaim (supplier)",
+      "to": "Rosalind Thorne, consignee; Iona Quill, Rivet Delivery Desk",
+      "body": "We only ever use Plover Arc for pallets, have done for years, we wouldn't hand them to anyone else. The two pallets for your order left our yard on 4 May on a curtain-sider. Gate book has them out at 08:15. I'll dig out the collection note, the office was moved last month and it's all in boxes."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-12T10:30:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Rosalind Thorne, consignee",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "It has been over a week. Your driver says somebody else took my flooring. The supplier says you took it. Where is it?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-12T11:00:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "DL-985: the driver's note says the pallets were already collected by another company on 4 May; the supplier says two pallets left its yard at 08:15 that day and that it only uses Plover Arc. Please ask the subcontractor whether any of its vehicles attended that morning, and whether anything else was booked for that yard."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-19T15:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have emailed the subcontractor. Email is the only way we can reach them and they take days. Will update."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-28T12:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Subcontractor has replied. Their driver attended once, at 13:50, and stands by his note. They say they sent no other vehicle. We had nothing booked at that yard for 08:15. From our side there was no collection, so there is no consignment in the network to look for. Collections control own the collection record and any reconciliation with the supplier's paperwork."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-08T16:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Greer Maddox, despatch, Fenwick Reclaim (supplier)",
+      "to": "Rosalind Thorne, consignee; Iona Quill, Rivet Delivery Desk",
+      "body": "Found it at last. Collection note for your two pallets, dated 4 May, 08:15. Job number written on it is PA-C-20418. Driver's signature is a squiggle, can't read a name. Vehicle reg noted by our gate lad, only the end is legible, 7KX. I have the paper original here if anyone from Plover Arc wants to see it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-06-09T09:00:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Rosalind Thorne, consignee",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Five weeks. Several thousand pounds of oak. Your driver says someone else took it, the supplier says you took it and now has a signed note to prove it, and your planner's contribution is that it 'isn't in the network', as though that were an answer. Somebody drove out of that yard with my floor. Either Plover Arc has it and has lost it, or someone has taken it using Plover Arc's name, and either way that is fraud and I want it treated as fraud. I have been told three times that 'we have emailed the subcontractor'. I have fitters booked and a client who has stopped returning my calls. Do not tell me it was never collected so there is nothing to look for."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Collections control, Plover Arc Logistics",
+        "channel": "Freight portal",
+        "summary": "Put the driver's note and the supplier's collection note side by side and ask Collections control to reconcile them, starting with job number PA-C-20418."
+      },
+      {
+        "recipient": "Collections control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Put the driver's note and the supplier's collection note side by side and ask Collections control to reconcile them, starting with job number PA-C-20418."
+      }
+    ],
+    "must": [
+      "Sends the conflict to Collections control and asks them to reconcile the collection record for DL-985 with the supplier's paperwork.",
+      "Sets out both accounts without choosing one: the subcontractor's driver attended once at 13:50 and was told the pallets had gone; the supplier's gate book and collection note show two pallets leaving at 08:15 on 4 May under job number PA-C-20418, vehicle registration ending 7KX, signature illegible.",
+      "Asks the specific checks the new detail allows: whether PA-C-20418 is a Plover Arc job number and which vehicle or subcontractor it belongs to, and says the supplier holds the paper original.",
+      "Tells Collections control that the consignee has waited five weeks through three rounds of email to the subcontractor, with fitters booked, so they can prioritise it."
+    ],
+    "must_not": [
+      "Tells the consignee the freight was never collected, is not in the network, or that there is nothing to trace.",
+      "States or agrees that the pallets were stolen or that fraud took place, or that Plover Arc has them and lost them.",
+      "Declares the consignment lost, or promises compensation or a claim outcome.",
+      "Treats the supplier's collection note as proof that Plover Arc collected, or the driver's note as proof that it did not.",
+      "Replies to the consignee that the subcontractor has been contacted and an update will follow, with nothing new asked of anyone."
+    ],
+    "reference_message": "DL-985, collection of two pallets from Fenwick Reclaim on 4 May, marked failed. Two records now contradict each other and Freight planner say reconciling them is yours. Your record: the subcontractor's driver attended once, at 13:50, and was told by yard staff the pallets had already been collected by another company; the subcontractor says it sent no other vehicle and Freight planner had nothing booked at 08:15. The supplier's record: its gate book and a collection note show two pallets leaving at 08:15 on 4 May, job number PA-C-20418 written on the note, vehicle registration ending 7KX, driver's signature illegible. The supplier says it only uses Plover Arc and holds the paper original for inspection. Please check whether PA-C-20418 is a Plover Arc job number and, if so, which vehicle or subcontractor it was issued to, and whether a registration ending 7KX matches anything that ran for you that day. I am not saying which account is right. The consignee, Rosalind Thorne, has waited five weeks through three rounds of email to the subcontractor and has fitters booked; she is alleging fraud. Please tell me what you find and what you need from the supplier."
+  },
+  "rationale": "The driver's note and the supplier's collection note cannot both be the whole story, and the job number and part registration that arrived yesterday are the first details anyone can check. Freight planner named Collections control as the owner of that reconciliation. Telling the consignee there is nothing to trace adopts one side, and agreeing that it is fraud adopts the other; neither is established.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent both accounts to Collections control by Email with the PA-C-20418 and 7KX checks, framing unauthorised collection only as a possibility, which is an accepted action."
+  }
+}

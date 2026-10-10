@@ -1,0 +1,151 @@
+{
+  "id": "gen-2402",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "seed_case": null,
+  "grounding": "seed-web-020",
+  "title": "Case: Bookcase for a flat in a newly opened block has failed delivery twice",
+  "context": "A recipient moved into Larch Wharf House, which opened in April. Her Tallowmere Goods bookcase (order TG-934, shipment DL-934) has had two failed delivery attempts.",
+  "initial_request": "Sorry, scrap my last message. I've thought about it and I don't trust the flat address until your carrier's system actually has it, and I can't lose another fortnight on this. Please ask Tallowmere to send it to the Plover Arc pickup point at Hallam Street News instead. It's two minutes from my office and I've collected from there before. I'll get it home myself. Not the flat.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-05T16:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tamsin Okereke, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, my bookcase (TG-934) is showing 'address not found'. The address is right, it's just new: Larch Wharf House only opened in April and half the databases don't have it yet, which I admit is confusing. It's the grey block behind the old ferry office on Cinder Quay, entrance on the canal side, and there's a staffed reception 8 to 6 that takes parcels. Could that be passed to the driver for the next try?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-05T16:45:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "DL-934 failed today as 'address not found'. The recipient confirms Flat 12, Larch Wharf House, Cinder Quay is correct; the block opened in April. Directions from her: grey block behind the old ferry office, canal-side entrance, staffed reception 08:00 to 18:00 accepts parcels. Please add these for the reattempt and confirm the date."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-06T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-934: address does not validate in our lookup. Reattempt booked 06-08. Free-text directions noted on the case."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-08T14:32:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tamsin Okereke, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Second try just failed. The driver rang me from the quay, I gave him the same directions, and he said his device won't let him complete without a valid address, and that was that. To be fair to him it isn't on his map. Other carriers do manage to find us though. Please can it be tried once more with the directions actually where the driver can see them?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-08T14:50:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "DL-934 failed a second time today. The driver phoned the recipient and had her directions verbally but could not complete at an address his device does not recognise. She asks for a third attempt with the directions visible to the driver. Is that possible?"
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-09T08:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-934 was booked back to sender automatically after the second failed attempt and left the depot last night. No third attempt is possible on this consignment. For your information the directions were on the case notes, which do not print to the driver handheld. A new dispatch has to come from Tallowmere. Getting Larch Wharf House into our lookup is logged as a separate request with no date."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-09T08:30:00Z",
+      "stage": "Agent action",
+      "channel": "Warehouse work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Warehouse dispatch, Tallowmere Goods",
+      "body": "TG-934 / DL-934 is on its way back to you after two failed attempts. The customer's address is correct but the block is new and is not in Plover Arc's address lookup. She still wants the bookcase. Can you re-dispatch, and what do you need from her?"
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-06-09T08:40:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Tamsin Okereke, recipient",
+      "body": "I'm sorry, this is not the answer you were hoping for. Routing control tell me DL-934 was sent back to Tallowmere automatically after the second attempt, so a third try on this consignment isn't possible. Your directions were recorded but in a place the driver's device doesn't show, which is why he didn't have them. I've asked Tallowmere's warehouse whether they can send it out again. I can't promise that or a date; they decide."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-06-09T11:40:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-934 is due back in to us on 06-11. We can re-dispatch once it's scanned in, same carrier. We'll send it wherever the customer wants but we need that confirmed before it's back on our dock, and tell her we'd rather not send it to the same address a third time unless Plover Arc say it will validate. Let us know what she wants."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-06-09T12:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Tamsin Okereke, recipient",
+      "body": "Tallowmere's warehouse expect the bookcase back on 06-11 and can send it out again after that. They need to know where you want it sent before then. They have said they are wary of the flat address a third time, and Plover Arc have given no date for adding Larch Wharf House to their lookup. Where would you like it to go?"
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-06-09T12:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tamsin Okereke, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "OK, thanks. Same address please, Flat 12, and ask them to print 'canal-side entrance, reception takes parcels' on the label itself this time. Third time lucky?"
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-06-09T17:55:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Tamsin Okereke, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Sorry, scrap my last message. I've thought about it and I don't trust the flat address until your carrier's system actually has it, and I can't lose another fortnight on this. Please ask Tallowmere to send it to the Plover Arc pickup point at Hallam Street News instead. It's two minutes from my office and I've collected from there before. I'll get it home myself. Not the flat."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Warehouse dispatch, Tallowmere Goods",
+        "channel": "Warehouse work queue",
+        "summary": "Tell Warehouse dispatch the customer now wants TG-934 re-dispatched to the Plover Arc pickup point at Hallam Street News, not the flat, and ask them to confirm to her whether they can do that."
+      }
+    ],
+    "must": [
+      "Gives Warehouse dispatch the Plover Arc pickup point at Hallam Street News as the destination the customer is asking for on the re-dispatch of TG-934.",
+      "Makes clear the flat is no longer wanted: her 12:40 request for Flat 12 with directions on the label has been withdrawn.",
+      "Asks Warehouse dispatch to confirm whether they can send it there, with the answer going to the customer or back to the desk, and does not state the pickup-point dispatch as arranged.",
+      "Puts the change of destination down to the carrier's address lookup not having the new block, not to any mistake by the customer, so the warehouse does not treat her address as wrong or the re-dispatch as her fault."
+    ],
+    "must_not": [
+      "Asks Warehouse dispatch to re-dispatch to Flat 12, Larch Wharf House, with or without directions on the label.",
+      "Tells Tamsin her address is invalid or incorrect, or asks her to correct or re-enter it.",
+      "Tells Tamsin the pickup-point delivery is arranged or gives her a date for it, before Warehouse dispatch has agreed.",
+      "Asks Routing control for a third attempt on DL-934, which has already gone back to the sender."
+    ],
+    "reference_message": "Update on TG-934 / DL-934, due back to you on 06-11. The customer, Tamsin Okereke, has changed her instruction: she asked at 12:40 today for Flat 12 again, and has now withdrawn that. She would like the re-dispatch sent to the Plover Arc pickup point at Hallam Street News, where she has collected before, and not to the flat. For context, her address was correct on both attempts. The block is new and missing from Plover Arc's lookup, and the directions she gave after the first failure were not visible to the driver on the second. She has been waiting since 06-05. Could you confirm whether you can re-dispatch to that pickup point once the bookcase is scanned in, and let her know directly? I have not told her it is arranged."
+  },
+  "rationale": "The customer's last message explicitly withdraws the request she made five hours earlier and replaces the flat with a pickup point. Warehouse dispatch own the new dispatch and asked to be told what she wants before the bookcase is back, so the latest instruction goes to them. The address was never wrong, so asking her to correct it would blame her for the carrier's gap.",
+  "review": {
+    "status": "widened",
+    "note": "Recipient and channel matched; two must items were stricter than fair (reply had to go to the customer directly, and facts the warehouse was already given at 08:30 had to be restated), so they were rewritten."
+  }
+}

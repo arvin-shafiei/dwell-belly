@@ -1,0 +1,91 @@
+{
+  "id": "gen-2210",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": "seed-web-115",
+  "title": "Case: Recipient writes again about a gashed box of knitwear that arrived smelling of smoke",
+  "context": "Tallowmere Goods shipped a box of knitwear from its overseas warehouse to Solveig Amankwah as DL-978. She reported its condition on arrival on 10 March.",
+  "initial_request": "Just for your file, no reply needed: the clothes are in a sealed bag, unwashed, and the box is in the shed, as Damage intake asked. Still can't work out how a box of jumpers ends up smelling like the back room of a pub, but there we are. I'll wait for the 18th.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-10T10:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Solveig Amankwah, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Box of knitwear arrived this morning, DL-978. There is a gash about 40 cm long down one side, taped over with plain brown tape that isn't Tallowmere's. Nothing is torn or missing as far as I can tell, but every single item reeks of cigarette smoke. Nobody in this house smokes. I honestly don't know what category of problem this is. What do I do with it?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-10T10:45:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Damage intake, Tallowmere Goods",
+      "body": "DL-978 / TG-978: the recipient reports a 40 cm gash in the carton, re-taped with tape that is not the merchant's, and all contents smelling strongly of cigarette smoke. Nothing torn or missing as far as she can tell. Please open a damage file and tell her what you need from her. I have made no assessment."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-10T13:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "File DM-978 opened. Smoke contamination counts as damage under our intake rules, it doesn't have to be broken. We have asked the customer directly for photos of the gash, the tape and the label, and to keep the box and not wash anything. We have also told Plover Arc Delivery investigations about the re-taping ourselves. Nothing further needed from the desk. Decision goes to the customer by 18 March 17:00."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-11T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DM-978: photos received from the customer, all usable. Still nothing needed from you. Decision date unchanged, 18 March 17:00."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-11T12:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Solveig Amankwah, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Damage intake have emailed to say they've got my photos and I'll hear by the 18th. Fine by me. Thanks for passing it on."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-14T16:22:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Solveig Amankwah, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just for your file, no reply needed: the clothes are in a sealed bag, unwashed, and the box is in the shed, as Damage intake asked. Still can't work out how a box of jumpers ends up smelling like the back room of a pub, but there we are. I'll wait for the 18th."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone",
+      "Records why nothing is owed: damage file DM-978 is open with Damage intake, they have the photos and have said nothing more is needed from the desk, and their decision is due 18 March 17:00, which has not passed",
+      "Notes that the recipient's message is for the file, asks for nothing and says no reply is needed"
+    ],
+    "must_not": [
+      "Sends the recipient a reply predicting the outcome of DM-978, whether that the claim will be accepted or that a smell with nothing broken may not count as damage",
+      "Forwards the note to Damage intake or chases them for a decision before 18 March 17:00",
+      "Gives the recipient any advice on washing, airing, wearing or disposing of the clothes",
+      "Offers a view on how the box came to be opened or to smell of smoke, or says it was tampered with",
+      "Hands the case to a supervisor"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Everything that needed doing was done on 10 and 11 March: the owning team opened the file, has the evidence, told the desk twice that nothing more is needed and gave a decision date that is still four days away. The recipient's note is an explicit for-the-file update that asks for no reply. Any message now would either be noise to Damage intake or would tempt the desk into saying something about the claim or the clothes that it has no standing to say.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator took no action and recorded why, matching the key."
+  }
+}

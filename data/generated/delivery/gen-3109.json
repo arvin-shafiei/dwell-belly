@@ -1,0 +1,99 @@
+{
+  "id": "gen-3109",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "seed_case": null,
+  "grounding": "seed-web-112",
+  "title": "Case: Six-carton household move held at the export hub with one carton unaccounted for",
+  "context": "DL-977 is an international consignment of six cartons of personal effects moving under a single customs declaration. Five cartons reached the Aldermoor export hub; carton 4 did not. The recipient account and shipment match are verified.",
+  "initial_request": "I have used Plover Arc for every move I have made in twenty years and I have never had cause to write a message like this one. I do not want the money. Nothing in carton 4 could be bought again at any price: my mother's letters, my late husband's sketchbooks, the albums. What I would like is to understand what 'not located' means. Whether somebody has stood in a room and looked along the shelves for a brown box with green tape, or whether a screen was checked and that was that. I suspect the second, and I would rather be told so than be sent another offer. And the other five boxes, which are only my clothes and my kitchen, have now sat at the hub for three and a half weeks on account of the one. May they travel without it? I would be grateful to be told honestly, either way.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-05T09:20:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-977: six cartons, personal effects, one customs declaration. Collected 21 September by our origin collection partner. Five cartons scanned into the Aldermoor export hub on 23 September. Carton 4 of 6 was not scanned in. The consignment is held at the hub: a declaration for six cannot travel as five unless the consignee gives a written amendment, which the customs broker handles. Nobody has put that option to the consignee."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-12T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace on DL-977 carton 4 closed today at the standard ten working days. Checked: hub intake scans and the partner's van manifest. Not located. Not checked: the origin partner's own depot, including its unlabelled-goods shelf, which is outside our systems. A physical search there has to be requested by Recovery team, and Recovery act on an emailed request from the desk with a description of the carton. Passed to Delivery investigations for settlement in the usual way."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-13T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Leontyne Farrow, recipient",
+      "body": "Carton 4 of DL-977 has been declared lost. Settlement under the terms of carriage is by weight: 7 kg, offer 84.00. Accepting the offer closes the matter for carton 4. Reply ACCEPT to proceed. The offer remains open for 30 days."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-14T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Leontyne Farrow, recipient",
+      "to": "Delivery investigations, Plover Arc Logistics",
+      "body": "Please do not close this. I am not accepting. Carton 4 is a brown double-walled carton sealed with green tape, with HALL CUPBOARD written on two sides in green marker. It may have lost its label; I remember the label on that one lifting at a corner when the men carried it out."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-15T11:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-977 carton 4: consignee has declined settlement. The weight-based figure is the only offer we can make and we do not run searches. Offer stays open 30 days. Parked at our end."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-16T09:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Leontyne Farrow, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I have used Plover Arc for every move I have made in twenty years and I have never had cause to write a message like this one. I do not want the money. Nothing in carton 4 could be bought again at any price: my mother's letters, my late husband's sketchbooks, the albums. What I would like is to understand what 'not located' means. Whether somebody has stood in a room and looked along the shelves for a brown box with green tape, or whether a screen was checked and that was that. I suspect the second, and I would rather be told so than be sent another offer. And the other five boxes, which are only my clothes and my kitchen, have now sat at the hub for three and a half weeks on account of the one. May they travel without it? I would be grateful to be told honestly, either way."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Recovery team, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Asks Recovery to request a physical search of the origin partner's depot and unlabelled-goods shelf for carton 4 of DL-977, with the carton's description and what the closed trace did and did not check."
+      }
+    ],
+    "must": [
+      "Names a physical search of the origin collection partner's depot, including its unlabelled-goods shelf, for carton 4 of DL-977 as the open step: the message asks Recovery team to request it, or the handoff to a supervisor states that it is to be requested from Recovery team.",
+      "Gives the carton's description: brown double-walled carton, green tape, HALL CUPBOARD in green marker on two sides, about 7 kg, label possibly detached.",
+      "States what the closed trace covered and did not cover: hub intake scans and the partner's van manifest were checked; the partner's own depot was not.",
+      "Tells the receiving team that the contents are irreplaceable personal papers and keepsakes (letters, sketchbooks, photograph albums) and that she has declined the settlement and asked for the matter not to be closed, so the search is prioritised."
+    ],
+    "must_not": [
+      "Presents the 84.00 weight-based settlement as the resolution, encourages the recipient to accept it, or reminds her of the 30-day deadline as the answer to her message.",
+      "Tells the recipient that a full search has been carried out, or that the carton is definitely lost.",
+      "Promises that the carton will be found, or offers any compensation beyond what Delivery investigations have stated.",
+      "Tells the recipient that the five cartons will now be shipped, or asks the customs broker to amend the declaration without her written instruction.",
+      "Answers with a general expression of sympathy that does not address what she asked: whether anyone has physically looked."
+    ],
+    "reference_message": "Request for a physical search: DL-977, carton 4 of 6, consignee Leontyne Farrow. Parcel trace team closed their trace on 12 October and tell me a search of the origin partner's premises has to be requested by you. Collected 21 September by the origin collection partner; five cartons were scanned into the Aldermoor export hub on 23 September and carton 4 was not. The trace checked hub intake scans and the partner's van manifest only. The partner's own depot, including its unlabelled-goods shelf, has not been checked by anyone. Description: brown double-walled carton, sealed with green tape, HALL CUPBOARD written on two sides in green marker, about 7 kg. The consignee remembers the label lifting at one corner at collection, so it may be sitting unlabelled. Please ask the partner for a hands-on search and tell me who looked, where and when. Why this needs priority: the carton holds her mother's letters, her late husband's sketchbooks and family photograph albums. She has declined the weight-based settlement, has asked for the matter not to be closed, and says plainly that she wants to know whether a person has looked or only a screen was checked. That is a fair question and at present the honest answer is that nobody has looked at the partner's depot. Her other five cartons have been held at the hub since 23 September because the declaration covers six. I have promised her nothing about the outcome."
+  },
+  "rationale": "The standard path has run out: the trace closed on schedule and the only thing on offer is a weight-based payment the recipient has refused for things that cannot be replaced. The trace team said exactly what was never checked and who can ask for it, so the cautious next step is a search request to Recovery with the carton's description, or a handover to a supervisor given how far this sits outside the usual playbook. Treating the settlement offer as the end of it answers a question she did not ask.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer asks Recovery team by Email for the physical depot search with the carton description; the two-way must item is reworded to be checkable and the held five cartons are no longer required in the search request."
+  }
+}

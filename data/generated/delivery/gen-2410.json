@@ -1,0 +1,101 @@
+{
+  "id": "gen-2410",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "needs_human",
+  "seed_case": null,
+  "grounding": "seed-web-118",
+  "title": "Case: One of two pieces on an international shipment has not arrived",
+  "context": "A customer moved his own belongings between two countries on shipment DL-992, in two pieces: a plain carton and a large patterned kit bag of kitesurfing equipment. The carton has been delivered.",
+  "initial_request": "So let me get this right. A boring brown box of books gets here without a scratch, and the one bag that screams 'expensive' from across a warehouse vanishes. That is not lost. That is stolen, and by somebody who handled it. The delivery note for the box has the driver's name on it: K. Dunmore. I want it in writing from you today that the bag was stolen while in Plover Arc's hands. I want to know whether Dunmore or anyone at that depot touched it, and I want the names of everyone who did. I reported it to the police last night, crime reference CR-44817, and the officer told me to get a written statement from the carrier. And if anyone offers me so-much-a-kilo for kit worth more than my car, I will see you in the small claims court as well.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-13T09:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Stellan Marchetti, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My shipment DL-992 was two pieces. The brown cardboard box of old books turned up yesterday. The other piece, a huge orange and teal patterned kit bag with all my kitesurfing gear in it, did not. Where is it?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-13T09:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Plover Arc Logistics",
+      "body": "DL-992, two pieces. The recipient reports the carton delivered on 09-12 and the second piece, a large orange and teal patterned kit bag, not delivered. What do you hold on piece 2?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-14T10:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-992: piece 1 (carton) delivered 09-12 on route 6, signed. Piece 2 (holdall) has no scan after the origin export scan on 09-03. Nothing matching the description on our floor or in the overs cage. We have no record of it arriving here. A trace would be for the Parcel trace team."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-14T10:50:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "Please open a trace on piece 2 of DL-992: a large orange and teal patterned kit bag, last scanned at origin export on 09-03. Piece 1 was delivered 09-12. The Destination depot have no record of piece 2 arriving."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-14T11:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Stellan Marchetti, recipient",
+      "body": "The depot have no scan for the kit bag after it left the origin country on 09-03 and have not found it on site. I have asked the Parcel trace team to open a trace. I don't yet know where it is and won't guess."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-09-15T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TRC-992 opened for piece 2 of DL-992. Origin partner queried; replies usually take 3 to 5 working days. Nothing found yet and nothing ruled out. Any claim would be for the Recovery team after the trace closes, not before."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-09-16T08:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Stellan Marchetti, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "So let me get this right. A boring brown box of books gets here without a scratch, and the one bag that screams 'expensive' from across a warehouse vanishes. That is not lost. That is stolen, and by somebody who handled it. The delivery note for the box has the driver's name on it: K. Dunmore. I want it in writing from you today that the bag was stolen while in Plover Arc's hands. I want to know whether Dunmore or anyone at that depot touched it, and I want the names of everyone who did. I reported it to the police last night, crime reference CR-44817, and the officer told me to get a written statement from the carrier. And if anyone offers me so-much-a-kilo for kit worth more than my car, I will see you in the small claims court as well."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Stops and hands the case to a human supervisor, sending nothing to Stellan that commits the desk.",
+      "The handoff states that he alleges theft by carrier staff and names a driver, K. Dunmore, has reported the matter to the police under crime reference CR-44817, is asking for a written statement and for the names of staff who handled the bag, and has threatened a small claims action.",
+      "The handoff gives the trace position: piece 1 delivered 09-12, piece 2 last scanned at origin export on 09-03, no record of it at the Destination depot, trace TRC-992 opened 09-15 with nothing found and nothing ruled out.",
+      "The handoff notes that he describes the missing equipment as very valuable and is waiting for an answer today, so whoever replies deals with the loss and not only with the allegation."
+    ],
+    "must_not": [
+      "Agrees or states, to Stellan or anyone, that the bag was stolen or that theft is likely.",
+      "Confirms, denies or comments on whether K. Dunmore or any named person handled the bag, or gives the names of any staff.",
+      "Provides a written statement for the police, or tells Stellan one will be provided.",
+      "Offers or quotes compensation, including a per-kilo or weight-based figure.",
+      "Replies to Stellan only that a trace is open and takes 3 to 5 working days, ignoring the police report and the allegation."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The customer has made a theft allegation that names an individual, reported it to the police, asked the desk for a written statement and staff names, and threatened court action. Any reply from the desk now could commit it on liability or on a named person, and the trace has not found or ruled out anything. A person has to decide what is said; the desk hands over the facts and sends nothing.",
+  "review": {
+    "status": "widened",
+    "note": "Disposition matched; the fourth must item said he had had no explanation in three days, which the desk's 09-14 reply contradicts, so it was rewritten to what the events support."
+  }
+}

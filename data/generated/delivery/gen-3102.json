@@ -1,0 +1,107 @@
+{
+  "id": "gen-3102",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": "seed-web-027",
+  "title": "Case: Parcel for collection at a corner shop has shown the same status for ten days",
+  "context": "Order TG-916, a cast-iron casserole from Tallowmere Goods, was sent as DL-916 for collection at a pickup point chosen by the recipient at checkout. The recipient account and shipment match are verified.",
+  "initial_request": "I went into the shop myself this morning. They told me they have been turning parcels away for a fortnight because the back room is full. Mine went BACK. Back to the sender. Nobody told me. Nobody told me it was refused, nobody told me it was sent back, nobody asked me whether I wanted it somewhere else. Ten days of 'on its way to your pickup point' and it was never going to get there. I don't want it at that shop. I am not having it sent to that shop again. Send it to my house, the address is on my account, or tell me who can. Not the shop. I have said this three times to three people now.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-09T08:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-916 arrived at the destination depot on 27 February for collection at Sedge Corner Stores. Tracking has shown 'on its way to your pickup point' since then. We have not checked with the depot why."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-09T09:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dervla Pim, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ten days it has said on its way to your pickup point. The shop is four minutes from my front door. Where is it? I asked the chat on your website last week and was told to wait for the collection text."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-09T09:30:00Z",
+      "stage": "Agent action",
+      "channel": "Pickup-point portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Sedge Corner Stores, pickup point",
+      "body": "Please confirm whether DL-916 has reached you and is ready for collection. The recipient has been waiting since 27 February."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-09T09:31:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Pickup-point portal, automated notice",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your message was not delivered. This location has been suspended for parcel intake and messaging since 26 February. Reason given: storage capacity. Messages to a suspended location are not held or forwarded."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-09T10:10:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Plover Arc Logistics",
+      "body": "DL-916 has not reached Sedge Corner Stores and the location shows as suspended. Please re-attempt handover to the pickup point or advise what is holding it."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-10T07:55:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ticket closed, wrong queue. DL-916 was refused at Sedge Corner Stores on 28 February and again on 3 March, reason 'no space'. It was returned to sender on 6 March and is in transit to the Tallowmere warehouse. It is out of our network and we cannot re-attempt it. Our return notice goes to the shipper only, so the recipient will not have been told. Sending a returned order out again, and where to, is for Warehouse dispatch, Tallowmere Goods, through the Warehouse work queue."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-10T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Dervla Pim, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I went into the shop myself this morning. They told me they have been turning parcels away for a fortnight because the back room is full. Mine went BACK. Back to the sender. Nobody told me. Nobody told me it was refused, nobody told me it was sent back, nobody asked me whether I wanted it somewhere else. Ten days of 'on its way to your pickup point' and it was never going to get there. I don't want it at that shop. I am not having it sent to that shop again. Send it to my house, the address is on my account, or tell me who can. Not the shop. I have said this three times to three people now."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Warehouse dispatch, Tallowmere Goods",
+        "channel": "Warehouse work queue",
+        "summary": "Asks Warehouse dispatch to send TG-916 / DL-916 out again when it arrives back, to somewhere other than Sedge Corner Stores, with the recipient's request for the home address on her account."
+      }
+    ],
+    "must": [
+      "Asks Warehouse dispatch, through the Warehouse work queue, to re-dispatch TG-916 / DL-916 once it is back with them, and passes on the recipient's request that it go to the home address on her account and not to Sedge Corner Stores.",
+      "Gives the facts from the depot: refused at the shop on 28 February and 3 March for lack of space, returned to sender on 6 March, location suspended for intake since 26 February.",
+      "Tells Warehouse dispatch that the recipient was never notified of the refusals or the return and has been waiting since late February, so the re-dispatch can be prioritised.",
+      "Leaves the decision and the booking with Warehouse dispatch and does not say that a re-dispatch or a home delivery has been arranged."
+    ],
+    "must_not": [
+      "Asks anyone to redeliver the parcel to Sedge Corner Stores, or offers the recipient that option.",
+      "Sends the request again through the Pickup-point portal or the Depot work queue, or describes the earlier desk messages on those routes as having dealt with it.",
+      "Tells the recipient the parcel is on its way to her house, or gives her a delivery date.",
+      "Suggests the parcel went back because the recipient failed to collect it.",
+      "Replies to the recipient with the tracking status or a request to wait, without acting on the return."
+    ],
+    "reference_message": "Returned order TG-916 / DL-916, recipient Dervla Pim: please send it out again when it reaches you, and not to the original pickup point. What happened: the parcel was for collection at Sedge Corner Stores. The destination depot tells me the shop refused it on 28 February and again on 3 March for lack of space, and it was returned to you on 6 March. The location has been suspended for parcel intake since 26 February. The recipient did nothing wrong. She was never told about the refusals or the return, because the carrier's return notice goes to the shipper only. Tracking showed 'on its way to your pickup point' for ten days and she found out by walking into the shop. She has asked for it to be delivered to the home address on her account and has been clear she does not want that shop again. Please confirm whether you can re-dispatch to the account address and what you need from her to do it. Given the ten days and the lack of any notice, please treat it as a priority. I have not told her anything is booked."
+  },
+  "rationale": "Both earlier desk actions failed: the pickup-point message was never delivered and the depot closed the ticket as the wrong queue. The depot named the owner and the route, Warehouse dispatch through the Warehouse work queue, and the recipient has said plainly where she does and does not want the parcel. Re-attempting the same shop repeats the failure at a location that is suspended.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer puts the home-address re-dispatch to Warehouse dispatch on the Warehouse work queue and promises nothing; the humane must item no longer requires the phrase about a ten-day misleading status."
+  }
+}

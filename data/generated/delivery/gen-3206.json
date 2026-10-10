@@ -1,0 +1,107 @@
+{
+  "id": "gen-3206",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": "seed-web-076",
+  "title": "Case: Three-pallet freight collection from a joinery yard after a change of haulier",
+  "context": "Sedgebank Joinery is shipping three pallets of oak worktops with Plover Arc as DL-947. The yard only has a forklift driver on site between 08:00 and 10:00.",
+  "initial_request": "Just closing the loop. All three pallets went this morning, on time, driver was lovely. Bit of a wobble midweek but it got sorted and relisting turned out to be the right call. Nothing needed from you, only wanted to say thanks. (Never did hear a word back from Greywether, for what it's worth.)",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-01T09:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947, 3 pallets, booked. Collection from Sedgebank Joinery yard 4 June 08:00-10:00, subcontracted to Greywether Haulage. Yard has agreed that window."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-02T11:20:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Marguerite Tolland, shipper, Sedgebank Joinery",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Greywether haven't sent a vehicle reg for our gate list. I've tried them twice and had nothing back. Could you find out? Gate won't open without it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-02T11:40:00Z",
+      "stage": "Agent action",
+      "channel": "Freight portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "DL-947: the shipper needs the vehicle registration for her gate list for the 4 June collection and cannot get an answer from Greywether Haulage. Please obtain it from the haulier and confirm."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-03T08:50:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947: Greywether Haulage withdrew from this job this morning after not answering us either. The 4 June window is void. We are re-tendering now. New haulier, date and any rate difference will go to the shipper on the portal for her acceptance."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-03T15:25:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 re-planned. Tarn & Holloway Transport, collection 5 June 08:00-10:00. Shipper accepted the revised rate and date on the portal at 15:10. Vehicle details sent to her direct for the gate list. Your vehicle-registration query from 2 June is closed with this; nothing is outstanding with Greywether and we are not pursuing them on this job."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-03T16:02:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Marguerite Tolland, shipper, Sedgebank Joinery",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Accepted the new quote, got the reg, yard have confirmed the forklift for the 5th. All good this end."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-05T08:50:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 collected 08:35, 3 pallets, signed for at the yard. On linehaul."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-06-05T09:30:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Marguerite Tolland, shipper, Sedgebank Joinery",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just closing the loop. All three pallets went this morning, on time, driver was lovely. Bit of a wobble midweek but it got sorted and relisting turned out to be the right call. Nothing needed from you, only wanted to say thanks. (Never did hear a word back from Greywether, for what it's worth.)"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone",
+      "Records why: Freight planner has confirmed DL-947 was collected on 5 June, the shipper has acknowledged it and asks for nothing, and the desk's only open query was closed by Freight planner on 3 June"
+    ],
+    "must_not": [
+      "Chases Greywether Haulage, or asks Freight planner to pursue or explain Greywether's silence",
+      "Sends the shipper a confirmation that restates a delivery date, arrival time or other detail no team has confirmed",
+      "Escalates the case to a human supervisor or opens a complaint about the withdrawn haulier",
+      "Reopens the rate or date change she has already accepted"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The collection happened, the owning team confirmed it, and the shipper says explicitly that nothing is needed. Her aside about never hearing from the first haulier is a remark, not a request, and Freight planner has already closed that query and said it is not pursuing them. Any message now would be noise or would chase a party no longer on the job.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer takes no action and logs that the collection is confirmed, the shipper asks for nothing and the Greywether query is closed."
+  }
+}

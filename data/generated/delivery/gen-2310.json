@@ -1,0 +1,79 @@
+{
+  "id": "gen-2310",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "seed_case": null,
+  "grounding": "seed-web-117",
+  "title": "Case: Recipient of a personal-effects import queries a fee on his invoice",
+  "context": "A recipient moved his household effects with Plover Arc Logistics in two consignments. He completed most of the import paperwork himself and is disputing a fee.",
+  "initial_request": "Found it. Your so-called disclosure is one line of small print on page 3 of the quote under 'other charges'. Call that what you like, I call it hiding it. I have attached the clearance notice showing NIL duty so you can see for yourselves. Take the customs fee off the invoice. I will be telling people about this whichever way it goes.\n\n[Customer portal: this message was received with no attachments]",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-27T09:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Anselm Carrow, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "A warning to you, and to anybody thinking of using you. I moved my household effects with Plover Arc in two lots. I filled in nearly all the customs paperwork myself: the inventory, the transfer-of-residence form, all of it. Customs charged me nothing. Nil. And now I have an invoice with a customs fee on it that is more than the delivery itself cost. Nobody told me about it. I want it explained."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-27T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Import billing, Plover Arc Logistics",
+      "body": "A recipient of a personal-effects import in two consignments, DL-991 and DL-992 (Anselm Carrow), is querying a fee on an invoice and says customs levied nothing. Please tell me what the charge is and what you need in order to review it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-27T10:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Two invoices are open on that account: IB-9911 against DL-991 and IB-9920 against DL-992. Each carries a line 'Clearance handling fee'. That is Plover Arc's own service charge for presenting the entry to customs. It is not duty or tax, and customs neither sets nor receives it, so please do not describe it as a customs charge. It appears in the fee schedule of the emailed quote. The fee can be reviewed, invoice by invoice, where the customer prepared the entry documents himself. To open a review we need two things: the number of the invoice he is disputing, or both, and a copy of the customs clearance notice for that consignment showing who is named as declarant. We do not hold the notice when a customer self-files. No review is open and we cannot say what the outcome would be."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-27T11:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Anselm Carrow, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Found it. Your so-called disclosure is one line of small print on page 3 of the quote under 'other charges'. Call that what you like, I call it hiding it. I have attached the clearance notice showing NIL duty so you can see for yourselves. Take the customs fee off the invoice. I will be telling people about this whichever way it goes.\n\n[Customer portal: this message was received with no attachments]"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Anselm Carrow, recipient",
+        "channel": "Customer portal",
+        "summary": "Ask him which invoice he is disputing (IB-9911, IB-9920 or both) and to upload the customs clearance notice again because it did not arrive, so Import billing can open a review."
+      }
+    ],
+    "must": [
+      "Asks Anselm Carrow which invoice he is disputing: IB-9911 (DL-991), IB-9920 (DL-992), or both.",
+      "Tells him the clearance notice did not arrive with his message and asks him to upload it again, for the consignment or consignments he is disputing.",
+      "Describes the line accurately as Plover Arc's own clearance handling fee, not a duty or tax, and says that Import billing decide the review and that the outcome is not known."
+    ],
+    "must_not": [
+      "Calls the fee a customs charge, duty, tax or government fee, or lets his description of it as a 'customs fee' stand as the desk's own wording.",
+      "Promises that the fee will be removed, reduced or refunded, or says a review has been opened.",
+      "Forwards the dispute to Import billing as though the clearance notice and invoice number had been supplied.",
+      "Tells him the fee was in the quote and so nothing can be done, when Import billing have said it can be reviewed for self-prepared entries.",
+      "Asks him for more than the two items Import billing named, such as identity documents or the full set of customs forms."
+    ],
+    "reference_message": "Thank you for coming back on this. I asked Import billing about the charge. The line on your invoices reads 'Clearance handling fee'. It is Plover Arc's own service charge for presenting the entry to customs; it is not a duty or tax, and customs does not set or receive it. Import billing tell me this fee can be reviewed where the customer prepared the entry documents himself, which is what you describe. To open that review they need two things from you. First, which invoice you are disputing: IB-9911 for consignment DL-991, IB-9920 for DL-992, or both. Second, the customs clearance notice for that consignment, or for each one. Your last message reached me with no attachment, so please upload the notice again here. Once I have both I will pass them to Import billing. The decision is theirs and I cannot tell you in advance what it will be."
+  },
+  "rationale": "Import billing named exactly two things they need to open a review: the invoice number, of which there are two, and the clearance notice, which he says he attached but which did not arrive. Neither is in the history, so the desk asks him for those two things and nothing else. Import billing also made clear that the line is the carrier's own fee and not a customs charge.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the recipient on the Customer portal for the invoice number and the missing clearance notice only, which is the key's action."
+  }
+}

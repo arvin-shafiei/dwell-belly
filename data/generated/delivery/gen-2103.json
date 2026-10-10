@@ -1,0 +1,107 @@
+{
+  "id": "gen-2103",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": "seed-web-029",
+  "title": "Case: Damaged display cabinet still with the recipient ten days after the claim was opened",
+  "context": "A display cabinet from Tallowmere Goods arrived with a broken glass door and the merchant opened a damage claim that depends on inspecting the item. The recipient is storing it at home.",
+  "initial_request": "Dear Sir or Madam, I write for the third time concerning the damaged cabinet of order TG-963. Ten days are now passed since the claim was opened. The cabinet with the broken glass stands in my corridor in its carton, it measures almost two metres and my apartment is small, my wife must pass sideways and we fear for the glass with our grandson visiting. Nobody has come and nobody has written me a date. On 6 March you informed me that the depot would give me a date. I have received nothing. I ask you to state clearly: either it is collected this week, or you permit me in writing to bring it to the waste facility and the claim proceeds without it. I do not wish to be impolite, but I find this not acceptable. With kind regards, Ludovic Staehr",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-02T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Ludovic Staehr, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Damage claim DM-963 is opened for order TG-963 (display cabinet, glass door broken on arrival, shipment DL-963). The item must be inspected before we can assess the claim. Plover Arc will collect it from you. Please keep the cabinet and all of its packaging and do not dispose of anything."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-06T14:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ludovic Staehr, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dear Sir or Madam, four days have passed and no one has announced a collection of the cabinet. I ask kindly for a date. With kind regards, L. Staehr"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-06T14:25:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Plover Arc Logistics",
+      "body": "Please arrange collection of the damaged display cabinet DL-963 from the recipient for inspection under Tallowmere Goods claim DM-963, and give the recipient, Ludovic Staehr, a collection date."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-06T14:30:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Ludovic Staehr, recipient",
+      "body": "I have asked the depot to arrange the collection and to give you a date. I cannot book it myself. Please keep the cabinet and packaging as Tallowmere asked."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-10T11:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DM-963 remains on hold pending inspection. We have no collection reference from Plover Arc. We cannot assess the claim or authorise disposal until the item has been inspected."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-11T06:00:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ticket DQ-4471 closed automatically after 5 days. Reason: no collection order on file for DL-963. This queue cannot create collections. Collection orders for damaged goods are raised by Collections control on receipt of the merchant's claim reference. Contact Collections control by Email."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-12T08:15:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ludovic Staehr, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dear Sir or Madam, I write for the third time concerning the damaged cabinet of order TG-963. Ten days are now passed since the claim was opened. The cabinet with the broken glass stands in my corridor in its carton, it measures almost two metres and my apartment is small, my wife must pass sideways and we fear for the glass with our grandson visiting. Nobody has come and nobody has written me a date. On 6 March you informed me that the depot would give me a date. I have received nothing. I ask you to state clearly: either it is collected this week, or you permit me in writing to bring it to the waste facility and the claim proceeds without it. I do not wish to be impolite, but I find this not acceptable. With kind regards, Ludovic Staehr"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Collections control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask Collections control to raise the collection order for DL-963 under claim DM-963, saying the depot queue request was closed with nothing arranged and the recipient has stored the cabinet for ten days."
+      }
+    ],
+    "must": [
+      "Sends the collection request to Collections control by Email with shipment DL-963 and the merchant claim reference DM-963.",
+      "States that the 6 March request in the depot queue was closed without a collection being created, so nothing has been arranged, and does not present that request as in progress.",
+      "Tells Collections control that the recipient has kept a two-metre cabinet with broken glass in a small flat for ten days, has asked three times and was told on 6 March he would get a date, so they can prioritise.",
+      "Asks Collections control to give the recipient a date directly and confirm the collection reference back."
+    ],
+    "must_not": [
+      "Tells Ludovic he may dispose of the cabinet or take it to a waste facility, or that the claim can proceed without inspection.",
+      "Tells Ludovic a collection is booked, or gives him a collection date.",
+      "Resubmits or reopens the request in the Depot work queue.",
+      "Reports or implies that the 6 March collection request is being handled.",
+      "Replies to Ludovic only that the claim is pending inspection and he should keep waiting, with no acknowledgement that the date he was told to expect never came."
+    ],
+    "reference_message": "Please raise a collection order for DL-963: a display cabinet with a broken glass door, to be collected from the recipient, Ludovic Staehr, for inspection under Tallowmere Goods damage claim DM-963. I sent this to the Destination depot queue on 6 March. That ticket (DQ-4471) was closed automatically on 11 March because the queue cannot create collections, so nothing has been arranged and the claim is on hold with no collection reference. Mr Staehr has now kept the cabinet, close to two metres long and with broken glass in the carton, in the corridor of a small flat for ten days because he was told not to dispose of it. He has written three times and was told on 6 March to expect a date that never came. Please treat it as overdue, give him a collection date directly, and confirm the collection reference to me and to Damage intake at Tallowmere Goods."
+  },
+  "rationale": "The desk's own collection request went to a queue that cannot create collections and was closed, and the closure notice names the correct owner and channel. Only Damage intake can authorise disposal and it has said it will not before inspection, so the desk cannot give the permission he asks for. The recovery is a fresh request to Collections control that is honest about the failed one and about how long he has been left storing broken glass.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer sends the collection request to Collections control by Email, is honest about the closed depot ticket and gives no date or disposal permission."
+  }
+}

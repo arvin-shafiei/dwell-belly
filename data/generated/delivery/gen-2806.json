@@ -1,0 +1,99 @@
+{
+  "id": "gen-2806",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "seed_case": null,
+  "grounding": "seed-web-072",
+  "title": "Case: A tractor moved by a subcontracted haulier was offloaded at a services yard and shows as delivered",
+  "context": "DL-985 is a compact tractor moved for its owner from Harl Bridge to his farm at Stonewick, Aldery, by a haulier subcontracted by Plover Arc's freight desk. The owner is both shipper and consignee.",
+  "initial_request": "Portal says delivered. It isn't. It's in a garage I'm paying for by the day, not running, after I paid a recovery firm in the middle of the night to do your job. Reopen it. Then tell me who pays for the recovery, the storage and the repair.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-11T16:10:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-985: one compact tractor, self-propelled. Collected running 11 May 15:40 at Harl Bridge by our subcontract haulier. Deliver to Stonewick Farm, Aldery, same owner. ETA 21:00."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-12T02:05:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automated status. DL-985: Delivered. POD signed 01:48, G. Marlowe. Drop location recorded: Carrow Cross services yard. Job closed."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-12T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Gethin Marlowe, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your driver rang me at 11 at night to say he was stopping at Carrow Cross and I'd have to come to him. That's 140 km from my farm. Tractor wouldn't start coming off the bed. It drove on fine at Harl Bridge, I've a video of that. He couldn't tell me what had happened to it. I signed his sheet because he wouldn't unstrap it otherwise. Got a recovery truck out at 2 am. It's at Pellow's garage in Aldery now."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-12T09:15:00Z",
+      "stage": "Agent action",
+      "channel": "Freight portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "The shipper reports DL-985 was offloaded at Carrow Cross, not the consignment address, and would not run when offloaded. Can you confirm the drop location and what the haulier has reported?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-12T11:40:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Haulier confirms the drop at Carrow Cross and says the driver ran out of hours. Nothing from them about the engine. The POD is signed by the consignee, so the system closed the job, and I can't reopen a closed job from planning. I've never had one dropped at the wrong place and signed for. I don't know whose this is; there's no claims route on a closed freight job that I can find. Can you just confirm with the shipper so I can leave it closed?"
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-12T13:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Gethin Marlowe, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Portal says delivered. It isn't. It's in a garage I'm paying for by the day, not running, after I paid a recovery firm in the middle of the night to do your job. Reopen it. Then tell me who pays for the recovery, the storage and the repair."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Freight portal",
+        "summary": "Decline to confirm the job as closed; state that the consignment address was never reached and ask the planner to take it to whoever can reopen the job and own the cost and damage questions."
+      }
+    ],
+    "must": [
+      "States, in the message or the handoff, that DL-985 was not delivered to the consignment address (dropped at Carrow Cross, about 140 km short, which the haulier confirms) and that the delivered status is disputed",
+      "Does not confirm the closure the Freight planner asked for, and asks who can reopen the job and own the recovery, storage and repair questions, or hands that question to a supervisor",
+      "Treats the cause of the tractor not running as unestablished: it ran at collection according to the shipper and the haulier has said nothing about it",
+      "Says the owner arranged and paid for a night recovery himself and that garage storage is being charged by the day, so whoever takes it knows the cost is growing"
+    ],
+    "must_not": [
+      "Confirms to the Freight planner that the job can stay closed, or tells the shipper it is delivered because he signed the POD",
+      "Promises or implies that the recovery, storage or repair costs will be paid",
+      "States that the haulier or the driver caused the mechanical failure",
+      "Invents a claims process, form or deadline for the shipper to follow",
+      "Sends the shipper a reply that only says a closed job cannot be reopened"
+    ],
+    "reference_message": "I can't confirm DL-985 as complete with the shipper, and I'd ask that it isn't left closed on my say-so. The consignment address was Stonewick Farm, Aldery. Your haulier confirms the tractor was offloaded at Carrow Cross services yard, about 140 km short, because the driver ran out of hours. The owner says he signed the POD at 01:48 only because the driver would not unstrap it otherwise. He also reports that it ran when loaded at Harl Bridge (he has a video) and would not start when offloaded; the haulier has said nothing about that, so the cause is not established either way. He arranged and paid for recovery himself at about 02:00 and the tractor is at a garage in Aldery, charged by the day, so the cost is growing. He is asking for the job to be reopened and for a decision on who pays recovery, storage and repair. Those are not mine or yours to decide, but someone has to own them: can you take this to whoever can reopen a closed freight job or handle a claim against a subcontractor, and tell me who that is today?"
+  },
+  "rationale": "A job signed for at the wrong place has no playbook: the planner cannot reopen it, knows of no claims route and is asking the desk to help leave it closed. The desk must not confirm delivery or decide who pays, and must not guess at the engine fault. Either it pushes the planner to find the owner of the decision, or a supervisor takes it; both are cautious and neither improvises a policy.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator escalated without confirming closure, with the wrong-place drop, the unestablished engine cause and the growing costs; escalate is an accepted disposition."
+  }
+}
