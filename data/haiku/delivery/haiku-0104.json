@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0104",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "theme": "pets_perishables",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-049",
+  "grounding": null,
+  "title": "Case: Perishable delivery window crosses the October clock change",
+  "context": "A time-sensitive food delivery is booked for the night of the UK clock change when BST ends and UTC+0 begins. The consignee has specified a narrow delivery window. The desk must determine whether the window still makes sense after the time change, and whether the carrier's scheduling has accounted for it correctly.",
+  "initial_request": "Coordinate a chilled food delivery during an ambiguous time window across the clock change.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-24T14:30:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight account services, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Booking confirmed DL-923: 18 kg chilled specialty cheese wheels, Brineleaf Pantry to Rosslyn Delicatessen, Edinburgh. Consignee-specified delivery window 23:00–23:30 on 2026-10-25. Scheduled for overnight route. Consignee notes: shelf life 6 days from departure; temperature must remain 2–6 °C. Carrier temperature log mandatory. Delivery window is stated in local time (BST/UTC+0, ambiguous at handover)."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-24T15:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Morag Skene, receiving coordinator, Rosslyn Delicatessen",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirm we need delivery between 23:00 and 23:30 on Sunday night. Our loading dock closes at 23:45. No earlier slot works. This is our Sunday evening prep window."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-25T08:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 loaded at Brineleaf warehouse 06:00 UTC today. Route scheduled to arrive Rosslyn 23:15 UTC. Driver briefed for chilled cargo. ETA looks good for their window."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-25T20:15:00Z",
+      "stage": "Escalation",
+      "channel": "Depot work queue",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 flagged for review: delivery window 23:00–23:30 local time, but clock change happens at 01:00 UTC (02:00 BST to 01:00 UTC). Driver will arrive 23:15 UTC which is 23:15 local on 26th after the change. Consignee window was specified in BST (23:00–23:30 BST = 22:00–22:30 UTC). Route now misses the window by 45 minutes. Cargo still good temp-wise but coordination breach. Request urgent clarification from consignee before final mile."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Morag Skene, Rosslyn Delicatessen",
+        "channel": "Business portal",
+        "summary": "Confirm whether the 23:00–23:30 window was intended in BST (which has now ended) or in UTC, and confirm receipt time flexibility for tonight's delivery."
+      },
+      {
+        "recipient": "Safety lead, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Instruct the driver to hold at the depot until consignee confirms the corrected delivery window after the time-zone clarification."
+      }
+    ],
+    "must": [
+      "Recognise that the consignee's specified window (23:00–23:30) was given in BST before the change, equivalent to 22:00–22:30 UTC",
+      "Confirm with the consignee whether they intended BST times (now passed) or UTC times (driver arrives within the new window)",
+      "Prevent delivery proceeding under an ambiguous or missed time window without explicit re-confirmation"
+    ],
+    "must_not": [
+      "Assume the consignee meant UTC; they stated local time and the change creates real ambiguity",
+      "Direct the driver to deliver at 23:15 UTC without confirming the consignee understands the clock change effect",
+      "Send the delivery through and log it as a timing issue for later investigation; the window must be clear before arrival",
+      "Contact only Plover Arc without involving the consignee in the re-confirmation"
+    ],
+    "reference_message": "To: Morag Skene, Rosslyn Delicatessen (Business portal)\n\nDL-923 is due to arrive at 23:15 UTC tonight. Please confirm: did you mean the 23:00–23:30 delivery window in BST (which ended at 01:00 UTC), or in UTC? The clock change at 01:00 UTC means the two interpretations differ by one hour. Your loading dock closes at 23:45 local time. Please confirm the window you need now."
+  },
+  "rationale": "The consignee specified a time window in local time (BST) before the October clock change, but that window has now passed in real time. The driver's arrival at 23:15 UTC matches a UTC-based interpretation but misses the original BST window by 45 minutes. The desk must clarify with the consignee whether they understand the time change and still want the delivery in the stated local window (now 22:00–22:30 UTC), or whether the cargo can arrive after 23:15 UTC. Without this confirmation, dispatching risks a refused delivery, spoilt cargo, or a coordination failure. Contact the consignee directly to resolve the ambiguity before the driver's final mile."
+}

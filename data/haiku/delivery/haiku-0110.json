@@ -1,0 +1,249 @@
+{
+  "id": "haiku-0110",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "long_context",
+  "theme": "age_restricted",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-014",
+  "grounding": null,
+  "title": "Case: Age-restricted delivery to a business with conflicting account settings",
+  "context": "A knife set order (age-restricted) was delivered to a business address. Early records show the business refused ID checks, but later messages suggest acceptance. The desk must determine what actually happened and whether to contact anyone.",
+  "initial_request": "Determine the correct disposition based on the full event history.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-10T08:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 (Talisker Pro knife set, age-restricted) assigned to driver Malik Chen for delivery to Ashford Catering Supply, 47 Millstone Way. Recipient account flagged 'ID verification required at door' - standard for this merchant category."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-10T08:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Malik Chen, driver",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Arrived at Ashford Catering Supply. Main door closed, business hours start 09:00. Loading dock staff visible. Will attempt dock entrance."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-10T08:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Malik Chen, driver",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Dock staff say they can't do ID checks before manager arrives. Refusing signature. Leaving parcel with redelivery flag."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-10T09:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Ashford Catering Supply, receiving coordinator",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Our manager is here now. Parcel is outside. Why was it left? We're ready for age-restricted delivery."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-10T09:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Ashford Catering Supply, receiving coordinator",
+      "body": "Driver reported refusal to proceed without ID check. Resheduling DL-922 for 14:00 today. Manager must be present with ID."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-10T09:25:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Ashford Catering Supply, receiving coordinator",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Manager Petra Grove will be here all day. We understand the ID requirement. Please ensure driver knows we're ready."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-10T13:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Malik Chen, driver",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Heading to Ashford now for 14:00 slot."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-10T14:05:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Malik Chen, driver",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Arrived. Manager at loading dock. Showing ID now."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-04-10T14:08:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Malik Chen, driver",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "ID verified. Handing over DL-922 to Petra Grove, Ashford Catering Supply. Signed."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-04-10T14:10:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 delivered and signed by Petra Grove at 14:08. Status: delivered."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-04-10T14:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Ashford Catering Supply, receiving coordinator",
+      "to": "Tallowmere Goods",
+      "body": "DL-922 received in good condition at 14:08 today. Thank you."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-04-10T16:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Flagging DL-922 for audit. Initial refusal at 08:45 suggests possible protocol breach. Driver proceeded despite documented resistance. Requires review before closure."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-04-10T16:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Malik Chen, driver",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Re DL-922: I documented the 08:45 refusal correctly. Business was closed. I followed protocol. Second attempt succeeded with manager present. Both attempts properly logged."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-04-10T17:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Clarification: the 08:45 'refusal' was not a customer refusal - business was simply not staffed to complete age verification. Driver correctly did not hand over. This is not a breach. Marking resolved."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-04-10T17:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Ashford Catering Supply, receiving coordinator",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Just to confirm - the delivery was perfect. Manager verified and signed. No issues at all."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-04-10T17:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods, Damage intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Received notification that DL-922 was left unattended outside Ashford Catering Supply in the morning. Needs investigation: was the box exposed to weather or handling damage during the unattended period?"
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-04-10T18:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Tallowmere Goods, Damage intake",
+      "body": "Package was left in a sheltered loading dock area, not exposed. Left for approximately 1.5 hours. Recipient confirms no damage on acceptance."
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-04-10T18:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods, Damage intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thank you for clarification. The sheltered storage and clean receipt acknowledgement close this inquiry."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-04-10T18:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Petra Grove, manager, Ashford Catering Supply",
+      "to": "Tallowmere Goods",
+      "body": "Order DL-922 arrived safely and as expected. Product quality is excellent."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-04-10T19:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Parcel trace team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 final status confirmed: delivered 2026-04-10 14:08, age-restricted protocol completed, recipient satisfied, no outstanding flags."
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-04-11T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Standard post-delivery review of DL-922 complete. All protocols followed. File ready for closure with no further action required."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-04-11T08:00:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, purchasing agent, Ashford Catering Supply",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, I'm following up on DL-922. There was some confusion in the morning about whether we could accept it early. Just want to make sure everything was resolved properly. Was the delivery compliant?"
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-04-11T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Received Marcus Webb's message. We have already confirmed with Petra Grove and receipts that full compliance occurred at 14:08. Webb may be unaware the morning attempt was procedurally correct (business was closed to receive restricted goods)."
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-04-11T09:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, purchasing agent, Ashford Catering Supply",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Apologies for the follow-up. I've now spoken to Petra. She confirmed the 14:00 delivery was perfect and ID was checked. I was confused by the morning attempt. Everything is fine. Just wanted to confirm we're all square."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "recognize that the delivery was completed successfully with full age-restriction protocol followed",
+      "identify that Marcus Webb's confusion is resolved by his own conversation with Petra Grove",
+      "determine that all parties have confirmed compliance and satisfaction"
+    ],
+    "must_not": [
+      "send contact to any party - all concerns have been addressed and confirmed",
+      "escalate when the safety lead has marked the file resolved",
+      "contact Marcus Webb to explain the delivery history - he has already obtained confirmation directly from his manager"
+    ],
+    "reference_message": null
+  },
+  "rationale": "All facts confirm that DL-922 was delivered safely with full age-restricted protocol compliance at 14:08. The morning refusal was procedurally correct (business was closed and unable to verify age). Safety review is complete, recipient is satisfied, and Marcus Webb has independently confirmed with Petra Grove that delivery was compliant. The desk has no outstanding issue to address and should not intervene."
+}

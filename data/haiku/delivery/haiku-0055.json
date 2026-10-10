@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0055",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-050",
+  "grounding": null,
+  "title": "Case: Surcharge refund request during depot flooding incident",
+  "context": "A shipment with guaranteed delivery failed to arrive on time due to a network-wide depot flooding. The recipient is requesting a refund of the surcharge paid for that guarantee. The carrier has issued a public incident notice, but individual refunds require merchant authorisation.",
+  "initial_request": "Recipient requests reimbursement of guaranteed-delivery surcharge for DL-934 after confirmed delay caused by depot flooding.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T08:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "NETWORK ALERT: Harlow depot flooding 2026-03-14 23:30 UTC. All inbound parcels diverted. Estimated restoration 2026-03-17 14:00 UTC. Affected shipment count: 4,847. Do not promise delivery dates outside this window."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T10:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods, Refunds team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have received customer complaints about delayed guaranteed deliveries due to the depot incident. We will process refunds for surcharges if you provide a list of affected shipments with proof of the delay and surcharge amount."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T14:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-934 was supposed to arrive 2026-03-15 with the Next Day Guaranteed service I paid extra for. It hasn't shown up. I want my £12.50 surcharge back. This is not my fault."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "no_action"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Tallowmere Goods, Refunds team",
+        "channel": "Email",
+        "summary": "Confirm DL-934 was guaranteed-next-day, provide surcharge amount and delay proof, request refund processing."
+      },
+      {
+        "recipient": "Marcus Webb, recipient",
+        "channel": "Customer portal",
+        "summary": "Acknowledge the depot flooding caused the delay, confirm the refund claim is being processed with the merchant, do not promise a new delivery date."
+      }
+    ],
+    "must": [
+      "Do not invent or promise a new guaranteed delivery date or revised arrival window",
+      "Acknowledge the network-wide incident as the reason for the delay, not a shipment-specific fault",
+      "Route the refund authorisation to the merchant, not attempt to process it directly or from carrier budget"
+    ],
+    "must_not": [
+      "Promise that DL-934 will arrive by any specific date",
+      "Suggest the delay was the driver's fault or a booking error",
+      "Contact Dispatch, Routing control or Safety lead asking them to investigate this individual shipment",
+      "Approve or reject the surcharge refund without merchant authorisation"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The desk must coordinate between the recipient's legitimate refund claim and the merchant's stated willingness to process it, without overpromising on delivery timelines during a known network outage. A single contact to the Refunds team to supply the proof they requested fulfils the process; optionally, informing the recipient that the claim is being handled respects their concern. The tempting error is to request an urgent re-route or investigation, which wastes resources on a known network event affecting thousands of parcels."
+}

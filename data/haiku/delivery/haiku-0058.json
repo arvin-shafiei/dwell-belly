@@ -1,0 +1,76 @@
+{
+  "id": "haiku-0058",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-041",
+  "grounding": null,
+  "title": "Case: Freight booking cannot locate dock appointment reference",
+  "context": "A freight coordinator requested a receiving-dock slot but the confirmation never arrived. A later attempt to reference the booking ID in dock scheduling failed. The desk must find the correct route to confirm or re-book the appointment.",
+  "initial_request": "Confirm whether Brineleaf Pantry's receiving dock has a valid appointment for the incoming pallet, and if not, route the re-booking through the working channel.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 is a full pallet of tinned goods, scheduled for Brineleaf Pantry Swindon warehouse. We requested a dock appointment three days ago but never got a confirmation number. Freight planner said to contact Plover Arc to verify the slot. Our receiving dock window closes at 16:00 UTC today."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T09:15:00Z",
+      "stage": "Agent action",
+      "channel": "Freight portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Can you confirm the receiving-dock appointment for DL-927 at Swindon? Ref from warehouse: none provided yet."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T09:45:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "That booking ID does not exist in our Freight portal system. No appointment record found. You may need to check with Scheduling; this queue only handles live route optimisation."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-14T10:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our dock manager just called. No one has confirmed a slot with them either. DL-927 will be turned away at 16:00 if there is no appointment by then. This is a time-critical issue now."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Request immediate check for DL-927 dock appointment or create new booking for Swindon warehouse before 16:00 UTC."
+      }
+    ],
+    "must": [
+      "Escalate the request to Scheduling, not Freight planner again or back to warehouse dispatch",
+      "Include the shipment reference DL-927 and the critical 16:00 UTC deadline",
+      "Request confirmation or creation of a dock appointment, not just status confirmation"
+    ],
+    "must_not": [
+      "Send the request back to Freight planner, who already confirmed the booking does not exist in their system",
+      "Report the failed Freight portal query to warehouse dispatch as if it were resolution",
+      "Contact the warehouse to investigate further rather than re-route through Scheduling",
+      "Allow the case to remain open without engaging the correct team responsible for creating dock appointments"
+    ],
+    "reference_message": "Scheduling: DL-927 pallet inbound to Brineleaf Pantry Swindon warehouse today. Freight planner has no appointment record. Warehouse dock closes 16:00 UTC. Can you create or confirm a receiving slot urgently? If not possible, warehouse needs to know now."
+  },
+  "rationale": "The Freight planner queue does not own dock appointment creation; Scheduling does. The failed lookup in Freight portal is a signal to change route, not a resolution. Time pressure and the warehouse rejection deadline make this urgent contact to the correct team. A hasty coordinator might report the Freight planner's response as done or loop back to the warehouse for more details instead of fixing the booking source."
+}

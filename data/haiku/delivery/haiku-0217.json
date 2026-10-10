@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0217",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-036",
+  "grounding": null,
+  "title": "Case: Furniture shipment to Northern Ireland with unclear duty status",
+  "context": "A bed frame is being delivered to a business in Belfast. The merchant (Tallowmere Goods) sent it from England. The recipient's billing contact has queried who pays customs duty. The desk does not decide tariffs, Incoterms, or cross-border tax liability.",
+  "initial_request": "Recipient business receiving coordinator asks about duty payment responsibility before accepting delivery.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-03T07:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 bed frame for Ashford Interiors Belfast. Currently in Holyhead depot awaiting pre-clearance docs. Sender Tallowmere Goods marked it 'DDP' on paperwork but we need confirmation from merchant on duty split before we proceed to Northern Ireland."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-03T08:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Maya Keswick, Ashford Interiors, receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, we need to know if Tallowmere is paying the import duty on this bed or if it comes out of our account. Our finance team needs to approve either way. Can you confirm?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-03T08:45:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Maya Keswick, Ashford Interiors, receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We've held the unload slot until 11:00 today. Need the duty answer urgently or we'll have to reject it and send it back. Which party pays?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Tallowmere Goods, Refunds team",
+        "channel": "Email",
+        "summary": "Clarify Incoterm duty responsibility and provide proof to Dispatch and recipient."
+      },
+      {
+        "recipient": "Plover Arc Logistics, Dispatch",
+        "channel": "Dispatch chat",
+        "summary": "Route duty responsibility clarification directly to merchant; do not advise recipient on tax liability."
+      }
+    ],
+    "must": [
+      "Do not tell the recipient or billing contact which party pays duty or interpret the Incoterm",
+      "Route the duty status question to the merchant (Tallowmere Goods) as the party responsible for confirming payment terms",
+      "Acknowledge to Dispatch that the cross-border liability question must be resolved by merchant before clearance can proceed"
+    ],
+    "must_not": [
+      "Advise the recipient that Tallowmere must pay because the shipment says DDP",
+      "Tell either party what Northern Ireland duty rules are or interpret tax law",
+      "Promise that duty will be paid or waived",
+      "Allow the recipient to reject without first giving the merchant a chance to clarify terms"
+    ],
+    "reference_message": null
+  },
+  "rationale": "Duty payment responsibility is determined by the Incoterm agreed between buyer and seller, not by the carrier or desk. The desk must route this to Tallowmere Goods (the merchant) to clarify and confirm the terms in writing to both Dispatch and the recipient. The desk must not guess the interpretation of 'DDP' or advise on cross-border tax liability, which are merchant and possibly broker decisions."
+}

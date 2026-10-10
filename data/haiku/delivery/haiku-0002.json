@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0002",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": "medication",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-035",
+  "grounding": null,
+  "title": "Case: Returned medical supplies awaiting refund review after carrier handoff",
+  "context": "Brineleaf Pantry received a return of prescribed dietary supplements from a customer. The desk's first attempt to route the refund review to the merchant's team failed. The right move recovers through a working channel to complete the review.",
+  "initial_request": "A customer returned prescribed dietary supplements to Brineleaf Pantry. The return arrived and was logged, but the refund review has not started. The desk must ensure the review reaches the correct authorised team.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-28T08:15:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Marcus Webb, Brineleaf Pantry warehouse supervisor",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return DL-927 arrived warehouse 2026-03-27T16:40Z. Customer ordered 4x Vitaflow Iron Plus capsules, sealed, unopened. Refund authorisation required before we process credit."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-28T08:22:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Refunds team, Brineleaf Pantry",
+      "body": "Return DL-927 in warehouse. Customer refund review needed. 4x Vitaflow Iron Plus, sealed condition. Please authorise refund."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-28T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Mail Delivery System",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Delivery failure: your message to refunds-team@brineleaf-internal could not be delivered. Mailbox does not exist or is not accepting mail. Error code 550."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-28T11:45:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Marcus Webb, Brineleaf Pantry warehouse supervisor",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 is still waiting. Customer will escalate if refund does not start. The return is food-safety sensitive. Do not delay the review."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Replacement authorisations, Brineleaf Pantry",
+        "channel": "Business portal",
+        "summary": "Request refund review and authorisation for return DL-927 (4x Vitaflow Iron Plus, sealed, arrived warehouse 2026-03-27)."
+      },
+      {
+        "recipient": "Replacement authorisations, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Request refund review and authorisation for return DL-927 (4x Vitaflow Iron Plus, sealed, arrived warehouse 2026-03-27)."
+      }
+    ],
+    "must": [
+      "Contact the correct Brineleaf Pantry team (Replacement authorisations, not Refunds team).",
+      "Use a working channel (Business portal or Email to the correct address).",
+      "Include shipment reference DL-927 and item details (Vitaflow Iron Plus, sealed condition).",
+      "Do not report the failed email as a completed action."
+    ],
+    "must_not": [
+      "Send another message to the failed refunds-team@ email address.",
+      "Escalate to a human supervisor instead of recovering through the correct route.",
+      "Leave the case pending without routing the review to an authorised team.",
+      "Suggest the desk will wait for a different response before acting."
+    ],
+    "reference_message": "Marcus, return DL-927 is in your warehouse. Please route the refund review to Replacement authorisations at Brineleaf Pantry—the Refunds team address did not accept our first message. The item is 4x Vitaflow Iron Plus, sealed and unopened. Please confirm when authorisation is submitted."
+  },
+  "rationale": "The desk's first email to Refunds failed due to a bad address. The right team for return authorisation at Brineleaf Pantry is Replacement authorisations. The recovery move is to contact the warehouse supervisor through the working Business portal channel and ask him to route the review to the correct internal team, or to contact Replacement authorisations directly through a verified channel. The food-safety sensitivity and customer escalation risk make delay unacceptable."
+}

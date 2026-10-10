@@ -1,0 +1,87 @@
+{
+  "id": "haiku-0080",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "theme": "b2b_pallets",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-039",
+  "grounding": null,
+  "title": "Case: Pallet goods-in discrepancy with mixed-language communication",
+  "context": "A B2B freight recipient reports a short-shipped pallet. Communication with the warehouse coordinator includes a machine translation that may have mistranslated a key detail about what was actually received. The desk must clarify what arrived before authorizing replacement or investigating the carrier.",
+  "initial_request": "Confirm the exact contents of the pallet received at goods-in, then route appropriately.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T07:30:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Shipment DL-964 tail-lift pallet scheduled goods-in 2026-03-14 slot 08:00. Recipient: Kasai Foods Ltd, Tokyo warehouse coordinator Yuki Nakamura. Pre-alert sent."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T09:15:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Yuki Nakamura, Kasai Foods Ltd",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-964 arrive 08:52. We receive only 18 pallets. Bill of lading say 20. Missing 2 pallets with carton label 'Preserved Plum Mix Grade B'. We not understand. Packing list from Brineleaf say inside box but we not find these item inside the 18 pallets we count. Please check sender warehouse."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T09:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Checked load-out for DL-964. All 20 pallets confirmed loaded and secured. Driver sign-off sheet matched BL 20 pallets. Brineleaf warehouse has no record of short-pick or hold. Load appears complete at dispatch."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-14T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Yuki Nakamura, Kasai Foods Ltd",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We count again. 18 pallets only. All receive scan into goods-in system. Packing list box say 'Preserved Plum Mix Grade B is inside box with other product'. But we open all box in 18 pallets and we not find Plum Mix. It is not there. What you do? We need this stock urgent."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Yuki Nakamura, Kasai Foods Ltd",
+        "channel": "Freight portal",
+        "summary": "Confirm in plain language whether the Preserved Plum Mix was supposed to be its own separate pallets or packed inside boxes within the 18 pallets received; request goods-in photos or packing notes if available."
+      },
+      {
+        "recipient": "Brineleaf Pantry warehouse dispatch",
+        "channel": "Email",
+        "summary": "Ask whether Preserved Plum Mix Grade B was loaded as 2 complete pallets or as contents mixed into boxes on other pallets; request load sequence details."
+      },
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Request in-transit investigation for DL-964 only after goods-in discrepancy is clarified; confirm with merchant and recipient first."
+      }
+    ],
+    "must": [
+      "Clarify whether the 2 missing 'pallets' are actually 2 physical pallets or the product name of items that should be inside the 18 pallets received.",
+      "Reply to Yuki Nakamura in simple English or request translation confirmation, because the machine translation is ambiguous on the key detail of packing structure.",
+      "Do not open a carrier investigation until the merchant and recipient confirm whether this is a short shipment of 2 pallets or a short-pick of bulk contents."
+    ],
+    "must_not": [
+      "Assume the 2 missing pallets are certainly lost in transit without clarifying with the merchant whether they were loaded as separate pallets or packed inside boxes.",
+      "Reply only to the carrier without first clarifying the discrepancy with the recipient and merchant.",
+      "Send a replacement authorization to Brineleaf Pantry before confirming exactly what was and was not received.",
+      "Treat the machine-translated 'inside box with other product' as definitive proof that the items are in the 18 pallets without asking for clarification or photos."
+    ],
+    "reference_message": "Yuki, thank you for the detailed count. I need to clarify one thing before we investigate: were the 2 pallets of Preserved Plum Mix Grade B supposed to arrive as 2 complete separate pallets, or were these items packed inside boxes mixed with other products on the 18 pallets you received? Please ask your goods-in team to check if any boxes in the 18 pallets have Preserved Plum Mix labels or contents. Can you send photos of a few box labels from your scan? This will help me work with the merchant and carrier correctly."
+  },
+  "rationale": "The machine translation from Yuki creates ambiguity: 'Packing list box say inside box' could mean either that the items are supposed to be packed inside the 18 boxes already received (requiring a recount or inspection of contents), or that 2 complete pallets are missing. The desk must ask clarifying questions to the recipient in accessible language and request visual evidence (goods-in scan results, photos) before routing to the carrier for investigation or to the merchant for replacement. A hasty desk might assume the translation clearly shows a carrier loss and immediately escalate to investigations."
+}

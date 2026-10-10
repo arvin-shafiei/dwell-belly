@@ -1,0 +1,158 @@
+{
+  "id": "haiku-0172",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "theme": "b2b_pallets",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-037",
+  "grounding": null,
+  "title": "Case: Goods-in discrepancy on partial pallet delivery to business",
+  "context": "A B2B pallet shipment arrived with fewer pallets than booked. The receiving coordinator must confirm the count before the desk can coordinate trace or replacement. A long thread contains auto-replies and unrelated messages that obscure the critical facts.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk receives notification of a short-shipped pallet delivery and must decide what to do.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-11T07:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Automated notification, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 delivery completed at Heathrow Business Park, dock 4, on 2026-03-11 at 06:15 UTC. 4 pallets unloaded. Tail-lift return scheduled."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-11T07:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Automated reply from Heathrow Business Park goods-in",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thank you for your message. We are currently processing inbound shipments. A member of the team will respond within 2 hours."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-11T08:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Thale, goods-in coordinator, Heathrow Business Park",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 arrived this morning. Our booking shows 5 pallets scheduled. Driver unloaded 4. One pallet not on the vehicle. We need clarification: was the 5th pallet re-routed, or is it short-shipped?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-11T08:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Lira Kim, Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have received 50 new delivery bookings this week. Scheduling is under pressure. DL-947 manifest shows 5 pallets. Recommend we advise the customer to check their warehouse records before we investigate further."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-11T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just confirming: did DL-947 leave our facility with 5 pallets on the truck? We loaded 5 but want to be sure before we file any claim."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-11T09:20:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Marketing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "New feature: track your parcel with live GPS! Log in to the Business portal to try it now. Upgrade your account for premium alerts."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-11T09:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Lira Kim, Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 route card shows all 5 pallets scanned at depot at 04:00 UTC. No re-route or cancellation record. The 5th pallet should have been on the vehicle."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-11T09:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Thale, goods-in coordinator, Heathrow Business Park",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "FYI we also had a separate delivery yesterday (DL-941) that was fine. Just want to note we are not disputing this in bad faith."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-11T10:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Automated notification, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-946 on-time performance: delivered 2026-03-11 08:22 UTC. Customer satisfied. Thank you for using Plover Arc Logistics."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-11T10:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We confirm dispatch paperwork shows 5 pallets picked and loaded for DL-947. This is a genuine short-ship case."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-11T10:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Lira Kim, Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route record and manifest both confirm 5 pallets. Delivery scan shows 4 unloaded. We need Delivery investigations to audit the stop."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-11T11:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marcus Thale, goods-in coordinator, Heathrow Business Park",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pallet search ongoing in our warehouse. No sign of a 5th pallet arrival today. We will confirm final count by end of shift."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-03-11T12:00:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Marcus Thale, goods-in coordinator, Heathrow Business Park",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirmed: we received 4 pallets only. 5th pallet not on dock, not in receiving area. DL-947 is short by 1 pallet. What is the next step?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Audit the DL-947 delivery stop to confirm whether the 5th pallet was left at the vehicle or mishandled during delivery."
+      }
+    ],
+    "must": [
+      "Send one message only to Delivery investigations at Plover Arc Logistics",
+      "Request an audit of the delivery stop to determine what happened to the 5th pallet",
+      "Do not contact the receiving site or shipper; the desk does not manage trace or recovery",
+      "Base the request only on the confirmed facts: manifest shows 5, depot scan shows 5 loaded, delivery scan shows 4 unloaded, receiving confirms 4 received"
+    ],
+    "must_not": [
+      "Contact Tallowmere Goods or Heathrow Business Park with next steps; that is Parcel trace team or Recovery team work, not the desk's role",
+      "Ask the shipper or receiver to file a claim or conduct their own search",
+      "Recommend the customer check their warehouse records again; the count is now confirmed",
+      "Send the message to Freight planner or Routing control; only Delivery investigations conducts stop audits"
+    ],
+    "reference_message": "DL-947 departed the depot with 5 pallets scanned at 04:00 UTC. Delivery stop scan shows 4 pallets unloaded. Receiving confirms 4 received; 5th pallet not located. Please audit the delivery stop records and vehicle to confirm the location and status of the 5th pallet. Report your findings to support trace and recovery coordination."
+  },
+  "rationale": "The facts are now clear: a genuine short-ship has occurred between depot and receiving. The desk's role is to direct the carrier's investigation function to audit the stop. Delivery investigations owns that work. The long thread of auto-replies, unrelated shipments, and freight planner pressure are noise; the critical facts appear in events 3, 7, 10, 11, and 13. The desk must not assume fault or manage recovery; it coordinates by requesting the investigation and stopping."
+}

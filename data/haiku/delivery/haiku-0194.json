@@ -1,0 +1,285 @@
+{
+  "id": "haiku-0194",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "long_context",
+  "theme": "wrong_address",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-016",
+  "grounding": null,
+  "title": "Case: Parcel redirected twice then returned to sender, but recipient still claiming non-delivery",
+  "context": "A parcel was redirected to a wrong address by the recipient's initial request, then re-redirected back to depot after a failed delivery attempt. The recipient later filed a non-delivery claim without mentioning the redirects. The desk must decide whether to contact the recipient, escalate to a supervisor, or take no action.",
+  "initial_request": "Recipient claims parcel DL-923 never arrived and requests the desk to investigate and recover it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-14T08:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Parcel DL-923 from Brineleaf Pantry never arrived. I paid for this order and need it urgently. Please investigate immediately."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-14T08:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Parcel trace team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 history: consigned to 47 Millbrook Lane, Cheshire. Recipient requested redirect on Feb 11 14:22 to Unit 3B Trafford Business Park. Driver attempted delivery Feb 13 10:45, access denied (locked gate). Returned to depot."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-14T08:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 is frozen food (fish stock). Consigned Feb 11 08:00. We note parcel status shows redirect attempted but failed. Recipient must confirm next action or we may need to declare it spoiled."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-14T08:25:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Parcel at Trafford depot now. Redirect destination access issue not resolved. We can hold 48 hrs max before disposal protocol kicks in for frozen goods."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-14T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Brineleaf Pantry, Customer service",
+      "body": "I have no idea why my parcel is at a business park. I never asked for that. It should go to my home address 47 Millbrook Lane. Sort this out please."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-02-14T08:35:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Brineleaf Pantry, Customer service",
+      "to": "Recipient: Kieran Walsh",
+      "body": "We have checked your account. You requested a redirect via text on Feb 11 14:22 to Unit 3B Trafford Business Park. Can you confirm if this was authorised by you or if your account has been compromised?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-02-14T08:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Brineleaf Pantry, Customer service",
+      "body": "I did not send that text. My phone was in my bag during work. Someone else must have done it. I want my food sent to my actual address now."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-02-14T08:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Brineleaf Pantry, Warehouse dispatch",
+      "to": "Plover Arc Logistics, Dispatch",
+      "body": "Recipient claims account compromise. We are flagging this for our fraud team review. Meantime, parcel is perishable. What is your hold time?"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-02-14T08:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Brineleaf Pantry, Warehouse dispatch",
+      "body": "Until 14:30 UTC today. After that, frozen food disposal protocol applies. No exceptions."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-02-14T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Damage intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Possible fraud on order DL-923. Recipient account appears compromised. Recipient now claims they did not authorise the redirect. We need Plover to hold the parcel pending our fraud investigation, but frozen stock cannot wait."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-02-14T09:05:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We cannot redeliver to original address without merchant approval, and we cannot hold perishable past 14:30. Merchant must issue new dispatch instruction or parcel is disposed."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-02-14T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This is ridiculous. The desk coordinates these services. I ordered food, it went to the wrong place, and now it is being destroyed. Someone needs to fix this. I want compensation and a replacement order."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-02-14T09:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Safety lead",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Adding context: Redirect was executed via mobile app, not text. System shows app login from recipient's account (same device ID as previous logins) at 14:22 Feb 11. No breach flag from auth side. Likely recipient changed mind about delivery location."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-02-14T09:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Refunds team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "If parcel is disposed, recipient will demand refund + replacement. We cannot replace until perishable disposal is confirmed. Desk should contact recipient to clarify intent before we lose the stock and the order."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-02-14T09:25:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I am filing a formal complaint. The parcel never reached me. I have no idea how it ended up at a business park and I do not want it there. Please recover it to my home address or issue a full refund and send a replacement to 47 Millbrook Lane."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-02-14T09:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Parcel trace team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Timeline clear: Feb 11 14:22 redirect submitted via app. Feb 13 10:45 delivery attempt to Trafford failed (locked gate, no receiver contact). Parcel returned to Trafford depot same day. All events logged and verifiable."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-02-14T09:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Replacement authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We need clarity on whether to refund or reship. If parcel is still in Plover's custody (at Trafford), Routing can still attempt redelivery to original address if authorised. If it is disposed, we authorize a new shipment at our cost. Desk should decide and inform both teams."
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-02-14T09:40:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hold expires 14:30 UTC. We need a merchant instruction in writing before 14:00 UTC: either authorize redelivery to 47 Millbrook or sign off on disposal. No third option."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-02-14T09:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Brineleaf Pantry, Customer service",
+      "body": "I did not redirect that parcel. I do not know how this happened. I want my money back and a new order sent to my home. This is not my fault."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-02-14T09:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Safety lead",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Recipient account shows device ID consistent across all logins since order placed. No evidence of compromise. App redirect was from recipient's device. Recipient may be denying redirect they made."
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-02-14T09:55:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Food-safety lead",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Fish stock was consigned at correct temperature. Parcel has been at ambient Trafford depot since Feb 13 10:50 (23+ hours). Stock is no longer safe to consume. If redelivered, we cannot guarantee it or accept liability. Parcel must be disposed."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-02-14T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I am still waiting for this to be resolved. If the food is spoiled due to the wrong redirect, that is Plover's fault for not delivering properly. I expect compensation."
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-02-14T10:05:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Disposal decision pending. Merchant must confirm in writing before 14:00 UTC or we follow frozen goods protocol. Awaiting instruction."
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-02-14T10:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Damage intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have reviewed recipient's account for fraud. Device ID and IP consistent. Redirect appears to have been authorized by recipient, not a breach. However, recipient is now denying this and claiming non-delivery. The desk must contact recipient to clarify intent before we proceed with disposal or refund."
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-02-14T10:15:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Recipient: Kieran Walsh",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This is taking too long. I have no parcel, no refund, and no replacement. The delivery desk should have prevented this. I am escalating this to my bank and filing a chargeback. Fix this now or I will pursue this further."
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-02-14T10:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics, Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "14:00 UTC decision window closing. If no merchant instruction received by then, disposal protocol activates automatically. Desk should advise merchant now."
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-02-14T10:25:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Replacement authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We need the desk to tell the recipient the facts: they redirected the parcel, the redirect failed, and the food has spoiled in custody. We will refund, but we cannot reship spoiled stock. If they deny the redirect, that is a fraud investigation matter, not a delivery coordination issue. Desk should contact recipient to confirm understanding."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Recipient: Kieran Walsh",
+        "channel": "Email",
+        "summary": "Explain that the parcel was redirected by their account on Feb 11, the redirect delivery failed, the food has spoiled in Plover's custody, and inform them of refund and replacement options."
+      }
+    ],
+    "must": [
+      "Acknowledge the redirect that occurred on Feb 11 14:22 from their account (with evidence trail)",
+      "Explain that the failed delivery attempt to the redirect address caused spoilage, not a non-delivery",
+      "Clarify that Brineleaf Pantry will refund and can send a replacement to the original address (47 Millbrook Lane)",
+      "Not escalate this to a supervisor, as the facts are clear and the coordination task is to inform the recipient of the resolution path"
+    ],
+    "must_not": [
+      "Contact Plover or Brineleaf asking them to investigate or decide; the facts are already established",
+      "Treat this as a potential fraud case requiring Safety incident queue escalation (Safety lead has confirmed account consistency and device legitimacy)",
+      "Offer compensation or accept liability on behalf of Plover or Brineleaf for the spoilage",
+      "Ask the recipient to submit new instructions or a new refund request; provide the refund and replacement path directly",
+      "Escalate to a human supervisor without first attempting to clarify the facts with the recipient via contact"
+    ],
+    "reference_message": "Dear Kieran, thank you for your patience. We have reviewed the full history of DL-923. Your account redirected the parcel to Unit 3B Trafford Business Park on 11 Feb at 14:22. The delivery attempt on 13 Feb failed (locked gate), and the parcel was returned to Trafford depot, where it has remained. The frozen fish stock has now exceeded safe hold time and cannot be redelivered safely. Brineleaf Pantry confirms this and will issue a full refund and send a replacement to 47 Millbrook Lane at no cost. You should receive the refund within 5 working days and the replacement shipment within 3 days of that. If you did not authorise the redirect on 11 Feb, please contact Brineleaf Pantry's fraud team directly. Best regards, Iona Quill."
+  },
+  "rationale": "The desk's role is to coordinate and clarify facts, not to investigate fraud or make liability decisions. The core facts are established: the recipient's account redirected the parcel, the redirect delivery failed due to access denial, the food spoiled in carrier custody, and the merchant has already approved a refund and replacement. The recipient is claiming non-delivery and denying the redirect, but the evidence (device ID, login history, app submission timestamp) is clear. The desk must contact the recipient to inform them of these facts and the resolution path (refund plus replacement), allowing them to understand what happened. This is not an escalation matter; it is a coordination communication to close the loop and prevent further confusion or disputes."
+}

@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0114",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": "multilingual",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-045",
+  "grounding": null,
+  "title": "Case: Broker portal message rejected for customs documentation",
+  "context": "An international shipment is held at customs waiting for a commercial invoice. The desk attempted to contact the broker through their portal but the message was rejected. The correct route to reach the broker is now unclear.",
+  "initial_request": "Coordinate release of DL-947 from customs hold by obtaining missing invoice documentation.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Customs Broker, Apex Trade Solutions",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Shipment DL-947 (consignee Karolina Nowak, Warsaw) is in customs hold. Missing: seller commercial invoice. Broker ref ATX-2847. Contact us to advise shipper."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T11:30:00Z",
+      "stage": "Agent action",
+      "channel": "Broker portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Apex Trade Solutions",
+      "body": "Please contact shipper urgently for commercial invoice on DL-947. Shipment blocked at Warsaw customs."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T15:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Broker portal system, Apex Trade Solutions",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Message rejected. Ticket ATX-2847 is assigned to Collections control queue only. Portal messaging is disabled for this shipment state. Use email to Collections control direct."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T16:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Karolina Nowak, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Gdzie jest moja paczka? DL-947 czeka od wczoraj. Potrzebuję to dzisiaj. Co się dzieje?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Collections control, Apex Trade Solutions",
+        "channel": "Email",
+        "summary": "Request urgent contact with shipper to supply commercial invoice for DL-947 customs release."
+      },
+      {
+        "recipient": "Apex Trade Solutions",
+        "channel": "Email",
+        "summary": "Request urgent contact with shipper to supply commercial invoice for DL-947 customs release."
+      }
+    ],
+    "must": [
+      "Send contact message only (no escalation)",
+      "Use Email channel to reach Collections control or Apex Trade Solutions directly",
+      "Request shipper invoice document via the working route (email, not portal)",
+      "Acknowledge the recipient's concern without promising timeline not in desk control"
+    ],
+    "must_not": [
+      "Send another message through Broker portal after it was explicitly rejected",
+      "Treat the portal rejection as a completed broker contact",
+      "Send the customer a response claiming the shipment will arrive today",
+      "Escalate to supervisor when a working alternative route exists"
+    ],
+    "reference_message": "Hi Collections control (ATX-2847): Portal messaging failed on DL-947. Shipment is held at Warsaw customs pending commercial invoice from shipper. Please contact the shipper urgently to provide documentation for release. Recipient is waiting. Thanks."
+  },
+  "rationale": "The desk's portal message failed explicitly—Collections control was the only available queue. The right move is to switch to the working channel (email) to reach Collections control directly with the same request. Escalation is premature because a recovery path exists. The customer message in Polish expresses urgency but the desk cannot control customs clearance speed; a brief acknowledgment in the next message to the broker (via email) is sufficient to move the case forward."
+}

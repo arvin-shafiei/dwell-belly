@@ -1,0 +1,76 @@
+{
+  "id": "haiku-0199",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "theme": "medication",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-039",
+  "grounding": null,
+  "title": "Case: Replacement medication shipment identity unclear after original delivery issue",
+  "context": "A recipient reports receiving a replacement medication shipment, but the desk cannot determine which original order it was sent to replace. The merchant and carrier both need clarification before any further action.",
+  "initial_request": "Recipient reports confusion about which damaged order a replacement relates to, and whether they should use the medication.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T10:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Thorne, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I got a replacement pack of Lisinopril 10mg this morning but I'm not sure which order it replaces. I had two prescriptions shipped in the last week and one arrived damaged. Which one was this meant for? Can I take it?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T10:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Tallowmere Goods Replacement authorisations",
+      "body": "Customer Marcus Thorne reports receiving a replacement Lisinopril shipment this morning but cannot identify which damaged order triggered it. Please advise which original shipment reference the replacement was authorised for."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T11:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods Replacement authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We see a replacement authorised for Marcus Thorne on 2026-03-14, but our system shows two damaged Lisinopril orders from him in the last week. Cannot confirm which one without the shipment reference. Check with Plover Arc Dispatch—they should have logged which delivery was damaged."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-15T13:20:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We don't hold replacement tracking. Merchant should tell you the shipment ref. Marcus keeps ringing us asking if he should take meds he's unsure about. This is urgent."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Tallowmere Goods Replacement authorisations",
+        "channel": "Email",
+        "summary": "Request the specific DL shipment reference(s) for both damaged Lisinopril orders received by Marcus Thorne in the past week"
+      }
+    ],
+    "must": [
+      "Ask Tallowmere Goods for the actual DL shipment reference number(s), not just confirmation that two orders existed",
+      "Do not advise the recipient whether or how to use the medication",
+      "Do not contact the recipient until the desk has the shipment reference from the merchant"
+    ],
+    "must_not": [
+      "Do not guess which damaged order the replacement was meant for",
+      "Do not tell Marcus Thorne to take or not take the medication",
+      "Do not ask Plover Arc Dispatch for the replacement tracking detail, as they explicitly stated they do not hold it",
+      "Do not escalate without first asking the merchant for the shipment reference"
+    ],
+    "reference_message": "We need the actual shipment reference numbers (DL format) for both damaged Lisinopril orders received by Marcus Thorne in the past week so we can match the replacement. Can you provide both DL references?"
+  },
+  "rationale": "The replacement cannot be connected to the correct original order without a shipment reference. The merchant holds replacement authorisation records and must provide the DL reference; Dispatch confirmed they do not track this. The desk must get the reference from the merchant before advising the customer on medication use, which is not the desk's role regardless."
+}

@@ -1,0 +1,67 @@
+{
+  "id": "haiku-0027",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-007",
+  "grounding": null,
+  "title": "Case: Locker full during weather disruption",
+  "context": "A parcel is assigned to a locker pickup point. A widespread weather event has created delays across the carrier's network. Multiple parcels are backing up at collection points.",
+  "initial_request": "Recipient requests immediate locker access for a parcel that cannot fit due to capacity constraints caused by the network disruption.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-15T06:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Safety lead",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Red weather warning active across all regions until 2026-02-16, 14:00 UTC. Expect 18–24 hour delays on all last-mile routes. Pickup points are experiencing volume buildup. Do not promise specific collection windows."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-15T10:45:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Marchmont Locker Station operator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-932 (office chair, 1.2 m³) arrived at 09:15 UTC. Locker is full. No large compartments available until at least 2026-02-16, 20:00 UTC due to weather backlog. Recipient has been sent access code but cannot retrieve."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-15T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Jessamy Copley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I got the code but the locker says FULL. I need this chair TODAY for a client meeting. Can you get it out now or send me a tracking link showing when it will be ready? This is urgent."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "no_action"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Jessamy Copley",
+        "channel": "Customer portal",
+        "summary": "Explain that weather delays affect all pickups, confirm the parcel is safe at the locker, and set realistic expectations without a specific collection time."
+      }
+    ],
+    "must": [
+      "Do not promise a specific pickup time or collection window",
+      "Acknowledge the weather disruption as the reason for the delay, not a failure to deliver to the locker",
+      "Do not request an investigation or one-off intervention for a known network event"
+    ],
+    "must_not": [
+      "Promise same-day collection or any time before the locker operator indicated capacity would free up",
+      "Ask Dispatch or Routing control to reroute or expedite the parcel around the network disruption",
+      "Offer alternative delivery (hold at depot, redirect to another locker) without locker operator or Dispatch confirming capacity"
+    ],
+    "reference_message": "Hi Jessamy, thanks for reaching out. DL-932 did arrive safely at Marchmont Locker Station this morning. Due to the red weather warning in effect across the region until tomorrow afternoon, all pickup points are experiencing delays in capacity. The locker will have space available from approximately 2026-02-16, 20:00 UTC onwards. We'll monitor progress and let you know if access opens earlier. We appreciate your patience."
+  },
+  "rationale": "The weather disruption is a known network event affecting many parcels, not a failure specific to this shipment. The desk must give an honest update about the delay without creating false expectations or initiating a one-off investigation that would bypass the carrier's network recovery plan. Contacting the recipient with realistic information is appropriate; opening a special case or promising dates the locker operator has not confirmed would be wrong."
+}

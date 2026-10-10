@@ -1,0 +1,68 @@
+{
+  "id": "haiku-0021",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "cross_border",
+  "theme": "age_restricted",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-002",
+  "grounding": null,
+  "title": "Case: Age-restricted item delivery to EU address with unclear recipient ID status",
+  "context": "A bottle of spirits has been attempted delivery to a residential address in the Republic of Ireland. The recipient was not present. The question is whether to reattempt delivery, hold for collection, or route the ID verification issue to the party responsible for cross-border age-restricted goods compliance.",
+  "initial_request": "Determine next action for a failed first delivery attempt of age-restricted goods to an EU address.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Delivery attempt 1 failed, DL-941. Single malt whisky 700ml ordered by K Brennan, delivery address 47 Sandymount Road, Dublin 4, Ireland. Driver reports no one answered; address is residential apartment, no entry code provided. Item is age-restricted UK stock. Recipient phone number not current. Reattempt scheduled for tomorrow 09:00 unless instructed otherwise."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T10:45:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Customs broker, DL-941 file",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Age-restricted alcohol shipment to ROI requires ID verification at point of delivery and import compliance sign-off. Recipient name and Irish address on file, but no pre-delivery ID confirmation has been received from the recipient. Standard UK delivery rules do not apply across the border. Recommend clarification before next attempt."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T12:00:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "K Brennan, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I was out yesterday. I'm ready now. Just leave it with the building manager or try again this afternoon. I'm over 18, obviously."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Customs broker, DL-941 file",
+        "channel": "Broker portal",
+        "summary": "Confirm whether pre-delivery ID verification has been completed and what process must be followed for reattempt to a residential Irish address."
+      }
+    ],
+    "must": [
+      "Route the ID and compliance question to the customs broker before reattempting delivery.",
+      "Acknowledge that recipient assurance of age does not satisfy cross-border legal requirements.",
+      "Do not advise the recipient on what documents to produce or what Irish law permits."
+    ],
+    "must_not": [
+      "Contact the recipient to request ID or to confirm age status.",
+      "Authorize reattempt based on recipient's verbal confirmation of age.",
+      "Treat this as a standard failed domestic delivery that only needs a contact number update.",
+      "Contact the merchant or driver to arrange alternative delivery without broker clearance."
+    ],
+    "reference_message": "K, we need to confirm ID verification requirements with our customs broker for the Irish delivery. We'll update you once that's cleared. Thanks for being ready."
+  },
+  "rationale": "Age-restricted goods crossing into the Republic of Ireland are subject to Irish import law and UK export compliance, not UK domestic age-verification rules. The broker has flagged that pre-delivery ID confirmation is required and standard reattempt is not appropriate. The desk must route to the broker to establish what process is needed before reattempting, and must not accept the recipient's self-assurance as legal proof."
+}

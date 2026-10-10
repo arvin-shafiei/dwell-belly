@@ -1,0 +1,271 @@
+{
+  "id": "haiku-0138",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "long_context",
+  "theme": "customs_hold",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-035",
+  "grounding": null,
+  "title": "Case: Customs duty query resolved but broker still waiting for confirmation",
+  "context": "A parcel is held at customs pending duty payment and documentation. A broker query was issued. The duty status changes during the case, but later messages suggest confusion about what actually happened. The desk must identify the true current state from the full history.",
+  "initial_request": "Determine whether to contact the broker, the merchant, or take no action based on the actual customs status.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-01T08:15:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-934 is held pending duty clearance. Missing commercial invoice. We've queried Brineleaf Pantry warehouse. Awaiting their response."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-01T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Harlow & Vex Customs Brokers",
+      "body": "Invoice attached. Duty value GBP 47.30. Please proceed."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-01T09:20:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Invoice received and verified. Duty amount confirmed at GBP 47.30. DL-934 cleared for collection. Recipient Keya Novak must pay duty at pickup point or we can debit account on file."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-01T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Checked with Harlow & Vex. They say duty still pending. Confused about the status. Can you clarify?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-01T10:30:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Status update: DL-934 released from hold. Duty GBP 47.30 must be collected from recipient at Plover Arc Logistics depot. Keya Novak has been notified via SMS."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-01T11:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still unclear. Stefan contacted Harlow & Vex again at 11:10. They said DL-934 status is unclear and they're checking their system."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-01T11:45:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Apologies for confusion. System sync delay. Confirmed: DL-934 cleared. Duty payable at depot. No further holds."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-01T12:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Harlow & Vex now saying parcel may still need re-inspection. Can't get a straight answer. This is delaying our operations."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-01T12:20:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Final status: DL-934 CLEARED. No re-inspection needed. Duty GBP 47.30 payable on collection by recipient. Parcel may leave depot for final delivery."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-01T13:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We need a definitive answer. Is the parcel cleared or not? Merchant is getting complaints from Keya Novak about delays."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-01T13:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Keya Novak, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I was told to pay duty at the depot but the parcel hasn't arrived. What is happening with DL-934?"
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-01T14:10:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Checking depot status now. May take 30 minutes."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-03-01T14:50:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Parcel DL-934 confirmed cleared and in Plover Arc Logistics Ashford depot queue. Recipient payment of GBP 47.30 required at collection. Delivery slot available today 16:00-18:00."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-03-01T15:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Broker just told us it might not be cleared. They're being very unclear and keep changing their story."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-03-01T15:20:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correction: DL-934 is NOT yet cleared. Awaiting final manifest review. Please advise recipient and merchant to stand by."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-03-01T15:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Keya Novak, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I have the afternoon off and I'm ready to pay duty. Can you tell me if the parcel is coming today or not?"
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-03-01T15:50:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Update at 15:48: Final manifest received and processed. DL-934 is NOW CLEARED for release. Duty GBP 47.30 due at collection. Delivery is proceeding."
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-03-01T16:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Broker just emailed us saying clearance is still pending and we should wait for their next update. I don't trust this anymore. What do you see?"
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-03-01T16:25:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Parcel DL-934 released to Plover Arc Logistics Dispatch at 16:20. In final delivery queue for today. All customs formalities complete."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-03-01T16:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I've been on the phone with Harlow & Vex for 15 minutes. Their systems are inconsistent. One agent says cleared, another says it's still with manifest review. I need you to escalate this before Keya Novak calls us asking why the delivery was cancelled."
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-03-01T16:50:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Plover Arc Logistics Dispatch confirms DL-934 was added to delivery run at 16:20 and driver has the manifest. Delivery window 17:30-19:00 today. Duty to be collected on delivery."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-03-01T17:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Harlow & Vex just admitted their portal has a sync lag. But they will not confirm on the phone that the parcel is actually cleared. They keep saying to wait for the next system update."
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-03-01T17:15:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Harlow & Vex Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Final confirmation: DL-934 cleared as of 16:20. No further holds or inspection required. Duty GBP 47.30 payable on delivery. Driver is en route. Keya Novak can expect delivery between 17:30 and 19:00."
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-03-01T17:25:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Keya Novak, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Is it coming today? I have cash ready for the duty payment."
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-03-01T17:30:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Rivet Delivery Desk: Harlow & Vex has given us at least 4 different answers in the last 90 minutes. I need a decision from you now. Is DL-934 cleared or not? The recipient is waiting. Do not tell me to call them again."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Keya Novak, recipient",
+        "channel": "Email",
+        "summary": "Confirm that DL-934 is cleared and will be delivered today between 17:30-19:00, with duty of GBP 47.30 due on collection."
+      },
+      {
+        "recipient": "Stefan Moss, Brineleaf Pantry Warehouse dispatch",
+        "channel": "Email",
+        "summary": "Confirm that the most recent broker clearance (16:20, event 21 and 23) is the authoritative status, parcel is with driver, and delivery is proceeding today."
+      }
+    ],
+    "must": [
+      "Recognize that event 17 and 23 are the most recent broker confirmations of actual clearance status (16:20 release to Dispatch with driver en route)",
+      "Base the decision on the final broker statement at 17:23 confirming clearance and driver status, not the contradictory earlier messages",
+      "Address both Keya Novak and Stefan Moss with a single coherent message confirming delivery is proceeding"
+    ],
+    "must_not": [
+      "Escalate to a human supervisor when the most recent authoritative broker messages (events 21 and 23) clearly state the parcel is cleared and with the driver",
+      "Contact Harlow & Vex Customs Brokers asking for re-confirmation, as this repeats the pattern that frustrated Stefan Moss and wastes time",
+      "Allow earlier contradictory messages (events 14, 15, 18, 22) to override the final factual status at event 23",
+      "Send a message expressing uncertainty or asking parties to wait for further updates, as the delivery window is now"
+    ],
+    "reference_message": "To Keya Novak and Stefan Moss (email): DL-934 is cleared and in final delivery. Driver has the manifest and will arrive between 17:30 and 19:00 today. Keya, please have GBP 47.30 ready for duty payment on delivery. Stefan, broker confirms no further holds as of 16:20."
+  },
+  "rationale": "The broker's final messages at events 21 and 23 confirm clearance and driver departure at 16:20. Earlier contradictions (events 14, 15, 18, 22) are internal broker system sync issues, not changes to actual status. The decisive fact—confirmed release to Dispatch with driver—sits in the middle of the history but is buried under later confusing emails. A hasty reader might escalate when seeing Stefan's frustration at event 25, but the correct move is to act on the authoritative final status and inform both parties that delivery is proceeding."
+}

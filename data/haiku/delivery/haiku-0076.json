@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0076",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "theme": "multilingual",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-036",
+  "grounding": null,
+  "title": "Case: Freight dimensions stated in mixed units with Welsh labels requiring confirmation",
+  "context": "A business sender has booked a freight pickup with dimensions stated across metric and imperial units, and the shipment labels are partly in Welsh. The Freight planner needs dimensional clarity before dispatch routing can proceed, as the quoted charges assume specific dimensions.",
+  "initial_request": "Confirm the actual dimensions of the shipment before pickup is allocated to a carrier route.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T10:15:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Caradoc Mills, Hendre Manufacturing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Booking FR-941 for pickup Thursday 16 March. Four pallets. Labels state 'Hyd 120cm, Lled 80cm, Uchder 100cm' (Welsh for length, width, height). Our notes also say 48 inches by 32 inches by 40 inches. Can you confirm which is correct before we load?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T10:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "FR-941 routed via standard pallet rules. I have it down as 120 x 80 x 100 cm (approx 48 x 31.5 x 39.4 inches) which fits our overhead clearance at the distribution hub. But the sender's note mentions 40 inches height and we need to confirm before Thursday pickup."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Caradoc Mills, Hendre Manufacturing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The pallet labels have the metric measurements. But our warehouse manager says the actual height when loaded is 40 inches (1.016 metres), not 100cm. This matters for the van roof. Which set of numbers do I give your driver on Thursday?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Request confirmation whether 40-inch (1.016m) height differs materially from the quoted 100cm, and whether the route allocation should be revised before pickup."
+      },
+      {
+        "recipient": "Caradoc Mills, Hendre Manufacturing",
+        "channel": "Business portal",
+        "summary": "Ask for physical measurement in metric centimetres before Thursday pickup, and advise that dimensions affect van fit and charges."
+      }
+    ],
+    "must": [
+      "Recognise that 40 inches (1.016m) is noticeably larger than 100cm and the discrepancy must be resolved before pickup.",
+      "Confirm actual dimensions with the sender before the pickup time window.",
+      "Do not allow the pickup to proceed with conflicting dimensional data that could affect routing, billing or safety."
+    ],
+    "must_not": [
+      "Assume the Welsh-language labels and the inch-based figure are equivalent without arithmetic check.",
+      "Tell the sender to use whichever measurement they prefer without escalating to Plover Arc.",
+      "Proceed to confirm the routing or charges to the sender without resolving the dimensional conflict.",
+      "Send the driver out with conflicting instructions about pallet height."
+    ],
+    "reference_message": "Caradoc Mills, Hendre Manufacturing: We need to confirm the actual dimensions before Thursday pickup. Your pallet labels state 100cm height, but you have also noted 40 inches (approximately 1.016 metres). These are not the same—40 inches is significantly taller. Please provide a single confirmed measurement in centimetres so we can ensure the correct vehicle is assigned. Reply by Tuesday 15 March noon."
+  },
+  "rationale": "The case turns on the arithmetic: 40 inches converts to approximately 101.6cm, which is larger than the stated 100cm label measurement. This discrepancy affects vehicle fit, hub clearance, and may alter routing or charges. A hasty reader might assume the values are close enough or that the label measurement is 'correct' because it is in metric and the pallet is labelled in Welsh. The right move is to confirm the actual dimension from the sender before pickup, and if necessary escalate to the Freight planner to adjust the route."
+}

@@ -1,0 +1,121 @@
+{
+  "id": "haiku-0229",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-017",
+  "grounding": null,
+  "title": "Case: Signature requirement changed mid-delivery for high-value electronics",
+  "context": "Plover Arc Logistics requires adult signature for high-value electronics over £800. Tallowmere Goods can request signature requirement changes up until the parcel enters final delivery. The Dispatch team manages signature flags in the system. Once a driver is en route, only Dispatch can amend the requirement, and any change must be confirmed to the desk.",
+  "initial_request": "A recipient and merchant exchange conflicting instructions about whether an expensive camera needs a signature on delivery. The desk must determine which instruction is current and act accordingly.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-14T07:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-917 is a Nikon Z9 camera (£2,400). Signature required per high-value policy. Shipping to Keir Sadler at 14 Maple Lane, Aberdeen. Dispatch will enforce signature on delivery."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-14T08:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Keir Sadler, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I work from home today. I'll accept the camera without signature - I trust the porch. Can you remove that requirement so the driver doesn't have to wait?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-14T09:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Recipient Keir Sadler requests signature removal for DL-917. He will be home. Please confirm if this can be amended before route release."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-14T09:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Noted. Signature flag removed from DL-917. Driver will not require signature. Parcel now flagged as safe-place delivery."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-14T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "URGENT: We need signature back on DL-917. Client risk policy prohibits unattended high-value electronics. Recipient may not have understood the risk. Please reinstate signature requirement immediately."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-02-14T10:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Keir Sadler, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Actually, my partner will not be home after all. I'll be here but I won't be able to answer the door quickly. I want the signature option back so the driver can just leave it and I can sign when I'm ready."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-02-14T11:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Driver Morag Reid, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm 12 mins away from Maple Lane. I have DL-917 on my load as safe-place. What's the actual instruction? Getting conflicting messages."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-02-14T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Keir Sadler just called us directly. He's confirmed he wants signature required. He understands the risk now. Confirm this is live in the system."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-02-14T11:08:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Driver Morag Reid, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm at the gate now. Still no clear instruction. I need to know: signature yes or no. Recipient is home."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Confirm that signature is now required for DL-917 and driver should request it before leaving the parcel."
+      }
+    ],
+    "must": [
+      "Follow the most recent valid recipient instruction, which requests signature",
+      "Instruct Dispatch to amend the flag in the system before delivery completes",
+      "Contact only Dispatch, not the recipient, since the driver is already at the location"
+    ],
+    "must_not": [
+      "Act on the initial recipient request (event 2) to remove signature, as it was superseded by events 6 and 8",
+      "Contact the recipient to re-confirm or re-negotiate, as Dispatch must give the driver a single clear instruction",
+      "Send conflicting or uncertain instructions to the driver about the delivery method",
+      "Treat the merchant's initial policy (event 1) as the final word when the recipient has given later instructions"
+    ],
+    "reference_message": "Morag: Signature required for DL-917. Recipient has confirmed he wants to sign. Please request signature before leaving parcel. I'm confirming this now with Dispatch control."
+  },
+  "rationale": "The recipient's latest clear instruction (events 6 and 8) is that signature should be required. Although he initially asked for it removed, he has now corrected that decision and explicitly confirmed signature is needed. The desk must relay this current instruction to the driver immediately through Dispatch, who control the delivery flag. The driver is at the location and needs one definitive instruction; the desk cannot contact the recipient again as that would create further delay and confusion."
+}

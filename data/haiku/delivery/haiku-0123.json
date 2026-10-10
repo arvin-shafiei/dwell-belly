@@ -1,0 +1,70 @@
+{
+  "id": "haiku-0123",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "pets_perishables",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-049",
+  "grounding": null,
+  "title": "Case: Brineleaf confirms replacement feed stock after warehouse damage report",
+  "context": "Brineleaf Pantry's warehouse identified and packaged a replacement shipment for the damaged feed stock. The consignee has already confirmed receipt of the replacement in the business portal. The desk is waiting for billing correction notification from Brineleaf's refunds team, but no timeline has been set.",
+  "initial_request": "Should the desk follow up on the replacement delivery?",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-02T14:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Jasper Kern, FarmCo receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 arrived with 8 sacks of Brineleaf premium poultry feed. 3 sacks soaked and spoiled in transit. We've logged damage in the portal and images attached. Need replacement ASAP—birds are on a tight schedule."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-02T15:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dara Nisbet, Brineleaf Pantry Damage intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Damage claim DL-947-DMG received. We've authorised replacement of 3 sacks. Warehouse dispatch is packing now. Will advise tracking once it ships."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-02T17:20:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Jasper Kern, FarmCo receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Replacement arrived and verified. All 3 sacks in good condition. We've confirmed receipt in the portal. Thanks for the quick turnaround."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-03T10:15:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Dara Nisbet, Brineleaf Pantry Damage intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947: replacement delivered and logged in your system. Our warehouse has marked the original 3 damaged sacks as written off. We'll send the refund adjustment to your business portal once our refunds team processes it. ETA early next week."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Document that Brineleaf has confirmed replacement delivery and written off the damage",
+      "Acknowledge internally that a billing adjustment is pending and expected early next week without sending a message to any party",
+      "Recognize that FarmCo has already confirmed replacement receipt, eliminating any need to re-contact them"
+    ],
+    "must_not": [
+      "Send a follow-up message to Jasper Kern or FarmCo asking for confirmation—they have already confirmed",
+      "Contact Brineleaf's refunds team to chase the billing adjustment—Nisbet has set an ETA and chasing now would duplicate the damage intake team's own workflow",
+      "Escalate to a supervisor; this is routine damage-and-replace closure, not a safety or coordination breakdown",
+      "Send a message to the desk asking for next steps—the next step (refund processing) is owned by Brineleaf and is on their schedule"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The replacement delivery is complete and acknowledged by the consignee. Brineleaf has already committed to a billing adjustment with a stated timeline and does not need the desk to chase it. Sending another message would duplicate work already assigned to Brineleaf's refunds team and would be noise rather than coordination. The desk should log the closure and wait for the billing notification."
+}

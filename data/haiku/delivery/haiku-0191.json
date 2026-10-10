@@ -1,0 +1,84 @@
+{
+  "id": "haiku-0191",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-016",
+  "grounding": null,
+  "title": "Case: Signature-required laptop delayed and concurrent damage claim from earlier shipment",
+  "context": "A high-value electronics delivery is overdue and requires signature, while the same customer has filed damage on a separate prior shipment that needs immediate intake. Both issues have different owners and different response timelines, and only one can be addressed in the first contact.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk receives a merged escalation covering two unrelated shipments.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics Delivery investigations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-941 delivery attempt failed 2026-04-11 19:30 UTC at address, recipient not present. Signature required. Driver left notice. Item: Dell XPS 15 laptop, value £1847. Next attempt window 2026-04-12 14:00-18:00 UTC."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T08:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maya Hendricks, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I was out yesterday. I can take delivery today between 14:00-18:00. But I'm also messaging because my Brineleaf Pantry order from 2026-04-08 arrived with a cracked camera lens in the box. I need to claim damage on that one too. DL-923. Can you sort both?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry Damage intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 damage claim received from customer at 2026-04-12 09:01 UTC. Item: Sony A6700 mirrorless camera, declared value £2195. Claim flagged as urgent because value threshold requires photo evidence within 24 hours of receipt per insurance. Receipt date 2026-04-08, so deadline is 2026-04-09 23:59 UTC. This deadline has passed. Intake cannot proceed without escalation to Brineleaf Pantry safety lead."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T09:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Maya Hendricks, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I've messaged three times now. I need both sorted today. The lens is still damaged and just sitting here. I'm available now if someone calls."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Plover Arc Logistics Delivery investigations",
+        "channel": "Email",
+        "summary": "Confirm delivery window 14:00-18:00 UTC today and note customer is ready."
+      },
+      {
+        "recipient": "Brineleaf Pantry Damage intake",
+        "channel": "Email",
+        "summary": "Request immediate escalation to Brineleaf Pantry safety lead and flag as time-critical for insurance compliance decision."
+      }
+    ],
+    "must": [
+      "Contact delivery investigations to confirm today's attempt can proceed with ready recipient.",
+      "Contact damage intake to escalate the insurance deadline breach to the merchant's safety lead rather than trying to restore a missed deadline.",
+      "Do not contact the customer directly; the desk does not handle damage claims or photo intake.",
+      "Record in notes that the missed photo deadline on DL-923 requires merchant decision-making and cannot be resolved by the desk."
+    ],
+    "must_not": [
+      "Send a single message to the customer trying to handle both issues yourself.",
+      "Ask the customer to provide photos or evidence for the damage claim.",
+      "Contact the merchant's replacement or refunds team on DL-923; damage intake and safety lead own the timeline breach.",
+      "Delay the delivery window confirmation on DL-941 while waiting for the damage issue on DL-923 to resolve.",
+      "Escalate to a human supervisor without attempting the two safe contacts first."
+    ],
+    "reference_message": null
+  },
+  "rationale": "This case has two distinct problems with different owners: delivery timing (Plover Arc Logistics Dispatch) and damage claim insurance deadline (Brineleaf Pantry). The right move contacts each owner about their specific issue in parallel—one to confirm today's delivery is still viable, one to escalate the missed deadline to the merchant's decision-maker. Neither action blocks the other. Contacting the customer directly or trying to fix the damage intake timeline exceeds the desk's scope. Escalating without first sending these two focused messages delays a simple confirmation and forces a human to repeat work the desk can safely do."
+}

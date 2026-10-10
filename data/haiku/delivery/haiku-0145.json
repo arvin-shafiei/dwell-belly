@@ -1,0 +1,130 @@
+{
+  "id": "haiku-0145",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "superseded_request",
+  "theme": "medication",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-013",
+  "grounding": null,
+  "title": "Case: Customer withdraws replacement request after phoning shipper direct",
+  "context": "A customer ordered prescription inhalers through an online pharmacy. The first shipment was marked failed delivery. The customer initially requested a replacement through the portal, but later called the pharmacy directly and cancelled that request, asking instead for a refund. The desk must identify which instruction is current.",
+  "initial_request": "Customer initially submitted replacement request via portal but has since changed their mind by phone call to the merchant.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T10:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Rajesh Patel, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My Ventopro inhalers (DL-941) were not delivered. Depot says they left it at the gate but no one was home. I need a replacement shipped immediately—I have asthma and run out soon."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Replacement authorisation received for DL-941 / RMA-941. Customer Rajesh Patel. Replacement inhalers are in stock and can ship today if approved."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T11:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Warehouse dispatch, Brineleaf Pantry",
+      "body": "Approved. Ship replacement inhalers for DL-941 to Rajesh Patel at the original address. Send us the new tracking reference."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T12:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Replacement DL-941-RP shipped, tracking DL-941R. ETA 2026-04-14."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-12T14:30:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Rajesh Patel, customer",
+      "to": "Brineleaf Pantry, food-safety lead",
+      "body": "Hi, I called you direct because the portal is slow. I just spoke to someone there and I want to cancel the replacement. I've decided I'd rather get a refund for the original order instead. Can you stop the replacement shipment? Please reverse it."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-12T15:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, food-safety lead",
+      "to": "Warehouse dispatch, Brineleaf Pantry",
+      "body": "Customer Rajesh Patel called and asked to cancel the replacement. He wants a refund instead. The replacement DL-941R was shipped 14 mins ago from our system—check if it can still be intercepted."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-12T15:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Brineleaf Pantry, food-safety lead",
+      "body": "DL-941R already left the warehouse on the dock. It will be with the carrier Plover Arc Logistics within the hour. Too late to stop it from our end."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-12T16:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, food-safety lead",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Customer Rajesh Patel called us directly this afternoon and withdrew his replacement request. He now wants a refund for DL-941 instead. We approved the replacement already and it shipped, but per his latest instruction we should process a refund, not a replacement. Can you help us align this?"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-04-12T17:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Rajesh Patel, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I called Brineleaf this afternoon and asked them to cancel the replacement and give me a refund instead. The replacement was already shipped before they could stop it. I cannot refuse delivery because I might still need it, but I want the refund option available. Can you pass this on?"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-04-12T18:30:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Refunds team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We received two conflicting instructions from the customer within hours. First a replacement request via portal, then a cancellation and refund request by phone call. The replacement is now in transit. We need the desk to confirm which instruction we should act on so we can process the refund correctly."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Brineleaf Pantry, Refunds team",
+        "channel": "Email",
+        "summary": "Confirm that the latest customer instruction (refund, issued by phone call at 14:30 UTC) supersedes the earlier replacement request; proceed with refund for DL-941 original order."
+      }
+    ],
+    "must": [
+      "Acknowledge that the customer's phone call instruction at 14:30 UTC is the latest valid directive",
+      "Instruct the refunds team to process the refund for the original order DL-941, not to block or reverse the replacement in transit",
+      "Do not ask the customer to refuse delivery or take action on the replacement shipment DL-941R"
+    ],
+    "must_not": [
+      "Act on the superseded replacement request from event 1 and event 3",
+      "Ask the desk to halt or recall the replacement shipment DL-941R (that is carrier and logistics work, not the desk's role)",
+      "Suggest the customer refuse the incoming replacement delivery",
+      "Send the instruction to Warehouse dispatch or Logistics instead of the Refunds team"
+    ],
+    "reference_message": "We confirm the customer's latest instruction is the refund request issued by phone call at 14:30 UTC today. Please proceed with processing a refund for DL-941 (original order). The replacement shipment DL-941R is in transit and outside our control to stop; the customer may receive it, but the refund should be issued for the original order per their current request."
+  },
+  "rationale": "The customer issued two conflicting instructions within hours: replacement first (portal), then refund (phone call). The phone call at 14:30 UTC is the latest valid instruction and supersedes the earlier one. The desk must confirm this to the refunds team so they process the refund correctly. The replacement is already in transit and not the desk's responsibility to stop; the refund decision stands independently of the replacement's delivery status."
+}

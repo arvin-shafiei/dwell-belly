@@ -1,0 +1,67 @@
+{
+  "id": "haiku-0225",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "data_protection",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-013",
+  "grounding": null,
+  "title": "Case: Data subject requests deletion but delivery records show disputed recipient identity",
+  "context": "A data subject has requested erasure of personal data held by the carrier. The desk has received conflicting information about which name and ID should be on the delivery record for shipment DL-947. One team asserts the recipient was the business coordinator; another insists it was the named individual. The conflict must be resolved before the desk can process the erasure request correctly.",
+  "initial_request": "Data subject erasure request for DL-947 received; conflicting identity records in the system.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Compliance officer, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Data subject access request received from Marco Tensi (ID 2847-9104) requesting erasure of all personal data associated with shipment DL-947 (Brineleaf Pantry delivery, 2026-03-28). Our legal team confirms the request is valid. Delivery investigations holds the delivery record. Please coordinate with them to identify which data sets require purging."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 notes: Driver scanned delivery complete at 14:22 on 2026-03-28. Recipient signature block shows 'M. Tensi'. However, the pickup-point log for that depot shows the parcel was handed to Diane Farnshaw (business receiving coordinator for Brineleaf) at 13:55, same day. We have two names in the system for this one delivery. Need clarification on which record is the source of truth before we process any data erasure."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T09:40:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Marco Tensi",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I am requesting erasure of my personal data from your records in relation to DL-947. I did not sign for this delivery. Diane Farnshaw collected it on my behalf. Your records should not hold my name or ID against this shipment. Please action this immediately."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Clarify whether DL-947 was delivered to M. Tensi or to Diane Farnshaw, and confirm the authoritative record before erasure can proceed."
+      }
+    ],
+    "must": [
+      "Send the conflict to Delivery investigations, not to another team",
+      "Request clarification on which name and ID should be the source of truth for DL-947",
+      "Avoid choosing a side between the driver signature and the pickup-point log without evidence"
+    ],
+    "must_not": [
+      "Contact Marco Tensi directly to confirm his identity or role without first resolving the internal record conflict",
+      "Forward the erasure request to Compliance or the refunds team before the identity question is settled",
+      "Assume the driver signature is correct and erase Diane Farnshaw's details from the record",
+      "Assume the pickup-point log is correct and erase Marco Tensi's details without verifying"
+    ],
+    "reference_message": "We have received a valid erasure request from Marco Tensi (ID 2847-9104) for DL-947. However, our internal records conflict: driver delivery notes show M. Tensi as recipient (scan 14:22), but the depot pickup-point log shows Diane Farnshaw received the parcel (13:55, same day). Before we can process the erasure correctly, please clarify which record is authoritative and confirm the actual recipient identity for DL-947. Once confirmed, Compliance will action the data purge against the correct party."
+  },
+  "rationale": "The desk has conflicting internal evidence about who actually received the parcel, and erasure of the wrong person's data could breach data protection law while leaving the actual recipient's data unhandled. The conflict cannot be resolved by contacting either Marco Tensi or the recipient; it must be sent to Delivery investigations, who hold both records and can determine which is accurate. Until identity is confirmed, no erasure should proceed."
+}

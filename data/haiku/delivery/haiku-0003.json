@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0003",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "theme": "carrier_strike",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-021",
+  "grounding": null,
+  "title": "Case: Strike delays create backlog uncertainty",
+  "context": "A carrier network slowdown due to industrial action has created a queue of parcels awaiting collection from a merchant warehouse. The merchant needs to know which specific shipment the desk is coordinating with, to avoid releasing the wrong items or creating a duplicate dispatch attempt.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk receives notice of a collection delay and a request for status, but the shipment reference is missing from the merchant's message.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Strike action at Plover Arc regional hubs is backing up collections. We have chilled goods ready for dispatch to a customer order but we need to know if a collection is still scheduled today or if we should hold stock. What is the status?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T07:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Regional collections paused until 14:00 due to action. Any shipments booked before 06:00 today will be collected; anything after that is queued and unconfirmed."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T08:15:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Reya Moffatt, warehouse coordinator, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We need to release these chilled items today. Tell us if we should pack and stage them or if collection won't happen. We cannot hold them overnight."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Reya Moffatt, warehouse coordinator, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Request the shipment reference (DL-xxx) so the desk can check whether it was booked before 06:00 and confirm collection timing."
+      },
+      {
+        "recipient": "Reya Moffatt, warehouse coordinator, Brineleaf Pantry",
+        "channel": "Business portal",
+        "summary": "Request the shipment reference (DL-xxx) so the desk can check whether it was booked before 06:00 and confirm collection timing."
+      }
+    ],
+    "must": [
+      "Ask Reya Moffatt for the specific shipment reference before checking collection status.",
+      "Do not guess or assume which order is being discussed.",
+      "Acknowledge the time-sensitive nature of perishable goods."
+    ],
+    "must_not": [
+      "Escalate without first asking for the missing shipment reference.",
+      "Tell the merchant to contact the carrier directly instead of getting the reference.",
+      "Suggest the merchant hold chilled stock overnight.",
+      "Provide a collection status without confirming which shipment is being discussed."
+    ],
+    "reference_message": "Hi Reya, I can help with the collection status, but I need the shipment reference (DL-xxx) for the order you mean. Once you send that, I can check whether it was booked before 06:00 and confirm if it will be collected today. Given the strike delays, the sooner you provide the reference, the sooner we can confirm your pack and stage plan."
+  },
+  "rationale": "The merchant is asking about collection status for goods that must move today, but has not named which shipment. Dispatch told the desk that collection depends on booking time (before or after 06:00). Without the shipment reference, the desk cannot safely confirm or deny anything, and risks advising action on the wrong order. The right move asks for the reference alone—nothing more—so the desk can then give accurate guidance."
+}

@@ -1,0 +1,149 @@
+{
+  "id": "haiku-0144",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "theme": "weather",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-050",
+  "grounding": null,
+  "title": "Case: Customer seeks refund after weather-delayed guaranteed delivery",
+  "context": "A customer paid for guaranteed next-day delivery on a perishable item. Heavy snow has disrupted the region's logistics network. The shipment is still in transit but arrival is now uncertain. The customer has messaged the desk requesting a refund of the surcharge.",
+  "initial_request": "Determine what message the desk should send and to whom.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Weather update: snow across Region 4 since 06:00. Dispatch reports 40% of guaranteed-delivery parcels now at risk of next-day miss. Advising all teams."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-15T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 and DL-952 and DL-988 reassigned to secondary routes. ETA updates pending. Storm severity 6. See Safety incident queue for protocol."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-15T09:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tallowmere Goods, Replacement authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Stock alert: smoked mackerel batch 2026-Feb-A approaching use-by. Request urgent replacement shipment dispatch if customer DL-947 claim filed."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-15T09:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Auto-reply",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thank you for your message. We will respond within 2 working days. —Plover Arc Logistics Customs & Broker Support"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-15T09:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Processing refund request from customer for DL-941. Surcharge amount £18.50. Awaiting desk sign-off on weather exception before release."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-02-15T10:00:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Early note: if parcels DL-936, DL-940, DL-947 are not delivered by 17:00 today we will issue credit notes automatically. Tallowmere has been notified."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-02-15T10:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Refund DL-941 customer name: Marta Cresswell. Item: smoked mackerel, batch 2026-Feb-A, qty 2 boxes. Paid £6.99 + £4.50 surcharge. Delivery window was 2026-02-15 09:00–12:00. Last scan: 2026-02-15 08:20 at Regional Hub North, status pending local delivery."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-02-15T10:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 remains on primary route but no driver assigned yet. Expect updates by 13:00."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-02-15T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Urgent request from Brineleaf Pantry: where is their shipment DL-523? Order placed 2026-02-10, expected 2026-02-14. See Business portal ticket 54782. Flagged for investigation."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-02-15T10:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Storm protocol in force. No outdoor delivery personnel to work beyond 15:00 UTC today in Region 4. All guaranteed parcels in region now likely to miss SLA."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-02-15T11:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Re: DL-941 refund. Awaiting your direction. Can process £4.50 surcharge credit immediately or hold pending delivery attempt. What is the desk's call?"
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-02-15T11:15:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marta Cresswell, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I paid extra for guaranteed delivery of perishables. It's now 11:15 and the parcel is still at the hub. The snow is getting worse. I need the £4.50 surcharge back. I don't want the mackerel to spoil in a van. Please confirm."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Refunds team, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Approve the £4.50 guaranteed-delivery surcharge refund for DL-941 (Marta Cresswell) due to documented weather disruption in Region 4."
+      }
+    ],
+    "must": [
+      "Send exactly one message to Tallowmere Goods Refunds team",
+      "Approve the £4.50 surcharge refund for DL-941",
+      "Reference the weather disruption or Regional Hub North location as justification"
+    ],
+    "must_not": [
+      "Contact Dispatch or Routing about reassigning the parcel",
+      "Send a message to the customer directly",
+      "Process a refund for the item cost (£6.99) rather than only the surcharge",
+      "Contact Brineleaf Pantry or address DL-523 or DL-947 or any shipment other than DL-941",
+      "Escalate to a human supervisor"
+    ],
+    "reference_message": "Marta Cresswell's guaranteed window (09:00–12:00) has passed and the parcel remains at Regional Hub North. Storm protocol now prevents regional delivery until tomorrow at earliest. Approve the £4.50 surcharge refund for DL-941. We will advise the customer once you have processed it."
+  },
+  "rationale": "The right answer is to approve a surcharge refund for a customer whose guaranteed window has definitively passed due to documented weather disruption. Marta's shipment has not progressed beyond the hub by 11:15 despite the 12:00 deadline, and Safety lead has confirmed all guaranteed parcels in the region will miss SLA due to storm protocol. The desk coordinates this outcome by instructing the Refunds team to process the surcharge credit. The noise (DL-947, DL-941, DL-523, auto-replies, stock alerts, collections credit notes) tempts toward escalation or paralysis, but the relevant facts are clear: one customer, one surcharge, one reason, one action."
+}

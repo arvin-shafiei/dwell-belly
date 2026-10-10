@@ -1,0 +1,67 @@
+{
+  "id": "haiku-0132",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "theme": "neighbour",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-020",
+  "grounding": null,
+  "title": "Case: Neighbour received parcel during BST window; recipient queries timezone on delivery confirmation",
+  "context": "A parcel was delivered to a neighbour during the recipient's specified delivery window. The delivery confirmation shows a timestamp, but the recipient is uncertain whether it was recorded in UTC or British Summer Time, and questions whether the delivery fell within their stated preference.",
+  "initial_request": "Recipient disputes whether neighbour collection falls within their requested window.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-14T07:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 delivered to neighbour (Callum Drew, 24 Oaks Lane) at 15:47 on 2026-05-14. Recipient had requested 14:00-16:00 window. Parcel left in safe place per standing instruction."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-14T16:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient services, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-947 standard parcel. Recipient window preference was recorded as 14:00-16:00 on order intake form. Delivery timestamp in dispatch system is recorded UTC. Note: delivery occurred during BST (UTC+1)."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-14T17:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Maya Sutherland, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I said 14:00 to 16:00 and I was home then. Driver left it with my neighbour at 15:47 but I need to know if that's actually within my window or if the time shown is wrong. The confirmation says 15:47 but I don't know if that's real time or something else. Can you confirm what time it actually was delivered?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Recipient services, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Clarify whether the 15:47 timestamp is UTC or BST-adjusted, and confirm whether delivery to neighbour fell within recipient's stated 14:00-16:00 window."
+      }
+    ],
+    "must": [
+      "Confirm the timezone basis of the 15:47 timestamp before assuring the recipient of anything.",
+      "Establish that 15:47 UTC converts to 16:47 BST, which is outside the 14:00-16:00 BST window.",
+      "Acknowledge that delivery to neighbour occurred outside the stated preference window."
+    ],
+    "must_not": [
+      "Assume the 15:47 is already in BST without checking.",
+      "Tell the recipient the delivery was within their window without resolving the UTC/BST discrepancy.",
+      "Contact the recipient directly with a timezone answer without confirmation from Recipient services or Dispatch."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The recipient's window preference (14:00-16:00) was recorded during UK working hours and almost certainly means local time (BST in May). The dispatch timestamp of 15:47 is recorded UTC. Converting: 15:47 UTC = 16:47 BST, which falls outside the 14:00-16:00 BST window. The desk must confirm this arithmetic with Recipient services before responding to the recipient, because the timezone confusion is real and the recipient's complaint is valid. Escalation ensures the timezone issue is resolved and the recipient's concern is properly addressed."
+}

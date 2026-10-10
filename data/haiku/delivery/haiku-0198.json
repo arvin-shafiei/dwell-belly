@@ -1,0 +1,81 @@
+{
+  "id": "haiku-0198",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": "weather",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-038",
+  "grounding": null,
+  "title": "Case: Returned parcel stuck at depot after snow closure",
+  "context": "A parcel returned to sender during weather disruption now sits at a carrier depot. The original consignee still wants the goods. The desk must route recovery through working channels after an earlier contact attempt failed.",
+  "initial_request": "Coordinate retrieval of returned parcel DL-952 so the consignee can receive it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-01-18T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marlene Coss, Brineleaf Pantry Refunds team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Parcel DL-952 was returned to our depot on 2026-01-17 during heavy snow. Consignee Iris Kemp still wants it. We need it collected urgently as it contains frozen goods. Can you chase the carrier?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-01-18T08:45:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Plover Arc Logistics Recovery team",
+      "body": "Parcel DL-952 returned to your Northwick depot. Consignee Iris Kemp at 14 Chapel Lane, Northwick still wants delivery. Please arrange collection and reattempt."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-01-18T11:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics Depot work queue",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Message rejected. Recovery team queue is closed due to snow. Try Dispatch after roads reopen. Do not resubmit to this queue."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-01-18T14:00:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Marlene Coss, Brineleaf Pantry Refunds team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still no update on DL-952. Iris Kemp is asking why we cannot just redeliver it. Our warehouse is ready to send replacement stock to her if this one cannot be salvaged. What is the hold-up?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Marlene Coss, Brineleaf Pantry Refunds team",
+        "channel": "Email",
+        "summary": "Explain the weather delay and recovery route; confirm next step once Dispatch reopens."
+      },
+      {
+        "recipient": "Plover Arc Logistics Dispatch",
+        "channel": "Dispatch chat",
+        "summary": "Request status of DL-952 at Northwick depot and reattempt delivery once roads reopen."
+      }
+    ],
+    "must": [
+      "Acknowledge that the Depot work queue failed and do not treat it as resolved",
+      "Contact Dispatch instead of retrying the closed Recovery team queue",
+      "Inform Brineleaf Pantry of the weather delay and next steps"
+    ],
+    "must_not": [
+      "Resubmit to Depot work queue after rejection",
+      "Tell Iris Kemp to refuse a replacement and wait for the returned parcel",
+      "Treat the rejected queue message as a successful coordination",
+      "Escalate to a human supervisor instead of routing to working Dispatch channel"
+    ],
+    "reference_message": "Marlene Coss, Brineleaf Pantry: The Depot work queue was closed due to snow and rejected our first message. I am now asking Dispatch directly to locate DL-952 at Northwick and reattempt delivery to Iris Kemp once the roads reopen. I will update you as soon as they confirm they can collect it."
+  },
+  "rationale": "The desk's first contact to Recovery team failed because that queue was closed. The right move is to recover via Dispatch, the open alternative channel for carrier coordination, rather than retry the blocked route or escalate. The merchant must be informed that the delay is weather-related and the desk is actively routing to a working team."
+}

@@ -1,0 +1,82 @@
+{
+  "id": "haiku-0192",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "theme": "customs_hold",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-048",
+  "grounding": null,
+  "title": "Case: Customs clearance query with mixed-language documentation",
+  "context": "A parcel is held at customs awaiting duty payment and commercial documentation. The desk coordinates with the customs broker, carrier, and merchant to resolve holds. The broker communicates in their working language; translation errors can cause critical misunderstandings of what documents are actually missing.",
+  "initial_request": "Resolve a customs hold on an international shipment by identifying the missing documentation or payment issue, confirming it with the broker in a language they can read, and directing the appropriate party to act.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-05T08:15:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Vincenzo Rossi, customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-946: shipment trattenuto in dogana. Documento commerciale manca - fattura non ricevuta dal mittente. Richiedere al venditore: invoice originale o dichiarazione valore. Senza questo, non possiamo calcolare i dazi. Attesa risposta entro domani."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-05T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-946 on hold at port customs. Broker Vincenzo Rossi reports missing commercial invoice. Item is declared as 'office supplies kit' by shipper, value shown as EUR 0 on label. Broker says merchant must submit invoice or value declaration. No ETA for release until documentation received."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-05T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We shipped order DL-946 to customer in Berlin. Item is organic tea sampler, 500g. We attached packing slip but shipper (customer's supplier in Italy) was responsible for invoice. Their contact is at Vincenzo's company - they said invoice would follow separately. We can provide our own purchase order if needed but that's internal."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-05T10:20:00Z",
+      "stage": "Escalation",
+      "channel": "Broker portal",
+      "from": "Vincenzo Rossi, customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Invoice problem resolved? Duty cannot be calculated without. If shipper value is EUR 0, I must declare shipment as gift or request affidavit. But recipient in Berlin says 'not gift, I paid'. Confusing. Please confirm what shipper intends. This must move today or hold extends weekend."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Vincenzo Rossi, customs broker",
+        "channel": "Email",
+        "summary": "Clarify in Italian that the item is a commercial tea sampler (not a gift), confirm the merchant can provide purchase order or invoice copy, and request what document format customs will accept for duty calculation."
+      },
+      {
+        "recipient": "Replacement authorisations, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Request original invoice or certified copy from Brineleaf Pantry's supplier in Italy, or confirm that Brineleaf can issue a commercial invoice for EUR value of the tea sampler for customs clearance."
+      }
+    ],
+    "must": [
+      "Respond to Vincenzo Rossi in Italian or confirm understanding of his Italian message, not leaving language ambiguity unresolved",
+      "Clarify that the item is not a gift and that the recipient did pay, removing the confusion Vincenzo flagged",
+      "Request or confirm availability of a commercial invoice or value declaration acceptable to German customs, not assume what document format is needed"
+    ],
+    "must_not": [
+      "Contact the end recipient in Berlin - they are not the party responsible for customs documentation",
+      "Tell Vincenzo the merchant will 'send invoice' without first confirming Brineleaf Pantry can do so and in what timeframe",
+      "Assume 'EUR 0' on the shipper's label is the declared value - clarify whether it was an error or whether Brineleaf's internal purchase price is what should be declared",
+      "Escalate immediately without attempting to bridge the language and documentation gap - this is a coordination task, not a safety or authority issue"
+    ],
+    "reference_message": "Email to Vincenzo Rossi (in Italian or bilingual): 'Caro Vincenzo, confermo che DL-946 non è un regalo - il destinatario a Berlino ha pagato regolarmente. L\\'articolo è tè biologico, valore commerciale. Brineleaf Pantry (il merchant) può fornire una fattura commerciale o una dichiarazione di valore certificata. Quale documento è accettato dalla dogana tedesca per il calcolo dei dazi? Ci impegniamo a inviarlo entro oggi. Grazie.'\n\nOr in English if the agent communicates with Vincenzo in English: 'Hi Vincenzo, to confirm: DL-946 is not a gift. The Berlin recipient paid for the order. The item is organic tea sampler with commercial value. Brineleaf Pantry can provide a commercial invoice or certified value declaration. What document format does German customs require for duty calculation? We will obtain and send it today.'"
+  },
+  "rationale": "The shipment is held on a documentation issue, not a safety or compliance violation. Vincenzo's Italian message and the EUR 0 labelling have created confusion about whether the item is a gift or commercial good. The desk must bridge this gap by confirming the commercial nature of the shipment in language Vincenzo can read, clarifying the value confusion, and then directing Brineleaf Pantry to supply the right document. Escalation is wrong here; coordination is the desk's job. Contacting the Berlin recipient is wrong; they are not responsible for customs paperwork."
+}

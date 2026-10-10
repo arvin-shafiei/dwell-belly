@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0171",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "theme": "data_protection",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-036",
+  "grounding": null,
+  "title": "Case: Data request from a business receiving coordinator",
+  "context": "A business receiving coordinator has requested information about a delivery, citing data-protection rights. The desk cannot safely respond without clarifying exactly what shipment and what information is being requested.",
+  "initial_request": "What should the desk do now?",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Petra Voss, receiving coordinator at Ashford Manufacturing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We need to exercise our data subject access rights under GDPR. Please provide all personal data held by Plover Arc Logistics relating to deliveries received at our facility in the last six months. Our legal team will follow up with a formal request."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T09:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Petra Voss, receiving coordinator at Ashford Manufacturing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Following up on the portal message. We are asking for the data access because we need to audit a logistics provider's handling. Urgency is medium."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T10:45:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Petra Voss, receiving coordinator at Ashford Manufacturing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We expect a response within five working days. Which team handles subject access requests? Do we contact your data protection officer directly?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Petra Voss, receiving coordinator at Ashford Manufacturing",
+        "channel": "Business portal",
+        "summary": "Confirm which specific shipment(s) or date range she is asking about, and clarify whether the request is for her own data or another person's data."
+      },
+      {
+        "recipient": "Petra Voss, receiving coordinator at Ashford Manufacturing",
+        "channel": "Email",
+        "summary": "Confirm which specific shipment(s) or date range she is asking about, and clarify whether the request is for her own data or another person's data."
+      }
+    ],
+    "must": [
+      "Ask Petra to specify which shipment reference(s) or delivery date(s) the access request covers",
+      "Ask Petra to confirm whether the data subject is herself or another person",
+      "Direct the formal data-protection request to the appropriate compliance or legal team at Plover Arc (not attempt to service it from the desk)"
+    ],
+    "must_not": [
+      "Send a data extract or shipment details without confirming the scope and subject of the request",
+      "Route the request to Dispatch or Delivery investigations as though it is a normal shipment query",
+      "Assume the data subject is Petra herself without asking",
+      "Provide contact details for the data protection officer without first clarifying the request scope"
+    ],
+    "reference_message": "Hi Petra, thank you for your access request. Before we route this to our compliance team, we need to clarify scope: which shipment reference(s) or date range are you asking about? Also, is the data subject yourself or another person? Once we have those details we can direct your formal request correctly."
+  },
+  "rationale": "Data-protection requests must be routed to the carrier's compliance or legal function, not handled by the delivery desk. However, the desk must first obtain the exact scope—which shipments and whose data—because without it, the compliance team cannot safely respond and a delay or misdirected request could breach the requester's rights. A hasty desk might either try to pull shipment details itself, or route a vague request upward without the necessary detail."
+}

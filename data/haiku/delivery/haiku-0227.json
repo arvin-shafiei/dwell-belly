@@ -1,0 +1,66 @@
+{
+  "id": "haiku-0227",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-039",
+  "grounding": null,
+  "title": "Case: Parcel locker full at pickup point; unclear which shipment",
+  "context": "A pickup-point staff member reports that a parcel locker is full and cannot accept an incoming delivery. The message does not specify which shipment is affected, and multiple parcels for the same recipient are in transit.",
+  "initial_request": "Coordinate with the pickup point to clarify which shipment cannot be received and arrange an alternative.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T14:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse Dispatch, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Two replacement shipments authorised today for recipient Marcus Venn at pickup point PickUp+57 (Saltmere branch): DL-947 (6× tinned preserves, 2.1 kg) dispatched 14:10 UTC, DL-948 (8× jarred condiments, 1.8 kg) dispatched 14:15 UTC. Both due for locker drop today by 17:30."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T16:45:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Sam Keene, PickUp+57 Saltmere",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Locker unit 4 (the only one that fits parcel sizes >2kg) is completely full. Cannot accept the incoming parcel for Venn today. What do we do?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T16:50:00Z",
+      "stage": "Escalation",
+      "channel": "Pickup-point portal",
+      "from": "Sam Keene, PickUp+57 Saltmere",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver is 15 mins away. Need immediate instruction. Which parcel can we refuse?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Sam Keene, PickUp+57 Saltmere",
+        "channel": "Pickup-point portal",
+        "summary": "Ask which of the two shipments (DL-947 or DL-948) has arrived first, or request immediate locker status and item dimensions to confirm which can fit."
+      }
+    ],
+    "must": [
+      "Identify the specific shipment reference that cannot be accepted by name (DL-947 or DL-948)",
+      "Ask Sam Keene for the exact information needed to distinguish between the two parcels",
+      "Not instruct the pickup point to refuse either parcel without first establishing which one is physically present"
+    ],
+    "must_not": [
+      "Contact Dispatch or Scheduling to reroute before clarifying which shipment is the problem",
+      "Tell Sam to accept both parcels without resolving the locker capacity issue",
+      "Contact Marcus Venn directly without first confirming which shipment is affected"
+    ],
+    "reference_message": "Sam, which parcel has the driver just delivered or is about to deliver—DL-947 or DL-948? Also confirm the locker space available. Once we know, we can arrange redirect or hold."
+  },
+  "rationale": "Two shipments are in flight to the same pickup point and locker, but only one cannot fit. The desk must first establish which shipment is blocked before routing it elsewhere. Asking Sam for the arrival sequence and remaining locker dimensions is the only safe move; any redirect instruction without this clarity risks refusing the wrong item or creating duplicate liability."
+}

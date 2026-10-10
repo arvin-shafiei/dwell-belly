@@ -1,0 +1,76 @@
+{
+  "id": "haiku-0165",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "theme": "multilingual",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-032",
+  "grounding": null,
+  "title": "Case: Partially legible delivery instruction in Polish",
+  "context": "A shipment to a business address in London includes a handwritten delivery note in Polish and English. The receiving coordinator cannot parse the instruction fully and the instruction conflicts with standard protocol. The desk must decide whether to seek clarification, proceed with standard delivery, or escalate.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk receives a query about ambiguous delivery instructions for DL-971.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T07:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Marcin Kowalski, Brineleaf Pantry warehouse dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-971 consignment to Whitmore Foods, London. Instruction note handwritten, partly Polish: 'Dostarczyć na tylne drzwi, nie przed 14:00, mgła niebezpieczna'. English part says 'Deliver rear entrance only, not before 2pm, fog hazard - use care.' Whitmore standard is front-bay receipt. Our driver needs clear direction by 13:30 today."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T08:12:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Tanya Morse, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-971 loaded, on route to WF. Driver reports the delivery address is listed as front entrance in our manifest. Handwritten note on consignment is unclear - looks like it says 'rear entrance' but we can't confirm. Do you want us to call Whitmore or deliver standard?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T08:47:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Wanda Leszcz, Whitmore Foods receiving",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The instruction is from our site manager. Rear entrance is correct because front bay is blocked today by maintenance work. We confirmed this with Marcin at Brineleaf two days ago. Do not use front entrance. Time window 2pm to 4pm is fixed."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T09:15:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Tanya Morse, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver 47 is 90 min out. Manifest says front, site says rear, handwritten note is ambiguous. We need a single clear instruction now or we divert and redeliver tomorrow. Your call."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Tanya Morse, Plover Arc Logistics Dispatch",
+        "channel": "Dispatch chat",
+        "summary": "Confirm delivery to rear entrance between 2pm and 4pm, reference the verbal confirmation Whitmore gave Brineleaf."
+      }
+    ],
+    "must": [
+      "Send instruction to Dispatch only, not to Brineleaf or Whitmore",
+      "Confirm rear entrance as the delivery location",
+      "Reference the two-day-old verbal confirmation from Whitmore to Brineleaf as the authoritative source"
+    ],
+    "must_not": [
+      "Contact Brineleaf Pantry or Whitmore Foods directly to re-clarify (they have already confirmed; the desk does not investigate merchant-to-consignee agreements)",
+      "Suggest the driver call ahead to Whitmore (delays the delivery and creates a new point of confusion)",
+      "Treat the handwritten note as the sole source of truth without cross-checking the manifest and the consignee confirmation",
+      "Escalate to a supervisor (the history resolves the ambiguity; rear entrance is confirmed by the receiving party)"
+    ],
+    "reference_message": "Deliver DL-971 to rear entrance, 2pm–4pm window. Whitmore Foods confirmed this location with Brineleaf two days ago; front bay is blocked by maintenance. Manifest update is not the desk's role but Dispatch should note the discrepancy for post-delivery reconciliation."
+  },
+  "rationale": "The handwritten note is ambiguous in language and legibility, but the receiving party (Whitmore Foods) has already verbally confirmed the rear entrance instruction to the shipper (Brineleaf Pantry) two days before dispatch. The desk's role is to coordinate, not to re-investigate the merchant-consignee agreement. A single clear instruction to Dispatch resolves the driver's dilemma without contacting either merchant. Escalation is unnecessary because the ambiguity is resolved by the facts in the history."
+}

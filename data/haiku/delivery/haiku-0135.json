@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0135",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "theme": "lockers",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-025",
+  "grounding": null,
+  "title": "Case: Parcel too large for locker, access code expired simultaneously",
+  "context": "A shipment was directed to an automated parcel locker before delivery. The recipient's access code has expired. The parcel dimensions exceed the largest available compartment.",
+  "initial_request": "The locker operator reports both problems at once and asks for immediate resolution.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-11T08:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Locker Operations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 arrived at Millbrook Automated Locker 2026-02-11 06:50 UTC. Recipient code expired 2026-02-10 23:00 UTC. Item dimensions 68cm × 45cm × 22cm do not fit any live compartment. Driver waiting. What now?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-11T08:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods, Replacement authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 is a lamp base, 18 kg. Recipient is Cade Venn at the registered address. No damage noted on intake."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-11T08:35:00Z",
+      "stage": "Escalation",
+      "channel": "Depot work queue",
+      "from": "Locker Operations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver has been holding for 40 minutes. The locker is full today so no oversized option will open up before 14:00. Customer needs direction NOW. Do we attempt home delivery or do we return to sender?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Locker Operations, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Instruct driver to attempt delivery to the registered home address; coordinate with Delivery investigations team if access is refused."
+      },
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Alert the team that DL-927 may arrive unplanned at home address; request standby and guidance if recipient refuses."
+      }
+    ],
+    "must": [
+      "Do not authorise return to sender without first attempting the original registered delivery address.",
+      "Contact the locker team or driver immediately to prevent further delay.",
+      "Record or flag the expired code issue separately for Scheduling to review the code refresh process."
+    ],
+    "must_not": [
+      "Send the parcel back to Tallowmere Goods or the shipping point without attempting home delivery first.",
+      "Contact the recipient directly to request a new locker code or rearrangement; the desk does not manage locker access.",
+      "Escalate the entire case to a human supervisor when the path forward (attempt home, track refusals) is clear."
+    ],
+    "reference_message": "Message to Locker Operations: Driver should proceed to Cade Venn's registered address for delivery attempt. If access is refused or address is invalid, hold at depot and notify Delivery investigations immediately."
+  },
+  "rationale": "The recipient has a registered home address as an alternative. Home delivery is the fastest safe resolution to the immediate operational jam. The expired code and oversized compartment are distinct technical issues that do not block the delivery attempt itself. The desk coordinates this one action now and flags the code-refresh process failure as a separate matter for investigation or process review."
+}

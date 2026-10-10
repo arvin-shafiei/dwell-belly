@@ -1,0 +1,61 @@
+{
+  "id": "haiku-0151",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "neighbour",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-002",
+  "grounding": null,
+  "title": "Case: Neighbor delivery acknowledged and confirmed by recipient",
+  "context": "A parcel was left with a neighbor after delivery attempt. The recipient has now confirmed receipt and acceptance of the parcel from the neighbor. The desk receives a follow-up message about the delivery.",
+  "initial_request": "Determine whether the desk should take action on a neighbor delivery that has been resolved.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-22T14:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics Delivery investigations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-987 / order TB-4521: Driver left parcel with neighbor at flat 3B (recipient at 3A not home). Neighbor is Mrs. Chen. Driver notes say she accepted and confirmed receipt at 14:02."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-22T14:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "James Hartwell, recipient",
+      "to": "Tallowmere Goods",
+      "body": "Got my order DL-987 from Mrs Chen next door, thanks. Microfiber throw is perfect."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T15:30:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Brineleaf Pantry Returns authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Flagging DL-987 for your awareness: neighbor delivery, left with Mrs. Chen at 3B. Just an FYI in case there are any issues later. No action needed from us right now."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Recognize that the recipient has confirmed receipt and acceptance from the neighbor",
+      "Understand that the Returns authorisations message is informational only and contains no request or unresolved issue",
+      "Log the case as resolved with no further contact required"
+    ],
+    "must_not": [
+      "Contact the recipient to ask for confirmation (already given)",
+      "Contact the neighbor or driver to verify the delivery (confirmed by both parties)",
+      "Escalate to a human supervisor (no safety, damage, or legal concern is present)",
+      "Send a duplicate acknowledgment message to Brineleaf Pantry or Plover Arc"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The parcel has been successfully delivered to the recipient via a neighbor, and the recipient has explicitly confirmed receipt and satisfaction on the customer portal. The Returns authorisations team's message is a courtesy notice with no outstanding request or unresolved problem. The desk has no obligation to act; sending another message would be redundant noise that adds no value."
+}

@@ -1,0 +1,76 @@
+{
+  "id": "haiku-0085",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "phishing",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-019",
+  "grounding": null,
+  "title": "Case: Recipient receives unexpected redelivery fee text from purported carrier",
+  "context": "A recipient reports receiving an unsolicited SMS claiming to be from Plover Arc Logistics, demanding payment for a redelivery fee on a shipment. The desk must determine whether this is a legitimate carrier communication or a phishing attempt before advising the recipient.",
+  "initial_request": "DL-927 recipient asks whether a text message claiming to charge a redelivery fee is genuine.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-11T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 (Tallowmere Goods, order to Martyn Cross, Sheffield) was scanned as failed attempt on 2026-03-10 at 17:22 UTC. No redelivery fee has been authorised or invoiced for this shipment at this time."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-11T10:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Martyn Cross, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I got a text this morning from what looks like Plover Arc saying I owe £8.50 for redelivery. The number is +44 7700 554321. I haven't agreed to pay anything. Is this real or a scam?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-11T11:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927: we do not send fee demands by SMS. All redelivery fees would go through Business billing team and invoiced to the merchant, not the recipient. That number is not ours."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-11T11:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Martyn Cross, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm worried I might have clicked a link in the text before I got suspicious. Can you tell me what to do now? Should I report this somewhere?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Martyn Cross, recipient",
+        "channel": "Customer portal",
+        "summary": "Confirm the text is not from Plover Arc, advise not to click links or pay, and direct to fraud reporting."
+      }
+    ],
+    "must": [
+      "Confirm to the recipient that the SMS is not legitimate",
+      "Advise the recipient that Plover Arc does not charge recipients directly via SMS for redelivery",
+      "Direct the recipient toward fraud reporting channels"
+    ],
+    "must_not": [
+      "Assume the SMS is legitimate or ask the recipient to pay it",
+      "Tell the recipient the matter is settled without addressing the clicked link risk",
+      "Contact only Dispatch or Business billing without responding to the recipient's concern",
+      "Suggest the recipient wait for a corrected communication from the carrier"
+    ],
+    "reference_message": "The text message you received is not from Plover Arc Logistics. We do not send fee demands by SMS to recipients, and that number is not our contact. Do not click any links in messages like this. If you entered payment details, contact your bank immediately. You can report the phishing attempt to the National Fraud Intelligence Bureau at www.actionfraud.police.uk or call 0300 123 2040. We'll ensure your redelivery is arranged at no charge."
+  },
+  "rationale": "The SMS is confirmed as fraudulent by two independent carrier teams (Dispatch and Business billing), who explicitly state Plover Arc does not use SMS for fee collection and the number is not theirs. The recipient has clicked a link and is now at risk. The desk must immediately reassure the recipient, clarify the communication is fake, and direct them toward protective action and fraud reporting. This is a contact case: the recipient is the person who needs information and guidance right now."
+}

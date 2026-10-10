@@ -1,0 +1,71 @@
+{
+  "id": "haiku-0059",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "theme": "age_restricted",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-037",
+  "grounding": null,
+  "title": "Case: Age-restricted item needs delivery ID verification",
+  "context": "A shipment of premium cutlery requires recipient age verification at point of delivery. The delivery attempt was made but the driver could not complete it due to missing identity documentation from the recipient. The desk must coordinate next steps.",
+  "initial_request": "Coordinate resolution of a failed delivery requiring age verification.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-22T14:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Webb, Plover Arc Logistics Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver report: DL-951 delivery attempt failed at 14:15. Recipient refused to show ID. Signature required due to age-restricted goods policy. Driver left notice. Awaiting instructions."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-22T14:45:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Tanya Voss, Plover Arc Logistics Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-951 flagged for reattempt. Recipient name on waybill is T. Moretti but driver noted 'possibly different person answered door'. No age verification possible without valid ID. Next slot available Thursday 2026-04-25 morning."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T15:20:00Z",
+      "stage": "Escalation",
+      "channel": "Depot work queue",
+      "from": "Tanya Voss, Plover Arc Logistics Routing control",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Escalation: DL-951 cannot proceed without ID check resolved. Recipient identity unconfirmed. Please advise on reattempt or alternative."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Recipient at DL-951 delivery address",
+        "channel": "Customer portal",
+        "summary": "Request valid ID be ready for Thursday reattempt; confirm recipient name T. Moretti"
+      },
+      {
+        "recipient": "Recipient at DL-951 delivery address",
+        "channel": "Call transcript",
+        "summary": "Confirm recipient identity is T. Moretti and request ID be available for Thursday delivery"
+      }
+    ],
+    "must": [
+      "Identify which person will receive the package and confirm it is T. Moretti before reattempt",
+      "Obtain explicit confirmation that valid ID will be presented at Thursday delivery window"
+    ],
+    "must_not": [
+      "Contact Plover Arc to reattempt without first verifying recipient identity with the address holder",
+      "Assume the person who answered the door on first attempt was the intended recipient T. Moretti",
+      "Send instructions to the carrier to force a delivery without age verification",
+      "Contact Tallowmere Goods or any other party; the desk must resolve with the recipient first"
+    ],
+    "reference_message": "We are rescheduling DL-951 for Thursday 2026-04-25 morning. To complete delivery of age-restricted goods, the recipient must present valid photo ID at the door. Please confirm: (1) your name is T. Moretti, and (2) you will have ID ready for the delivery driver. Reply to this message or call us to confirm."
+  },
+  "rationale": "The shipment cannot proceed until the recipient's identity is verified and the carriage policy (ID at delivery) can be met. The driver encountered an unknown person at the address, so confirmation of identity with the actual recipient is a prerequisite to any reattempt. Contacting the recipient directly to confirm name and commitment to provide ID resolves the missing context (unconfirmed recipient identity) before asking the carrier to make a second attempt."
+}

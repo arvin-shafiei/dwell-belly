@@ -1,0 +1,166 @@
+{
+  "id": "haiku-0060",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "theme": "multilingual",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-050",
+  "grounding": null,
+  "title": "Case: Surcharge refund request amid language barrier and order history noise",
+  "context": "A customer paid a guaranteed-delivery surcharge for a shipment that arrived late. The customer has contacted the desk requesting reimbursement. The file contains multiple shipments, auto-replies, and a mix of languages, requiring the desk to isolate the relevant facts and respond appropriately.",
+  "initial_request": "Customer requests refund of guaranteed-delivery surcharge after confirmed late delivery.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Routing update for DL-941: rerouted via southern depot due to vehicle availability. Standard delivery window now 2026-04-14 to 2026-04-15. Guaranteed surcharge already charged at booking."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Auto-reply, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thank you for contacting us. This is an automated response. Your message has been received and will be reviewed by our team within 24 hours."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch chat",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 out on route. Driver Rashid reports heavy traffic on approach to zone 7. ETA 16:45 for next three stops."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T10:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Mikhal Voss, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, my previous order DL-835 arrived fine. Just confirming you have my new contact number for DL-941: +44 7911 456289. Thanks."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-12T11:00:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-941 delivered 2026-04-16T14:23:00Z. Recipient signature: M. Voss. Proof of delivery attached."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-12T11:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods marketing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Spring promotion now live. Save 15% on next order with code SPRING26. Visit our website to shop."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-12T13:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Batch 447 packed and ready for collection. 12 units destined for various postcodes. DL-941 included."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-12T14:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Window adjustment: DL-941 rerouted again due to vehicle break-down. New guaranteed window is now 2026-04-15 to 2026-04-17. Customer notification sent."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-04-12T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return collection RT-094 scheduled for 2026-04-13 morning. No issues flagged."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-04-12T16:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Mikhal Voss, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dobrze, ale nie mogę zalogować się do portalu. Mam problem z hasłem. Proszę o pomoc. (OK, but I cannot log in to the portal. I have a password problem. Please help.)"
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-04-12T16:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-941 surcharge query logged. Guaranteed window was 2026-04-15 to 2026-04-17 at time of delivery. Actual delivery was 2026-04-16. Within window. No refund due under contract."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-04-12T17:20:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Quarterly audit reminder: all incident reports must be filed by end of week."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-04-12T18:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch chat",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 delivery completed 18:05. No damage reported by recipient."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-04-13T09:00:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Mikhal Voss, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Przepraszamy, ale chcę wiedzieć, dlaczego muszę zapłacić za gwarancję dostawy, jeśli towar przywieziony został po terminie. Gwarancja miała być do 14 kwietnia, a dostawy nikt nie robił. Zwróćcie pieniądze. (Sorry, but I want to know why I have to pay for guaranteed delivery if the goods were brought after the deadline. The guarantee was supposed to be until 14 April, and no delivery was done. Give me my money back.)"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Mikhal Voss, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Clarify the actual guaranteed window at the time of booking (2026-04-15 to 2026-04-17) and confirm that delivery on 2026-04-16 met the contract terms, so no refund is due."
+      }
+    ],
+    "must": [
+      "Identify that the guaranteed window was updated to 2026-04-15 to 2026-04-17 before delivery (event 8)",
+      "Confirm that delivery on 2026-04-16 falls within the operative guaranteed window",
+      "Address the customer's language and explain the surcharge is not refundable"
+    ],
+    "must_not": [
+      "Assume the original guarantee window of 2026-04-14 to 2026-04-15 applies; the window was changed by the carrier",
+      "Escalate to a supervisor; the facts from the desk's own records settle the matter",
+      "Escalate to the refunds team again; they already ruled on this (event 11)",
+      "Contact the refunds team to override their decision"
+    ],
+    "reference_message": "Hi Mikhal, thank you for your enquiry. The guaranteed delivery window for DL-941 was updated to 2026-04-15–2026-04-17 (event 8, before delivery). Your shipment arrived on 2026-04-16, which is within that window. The guaranteed-delivery surcharge applies to the window at time of delivery, and your parcel met that guarantee. No refund applies under the contract terms. If you have other concerns about this shipment, please let us know."
+  },
+  "rationale": "The customer claims delivery was late, but the desk's records show the operative guaranteed window was 2026-04-15–2026-04-17 at delivery time (not the original 2026-04-14–2026-04-15). Delivery on 2026-04-16 met the guarantee. The refunds team already reviewed this and found no refund due. The right move is to clarify the facts to the customer directly, in plain language, citing the operative window."
+}

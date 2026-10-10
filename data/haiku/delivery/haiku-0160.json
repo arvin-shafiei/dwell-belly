@@ -1,0 +1,77 @@
+{
+  "id": "haiku-0160",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "theme": "weather",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-014",
+  "grounding": null,
+  "title": "Case: Delivery window conflict during winter storm shutdown",
+  "context": "A shipment is scheduled for delivery during a business closure period announced due to weather. The desk must verify the actual closure dates and confirm whether delivery is still viable within the stated window, as the customer's closure notice used US date format and the storm warning uses a different timezone.",
+  "initial_request": "Confirm whether the scheduled delivery window for DL-948 is feasible given the recipient's winter storm closure.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-01-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Rosalind Kemp, receiving coordinator, Hethwick Manufacturing",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Due to heavy snow forecast, we are closing the receiving desk from 01/20/2026 through 01/22/2026. No deliveries can be accepted during this period. We will resume normal operations on 01/23."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-01-15T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-948 (cast iron tooling, 47kg) currently scheduled delivery slot 21 Jan 2026 09:00-17:00 GMT. Driver assignment pending weather confirmation. Route is passable but difficult conditions expected."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-01-15T14:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Webb, Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hethwick receiving desk closure notice received. Their dates show 01/20 to 01/22 in US format. That's Jan 20-22 inclusive. Our scheduled slot is 21 Jan - that falls inside their closure window. Need clarity from you on whether we should hold or attempt anyway."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-01-15T16:20:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Hethwick Manufacturing operations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We received the dispatch notification saying delivery is Jan 21. Please confirm this is cancelled. Our facility will be unmanned from tomorrow evening through Thursday morning due to the storm. We cannot accept any delivery during shutdown."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Confirm that DL-948 delivery on 21 Jan falls within Hethwick's closure window (20-22 Jan inclusive) and request postponement to 23 Jan or later."
+      }
+    ],
+    "must": [
+      "Recognise that US date format 01/20-01/22 means 20-22 January inclusive",
+      "Confirm that 21 January is within the closure period",
+      "Contact Dispatch with a clear direction to postpone, not leave ambiguous",
+      "Do not attempt delivery on 21 Jan"
+    ],
+    "must_not": [
+      "Treat the US dates as ambiguous and ask the customer to clarify instead of resolving it",
+      "Send the delivery instruction through to proceed on 21 Jan",
+      "Escalate to a human supervisor without first resolving the date interpretation",
+      "Confuse GMT/UTC offset with the date range itself"
+    ],
+    "reference_message": "DL-948 is scheduled 21 Jan during Hethwick's announced closure (20-22 Jan). Please postpone delivery to 23 Jan earliest and confirm new slot with customer. Do not dispatch on current date."
+  },
+  "rationale": "The customer's US date format (01/20/2026 through 01/22/2026) converts to 20-22 January inclusive in UK calendar terms. The scheduled delivery on 21 January falls squarely within this window, making it impossible. The desk must resolve this arithmetic before anyone acts, and instruct Dispatch to postpone rather than attempt delivery during an unmanned closure."
+}

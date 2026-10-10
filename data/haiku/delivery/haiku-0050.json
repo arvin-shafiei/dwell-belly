@@ -1,0 +1,60 @@
+{
+  "id": "haiku-0050",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "attachment_evidence",
+  "theme": "pets_perishables",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-030",
+  "grounding": null,
+  "title": "Case: Perishable delivery marked complete but recipient disputes receiving it",
+  "context": "A food shipment with a short shelf-life window was marked delivered, but the recipient claims non-receipt. An attachment purporting to show proof-of-delivery is present but unreadable or missing key details. The desk must verify what actually happened before advising the merchant or carrier.",
+  "initial_request": "Resolve whether Brineleaf Pantry should issue a replacement or if the delivery was genuine.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T14:23:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 delivered 2026-04-12 14:18 to Kelston Farm Shop, recipient signed. Attachment: POD scan."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T14:24:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "POD_DL923.pdf [corrupted or unreadable in transmission]"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T14:45:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Marcus Pell, warehouse coordinator, Kelston Farm Shop",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have no record of DL-923 arriving. The shipment was 48 chilled lobster tails, ordered for tonight's service. It is now 14:45 and we cannot use it. Contact Brineleaf Pantry urgently."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Acknowledge that the POD attachment cannot be read or verified",
+      "Request a readable copy of the proof-of-delivery from Dispatch before advising on replacement",
+      "Not assume delivery occurred based on an unreadable attachment"
+    ],
+    "must_not": [
+      "Tell Brineleaf Pantry to issue a replacement before POD is confirmed",
+      "Contact the recipient or driver based on corrupted evidence",
+      "Invent or assume the contents of the unreadable attachment"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The POD attachment is unreadable, making it impossible to verify whether delivery actually occurred. Time-sensitive perishable goods require urgent resolution, but the desk cannot safely advise the merchant to replace without valid proof of non-delivery. Escalation to a supervisor is necessary because the case depends on physical evidence that must be recovered or clarified before any action can proceed."
+}

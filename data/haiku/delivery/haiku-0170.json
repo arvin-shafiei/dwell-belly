@@ -1,0 +1,86 @@
+{
+  "id": "haiku-0170",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": "neighbour",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-034",
+  "grounding": null,
+  "title": "Case: Neighbour acceptance note arrived but prior desk contact bounced",
+  "context": "A parcel was left with a neighbour per standing instructions. The recipient has now contacted the desk asking for proof of the neighbour's identity and contact details. An earlier attempt to reach the merchant's Returns authorisations team via their standard email failed to deliver.",
+  "initial_request": "Recipient wants confirmation of safe handover and neighbour contact information.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-12T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Delivery investigations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 left with neighbour per recipient standing instruction on 2026-04-11 14:22. Driver notes: 'Left with Mrs C at 14 Rosewood Lane, next door to recipient address.' Recipient has not confirmed acceptance. Merchant is Tallowmere Goods."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-12T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Replacement authorisations, Tallowmere Goods",
+      "body": "DL-927 left with neighbour. Recipient has standing instruction for this. Please confirm merchant accepts neighbour handover and provide neighbour contact if recipient disputes delivery."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-12T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Mail Delivery System",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Delivery failure notice: Your message to Replacement authorisations, Tallowmere Goods could not be delivered. Address not found in system."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-12T14:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Webb, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I authorized my neighbour to take parcels but I need her contact details to arrange collection. Can you give me her name and number from the driver notes?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Plover Arc Logistics, Delivery investigations",
+        "channel": "Email",
+        "summary": "Forward recipient's request and ask carrier to release neighbour contact details to verified recipient."
+      },
+      {
+        "recipient": "Tallowmere Goods, Damage intake",
+        "channel": "Email",
+        "summary": "Confirm neighbour handover acceptance and request neighbour contact information be shared with recipient."
+      },
+      {
+        "recipient": "Tallowmere Goods, Warehouse dispatch",
+        "channel": "Email",
+        "summary": "Confirm neighbour handover per standing instruction and request neighbour identity confirmation for recipient."
+      }
+    ],
+    "must": [
+      "Send to a working team at Tallowmere Goods (not Replacement authorisations email)",
+      "Request neighbour contact details or confirmation from the party holding that information",
+      "Do not treat the failed email attempt as a completed action"
+    ],
+    "must_not": [
+      "Contact Replacement authorisations at Tallowmere Goods again at the bounced address",
+      "Assume the earlier failed email resolved the query",
+      "Send neighbour details directly to recipient without merchant consent",
+      "Treat this as resolved because the carrier left the parcel safely"
+    ],
+    "reference_message": "Hi Tallowmere Goods Damage intake team, DL-927 was left with the recipient's neighbour per standing instruction on 2026-04-11. Recipient Marcus Webb has now requested the neighbour's contact details to arrange collection. Can you confirm acceptance of the neighbour handover and provide the neighbour's name and contact information so we can share it with Marcus through his verified account?"
+  },
+  "rationale": "The desk's first attempt to reach the merchant bounced and must not be treated as complete. Marcus has a legitimate need for neighbour details and has verified standing instructions. The desk must retry through a different working team at Tallowmere Goods—Damage intake or Warehouse dispatch are more likely to access neighbour handover records than the failed Replacement authorisations route—and coordinate release of neighbour contact information to the verified recipient."
+}

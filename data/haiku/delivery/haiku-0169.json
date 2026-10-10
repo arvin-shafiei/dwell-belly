@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0169",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "returns_dispute",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-025",
+  "grounding": null,
+  "title": "Case: Returned item disputed between recipient and warehouse",
+  "context": "A return shipment has conflicting records: the recipient claims they sent the correct item back, but the merchant's warehouse says they received a different item. The desk must send the conflict to the team that can verify it.",
+  "initial_request": "Determine whether to contact a party and which party can settle the return dispute.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-08T14:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 returned to us on 2026-03-07. Recipient claimed faulty linen tablecloth batch ref TC-4421. We received a different item: a set of dinner napkins, not tablecloths. No refund can be issued until the correct item is traced."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-08T14:35:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-924 was picked up from recipient's address on 2026-03-06 at 14:15 UTC. Driver confirms the label matched a tablecloth box. No scan error in our records."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-08T15:00:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Marcus Keel, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I packed the tablecloth set myself and handed it to the driver. Tallowmere is claiming I sent napkins—I did not. This is unfair. Please verify what left my house."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Request review of DL-924 pickup scan, driver notes, and any in-transit handling records to clarify what item was collected from recipient."
+      },
+      {
+        "recipient": "Damage intake, Tallowmere Goods",
+        "channel": "Email",
+        "summary": "Request detailed inbound log and warehouse scan records for DL-924 to establish exactly what was received and when, and whether labelling could have been mismatched."
+      }
+    ],
+    "must": [
+      "Send the conflicting claim (tablecloth vs napkins) to the party that collected or received the item for verification, not to the recipient.",
+      "Do not accuse either party of dishonesty; request factual review of records.",
+      "Acknowledge that neither pickup record nor warehouse intake can be assumed correct without investigation."
+    ],
+    "must_not": [
+      "Contact the recipient again before verification (they cannot resolve a logistics discrepancy).",
+      "Assume the warehouse is correct and the recipient is lying.",
+      "Assume the driver's recollection is complete proof against the warehouse record.",
+      "Instruct either party to issue a refund or replacement without investigation."
+    ],
+    "reference_message": "Request Delivery investigations and Damage intake to compare their records: driver's pickup scan and any notes against warehouse inbound log and item description on arrival. Escalate only if records cannot reconcile the tablecloth vs napkins discrepancy."
+  },
+  "rationale": "The facts are in genuine conflict: the driver says they collected a tablecloth box, the warehouse says they received napkins. Neither account is proven false. The desk must route this conflict to the teams that hold evidence (pickup scan, warehouse intake log, labelling), not judge which party is dishonest. The recipient's claim cannot be verified by the desk; only Delivery investigations and Damage intake can check their own records against each other."
+}

@@ -1,0 +1,60 @@
+{
+  "id": "haiku-0207",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "theme": "b2b_pallets",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-011",
+  "grounding": null,
+  "title": "Case: Goods-in team confirms short-shipment receipt after depot notification already sent",
+  "context": "A B2B pallet shipment arrived at the merchant's goods-in dock with one pallet missing. The depot already notified the desk of the shortage, and the merchant has now confirmed the discrepancy independently. Both parties have the same information and the depot has been assigned to investigate.",
+  "initial_request": "The merchant's goods-in coordinator is reporting a pallet shortage on a freight booking, but the desk has already escalated this to the carrier's Parcel trace team.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-10T14:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-917 pallet freight delivery completed at Brineleaf Pantry goods-in dock 2026-04-10 13:55 UTC. 5 pallets received, 6 pallets on manifest. Tail-lift unloaded by depot staff. Short one pallet (Ref: BP-4782-CHILL, food storage units). Forwarding to Parcel trace team for investigation."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-10T14:35:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "DL-917: one pallet short at goods-in. Please trace BP-4782-CHILL (manifest item, expected Brineleaf Pantry). Depot staff confirm unload completed. Awaiting your investigation."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-10T15:18:00Z",
+      "stage": "Escalation",
+      "channel": "Warehouse work queue",
+      "from": "Marcus Thale, goods-in coordinator, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirming short shipment on DL-917. We counted 5 pallets in dock, manifest shows 6. Missing pallet is BP-4782-CHILL. We've logged it in our system. Can you chase the carrier?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Recognize that the desk has already notified the carrier's trace team of the shortage",
+      "Acknowledge that the merchant's independent confirmation adds no new information to move the case forward",
+      "Confirm that the Parcel trace team is now responsible for locating the pallet"
+    ],
+    "must_not": [
+      "Send a duplicate message to the Parcel trace team restating the same shortage",
+      "Contact the goods-in coordinator as if the desk is taking new action on a fresh report",
+      "Escalate to a human supervisor when the investigation is already assigned and in progress"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The desk has already notified the carrier's investigation team (Parcel trace) with full details of the shortage. The merchant's confirmation in event 3 repeats the same facts already reported in event 1: one pallet, the same reference, the same delivery. Sending another message to the trace team would be noise; sending a message to the coordinator would suggest action when none is available. The desk should log the merchant's confirmation and wait for the trace team's findings."
+}

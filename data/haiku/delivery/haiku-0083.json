@@ -1,0 +1,77 @@
+{
+  "id": "haiku-0083",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-022",
+  "grounding": null,
+  "title": "Case: High-value laptop delayed in network-wide depot outage",
+  "context": "A signature-required laptop shipment is delayed during a known regional depot system failure. The customer is anxious and wants status, but no individual investigation is warranted.",
+  "initial_request": "Iona Quill, Rivet Delivery Desk must decide whether to contact the customer, escalate to a supervisor, or take no action.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-18T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network alert: Northeast regional depot (Millbrook) experiencing system outage since 06:00 today. All inbound/outbound scan visibility offline. ETA for restoration unknown. ~840 parcels affected including electronics requiring signature."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-18T09:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Safety incident queue, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Millbrook depot outage: no security or environmental concerns. Parcels secure in facility. Restoring systems now, target 16:00 UTC."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-18T10:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Newell, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ordered a Canon EOS R5 camera (DL-6847-M) yesterday, scheduled delivery today. Nothing on tracking since early morning. This is expensive. Where is my parcel?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-18T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Marcus Newell, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still no update. I need this camera for a shoot tomorrow. Can you check directly with the warehouse or driver? I'm not paying for something lost in your system."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "no_action"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Marcus Newell, customer",
+        "channel": "Email",
+        "summary": "Acknowledge the delay, explain the known depot system outage affecting his parcel, confirm the camera is secure, provide the target restoration time, and advise of next tracking update."
+      }
+    ],
+    "must": [
+      "Must mention the network-wide depot outage by name or clear reference",
+      "Must not promise a specific delivery date or time",
+      "Must confirm the parcel is secure at the depot"
+    ],
+    "must_not": [
+      "Must not escalate this to Dispatch for a priority or individual investigation",
+      "Must not contact Warehouse dispatch or Safety lead for a one-off trace",
+      "Must not suggest the parcel is lost or offer a replacement without evidence",
+      "Must not contact the customer with vague reassurance that avoids the known outage"
+    ],
+    "reference_message": "Hi Marcus, Thank you for contacting us. Your Canon EOS R5 (DL-6847-M) is currently held at our Millbrook depot. The facility experienced a system outage this morning affecting tracking visibility for around 840 parcels in the region. Dispatch has confirmed your camera is secure in the facility. Systems restoration is targeted for 16:00 UTC today. Once systems are back online, you'll see tracking updates and a new delivery estimate. We appreciate your patience during this network event."
+  },
+  "rationale": "The delay is caused by a known network-wide system failure, not a lost or misdirected parcel. The customer deserves an honest status that explains the outage, confirms security, and manages expectations without promising dates. No investigation is warranted; contacting Dispatch or Safety for a one-off trace during a mass outage would waste resources and violate the desk's coordination scope."
+}

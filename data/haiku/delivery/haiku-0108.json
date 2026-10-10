@@ -1,0 +1,84 @@
+{
+  "id": "haiku-0108",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "theme": "carrier_strike",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-032",
+  "grounding": null,
+  "title": "Case: Pickup point staff report collection delay in mixed language",
+  "context": "A carrier strike is affecting logistics across the region. A pickup point has a parcel awaiting collection but staff communication includes machine translation errors. The desk must clarify the actual situation and coordinate with the right team.",
+  "initial_request": "Determine whether to contact Plover Arc Logistics, request escalation, or take no action.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-18T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order reconciliation, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Customer return DL-941-RT authorised. Perishable cheese wheel, 3kg. Pickup point Varna Station is designated collection point. Strike notice: Plover Arc Logistics suspended regional pickups until 19 March due to industrial action."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-18T08:15:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Marko Zhekov, Varna Station",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-941-RT cheese wheel here for collect. Customer say must go back 17 March. Now is 18 March. The parcel is not fresh, the ice is melting very very. We cannot keep this cold space after today. What happen? TRANSLATE: Parcel deteriorating - must clarify if warehouse or collection responsibility."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-18T09:45:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Marko Zhekov, Varna Station",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Rivet desk - I say again. The cheese is spoiling. Pickup delay caused by strike. We do not have instruction. Do we keep? Do we bin? Do we tell customer? Please answer now."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-18T10:20:00Z",
+      "stage": "Escalation",
+      "channel": "Pickup-point portal",
+      "from": "Marko Zhekov, Varna Station",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-941-RT - I must decide TODAY. Strike means no collection until tomorrow at least. Cheese will not survive. Pickup point manager say resolve now or we dispose ourselves. What is your decision?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Recovery team, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Confirm whether strike delays will prevent collection of DL-941-RT before spoilage, and authorise emergency disposal if perishable integrity cannot be maintained."
+      },
+      {
+        "recipient": "Replacement authorisations, Brineleaf Pantry",
+        "channel": "Email",
+        "summary": "Alert merchant that return DL-941-RT perishable cheese faces spoilage due to carrier strike delays; request urgent guidance on whether to authorise disposal at pickup point."
+      }
+    ],
+    "must": [
+      "Recognise the urgent perishable food safety issue despite translation errors in Marko's messages",
+      "Clarify with either the carrier or merchant whether emergency disposal is authorised before end of business today",
+      "Confirm Marko's actual question: whether he may dispose of the parcel rather than leaving him waiting indefinitely",
+      "Respond in simple English or confirm Marko can read English responses"
+    ],
+    "must_not": [
+      "Contact only Plover Arc Dispatch without also involving the merchant, leaving perishable disposal unresolved",
+      "Assume Marko's 'TRANSLATE' note is a system error rather than his request for clarification on the frozen condition",
+      "Tell Marko to 'wait for pickup' without acknowledging the strike makes this timeline impossible for a perishable",
+      "Reply only to Brineleaf Pantry without giving Marko an immediate answer on disposal authority",
+      "Send a generic response that does not address the specific 24-hour spoilage deadline"
+    ],
+    "reference_message": "Marko: We recognise the strike is delaying collection and the cheese cannot stay cold at your site beyond today. We are asking both Plover Arc Recovery and Brineleaf Pantry for immediate authorisation to dispose of DL-941-RT safely. Do not bin it yourself - wait for our reply within 2 hours. If we cannot arrange pickup or authorise disposal by 14:00 today, we will send disposal instructions."
+  },
+  "rationale": "Marko's mixed-language messages and the machine translation note are attempts to communicate an urgent food safety crisis, not system errors to ignore. The desk must recognise the perishable spoilage risk is real and immediate, bypass normal delays, and secure a disposal decision from either the carrier's Recovery team or the merchant within hours. Waiting for post-strike normal operations will destroy the merchandise and fail both parties."
+}

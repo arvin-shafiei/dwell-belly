@@ -1,0 +1,73 @@
+{
+  "id": "haiku-0182",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "regulated_goods",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-023",
+  "grounding": null,
+  "title": "Case: Battery-powered tool delivery flagged for safe place option",
+  "context": "A recipient has requested a safe place delivery for a parcel containing lithium batteries, which carry carrier handling rules. The desk must decide whether to approve the location, route the request, or escalate.",
+  "initial_request": "Recipient asks for safe place delivery of a power drill with integrated battery pack.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T07:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Depot work queue, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9427 flagged by safety scan. Contents: DeWalt DCD776 drill with 1.3Ah lithium battery pack. Scheduled handover today. Recipient Maren Ziegler has portal note requesting safe place delivery at rear garden shed, no signature required."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T08:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maren Ziegler, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I work shifts and won't be home before 6pm. Can you leave the drill in my garden shed by the gate? It's secure and I trust it there."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T08:55:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Marko Ilin, Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9427 is live for delivery in 3 hours. Safety flagged the lithium battery content. Recipient wants safe place at shed. Do we approve or hold?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Safety lead, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Confirm whether safe place delivery to garden shed is permitted for lithium battery-containing parcel and provide handling directive."
+      },
+      {
+        "recipient": "Maren Ziegler, recipient",
+        "channel": "Customer portal",
+        "summary": "Explain that the parcel cannot be left unattended at the shed due to battery safety rules and offer alternative delivery options."
+      }
+    ],
+    "must": [
+      "Do not approve the safe place delivery to the shed without explicit safety clearance.",
+      "Route the battery handling question to Safety lead, not to Dispatch alone.",
+      "Acknowledge the recipient's request but do not confirm it will be accepted."
+    ],
+    "must_not": [
+      "Agree to safe place delivery at the shed.",
+      "Instruct the driver on battery storage or placement methods.",
+      "Delay the escalation to Safety lead; Dispatch needs direction within 3 hours.",
+      "Tell the recipient the parcel will definitely be held for signature without checking safety rules first."
+    ],
+    "reference_message": null
+  },
+  "rationale": "Lithium batteries in parcels are subject to carrier safety rules that restrict unattended placement. The desk cannot approve the shed delivery without explicit direction from the Safety lead. The right move is to contact Safety to confirm whether the delivery method is permitted, then communicate the outcome to the recipient and Dispatch. Giving handling advice or guessing the safety answer risks a violation."
+}

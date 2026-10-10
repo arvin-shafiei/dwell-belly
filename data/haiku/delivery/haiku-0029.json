@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0029",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "theme": "b2b_pallets",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-032",
+  "grounding": null,
+  "title": "Case: Pallet count discrepancy at goods-in",
+  "context": "A B2B pallet shipment has arrived at the receiving site. Goods-in staff and the driver report different pallet counts. The recipient business (Marwick Supplies) depends on an accurate count to reconcile their stock and trigger payment. The freight planner needs to know the true count before closing the shipment record.",
+  "initial_request": "Resolve the pallet count conflict so the shipment can be finalized.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-12T08:15:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Marwick Supplies goods-in coordinator, Marwick Supplies",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 arrived this morning. Our staff counted 14 pallets on the tail-lift. Driver paperwork says 15. We need the correct count before we can book goods-in and pay the invoice."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-12T08:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-923 shipped from warehouse with 15 pallets on the manifest. Driver Keir Voss signed off on full load. Plover Arc shows 15 pallets."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-12T09:20:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Tomas Reeves, receiving coordinator, Marwick Supplies",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have physically recounted. Definitely 14 pallets on the dock. One pallet is missing. Your driver or logistics team lost it somewhere. We cannot pay for 15 and we are holding the goods-in until this is resolved."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Delivery investigations, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Report pallet count mismatch (manifest 15 vs goods-in 14) and request investigation of driver handoff and route to identify loss."
+      },
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Notify of discrepancy (15 on manifest, 14 received) and ask them to coordinate investigation with Delivery investigations before closing shipment record."
+      }
+    ],
+    "must": [
+      "Send the conflict to Plover Arc Logistics for resolution, not to Marwick Supplies.",
+      "Acknowledge both the manifest count (15) and the received count (14) in the message.",
+      "Request investigation of the route or handoff to identify where the pallet was lost."
+    ],
+    "must_not": [
+      "Assume the driver or Marwick Supplies is at fault; the conflict must be investigated.",
+      "Tell Marwick Supplies to accept 15 pallets or accept 14 without escalating to Plover Arc.",
+      "Contact the driver directly to override the goods-in count.",
+      "Suggest Marwick Supplies file a damage claim before the loss is confirmed."
+    ],
+    "reference_message": "DL-923 has a pallet count conflict: manifest and driver record show 15 pallets, but Marwick Supplies goods-in staff counted 14 pallets on arrival. Please investigate where the discrepancy occurred (in transit, handoff, or scan) and confirm the correct count. Marwick Supplies is holding goods-in pending resolution."
+  },
+  "rationale": "The desk cannot resolve a factual conflict between two credible sources. The manifest and driver record say 15; the receiving count says 14. Only Plover Arc Logistics' Delivery investigations team can review the route, driver handoff, and depot records to determine which count is correct. The desk must report both versions to the carrier and ask for investigation, not pick a side or pressure the recipient."
+}

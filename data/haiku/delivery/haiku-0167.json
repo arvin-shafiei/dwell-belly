@@ -1,0 +1,86 @@
+{
+  "id": "haiku-0167",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "theme": "neighbour",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-021",
+  "grounding": null,
+  "title": "Case: Neighbour acceptance during depot network outage",
+  "context": "A parcel was left with a neighbour during a widespread tracking system failure affecting Plover Arc Logistics depots across three regions. The recipient is asking for confirmation of delivery. The desk must give honest status without promising investigation or reinstatement timelines that depend on the outage being resolved.",
+  "initial_request": "Recipient contacts the desk asking where their parcel is after the neighbour says they have it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-11T06:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network-wide tracking outage affecting all depots in North, Central and East zones until further notice. Drivers unable to upload delivery scans. All parcels routed to affected zones are showing no recent status. Do not promise timeline restoration to customers."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-11T08:20:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Tomás Fenwick, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-917 still shows in transit on your tracker but I haven't received it. I live in Millbrook Lane, flat 4. Can you tell me where it is?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-11T09:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Parcel trace team",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-917 was loaded on vehicle 44-North at 07:30 today. Driver notes are not uploading due to outage. Last known position is East Millbrook depot zone. No further detail available until system restores."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-11T11:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tomás Fenwick, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I called my neighbour at flat 5. She said the Plover driver left the parcel with her this morning around 09:00. But your site still says in transit. Is it lost or what?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-11T12:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Tomás Fenwick, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This is confusing. The parcel is at my neighbour's but you're telling me it's still on a van. I need to know it's safe. Can you confirm delivery please?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "no_action"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Tomás Fenwick, recipient",
+        "channel": "Customer portal",
+        "summary": "Confirm parcel was left safely with neighbour at flat 5 this morning; explain tracking system outage is preventing upload of driver proof; no investigation needed."
+      }
+    ],
+    "must": [
+      "Acknowledge neighbour-left delivery is confirmed by recipient's own inquiry and neighbour's account",
+      "Explain the network outage without committing to investigation or reinstatement of tracking proof",
+      "Not open a trace, recovery, or damage inquiry; neighbour-left is a known delivery outcome, not a failure"
+    ],
+    "must_not": [
+      "Contact the carrier asking them to investigate or rescan DL-917; investigation is not warranted for a confirmed safe delivery to a known party",
+      "Promise that tracking will be updated by a specific time or that proof of delivery will be obtained later",
+      "Suggest the parcel is lost or at risk; the recipient has already confirmed its location via neighbour",
+      "Escalate to a supervisor; the facts are clear and the answer is within desk scope"
+    ],
+    "reference_message": "Hi Tomás, thanks for checking with your neighbour. We can confirm DL-917 was delivered to flat 5 this morning as your neighbour described. Our tracking system is currently offline across several regions due to a network outage, which is why the driver's scan hasn't uploaded yet. Your parcel is safe and in your neighbour's care. No further action is needed."
+  },
+  "rationale": "The parcel is confirmed delivered safely to a neighbour by the recipient's direct inquiry. The tracking outage is a known network event affecting many shipments, not a problem with this one. Contacting the carrier to investigate or promising to restore tracking proof would waste resources and create false expectations. The desk should confirm receipt and explain the outage, then close the case."
+}

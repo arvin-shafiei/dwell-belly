@@ -1,0 +1,77 @@
+{
+  "id": "haiku-0052",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "theme": "weather",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-050",
+  "grounding": null,
+  "title": "Case: Storm delay with mixed-language clarification needed",
+  "context": "A heavy snowstorm has disrupted delivery schedules across the region. A message from a recipient in a non-English-speaking area contains a key term that may have been machine-translated ambiguously, creating uncertainty about whether the customer is requesting a refund, a redelivery, or compensation.",
+  "initial_request": "Desk receives an escalated message from a recipient unhappy about a storm delay and requesting something specific, but the translation or transcription makes the exact request unclear.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 (Tallowmere Goods, 12kg mixed textiles) was scheduled delivery 2026-03-12. Heavy snow across northeast region. Driver diverted to depot. Parcel retained, redelivery window TBD pending weather clearance."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T18:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Katya Lussier, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Bonjour. Mon colis DL-927 n'est pas arrivé aujourd'hui. J'avais besoin avant le weekend. Je veux une compensation pour la garantie de livraison rapide. Pouvez-vous me donner le remboursement maintenant?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T19:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Auto-translation system",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[SYSTEM TRANSLATION] Hello. My package DL-927 did not arrive today. I needed it before the weekend. I want a return for the rapid delivery guarantee. Can you give me the refund now?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-13T08:00:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Katya Lussier, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Bonjour encore. Toujours pas de réponse. La neige a arrêté mais mon colis est toujours au dépôt. Confirmer: est-ce que vous faites un remboursement ou une livraison demain? Il faut que je sache maintenant pour organiser mon weekend."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Katya Lussier, recipient",
+        "channel": "Email",
+        "summary": "Apologise for the delay, confirm the next redelivery attempt time, and explain options for guaranteed-delivery surcharge recovery in French."
+      }
+    ],
+    "must": [
+      "Respond in French, the language Katya is using.",
+      "Confirm when the parcel will be attempted again, not just state the carrier is clearing it.",
+      "Make clear distinction between what the desk can decide (redelivery timing) and what requires the merchant's authorization (refund or surcharge credit).",
+      "Acknowledge the weather caused the delay and thank her for patience."
+    ],
+    "must_not": [
+      "Reply only in English, leaving Katya unable to understand the response.",
+      "Unilaterally promise a refund of the surcharge without involving Tallowmere Goods' Refunds team.",
+      "Assume 'remboursement' means a refund of the item price, which the desk cannot authorize.",
+      "Make a delivery promise the desk cannot control, such as guaranteeing arrival by a specific hour."
+    ],
+    "reference_message": "Bonjour Katya, Merci pour votre patience. DL-927 est actuellement au dépôt Plover Arc suite à la tempête de neige. La météo se levant, nous prévoyons une tentative de livraison demain (2026-03-14) entre 08h00 et 16h00. Pour la réclamation de surcharge de livraison garantie, je dois vérifier avec Tallowmere Goods Refunds team—ce n'est pas une décision que la coordination peut faire. Je vais les contacter aujourd'hui et vous envoyer un suivi demain avec les étapes suivantes. Êtes-vous disponible demain pour recevoir le colis? Cordialement, Iona Quill, Rivet Delivery Desk."
+  },
+  "rationale": "The desk must recognise that Katya's French message is the primary communication and machine translation has created ambiguity about whether she is demanding a refund (which she cannot get from the desk), a redelivery confirmation (which the desk can provide), or a surcharge credit (which only the merchant can authorise). The correct move is to respond in French with a clear redelivery window and a hand-off to the merchant's Refunds team, making it possible for Katya to plan her weekend and ensuring the surcharge claim is not lost."
+}

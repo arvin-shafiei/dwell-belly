@@ -1,0 +1,71 @@
+{
+  "id": "haiku-0086",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "theme": "electronics",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-042",
+  "grounding": null,
+  "title": "Case: High-value laptop shipment stuck in depot hold pending signature protocol clarification",
+  "context": "A high-value electronics shipment requires signature on delivery. The depot has flagged it for hold pending clarification of the signature protocol. An earlier attempt to route the request failed. The desk must find the correct owner to clarify the delivery rules.",
+  "initial_request": "Resolve the hold on a £4,200 laptop shipment so delivery can proceed today.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T07:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Depot shift supervisor, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-937 (Dell XPS 15 laptop, £4,200 value, Brineleaf Pantry to business address in Cambridge) is in hold pending signature protocol. Driver scheduled 11:00 UTC but cannot proceed without clarification: does recipient need to sign in person or can driver collect signature from building receptionist? Previous escalation ticket to Scheduling was auto-closed as stale."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T08:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry, Replacement authorisations",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We received a bounced message from your earlier attempt to clarify DL-937 signature rules. That email went to the wrong address (warehouse dispatch inbox, now closed). We can confirm the recipient (Apex Analytics Ltd, Cambridge) requires in-person signature only. Please advise Dispatch immediately to proceed with personal signature requirement."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T08:45:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Depot shift supervisor, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still waiting on signature protocol decision for DL-937. Driver leaves for delivery run at 10:00 UTC. If we don't hear back, we'll have to reschedule to tomorrow, causing a complaint and a missed SLA window."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Confirm that DL-937 delivery must proceed with in-person signature only; recipient is Apex Analytics Ltd."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Confirm that DL-937 delivery must proceed with in-person signature only; recipient is Apex Analytics Ltd."
+      }
+    ],
+    "must": [
+      "Do not report the failed earlier email as a completed action or resolution.",
+      "Route the signature protocol decision to Dispatch (the depot owner responsible for the hold), not to Replacement authorisations or Warehouse dispatch.",
+      "Include the verified requirement: in-person signature only, from Brineleaf Pantry."
+    ],
+    "must_not": [
+      "Send the message to Replacement authorisations or Warehouse dispatch, treating them as the hold owner.",
+      "Assume the bounced email means the hold can now be lifted without sending a new clarification to Dispatch.",
+      "Treat the failed escalation ticket to Scheduling as evidence that Dispatch should have resolved it already."
+    ],
+    "reference_message": "DL-937 signature protocol confirmed: Apex Analytics Ltd requires in-person signature only (verified with merchant). Proceed with delivery on personal signature. Driver departs 10:00 UTC."
+  },
+  "rationale": "The depot hold is owned by Dispatch, which must receive the clarified protocol. Brineleaf Pantry's reply corrects the failed earlier email route and provides the verified requirement. The right move contacts Dispatch directly with the clarified rule, recovering from the failed email without assuming the problem is solved."
+}

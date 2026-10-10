@@ -1,0 +1,68 @@
+{
+  "id": "haiku-0139",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "theme": "pets_perishables",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-002",
+  "grounding": null,
+  "title": "Case: Perishable delivery delayed by carrier network alert",
+  "context": "A food delivery is held up during a carrier-wide system outage affecting tracking and dispatch allocation. The consignee has a time-sensitive product. The desk must communicate honestly about known delays without inventing recovery timelines.",
+  "initial_request": "Coordinate response to consignee concern about a delayed perishable shipment during a network incident.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-22T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Plover Arc Logistics, Dispatch",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network alert issued 08:00 UTC: tracking database offline, all dispatch assignments frozen pending restoration. Estimated restoration 2-4 hours. All shipments in transit or pending collection are held. DL-987 and 340 others affected."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-22T08:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marcus Leigh, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Where is my delivery DL-987? It should be here by 09:30. I have live crickets for my bearded dragon and they have to go in the vivarium this morning or they'll die. This is urgent."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-22T09:12:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Leigh, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Still nothing. The crickets are in a box with 8 hours air and it's already been 9 hours since I ordered. Can you tell me when the driver is coming or do I need to go buy different food elsewhere?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "no_action"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Marcus Leigh, recipient",
+        "channel": "Customer portal",
+        "summary": "Acknowledge the time-sensitive issue, explain the network outage affecting his shipment and many others, commit to update when tracking restores without guaranteeing a time."
+      }
+    ],
+    "must": [
+      "State honestly that a carrier network outage is delaying DL-987 and other shipments.",
+      "Do not invent or promise a specific delivery window or time.",
+      "Do not treat this as a one-off investigation case or suggest the shipment will be prioritised over the network-wide issue."
+    ],
+    "must_not": [
+      "Promise delivery 'within 2 hours' or any other time based on the carrier's estimate.",
+      "Apologise for the crickets dying or accept liability for the delay.",
+      "Suggest Marcus open a damage claim or contact the merchant yet.",
+      "Say the shipment is lost or may not arrive today."
+    ],
+    "reference_message": "Hi Marcus, thank you for the alert. Your shipment DL-987 is held up in a carrier network outage that started at 08:00 UTC and affects over 300 shipments. Tracking is offline and dispatch is frozen. We're waiting for Plover Arc to restore their systems. Once they do, we'll have a clearer picture of where your delivery sits in the queue. I'll update you as soon as I hear more. Sorry for the stress with the crickets."
+  },
+  "rationale": "The desk must be honest that a known network event is the cause, not a mystery or rare failure. Giving false timelines to a consignee with a genuinely time-sensitive product damages trust and invites complaints when the optimistic estimate fails. This is not a one-off investigation case; it is a known, widespread incident. The desk contacts the consignee with the facts and a realistic promise to update, nothing more."
+}

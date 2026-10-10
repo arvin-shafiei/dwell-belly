@@ -1,0 +1,61 @@
+{
+  "id": "haiku-0096",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "theme": "returns_dispute",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-020",
+  "grounding": null,
+  "title": "Case: Return item received but marked as wrong SKU in warehouse system",
+  "context": "A customer returned a parcel that the merchant warehouse has physically received and scanned, but the system shows a different product code than what the return authorisation listed. The warehouse cannot process the refund until this mismatch is resolved. No standard procedure covers inventory discrepancies on returns.",
+  "initial_request": "Customer wants to know why their refund is delayed after the warehouse confirmed receipt.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse receiving, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return DL-942 received at dock 14:22 UTC yesterday. Item scanned as SKU 8847-B (Fenugreek oil 500ml) but return auth RA-942 lists SKU 8847-A (Fenugreek oil 250ml). Weight and packaging match 8847-B. We cannot release refund until this is verified. Needs escalation to damage intake or returns auth."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T08:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Yasmin Keech, Plover Arc Logistics Parcel trace",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirmed DL-942 was delivered to Kaveh Nouri on 2026-03-13 at 16:04. Signature on file. No damage noted at collection."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T09:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Kaveh Nouri, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I returned the 250ml bottle I ordered weeks ago. Your warehouse confirms they have it. Why is my refund taking so long? I need this resolved this week."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Escalate to a human supervisor or the merchant's returns authorisation team",
+      "Acknowledge the physical receipt and the SKU mismatch in the escalation",
+      "Do not guess which product was actually returned or approve a refund based on incomplete information"
+    ],
+    "must_not": [
+      "Contact the customer to ask them to clarify which item they actually returned",
+      "Ask the warehouse to process the refund under the original SKU code anyway",
+      "Forward only the warehouse message without flagging the SKU discrepancy as unresolved",
+      "Contact Plover Arc Logistics to re-investigate the delivery"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The warehouse has identified a genuine exception: the returned item does not match the authorisation, and no coordinator can safely resolve this without access to the merchant's returns policy or damage intake authority. This is not a standard delay; it requires the merchant's Returns authorisations or Damage intake team to verify whether the customer returned the wrong item, whether the system record is wrong, or whether the refund should still proceed. Escalating stops the desk from guessing and hands the decision to the owning team."
+}

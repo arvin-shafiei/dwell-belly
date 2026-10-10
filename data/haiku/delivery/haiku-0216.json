@@ -1,0 +1,72 @@
+{
+  "id": "haiku-0216",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "theme": "carrier_strike",
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-037",
+  "grounding": null,
+  "title": "Case: Collection window deadline crossed amid strike delays",
+  "context": "A heavy item collection is booked but a carrier strike has disrupted scheduling. The desk must verify whether the collection window has expired before advising the recipient.",
+  "initial_request": "Recipient requests confirmation that a heavy sofa collection is still on track for a specific date window.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-10T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-927 heavy collection: Habitat Furnishings sofa, booked for collection 2026-03-10 to 2026-03-11 window. Industrial action began 2026-03-09. Dispatch capacity severely reduced. Collection not yet attempted."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-11T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Strike continues. DL-927 has not been assigned to a route. No ETA available. Rescheduling demand is high."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-11T16:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Marcus Lochran, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I need to know if the sofa collection is happening today (11th March) or tomorrow. I have arranged home access only for the 10th and 11th window. After that I cannot be home. Can you confirm the collection is still within my booking dates?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Confirm whether DL-927 can be collected on 2026-03-11 within the original booking window, or advise that a reschedule is necessary."
+      },
+      {
+        "recipient": "Marcus Lochran, recipient",
+        "channel": "Customer portal",
+        "summary": "Advise that the collection window closes end of 2026-03-11 and confirm rescheduling if not completed by then."
+      }
+    ],
+    "must": [
+      "Verify the collection window expiry date (end of 11 March UTC) before promising or implying the collection can proceed.",
+      "Communicate clearly to the recipient whether collection is possible within the 10–11 March window or will require reschedule.",
+      "Not assume the collection is still viable; strike delays mean the window may have passed in practice even if not in contract."
+    ],
+    "must_not": [
+      "Tell the recipient the collection will happen without confirming with Scheduling first.",
+      "Extend the collection window unilaterally or suggest a new date without explicit merchant or carrier agreement.",
+      "Overlook that the recipient's availability window (10–11 March) is now closed by the time of his message on 11 March afternoon."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The recipient's message arrives on 11 March at 16:45 UTC, which is inside his booking window but near its end. The critical question is whether the collection can physically occur on 11 March evening or already impossible. The desk must contact Scheduling to establish capacity and timing before replying to the recipient. If Scheduling cannot deliver by end of 11 March, the collection window has expired and a reschedule is unavoidable; the desk must relay this clearly and arrange new dates through the merchant, not guess at the original booking or extend it without authority."
+}

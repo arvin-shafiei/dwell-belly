@@ -1,0 +1,61 @@
+{
+  "id": "haiku-0236",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "theme": null,
+  "model": "claude-haiku-4-5-20251001",
+  "seed_case": "delivery-001",
+  "grounding": null,
+  "title": "Case: Delivery attempt refused due to unexpected legal hold",
+  "context": "A recipient refuses delivery citing an active legal dispute over the item. This is outside standard non-receipt or rescheduling workflows. The correct response is to escalate to a supervisor rather than attempt negotiation or reroute, since legal holds require merchant and carrier coordination on policy.",
+  "initial_request": "Recipient has declined the delivery of DL-947 citing a court order freeze. The desk must decide whether to attempt contact, escalate to a supervisor, or take no action.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T11:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Webb, Plover Arc Logistics driver",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Attended delivery window at Unit 7 Fennard Park, recipient Vikram Okonkwo was home. He refused to accept parcel DL-947 (Tallowmere Goods, 6x ceramic bowls). Said there's a court order freezing the item pending litigation. Wouldn't take it. Parcel returned to vehicle."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T11:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Marcus Webb, Plover Arc Logistics driver",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I asked him if the order was under his name or someone else's. He said the order is in his name but his ex-partner filed a claim and the courts froze it. He doesn't want it at the house."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T12:15:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Vikram Okonkwo, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your driver tried to force the delivery. I have a court order on this shipment. I will not accept it. Contact my solicitor or sort it with the merchant, but do not attempt delivery again without written clearance from my legal counsel."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "escalate"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Stop any further delivery attempts to the recipient address",
+      "Route the case to a human supervisor with full details of the legal claim",
+      "Preserve the driver's and recipient's account of the dispute for investigation"
+    ],
+    "must_not": [
+      "Attempt to negotiate or override the recipient's refusal",
+      "Contact the recipient again on behalf of the merchant to persuade acceptance",
+      "Treat this as a standard rescheduling or alternative-address case",
+      "Assume the court order is invalid or attempt to verify it yourself"
+    ],
+    "reference_message": null
+  },
+  "rationale": "A court order on a shipment is a legal matter that requires merchant (Tallowmere Goods), carrier (Plover Arc Logistics) and possibly their legal teams to resolve before any further delivery action. The desk has no authority to arbitrate disputes or challenge legal holds. The correct move is to escalate immediately to a supervisor who can engage the appropriate teams and avoid exposure to contempt or liability."
+}
