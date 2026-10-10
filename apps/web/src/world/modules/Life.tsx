@@ -6,7 +6,6 @@ import Birds from "./Life/Birds";
 import Cyclists from "./Life/Cyclists";
 import Furniture from "./Life/Furniture";
 import Helicopter from "./Life/Helicopter";
-import Pedestrians from "./Life/Pedestrians";
 import Plane from "./Life/Plane";
 import Sea from "./Life/Sea";
 
@@ -14,7 +13,6 @@ export default function Life() {
   return (
     <group name="life">
       <Furniture />
-      <Pedestrians />
       <Cyclists />
       <Birds />
       <Plane />

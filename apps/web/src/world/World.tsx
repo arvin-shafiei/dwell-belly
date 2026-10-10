@@ -1,7 +1,7 @@
 "use client";
 // The 3D city. Each module is independent and wrapped so one failure can't break the scene.
 import { Canvas } from "@react-three/fiber";
-import { AdaptiveDpr, PerformanceMonitor } from "@react-three/drei";
+import { AdaptiveDpr, PerformanceMonitor, Stats } from "@react-three/drei";
 import { Suspense, useState } from "react";
 import { ModuleBoundary } from "./ModuleBoundary";
 import Ground from "./modules/Ground";
@@ -50,6 +50,8 @@ export default function World() {
   // GPU first: ask for the discrete/high-performance GPU (on Macs Chrome runs WebGL on Metal via ANGLE),
   // and drop resolution automatically if frame rate falls, instead of burning CPU/GPU.
   const [dpr, setDpr] = useState(1.5);
+  // ?stats=1 shows FPS / frame time (click the panel to cycle FPS, ms, MB).
+  const [showStats] = useState(() => typeof window !== "undefined" && new URLSearchParams(window.location.search).has("stats"));
   return (
     <Canvas
       shadows
@@ -59,6 +61,7 @@ export default function World() {
     >
       <PerformanceMonitor onIncline={() => setDpr(Math.min(2, window.devicePixelRatio))} onDecline={() => setDpr(1)} />
       <AdaptiveDpr pixelated />
+      {showStats && <Stats className="!left-auto !right-2 !top-16" />}
       <color attach="background" args={["#a9c7e8"]} />
       {/* Fallback light so the scene is visible even before Sky is implemented. Sky may add more. */}
       <hemisphereLight args={["#ffffff", "#556655", 0.6]} />
