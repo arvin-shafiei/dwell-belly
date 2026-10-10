@@ -21,6 +21,15 @@ Commands (repo root): `npm run dev` (both apps), `npm run build`, `npm run lint`
 
 **Next.js 16 is newer than your training data.** Before writing Next code, read the guide in `node_modules/next/dist/docs/`. Notable: data fetching outside `<Suspense>` fails the build (Cache Components / PPR). See `apps/*/AGENTS.md`.
 
+## 3D city (`apps/web/src/world/`, page `/city`)
+
+A three.js (react-three-fiber + drei) city where the delivery workflow plays out: delivery trucks, traffic, crashes, police, roadworks that close roads so traffic reroutes. The workflow side is **mocked on the frontend** for now (`modules/WorkflowDriver.tsx`), not wired to the real agent.
+
+- **Shared contracts (change only with care, everything depends on them):** `config.ts` (zone boxes, sizes), `roads.ts` (road graph, `findPath` avoiding blocked edges, `lanePosition`, drive on the LEFT), `store.ts` (zustand: blocked roads, incidents, deliveries, workflow events, camera focus), `registry.ts` (live vehicles, per-frame), `bus.ts` (one-off events + UI requests), `signals.ts` (traffic light timing).
+- **Modules:** one file each in `world/modules/` (helpers in `world/modules/<Name>/`). `World.tsx` mounts every 3D module inside a `ModuleBoundary`, so a crashing module disappears instead of killing the scene. Overlays (`WorkflowHud`, `Minimap`) are DOM, mounted by `CityPage.tsx`.
+- **Ownership:** incidents are created by `Crashes`/`Roadworks`; `Responders` moves them to responding → clearing → cleared and reopens the road (Roadworks reopens its own). Vehicles must re-path with `findPath(…, blockedSet())` when their next road gets blocked.
+- Per-frame data goes in `registry.ts`, never in zustand (re-render storm). Tests: `npm test -w web` (vitest).
+
 ## Architecture rules (from the spec)
 
 - **Build order:** core incident flow first (Ingest, History Lookup, Triage, Clash Check, Planner, Safety Gate, Human Decision, Action, Verify, Case Log). Don't start extras until the core runs end to end.
