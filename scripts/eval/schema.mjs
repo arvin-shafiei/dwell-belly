@@ -68,6 +68,8 @@ export const AgentResult = z.object({
   }).nullable(),
   handoff: z.string().nullable(),
   wontDo: z.array(z.string()),
+  // Every message that went out, the first included. Absent when the agent only reports one.
+  messages: z.array(z.object({ recipient: z.string(), channel: z.string(), message: z.string() })).optional(),
 });
 
 export const Judgement = z.object({
