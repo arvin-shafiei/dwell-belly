@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ExecutionRecord, OutboxEntry } from "../types";
-import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noteCaseText, noteRerun } from "./voiceSlots";
+import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noCallLine, noteCaseText, noteRerun } from "./voiceSlots";
 
 const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
 const ex = { id: "e1", caseId: "delivery-003", dataset: "public", workflowId: "default-incident", title: "Case 003" } as ExecutionRecord & { title: string };
@@ -18,6 +18,12 @@ describe("voice slots", () => {
     ] }] } } as unknown as ExecutionRecord;
     expect(noteCaseText(run)).toBe("From: Fen Orlo, route driver\nI am at 7 Sedgeglass Mews for DL-003.\n\nFrom: Dispatch\nContact Elva Kesh.");
     expect(noteCaseText(ex)).toBe("");
+  });
+  it("says plainly why there is no call", () => {
+    expect(noCallLine([{ ...row("Dispatch chat"), action: { ...row("Dispatch chat").action, recipient: "Dispatch, Plover Arc Logistics" } }]))
+      .toBe("No call needed on this run: the agent chose Dispatch chat to Dispatch, Plover Arc Logistics.");
+    expect(noCallLine([])).toBe("No call needed on this run: the agent sent nothing.");
+    expect(noCallLine(null)).toBe("No call needed on this run: the agent sent nothing.");
   });
   it("treats a callback route as a phone channel", () => {
     expect(callableRows([row("Verified order callback route"), row("Callback"), row("Email")]).map((r) => r.action.channel))

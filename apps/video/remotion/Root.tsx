@@ -21,6 +21,7 @@ export const Root: React.FC = () => {
   return (
     <>
       <Composition id="Demo" component={Demo} durationInFrames={DEMO_FRAMES} fps={DEMO_FPS} width={1920} height={1080} defaultProps={demoDefaults} />
+      <Composition id="DemoCut" component={DemoV2} durationInFrames={Math.min(1800, v2Duration(true))} fps={V2_FPS} width={1920} height={1080} defaultProps={{ ...demoDefaults, cut: true }} />
       <Composition id="DemoV2" component={DemoV2} durationInFrames={v2Duration()} fps={V2_FPS} width={1920} height={1080} defaultProps={demoDefaults} />
       <Composition id="HeroGif" component={HeroGif} durationInFrames={8 * GIF_FPS} fps={GIF_FPS} width={1200} height={675} />
       {FEATURES.map((f) => (
