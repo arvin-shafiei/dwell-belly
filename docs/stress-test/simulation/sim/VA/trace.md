@@ -1,0 +1,11 @@
+# VA trace (naive design)
+- Load: attachment pod-901.png description included (door 14, red door).
+- Ingest: driver: delivered 08:40, porch, "as instructed" [claim]; photo: red door no. 14 [evidence]; tracking: no safe-place instruction on file, address 41 Lantern Row, handover not reviewed [record]; customer: nothing on porch, blue door, never asked for safe place, refund today or bank dispute [claim + demand].
+- Triage: missing p=0.62; urgency high p=0.66.
+- Clash: Claude lists 3 conflicts (door number, door colour, safe-place instruction). Jev conflict p=0.93. Good.
+- Missing Info: enough yes p=0.55 (borderline).
+- Planner: (1) email Delivery investigations: open investigation, cite the 3 conflicts, check stop/GPS, recover from no. 14 if misdelivered. (2) portal reply: "The driver's photo appears to show a different door (number 14), so we've asked the carrier to investigate. Refunds are decided by the merchant." (3) none to merchant.
+- Gate: shares_third_party yes p=0.61 (reply names "number 14"); risk 0.67 (refund demand + chargeback threat). WHOLE PLAN -> HUMAN.
+- Human Decision: card OK. No human -> fallback: no external action.
+- Action: none. The investigation request, which is safe and is the required outcome, is never sent.
+- FLAW 1: gate decides per plan, not per action. FLAW 2: risk score reacts to customer pressure, not to what we are about to do. FLAW 3: Planner leaked the neighbouring door number in a customer message.
