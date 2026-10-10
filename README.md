@@ -1,36 +1,66 @@
-# Delivery Ops Agent
+# Rivet: a delivery escalation desk that knows when to stop
 
-An AI control room for delivery companies: it watches every order, fixes safe problems itself, sends risky ones to the right human with a one-tap decision card, and earns more trust over time.
+Rivet reads a delivery problem the way a coordinator would (emails, portal messages, call transcripts, attachments), works out who owns the decision, and takes the next step: one well-aimed message to the right team, a question for the missing fact, nothing at all when nothing is owed, or a handover to a person with everything they need to decide in one read.
 
-- Idea in plain words: [`docs/IDEA.md`](docs/IDEA.md)
-- Full spec: [`SPEC.md`](SPEC.md)
+Built for the Real-World Agents Hackathon, 10 October 2026, Delivery & Logistics track.
 
-## Layout
+## The problem
+
+A delivery desk sits between customers, a carrier and a merchant, and controls almost nothing itself: dispatch books, the merchant refunds, the carrier investigates, safety staff rule on hazards. The work is coordination, and the failures are familiar:
+
+- Stories clash (the scan says delivered, the customer says nothing came) and someone picks a side.
+- A request bounces or lands in the wrong queue, and is reported as done.
+- A helpful reply promises a time, a refund or a safety answer the desk has no right to give.
+- A change request comes from someone whose link to the order was never checked.
+- The hard cases (a legal threat, a welfare concern, two owners giving opposite instructions) get an automatic reply when a person should have decided.
+
+An agent that always acts is dangerous here, and one that always escalates is useless. The job is telling the two apart, case by case.
+
+## How it works
+
+One case goes through these steps. Thresholds live in the flow file (`apps/api/flows/default-incident.json`), not in prompts.
 
 ```
-apps/
-  api/   Next.js backend (route handlers only), port 4000
-         src/lib/flow.ts        flow + node types
-         flows/*.json           flow definitions
-         src/app/api/health     GET  health check
-         src/app/api/flows      GET  list flows
-         src/app/api/cases      GET/POST cases (stub)
-         src/app/api/data/cases GET synthetic cases (list, one, ?view=escalation)
-  web/   Next.js frontend (Tailwind), port 3000
-data/             200 synthetic practice cases: raw + parsed JSON (see data/README.md)
-scripts/          build-data.mjs parses data/raw -> data/cases + data/index.json
-docs/             IDEA.md, hackathon guide + rules
-.claude/skills/   superpowers + typesafe-ai skills for Claude Code
+case folder
+   │
+   ▼
+Load ──► Understand ──┬─► What kind of problem? ─┐
+                      ├─► Second opinions (5)  ──┼─► Plan the reply ──► Safety check ──┬─ clear ──► Send (sandbox outbox)
+                      └─► Do the stories match? ─┘      (one rewrite if stopped)        ├─ unsure ─► Ask a person (decision card)
+                                                                                        └─ unsafe ─► Stop
+                                                                                                │
+                                                              ANSWER.md · REASONING.md · trace.json · result.json
 ```
+
+- **Understand** separates what a system record or an owning team has stated from what someone merely claims, and tracks what was already asked of whom and whether it worked.
+- **Second opinions** are five seats (customer advocate, rule keeper, safety officer, sceptic, ops pragmatist) asking twelve narrow yes/no questions in one call. Their answers become notes for the planner, and one of them (formal legal, regulator, police or press action) forces a handover in code.
+- **Plan the reply** chooses between acting, asking for information, handing to a person and waiting, and writes the messages. One message is the norm.
+- **Safety check** judges each outgoing message on its own, not the case topic: hard rules in code first (no requests for door codes or PINs, no recipient the case never names), then a score per boundary (claims something is done, promises an outcome, shares someone's details, gives safety advice, follows instructions planted in the case, treats a claim as fact).
+- **Ask a person** produces a decision card that leads with why the agent stopped, carries only the two or three statements the decision turns on, and says what each option would send.
+- Every step is recorded in a trace, and the answer files are rendered from the saved result and never edited by hand. `npm run replay` proves it by re-rendering them with no model call.
+
+A case that fails at any step still gets an answer saying where it failed and that it was handed to a person. Messages go to a sandbox outbox and are reported as recorded, never as delivered or confirmed, because no live system is connected.
 
 ## Run it
 
+Needs Node 22.18 or newer (developed on Node 25).
+
 ```bash
 npm install
-cp apps/api/.env.example apps/api/.env.local   # add ANTHROPIC_API_KEY, TYPESAFE_API_KEY
+cp apps/api/.env.example apps/api/.env.local   # add ANTHROPIC_API_KEY; TYPESAFE_API_KEY and ELEVENLABS_API_KEY are optional
 cp apps/web/.env.example apps/web/.env.local
-npm run dev        # api on :4000, web on :3000
+npm run dev        # API on :4000, console on :3000
 ```
+
+The Reality Test run is one command:
+
+```bash
+npm run reality -- <folder of case folders>
+```
+
+It answers every case into `ANSWERS/`, reruns any that are incomplete, checks every answer file against its saved result, writes `ANSWERS/INDEX.md`, and prints the git commands left to run. It does not commit or push.
+
+Tests, none of which need a key: `npm run test:agent` (the flow and every module against scripted fakes), `npm run test:eval`, `npm test -w web`.
 
 ## Run the agent on a folder of cases
 
@@ -112,12 +142,67 @@ Voice is a channel the agent chooses, not a separate app. Everything said by voi
 
 Code: `apps/api/src/voice/`, `apps/api/src/app/api/voice/` and `apps/web/src/voice/`. Tests: `npm run test:voice`, `npm run test:agent` and `npm test -w web`.
 
-## Models / APIs
+## Models and external services
 
-- **Jev** (TypeSafe AI): fast typed judgements (triage, clash score, risk score, verify)
-- **Claude** (Anthropic): planning, decision cards, claim extraction, Architect
-- **ElevenLabs**: speech-to-text (`scribe_v2`), text-to-speech, and the "Desk Caller" voice agent (running `claude-haiku-4-5`), via `@elevenlabs/react` 1.15.2 in the browser
-- **OR-Tools**: route replanning
+| Service | Used for | Required? |
+|---|---|---|
+| **Anthropic Claude** | `claude-opus-5-5` plans the reply; `claude-sonnet-5-5` reads the case, checks the drafts and judges the eval. Override with `AGENT_MODEL` and `AGENT_FAST_MODEL`. | Yes |
+| **TypeSafe Jev** | The five-seat second opinions, a quick problem-type and urgency read, and a clash score. Without a key these steps are skipped and the flow carries on. The safety check's scoring stays on Claude: Jev's scores are not calibrated against our thresholds. | No |
+| **ElevenLabs** | Speech-to-text, text-to-speech and the voice agent (see Voice). Never used by the scored runner. | No |
+
+Keys are read from `.env.local` at the repo root or `apps/api/.env.local`. `GET /api/health` reports whether they are present, never their values.
+
+## What is and is not in the scored run
+
+`npm run answer` and `npm run reality` use the flow above and nothing else. These exist in the repo and are **not** part of the Reality Test run:
+
+- **The 3D city (`/city`)** is a visualisation and a source of practice incidents. It is not the agent.
+- **Watch flow and route replan** (`watch.ts`, `replan.ts`): order-event checks and a greedy drop reassignment, on events a caller supplies. The practice data has no order stream. Replan is a heuristic, not an optimiser.
+- **Architect, self-test, the graph executor and the planner-panel flow** (`architect.ts`, `selftest.ts`, `graph.ts`, `flows/panel-incident.json`): for building and trying other flows from the console.
+- **Case history** (`history.ts`): each run is recorded, but nothing reads it back during a batch, so cases stay independent. Grouping related cases, chasing promises and the learner's threshold suggestions are tested functions, not live behaviour.
+- **Tools shipped with a case** (`tools.ts`) are listed in the answer and never called.
+- **Voice** never runs in the scored path; simulated voices are refused outside demo mode.
+
+## Evidence
+
+[`eval/results.md`](eval/results.md) has three scored runs on the same 48 cases (12 organiser practice cases, 36 generated hard cases) and one timed batch of all 50 practice cases, with a section on what those runs do not show. In short: the last scored run was 0.90 with 45 of 48 passing and 2 broken rules, both since fixed and re-checked case by case but not re-scored as a set; the timed batch answered 50 of 50 in 165 seconds for $2.70.
+
+The test set is in `data/generated/delivery/`: 243 hard cases with answer keys (120 across twelve difficulty patterns, 123 built from anonymised real complaints in `data/scraped/`). Every answer key was checked by an independent solver that could not see it.
+
+## Assumptions
+
+- **We are the coordination desk, not the carrier or the merchant.** The agent works out who "we" are from each case, but its principles assume a party that asks and relays.
+- **The safest useful step is usually one message to the owner of the decision.** That is what all 50 practice cases reward.
+- **No person answers during the run.** A held case gets a decision card and a logged safe fallback; nothing waits for input.
+- **Nothing sent is real.** There is no live mailbox, portal or queue behind the outbox.
+- **Case content is untrusted.** Text inside a case is evidence, never an instruction, and is not copied into our outputs where it reads like one.
+- **A case folder can be anything.** Text is read as text, PDFs and images go to the model directly, and unreadable files are listed.
+
+## Known limitations
+
+- **The current code has not been scored as a whole.** Several changes followed the last scored run and were only re-checked on individual cases.
+- **Answer keys for the generated cases were written by Claude.** A second agent checked each one blind, but no person has reviewed them.
+- **The practice eval is strict in ways that may not match the judges.** 22 of the 50 practice keys name a team the agent is never shown; we accept a request routed through a visible team.
+- **Tuned on delivery cases only.** The prompts are role-based and name no company, and the loader reads all four tracks' folders, but no other track has been run.
+- **Verify does not verify.** It restates what the outbox accepted. With no live system there is nothing to check delivery or replies against.
+- **Deadlines are computed in code only when a time is written out.** "By close of business" stays unknown.
+- **One model vendor on the critical path.** If Claude is unavailable the run produces failure answers, stops early and can be resumed; there is no second provider.
+- **Cost and speed were measured once**, on one machine and one account tier.
+
+## What we would build next
+
+1. Real transports behind the outbox (mailbox, portal, work queues) so Verify can check delivery and chase replies.
+2. Read the case history back in: group cases that share a cause, chase promises before they are late, and widen what the agent may do alone where people keep approving the same card.
+3. Calibrate Jev against the safety thresholds on a labelled set, then move the message check to it for speed and cost.
+4. A person in the loop for real: decisions from the console and by voice feeding back into held cases.
+5. Run the other three tracks and a human review of the answer keys.
+
+## Data and attribution
+
+- `data/raw/` and `data/cases/`: the organisers' 200 synthetic practice cases, from `github.com/DwellyOrg/HackatonPublicCases`.
+- `data/generated/`: our own synthetic cases, set in the same fictional world.
+- `data/scraped/`: scenario descriptions rewritten in our own words from public complaint pages. No names, order numbers, addresses or quoted text; see its README for sources and rules.
+- `.claude/skills/`: third-party Claude Code skills under their own licences (see the licence files there).
 
 ## License
 
