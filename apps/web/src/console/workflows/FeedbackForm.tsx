@@ -19,9 +19,6 @@ export function FeedbackForm({ executionId, workflowId, disabled, onProposal, on
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     let live = true;
-    setCaseTitle(null);
-    setError(null);
-    setCorrection("");
     if (executionId) void getExecution(executionId).then((r) => {
       if (live && r.ok) setCaseTitle(r.data.execution.caseId);
     });

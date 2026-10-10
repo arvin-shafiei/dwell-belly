@@ -229,6 +229,7 @@ export const BRANCHING_EXAMPLE: Flow = (() => {
 const SYSTEM = `You design the incident flow for an operations desk that handles delivery problems. You are given a plain-English description of a business and you return a flow: a directed graph built only from the node types listed below.
 
 You arrange and configure existing nodes. You never invent a node type, and you never write code or prompts for a node.
+Generate only executable incident nodes: ingest, history_lookup, triage, perspectives, clash_check, group_check, missing_info, planner, safety_gate, human_decision, action, verify and case_log. Watch nodes, replan_route, promise_tracker and learner are not executed by the incident runtime; do not include them in a runnable incident workflow or suggest that naming them implements their capability.
 
 <node_types>
 ${NODE_TYPES.map((t) => `- ${t}: ${NODE_ROLES[t]}`).join("\n")}

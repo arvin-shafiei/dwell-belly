@@ -77,6 +77,16 @@ export async function executeSample(workflowId: string, scenario: string): Promi
   return getExecution(started.data.executionId);
 }
 
+export async function executeReply(workflowId: string, parentExecutionId: string, scenario: string): Promise<Result<{ execution: ExecutionRecord }>> {
+  const messages = splitThread(scenario);
+  const request = buildIntakeRequest({ messages, attachments: [], now: new Date(), workflowId });
+  return call("/api/console/execute", {
+    method: "POST", body: JSON.stringify({ workflowId, parentExecutionId, mode: "demo",
+      extraEvents: request.events.map((e, i) => ({ ...e, timestamp: messages[i].date ?? "", source: "simulated_persona" })),
+    }),
+  });
+}
+
 export type { ExecutionRecord };
 
 // ---------- Architect (proxied by app/api/console/architect/route.ts) ----------

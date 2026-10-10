@@ -85,6 +85,11 @@ describe("buildIntakeRequest", () => {
 
 describe("parseIntakeRequest", () => {
   const ev = { timestamp: "2026-01-01T00:00:00Z", body: "x" };
+  it("marks all demo sample messages as simulated and preserves explicit practice mode", () => {
+    const r = parseIntakeRequest({ practice: true, workflowId: "custom-flow", events: [{ ...ev, source: "live_human" }, { ...ev, source: "audio_attachment" }] });
+    expect(r.ok && r.value.practice).toBe(true);
+    expect(r.ok && r.value.events.map((e) => e.source)).toEqual(["simulated_persona", "simulated_persona"]);
+  });
   it("refuses empty or broken bodies with a plain reason", () => {
     expect(parseIntakeRequest(null)).toEqual({ ok: false, error: "The request was empty." });
     expect(parseIntakeRequest({ events: [] })).toEqual({ ok: false, error: "Add at least one message." });

@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.13, 10 Oct 2026. **Owner of this doc:** Oriol.
+**Version:** 1.14, 10 Oct 2026. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -250,6 +250,8 @@ No data supports the out-of-scope items. The README must not claim any of them a
 # Part D. The agent (P0, the scored core)
 
 ## D1. Architecture
+
+**Live workflow trial:** the Architect generates an executable incident graph from a business description. Concrete path requirements are saved as bounded planner `config.policy` strings and passed to the planner and safety critic; canvas names alone have no execution semantics. The workflow editor can create a new practice case from typed messages, including an escalation-only adaptation of delivery-003, and append simulated recipient/driver replies to the same accumulated case. It runs the real models and replays the actual trace. Messages remain sandboxed and these samples are marked simulated. A human correction is explicitly submitted with a name and saved against the exact executed flow, input and trace. The Architect proposes a draft change; a person reviews it, saves a new version and reruns the case. Feedback does not authorise an action or establish identity or safety clearance. A changed baseline invalidates the proposal. This is an incident decision workflow, not a connected carrier booking service or automatic full order lifecycle.
 
 ```
 case folder / live message / voice note / call transcript
@@ -1042,6 +1044,8 @@ This table is the reallocation.
 ---
 
 ## Changelog
+
+- **1.14:** add live typed workflow samples and accumulated simulated follow-up replies, including delivery-003's escalation-only gate-access trial. Architect planner policies now affect actual planning and the safety critic. Explicit human corrections are recorded with exact run/flow evidence and produce reviewable version changes, with stale-baseline checks and direct reruns for samples without answer keys. Three real Architect-generated demo flows and reproducible sandbox rehearsal scripts are included; no physical booking or delivery integration is implied.
 
 - **1.14 (15:45):** live calls follow the caller's language, switching whenever they do; the Desk Caller prompt makes calls natural and stops unchecked promises, case details to the wrong person and repeat questions to a driver; driver voice notes default to Any language.
 

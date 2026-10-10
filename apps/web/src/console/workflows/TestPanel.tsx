@@ -8,7 +8,7 @@ import type { Flow, ImproveProposal, ScenarioSetId, TestRun, TestRunCase, Workfl
 import { Icon } from "./icons";
 import { Badge, Btn, SectionLabel } from "./bits";
 import {
-  cancelTestRun, createVersion, getTestRun, getExecution, improveFlow, listCases, listScenarioSets, listTestRuns, listVersions,
+  cancelTestRun, createVersion, executeCase, getTestRun, getExecution, improveFlow, listCases, listScenarioSets, listTestRuns, listVersions,
   startTestRun, type ScenarioSetInfo, type TestRunBody,
 } from "./api";
 import {
@@ -167,7 +167,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   const [busyMsg, setBusyMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [accepted, setAccepted] = useState<{ version: number; run: TestRun } | null>(null);
-  const [feedbackRetest, setFeedbackRetest] = useState<{ version: number; caseId: string } | null>(null);
+  const [feedbackRetest, setFeedbackRetest] = useState<{ version: number; caseId: string; dataset: string } | null>(null);
   const [auto, setAuto] = useState<AutoState | null>(null);
   const [confirmAuto, setConfirmAuto] = useState(false);
   const [advanced, setAdvanced] = useState(false);
@@ -387,7 +387,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-4">
         {blocked && <div className="rounded-md bg-[#f59e0b]/10 px-3 py-2 text-[13px] text-[#fcd34d]">{blocked}</div>}
         {!blocked && hint && <div className="rounded-md bg-white/[0.04] px-3 py-2 text-[12.5px] text-white/60">{hint}</div>}
-        <FeedbackForm executionId={selectedExecId} workflowId={workflowId} disabled={disabled}
+        <FeedbackForm key={`${workflowId}:${selectedExecId}`} executionId={selectedExecId} workflowId={workflowId} disabled={disabled}
           onBusy={setImproving}
           onProposal={(p) => {
             setProposal(p);
@@ -495,9 +495,9 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
                     const p = proposal;
                     const r = run;
                     const v = await accept(p);
-                    if (v && p.feedbackId && selectedExecId) {
-                      const ex = await getExecution(selectedExecId);
-                      if (ex.ok) setFeedbackRetest({ version: v.version, caseId: ex.data.execution.caseId });
+                    if (v && p.feedbackId && (p.feedbackExecutionId || selectedExecId)) {
+                      const ex = await getExecution(p.feedbackExecutionId || selectedExecId!);
+                      if (ex.ok) setFeedbackRetest({ version: v.version, caseId: ex.data.execution.caseId, dataset: ex.data.execution.dataset });
                     } else if (v && r) setAccepted({ version: v.version, run: r });
                   }}
                 >
@@ -517,7 +517,13 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
         {feedbackRetest && !running && !autoRunning && workflowId && (
           <div className="space-y-2 rounded-lg bg-[#22c55e]/[0.07] p-3">
             <p className="text-[13px] text-white/85">Version {feedbackRetest.version} saved. Check the corrected case, then try another example.</p>
-            <Btn variant="primary" disabled={disabled} onClick={() => void runTest({ workflowId, version: feedbackRetest.version, set: "custom", caseIds: [feedbackRetest.caseId], limit: 1, fresh: true })}>Test the corrected case</Btn>
+            <Btn variant="primary" disabled={disabled} onClick={async () => {
+              setImproving(true);
+              const r = await executeCase({ workflowId, caseId: feedbackRetest.caseId, dataset: feedbackRetest.dataset });
+              setImproving(false);
+              if (r.ok) onShowExecution(r.data.execution.id);
+              else setError(r.error);
+            }}>Test the corrected case</Btn>
           </div>
         )}
 

@@ -144,6 +144,7 @@ export async function improveFromFeedback(body: ImproveInput): Promise<ImprovePr
     const current = getWorkflow(execution.workflowId);
     if (!current || flowHash(current.flow) !== flowHash(snapshot)) throw new ImproveError("The workflow changed while the proposal was being built. Test its current version again", 409);
     proposal.feedbackId = feedbackId;
+    proposal.feedbackExecutionId = execution.id;
     proposal.rationale = `Feedback from ${author} on ${execution.caseId}, run ${execution.id}, version ${from.version}: ${correction}. Review this proposed change and test it before relying on it.`;
     getDb().prepare("UPDATE workflow_feedback SET proposal = ? WHERE id = ?").run(JSON.stringify(proposal), feedbackId);
     return proposal;

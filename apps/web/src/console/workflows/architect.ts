@@ -7,6 +7,7 @@ export interface ArchitectUsage { model: string; latencyMs: number; tokensIn: nu
 export interface ArchitectResult { ok?: boolean; flow?: Flow; problems?: string[]; usage?: ArchitectUsage[]; error?: string }
 
 export const EXAMPLE_PROMPTS = [
+  "A residential parcel courier. Drivers sometimes reach a locked gate. Contact the verified recipient for intercom admission or meeting the driver; never request permanent access codes. If the recipient is unavailable, ask Dispatch for feasible alternatives matching their availability. Confirm handover from the driver's actual record. Build a granular incident workflow with missing-information and conflict checks, safe owner coordination, human authority checks and an unfamiliar-case fallback. Use only executable incident nodes, with concrete planner policies.",
   "Pharmacy courier, 40 drivers, controlled meds",
   "Frozen food, cold-chain vans",
   "Furniture two-person delivery and returns",
