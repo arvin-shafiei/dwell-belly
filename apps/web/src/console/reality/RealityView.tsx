@@ -37,8 +37,6 @@ import {
   type RealityResponse,
 } from "./logic";
 
-const RUN_COMMAND = "npm run reality -- reality/ ANSWERS";
-
 export default function RealityView() {
   const { params, setParams } = useConsole();
   const openId = params.get("case");
@@ -93,7 +91,6 @@ function Waiting({ error }: { error?: string }) {
     <Panel>
       <EmptyState icon={<IconClock size={20} />} title="Waiting for the Reality Test at 16:30">
         <p>Each case shows up here as soon as its answer is written.</p>
-        <p className="mt-3 font-mono text-[11px] text-white/35">{RUN_COMMAND}</p>
         {error && <p className="mt-3 text-[12px] text-rv-red/80">{error}</p>}
       </EmptyState>
     </Panel>

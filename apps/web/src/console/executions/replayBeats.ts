@@ -6,6 +6,9 @@ import type { Trace } from "../types";
 import { buildTimeline, type TimelineItem } from "./logic";
 import { clashSentence, plainChannel } from "./plainView";
 
+/** Case files the trace names by their file stem; shown as what they are. */
+const FILE_NAMES: Record<string, string> = { context: "Background notes", history: "Past orders", notes: "Notes" };
+
 type NodeItem = Extract<TimelineItem, { kind: "node" }>;
 
 export const MIN_BEAT_MS = 600;
@@ -94,7 +97,7 @@ export function buildReplay(trace: Trace | null | undefined): ReplayBeat[] {
       title: start?.kind === "run_start" ? scrubLeaks(start.title).replace(/^\s*case\s*[\w-]*\s*[:.\-–]\s*/i, "") : "",
       inputs: start?.kind === "run_start"
         ? start.inputs.map((i) => ({
-            from: scrubLeaks(i.from) || "Message",
+            from: (i.channel === "file" ? FILE_NAMES[i.from.toLowerCase()] : undefined) ?? (scrubLeaks(i.from) || "Message"),
             how: i.channel === "file" ? "" : plainChannel(i.channel),
             note: i.excerpt && !SIZE_ONLY.test(i.excerpt) ? shorten(scrubLeaks(i.excerpt), 140) : null,
           }))
