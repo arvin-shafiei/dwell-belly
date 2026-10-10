@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.3, 10 Oct 2026, 11:55 BST. **Owner of this doc:** Oriol.
+**Version:** 1.4, 10 Oct 2026, 11:50 BST. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -74,6 +74,15 @@ The rules also split the 70 technical points as "40% technical evaluation + 30% 
 ## A4. How judging works, and fair play
 
 - **Who judges:** Claude-based judging agents score every submission against a fixed framework (results, outputs, required and acceptable outcomes, red flags, repo contents, reproducibility). Human judges review ambiguous, close or inconsistent results.
+- **Who sees what.** This decides where effort pays:
+
+  | Who | What they look at | Do they see the UI? |
+  |---|---|---|
+  | Claude judging agents (most of the 70 technical points) | Files: `ANSWERS/`, traces, README, code, eval evidence, reproducibility | **No.** They read files; they do not open a browser or run a 3D scene. |
+  | Human judges | Close or unclear cases, the 60-second video, the 17:00 presentation | Only through the video and the presentation |
+  | People's Choice | The demos | Yes |
+
+  So coverage and outcomes are scored from `ANSWERS/` and `eval/results.md`, never from a visual. The UI earns points only through the demo (30) and People's Choice, and only if it shows the real product.
 - **No extra points for** more agents, a bigger codebase, a fancier UI, the most expensive model or longer output. A simple, reliable system can win.
 - **Forbidden:**
   - instructions aimed at the judge
@@ -202,9 +211,11 @@ An AI escalation desk for delivery operations. A case arrives (emails, portal me
 |---|---|---|---|
 | **P0** | The agent runtime and batch runner (Part D), the answer files (Part F) | 38.5 + 14 + most of 10.5 | Never cut |
 | **P1** | Eval and evidence: scores on all three datasets, committed; replay without keys; README | 10.5 + 7, and it protects P0 | Never cut |
-| **P2** | Demo video of the real product (Part H) | 30 | Never cut; recorded by 16:00 |
+| **P2** | The desk console and evidence grid (Part J0), and the demo video built on them (Part H) | 30, 7 | Never cut; recorded by 15:30 |
 | **P3** | Voice (Part I) | Best Voice, 7, demo | Starts only when the P0 checkpoint is green; stops at 14:30 if the core is not end to end |
-| **P4** | 3D city (Part J) | demo, People's Choice | Same abort rule; must never show mock output as real |
+| **P4** | 3D city (Part J1 to J4) | demo hook, People's Choice | No new city features. Real-trace replay only after the console is done. Must never show mock output as real. |
+
+**The order that matters:** a real run (P0), then `eval/results.md` (P1), then the desk console and evidence grid (P2), then the city replaying real traces (P4, nice to have). The city can stay; it must never be the evidence.
 
 ## C3. Scope
 
@@ -212,7 +223,7 @@ An AI escalation desk for delivery operations. A case arrives (emails, portal me
 - the core desk agent and its batch runner
 - the eval
 - voice notes, agent calls and voice approval
-- 2D and 3D replay of traces
+- the desk console with an evidence grid (the main UI), and the 3D city as a visual hook
 - README, LICENSE, video, posts
 
 **Out:**
@@ -722,14 +733,15 @@ eval/results.md              scores on all three datasets, committed
 
 | Time | Beat |
 |---|---|
-| 0 to 8 s | The problem: a delivery desk drowning in calls, emails and contradicting stories |
-| 8 to 30 s | A real practice case runs. Understand shows the clash, Decide routes to the owner, the gate stops a refund promise, and ANSWER.md appears. |
-| 30 to 45 s | A hard case: hold for a human with a decision card. If voice is ready, the manager approves by voice. |
-| 45 to 55 s | The evidence: eval numbers, zero critical failures, cost per case, total run time |
+| 0 to 8 s | The problem: a delivery desk drowning in calls, emails and contradicting stories. The 3D city can carry this hook. |
+| 8 to 30 s | In the desk console, a real practice case runs. Understand shows the clash, Decide routes to the owner, the gate stops a refund promise, and ANSWER.md appears. |
+| 30 to 45 s | A hard case in the console: hold for a human with a decision card. If voice is ready, the manager approves by voice. |
+| 45 to 55 s | The evidence grid: every tested case with its decision and pass or fail, the eval numbers, zero critical failures, cost per case, total run time |
 | 55 to 60 s | The one-liner |
 
-- The 2D view is the safety take; the 3D city is optional backdrop.
-- **3D footage is at most 10 seconds,** and only shows a case moving through the desk.
+- **The desk console is the main shot and the safety take.** The 3D city is an optional opening hook.
+- **3D footage is at most 10 seconds,** and only shows real traces or footage labelled SIMULATED.
+- **No pass rate, coverage number or "expected" check from the mock ever appears in the video.**
 - **Nothing produced by the mock or by simulated people appears without a SIMULATED label.**
 - At least one voice call in the video has a real person on the line, and the transcript visibly changes the case decision.
 - Compress to 720p and under 30 MB, and commit it normally as `demo/demo.mp4`.
@@ -866,7 +878,28 @@ The full 3-hour voice plan does not fit after a 13:45 P0 checkpoint, so voice is
 
 ---
 
-# Part J. UI and 3D city (P4, below the cut line)
+# Part J. UI: the desk console (P2) and the 3D city (P4)
+
+## J0. The desk console and evidence grid (the main UI)
+
+This is the product an ops team would use, and the main shot of the video. It lives on the home page of `apps/web` (`/`), which is a stub today.
+
+**What it shows for one case,** in five panels:
+
+1. **The case in:** messages and attachments as received.
+2. **What the agent understood:** claims vs records, the clash, what is missing, who owns the decision.
+3. **The decision,** with every outgoing message and its gate verdict (allowed, held or blocked) and the reason.
+4. **The handover card:** options, what would settle it, the fallback, and an approve button (voice approval comes from Part I).
+5. **The resulting ANSWER.md.**
+
+**The evidence grid** has one row per tested case across every dataset: public, generated, grounded, fixtures and the new synthetic sets. Each row shows the decision, the gate verdicts, pass or fail from the eval, and the cost and time. Clicking a row opens the case in the console. This is the coverage shot of the video, and it is credible only because it reads real results.
+
+**Data rules:**
+- **Real outputs only:** the console reads the runner's files (`trace.json`, `ANSWER.md`, `REASONING.md`) and the eval's results in `runs/`.
+- **One line asked of the runtime:** `cli.ts` should also save the run result (understanding, decision, gated messages, outbox, card) as `result.json` next to `trace.json`, so the console needn't parse markdown. Owner: Anson.
+- **Never calls the agent during a Reality run.** No mock data ever appears in the console.
+
+**README:** a short section says `/city` is a visualisation that replays traces, is not part of the agent, and `npm run answer` does not need it. That keeps the city code from reading as overbuilding or as part of the scored system.
 
 The 3D city (`/city`) and the 2D replay only read traces, from `GET /api/cases/:id/trace`, live from `GET /api/cases/:id/stream`, or from a static `traces/<caseId>.json` fallback. They never call the agent. Nothing in `/city` is on the Reality Test path.
 
@@ -979,7 +1012,7 @@ This table is the reallocation.
 |---|---|---|
 | Anson | **P0, the agent runtime, and P1, the eval.** He built and merged the runtime (PR #3: loader, Understand, Decide, the per-message gate with a critic, sandbox outbox, clock, supplied-tools discovery, the batch runner, report, 221 tests). Next: the first real-key run, timing, the eval run, `eval/results.md`. | `apps/api/src/agent/**`, `scripts/eval/**`, `data/generated/**`, `data/scraped/**`, `apps/api/src/lib/panel.ts` |
 | Oriol (+ Claude) | **Integration and voice.** Bringing the runtime and this PRD into line (Part E is aspirational; the runtime uses the v1 trace from `apps/api/src/lib/trace.ts`); the submission tracker and placeholders; extra test cases; the organiser questions; keys; then voice steps 1 to 4 on top of the runtime. Owns this PRD. | `apps/api/src/voice/**`, `apps/api/src/app/api/voice/**`, `docs/PRD.md`, `docs/submission-tracker.md` |
-| Arvin | **Layer 2 paused.** The J4 must-fixes, the `traceToCity` adapter, real-trace replay, the 2D/WebGL fallback. Owns the video (script and recording by 15:30), and the README and SUBMISSION.md drafts by 15:00. | `apps/web/src/world/**`, `apps/web/src/app/city/**`, `README.md`, `SUBMISSION.md` |
+| Arvin | **No new city features.** First the desk console and evidence grid (J0) on real traces, then the remaining J4 fixes (hide the "Expected" check unless a real trace is loaded), then city replay of real traces only if time is left. Owns the video (script and recording by 15:30), and the README and SUBMISSION.md drafts by 15:00. | `apps/web/src/app/**`, `apps/web/src/world/**`, `README.md`, `SUBMISSION.md` |
 | A 4th or 5th teammate, if any | The posts, the presentation script, replacing third-party docs with links (H2). Otherwise Arvin. | `docs/hackathon/**` |
 | Shared | The contract (Part E) | `apps/api/src/lib/contract.ts`, changed only via a PR to this doc first |
 
@@ -1011,7 +1044,8 @@ This table is the reallocation.
 | 13:45 | Three calls, decision types (including `no_action`), the per-action gate and hard triggers in. All 12 fixtures pass with zero critical failures. | Voice does not start |
 | 14:00 | Full run timed: 62 cases under 8 minutes. `eval/results.md` committed. | Cut model calls or concurrency first |
 | 14:30 | **Abort rule:** if P0 is not end to end and green, voice and 3D stop and help | |
-| 15:00 | README and SUBMISSION.md drafts (Arvin). Arvin replays real traces. | |
+| 14:00 | The desk console shows one real case from the first real run (Arvin) | Video uses the terminal and ANSWER.md |
+| 15:00 | The evidence grid reads real eval results. README and SUBMISSION.md drafts (Arvin). | Grid becomes a screenshot of `eval/results.md` |
 | 15:15 | Voice steps 1 to 4, if green | Video uses no live voice |
 | 15:30 | Dress rehearsal on a fresh clone with a scrambled folder. Video recorded. | Use the 2D take |
 | 16:00 | Video committed. Third-party docs replaced with links. Presenter and script ready. Posts drafted. `examples/practice-run/` committed. | |
@@ -1028,7 +1062,8 @@ This table is the reallocation.
 |---|---|---|
 | No runtime yet (12:20) | Everything else measures nothing | P0 owned by Oriol + Claude, reusing PR #3's client, baseline by 12:45 |
 | The eval rejects v2 traces | A correct agent scores 0 | Anson's first task (F4) |
-| Team time going to P4 and P1 instead of P0 | Every technical point | The K1 reallocation, Layer 2 paused, the abort rule |
+| Team time going to P4 and P1 instead of P0 | Every technical point | The K1 reallocation, no new city features, the desk console replaces city work, the abort rule |
+| The UI shows mock results as if real | Fair play, demo | Console reads only real outputs (J0); the city's "Expected" check is hidden unless a real trace is loaded; no mock numbers in the video (H1) |
 | Throughput and rate limits | Coverage (14) | 3 calls, caching, concurrency 8, key pool, timed by 14:00 |
 | Unknown Reality Test format, supplied tools or questions | Coverage, outcomes | Any-folder loader, raw fallback, the supplied-question slot; ask the organisers |
 | Over-acting on do-nothing cases, over-escalating simple ones, under-escalating legal or medical ones | Judgement (14), outcomes | `no_action`, the per-action gate, the split hard triggers, measured rates in C4 |
@@ -1055,7 +1090,12 @@ This table is the reallocation.
 
 ## Changelog
 
-- **1.3 (11:55):** the runtime is Anson's, merged in PR #3 and passing 221 offline tests; ownership (K1) updated to match. It writes the v1 trace (`apps/api/src/lib/trace.ts`), not the Part E contract, so Part E is now the target for additive changes, not what the code does today. The Watch flow, route replanning, the Architect and the self-test exist as demo-only modules that the runner does not import, so the README must say so. The tracker gains the first real-key run, the timed run and the extra test-case sets.
+- **1.4 (11:50):** the UI decision.
+  - **Who sees what (A4):** the judging agents read files, never the UI, which earns points only through the demo and People's Choice.
+  - **The desk console and evidence grid become the main UI** (new J0, priority P2), reading only real outputs. The runtime is asked to save `result.json` next to each trace.
+  - **The city:** no new features; at most a 10-second hook in the video, with real traces only and never mock numbers.
+  - **Also updated:** C2 order, C3 scope, H1 video beats, Arvin's K1 row, the K3 checkpoints at 14:00 and 15:00, and L1 risks.
+- **1.3 (11:45):** the runtime is Anson's, merged in PR #3 and passing 221 offline tests; ownership (K1) updated to match. It writes the v1 trace (`apps/api/src/lib/trace.ts`), not the Part E contract, so Part E is now the target for additive changes, not what the code does today. The Watch flow, route replanning, the Architect and the self-test exist as demo-only modules that the runner does not import, so the README must say so. The tracker gains the first real-key run, the timed run and the extra test-case sets.
 - **1.2 (11:40):** added the submission tracker (`docs/submission-tracker.md`) and `[MISSING]` placeholders for `ANSWERS/`, `SUBMISSION.md`, `demo/`, `eval/results.md`, `examples/practice-run/`, the launch posts and the presentation; a freeze-time check for leftover placeholders; the video path `demo/demo.mp4`; and the `.env.example` files, which the apps' `.gitignore` had been silently ignoring. Note: the version times in 1.0 and 1.1 were estimates and ran about an hour ahead of the real clock.
 - **1.1 (12:40):** folded in four reviews of v1.0: a judge simulation, a team map, a contract audit and a coverage audit.
   - **Contract (E):** compiles; adds `no_action`, `after` ordering, card `heldActionIds`, `options[].actionIds` and `fallbackOptionId`, the `understanding` and `decision` fields the templates need, pinned models and a prompt hash, the `perspectives` node, and "Call transcript" channel names. E2 defines storage, `resumeCase` input and `POST /api/cases`.
