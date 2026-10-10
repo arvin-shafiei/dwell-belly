@@ -1,14 +1,20 @@
 "use client";
 // Overlay module: WorkflowHud. "Rivet Ops — live" control-room HUD over the city canvas.
 // The root is pointer-events-none so the canvas stays draggable; only panels take the mouse.
-import { memo, useState } from "react";
+// Placement comes from WorkflowHud/layout.ts (one source of truth, unit-tested for overlaps):
+//   top bar (full width, may wrap; its height is measured) > ops panel (right) / scenario panel (left,
+//   above the minimap) > bottom band (decision card + hotkeys, between minimap and ops panel).
+// Z-order inside the HUD: bottom band 10 < panels 20 < top bar + its menus 30. CityPage keeps the
+// 3D canvas (and drei <Html> labels) in an isolated layer below the HUD.
+import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useWorld } from "../store";
+import { hudLayout, TOPBAR_FALLBACK_H, type Insets } from "./WorkflowHud/layout";
 import { MiniFlow } from "./WorkflowHud/MiniFlow";
-import { CaseFeed, DecisionToast, Deliveries, GLASS, HotkeysFooter, IncidentList, AgentToggle, TopBar, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { AgentToggle, CaseFeed, DecisionToast, Deliveries, GLASS, HotkeysFooter, IncidentList, RealAgentTag, SimulatedTag, useThrottledWorkflow } from "./WorkflowHud/parts";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
+import { Clock, TopBar } from "./WorkflowHud/topbar";
 
-// The Minimap sits at bottom-4 left-4 (240px); bottom overlays start right of it.
-const MINIMAP_CLEAR = 268;
+const px = (b: Insets): CSSProperties => ({ left: b.left, right: b.right, top: b.top, bottom: b.bottom });
 
 const STYLES = `
 @keyframes hud-toast-in { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: none; } }
@@ -37,19 +43,19 @@ function AgentNote() {
 const OpsPanel = memo(function OpsPanel({ onCollapse }: { onCollapse: () => void }) {
   const events = useThrottledWorkflow(250);
   return (
-    <aside className={`${GLASS} hud-panel flex max-h-full w-[380px] flex-col overflow-hidden`}>
-      <header className="flex items-center justify-between border-b border-white/[0.07] px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <span className="h-3.5 w-[3px] rounded-full bg-[#ff6a1a]" />
-          <h2 className="text-[12px] font-semibold tracking-tight text-white">Incident workflow</h2>
-          <span className="font-mono text-[10px] text-white/40">default-incident</span>
-          <AgentToggle />
+    <aside className={`${GLASS} hud-panel flex max-h-full w-full flex-col overflow-hidden`}>
+      <header className="flex items-center justify-between gap-2 border-b border-white/[0.07] px-4 py-2.5">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="h-3.5 w-[3px] shrink-0 rounded-full bg-[#ff6a1a]" />
+          <h2 className="shrink-0 whitespace-nowrap text-[12px] font-semibold tracking-tight text-white">Incident workflow</h2>
+          <span className="min-w-0 truncate font-mono text-[10px] text-white/40">default-incident</span>
+          <AgentToggle short />
         </div>
         <button
           type="button"
           onClick={onCollapse}
           title="Collapse panel"
-          className="grid h-6 w-6 place-items-center rounded-md text-white/60 transition hover:bg-white/10 hover:text-white"
+          className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-white/60 transition hover:bg-white/10 hover:text-white"
         >
           <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
             <path d="M3 1.5 L6.5 5 L3 8.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
@@ -83,45 +89,73 @@ function CollapsedTab({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-export default function WorkflowHud() {
+/** Embed mode (`?embed=1`, the desk console's iframe): only an honesty badge and the clock, in a corner. */
+function EmbedBadge() {
+  const real = useWorld((st) => st.agentMode === "real" && !!st.agentOnline);
+  return (
+    <div className="absolute left-2 top-2 flex items-center gap-2 rounded-lg border border-white/10 bg-[#0b0d12]/70 px-2 py-1 backdrop-blur-md">
+      <span className="h-2 w-2 shrink-0 rounded-sm bg-[#ff6a1a]" />
+      <Clock className="text-[11px]" />
+      {real ? <RealAgentTag /> : <SimulatedTag />}
+      <TourBadge />
+    </div>
+  );
+}
+
+/** Height of the top bar, kept in sync as it wraps (ResizeObserver; border-box). */
+function useMeasuredHeight<T extends HTMLElement>(fallback: number) {
+  const ref = useRef<T>(null);
+  const [h, setH] = useState(fallback);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setH(Math.ceil(el.getBoundingClientRect().height)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return [ref, h] as const;
+}
+
+export default function WorkflowHud({ embed = false }: { embed?: boolean }) {
   const [open, setOpen] = useState(true);
   const [scenOpen, setScenOpen] = useState(false);
   const cov = useScenarioCoverage();
+  const [barRef, barH] = useMeasuredHeight<HTMLDivElement>(TOPBAR_FALLBACK_H);
+
+  if (embed) {
+    return (
+      <div className="pointer-events-none absolute inset-0 z-10 select-none font-sans text-white antialiased">
+        <EmbedBadge />
+      </div>
+    );
+  }
+
+  const L = hudLayout({ topBarH: barH, opsOpen: open, minimap: true });
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none font-sans text-white antialiased">
       <style>{STYLES}</style>
 
-      <div className="absolute left-3 right-3 top-3">
-        <TopBar
-          badge={
-            <>
-              <AgentToggle />
-              <TourBadge />
-            </>
-          }
-          extra={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
-        />
+      {/* bottom band: decision card above the hotkeys, between the minimap and the ops panel */}
+      <div className="absolute z-10 flex flex-col items-center justify-end gap-2" style={px(L.bottomBand)}>
+        <DecisionToast />
+        <HotkeysFooter />
       </div>
 
-      <div className="absolute bottom-14 right-3 top-[72px] flex flex-col items-end">
+      <div className="absolute z-20 flex max-w-[calc(100%-24px)] flex-col items-end" style={{ ...px(L.ops), width: open ? L.ops.width : undefined }}>
         {open ? <OpsPanel onCollapse={() => setOpen(false)} /> : <CollapsedTab onOpen={() => setOpen(true)} />}
       </div>
 
       {scenOpen && (
-        <div className="absolute left-3 top-[72px] flex flex-col" style={{ bottom: MINIMAP_CLEAR }}>
-          <ScenarioPanel onClose={() => setScenOpen(false)} />
+        <div className="absolute z-20 flex max-w-[calc(100%-24px)] flex-col" style={{ ...px(L.scenario), width: L.scenario.width }}>
+          <ScenarioPanel cov={cov} onClose={() => setScenOpen(false)} />
         </div>
       )}
 
-      <div
-        className="absolute bottom-16 flex justify-center"
-        style={{ left: MINIMAP_CLEAR, right: open ? 404 : 12 }}
-      >
-        <DecisionToast />
-      </div>
-
-      <div className="absolute bottom-3 flex justify-center" style={{ left: MINIMAP_CLEAR, right: open ? 404 : 12 }}>
-        <HotkeysFooter />
+      <div ref={barRef} className="absolute z-30" style={px(L.topBar)}>
+        <TopBar
+          scenarios={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
+          badge={<TourBadge />}
+        />
       </div>
     </div>
   );

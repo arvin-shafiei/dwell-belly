@@ -43,6 +43,9 @@ export interface WorkflowEvent {
   source?: "mock" | "agent";
 }
 
+/** Weather the HUD/console forces on the Sky module; "auto" runs Sky's own looping cycle. */
+export type WeatherOverride = "auto" | "clear" | "overcast" | "drizzle" | "rain" | "storm";
+
 export interface Delivery {
   id: string; // "DL-1042"
   truckId: string;
@@ -67,6 +70,8 @@ interface WorldState {
   /** Whether the agent API answered its health check (null = not checked yet). */
   agentOnline: boolean | null;
   paused: boolean;
+  /** Forced weather (Sky eases to it over ~2 s and holds it); "auto" resumes the cycle. */
+  weatherOverride: WeatherOverride;
 
   blockEdge: (key: string, reason: string) => void;
   unblockEdge: (key: string) => void;
@@ -84,6 +89,7 @@ interface WorldState {
   setAgentMode: (m: "mock" | "real") => void;
   setAgentOnline: (v: boolean) => void;
   setPaused: (p: boolean) => void;
+  setWeatherOverride: (w: WeatherOverride) => void;
 }
 
 export const useWorld = create<WorldState>((set) => ({
@@ -99,6 +105,7 @@ export const useWorld = create<WorldState>((set) => ({
   agentMode: "mock",
   agentOnline: null,
   paused: false,
+  weatherOverride: "auto",
 
   blockEdge: (key, reason) => set((s) => ({ blocked: { ...s.blocked, [key]: reason } })),
   unblockEdge: (key) =>
@@ -122,6 +129,7 @@ export const useWorld = create<WorldState>((set) => ({
   setAgentMode: (agentMode) => set({ agentMode }),
   setAgentOnline: (agentOnline) => set({ agentOnline }),
   setPaused: (paused) => set({ paused }),
+  setWeatherOverride: (weatherOverride) => set({ weatherOverride }),
 }));
 
 /** Current blocked edges as a Set, for findPath(). Call inside useFrame via useWorld.getState(). */

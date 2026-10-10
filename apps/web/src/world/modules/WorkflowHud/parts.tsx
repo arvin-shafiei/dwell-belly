@@ -1,12 +1,11 @@
 "use client";
-// HUD building blocks: top bar, case feed, incidents, deliveries, decision toast, hotkeys footer.
+// HUD building blocks: agent labels, case feed, incidents, deliveries, decision toast, hotkeys footer.
 import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { emit, type WorldEvent } from "../../bus";
 import { useWorld, type Delivery, type Incident, type IncidentKind, type WorkflowEvent } from "../../store";
 import { getScenario } from "../../scenarios";
-import { formatAge, formatClock, formatCost, newAsks, RUNNER_OF, summariseCases } from "./flow";
-import { chosenAction, formatExpected, matchExpected, scenarioIdOf } from "./scenarioMatch";
+import { formatAge, formatCost, newAsks, RUNNER_OF, summariseCases } from "./flow";
+import { chosenAction, formatExpected, hasRealTrace, matchExpected, scenarioIdOf } from "./scenarioMatch";
 import {
   INCIDENT_COLOR,
   INCIDENT_LABEL,
@@ -66,116 +65,7 @@ export function SectionTitle({ children, right }: { children: ReactNode; right?:
   );
 }
 
-// ---------------------------------------------------------------- top bar
-
-const DEMO: { label: string; event: WorldEvent; kind: IncidentKind }[] = [
-  { label: "Car crash", event: { type: "request:crash", kind: "car_crash" }, kind: "car_crash" },
-  { label: "Truck crash", event: { type: "request:crash", kind: "truck_crash" }, kind: "truck_crash" },
-  { label: "Pileup", event: { type: "request:crash", kind: "pileup" }, kind: "pileup" },
-  { label: "Emergency landing", event: { type: "request:plane", kind: "emergency_landing" }, kind: "emergency_landing" },
-  { label: "Plane crash", event: { type: "request:plane", kind: "plane_crash" }, kind: "plane_crash" },
-  { label: "Roadworks", event: { type: "request:roadworks" }, kind: "roadworks" },
-  { label: "Van breakdown", event: { type: "request:breakdown" }, kind: "breakdown" },
-];
-
-function Clock() {
-  const hhmm = useWorld((s) => formatClock(s.timeOfDay));
-  return <span className="font-mono text-[15px] font-medium tabular-nums tracking-tight text-white">{hhmm}</span>;
-}
-
-function PauseButton() {
-  const paused = useWorld((s) => s.paused);
-  const setPaused = useWorld((s) => s.setPaused);
-  return (
-    <button
-      type="button"
-      onClick={() => setPaused(!paused)}
-      title={paused ? "Resume simulation" : "Pause simulation"}
-      className={`grid h-7 w-7 place-items-center rounded-md border transition ${
-        paused ? "border-[#ff6a1a]/60 bg-[#ff6a1a]/20 text-[#ff8a4a]" : "border-white/10 bg-white/5 text-white/80 hover:bg-white/10"
-      }`}
-    >
-      {paused ? (
-        <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden>
-          <path d="M1 1 L9 6 L1 11 Z" fill="currentColor" />
-        </svg>
-      ) : (
-        <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden>
-          <rect x="1" y="1" width="3" height="10" rx="0.6" fill="currentColor" />
-          <rect x="6" y="1" width="3" height="10" rx="0.6" fill="currentColor" />
-        </svg>
-      )}
-    </button>
-  );
-}
-
-function Counter({ label, value, tone }: { label: string; value: number; tone: string }) {
-  return (
-    <div className="flex flex-col items-end leading-none">
-      <span className={`font-mono text-[17px] font-semibold tabular-nums ${value > 0 ? tone : "text-white/40"}`}>{value}</span>
-      <span className="mt-1 text-[9px] uppercase tracking-[0.14em] text-white/45">{label}</span>
-    </div>
-  );
-}
-
-function Counters() {
-  const active = useWorld((s) => s.incidents.reduce((n, i) => n + (i.status !== "cleared" ? 1 : 0), 0));
-  const closed = useWorld((s) => Object.keys(s.blocked).length);
-  const cases = useWorld((s) => {
-    const open = new Set<string>();
-    for (const e of s.workflow) {
-      if (e.nodeId === "log" && e.status === "ok") open.delete(e.caseId);
-      else open.add(e.caseId);
-    }
-    return open.size;
-  });
-  return (
-    <div className="flex items-center gap-5">
-      <Counter label="Incidents" value={active} tone="text-rose-400" />
-      <Counter label="Roads closed" value={closed} tone="text-amber-300" />
-      <Counter label="Open cases" value={cases} tone="text-[#ff8a4a]" />
-    </div>
-  );
-}
-
-const SPEEDS = [1, 3, 10, 30];
-const PRESETS: { label: string; hour: number }[] = [
-  { label: "Dawn", hour: 6 },
-  { label: "Noon", hour: 12 },
-  { label: "Golden", hour: 18.5 },
-  { label: "Night", hour: 22.5 },
-];
-
-/** Fast-forward the clock and jump to a time of day (the Sky module adopts external time changes). */
-function TimeControls() {
-  const scale = useWorld((s) => s.timeScale);
-  const setScale = useWorld((s) => s.setTimeScale);
-  const setTime = useWorld((s) => s.setTimeOfDay);
-  const btn = "rounded px-1.5 py-0.5 font-mono text-[10px] tabular-nums transition";
-  return (
-    <div className="flex items-center gap-1">
-      <div className="flex items-center rounded-md border border-white/10 bg-white/5 p-0.5" title="Clock speed">
-        {SPEEDS.map((x) => (
-          <button
-            key={x}
-            type="button"
-            onClick={() => setScale(x)}
-            className={`${btn} ${scale === x ? "bg-[#ff6a1a]/25 text-[#ff8a4a]" : "text-white/60 hover:text-white"}`}
-          >
-            {x}×
-          </button>
-        ))}
-      </div>
-      <div className="flex items-center rounded-md border border-white/10 bg-white/5 p-0.5" title="Jump to time">
-        {PRESETS.map((p) => (
-          <button key={p.label} type="button" onClick={() => setTime(p.hour)} className={`${btn} text-white/60 hover:text-white`}>
-            {p.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
+// ---------------------------------------------------------------- agent labels
 
 /**
  * Honesty label (rules: no fabricated results). Everything the HUD shows about cases comes from the
@@ -186,10 +76,11 @@ export function SimulatedTag({ long = false }: { long?: boolean }) {
   return (
     <span
       title="Mock agent for the visual demo. Real decisions come from the agent runtime in apps/api (ANSWERS/<n>/trace.json)."
-      className="inline-flex items-center gap-1 rounded border border-fuchsia-400/50 bg-fuchsia-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-fuchsia-200"
+      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-fuchsia-400/50 bg-fuchsia-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-fuchsia-200"
     >
       <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-300" />
-      {long ? "Simulated · mock agent" : "Simulated"}
+      Simulated
+      {long && <span className="hidden whitespace-nowrap 2xl:inline"> · mock agent</span>}
     </span>
   );
 }
@@ -198,7 +89,7 @@ export function RealAgentTag() {
   return (
     <span
       title="Decided by the real agent in apps/api; this is a replay of its trace."
-      className="inline-flex items-center gap-1 rounded border border-emerald-400/50 bg-emerald-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-emerald-200"
+      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-emerald-400/50 bg-emerald-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-emerald-200"
     >
       <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
       Real agent
@@ -210,7 +101,7 @@ export function RealAgentTag() {
  * Mock vs real agent. "Real" sends each staged scenario to POST /api/cases (costs model calls), so
  * it's opt-in, and only available when the agent API answers its health check.
  */
-export function AgentToggle() {
+export function AgentToggle({ short = false }: { short?: boolean }) {
   const mode = useWorld((s) => s.agentMode);
   const online = useWorld((s) => s.agentOnline);
   const setMode = useWorld((s) => s.setAgentMode);
@@ -227,68 +118,12 @@ export function AgentToggle() {
             : "Click to send scenarios to the real agent (apps/api). Uses model calls."
           : "Agent API not reachable at NEXT_PUBLIC_API_URL, so the mock agent runs."
       }
-      className="disabled:cursor-not-allowed"
+      className="shrink-0 disabled:cursor-not-allowed"
     >
-      {real ? <RealAgentTag /> : <SimulatedTag long />}
+      {real ? <RealAgentTag /> : <SimulatedTag long={!short} />}
     </button>
   );
 }
-
-export const TopBar = memo(function TopBar({ badge, extra }: { badge?: ReactNode; extra?: ReactNode }) {
-  const paused = useWorld((s) => s.paused);
-  return (
-    <div className={`${GLASS} flex items-center gap-4 px-3 py-2`}>
-      <div className="flex items-center gap-2.5">
-        <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#ff6a1a] shadow-[0_0_18px_rgba(255,106,26,0.45)]">
-          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
-            <path d="M3 3 H10 A3 3 0 0 1 10 9 H6 L11 13" stroke="#0b0d12" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M3 3 V13" stroke="#0b0d12" strokeWidth="2.2" strokeLinecap="round" />
-          </svg>
-        </div>
-        <div className="leading-tight">
-          <div className="text-[13px] font-semibold tracking-tight text-white">Rivet Ops</div>
-          <div className="flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.18em]">
-            <span className="relative flex h-1.5 w-1.5">
-              {!paused && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff6a1a] opacity-75" />}
-              <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${paused ? "bg-white/40" : "bg-[#ff6a1a]"}`} />
-            </span>
-            <span className={paused ? "text-white/40" : "text-[#ff8a4a]"}>{paused ? "paused" : "live"}</span>
-            {badge}
-          </div>
-        </div>
-      </div>
-
-      <div className="h-8 w-px bg-white/10" />
-
-      <div className="flex items-center gap-2">
-        <Clock />
-        <PauseButton />
-        <TimeControls />
-      </div>
-
-      <div className="h-8 w-px bg-white/10" />
-
-      <div className="flex min-w-0 flex-1 items-center gap-1.5">
-        <span className="mr-1 hidden text-[9px] uppercase tracking-[0.16em] text-white/40 xl:inline">Inject</span>
-        {DEMO.map((d) => (
-          <button
-            key={d.label}
-            type="button"
-            onClick={() => emit(d.event)}
-            className="group flex items-center gap-1.5 whitespace-nowrap rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-[11px] font-medium text-white/85 transition hover:border-[#ff6a1a]/60 hover:bg-[#ff6a1a]/15 hover:text-white active:scale-[0.97]"
-          >
-            <IncidentIcon kind={d.kind} size={12} />
-            {d.label}
-          </button>
-        ))}
-      </div>
-
-      {extra}
-
-      <Counters />
-    </div>
-  );
-});
 
 // ---------------------------------------------------------------- icons
 
@@ -296,8 +131,16 @@ export function IncidentIcon({ kind, size = 16 }: { kind: IncidentKind; size?: n
   const c = INCIDENT_COLOR[kind];
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" aria-hidden className="shrink-0">
-      {kind === "car_crash" && (
+      {(kind === "car_crash" || kind === "pileup") && (
         <path d="M8 1 L9.6 5.2 L14 4.4 L11 8 L14.4 11.4 L9.8 11 L8 15 L6.2 11 L1.6 11.4 L5 8 L2 4.4 L6.4 5.2 Z" fill={c} />
+      )}
+      {kind === "pileup" && <circle cx="12.6" cy="3.4" r="2.2" fill={c} stroke="#0b0d12" strokeWidth="0.8" />}
+      {(kind === "emergency_landing" || kind === "plane_crash") && (
+        <path
+          d="M8 1 C8.8 1 9 2 9 3 V6.2 L15 9.6 V11 L9 9 V12.4 L10.8 13.8 V15 L8 14.2 L5.2 15 V13.8 L7 12.4 V9 L1 11 V9.6 L7 6.2 V3 C7 2 7.2 1 8 1 Z"
+          fill={c}
+          transform={kind === "plane_crash" ? "rotate(35 8 8)" : undefined}
+        />
       )}
       {kind === "truck_crash" && (
         <g fill={c}>
@@ -350,7 +193,7 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
                 <span className={`absolute inset-y-0 left-0 w-[3px] ${style.bar}`} />
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[11px] font-medium text-white">{c.caseId}</span>
-                  {c.caseId.startsWith("AGT-") ? <RealAgentTag /> : <SimulatedTag />}
+                  {c.caseId.startsWith("AGT-") || hasRealTrace(events, c.caseId) ? <RealAgentTag /> : <SimulatedTag />}
                   <span className={`rounded px-1.5 py-px font-mono text-[9px] uppercase tracking-wider ${style.chip}`}>{style.label}</span>
                   <span className="ml-auto font-mono text-[10px] tabular-nums text-white/55">{formatCost(c.cost)}</span>
                 </div>
@@ -374,8 +217,13 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
   );
 });
 
-/** For scenario cases: the case's expected next action and whether the mock agent's choice matches it. */
+/**
+ * For scenario cases replayed from a REAL agent trace: the expected next action and whether the agent's
+ * choice matches it. PRD J4: never shown for mock cases, whose planner copies the answer key and would
+ * always "match" (that would read as a fabricated eval).
+ */
 function ExpectedLine({ caseId, events }: { caseId: string; events: readonly WorkflowEvent[] }) {
+  if (!hasRealTrace(events, caseId)) return null;
   const sid = scenarioIdOf(caseId);
   const expected = sid ? getScenario(sid)?.expected : null;
   if (!expected) return null;
@@ -565,7 +413,7 @@ export function DecisionToast() {
   return (
     <div
       key={cur.e.id}
-      className={`${GLASS} hud-toast w-[min(440px,calc(100vw-32px))] overflow-hidden border-amber-300/30`}
+      className={`${GLASS} hud-toast w-full max-w-[440px] overflow-hidden border-amber-300/30`}
       role="alertdialog"
       aria-label="Decision needed"
     >
@@ -578,12 +426,12 @@ export function DecisionToast() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-300">Decision needed</span>
-          <SimulatedTag />
-          <span className="font-mono text-[11px] text-white/80">{cur.e.caseId}</span>
-          {queue.length > 1 && <span className="ml-auto font-mono text-[10px] text-white/45">+{queue.length - 1} queued</span>}
+          <span className="shrink-0 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-300">Decision needed</span>
+          {cur.e.source === "agent" ? <RealAgentTag /> : <SimulatedTag />}
+          <span className="min-w-0 truncate font-mono text-[11px] text-white/80">{cur.e.caseId}</span>
+          {queue.length > 1 && <span className="ml-auto shrink-0 font-mono text-[10px] text-white/45">+{queue.length - 1} queued</span>}
         </div>
-        <p className="mt-1.5 text-[13px] leading-snug text-white">{cur.e.summary}</p>
+        <p className="mt-1.5 line-clamp-3 text-[13px] leading-snug text-white">{cur.e.summary}</p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {opts.map((o) => {
             const on = picked === o.label;
@@ -637,9 +485,9 @@ const KEYS: [string, string][] = [
 
 export function HotkeysFooter() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-white/10 bg-[#0b0d12]/55 px-3.5 py-1.5 text-[10.5px] text-white/55 backdrop-blur-md">
+    <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-2xl border border-white/10 bg-[#0b0d12]/55 px-3.5 py-1.5 text-[10.5px] text-white/55 backdrop-blur-md">
       {KEYS.map(([k, v], i) => (
-        <span key={k} className="flex items-center gap-1.5">
+        <span key={k} className="flex items-center gap-1.5 whitespace-nowrap">
           {i > 0 && <span className="text-white/20">·</span>}
           <kbd className="rounded border border-white/15 bg-white/[0.06] px-1 py-px font-mono text-[10px] text-white/85">{k}</kbd>
           {v}
