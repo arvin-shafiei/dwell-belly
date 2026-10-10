@@ -25,6 +25,8 @@ export const ZONES = {
   depot: { minX: -60, maxX: 60, minZ: 240, maxZ: 330 },
   // North: suburb houses (delivery stops).
   suburbs: { minX: -80, maxX: 80, minZ: -340, maxZ: -240 },
+  // North-west: the airport. Runway runs along x; terminal, cargo sheds, control tower.
+  airport: { minX: -460, maxX: -250, minZ: -440, maxZ: -250 },
 } satisfies Record<string, Box>;
 
 export type ZoneName = keyof typeof ZONES;

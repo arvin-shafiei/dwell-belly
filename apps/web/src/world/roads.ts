@@ -122,6 +122,15 @@ addEdge(ringAt(0, -R), s(0, 0), "street");
 addEdge(ringAt(-110, -R), s(-1, 0), "street");
 addEdge(ringAt(110, -R), s(1, 0), "street");
 
+// Airport (north-west): access road from the ring's NW corner to the terminal and the cargo sheds
+addNode("airport_gate", -260, -260, "airport");
+addNode("airport_terminal", -300, -290, "airport");
+addNode("airport_cargo", -260, -330, "airport");
+addEdge(ringAt(-R, -R), "airport_gate", "street");
+addEdge("airport_gate", "airport_terminal", "street");
+addEdge("airport_gate", "airport_cargo", "street");
+addEdge("airport_terminal", "airport_cargo", "street");
+
 // --- Public API -------------------------------------------------------------
 
 export const ROAD_NODES: ReadonlyMap<string, RoadNode> = nodes;
@@ -151,12 +160,14 @@ export const PLACES = {
   hospital: g(3, -3),
   maintenanceYard: g(-4, -4),
   downtownCentre: g(0, 0),
+  airport: "airport_terminal",
+  airCargo: "airport_cargo",
 } as const;
 
 /** Delivery stops: every suburb node plus a spread of downtown intersections. */
 export const DELIVERY_STOPS: readonly string[] = [
   ...[...nodes.values()].filter((n) => n.zone === "suburbs").map((n) => n.id),
-  g(-2, -2), g(2, -1), g(1, 2), g(-3, 1), g(3, 3), g(0, -3), "farm_n", "farm_s", "dock_n",
+  g(-2, -2), g(2, -1), g(1, 2), g(-3, 1), g(3, 3), g(0, -3), "farm_n", "farm_s", "dock_n", "airport_cargo",
 ];
 
 /**

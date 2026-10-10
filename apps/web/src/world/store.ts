@@ -1,7 +1,8 @@
 // Shared world state (low-frequency things only). Per-frame positions live in registry.ts, not here.
 import { create } from "zustand";
 
-export type IncidentKind = "car_crash" | "truck_crash" | "roadworks" | "breakdown";
+export type IncidentKind =
+  | "car_crash" | "truck_crash" | "pileup" | "roadworks" | "breakdown" | "plane_crash" | "emergency_landing";
 export type IncidentStatus = "active" | "responding" | "clearing" | "cleared";
 
 export interface Incident {

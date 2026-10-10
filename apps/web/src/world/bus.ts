@@ -8,7 +8,8 @@ export type WorldEvent =
   | { type: "delivery:completed"; deliveryId: string }
   | { type: "vehicle:crashed"; vehicleId: string; incidentId: string }
   // Requests from the UI (demo buttons). The owning module listens and acts.
-  | { type: "request:crash"; kind: "car_crash" | "truck_crash" }
+  | { type: "request:crash"; kind: "car_crash" | "truck_crash" | "pileup" }
+  | { type: "request:plane"; kind: "emergency_landing" | "plane_crash" }
   | { type: "request:roadworks" }
   | { type: "request:breakdown" }
   // Scenarios (see scenarios.ts): the HUD fires one; the Scenarios module acts it out in the city and
