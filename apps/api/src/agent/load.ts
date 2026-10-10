@@ -16,6 +16,15 @@ const MAX_PDF_BYTES = 8_000_000;
 // Base64 adds a third; this keeps one image under the API's 5 MB limit and a request under 32 MB.
 const MAX_IMAGE_BYTES = 3_700_000;
 const MAX_MEDIA_TOTAL_BYTES = 20_000_000;
+// Audio is turned into text by a speech-to-text call (voice layer) when one is given. Each call is
+// bounded by its own timeout, so the count is capped to keep a case's load time bounded too.
+const AUDIO = new Set([".mp3", ".wav", ".m4a", ".ogg", ".webm", ".flac"]);
+const MAX_AUDIO_FILES = 3;
+const MAX_AUDIO_BYTES = 25_000_000;
+const UNCLEAR_BELOW = 0.6;
+
+export type TranscribeFn = (audio: Uint8Array, filename: string) =>
+  Promise<{ ok: true; text: string; language: string; confidence: number } | { ok: false; error: string }>;
 
 async function walk(dir: string): Promise<string[]> {
   const out: string[] = [];
@@ -28,16 +37,32 @@ async function walk(dir: string): Promise<string[]> {
   return out.sort();
 }
 
-export async function loadFolder(dir: string): Promise<CaseBundle> {
+export async function loadFolder(dir: string, options: { transcribe?: TranscribeFn } = {}): Promise<CaseBundle> {
   const bundle: CaseBundle = { id: path.basename(dir), title: path.basename(dir), documents: [], media: [], unreadable: [] };
   const files = await walk(dir);
   let textBudget = MAX_CASE_CHARS;
   let mediaBytes = 0;
+  let audioFiles = 0;
   for (const file of files) {
     const name = path.relative(dir, file);
     const ext = path.extname(file).toLowerCase();
     try {
-      if (MEDIA[ext]) {
+      if (AUDIO.has(ext)) {
+        if (!options.transcribe) { bundle.unreadable.push(`${name} (audio, not transcribed: no speech-to-text key)`); continue; }
+        if (audioFiles >= MAX_AUDIO_FILES) { bundle.unreadable.push(`${name} (audio, left out: at most ${MAX_AUDIO_FILES} recordings are transcribed per case)`); continue; }
+        const size = (await stat(file)).size;
+        if (size === 0 || size > MAX_AUDIO_BYTES) { bundle.unreadable.push(`${name} (audio, ${size === 0 ? "empty file" : `too large: ${size} bytes`})`); continue; }
+        audioFiles++;
+        const heard = await options.transcribe(new Uint8Array(await readFile(file)), name).catch(() => null);
+        if (!heard || !heard.ok) { bundle.unreadable.push(`${name} (audio, transcription failed)`); continue; }
+        // A recording is the speaker's account of events, never a record, whoever the speaker is.
+        const body = heard.confidence < UNCLEAR_BELOW ? `[unclear transcription] ${heard.text}` : heard.text;
+        const text = `Audio attachment transcribed automatically. What follows is a claim by the speaker, not a record.\n\n${body}`;
+        const take = Math.min(text.length, MAX_TEXT_CHARS, textBudget);
+        textBudget -= take;
+        if (take > 0) bundle.documents.push({ name: `${name} (audio transcript)`, text: text.slice(0, take) });
+        if (take < text.length) bundle.unreadable.push(`${name} (read the first ${take} of ${text.length} characters of its transcript)`);
+      } else if (MEDIA[ext]) {
         const size = (await stat(file)).size;
         if (size === 0) bundle.unreadable.push(`${name} (empty file)`);
         else if (size > (ext === ".pdf" ? MAX_PDF_BYTES : MAX_IMAGE_BYTES)) bundle.unreadable.push(`${name} (too large: ${size} bytes)`);
