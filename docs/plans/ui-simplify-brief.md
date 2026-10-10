@@ -48,3 +48,21 @@ The user wants the desk console (`/`) and the city HUD (`/city`) **clean, easy, 
 5. **Less on screen.** Hide advanced controls (JSON editors, runner chips, version notes, cost breakdowns, debug badges) behind an "Advanced" toggle that's off by default. Show counts as big simple numbers with a word ("12 Sent", "3 Need a person").
 6. **Honesty stays.** Keep provenance labels, but in plain words: "Live" for real agent results, "Practice case" for city-made cases. Never show a fake number.
 7. **Don't break anything:** same data and same APIs, keep tests passing (update text assertions), and keep `/` and `/city` returning 200. No git, no pkill, and stay in your owned files. Put the glossary in ONE shared file, `apps/web/src/ui/plain.ts` (`plainNode(type)`, `plainOutcome(o)`, `plainGate(g)`, `riskWord(n)`, `cents(usd)`), created by the console-shell agent. Other agents import it; if it doesn't exist yet, create it with exactly those exports (first writer wins, so don't overwrite it, only extend it).
+
+## Addendum: raw step summaries are the worst leak
+
+The backend writes developer summaries into each step's `node_end.summary`, e.g. "triage: missed_or_failed_delivery · medium", "perspectives: skipped: no Jev key", "ingest: 1 files, 0 attachments read", "verify: accepted by the outbox; receipt and reply unverified", "planner: act: Plover Arc Logistics owns the route review…", "gate: 2 of 2 messages cleared".
+
+**Never render `summary` raw.** Every UI must go through `plainStep(nodeType, summary, output?)` in `apps/web/src/ui/plain.ts`, which returns a short plain sentence or `null` (null = hide the step):
+- **ingest:** "Read the messages".
+- **history:** "Checked past orders", or "Found 2 open promises".
+- **triage:** "Problem: missed delivery", via `plainCaseType` (snake_case → words, with a map for the known types).
+- **perspectives:** "Got second opinions"; if skipped or no key, return `null` and hide it.
+- **clash:** "The stories don't match: <short reason>" or "The stories match".
+- **planner:** "Plan: send a message", "Plan: ask a question" or "Plan: ask a person", plus the owner in plain words; never the raw reasoning.
+- **gate:** "Safety check passed" / "Safety check: 1 held for a person" / "Safety check stopped it".
+- **action:** "Message sent" / "2 messages sent".
+- **verify:** "Sent, waiting for a reply".
+- **log:** hide it.
+
+Also strip anything that matches `/Jev|Claude|outbox|config|trace|run_end|\bkey\b/i` from any user-visible string, and replace snake_case with words. The `plain.ts` owner implements `plainStep` with tests; everyone else uses it.
