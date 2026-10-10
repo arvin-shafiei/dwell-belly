@@ -4,7 +4,6 @@ import { memo } from "react";
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
 import type { FlowNode } from "../types";
 import { Icon } from "./icons";
-import { scrubLeaks } from "../../ui/plain";
 import { metaFor, nodeTitle, plainWhen } from "./nodeTypes";
 import type { NodeRun } from "./status";
 import { runMark } from "./runStats";
@@ -127,13 +126,6 @@ function FlowNodeCardImpl({ data, selected }: NodeProps<CardNode>) {
       {run && (
         <div className="absolute -right-2 -top-2">
           <StatusMark run={run} />
-        </div>
-      )}
-
-      {/* What this step found, right under the block, so a run can be read off the canvas. */}
-      {run && run.detail.length > 0 && !mark && (
-        <div className="pointer-events-none absolute left-0 top-full mt-1.5 line-clamp-3 text-[12px] leading-snug text-white/70" style={{ width: CARD_W }}>
-          {scrubLeaks(run.detail[0])}
         </div>
       )}
 
