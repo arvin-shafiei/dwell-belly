@@ -31,7 +31,7 @@ git grep -n "\[MISSING\]" -- ':!docs/submission-tracker.md' ':!docs/PRD.md'
 | Voice marked as an unverified claim in the agent's input | PRD D2.14, I5 | `apps/api/src/agent/load.ts` (`fromView`), `prompts.ts` | Anson | Missing. `fromView` still labels events `voice: live human`; it should say `voice (unverified claim)`, plus one Understand-prompt sentence that voice is a claim even from carrier staff. |
 | Keys for a full voice rehearsal | | `apps/api/.env.local` | Oriol | All set and verified on Oriol's machine: ElevenLabs key, Desk Caller agent id, Anthropic, TypeSafe (Jev answered in 280 ms; a spoken refund promise was denied in 274 ms, a harmless sentence allowed in 225 ms). Regenerate all of them after the event. |
 | README section saying `/city` is a visualisation, not part of the agent | 6B, 15 | `README.md` | Arvin | Done, under "What is and is not in the scored run". |
-| LinkedIn and X posts | 6F | `docs/launch-posts.md`, `SUBMISSION.md` | Unassigned | Placeholder |
+| LinkedIn and X posts | 6F | `docs/launch-posts.md`, `SUBMISSION.md` | Unassigned | Both posts published and linked in both files. |
 | Apache 2.0 licence | 6G | `LICENSE` |  | Done. Replaced the reformatted 55-line copy with the standard 202-line text from apache.org. |
 | Third-party material | 6G, 17 | `docs/hackathon/`, `data/raw/` | Oriol (decision) | Open. Recommended: remove the kickoff transcript, replace the rules and guides with links plus our own summary, credit the organisers' practice cases. |
 | Submission form fields | 7 | `SUBMISSION.md` | Unassigned | Placeholder |
