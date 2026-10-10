@@ -24,7 +24,9 @@ export type TraceEvent =
               model: string; latencyMs: number; tokensIn: number; tokensOut: number;
               costUsd: number; ok: boolean; error?: string })
   | (Base & { kind: "node_end"; nodeId: string; status: "ok" | "error" | "skipped";
-              summary: string; output?: NodeOutput; latencyMs: number; costUsd: number })
+              summary: string; output?: NodeOutput; latencyMs: number; costUsd: number;
+              /** How this step reached its result, as a few short plain lines for a person. Never case text copied verbatim. */
+              detail?: string[] })
   | (Base & { kind: "edge"; from: string; to: string; when?: "allow" | "ask" | "block" | string })
   | (Base & { kind: "run_end"; outcome: Outcome; totalCostUsd: number; totalLatencyMs: number;
               nextAction?: NextAction; error?: string });

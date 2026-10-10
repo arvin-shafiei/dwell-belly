@@ -146,6 +146,11 @@ export function renderReasoning(r: RunResult): string {
   for (const e of r.trace.events) {
     if (e.kind === "node_end") lines.push(`| ${e.nodeId} | ${e.status} | ${cell(e.summary)} | ${e.latencyMs} ms | $${e.costUsd.toFixed(4)} |`);
   }
+  const explained = r.trace.events.filter((e) => e.kind === "node_end" && e.detail?.length);
+  if (explained.length) {
+    lines.push("", "## How each step decided");
+    for (const e of explained) if (e.kind === "node_end") lines.push("", `**${e.nodeId}**`, ...(e.detail ?? []).map((d) => `- ${d}`));
+  }
   const calls = r.trace.events.filter((e) => e.kind === "model_call");
   const end = r.trace.events.findLast((e) => e.kind === "run_end");
   lines.push("", `Model calls: ${calls.length}. Total cost: $${end?.kind === "run_end" ? end.totalCostUsd.toFixed(4) : "0"}. Total time: ${end?.kind === "run_end" ? end.totalLatencyMs : 0} ms.`);

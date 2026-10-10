@@ -4,7 +4,7 @@ import "@xyflow/react/dist/style.css";
 import "./workflows.css";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import {
-  Background, BackgroundVariant, Controls, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow,
+  Background, BackgroundVariant, Controls, MiniMap, Panel, ReactFlow, ReactFlowProvider, useReactFlow,
   type Connection, type Edge, type NodeChange,
 } from "@xyflow/react";
 import type { ExecutionRecord, Flow, FlowNode, ImproveProposal, NodeType, WorkflowRecord, WorkflowVersion } from "../types";
@@ -13,7 +13,7 @@ import {
   type ExecutionSummary,
 } from "./api";
 import { ArchitectPanel } from "./ArchitectPanel";
-import { cents, plainFailure, plainOutcome } from "../../ui/plain";
+import { cents, plainFailure, plainOutcome, scrubLeaks } from "../../ui/plain";
 import { nameFrom, problemsByNode, revealFrame, revealOrder, safetyLine, safetySummary, slugify, type ArchitectUsage } from "./architect";
 import { WorkflowMenu } from "./WorkflowMenu";
 import { TestPanel } from "./TestPanel";
@@ -221,6 +221,20 @@ function EditorInner() {
     if (diffView || !execId || !execution?.trace || execution.id !== execId) return null;
     return buildOverlay(execution.trace, doc?.flow ?? null, cursor ?? undefined);
   }, [execId, execution, doc?.flow, cursor, diffView]);
+
+  // The step whose reasoning is shown in full: the one that just finished in the playback, else the one clicked.
+  const explained = useMemo(() => {
+    if (!overlay) return null;
+    let id: string | null = sel?.kind === "node" ? sel.id : null;
+    if (cursor !== null && execution?.trace) {
+      for (let i = Math.min(cursor, execution.trace.events.length - 1); i >= 0; i--) {
+        const e = execution.trace.events[i];
+        if (e.kind === "node_end") { id = e.nodeId; break; }
+      }
+    }
+    const run = id ? overlay.nodes[id] : null;
+    return run && run.detail.length ? run : null;
+  }, [overlay, cursor, execution, sel]);
 
   // ---------- canvas model ----------
   // The canvas draws a display tree (shared nodes copied per branch, loops as badges) laid out as
@@ -847,6 +861,19 @@ function EditorInner() {
           >
             <Background variant={BackgroundVariant.Dots} gap={20} size={1.4} color="#3b3b44" bgColor="#1f1f23" />
             <Controls position="bottom-left" showInteractive={false} />
+            {explained && (
+              <Panel position="bottom-center" className="!mb-3">
+                <div className="max-w-[560px] rounded-xl border border-white/10 bg-[#17171b]/92 px-4 py-3 text-[13px] text-white/85 shadow-xl backdrop-blur">
+                  <div className="mb-1.5 flex items-center gap-2 text-[12px] font-semibold text-white">
+                    <span>{nodeTitle(doc?.flow.nodes.find((n) => n.id === explained.nodeId) ?? { id: explained.nodeId, type: explained.nodeType as never, runs_on: [] })}</span>
+                    <span className="font-normal text-white/45">how it decided</span>
+                  </div>
+                  <ul className="space-y-1">
+                    {explained.detail.map((line, i) => <li key={i} className="leading-snug">{scrubLeaks(line)}</li>)}
+                  </ul>
+                </div>
+              </Panel>
+            )}
             <MiniMap
               position="bottom-right" pannable zoomable
               nodeColor={(n) => {

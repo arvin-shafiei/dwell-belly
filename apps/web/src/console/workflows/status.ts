@@ -23,6 +23,8 @@ export interface NodeRun {
   latencyMs: number;
   costUsd: number;
   summary: string | null;
+  /** How the step reached its result, in a few plain lines (node_end.detail). Empty for older runs. */
+  detail: string[];
   output: NodeEndEvent["output"] | null;
   modelCalls: ModelCallEvent[];
 }
@@ -69,7 +71,7 @@ export function buildOverlay(trace: Trace, flow?: Pick<Flow, "edges"> | null, up
     if (!n) {
       n = nodes[nodeId] = {
         nodeId, nodeType, status: "running", runs: 0, order: order++, startT: t, endT: null,
-        latencyMs: 0, costUsd: 0, summary: null, output: null, modelCalls: [],
+        latencyMs: 0, costUsd: 0, summary: null, detail: [], output: null, modelCalls: [],
       };
     }
     return n;
@@ -103,6 +105,7 @@ export function buildOverlay(trace: Trace, flow?: Pick<Flow, "edges"> | null, up
         n.latencyMs += ev.latencyMs;
         n.costUsd += ev.costUsd;
         n.summary = ev.summary;
+        n.detail = ev.detail ?? [];
         n.output = ev.output ?? null;
         break;
       }
