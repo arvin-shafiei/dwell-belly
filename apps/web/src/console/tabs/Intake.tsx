@@ -146,6 +146,13 @@ export default function IntakeTab() {
             </p>
           </Panel>
 
+          <Panel title="Phone the desk as the driver">
+            <p className="mb-3 text-[13px] text-white/55">
+              You&apos;re a driver on the road. Tell the desk what&apos;s stopping the delivery and what you can do, in any language. When you hang up, the call is added below and the agent handles the rest.
+            </p>
+            <VoiceSlot.DriverCall onCall={(m) => setAdded((a) => [...a, m])} />
+          </Panel>
+
           <Panel title="Add a message" subtitle={added.length ? `${added.length} added` : undefined}>
             <AddMessage onAdd={(m) => setAdded((a) => [...a, m])} />
             {added.length > 0 && (

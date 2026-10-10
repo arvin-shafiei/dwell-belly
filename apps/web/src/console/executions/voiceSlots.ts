@@ -175,3 +175,32 @@ export function callStateSeed(e: ExecutionRecord, calleeName: string, simulated:
     at: "",
   };
 }
+
+/** New case: a driver on the road phones the desk. Nothing is known before the call; the call is the case. */
+export const DRIVER_CALL_ID = "new-driver-call";
+
+export function driverCallRequest(name: string) {
+  return {
+    mode: "demo" as const,
+    purpose: "call" as const,
+    caseId: DRIVER_CALL_ID,
+    calleeRole: "driver",
+    calleeName: name,
+    brief: `${name} is one of our delivery drivers, out on their round. They flagged a delivery they can't complete. Nothing else is known yet.`,
+    goal: "Find out what is stopping the delivery, which parcel and address it is, and what the driver can do from there (wait, try again later, or leave it at a pickup point), so the desk can sort out the rest.",
+    questions: ["What's stopping the delivery?", "Which parcel is it, and what's the address?", "What can you do from there, and how long can you wait?"],
+  };
+}
+
+export function driverCallState(name: string): CallStateSeed {
+  return { caseId: DRIVER_CALL_ID, mode: "demo", source: "live_human", caseText: "", calleeName: name, startN: 1, at: "" };
+}
+
+/** The finished driver call as one call transcript for the case: only what was said, desk and driver. */
+export function driverCallMessage(events: CaseViewEvent[], name: string): { channel: string; from: string; to: string; subject: null; date: null; body: string } | null {
+  const lines = events
+    .filter((e) => e.channel === "Call transcript" && (e.from === name || (e.from === "Desk (voice agent)" && e.to === name)))
+    .map((e) => `${e.from === name ? name : "Desk"}: ${e.body}`);
+  if (!lines.length) return null;
+  return { channel: "Call transcript", from: `${name} (driver)`, to: "Rivet Delivery Desk", subject: null, date: null, body: lines.join("\n") };
+}

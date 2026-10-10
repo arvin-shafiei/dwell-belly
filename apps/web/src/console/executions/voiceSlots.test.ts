@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ExecutionRecord, OutboxEntry } from "../types";
-import { approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noCallLine, noteCaseText, noteRerun, partyRole, voiceNeeded, childRun } from "./voiceSlots";
+import { approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noCallLine, noteCaseText, noteRerun, partyRole, voiceNeeded, childRun, driverCallMessage, driverCallRequest, driverCallState } from "./voiceSlots";
 
 
 const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
@@ -102,5 +102,28 @@ describe("voice slots", () => {
     const r = callRequest(ex, { ...row("Call"), action: { ...row("Call").action, message: "x".repeat(900) } });
     expect(r.brief.length).toBe(600);
     expect(r).toMatchObject({ purpose: "call", calleeName: "Ms Patel", goal: "Agree a slot", mode: "demo" });
+  });
+});
+
+describe("driver call from New case", () => {
+  const ev = (from: string, to: string, body: string) => ({ n: 1, timestamp: "", stage: null, channel: "Call transcript", from, to, body });
+  it("keeps only what the desk and the driver said, in order", () => {
+    const m = driverCallMessage([
+      ev("Desk (voice agent)", "Tom", "Hi, is this Tom?"),
+      ev("Tom", "Desk", "Yes. The road's closed, I can't get the van in."),
+      ev("Tom (driver)", "Desk", "Said on the call (blocker): road closed"),
+      ev("Desk (voice agent)", "Desk supervisor", "A person is needed: off track"),
+    ], "Tom");
+    expect(m?.from).toBe("Tom (driver)");
+    expect(m?.body).toBe("Desk: Hi, is this Tom?\nTom: Yes. The road's closed, I can't get the van in.");
+  });
+  it("gives nothing for a call where nobody spoke", () => {
+    expect(driverCallMessage([], "Tom")).toBeNull();
+  });
+  it("asks the agent about the blocker, the parcel and what the driver can do, with no case details", () => {
+    const r = driverCallRequest("Tom");
+    expect(r.purpose).toBe("call");
+    expect(r.questions).toHaveLength(3);
+    expect(driverCallState("Tom").caseText).toBe("");
   });
 });

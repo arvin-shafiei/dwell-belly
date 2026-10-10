@@ -26,6 +26,7 @@ import { Badge, getJson } from "./ui";
 import { liveCallsOn, setLiveCalls, subscribeLiveCalls } from "../../voice/liveCalls";
 import {
   approvalRerun, callableRows, childRun, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noteCaseText, partyRole, type VoiceComponentName,
+  driverCallMessage, driverCallRequest, driverCallState,
 } from "./voiceSlots";
 
 // The voice components' props are owned by the voice layer; the slots pass the documented shapes.
@@ -290,6 +291,25 @@ function Mounts({ execution }: { execution: ExecutionRecord }) {
   );
 }
 
+/** New case: you phone the desk as a driver on the road. When you hang up, the call is added to the case as one call transcript. */
+function DriverCall({ name = "Tom", onCall }: { name?: string; onCall: (message: NonNullable<ReturnType<typeof driverCallMessage>>) => void }) {
+  return (
+    <Slot
+      name="CallDrawer"
+      label="Call the desk as the driver"
+      props={{
+        request: driverCallRequest(name),
+        state: driverCallState(name),
+        label: "Call the desk as the driver",
+        onDone: (r: { events: CaseViewEvent[] }) => {
+          const message = driverCallMessage(r.events, name);
+          if (message) onCall(message);
+        },
+      }}
+    />
+  );
+}
+
 /** One thing a person can do by voice: what it is, who they play, then the control. */
 function VoiceCard({ icon, title, children }: { icon: string; title: string; children: ReactNode }) {
   return (
@@ -303,5 +323,5 @@ function VoiceCard({ icon, title, children }: { icon: string; title: string; chi
   );
 }
 
-export const VoiceSlot = { NoteButton, CallDrawer, ApproveByVoice, Mounts, Ring, LiveCallsSwitch };
+export const VoiceSlot = { NoteButton, CallDrawer, ApproveByVoice, Mounts, Ring, LiveCallsSwitch, DriverCall };
 export default VoiceSlot;
