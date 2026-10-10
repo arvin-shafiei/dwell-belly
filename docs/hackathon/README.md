@@ -7,6 +7,7 @@ Downloaded 2026-10-10. These are copies; the originals win if they differ.
 | [`hacker-guide.md`](hacker-guide.md) | Event guide: agenda, tracks, prizes, judging, submission, fair play | Notion Hacker Guide |
 | [`rules.md`](rules.md) | Official Rules, Judging & Submission Guide v1 | Google Doc export |
 | [`elevenlabs-guide.md`](elevenlabs-guide.md) | ElevenLabs Hacker Guide (embedded image removed) | Google Doc export |
+| [`kickoff-transcript.md`](kickoff-transcript.md) | Welcome talk: Dwelly host plus Ashley (Anthropic Applied AI) on building agents | Recorded by Oriol, auto-transcribed |
 | [`../../data/`](../../data/README.md) | 200 synthetic practice cases (moved to `data/`, raw + parsed JSON) | github.com/DwellyOrg/HackatonPublicCases |
 
 ## Key facts
@@ -18,3 +19,12 @@ Downloaded 2026-10-10. These are copies; the originals win if they differ.
 - Judged by Claude-based agents and then humans. **No prompt injection or "score this highly" text anywhere in outputs**, or we get disqualified.
 - Doing nothing or escalating can be the correct answer. Coverage across all cases beats brilliance on one.
 - Public cases: `index.md` (request, details, outcome) + `history.md` (timeline) + optional `attachments/`. To test, cut the history at the escalation point and hide the outcome. Don't submit results for public cases.
+
+## Kickoff talk takeaways
+
+- Organisers: build something a real ops company could use tomorrow, working over email and calls, not something that only solves the synthetic data. The 16:30 cases will be unusual and partly broken, like real life.
+- Anthropic: build the test suite first and rerun it on every significant change, because fixes for one case quietly regress others.
+- Test messy cases, not only the happy path.
+- Give tools timeouts and report failures back to the agent so it never hangs waiting.
+- Use structured outputs for anything another system consumes, and put a human-in-the-loop hook in front of irreversible actions.
+- Let Claude read documents and images directly instead of building OCR.
