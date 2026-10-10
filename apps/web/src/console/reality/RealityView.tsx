@@ -25,6 +25,7 @@ import {
 import { cents } from "../../ui/plain";
 import { postJson, useApi } from "../useApi";
 import CaseDetail from "./CaseDetail";
+import FilesView from "./FilesView";
 import UploadArea, { type StagedUpload } from "./UploadArea";
 import { TONE_CLASS, TileStatusDot } from "./tone";
 import {
@@ -89,6 +90,7 @@ export default function RealityView() {
   if (open) return <CaseDetail c={open} query={query} root={root} onBack={() => setParams({ case: null })} />;
 
   const tryAny = () => setParams({ src: "try", run: null, case: null });
+  const view: "files" | "cases" = params.get("view") === "files" ? "files" : "cases";
 
   return (
     <div className="h-full overflow-y-auto">
@@ -103,7 +105,7 @@ export default function RealityView() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <SourceSwitch source={source} onChange={(src) => setParams({ src: src === "try" ? "try" : null, run: null, case: null })} />
+          <SourceSwitch source={source} onChange={(src) => setParams({ src: src === "try" ? "try" : null, run: null, case: null, view: src === "answers" ? "files" : view })} />
           <Badge tone="neutral" title="Shown exactly as written by the run. Nothing here can change them.">
             Read-only
           </Badge>
@@ -131,6 +133,13 @@ export default function RealityView() {
       ) : (
         <>
           {phase === "running" ? <Progress done={t.done} total={t.total} /> : <Summary t={t} />}
+          <div className="flex items-center gap-3">
+            <ViewSwitch view={view} onChange={(v) => setParams({ view: v === "files" ? "files" : null })} />
+            <button type="button" onClick={() => setParams({ view: "files" })} className="font-mono text-[12px] text-white/45 hover:text-white/80" title="Browse the output folder">
+              {root}/
+            </button>
+          </div>
+          {view === "files" ? <FilesView query={query} cases={cases} /> : <>
           <Panel
             title={phase === "running" ? "Cases" : `All ${t.total} cases`}
             actions={<Legend />}
@@ -138,6 +147,7 @@ export default function RealityView() {
             <TileGrid cases={cases} total={t.total} onOpen={(id) => setParams({ case: id })} />
           </Panel>
           <CaseTable cases={cases.filter((c) => caseStatus(c) !== "working")} onOpen={(id) => setParams({ case: id })} />
+          </>}
         </>
       )}
     </div>
@@ -159,6 +169,29 @@ function SourceSwitch({ source, onChange }: { source: Source; onChange: (s: Sour
           className={cx(
             "rounded px-2.5 py-1 text-[12px] font-medium transition-colors",
             source === k ? "bg-white/[0.08] text-white" : "text-white/50 hover:text-white/80",
+          )}
+        >
+          {label}
+        </button>
+      ))}
+    </span>
+  );
+}
+
+function ViewSwitch({ view, onChange }: { view: "files" | "cases"; onChange: (v: "files" | "cases") => void }) {
+  const opts: ["files" | "cases", string][] = [["files", "Files"], ["cases", "Cases"]];
+  return (
+    <span className="inline-flex rounded-md border border-white/[0.08] p-0.5" role="tablist" aria-label="Results view">
+      {opts.map(([k, label]) => (
+        <button
+          key={k}
+          type="button"
+          role="tab"
+          aria-selected={view === k}
+          onClick={() => onChange(k)}
+          className={cx(
+            "rounded px-2.5 py-1 text-[12px] font-medium transition-colors",
+            view === k ? "bg-white/[0.08] text-white" : "text-white/50 hover:text-white/80",
           )}
         >
           {label}
