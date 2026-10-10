@@ -6,7 +6,7 @@ Anson. Backend decisions, edge cases and the eval. Paths: `scripts/eval/`, `data
 
 ## Built so far
 
-**Nothing below is pushed.** Four commits sit on local `main` (a hook on my machine blocks pushing to main; I will push or open a PR next).
+**Everything below is in PR #3 (branch `anson/eval-dataset`), not yet merged to main.** `data/scraped/` is local only.
 
 - **120 generated hard cases** in `data/generated/delivery/gen-NNN.json`, 10 for each of 12 patterns (conflicting info, failed action, missing context, noise, superseded request, out-of-policy demand, embedded instructions, unverified identity, needs human, safety hazard, no action needed, unusual exception). All pass `scripts/eval/validate-cases.mjs`. Answer keys are written by Claude and not yet reviewed; a blind review is about to run.
 - **Eval** in `scripts/eval/`: `npm run eval` scores an agent on the 50 public plus 120 generated cases. Scoring arithmetic has 13 passing unit tests. **The Claude judge and the baseline agent have never run**: no API key on my machine yet.
@@ -75,7 +75,7 @@ Or `--traces <dir>` reading `<dir>/<caseId>.json` in the same shape.
 
 ## Next 2 hours
 
-- 11:00 Push the work. Blind review of the 120 answer keys (running).
+- 11:00 Blind review of the 120 answer keys (running); fixes land on PR #3.
 - 11:20 Fix the eval leak (strip title and context; report both).
 - 11:30 Second wave of cases from the scraped seeds, with humane-handling requirements.
 - 12:00 Run baseline plus judge once a Claude key exists.
