@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { edgeKey, getNode, neighbours } from "../../roads";
 import {
   CHASE,
+  isReckless,
+  pitAllowed,
   boxSlots,
   cameraSites,
   chooseTurn,
@@ -24,7 +26,7 @@ const seq = (...xs: number[]) => {
   return () => xs[i++ % xs.length];
 };
 
-const calm: ChaseInput = { gap: 200, behind: false, straight: true, onMotorway: false, allHome: false };
+const calm: ChaseInput = { gap: 200, pit: false, collided: false, settled: false, onMotorway: false, allHome: false };
 
 function run(s: ChaseState, input: ChaseInput, seconds: number, dt = 0.1) {
   const actions: string[] = [];
@@ -44,26 +46,51 @@ describe("rollEnding", () => {
 });
 
 describe("stepChase", () => {
-  it("PIT: waits for a close police car behind on a straight, then spins, arrests, leaves", () => {
+  it("PIT: only once allowed and a contact lands, then spin, settle, arrest, leave", () => {
     const s = newChase("pit", () => 0);
-    expect(run(s, { ...calm, gap: 6, behind: true }, s.minFleeS - 1)).toEqual([]);
-    expect(run(s, { ...calm, gap: 30, behind: true }, 2)).toEqual([]); // too far
-    expect(run(s, { ...calm, gap: 6, behind: true, straight: false }, 2)).toEqual([]); // no room
-    expect(stepChase(s, { ...calm, gap: 6, behind: true }, 0.1)).toBe("spin");
+    expect(pitAllowed(s)).toBe(false);
+    expect(run(s, { ...calm, pit: true }, s.minFleeS - 1)).toEqual([]); // too early
+    run(s, calm, 1.2);
+    expect(pitAllowed(s)).toBe(true);
+    expect(stepChase(s, { ...calm, pit: true }, 0.1)).toBe("spin");
     expect(s.phase).toBe("pit");
-    expect(run(s, calm, CHASE.spinS + 0.2)).toEqual(["start_arrest"]);
+    expect(run(s, calm, CHASE.spinMinS + 0.5)).toEqual([]); // still sliding
+    expect(stepChase(s, { ...calm, settled: true }, 0.1)).toBe("start_arrest");
     expect(run(s, calm, CHASE.arrestS + 0.2)).toEqual(["release"]);
     expect(s.phase).toBe("leaving");
     expect(stepChase(s, { ...calm, allHome: true }, 0.1)).toBe("finish");
     expect(s.phase).toBe("done");
   });
 
-  it("crash: crashes once the minimum flee time has passed", () => {
+  it("a spin that never settles still moves on to the arrest", () => {
+    const s = newChase("pit", () => 0);
+    s.phase = "pit";
+    expect(run(s, calm, CHASE.spinMaxS + 0.2)).toEqual(["start_arrest"]);
+  });
+
+  it("PIT contacts are ignored in crash and escape chases", () => {
+    const s = newChase("escape", () => 0);
+    expect(run(s, { ...calm, pit: true }, s.minFleeS + 2)).toEqual([]);
+  });
+
+  it("a real collision ends any chase in a crash", () => {
+    for (const ending of ["pit", "crash", "escape"] as const) {
+      const s = newChase(ending, () => 0);
+      run(s, calm, 3);
+      expect(stepChase(s, { ...calm, collided: true }, 0.1)).toBe("crash");
+      expect(s.phase).toBe("crashed");
+      expect(s.ending).toBe("crash");
+    }
+  });
+
+  it("crash: reckless after the minimum flee time, lamppost fallback after the grace period", () => {
     const s = newChase("crash", () => 0);
-    const acts = run(s, calm, s.minFleeS + 0.5);
-    expect(acts).toEqual(["crash"]);
-    expect(s.phase).toBe("crashed");
-    expect(run(s, calm, CHASE.crashSettleS + 0.2)).toEqual(["start_arrest"]);
+    run(s, calm, s.minFleeS - 0.5);
+    expect(isReckless(s)).toBe(false);
+    run(s, calm, 1);
+    expect(isReckless(s)).toBe(true);
+    expect(run(s, calm, CHASE.crashGraceS + 0.5)).toEqual(["crash"]);
+    expect(run(s, { ...calm, settled: true }, CHASE.spinMinS + 0.2)).toEqual(["start_arrest"]);
   });
 
   it("escape: police give up once the getaway is on the motorway and pulling away", () => {
@@ -80,7 +107,7 @@ describe("stepChase", () => {
     expect(acts).toEqual(["give_up"]);
   });
 
-  it("a PIT that never lines up turns into a crash at the time limit", () => {
+  it("a PIT that never lands turns into a crash at the time limit", () => {
     const s = newChase("pit", () => 0);
     const acts = run(s, calm, CHASE.maxFleeS + 0.5);
     expect(acts).toEqual(["crash"]);
@@ -103,18 +130,21 @@ describe("stepChase", () => {
 describe("pursuitTarget", () => {
   const g = { from: "g_0_0", to: "g_1_0", path: ["g_-1_0", "g_0_0", "g_1_0", "g_2_0", "g_3_0"], idx: 1 };
 
-  it("tailing units chase the getaway's current target node", () => {
+  it("unit 0 tails the getaway's current target node", () => {
     expect(pursuitTarget(0, g, "g_0_1")).toBe("g_1_0");
-    expect(pursuitTarget(2, g, "g_0_1")).toBe("g_1_0");
+    expect(pursuitTarget(0, g, "g_0_1", "g_3_0")).toBe("g_1_0"); // ignores the prediction
   });
 
-  it("the interceptor aims further along the getaway's route", () => {
-    expect(pursuitTarget(1, g, "g_0_1")).toBe("g_3_0");
+  it("the other units aim at the predicted node to cut it off", () => {
+    expect(pursuitTarget(1, g, "g_0_1", "g_3_0")).toBe("g_3_0");
+    expect(pursuitTarget(2, g, "g_0_1", "g_2_0")).toBe("g_2_0");
+    expect(pursuitTarget(1, g, "g_0_1")).toBe("g_3_0"); // no prediction: two nodes on
+    expect(pursuitTarget(1, g, "g_0_1", "g_9_9")).toBe("g_3_0"); // prediction off the route: ignored
   });
 
   it("never returns the node the police car is already heading to", () => {
     expect(pursuitTarget(0, g, "g_1_0")).toBe("g_2_0");
-    expect(pursuitTarget(1, g, "g_3_0")).toBe("g_2_0");
+    expect(pursuitTarget(1, g, "g_3_0", "g_3_0")).toBe("g_2_0");
   });
 
   it("falls back to the getaway's last node when its route is only one edge", () => {

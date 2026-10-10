@@ -8,6 +8,7 @@ import { findPath, getEdge, getNode, PLACES } from "../../roads";
 import { hasSignal, signalFor } from "../../signals";
 import { blockedSet, useWorld, type Delivery } from "../../store";
 import { BAYS, etaSeconds, makeIdGen, pickBreakdownVictim, planStops, roadName, type Bay } from "./planning";
+import { Lookahead, type ObstacleFn } from "./lookahead";
 import { buildRoute, firstBlockedEdge, kerbPose, newSample, sampleRoute, type Pose, type Route, type RouteSample } from "./route";
 
 export type VanKind = "van" | "truck";
@@ -39,6 +40,7 @@ export interface Van {
   group: Group;
   entry: VehicleEntry;
   unregister: () => void;
+  look: Lookahead;
   phase: Phase;
   phaseStart: number; // sim ms
   phaseDur: number; // ms (loading)
@@ -101,10 +103,14 @@ export const KERB_SIDE = 2.2;
 // Heavy stops for HGVs (farms, docks, edge of town) mixed with the normal pool.
 const TRUCK_POOL = ["farm_n", "farm_s", "dock_n", "g_3_3", "g_-3_1", "g_2_-1", "sub_-1_1", "sub_1_1"];
 
-export const VEHICLE_DIMS: Record<VanKind, { len: number; height: number }> = {
-  van: { len: 5.4, height: 2.3 },
-  truck: { len: 8.6, height: 3.5 },
+export const VEHICLE_DIMS: Record<VanKind, { len: number; height: number; halfWidth: number }> = {
+  van: { len: 5.4, height: 2.3, halfWidth: 1.05 },
+  truck: { len: 8.6, height: 3.5, halfWidth: 1.3 },
 };
+/** Braking rate the speed profile plans with (see drive()); also sizes the look-ahead ray. */
+const PLAN_DECEL = 4.5;
+/** Radius around a junction node inside which a vehicle counts as "in the junction" (we yield). */
+const JUNCTION_R = 10;
 
 export class FleetSim {
   vans = new Map<string, Van>();
@@ -120,9 +126,13 @@ export class FleetSim {
   private rand: () => number;
   /** Called when the vehicle list changes (spawn/remove), so React can re-render labels. */
   onListChange: () => void = () => {};
+  /** On-screen test (the renderer sets a camera frustum check); off-screen vans raycast every 4th frame. */
+  sees: (x: number, z: number) => boolean = () => true;
+  private obstacleFn: ObstacleFn | undefined;
 
-  constructor(rand: () => number = Math.random) {
+  constructor(rand: () => number = Math.random, opts: { obstacleFn?: ObstacleFn } = {}) {
     this.rand = rand;
+    this.obstacleFn = opts.obstacleFn;
     for (let i = MAX_VEHICLES - 1; i >= 0; i--) this.freeIndices.push(i);
   }
 
@@ -168,8 +178,10 @@ export class FleetSim {
     group.userData.vehicleId = id;
     const index = this.freeIndices.pop() ?? 0;
     const entry: VehicleEntry = { id, kind, object: group, edgeKey: null, from: null, to: null, t: 0, speed: 0, stopped: true };
+    const dims = VEHICLE_DIMS[kind];
+    const look = new Lookahead({ halfLength: dims.len / 2, halfWidth: dims.halfWidth, decel: PLAN_DECEL }, this.obstacleFn, index);
     const v: Van = {
-      id, kind, index, bay, group, entry, unregister: () => {},
+      id, kind, index, bay, group, entry, unregister: () => {}, look,
       phase: "loading", phaseStart: this.now, phaseDur: LOAD_MS,
       parcels: carry, loadCount: 0, route: null, leg: "stop", d: 0, speed: 0, sample: newSample(),
       kerb: null, dropDone: false, delayedThisLeg: false, stuckMs: 0, rerouteDirty: false, forceReroute: false, lastRerouteTry: -1e9, waitNoted: false,
@@ -357,6 +369,23 @@ export class FleetSim {
       }
     }
 
+    // look-ahead raycast: brake for anything in front (not just our lane's queue); take the more cautious
+    const look = v.look;
+    look.scan(v.id, v.x, v.z, v.heading, v.speed, dt, this.sees(v.x, v.z));
+    if (look.hitId) {
+      let lim = v.d + look.room;
+      // something sitting in the junction we're about to enter: give way at the stop line
+      if (s.edge >= 0 && route === r) {
+        const k = s.edge + 1;
+        const sl = route.stopLine[k] - 0.3;
+        if (k < route.nodes.length - 1 && v.d < sl) {
+          const n = getNode(route.nodes[k]);
+          if (look.hitInJunction(n.x, n.z, JUNCTION_R)) lim = Math.min(lim, sl);
+        }
+      }
+      stopAt = Math.min(stopAt, lim);
+    }
+
     // speed target: edge limit, slower for corners ahead, and able to stop at stopAt
     const factor = v.kind === "truck" ? 0.72 : 0.88;
     const edgeLimit = s.edge >= 0 ? getEdge(route.nodes[s.edge], route.nodes[s.edge + 1])!.speedLimit * factor : 4;
@@ -365,7 +394,7 @@ export class FleetSim {
     const nextSeg = route.segs[v.sample.seg + 1];
     if (nextSeg && nextSeg.vmax < vmax) vmax = Math.min(vmax, Math.sqrt(nextSeg.vmax ** 2 + 2 * 3 * Math.max(0, nextSeg.start - v.d)));
     const room = stopAt - v.d;
-    const target = Math.min(vmax, room > 0 ? Math.sqrt(2 * 4.5 * room) : 0);
+    const target = Math.min(vmax, room > 0 ? Math.sqrt(2 * PLAN_DECEL * room) : 0);
     const prev = v.speed;
     v.speed = target > v.speed ? Math.min(target, v.speed + ACCEL * dt) : Math.max(target, v.speed - DECEL * dt);
     v.braking = v.speed < prev - 0.01 || v.speed < 0.2;

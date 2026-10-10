@@ -24,3 +24,82 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ---- Rivet desk console ("/") — additive; the /city page does not use these. ---- */
+@theme inline {
+  --color-rv-canvas: #1f1f23;
+  --color-rv-sidebar: #18181b;
+  --color-rv-panel: #26262b;
+  --color-rv-card: #2a2a30;
+  --color-rv-raised: #33333a;
+  --color-rv-line: #36363e;
+  --color-rv-orange: #ff6a1a;
+  --color-rv-orange-hi: #ff8443;
+  --color-rv-green: #3ecf8e;
+  --color-rv-red: #f2555a;
+  --color-rv-amber: #f5a524;
+  --color-rv-blue: #5aa9ff;
+  --color-rv-violet: #a78bfa;
+  --font-console: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+.console-root {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  background: #1f1f23;
+  color: #e7e7ea;
+  color-scheme: dark;
+}
+
+.console-root .tabular,
+.console-root table {
+  font-variant-numeric: tabular-nums;
+}
+
+/* n8n-like dotted canvas background (for workflow canvases and empty areas). */
+.rv-dotgrid {
+  background-color: #1f1f23;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Thin dark scrollbars inside the console. */
+.console-root * {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a42 transparent;
+}
+.console-root *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.console-root *::-webkit-scrollbar-thumb {
+  background: #3a3a42;
+  border-radius: 8px;
+}
+.console-root *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.console-root :focus-visible {
+  outline: 2px solid #ff6a1a;
+  outline-offset: 1px;
+}
+
+@keyframes rv-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.rv-pulse {
+  animation: rv-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes rv-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+.rv-skeleton {
+  background: linear-gradient(90deg, #2a2a30 0, #34343b 60px, #2a2a30 120px);
+  background-size: 400px 100%;
+  animation: rv-shimmer 1.2s linear infinite;
+  border-radius: 4px;
+}

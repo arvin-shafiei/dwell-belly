@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyWeather, buildSchedule, createWeatherState, sampleWeather, snapToTexel } from "./weather";
+import { applyWeather, blendParams, blendToward, buildSchedule, createWeatherState, easeFactor, followCycle, sampleWeather, snapToTexel } from "./weather";
 import { createSkyState, sampleSky } from "./skyState";
 import { Vector3 } from "three";
 
@@ -101,5 +101,59 @@ describe("applyWeather", () => {
     applyWeather(b, { weather: "clear", cover: 0.12, rain: 0, storm: 0 });
     expect(b.zenith.equals(a.zenith)).toBe(true);
     expect(b.keyIntensity).toBeCloseTo(a.keyIntensity);
+  });
+});
+
+describe("weather override blending", () => {
+  it("blendToward moves a fraction of the way and labels the kind", () => {
+    const s = createWeatherState();
+    blendToward(s, "storm", 0.5);
+    expect(s.weather).toBe("storm");
+    expect(s.cover).toBeCloseTo(0.5);
+    expect(s.rain).toBeCloseTo(0.5);
+    expect(s.storm).toBeCloseTo(0.5);
+    blendToward(s, "storm", 1);
+    expect(s).toMatchObject({ cover: 1, rain: 1, storm: 1 });
+  });
+
+  it("clamps k to 0..1", () => {
+    const s = createWeatherState();
+    blendToward(s, "rain", 5);
+    expect(s.rain).toBeCloseTo(0.8);
+    blendToward(s, "clear", -1);
+    expect(s.rain).toBeCloseTo(0.8);
+  });
+
+  it("eases to ~98% of the target in about 2 s at 60 fps and holds it", () => {
+    const s = createWeatherState();
+    const dt = 1 / 60;
+    for (let i = 0; i < 120; i++) blendToward(s, "rain", easeFactor(dt, 2));
+    expect(s.rain).toBeGreaterThan(0.8 * 0.97);
+    expect(s.rain).toBeLessThanOrEqual(0.8);
+    for (let i = 0; i < 600; i++) blendToward(s, "rain", easeFactor(dt, 2));
+    expect(s.rain).toBeCloseTo(0.8, 5);
+    expect(s.cover).toBeCloseTo(0.95, 5);
+  });
+
+  it("blendParams eases toward a sampled cycle state without changing its label", () => {
+    const s = createWeatherState();
+    s.weather = "storm";
+    blendParams(s, { cover: 1, rain: 0, storm: 0 }, 0.25);
+    expect(s.cover).toBeCloseTo(0.25);
+    expect(s.weather).toBe("storm");
+  });
+
+  it("followCycle eases onto the cycle and takes its label", () => {
+    const s = createWeatherState();
+    const c = { weather: "rain" as const, cover: 0.95, rain: 0.8, storm: 0 };
+    followCycle(s, c, 1);
+    expect(s).toEqual(c);
+  });
+
+  it("easeFactor is frame-rate independent", () => {
+    const one = easeFactor(0.1, 2);
+    const ten = 1 - (1 - easeFactor(0.01, 2)) ** 10;
+    expect(ten).toBeCloseTo(one, 10);
+    expect(easeFactor(0.1, 0)).toBe(1);
   });
 });

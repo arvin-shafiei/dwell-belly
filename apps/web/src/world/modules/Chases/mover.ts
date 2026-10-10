@@ -167,7 +167,7 @@ export class Mover {
     e.object.rotation.y = h + this.yaw + steer;
     if (this.path.length >= 2) {
       // over in the oncoming lane: register on that lane so oncoming traffic sees (and brakes for) us
-      const rev = lat > 2;
+      const rev = lat > 3;
       e.from = rev ? this.to : this.from;
       e.to = rev ? this.from : this.to;
       e.t = rev ? 1 - this.t : this.t;

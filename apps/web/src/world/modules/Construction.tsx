@@ -12,11 +12,17 @@ import { useWorld } from "../store";
 import { MixerFleet } from "./Construction/mixers";
 import { ConstructionScene, nightLevel } from "./Construction/scene";
 import { getSites } from "./Construction/sites";
+import { ViewCheck } from "./DeliveryFleet/lookahead";
+
+// Camera frustum check so off-screen mixers only raycast every 4th frame.
+const view = new ViewCheck();
 
 export default function Construction() {
   const [rt] = useState(() => {
     const sites = getSites();
-    return { scene: new ConstructionScene(sites), fleet: new MixerFleet(sites) };
+    const fleet = new MixerFleet(sites);
+    fleet.sees = view.sees;
+    return { scene: new ConstructionScene(sites), fleet };
   });
 
   useEffect(() => {
@@ -45,9 +51,10 @@ export default function Construction() {
     return useWorld.subscribe((s) => apply(s.timeOfDay));
   }, [rt]);
 
-  useFrame((_, delta) => {
+  useFrame(({ camera }, delta) => {
     const w = useWorld.getState();
     if (w.paused) return;
+    view.update(camera);
     const dt = Math.min(delta, 0.1);
     rt.scene.tick(dt, nightLevel(w.timeOfDay));
     rt.fleet.step(dt, performance.now());

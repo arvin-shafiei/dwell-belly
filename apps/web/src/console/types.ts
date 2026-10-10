@@ -3,9 +3,9 @@
 // Client side: apps/web/src/console/** tabs. Data rule (PRD J0): real outputs only, never mock data
 // presented as real. Anything simulated carries `simulated: true` and must be labelled in the UI.
 import type { Trace } from "../../../api/src/lib/trace";
-import type { Flow } from "../../../api/src/lib/flow";
+import type { Flow, FlowEdge, FlowNode, NodeType, Runner } from "../../../api/src/lib/flow";
 
-export type { Trace, Flow };
+export type { Trace, Flow, FlowEdge, FlowNode, NodeType, Runner };
 
 /** A saved workflow (n8n "workflow"). The default one is apps/api/flows/default-incident.json. */
 export interface WorkflowRecord {
@@ -38,6 +38,7 @@ export interface ExecutionRecord {
   reasoningMd: string | null;
   /** Eval verdict when one exists. */
   eval: { pass: boolean; score: number; notes?: string } | null;
+  error?: string | null;
 }
 
 /** A row of the evidence grid: every tested case across every dataset. */

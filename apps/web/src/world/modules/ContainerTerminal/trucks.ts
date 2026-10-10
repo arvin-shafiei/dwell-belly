@@ -6,7 +6,8 @@
 import { Object3D } from "three";
 import { emit, type WorldEvent } from "../../bus";
 import { CT_PLACES } from "../../districts/containerTerminal";
-import { nextId, registerVehicle, vehiclesAhead, type VehicleEntry } from "../../registry";
+import { getVehicle, nextId, registerVehicle, vehiclesAhead, type VehicleEntry } from "../../registry";
+import { DEFAULT_BUFFER, Lookahead, type ObstacleFn } from "../DeliveryFleet/lookahead";
 import { ROAD_EDGES, ROAD_NODES, edgeKey, findPath, getEdge, getNode, neighbours } from "../../roads";
 import { hasSignal, signalFor } from "../../signals";
 import { useWorld } from "../../store";
@@ -43,6 +44,7 @@ export interface Truck {
   obj: Object3D;
   entry: VehicleEntry;
   unregister: () => void;
+  look: Lookahead;
   phase: Phase;
   leg: Leg;
   gate: number;
@@ -158,7 +160,14 @@ export interface SimOptions {
   firstTipAfter?: number;
   /** Seconds between self-inflicted rollovers (min, max). */
   tipGap?: [number, number];
+  /** Look-ahead raycast (defaults to physics.obstacleAhead); injectable for tests. */
+  obstacleFn?: ObstacleFn;
 }
+
+/** Truck cab half-width for the look-ahead corridor. */
+const RIG_HALF_W = 1.3;
+/** Junction radius: a vehicle this close to the node we're about to enter is "in the junction". */
+const JUNCTION_R = 10;
 
 const _p: Pose = { x: 0, z: 0, h: 0 };
 const _q: Pose = { x: 0, z: 0, h: 0 };
@@ -179,9 +188,13 @@ export class TruckSim {
   private readonly tipGap: [number, number];
   private blocked: ReadonlySet<string> = new Set();
   private now = 0;
+  private readonly obstacleFn: ObstacleFn | undefined;
+  /** On-screen test (the renderer sets a camera frustum check); off-screen rigs raycast every 4th frame. */
+  sees: (x: number, z: number) => boolean = () => true;
 
   constructor(opts: SimOptions = {}) {
     this.rand = mulberry32(opts.seed ?? 20261010);
+    this.obstacleFn = opts.obstacleFn;
     this.yard = new Yard(yardSpecs(), makeYardBox);
     this.rmgs = Array.from({ length: RMG_COUNT }, (_, k) => new RmgSim(k, k, this.yard));
     this.pools = destinationPools();
@@ -200,9 +213,17 @@ export class TruckSim {
     const id = prev ? nextId("CT") : `CT-${String(index + 1).padStart(2, "0")}`;
     const obj = new Object3D();
     obj.name = id;
+    const style = STYLES[index === 0 ? "maniac" : pickStyle(r)];
+    // the ray starts at the fifth wheel (the registry position), so the cab front is `kingpin` ahead of it;
+    // maniacs look 50% less far past their stopping distance, so they still rear-end now and then
+    const look = new Lookahead(
+      { halfLength: TRUCK.kingpin, halfWidth: RIG_HALF_W, decel: style.brake, buffer: style.name === "maniac" ? DEFAULT_BUFFER * 0.5 : DEFAULT_BUFFER, standoff: 0 },
+      this.obstacleFn,
+      index,
+    );
     const t: Truck = {
-      id, index, color: index % CAB_COLORS.length, style: STYLES[index === 0 ? "maniac" : pickStyle(r)], obj,
-      entry: null as unknown as VehicleEntry, unregister: () => {},
+      id, index, color: index % CAB_COLORS.length, style, obj,
+      entry: null as unknown as VehicleEntry, unregister: () => {}, look,
       phase: "driving", leg: "toGate", gate: index % 4, rmg: index % RMG_COUNT, dest: "", at: "", route: null, s: 0, v: 0, edge: 0,
       retryAt: 0, timer: 0, box: null, boxLock: 1, lat: 0, latTarget: 0, overtake: null, overtakeCooldown: 0,
       lightEdge: -1, lightRoll: 0, lightCall: "go", latAcc: 0, sway: 0, requested: false, loaded: false,
@@ -505,6 +526,29 @@ export class TruckSim {
           gap = Math.max(0.05, dist);
           leadV = 0;
         }
+      }
+    }
+
+    // look-ahead raycast: anything in front (cross traffic, a wreck, a queue on the next road), as a bumper
+    // gap for the IDM; and give way at the line to a vehicle sitting in the junction we're about to enter
+    const look = t.look;
+    look.scan(t.id, t.cab.x, t.cab.z, t.cab.h, t.v, dt, this.sees(t.cab.x, t.cab.z));
+    if (look.hitId) {
+      let g = look.room;
+      let lv = 0;
+      const o = look.hitStopped ? undefined : getVehicle(look.hitId);
+      if (o) lv = Math.max(0, o.speed * Math.cos(o.object.rotation.y - t.cab.h)); // its speed along our heading
+      if (t.edge + 1 < route.nodes.length - 1) {
+        const toLine = (1 - et) * len - 6.5;
+        const n = getNode(b);
+        if (toLine > 0 && toLine < g && look.hitInJunction(n.x, n.z, JUNCTION_R)) {
+          g = Math.max(0.05, toLine);
+          lv = 0;
+        }
+      }
+      if (g < gap) {
+        gap = g;
+        leadV = lv;
       }
     }
 

@@ -40,12 +40,27 @@ export interface NextAction {
   undoable: boolean;
 }
 
+/** Why the agent stopped. One per card, so a person sees the kind of problem before reading anything. */
+export type StopReason =
+  | "rule_requires_person"     // a configured rule (e.g. formal legal action) forbids acting alone
+  | "agent_judged_unsafe"      // the planner itself decided a person must choose
+  | "message_too_risky"        // the safety check held or blocked a drafted message
+  | "delivery_failed"          // a cleared message could not be delivered on any channel
+  | "no_clear_action";         // the agent wanted to act but had nothing safe to send
+
 export interface DecisionCard {
   routeTo: string;
   summary: string;
+  /** The headline: why this case could not be decided without a person, in one line. */
+  whyStopped?: { reason: StopReason; line: string };
+  /** The two or three statements the decision turns on. Everything else in the thread can stay collapsed. */
+  evidence?: { who: string; says: string; basis: "system_record" | "owning_team_statement" | "unverified_claim" }[];
+  /** What the agent has already done safely, so the person knows what is and is not in hand. */
+  alreadyDone?: string[];
   clash?: string;
   tried: string[];
-  options: { id: string; label: string; undoable: boolean }[];
+  /** `effect` says exactly what happens if this option is chosen: who is told what, on which channel. */
+  options: { id: string; label: string; undoable: boolean; effect?: string }[];
   wouldChangeMyMind: string;
   deadlineMins: number;
   fallback: string;

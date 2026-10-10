@@ -45,6 +45,8 @@ import {
   type Route,
   type SiteItemKind,
 } from "./Roadworks/logic";
+import { Lookahead, ViewCheck } from "./DeliveryFleet/lookahead";
+import { RW_BRAKE, RW_HALF_LEN, RW_HALF_W, RW_STOP_LINE, approachSpeed, lookWant, queueWant } from "./Roadworks/drive";
 import { ARROW_FRAMES, makeArrowAtlas, makeBarrierStripes, makeChevrons, makeClosedSign } from "./Roadworks/textures";
 
 const YARD = PLACES.maintenanceYard;
@@ -76,6 +78,7 @@ interface Job {
   closed: boolean;
   entry: VehicleEntry;
   unregister: () => void;
+  look: Lookahead;
   group: Group | null;
   heading: number;
   speed: number;
@@ -89,6 +92,8 @@ interface Job {
 // ---------- scratch objects (no per-frame allocation) ----------
 const dummy = new Object3D();
 const scratchBlocked = new Set<string>();
+// Camera frustum check so off-screen trucks only raycast every 4th frame.
+const view = new ViewCheck();
 
 function wrapAngle(a: number) {
   while (a > Math.PI) a -= Math.PI * 2;
@@ -404,6 +409,7 @@ export default function Roadworks() {
       closed: false,
       entry,
       unregister: registerVehicle(entry),
+      look: new Lookahead({ halfLength: RW_HALF_LEN, halfWidth: RW_HALF_W, decel: RW_BRAKE }),
       group: null,
       heading: lanePosition(route.nodes[0], route.nodes[1] ?? route.nodes[0], 0)[2],
       speed: 0,
@@ -473,13 +479,14 @@ export default function Roadworks() {
     }
     job.ghost = Math.max(0, job.ghost - dt);
     const ahead = job.ghost > 0 ? undefined : vehiclesAhead(from, to, cursor.t, job.id)[0];
-    if (ahead) {
-      const gap = (ahead.t - cursor.t) * len;
-      if (gap < 8) want = 0;
-      else if (gap < 18) want = Math.min(want, ahead.speed + (gap - 8) * 0.5);
+    if (ahead) want = queueWant(want, (ahead.t - cursor.t) * len, ahead.speed);
+    // look-ahead raycast: brake for anything in front, give way to a vehicle sitting in the junction
+    if (job.ghost <= 0) {
+      const [lx, lz, lh] = lanePosition(from, to, cursor.t);
+      job.look.scan(job.id, lx, lz, lh, job.speed, dt, view.sees(lx, lz));
+      want = lookWant(want, job.look, (1 - cursor.t) * len - RW_STOP_LINE - RW_HALF_LEN, lastSeg ? null : getNode(to));
     }
-    const accel = want > job.speed ? 6 : 14;
-    job.speed += Math.max(-accel * dt, Math.min(accel * dt, want - job.speed));
+    job.speed = approachSpeed(job.speed, want, dt);
     if (job.speed < 0.05 && want === 0) {
       job.speed = 0;
       job.stuck += dt;
@@ -535,8 +542,9 @@ export default function Roadworks() {
     return arrived;
   }
 
-  useFrame((_, rawDelta) => {
+  useFrame(({ camera }, rawDelta) => {
     const world = useWorld.getState();
+    view.update(camera);
     const now = performance.now() / 1000;
     if (!world.paused) {
       const dt = Math.min(rawDelta, 0.1);

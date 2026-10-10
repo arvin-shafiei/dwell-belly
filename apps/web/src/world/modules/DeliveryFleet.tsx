@@ -12,6 +12,7 @@ import {
 } from "three";
 import { useWorld } from "../store";
 import { DROP_POP_MS, FleetSim, LOAD_MS, MAX_VEHICLES, VEHICLE_DIMS, type LabelStatus, type Van } from "./DeliveryFleet/sim";
+import { ViewCheck } from "./DeliveryFleet/lookahead";
 import { LAYOUTS, RIVET_ORANGE, makeCheckTexture, makeLiveryTexture, makeParcelTexture } from "./DeliveryFleet/visuals";
 
 const MAX_PARCELS = 120;
@@ -78,6 +79,9 @@ function VanLabel({ van, selected, register }: { van: Van; selected: boolean; re
   );
 }
 
+// Camera frustum check so off-screen vans only raycast every 4th frame.
+const view = new ViewCheck();
+
 export default function DeliveryFleet() {
   const [vans, setVans] = useState<Van[]>([]);
   const simRef = useRef<FleetSim | null>(null);
@@ -128,6 +132,7 @@ export default function DeliveryFleet() {
     const sim = new FleetSim();
     simRef.current = sim;
     sim.onListChange = () => setVans([...sim.vans.values()]);
+    sim.sees = view.sees;
     sim.start();
     return () => {
       sim.dispose();
@@ -173,6 +178,7 @@ export default function DeliveryFleet() {
     if (world.paused) return;
     const dt = Math.min(rawDelta, 0.1);
     const wall = performance.now();
+    view.update(camera);
     sim.update(dt, wall);
     const now = sim.now;
     const blink = wall % 800 < 420;

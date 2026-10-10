@@ -45,8 +45,11 @@ import {
 import { advanceHour, createGrade, createSkyState, gradeFor, sampleSky } from "./Sky/skyState";
 import {
   applyWeather,
+  blendToward,
   buildSchedule,
   createWeatherState,
+  easeFactor,
+  followCycle,
   sampleWeather,
   snapToTexel,
   type Weather,
@@ -68,6 +71,7 @@ const STORE_PUSH_MS = 250; // setTimeOfDay at most 4x per second
 const SHADOW_MAP = 2048;
 const LIGHT_DISTANCE = 900;
 const WEATHER_SEED = 2026;
+const WEATHER_EASE_S = 2; // seconds to ease into a forced weather (or back onto the cycle)
 const CLOUD_WIND = 4; // clouds move faster than ground smoke (wind aloft)
 const RAIN_DROPS = 9000;
 const RAIN_BOX = new Vector3(150, 110, 150);
@@ -186,7 +190,8 @@ function lerp(a: number, b: number, t: number) {
 export default function Sky() {
   const scene = useThree((s) => s.scene);
   const sky = useMemo(() => createSkyState(), []);
-  const weather = useMemo(() => createWeatherState(), []);
+  const weather = useMemo(() => createWeatherState(), []); // what we render (eased)
+  const cycle = useMemo(() => createWeatherState(), []); // the looping schedule's weather
   const schedule = useMemo(() => buildSchedule(WEATHER_SEED), []);
   const grade = useMemo(() => createGrade(), []);
 
@@ -280,7 +285,12 @@ export default function Sky() {
 
     // ---- palette + weather ----
     sampleSky(hourRef.current, sky);
-    sampleWeather(schedule, weatherT.current, weather);
+    // The cycle always runs; a HUD/console override eases the rendered weather to a fixed kind over ~2 s and
+    // holds it, and "auto" eases back onto the cycle (no snap either way).
+    sampleWeather(schedule, weatherT.current, cycle);
+    const ease = easeFactor(dt, WEATHER_EASE_S);
+    if (world.weatherOverride !== "auto") blendToward(weather, world.weatherOverride, ease);
+    else followCycle(weather, cycle, ease);
     applyWeather(sky, weather);
     publishStatus(weather.weather, weather.rain);
     const rain = weather.rain;

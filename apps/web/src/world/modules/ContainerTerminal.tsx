@@ -81,6 +81,7 @@ import {
   withBrandAttribute,
 } from "./ContainerTerminal/textures";
 import { CAB_COLORS, TruckSim, rigRoll } from "./ContainerTerminal/trucks";
+import { ViewCheck } from "./DeliveryFleet/lookahead";
 import { CARGO_PER_WRECK, rollPivotOffset } from "./ContainerTerminal/wreck";
 import { MAX_TIER, instanceIndex, mulberry32 } from "./ContainerTerminal/yard";
 
@@ -142,6 +143,9 @@ function Static({
   if (!matrices.length) return null;
   return <instancedMesh ref={ref} args={[geometry, material, matrices.length]} castShadow={cast} receiveShadow={receive} />;
 }
+
+// Camera frustum check so off-screen lorries only raycast every 4th frame.
+const view = new ViewCheck();
 
 export default function ContainerTerminal() {
   // ---------------------------------------------------------------- resources
@@ -283,6 +287,7 @@ export default function ContainerTerminal() {
   const yardFull = useRef(true);
   useEffect(() => {
     const sim = new TruckSim({ count: TRUCKS });
+    sim.sees = view.sees;
     simRef.current = sim;
     yardFull.current = true;
     const off = on((e) => sim.onEvent(e));
@@ -336,9 +341,10 @@ export default function ContainerTerminal() {
   const N_BEACON = RMG_COUNT + STS_CRANES.length * 2;
 
   const mats = useRef(R); // materials are tweaked per frame (time, night) through the ref
-  useFrame((_, rawDt) => {
+  useFrame(({ camera }, rawDt) => {
     const sim = simRef.current;
     const M = mats.current;
+    view.update(camera);
     const st = S.current;
     const w = useWorld.getState();
     const dt = Math.min(rawDt, 0.1);

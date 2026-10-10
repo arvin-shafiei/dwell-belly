@@ -7,8 +7,10 @@ import { WATER_X, ZONES, type ZoneName } from "../config";
 import { allVehicles, type VehicleKind } from "../registry";
 import { ROAD_EDGES, ROAD_NODES, type RoadKind } from "../roads";
 import { useWorld } from "../store";
+import { MINIMAP } from "./WorkflowHud/layout";
 
-const SIZE = 240; // CSS px
+// Footprint is shared with the HUD (WorkflowHud/layout.ts) so the scenario panel and decision card clear it.
+const SIZE = MINIMAP.size; // CSS px
 const WORLD_MIN = -1100; // metres, map covers WORLD_MIN..WORLD_MAX on both axes
 const WORLD_MAX = 1100;
 const SCALE = SIZE / (WORLD_MAX - WORLD_MIN);
@@ -176,7 +178,7 @@ function drawDot(ctx: CanvasRenderingContext2D, x: number, y: number, s: DotStyl
   }
 }
 
-export default function Minimap() {
+export default function Minimap({ embed = false }: { embed?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [legendOpen, setLegendOpen] = useState(false);
 
@@ -289,7 +291,7 @@ export default function Minimap() {
     };
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [embed]);
 
   const onClick = (e: MouseEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -300,9 +302,20 @@ export default function Minimap() {
     s.setFocus({ x: toWorld(px), z: toWorld(py) });
   };
 
+  // Embed mode (the desk console's iframe) shows the bare city: no minimap.
+  if (embed) return null;
+
+  // The legend overlays the map inside the card, so the card's footprint never changes (the HUD's
+  // scenario panel sits right above it).
   return (
-    <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex flex-col gap-2 select-none">
-      <div className="relative rounded-2xl border border-white/10 bg-black/45 p-1.5 shadow-2xl shadow-black/50 backdrop-blur-md">
+    <div
+      className="pointer-events-none absolute z-20 select-none"
+      style={{ left: MINIMAP.inset, bottom: MINIMAP.inset }}
+    >
+      <div
+        className="relative rounded-2xl border-white/10 bg-black/45 shadow-2xl shadow-black/50 backdrop-blur-md"
+        style={{ padding: MINIMAP.pad, borderWidth: MINIMAP.border, borderStyle: "solid" }}
+      >
         <canvas
           ref={canvasRef}
           onClick={onClick}
@@ -315,35 +328,36 @@ export default function Minimap() {
           onClick={() => setLegendOpen((o) => !o)}
           aria-label={legendOpen ? "Hide minimap legend" : "Show minimap legend"}
           aria-expanded={legendOpen}
-          className="pointer-events-auto absolute top-3 left-3 flex h-5 w-5 items-center justify-center rounded-full border border-white/20 bg-black/60 text-[11px] font-semibold text-white/80 hover:bg-black/80 hover:text-white"
+          className="pointer-events-auto absolute top-3 left-3 z-10 flex h-5 w-5 items-center justify-center rounded-full border border-white/20 bg-black/60 text-[11px] font-semibold text-white/80 hover:bg-black/80 hover:text-white"
         >
-          ?
+          {legendOpen ? "×" : "?"}
         </button>
-      </div>
-      {legendOpen && (
-        <div
-          className="grid grid-cols-2 gap-x-3 gap-y-1 rounded-xl border border-white/10 bg-black/55 px-3 py-2 text-[10px] text-white/80 backdrop-blur-md"
-          style={{ width: SIZE + 12 }}
-        >
-          {LEGEND.map(({ label, style }) => (
-            <div key={label} className="flex items-center gap-1.5">
-              <span
-                className="inline-block h-2 w-2 shrink-0 rounded-full"
-                style={{ background: style.fill, boxShadow: style.stroke ? `0 0 0 1px ${style.stroke}` : undefined }}
-              />
-              {label}
+        {legendOpen && (
+          <div
+            className="pointer-events-auto absolute grid grid-cols-2 content-start gap-x-3 gap-y-1 overflow-y-auto rounded-xl bg-black/80 px-3 pb-2 pt-8 text-[10px] text-white/85"
+            style={{ inset: MINIMAP.pad }}
+            onClick={() => setLegendOpen(false)}
+          >
+            {LEGEND.map(({ label, style }) => (
+              <div key={label} className="flex min-w-0 items-center gap-1.5">
+                <span
+                  className="inline-block h-2 w-2 shrink-0 rounded-full"
+                  style={{ background: style.fill, boxShadow: style.stroke ? `0 0 0 1px ${style.stroke}` : undefined }}
+                />
+                <span className="truncate">{label}</span>
+              </div>
+            ))}
+            <div className="flex items-center gap-1.5">
+              <span className="inline-block h-0.5 w-3 shrink-0 bg-red-500" />
+              Road closed
             </div>
-          ))}
-          <div className="flex items-center gap-1.5">
-            <span className="inline-block h-0.5 w-3 shrink-0 bg-red-500" />
-            Road closed
+            <div className="flex items-center gap-1.5">
+              <span className="inline-block h-2 w-2 shrink-0 rounded-full border border-red-500" />
+              Incident
+            </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="inline-block h-2 w-2 shrink-0 rounded-full border border-red-500" />
-            Incident
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

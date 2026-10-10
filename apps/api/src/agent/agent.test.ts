@@ -99,7 +99,11 @@ test("a mid-risk message is held for a human and a decision card is written", as
   const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision, decision], critic: [{ actions: [scores(0.5)] }, { actions: [scores(0.5)] }] })));
   assert.equal(r.outcome, "escalated");
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
-  assert.ok(r.card);
+  assert.equal(r.card?.whyStopped?.reason, "message_too_risky");
+  assert.match(r.card?.whyStopped?.line ?? "", /safety check stopped the message to Delivery investigations/);
+  assert.deepEqual(r.card?.options.map((o) => [o.label, o.undoable]), [[`Approve the message to ${action.recipient}`, false], ["Send nothing", true]]);
+  // With no handover from the planner, the evidence is the two sides of the conflict the analysis found.
+  assert.equal(r.card?.evidence?.[0].who, "Sorin Vaal, recipient");
   assert.match(renderAnswer(r), /No person was available during this run/);
 });
 
@@ -111,11 +115,23 @@ test("wait_no_action sends nothing even if the model drafted a message", async (
 });
 
 test("escalating can still send a safe alert alongside the handover", async () => {
-  const handover = { route_to: "desk supervisor", summary: "Legal threat", clash: "", options: ["Reply", "Hold"], would_change_my_mind: "A solicitor's letter", safe_fallback: "Hold" };
+  const handover = {
+    route_to: "desk supervisor", why_a_person: "A solicitor has written to the desk.", summary: "Legal threat", clash: "",
+    key_evidence: [{ who: "Sorin Vaal, recipient", says: "Will sue", basis: "unverified_claim" as const }],
+    options: [{ label: "Reply", effect: "Sends a holding reply to the recipient by portal", undoable: false }, { label: "Hold", effect: "Nothing is sent", undoable: true }],
+    would_change_my_mind: "A solicitor's letter", safe_fallback: "Hold",
+  };
   const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [{ ...decision, decision_type: "escalate_to_human", handover }], critic: [{ actions: [scores(0)] }] })));
   assert.equal(r.outcome, "escalated");
   assert.deepEqual(r.outbox.map((o) => o.status), ["recorded"]);
   assert.equal(r.card?.routeTo, "desk supervisor");
+  assert.deepEqual(r.card?.whyStopped, { reason: "agent_judged_unsafe", line: "A solicitor has written to the desk." });
+  assert.equal(r.card?.evidence?.length, 1);
+  assert.deepEqual(r.card?.alreadyDone, [`Message recorded for ${action.recipient} via Email: Open an investigation`]);
+  const answer = renderAnswer(r);
+  assert.match(answer, /\*\*Why a person is needed:\*\* A solicitor has written to the desk\./);
+  assert.match(answer, /\*\*Reply\*\*: Sends a holding reply to the recipient by portal \(cannot be undone\)/);
+  assert.match(answer, /Already done safely:/);
 });
 
 test("a model failure becomes an error outcome with an honest answer, not a throw", async () => {
@@ -176,10 +192,11 @@ test("a case that times out stays a failure even when its model call returns lat
 });
 
 test("a force_human panel rule holds every message, whatever the planner chose", async () => {
-  const panel = async () => ({ ok: true, seats: [], forceHuman: true, notes: ["Legal threat"], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
+  const panel = async () => ({ ok: true, seats: [{ id: "rule_keeper", name: "Rule keeper", answers: { legal_or_public: 0.95 }, raised: ["legal_or_public"] }], forceHuman: true, notes: ["Legal threat"], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
   const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), panel });
   assert.equal(r.outcome, "escalated");
   assert.deepEqual(r.outbox.map((o) => o.status), ["held_for_human"]);
+  assert.deepEqual(r.card?.whyStopped, { reason: "rule_requires_person", line: "Legal, regulator, police or press involvement. A person at the desk decides before anything is sent." });
   const end = r.trace.events.at(-1);
   assert.equal(end?.kind === "run_end" ? end.nextAction : "not a run_end", undefined);
 });

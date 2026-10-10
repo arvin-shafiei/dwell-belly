@@ -94,6 +94,38 @@ export function sampleWeather(s: Schedule, tSeconds: number, out: WeatherState):
   return out;
 }
 
+/** Move `state` a fraction `k` (0..1) of the way toward explicit cover/rain/storm values. In place. */
+export function blendParams(state: WeatherState, target: Params, k: number): WeatherState {
+  const t = Math.max(0, Math.min(1, k));
+  state.cover += (target.cover - state.cover) * t;
+  state.rain += (target.rain - state.rain) * t;
+  state.storm += (target.storm - state.storm) * t;
+  return state;
+}
+
+/**
+ * Ease `state` a fraction `k` (0..1) of the way toward a weather kind's targets and label it that kind.
+ * Call every frame with k = 1 - exp(-dt / tau) for a frame-rate independent ease. In place.
+ */
+export function blendToward(state: WeatherState, kind: Weather, k: number): WeatherState {
+  blendParams(state, TARGETS[kind], k);
+  state.weather = kind;
+  return state;
+}
+
+/** Ease `state` toward the sampled cycle weather `cycle` and take its label. In place. */
+export function followCycle(state: WeatherState, cycle: WeatherState, k: number): WeatherState {
+  blendParams(state, cycle, k);
+  state.weather = cycle.weather;
+  return state;
+}
+
+/** Per-frame ease factor that closes ~98% of the gap in `seconds` (exponential, frame-rate independent). */
+export function easeFactor(dt: number, seconds: number): number {
+  if (seconds <= 0) return 1;
+  return 1 - Math.exp((-4 * Math.max(0, dt)) / seconds);
+}
+
 const _right = new Vector3();
 const _up = new Vector3();
 const UP = new Vector3(0, 1, 0);
