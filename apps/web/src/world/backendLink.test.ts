@@ -103,7 +103,7 @@ describe("budget guard", () => {
     expect(useWorld.getState().agentBudget.spentUsd).toBeCloseTo(0.0421);
     useWorld.getState().setAgentBudgetMax(20);
     expect(useWorld.getState().agentBudget.maxPerWindow).toBe(20);
-    expect(newBudget().maxPerWindow).toBe(20); // default
+    expect(newBudget().maxPerWindow).toBe(3); // default (kept low: the key has little money left)
   });
 });
 

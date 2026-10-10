@@ -498,6 +498,7 @@ test("every step records how it decided, and REASONING.md prints it", async () =
   assert.match(detail.clash.join(" "), /Disagreement between scan and recipient: whether DL-024 was delivered\. What would settle it: carrier investigation/);
   assert.match(detail.planner.join(" "), /Ask the carrier to open an investigation\..*Will not: Tell the recipient it is lost/);
   assert.match(detail.gate.join(" "), /Message to Delivery investigations, Plover Arc Logistics: clear to send \(risk 0\.05, below 0\.3\)/);
+  assert.match(detail.action.join(" "), /It says: "Please open a delivery investigation for DL-024\./);
   assert.match(renderReasoning(r), /## How each step decided[\s\S]*\*\*gate\*\*\n- Message to Delivery investigations/);
 });
 

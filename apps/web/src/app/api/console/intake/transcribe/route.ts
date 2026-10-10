@@ -20,6 +20,8 @@ export async function POST(req: Request) {
   out.set("audio", audio, audio instanceof File ? audio.name : "call.webm");
   out.set("mode", "demo");
   out.set("source", "audio_attachment");
+  // A recording that came with the case can be in any language: detect it, and show the English too.
+  out.set("languageCode", "auto");
   out.set("from", String(form.get("from") ?? "Caller"));
   out.set("caseText", String(form.get("caseText") ?? ""));
   try {

@@ -1,47 +1,45 @@
 "use client";
 // Module: WorkflowDriver. Links the city to the REAL agent API; renders nothing. There is no mock agent:
-// incidents, grouped delivery delays and staged scenarios go to apps/api POST /api/cases through
-// WorkflowDriver/link.ts (FIFO queue, 2 at a time, within the budget guard), and new console runs are
+// incidents, grouped delivery delays and staged scenarios go through the console (POST /api/console/city/cases,
+// recorded in SQLite, run on apps/api) via WorkflowDriver/link.ts (FIFO queue, 2 at a time, within the budget guard), and new console runs are
 // polled and replayed. While the agent API is offline, cases wait in the queue and nothing is invented.
 import { useEffect } from "react";
 import { emit, on } from "../bus";
 import { useWorld } from "../store";
-import { checkAgent, runAgentFull, traceCost } from "../agentBridge";
-import { browserFetchJson, ExecutionPoller, loadSharedBudget, POLL_MS, saveSharedBudget } from "../backendLink";
+import { checkAgent, followExecution, runCityCase, traceCost } from "../agentBridge";
+import { browserFetchJson, ExecutionPoller, POLL_MS } from "../backendLink";
 import { allVehicles } from "../registry";
 import { budgetLeft } from "./WorkflowDriver/budget";
 import { CityAgentLink } from "./WorkflowDriver/link";
+import { setCityLink } from "./WorkflowDriver/handle";
 import type { Trace } from "../../../../api/src/lib/trace";
 
 function push(e: Omit<import("../store").WorkflowEvent, "id" | "t">) {
   useWorld.getState().pushWorkflow({ ...e, id: `agt-${Math.random().toString(36).slice(2, 10)}`, t: performance.now() });
 }
 
-/** Claim one slot from the budget shared by every open city tab. False = over budget (the case waits). */
+/** The shared budget as SQLite last reported it (state load, every case start, every 429). */
+function syncBudget(b: { starts: number[]; spentUsd: number; maxPerWindow: number }) {
+  useWorld.getState().syncAgentBudget(b.starts, b.spentUsd, b.maxPerWindow);
+}
+
+/**
+ * Local pre-check against the last known shared budget; the server (POST /api/console/city/cases) is the
+ * authority and answers 429 when the window is full, which puts the case back in the queue.
+ */
 function claimBudget(): boolean {
-  const st = useWorld.getState();
-  const shared = loadSharedBudget();
-  if (shared) st.syncAgentBudget(shared.starts, shared.spentUsd);
-  if (budgetLeft(useWorld.getState().agentBudget, Date.now()) <= 0) return false;
-  if (!useWorld.getState().claimAgentRun(Date.now())) return false;
-  const b = useWorld.getState().agentBudget;
-  saveSharedBudget(b.starts, b.spentUsd);
-  return true;
+  return budgetLeft(useWorld.getState().agentBudget, Date.now()) > 0;
 }
 
 function recordSpend(trace: Trace) {
   const usd = traceCost(trace);
-  if (usd === null) return;
-  const st = useWorld.getState();
-  const shared = loadSharedBudget();
-  const total = Math.max(shared?.spentUsd ?? 0, st.agentBudget.spentUsd) + usd;
-  st.syncAgentBudget(shared?.starts ?? [], total);
-  saveSharedBudget(useWorld.getState().agentBudget.starts, total);
+  if (usd !== null) useWorld.getState().addAgentSpend(usd); // display only: SQLite adds it server side
 }
 
 function createCityLink(): CityAgentLink {
   return new CityAgentLink({
-    runAgent: runAgentFull,
+    runAgent: (view, label) => runCityCase(view, label, { onBudget: syncBudget }),
+    follow: (id) => followExecution(id),
     push,
     emit,
     schedule: (fn, ms) => void setTimeout(fn, ms),
@@ -64,6 +62,7 @@ function createCityLink(): CityAgentLink {
 export default function WorkflowDriver() {
   useEffect(() => {
     const link = createCityLink();
+    setCityLink(link);
 
     const off = on((ev) => {
       switch (ev.type) {
@@ -120,6 +119,7 @@ export default function WorkflowDriver() {
       clearInterval(tick);
       clearInterval(pollTimer);
       off();
+      setCityLink(null);
     };
   }, []);
 

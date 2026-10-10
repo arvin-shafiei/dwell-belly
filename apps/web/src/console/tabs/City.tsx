@@ -7,11 +7,13 @@ import { MakeSomethingHappen, SpeedControl, TimeControl, WeatherControl } from "
 import { PracticeCases } from "../city/PracticeCases";
 import { Happening } from "../city/Happening";
 import { LINK_WORDS } from "../city/logic";
+import { useCitySaved } from "../city/useCitySaved";
 
 const DOT = { live: "bg-emerald-400", stale: "bg-red-400", waiting: "bg-white/30" } as const;
 
 export default function CityTab() {
   const { telemetry: t, state, send } = useCityLink();
+  const saved = useCitySaved();
   const [tour, setTour] = useState(false);
 
   return (
@@ -52,7 +54,7 @@ export default function CityTab() {
       </main>
 
       <aside aria-label="What's happening" className="min-h-0 overflow-y-auto border-l border-white/[0.06]">
-        <Happening t={t} send={send} />
+        <Happening t={t} send={send} saved={saved} />
       </aside>
     </div>
   );

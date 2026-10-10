@@ -88,6 +88,8 @@ export interface WorkflowEvent {
   origin?: "city_incident" | "city_scenario" | "console" | "voice" | "runs" | "answers" | "examples";
   /** The trace's runId, to find its card in the human review queue. */
   runId?: string;
+  /** The console execution (SQLite) this line belongs to, for city cases recorded through the console. */
+  executionId?: string;
 }
 
 // ---------- voice (PRD J3: calls, transcripts, voice notes, soundEnabled; low frequency only) ----------
@@ -213,6 +215,8 @@ export interface QueuedCase {
   enqueuedAt: number; // Date.now()
   /** Built from city events (simulated_persona inputs): the trace will be labelled synthetic. */
   synthetic: boolean;
+  /** For kind "incident": the incident, so a refresh can queue it again (cityState.ts). */
+  incidentId?: string;
 }
 
 export interface Delivery {
@@ -274,9 +278,11 @@ interface WorldState extends VoiceSlice {
   addAgentSpend: (usd: number) => void;
   setAgentBudgetMax: (n: number) => void;
   /** Merge another tab's start times (shared budget across open city tabs). */
-  syncAgentBudget: (starts: number[], spentUsd?: number) => void;
+  syncAgentBudget: (starts: number[], spentUsd?: number, maxPerWindow?: number) => void;
   setPaused: (p: boolean) => void;
   setWeatherOverride: (w: WeatherOverride) => void;
+  /** Replace the persisted parts with a saved city (cityState.ts hydrateCity), before modules start. */
+  hydrate: (h: Pick<WorldState, "incidents" | "events" | "blocked" | "weatherOverride" | "timeOfDay" | "timeScale" | "workflow">) => void;
   /** Voice (PRD J3). applyVoiceEvent is fed by the bus automatically (see the bottom of this file). */
   applyVoiceEvent: (e: WorldEvent) => void;
   /** The audio manager's onStart for a line: its text may now be revealed. */
@@ -338,16 +344,18 @@ export const useWorld = create<WorldState>((set) => ({
   setAgentQueue: (agentQueue, agentRunning) => set({ agentQueue, agentRunning }),
   addAgentSpend: (usd) => set((s) => ({ agentBudget: addSpend(s.agentBudget, usd) })),
   setAgentBudgetMax: (n) => set((s) => ({ agentBudget: { ...s.agentBudget, maxPerWindow: clampMax(n) } })),
-  syncAgentBudget: (starts, spentUsd) =>
+  syncAgentBudget: (starts, spentUsd, maxPerWindow) =>
     set((s) => ({
       agentBudget: {
         ...s.agentBudget,
         starts: mergeStarts(s.agentBudget.starts, starts, Date.now(), s.agentBudget.windowMs),
         ...(spentUsd !== undefined && spentUsd > s.agentBudget.spentUsd ? { spentUsd } : {}),
+        ...(maxPerWindow !== undefined ? { maxPerWindow: clampMax(maxPerWindow) } : {}),
       },
     })),
   setPaused: (paused) => set({ paused }),
   setWeatherOverride: (weatherOverride) => set({ weatherOverride }),
+  hydrate: (h) => set({ ...h, incidents: h.incidents.slice(-50), events: h.events.slice(-30), workflow: h.workflow.slice(-200) }),
   applyVoiceEvent: (e) =>
     set((s) => voiceReduce(s, e, typeof performance !== "undefined" ? performance.now() : Date.now()) ?? s),
   markUtteranceStarted: (callId, seq, at) =>

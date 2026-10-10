@@ -57,19 +57,28 @@ const TAB_COMPONENT: Record<TabId, ComponentType> = {
   settings: SettingsTab,
 };
 
-/** Sidebar order. "decisions" opens the Decisions drawer instead of a tab; Settings sits at the bottom. */
+/**
+ * The sidebar leads with the three things the product is about: the playbook a case runs through,
+ * the decisions waiting for a person, and the cases that have run. Every other page is still
+ * there, under "More", so the first screen is not a menu of ten places to go.
+ * "decisions" opens the Decisions drawer instead of a tab; Settings sits at the bottom.
+ */
 type NavItem = { id: TabId; title: string; Icon: ComponentType<IconProps> } | { id: "decisions"; title: string; Icon: ComponentType<IconProps> };
 const NAV: NavItem[] = [
+  { id: "workflows", title: TAB_TITLES.workflows, Icon: IconWorkflow },
+  { id: "decisions", title: "Decisions", Icon: IconDecisions },
+  { id: "executions", title: TAB_TITLES.executions, Icon: IconRuns },
+];
+const MORE: { id: TabId; title: string; Icon: ComponentType<IconProps> }[] = [
   { id: "overview", title: TAB_TITLES.overview, Icon: IconHome },
   { id: "intake", title: TAB_TITLES.intake, Icon: IconNewCase },
-  { id: "executions", title: TAB_TITLES.executions, Icon: IconRuns },
-  { id: "decisions", title: "Decisions", Icon: IconDecisions },
-  { id: "workflows", title: TAB_TITLES.workflows, Icon: IconWorkflow },
   { id: "evidence", title: TAB_TITLES.evidence, Icon: IconEvidence },
   { id: "reality", title: TAB_TITLES.reality, Icon: IconReality },
   { id: "how", title: TAB_TITLES.how, Icon: IconInfo },
   { id: "city", title: TAB_TITLES.city, Icon: IconCity },
 ];
+/** The page the console opens on. */
+const HOME_TAB: TabId = "workflows";
 
 /** Params that survive a tab switch. */
 const STICKY_PARAMS = ["workflow"];
@@ -111,7 +120,7 @@ export default function Shell() {
   const pathname = usePathname();
   const search = useSearchParams();
   const rawTab = search.get("tab");
-  const tab: TabId = isTabId(rawTab) ? rawTab : "overview";
+  const tab: TabId = isTabId(rawTab) ? rawTab : HOME_TAB;
   const [headerSlot, setHeaderSlot] = useState<HTMLDivElement | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const closeReview = useCallback(() => setReviewOpen(false), []);
@@ -286,6 +295,8 @@ function Sidebar({
 }) {
   const { tasks } = useReviewQueue();
   const waiting = tasks.filter((t) => !t.simulated && t.status === "pending").length;
+  // "More" starts open only when the page being shown lives under it.
+  const [moreOpen, setMoreOpen] = useState(() => MORE.some((m) => m.id === tab));
 
   const row = (on: boolean) =>
     cx(
@@ -359,6 +370,19 @@ function Sidebar({
             )}
           </li>
         ))}
+        <li className="mt-2">
+          <button
+            type="button"
+            onClick={() => setMoreOpen((open) => !open)}
+            aria-expanded={moreOpen}
+            title={collapsed ? "More pages" : undefined}
+            className={cx("flex h-8 w-full items-center gap-3 rounded-md text-[12px] uppercase tracking-wide text-white/35 hover:text-white/70", collapsed ? "justify-center" : "px-2.5")}
+          >
+            <IconChevronRight size={14} className={cx("transition-transform", moreOpen && "rotate-90")} />
+            {!collapsed && <span>More</span>}
+          </button>
+        </li>
+        {moreOpen && MORE.map((item) => <li key={item.id}>{tabLink(item.id, item.title, item.Icon)}</li>)}
       </ul>
 
       <div className="mt-auto flex flex-col gap-1 border-t border-white/[0.06] px-2 py-2">

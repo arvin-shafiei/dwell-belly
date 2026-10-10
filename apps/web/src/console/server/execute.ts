@@ -4,8 +4,9 @@
 // `extraEvents` (voice notes, call transcripts) are appended on the case's own timeline, and
 // `humanDecision` is passed through as a trusted input. Any voice input runs in "demo" mode (PRD I2).
 import { randomUUID } from "node:crypto";
-import type { CaseViewEvent, DecisionCard, ExecutionVoice, Flow, HumanDecision, OutboxEntry } from "../types";
+import type { CaseViewEvent, DecisionCard, ExecutionVoice, Flow, HumanDecision, OutboxEntry, Trace } from "../types";
 import { buildView } from "./catalogue";
+import type { CaseView } from "./caseViews";
 import { summariseTrace, isTrace } from "./mapping";
 import { buildRerun } from "./rerun";
 import { getExecution, getExecutionInput, recordExecutionInput, getWorkflow, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
@@ -115,40 +116,59 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
   const saved = input.flow ? null : getWorkflow(base.workflowId);
   const flow = input.flow ?? (saved?.source === "db" ? saved.flow : null);
 
+  const voiceRun = request.voiceInput && !input.mode;
+  await recordAgentRun(base, flow ? { ...request.body, flow } : { ...request.body, flowId: base.workflowId }, (trace, s) =>
+    // Voice runs go in "demo" mode only because the agent admits voice there (PRD I2). They are simulated
+    // only when a simulated persona spoke (trace.synthetic), not because of the mode itself.
+    voiceRun ? trace.synthetic === true || request.synthetic : s.simulated || request.synthetic,
+    { ...built.view, events: request.body.events },
+  );
+  return getExecution(base.id)!;
+}
+
+/**
+ * POSTs `body` to the agent API (apps/api POST /api/cases) and records the result on the "running" row `base`
+ * (already written). Shared by execute() and city cases (city.ts). Never throws: failures become an error row.
+ */
+export async function recordAgentRun(
+  base: ExecutionWrite,
+  body: unknown,
+  simulatedOf: (trace: Trace, s: ReturnType<typeof summariseTrace>) => boolean = (_t, s) => s.simulated,
+  inputView?: CaseView,
+): Promise<void> {
+  const startedAt = Date.parse(base.startedAt);
   try {
     // Persist evidence, never the control fields: a previous human approval must not
     // authorise a different action in a later follow-up.
-    recordExecutionInput(base.id, { ...built.view, events: request.body.events });
+    if (inputView) recordExecutionInput(base.id, inputView);
     const res = await fetch(`${agentUrl()}/api/cases`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       // A workflow edited in the console runs as edited: the agent API validates the flow and
       // refuses an unsound one. An untouched workflow is left to the API's own flow file.
-      body: JSON.stringify(flow ? { ...request.body, flow } : { ...request.body, flowId: base.workflowId }),
+      body: JSON.stringify(body),
       signal: AbortSignal.timeout(RUN_TIMEOUT_MS),
     });
     const text = await res.text();
     if (!res.ok) throw new Error(`agent API answered ${res.status}: ${text.slice(0, 500)}`);
-    const body = JSON.parse(text) as { trace?: unknown; outcome?: string; outbox?: OutboxEntry[]; card?: DecisionCard | null };
-    const trace = body.trace ?? body;
+    const parsed = JSON.parse(text) as { trace?: unknown; outcome?: string; outbox?: OutboxEntry[]; card?: DecisionCard | null };
+    const trace = parsed.trace ?? parsed;
     if (!isTrace(trace)) throw new Error("agent API response has no trace");
     const s = summariseTrace(trace);
     upsertExecution({
       ...base,
       status: s.status,
-      outcome: s.outcome ?? body.outcome ?? null,
-      durationMs: s.durationMs ?? Date.now() - startedAt.getTime(),
+      outcome: s.outcome ?? parsed.outcome ?? null,
+      durationMs: s.durationMs ?? Date.now() - startedAt,
       costUsd: s.costUsd,
-      // Voice runs go in "demo" mode only because the agent admits voice there (PRD I2). They are simulated
-      // only when a simulated persona spoke (trace.synthetic), not because of the mode itself.
-      simulated: request.voiceInput && !input.mode ? trace.synthetic === true || request.synthetic : s.simulated || request.synthetic,
+      simulated: simulatedOf(trace, s),
       title: s.title ?? base.title,
       nextAction: s.nextAction,
       gate: s.gate,
       error: s.error,
       trace,
-      outbox: Array.isArray(body.outbox) ? body.outbox : null,
-      card: body.card ?? null,
+      outbox: Array.isArray(parsed.outbox) ? parsed.outbox : null,
+      card: parsed.card ?? null,
     });
   } catch (err) {
     const c = err instanceof Error ? (err.cause as { message?: string; code?: string } | undefined) : undefined;
@@ -156,9 +176,8 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
     const message = err instanceof Error
       ? (err.name === "TimeoutError" ? `agent API did not answer within ${RUN_TIMEOUT_MS / 1000} s` : `${err.message}${cause}`)
       : String(err);
-    upsertExecution({ ...base, status: "error", durationMs: Date.now() - startedAt.getTime(), error: message });
+    upsertExecution({ ...base, status: "error", durationMs: Date.now() - startedAt, error: message });
   }
-  return getExecution(base.id)!;
 }
 
 export async function agentHealthy(): Promise<boolean> {

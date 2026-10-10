@@ -1,4 +1,5 @@
-// Bridge from the city to the real agent (apps/api POST /api/cases). A staged scenario (or, via
+// Bridge from the city to the real agent. City cases go through the console (runCityCase: same-origin
+// POST /api/console/city/cases, recorded in SQLite); runAgentFull still calls apps/api POST /api/cases directly. A staged scenario (or, via
 // backendLink.ts, a city incident) becomes a case view, the agent runs it and returns its Trace, and the
 // trace is turned into timed WorkflowEvents for the HUD, decision cards included. Every city case goes
 // through here (modules/WorkflowDriver/link.ts queues them within the budget); there is no mock.
@@ -151,10 +152,13 @@ export function outcomeOf(trace: Trace): "acted" | "asked_for_info" | "escalated
   return o === "acted" || o === "asked_for_info" || o === "escalated" || o === "blocked" || o === "no_action" ? o : "escalated";
 }
 
+/** Agent API health as the console sees it (same-origin /api/console/status), so the city and the console agree. */
 export async function checkAgent(signal?: AbortSignal): Promise<boolean> {
   try {
-    const r = await fetch(`${AGENT_API}/api/health`, { signal, cache: "no-store" });
-    return r.ok;
+    const r = await fetch("/api/console/status", { signal, cache: "no-store" });
+    if (!r.ok) return false;
+    const body = (await r.json()) as { agentApi?: unknown };
+    return body.agentApi === true;
   } catch {
     return false;
   }
@@ -196,4 +200,69 @@ export async function runAgentFull(view: { id: string; events: ViewEvent[]; mode
   } finally {
     clearTimeout(timer);
   }
+}
+
+// ---------------------------------------------------------------- city cases through the console (SQLite)
+
+export const CITY_CASES_URL = "/api/console/city/cases";
+const FOLLOW_EVERY_MS = 2000;
+
+/** The shared city budget is full (429): the case keeps waiting in the queue. */
+export class OverBudgetError extends Error {
+  readonly overBudget = true;
+  constructor(readonly budget: { starts: number[]; spentUsd: number; maxPerWindow: number } | null) {
+    super("over budget");
+  }
+}
+
+export interface CityRunResult extends AgentRunResult {
+  executionId: string;
+}
+
+type CityDeps = { fetch?: typeof fetch; sleep?: (ms: number) => Promise<void>; timeoutMs?: number; onBudget?: (b: { starts: number[]; spentUsd: number; maxPerWindow: number }) => void };
+
+function runFailed(message: string): Error {
+  const e = new Error(message);
+  e.name = "RunFailed";
+  return e;
+}
+
+/** Poll GET /api/console/executions/:id until it finishes; the run's trace, card and outbox. */
+export async function followExecution(id: string, deps: CityDeps = {}): Promise<CityRunResult> {
+  const f = deps.fetch ?? fetch;
+  const sleep = deps.sleep ?? ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));
+  const until = Date.now() + (deps.timeoutMs ?? RUN_TIMEOUT_MS);
+  let misses = 0;
+  while (Date.now() < until) {
+    try {
+      const r = await f(`/api/console/executions/${encodeURIComponent(id)}`, { cache: "no-store" });
+      if (r.status === 404) throw runFailed("execution not found");
+      const body = (await r.json()) as { execution?: { status: string; trace: Trace | null; card?: DecisionCard | null; outbox?: unknown[] | null; error?: string | null } };
+      const ex = body.execution;
+      misses = 0;
+      if (ex && ex.status !== "running") {
+        if (ex.status === "error" || !ex.trace?.events) throw runFailed(ex.error ?? "the agent run failed");
+        return { trace: ex.trace, card: ex.card ?? lastCard(ex.trace), outbox: ex.outbox ?? null, executionId: id };
+      }
+    } catch (e) {
+      if (e instanceof Error && e.name === "RunFailed") throw e;
+      if (++misses > 5) throw e; // the console API is unreachable: give up after ~10 s
+    }
+    await sleep(FOLLOW_EVERY_MS);
+  }
+  throw new Error("the agent run did not finish in time");
+}
+
+/**
+ * Run a city case through the console (same-origin, recorded in SQLite as origin "city", dataset
+ * "city-live"): POST it, then follow the execution until it finishes. Throws OverBudgetError on 429.
+ */
+export async function runCityCase(view: { id: string; events: ViewEvent[]; mode?: "demo" | "practice"; context?: string | null }, label: string, deps: CityDeps = {}): Promise<CityRunResult> {
+  const f = deps.fetch ?? fetch;
+  const r = await f(CITY_CASES_URL, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ view, label }) });
+  const body = (await r.json().catch(() => null)) as { id?: string; error?: string; budget?: { starts: number[]; spentUsd: number; maxPerWindow: number } } | null;
+  if (body?.budget) deps.onBudget?.(body.budget);
+  if (r.status === 429) throw new OverBudgetError(body?.budget ?? null);
+  if (!r.ok || !body?.id) throw new Error(body?.error ?? `city cases ${r.status}`);
+  return followExecution(body.id, deps);
 }
