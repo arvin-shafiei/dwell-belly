@@ -282,7 +282,7 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
                     {c.prov ? (c.state === "closed" || c.cost > 0 ? formatCost(c.cost) : "…") : `est ${formatCost(c.cost)}`}
                   </span>
                 </div>
-                <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-white/70">{c.last.summary}</p>
+                <p className="mt-0.5 truncate text-[11px] leading-snug text-white/70" title={c.last.summary}>{c.last.summary}</p>
                 <ExpectedLine caseId={c.caseId} events={events} />
                 <div className="mt-1 flex items-center gap-1.5 font-mono text-[9px] text-white/40">
                   <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: RUNNER_COLOR[runner] }} />

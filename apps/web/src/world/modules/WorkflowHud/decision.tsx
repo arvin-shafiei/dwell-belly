@@ -81,11 +81,30 @@ function pushChoice(item: ToastItem, label: string, result: DecisionOutcome) {
   });
 }
 
+/** Truncate to `n` chars with an ellipsis (whitespace collapsed). */
+export function clip(s: string, n: number): string {
+  const t = s.replace(/\s+/g, " ").trim();
+  return t.length <= n ? t : `${t.slice(0, n - 1).trimEnd()}…`;
+}
+
+/** Option button text: at most 4 words and 28 chars. The full label and effect go in the tooltip. */
+export function shortLabel(label: string): string {
+  const words = label.replace(/\s+/g, " ").trim().split(" ");
+  return clip(words.length > 4 ? `${words.slice(0, 4).join(" ")}…` : words.join(" "), 28);
+}
+
+const BASIS_DOT: Record<string, string> = {
+  system_record: "bg-emerald-400",
+  owning_team_statement: "bg-sky-400",
+  unverified_claim: "bg-amber-400",
+};
+
 type Choice = { optionId: string; state: "sending" } | { optionId: string; state: "done"; result: DecisionOutcome };
 
 export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: ReviewTask[]; loading: boolean; onOpenQueue: () => void }) {
   const [queue, setQueue] = useState<ToastItem[]>([]);
   const [choice, setChoice] = useState<Choice | null>(null);
+  const [details, setDetails] = useState(false);
   const seenKeys = useRef(new Set<string>());
   const seededQueue = useRef(false);
   const lastId = useRef<string | null>(null);
@@ -135,6 +154,7 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
 
   const dismiss = () => {
     setChoice(null);
+    setDetails(false);
     setQueue((q) => q.slice(1));
   };
 
@@ -154,39 +174,37 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
   const c = cur.card;
   const mins = Math.round(c.deadlineMs / 60_000);
   const picked = choice?.optionId ?? null;
+  const why = c.whyStopped?.line || c.summary;
+  const status =
+    choice?.state === "sending" ? { text: "Recording…", cls: "text-white/50", title: "" }
+    : choice?.state === "done"
+      ? choice.result.status === "recorded"
+        ? { text: "Recorded · not re-run", cls: "text-emerald-300", title: choice.result.note }
+        : { text: "NOT SENT", cls: "text-amber-300", title: choice.result.reason }
+      : null;
   return (
-    <div key={cur.key} className={`${GLASS} hud-toast hud-scroll max-h-[46vh] w-full max-w-[460px] overflow-y-auto border-amber-300/30`} role="alertdialog" aria-label="Decision needed">
-      <div className="px-4 pb-3.5 pt-3">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
+    <div key={cur.key} className={`${GLASS} hud-toast w-full max-w-[380px] border-amber-300/30`} role="alertdialog" aria-label="Decision needed" title={cur.caseLabel}>
+      <div className="px-3 pb-2.5 pt-2.5">
+        <div className="flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-amber-400" />
+          <span className="min-w-0 truncate rounded bg-amber-400/15 px-1.5 py-px text-[9.5px] font-semibold uppercase tracking-[0.12em] text-amber-200" title={c.routeTo}>
+            {clip(c.routeTo.replaceAll("_", " "), 28)}
           </span>
-          <span className="shrink-0 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-300">Needs {c.routeTo.replaceAll("_", " ")}</span>
           <RealAgentTag label={cur.prov} />
           {queue.length > 1 && <span className="ml-auto shrink-0 font-mono text-[10px] text-white/45">+{queue.length - 1}</span>}
         </div>
-        <div className="mt-1 truncate font-mono text-[10.5px] text-white/50">{cur.caseLabel}</div>
-        {c.whyStopped && <p className="mt-1.5 text-[13px] font-medium leading-snug text-white">{c.whyStopped.line}</p>}
-        <p className="mt-1 line-clamp-3 text-[11.5px] leading-snug text-white/70">{c.summary}</p>
+        <p className="mt-1.5 truncate text-[12px] font-medium text-white" title={why}>{clip(why, 90)}</p>
         {c.evidence && c.evidence.length > 0 && (
-          <ul className="mt-2 space-y-1">
-            {c.evidence.slice(0, 3).map((ev, i) => (
-              <li key={i} className="rounded-md bg-white/[0.04] px-2 py-1 text-[10.5px] leading-snug">
-                <span className="font-semibold text-white/85">{ev.who}</span>
-                <span className="ml-1.5 font-mono text-[9px] uppercase tracking-wider text-white/40">{ev.basis.replaceAll("_", " ")}</span>
-                <span className="block text-white/65">{ev.says}</span>
+          <ul className="mt-1 space-y-0.5">
+            {c.evidence.slice(0, 2).map((ev, i) => (
+              <li key={i} className="flex items-center gap-1.5 text-[10.5px] text-white/60" title={`${ev.who}: ${ev.says} (${ev.basis.replaceAll("_", " ")})`}>
+                <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${BASIS_DOT[ev.basis] ?? "bg-white/40"}`} />
+                <span className="truncate">{clip(`${ev.who}: ${ev.says}`, 70)}</span>
               </li>
             ))}
           </ul>
         )}
-        {c.alreadyDone && c.alreadyDone.length > 0 && (
-          <div className="mt-2 text-[10.5px] leading-snug text-white/55">
-            <span className="font-semibold uppercase tracking-wider text-white/40">Already done</span>
-            <ul className="mt-0.5 list-disc pl-4">{c.alreadyDone.slice(0, 3).map((d, i) => <li key={i}>{d}</li>)}</ul>
-          </div>
-        )}
-        <div className="mt-2.5 flex flex-col gap-1.5">
+        <div className="mt-2 flex flex-wrap gap-1">
           {c.options.map((o) => {
             const on = picked === o.id;
             return (
@@ -195,41 +213,40 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
                 type="button"
                 disabled={!!picked}
                 onClick={() => void choose(o.id)}
-                title={o.effect}
-                className={`rounded-md border px-2.5 py-1.5 text-left text-[11.5px] transition ${
+                title={[o.label, o.effect, o.safe ? "Undoable" : ""].filter(Boolean).join(" · ")}
+                className={`max-w-full truncate rounded-md border px-2 py-1 text-[11px] font-medium transition ${
                   on
                     ? "border-[#ff6a1a] bg-[#ff6a1a] text-black"
                     : picked
                       ? "border-white/5 bg-white/[0.02] text-white/30"
-                      : "border-white/12 bg-white/[0.05] text-white/90 hover:border-[#ff6a1a]/60 hover:bg-[#ff6a1a]/15"
+                      : `${o.safe ? "border-emerald-400/30" : "border-white/12"} bg-white/[0.05] text-white/90 hover:border-[#ff6a1a]/60 hover:bg-[#ff6a1a]/15`
                 }`}
               >
-                <span className="flex items-center gap-1.5 font-medium">
-                  {o.label}
-                  {o.safe && <span className={`rounded px-1 font-mono text-[8.5px] uppercase tracking-wider ${on ? "bg-black/20" : "bg-emerald-400/15 text-emerald-300"}`}>undoable</span>}
-                </span>
-                {o.effect && <span className={`mt-0.5 block text-[10px] leading-snug ${on ? "text-black/70" : "text-white/50"}`}>{o.effect}</span>}
+                {shortLabel(o.label)}
               </button>
             );
           })}
         </div>
-        <div className="mt-2.5 flex items-center gap-2 font-mono text-[10px] text-white/45">
-          {choice?.state === "sending" ? (
-            <span>Recording in the review queue…</span>
-          ) : choice?.state === "done" ? (
-            choice.result.status === "recorded" ? (
-              <span className="text-emerald-300" title={choice.result.note}>Recorded in the review queue · action pending · not re-run</span>
-            ) : (
-              <span className="text-amber-300" title={choice.result.reason}>Kept local · NOT SENT: {choice.result.reason}</span>
-            )
-          ) : (
-            <span className="min-w-0 truncate" title={c.fallback}>Decide within {mins} min · else: {c.fallback ?? "the agent's fallback"}</span>
-          )}
-          <span className="ml-auto flex shrink-0 gap-1.5">
-            <button type="button" onClick={onOpenQueue} className="rounded border border-white/15 px-1.5 py-0.5 text-white/70 hover:bg-white/10">Queue</button>
-            <button type="button" onClick={dismiss} className="rounded border border-white/15 px-1.5 py-0.5 text-white/70 hover:bg-white/10">{choice?.state === "done" ? "Close" : "Later"}</button>
+        <div className="mt-1.5 flex items-center gap-1.5 font-mono text-[10px] text-white/45">
+          <button type="button" onClick={() => setDetails((d) => !d)} className="text-white/55 hover:text-white" aria-expanded={details}>
+            Details {details ? "▴" : "▾"}
+          </button>
+          {status ? <span className={`min-w-0 truncate ${status.cls}`} title={status.title}>{status.text}</span> : <span>{mins} min</span>}
+          <span className="ml-auto flex shrink-0 gap-1">
+            <button type="button" onClick={onOpenQueue} className="rounded border border-white/15 px-1.5 py-px text-white/70 hover:bg-white/10">Queue</button>
+            <button type="button" onClick={dismiss} className="rounded border border-white/15 px-1.5 py-px text-white/70 hover:bg-white/10">{choice?.state === "done" ? "Close" : "Later"}</button>
           </span>
         </div>
+        {details && (
+          <div className="hud-scroll mt-1.5 max-h-40 space-y-1 overflow-y-auto border-t border-white/[0.07] pt-1.5 text-[10.5px] leading-snug text-white/60">
+            {c.summary && c.summary !== why && <p>{c.summary}</p>}
+            {c.clash && <p><span className="text-white/40">Clash: </span>{c.clash}</p>}
+            {c.alreadyDone?.length ? <p><span className="text-white/40">Done: </span>{c.alreadyDone.join(" · ")}</p> : null}
+            {c.wouldChangeMyMind && <p><span className="text-white/40">Would settle it: </span>{c.wouldChangeMyMind}</p>}
+            {c.fallback && <p><span className="text-white/40">If nobody answers: </span>{c.fallback}</p>}
+            {status?.title && <p><span className="text-white/40">Status: </span>{status.title}</p>}
+          </div>
+        )}
       </div>
     </div>
   );

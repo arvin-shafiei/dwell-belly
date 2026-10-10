@@ -118,7 +118,7 @@ export function traceToTimedEvents(trace: Trace, caseId: string, meta: ReplayMet
       if (out0?.type === "human_decision" && out0.card) {
         const card = cardFromTrace(out0.card, `${trace.runId}:${e.nodeId}:${e.t}`);
         const line = out0.card.whyStopped?.line ?? out0.card.summary;
-        out.push({ atMs: at, event: { caseId, nodeId: "human", status: "ask", summary: `Needs ${out0.card.routeTo}: ${line}`.slice(0, 200), card, decision: "hold_for_human", ...tag } });
+        out.push({ atMs: at, event: { caseId, nodeId: "human", status: "ask", summary: `Needs ${out0.card.routeTo}: ${line}`.slice(0, 120), card, decision: "hold_for_human", ...tag } });
         continue;
       }
       out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: gateStatus(e), summary: e.summary || e.nodeId, ...tag } });

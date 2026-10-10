@@ -37,3 +37,14 @@ describe("decision toast sources", () => {
     expect(toastFromTask({ ...task, status: "decision_recorded" }, 0)).toBeNull();
   });
 });
+
+describe("compact card text", () => {
+  it("clips long lines and keeps option labels to four words", async () => {
+    const { clip, shortLabel } = await import("./decision");
+    expect(clip("a".repeat(100), 90)).toHaveLength(90);
+    expect(clip("short", 90)).toBe("short");
+    expect(shortLabel("Phone driver and open welfare check")).toBe("Phone driver and open…");
+    expect(shortLabel("Hold")).toBe("Hold");
+    expect(shortLabel("Supercalifragilistic expialidocious extraordinarily")).toHaveLength(28);
+  });
+});
