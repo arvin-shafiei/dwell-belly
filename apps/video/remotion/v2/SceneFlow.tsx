@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { MONO } from "../theme";
 import { clamp, Header, K, Label, Pop, ramp, sp, Stage, Typed } from "./kit";
@@ -17,19 +17,25 @@ export const FLOW_START = 50; // first node lights up
 export const FLOW_STEP = 140; // frames per node
 export const FLOW_FRAMES = FLOW_START + FLOW_STEP * 5 + 110;
 
+/** Timing for the flow scene: when node 1 lights, frames per node, frames for the safety step. */
+type FlowT = { start: number; step: number; safety: number };
+const FlowCtx = createContext<FlowT>({ start: FLOW_START, step: FLOW_STEP, safety: FLOW_STEP });
+export const flowFrames = (t: FlowT) => t.start + t.step * 4 + t.safety + 110;
+
 const NODE_W = 270;
 const GAP = 64;
 const ROW_Y = 330;
 const LEFT = (1920 - (NODE_W * 5 + GAP * 4)) / 2;
 
 const Pipeline: React.FC<{ frame: number; fps: number }> = ({ frame, fps }) => {
+  const { start: FS, step: ST } = useContext(FlowCtx);
   return (
     <div style={{ position: "absolute", left: 0, top: ROW_Y, width: 1920, height: 120 }}>
       <svg width={1920} height={120} style={{ position: "absolute", left: 0, top: 0 }}>
         {NODES.slice(0, -1).map((_, i) => {
           const x1 = LEFT + i * (NODE_W + GAP) + NODE_W;
           const x2 = x1 + GAP;
-          const t = ramp(frame, FLOW_START + (i + 1) * FLOW_STEP - 22, FLOW_START + (i + 1) * FLOW_STEP);
+          const t = ramp(frame, FS + (i + 1) * ST - Math.min(22, ST / 3), FS + (i + 1) * ST);
           return (
             <g key={i}>
               <line x1={x1} y1={60} x2={x2} y2={60} stroke={K.line2} strokeWidth={2} />
@@ -40,11 +46,11 @@ const Pipeline: React.FC<{ frame: number; fps: number }> = ({ frame, fps }) => {
         })}
       </svg>
       {NODES.map((n, i) => {
-        const at = FLOW_START + i * FLOW_STEP;
+        const at = FS + i * ST;
         const appear = sp(frame, fps, 6 + i * 4, 16);
         const on = sp(frame, fps, at, 12);
-        const active = frame >= at && frame < at + FLOW_STEP;
-        const done = frame >= at + FLOW_STEP;
+        const active = frame >= at && frame < at + ST;
+        const done = frame >= at + ST && i < 4;
         return (
           <div
             key={n.name}
@@ -79,10 +85,11 @@ const Pipeline: React.FC<{ frame: number; fps: number }> = ({ frame, fps }) => {
 
 /** Wraps a step's detail so it springs in and fades when the next step starts. */
 const Detail: React.FC<{ i: number; frame: number; fps: number; children: React.ReactNode; hold?: boolean }> = ({ i, frame, fps, children, hold }) => {
-  const at = FLOW_START + i * FLOW_STEP;
-  if (frame < at - 2 || (!hold && frame > at + FLOW_STEP + 8)) return null;
+  const { start: FS, step: ST } = useContext(FlowCtx);
+  const at = FS + i * ST;
+  if (frame < at - 2 || (!hold && frame > at + ST + 8)) return null;
   const v = sp(frame, fps, at + 4, 16);
-  const out = hold ? 1 : interpolate(frame, [at + FLOW_STEP - 6, at + FLOW_STEP + 6], [1, 0], clamp);
+  const out = hold ? 1 : interpolate(frame, [at + ST - 6, at + ST + 6], [1, 0], clamp);
   return (
     <div style={{ position: "absolute", left: 160, right: 160, top: 540, opacity: Math.min(1, v) * out, transform: `translateY(${(1 - v) * 40}px)` }}>{children}</div>
   );
@@ -127,9 +134,16 @@ const Gauge: React.FC<{ frame: number; fps: number; at: number }> = ({ frame, fp
   );
 };
 
-export const SceneFlow: React.FC = () => {
+export const SceneFlow: React.FC<{ start?: number; step?: number; safety?: number }> = ({ start = FLOW_START, step = FLOW_STEP, safety }) => (
+  <FlowCtx.Provider value={{ start, step, safety: safety ?? step }}>
+    <SceneFlowInner />
+  </FlowCtx.Provider>
+);
+
+const SceneFlowInner: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const { start: FLOW_START, step: FLOW_STEP, safety: SAFETY } = useContext(FlowCtx);
   const s = (i: number, k: number) => sp(frame, fps, FLOW_START + i * FLOW_STEP + 10 + k * 8, 15);
   const safetyAt = FLOW_START + 4 * FLOW_STEP;
   return (
@@ -190,7 +204,7 @@ export const SceneFlow: React.FC = () => {
         <div style={{ display: "flex", gap: 22, marginTop: 26, alignItems: "center" }}>
           {["Act", "Ask", "Hand over", "Wait"].map((m, k) => {
             const chosen = m === "Act";
-            const pick = sp(frame, fps, FLOW_START + 3 * FLOW_STEP + 60, 12);
+            const pick = sp(frame, fps, FLOW_START + 3 * FLOW_STEP + Math.round(FLOW_STEP * 0.43), 12);
             return (
               <Pop key={m} v={s(3, k)} dy={20}>
                 <div
@@ -212,7 +226,7 @@ export const SceneFlow: React.FC = () => {
             );
           })}
         </div>
-        <Pop v={sp(frame, fps, FLOW_START + 3 * FLOW_STEP + 72, 15)} dy={20}>
+        <Pop v={sp(frame, fps, FLOW_START + 3 * FLOW_STEP + Math.round(FLOW_STEP * 0.51), 15)} dy={20}>
           <div style={{ fontSize: 40, fontWeight: 600, marginTop: 34 }}>
             Send one message to <span style={{ color: K.orange }}>Tracking support, Plover Arc Logistics.</span>
           </div>
@@ -251,7 +265,7 @@ export const SceneFlow: React.FC = () => {
           </div>
         </div>
       </Detail>
-      {frame > safetyAt + FLOW_STEP - 10 ? <Outbox frame={frame} fps={fps} at={safetyAt + FLOW_STEP - 10} /> : null}
+      {frame > safetyAt + SAFETY - 10 ? <Outbox frame={frame} fps={fps} at={safetyAt + SAFETY - 10} /> : null}
       <div style={{ position: "absolute", bottom: 40, right: 60, fontFamily: MONO, fontSize: 17, color: K.muted }}>Thresholds live in the flow file, not in prompts</div>
     </Stage>
   );

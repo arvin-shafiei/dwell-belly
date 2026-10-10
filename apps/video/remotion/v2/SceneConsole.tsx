@@ -23,9 +23,11 @@ export const CONSOLE_SHOTS: ConsoleShot[] = [
 const DEF_DUR = 105;
 
 /** The shots that have footage, in order, with start frames. */
-export const availableConsoleShots = () => {
+export type ShotPick = { kicker: string; dur: number };
+export const availableConsoleShots = (pick?: ShotPick[]) => {
   let at = 0;
-  return CONSOLE_SHOTS.map((s) => ({ ...s, clip: s.clips.find(hasClip), useStill: s.still && hasStill(s.still) ? s.still : undefined }))
+  const base = pick ? pick.map((p) => ({ ...CONSOLE_SHOTS.find((c) => c.kicker === p.kicker)!, dur: p.dur })).filter((c) => c.clips) : CONSOLE_SHOTS;
+  return base.map((s) => ({ ...s, clip: s.clips.find(hasClip), useStill: s.still && hasStill(s.still) ? s.still : undefined }))
     .filter((s) => s.clip || s.useStill)
     .map((s) => {
       const d = s.dur ?? DEF_DUR;
@@ -34,7 +36,7 @@ export const availableConsoleShots = () => {
       return r;
     });
 };
-export const consoleDuration = () => availableConsoleShots().reduce((a, s) => a + s.d, 0);
+export const consoleDuration = (pick?: ShotPick[]) => availableConsoleShots(pick).reduce((a, s) => a + s.d, 0);
 
 const DEVICE_W = 1330;
 
@@ -47,10 +49,10 @@ const Media: React.FC<{ clip?: string; stillName?: string; d: number; skip?: num
   return <Img src={staticFile(s.file)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 0%", transform: `scale(${z})`, transformOrigin: "50% 20%" }} />;
 };
 
-export const SceneConsole: React.FC = () => {
+export const SceneConsole: React.FC<{ pick?: ShotPick[] }> = ({ pick }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const shots = availableConsoleShots();
+  const shots = availableConsoleShots(pick);
   const enter = sp(frame, fps, 6, 16);
   const idx = Math.max(0, shots.findLastIndex((s) => frame >= s.at));
   return (
@@ -113,14 +115,14 @@ const ShotText: React.FC<{ shot: ReturnType<typeof availableConsoleShots>[number
 };
 
 /** The simulated city, labelled as a visualisation of agent traces. */
-export const SceneCity: React.FC<{ d: number }> = ({ d }) => {
+export const SceneCity: React.FC<{ d: number; max?: number }> = ({ d, max = 9 }) => {
   const frame = useCurrentFrame();
   const shots: { clip?: string; still?: string; cap: string }[] = [
     { clip: "city-flyover", still: "city-aerial", cap: "A live 3D city: deliveries, traffic, the river and the port." },
     { clip: "city-crash", still: "city-crash", cap: "A truck crash becomes an incident, and a case for the desk." },
     { still: "city-port", cap: "Ships berth at the container port." },
     { clip: "v2/city-motorcade", still: "city-motorcade", cap: "A motorcade crosses the city under a rolling road closure." },
-  ].filter((s) => (s.clip && hasClip(s.clip)) || (s.still && hasStill(s.still)));
+  ].filter((s) => (s.clip && hasClip(s.clip)) || (s.still && hasStill(s.still))).slice(0, max);
   if (!shots.length) return null;
   const per = Math.floor(d / shots.length);
   return (

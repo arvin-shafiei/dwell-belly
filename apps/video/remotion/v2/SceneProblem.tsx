@@ -31,8 +31,8 @@ const rnd = (i: number, k: number) => {
   return x - Math.floor(x);
 };
 
-const CaseCard: React.FC<{ id: string; title: string; i: number; frame: number; fps: number; dim: number }> = ({ id, title, i, frame, fps, dim }) => {
-  const at = 6 + i * 7;
+const CaseCard: React.FC<{ id: string; title: string; i: number; frame: number; fps: number; dim: number; k: number }> = ({ id, title, i, frame, fps, dim, k }) => {
+  const at = (6 + i * 7) * k;
   const v = sp(frame, fps, at, 14, 0.6);
   const col = i % 4;
   const row = Math.floor(i / 4);
@@ -65,26 +65,27 @@ const CaseCard: React.FC<{ id: string; title: string; i: number; frame: number; 
 };
 
 /** 0-11 s: the desk is drowning, and the stories clash. */
-export const SceneProblem: React.FC = () => {
+/** `k` scales every cue (1 = full length, about 0.45 for the 60 s cut). */
+export const SceneProblem: React.FC<{ k?: number }> = ({ k = 1 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const dim = ramp(frame, 175, 200);
-  const push = interpolate(frame, [0, 200], [1, 1.06], clamp);
-  const clashA = sp(frame, fps, 200, 15);
-  const clashB = sp(frame, fps, 212, 15);
-  const neq = sp(frame, fps, 232, 10);
+  const dim = ramp(frame, 175 * k, 200 * k);
+  const push = interpolate(frame, [0, 200 * k], [1, 1.06], clamp);
+  const clashA = sp(frame, fps, 200 * k, 15);
+  const clashB = sp(frame, fps, 212 * k, 15);
+  const neq = sp(frame, fps, 232 * k, 10);
   return (
     <Stage>
       <AbsoluteFill style={{ transform: `scale(${push})` }}>
         {CASES.map(([id, t], i) => (
-          <CaseCard key={id} id={id} title={t} i={i} frame={frame} fps={fps} dim={dim} />
+          <CaseCard key={id} id={id} title={t} i={i} frame={frame} fps={fps} dim={dim} k={k} />
         ))}
       </AbsoluteFill>
-      <Header kicker="The problem" line="Case after case lands on the desk. It *controls* none of the parties." size={54} out={170} />
-      {frame >= 190 ? (
+      <Header kicker="The problem" line="Case after case lands on the desk. It *controls* none of the parties." size={54} out={170 * k} />
+      {frame >= 190 * k ? (
         <AbsoluteFill>
           <div style={{ position: "absolute", left: 120, top: 84 }}>
-            <Kinetic text="And the stories *don't* match." at={192} size={64} />
+            <Kinetic text="And the stories *don't* match." at={192 * k} size={64} />
           </div>
           <div style={{ position: "absolute", top: 400, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 48 }}>
             <Pop v={clashA} dx={-120} dy={0}>
@@ -101,10 +102,10 @@ export const SceneProblem: React.FC = () => {
               </div>
             </Pop>
           </div>
-          <div style={{ position: "absolute", top: 700, left: 0, right: 0, textAlign: "center", opacity: ramp(frame, 255, 275) }}>
+          <div style={{ position: "absolute", top: 700, left: 0, right: 0, textAlign: "center", opacity: ramp(frame, 255 * k, 275 * k) }}>
             <div style={{ fontSize: 34, color: K.muted }}>Act on the wrong one and the desk makes a promise it can't keep.</div>
           </div>
-          <div style={{ position: "absolute", bottom: 60, left: 120, fontFamily: MONO, fontSize: 17, color: K.muted, opacity: ramp(frame, 230, 250) }}>
+          <div style={{ position: "absolute", bottom: 60, left: 120, fontFamily: MONO, fontSize: 17, color: K.muted, opacity: ramp(frame, 230 * k, 250 * k) }}>
             Practice case delivery-013, from the organisers' synthetic set
           </div>
         </AbsoluteFill>

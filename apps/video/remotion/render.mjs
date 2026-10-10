@@ -1,6 +1,7 @@
 // Renders the Remotion compositions.
 //
-//   node remotion/render.mjs demo            -> demo/rivet-demo.mp4 (the v2 film, DemoV2) + docs/media/hero.gif
+//   node remotion/render.mjs demo            -> demo/rivet-demo.mp4 (the 60 s cut, DemoCut)
+//   node remotion/render.mjs full            -> demo/rivet-demo-full.mp4 (the full film, DemoV2) + docs/media/hero.gif
 //   node remotion/render.mjs v1              -> demo/rivet-demo-v1.mp4 (the 60 s cut, Demo)
 //   node remotion/render.mjs gifs            -> docs/media/hero.gif, docs/media/feature-*.gif
 //   node remotion/render.mjs all
@@ -18,7 +19,8 @@ import { MEDIA_DIR, scanMedia } from "./scan-media.mjs";
 const here = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(here, "../../..");
 const DEMO_OUT = join(REPO, "demo", "rivet-demo-v1.mp4");
-const V2_OUT = join(REPO, "demo", "rivet-demo.mp4");
+const V2_OUT = join(REPO, "demo", "rivet-demo-full.mp4");
+const CUT_OUT = join(REPO, "demo", "rivet-demo.mp4");
 const V2_MAX = 60 * 1024 * 1024;
 const MB = 1024 * 1024;
 // 50 MB is the hard limit for committing without LFS; the PRD (H1) asks for under 30 MB.
@@ -95,7 +97,18 @@ async function main() {
     }
   }
 
-  if (what === "demo" || what === "v2" || what === "all") {
+  if (what === "demo" || what === "all") {
+    const inputProps = { audio, audioVolume: 1, cut: true };
+    for (const crf of [20, 24, 28]) {
+      console.log(`rendering DemoCut (crf ${crf}) -> ${CUT_OUT}`);
+      await render("DemoCut", CUT_OUT, { inputProps, media: { crf, x264Preset: "slow", pixelFormat: "yuv420p", muted: !audio } });
+      const size = statSync(CUT_OUT).size;
+      console.log(`  ${CUT_OUT}: ${mb(size)}`);
+      if (size < 30 * MB) break;
+    }
+  }
+
+  if (what === "full" || what === "all") {
     mkdirSync(dirname(V2_OUT), { recursive: true });
     const inputProps = { audio, audioVolume: 1 };
     for (const crf of [20, 24, 28]) {
@@ -108,7 +121,7 @@ async function main() {
   }
 
   // README hero from the best 6 s of v2: the safety check (needle lands in "clear", the sent email types out).
-  if (what === "demo" || what === "v2" || what === "all" || what === "hero-v2") {
+  if (what === "full" || what === "all" || what === "hero-v2") {
     const HERO_START = 32.4; // s: Problem 285 + Title 120 - 2 x 16 transition = 373 frames, + safety step at 610
     const ff = ffmpegCmd();
     const out = join(MEDIA_DIR, "hero.gif");

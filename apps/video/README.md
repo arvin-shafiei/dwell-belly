@@ -9,10 +9,11 @@ Turns real screenshots and screen recordings of Rivet into the demo video and th
 
 ```bash
 npm run studio -w video        # preview and scrub in the browser
-npm run render:demo -w video   # -> demo/rivet-demo.mp4 (DemoV2, about 1:56) and docs/media/hero.gif (6 s from it)
+npm run render:demo -w video   # -> demo/rivet-demo.mp4 (DemoCut, the 60 s cut of the v2 film; rules ask for about 60 s)
+npm run render:demo-full -w video  # -> demo/rivet-demo-full.mp4 (DemoV2, about 1:56) and docs/media/hero.gif (6 s from it)
 npm run render:v1 -w video     # -> demo/rivet-demo-v1.mp4 (Demo, the earlier 60 s cut of stills and clips)
 npm run render:gifs -w video   # -> docs/media/feature-{voice,playbook,city,decisions}.gif
-npm run render:hero -w video   # -> docs/media/hero.gif only, cut from an existing demo/rivet-demo.mp4
+npm run render:hero -w video   # -> docs/media/hero.gif only, cut from an existing demo/rivet-demo-full.mp4
 npm run render:all -w video
 ```
 
@@ -20,7 +21,8 @@ Options (after `--`): `--wait=15` waits up to 15 minutes for `docs/media/manifes
 
 | Composition | Size | Length | Output |
 |---|---|---|---|
-| `DemoV2` | 1920x1080, 30 fps, H.264 | about 116 s | `demo/rivet-demo.mp4` (re-encoded at a higher CRF if over 60 MB) |
+| `DemoCut` | 1920x1080, 30 fps, H.264 | 59.3 s (hard max 60) | `demo/rivet-demo.mp4`: problem, delivery-013 through the flow, console footage (Watch it think, Decisions, Playbooks), city, numbers, end card |
+| `DemoV2` | 1920x1080, 30 fps, H.264 | about 116 s | `demo/rivet-demo-full.mp4` (re-encoded at a higher CRF if over 60 MB) |
 | `Demo` | 1920x1080, 30 fps, H.264 | 60 s | `demo/rivet-demo-v1.mp4` |
 | `FeatureGif-voice`, `-playbook`, `-city`, `-decisions` | 960x540, 15 fps | 5 s loops | `docs/media/feature-*.gif` |
 | `HeroGif` | 1200x675, 15 fps | 8 s | not rendered by default (a stills-only fallback); `hero.gif` is cut from `DemoV2` |
