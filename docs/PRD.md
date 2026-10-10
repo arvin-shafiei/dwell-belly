@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.1, 10 Oct 2026, 12:40 BST. **Owner of this doc:** Oriol.
+**Version:** 1.2, 10 Oct 2026, 11:40 BST. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -687,7 +687,7 @@ eval/results.md              scores on all three datasets, committed
 
 | Time | Action |
 |---|---|
-| 16:20 | Stop feature work. Pull, clean install, run the replay test and a 5-case smoke run. `git grep -n "sk-ant"` returns nothing. Video committed and under 100 MB. |
+| 16:20 | Stop feature work. Pull, clean install, run the replay test and a 5-case smoke run. `git grep -n "sk-ant"` returns nothing. Video committed and under 100 MB. `git grep -n "\[MISSING\]" -- ':!docs/submission-tracker.md' ':!docs/PRD.md'` returns nothing, except `ANSWERS/README.md`, which is deleted when the results are committed. |
 | 16:25 | Final README check. Commit, tag `freeze-1630`, push. Copy the hash into the form draft. |
 | 16:30 | Cases released. One person copies them into `reality/` (outside `apps/`) and checks the folder count. Nobody touches code. |
 | 16:32 | Run the batch: reality mode, 8 cases at a time. One person watches the run log; a second watches rate limits and errors. |
@@ -732,7 +732,9 @@ eval/results.md              scores on all three datasets, committed
 - **3D footage is at most 10 seconds,** and only shows a case moving through the desk.
 - **Nothing produced by the mock or by simulated people appears without a SIMULATED label.**
 - At least one voice call in the video has a real person on the line, and the transcript visibly changes the case decision.
-- Compress to 720p and under 30 MB, and commit it normally.
+- Compress to 720p and under 30 MB, and commit it normally as `demo/demo.mp4`.
+
+**Tracking:** `docs/submission-tracker.md` lists every required item with its path, owner and status. Each missing item has a placeholder file that starts with `[MISSING]`.
 
 ## H2. Artefacts
 
@@ -1053,6 +1055,7 @@ This table is the reallocation.
 
 ## Changelog
 
+- **1.2 (11:40):** added the submission tracker (`docs/submission-tracker.md`) and `[MISSING]` placeholders for `ANSWERS/`, `SUBMISSION.md`, `demo/`, `eval/results.md`, `examples/practice-run/`, the launch posts and the presentation; a freeze-time check for leftover placeholders; the video path `demo/demo.mp4`; and the `.env.example` files, which the apps' `.gitignore` had been silently ignoring. Note: the version times in 1.0 and 1.1 were estimates and ran about an hour ahead of the real clock.
 - **1.1 (12:40):** folded in four reviews of v1.0: a judge simulation, a team map, a contract audit and a coverage audit.
   - **Contract (E):** compiles; adds `no_action`, `after` ordering, card `heldActionIds`, `options[].actionIds` and `fallbackOptionId`, the `understanding` and `decision` fields the templates need, pinned models and a prompt hash, the `perspectives` node, and "Call transcript" channel names. E2 defines storage, `resumeCase` input and `POST /api/cases`.
   - **Rules (D2):** `no_action`; the legal split (customer threat vs formal letter); medical, vulnerable and bereavement; unverified senders; owner-only confirmation; channel choice; conflicting instructions; source ranking; attachments as claims; ordering; owner refusals; policy conflicts; maths in code; never addressing the evaluator.
