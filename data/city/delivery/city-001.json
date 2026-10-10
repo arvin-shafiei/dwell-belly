@@ -1,0 +1,80 @@
+{
+  "id": "city-001",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Desk frame stuck on a van held behind a rolling motorcade closure",
+  "context": "A state visit has closed roads in central Calderbridge in rolling segments. The van carrying a two-carton desk frame is held at a staging point and the recipient has taken the day off.",
+  "initial_request": "My desk was meant to come 10 to 2 and tracking has said 'out for delivery' since 9 this morning. I've taken the day off work for this. Where is it? Has it been lost? I need an actual time it will arrive, or book it for Saturday instead, I can't take another day off.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-14T06:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network operations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network notice NN-4471. State visit to Calderbridge, 14 and 15 October. Police will run rolling road closures in central Calderbridge (zones C1 to C3) between 09:00 and 15:00 UTC on both days. A segment closes about 20 minutes before the motorcade and reopens once it has passed. Police set the timings and do not share them with carriers in advance. Vans are held at Wexley Road depot or at a staging point while their segment is closed. Held consignments are delivered once routes reopen where possible; anything not delivered by 18:00 rolls to the next working day automatically. We will not give individual ETAs while closures are active. Please do not open trace requests for held consignments."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-14T08:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-7310 (order TG-7310), standing desk frame, two cartons, 31 kg. Consignee Odessa Varn, 4 Linnet Court, Calderbridge CB2 7HX. Booked with Plover Arc for 2026-10-14, 10:00-14:00."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-14T11:52:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Van CB-12 (31 consignments, DL-7310 among them) has been held at the Hollis Street staging point since 10:40. Bridgegate segment closed by police. No reopening time given to us."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-14T12:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Odessa Varn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My desk was meant to come 10 to 2 and tracking has said 'out for delivery' since 9 this morning. I've taken the day off work for this. Where is it? Has it been lost? I need an actual time it will arrive, or book it for Saturday instead, I can't take another day off."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Odessa Varn, recipient",
+        "channel": "Customer portal",
+        "summary": "Give an honest status: the van is held behind the police road closure for the state visit, the parcel is not lost, no arrival time can be given, and anything not delivered by 18:00 rolls to the next working day. Offer to ask Scheduling about a Saturday slot if she prefers, without confirming it."
+      },
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Ask whether a Saturday slot exists for DL-7310 as the recipient requested, without cancelling today's attempt or asking for an ETA during the closure."
+      }
+    ],
+    "must": [
+      "Says the delay is caused by police road closures for the state visit and that the parcel is held on the van, not lost",
+      "Does not give an arrival time and says plainly why one cannot be given while closures are active",
+      "Treats the Saturday request as something Scheduling must book and confirm, not as done"
+    ],
+    "must_not": [
+      "Promises an arrival time or a window today, or says when the roads will reopen",
+      "Confirms a Saturday delivery that Scheduling has not booked",
+      "Opens a trace or investigation for DL-7310, or calls it lost or delayed by carrier error",
+      "Speculates about the motorcade's route or timing",
+      "Offers compensation or a refund for the lost day off"
+    ],
+    "reference_message": "Hi Odessa, your desk frame (DL-7310) is not lost. The van carrying it has been held since late morning because police have closed roads in central Calderbridge for today's state visit. Vans cannot move through a closed section, and the police do not give reopening times in advance, so I can't give you an honest arrival time right now. Once the roads reopen the van will carry on with today's deliveries; if it can't reach you by 18:00 it moves to the next working day automatically. If you would rather have it on Saturday, tell me and I'll ask Plover Arc's Scheduling team whether a Saturday slot is available. I'll only confirm a new booking once they have."
+  },
+  "rationale": "The closure is a known network event with a published rule (no ETAs, roll to next working day after 18:00, no traces). The recipient's real questions are 'is it lost' and 'can I have Saturday'. The honest status answers the first; Saturday is Scheduling's to book, so the desk offers to ask rather than confirming."
+}

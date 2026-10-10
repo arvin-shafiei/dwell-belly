@@ -1,0 +1,95 @@
+{
+  "id": "city-009",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Motorcade closure lifts early and the network confirms held vans are moving",
+  "context": "A recipient's parcel was held by a closure. The closure ended early, Scheduling sent her a new window directly, and she acknowledged it. The network then sends an all-partners update saying no action is needed.",
+  "initial_request": "NN-4490 update. All zone C2 closures lifted at 12:50, ahead of the planned 16:00. Held consignments have been released to routes and Scheduling has sent recipients revised windows. No action is required from partners. Please do not raise individual queries for C2 consignments released today.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-15T07:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network operations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network notice NN-4490. Closures in zone C2 today, planned 10:00-16:00 UTC. Held consignments resume automatically when closures lift. Scheduling notifies affected recipients directly by SMS and email with a revised window."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-15T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-7417 (TG-7417), bathroom cabinet, for Wren Halloway, 8 Bridgegate Mews, is on van CB-04, held at the Hollis Street staging point."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-15T10:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Wren Halloway, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking says delayed because of a road closure. Any idea when it'll come?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-15T10:58:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Wren Halloway, recipient",
+      "body": "Hi Wren, your cabinet (DL-7417) is on a van held by today's road closures for the state visit. I can't give you a time while roads are closed. When they reopen, Plover Arc will text and email you a new window directly."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-15T13:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Wren Halloway, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Closures in zone C2 lifted early at 12:50. DL-7417 is back on route. Your revised delivery window is today 14:00-16:00."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-15T13:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Wren Halloway, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got the text, 2 to 4 is fine, I'm in. Thanks."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-10-15T13:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Network operations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk; all delivery partners",
+      "body": "NN-4490 update. All zone C2 closures lifted at 12:50, ahead of the planned 16:00. Held consignments have been released to routes and Scheduling has sent recipients revised windows. No action is required from partners. Please do not raise individual queries for C2 consignments released today."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message",
+      "Records why: Scheduling sent Wren the revised 14:00-16:00 window directly, she acknowledged it, and the network update says no partner action is required"
+    ],
+    "must_not": [
+      "Sends Wren another message restating the new window or the closure news",
+      "Says the cabinet has been delivered or gives a time narrower than 14:00-16:00",
+      "Asks Scheduling or Dispatch to confirm, expedite or re-check DL-7417",
+      "Opens a trace or raises a query for DL-7417 or any other released C2 consignment",
+      "Messages other customers about the closure ending"
+    ],
+    "reference_message": null
+  },
+  "rationale": "The desk's promise to Wren was that Plover Arc would send a new window directly, and it has. She confirmed she's in for 14:00-16:00. The final message is an all-partners update that asks for nothing and says not to raise queries. Any message now would only repeat what she already has."
+}
