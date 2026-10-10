@@ -12,6 +12,7 @@ export interface BoxSpec {
   d: number; // along z
   h: number;
   color: string;
+  g: number; // building group: everything with the same g collapses / rebuilds together
 }
 export interface Body extends BoxSpec {
   kind: BodyKind;
@@ -28,6 +29,7 @@ export interface AwningSpec {
   w: number;
   ry: number;
   color: string;
+  g: number;
 }
 export interface TankSpec {
   x: number;
@@ -35,12 +37,14 @@ export interface TankSpec {
   z: number;
   r: number;
   h: number;
+  g: number;
 }
 export interface AntennaSpec {
   x: number;
   y: number;
   z: number;
   h: number;
+  g: number;
 }
 export interface LandmarkSpec {
   kind: "shard" | "gherkin";
@@ -48,6 +52,7 @@ export interface LandmarkSpec {
   z: number;
   h: number;
   r: number;
+  g: number;
 }
 export interface CityLayout {
   bodies: Body[];
@@ -58,8 +63,10 @@ export interface CityLayout {
   acs: BoxSpec[];
   tanks: TankSpec[];
   antennas: AntennaSpec[];
-  lights: { x: number; y: number; z: number }[];
+  lights: { x: number; y: number; z: number; g: number }[];
   landmarks: LandmarkSpec[];
+  /** Number of building groups; ids are 1..groups. Pushes use the current group (out.groups). */
+  groups: number;
 }
 
 export const BLOCK_CENTRES = [-140, -100, -60, -20, 20, 60, 100, 140] as const;
@@ -110,7 +117,7 @@ export const PALETTE = {
 } as const;
 
 function emptyLayout(): CityLayout {
-  return { bodies: [], trims: [], roofs: [], shopfronts: [], awnings: [], acs: [], tanks: [], antennas: [], lights: [], landmarks: [] };
+  return { bodies: [], trims: [], roofs: [], shopfronts: [], awnings: [], acs: [], tanks: [], antennas: [], lights: [], landmarks: [], groups: 0 };
 }
 
 // ---------------------------------------------------------------- roof clutter
@@ -121,7 +128,7 @@ function roofProps(out: CityLayout, r: Rng, x: number, z: number, w: number, d: 
     const aw = range(r, 1.2, 2.2);
     const ad = range(r, 1, 1.6);
     if (w < aw + 2 || d < ad + 2) break;
-    out.acs.push({
+    out.acs.push({ g: out.groups,
       x: x + range(r, -(w - aw) / 2 + 0.6, (w - aw) / 2 - 0.6),
       z: z + range(r, -(d - ad) / 2 + 0.6, (d - ad) / 2 - 0.6),
       y: top,
@@ -133,19 +140,20 @@ function roofProps(out: CityLayout, r: Rng, x: number, z: number, w: number, d: 
   }
   if (tank && w > 5 && d > 5) {
     const tr = range(r, 1, 1.4);
-    out.tanks.push({ x: x + range(r, -w / 2 + 2, w / 2 - 2), z: z + range(r, -d / 2 + 2, d / 2 - 2), y: top, r: tr, h: range(r, 2, 2.8) });
+    out.tanks.push({ g: out.groups, x: x + range(r, -w / 2 + 2, w / 2 - 2), z: z + range(r, -d / 2 + 2, d / 2 - 2), y: top, r: tr, h: range(r, 2, 2.8) });
   }
 }
 
 function antenna(out: CityLayout, x: number, z: number, top: number, h: number) {
-  out.antennas.push({ x, z, y: top, h });
-  out.lights.push({ x, z, y: top + h + 0.3 });
+  out.antennas.push({ g: out.groups, x, z, y: top, h });
+  out.lights.push({ g: out.groups, x, z, y: top + h + 0.3 });
 }
 
 /** A tower, optionally stepped, with roof clutter or a mast. */
 function tower(out: CityLayout, r: Rng, kind: BodyKind, x: number, z: number, w: number, d: number, h: number, y = 0, mast = false) {
+  if (y === 0) out.groups++; // a tower on a podium shares the podium's group
   const color = pick(r, PALETTE[kind]);
-  out.bodies.push({ kind, x, z, y, w, d, h, color });
+  out.bodies.push({ g: out.groups, kind, x, z, y, w, d, h, color });
   let top = y + h;
   let tw = w;
   let td = d;
@@ -155,12 +163,12 @@ function tower(out: CityLayout, r: Rng, kind: BodyKind, x: number, z: number, w:
       tw *= range(r, 0.62, 0.78);
       td *= range(r, 0.62, 0.78);
       const th = range(r, 5, 12);
-      out.bodies.push({ kind, x, z, y: top, w: tw, d: td, h: th, color });
+      out.bodies.push({ g: out.groups, kind, x, z, y: top, w: tw, d: td, h: th, color });
       top += th;
     }
   }
   // dark cap so the silhouette reads against the sky
-  out.trims.push({ x, z, y: top, w: tw, d: td, h: 0.6, color: PALETTE.cap });
+  out.trims.push({ g: out.groups, x, z, y: top, w: tw, d: td, h: 0.6, color: PALETTE.cap });
   top += 0.6;
   if (mast) antenna(out, x, z, top, range(r, 8, 14));
   else roofProps(out, r, x, z, tw, td, top, kind === "office" && r() < 0.5);
@@ -175,8 +183,9 @@ function towerBlock(out: CityLayout, r: Rng, cx: number, cz: number, hMin: numbe
     let y = 0;
     if (r() < 0.55) {
       const ph = range(r, 6, 9);
-      out.bodies.push({ kind: "office", x: cx, z: cz, y: 0, w: 2 * HALF, d: 2 * HALF, h: ph, color: pick(r, PALETTE.office) });
-      out.trims.push({ x: cx, z: cz, y: ph, w: 2 * HALF, d: 2 * HALF, h: 0.4, color: PALETTE.stone });
+      out.groups++;
+      out.bodies.push({ g: out.groups, kind: "office", x: cx, z: cz, y: 0, w: 2 * HALF, d: 2 * HALF, h: ph, color: pick(r, PALETTE.office) });
+      out.trims.push({ g: out.groups, x: cx, z: cz, y: ph, w: 2 * HALF, d: 2 * HALF, h: 0.4, color: PALETTE.stone });
       y = ph + 0.4;
     }
     const w = range(r, 14, 20);
@@ -267,12 +276,13 @@ function terraceBlock(out: CityLayout, r: Rng, cx: number, cz: number) {
       const d = s.nx !== 0 ? hw : depth;
       const h = floors * 3.2 + range(r, -0.2, 0.5);
       const color = r() < 0.7 ? rowColor : pick(r, PALETTE[kind]);
-      out.bodies.push({ kind, x, z, y: 0, w, d, h, color });
+      out.groups++;
+      out.bodies.push({ g: out.groups, kind, x, z, y: 0, w, d, h, color });
       const ry = Math.atan2(s.nx, s.nz); // local +z -> outward
       if (shops) {
         // shopfront: ground floor, from inside the body out to the buildable edge
         const [sfx, sfz] = at((HALF - depth / 2) * sgn);
-        out.shopfronts.push({
+        out.shopfronts.push({ g: out.groups,
           x: sfx,
           z: sfz,
           y: 0,
@@ -282,19 +292,19 @@ function terraceBlock(out: CityLayout, r: Rng, cx: number, cz: number) {
           color: pick(r, PALETTE.shopfront),
         });
         const [ax, az] = at((HALF + 0.75) * sgn);
-        out.awnings.push({ x: ax, z: az, y: 3.3, w: hw - 0.6, ry, color: pick(r, PALETTE.awning) });
-        out.trims.push({ x, z, y: h, w, d, h: 0.7, color: PALETTE.stone }); // parapet
+        out.awnings.push({ g: out.groups, x: ax, z: az, y: 3.3, w: hw - 0.6, ry, color: pick(r, PALETTE.awning) });
+        out.trims.push({ g: out.groups, x, z, y: h, w, d, h: 0.7, color: PALETTE.stone }); // parapet
         roofProps(out, r, x, z, w, d, h + 0.7, false);
       } else {
         const rh = range(r, 2.2, 3.2);
         // ridge runs along the street: local x along the row
         const along2 = Math.abs(s.nz) > 0 ? 0 : Math.PI / 2;
-        out.roofs.push({ x, z, y: h, w: hw, d: depth, h: rh, ry: along2, color: roofColor });
+        out.roofs.push({ g: out.groups, x, z, y: h, w: hw, d: depth, h: rh, ry: along2, color: roofColor });
         if (r() < 0.85) {
           // chimney stack on the party wall
           const cxo = s.nx !== 0 ? x : x - hw / 2 + 0.6;
           const czo = s.nz !== 0 ? z : z - hw / 2 + 0.6;
-          out.trims.push({ x: cxo, z: czo, y: h, w: 1.1, d: 1.1, h: rh + 1.2, color: PALETTE.chimney });
+          out.trims.push({ g: out.groups, x: cxo, z: czo, y: h, w: 1.1, d: 1.1, h: rh + 1.2, color: PALETTE.chimney });
         }
       }
       u += hw;
@@ -306,16 +316,18 @@ function terraceBlock(out: CityLayout, r: Rng, cx: number, cz: number) {
 
 function shardBlock(out: CityLayout, r: Rng, cx: number, cz: number) {
   const h = 128;
-  out.landmarks.push({ kind: "shard", x: cx, z: cz, h, r: 11 });
-  out.lights.push({ x: cx, z: cz, y: h + 0.5 });
+  out.groups++;
+  out.landmarks.push({ g: out.groups, kind: "shard", x: cx, z: cz, h, r: 11 });
+  out.lights.push({ g: out.groups, x: cx, z: cz, y: h + 0.5 });
   void r;
 }
 
 function gherkinBlock(out: CityLayout, r: Rng, cx: number, cz: number) {
   const h = 82;
-  out.landmarks.push({ kind: "gherkin", x: cx, z: cz, h, r: 11 });
-  out.trims.push({ x: cx, z: cz, y: 0, w: 2 * HALF, d: 2 * HALF, h: 0.2, color: PALETTE.stone }); // plaza
-  out.lights.push({ x: cx, z: cz, y: h + 0.6 });
+  out.groups++;
+  out.landmarks.push({ g: out.groups, kind: "gherkin", x: cx, z: cz, h, r: 11 });
+  out.trims.push({ g: out.groups, x: cx, z: cz, y: 0, w: 2 * HALF, d: 2 * HALF, h: 0.2, color: PALETTE.stone }); // plaza
+  out.lights.push({ g: out.groups, x: cx, z: cz, y: h + 0.6 });
   void r;
 }
 
