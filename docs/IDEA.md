@@ -65,6 +65,14 @@ From the 50 public delivery cases ([`data/`](../data/README.md)) and the [hackat
 4. The **Watch flow, Replan Route (OR-Tools) and the fleet/GPS checks have no data**. They're demo extras with a small fake fleet, not something the Reality Test will score.
 5. **Practice loop:** run every public delivery case using `?view=escalation`, and compare against `next_action`. This is our eval set.
 
+## Team decisions (morning of 10 Oct)
+
+- **Scoring is on the Reality Test, so most of the team works on the agent's decisions.** The frontend is one person's job.
+- **Two views of the same trace:** first a 2D n8n-style node view for replaying the decisions on one order, then a **3D view** (three.js) built in parallel. In 3D the agents are characters ("hamsters") at stations in an office, and parcels move between them, so a business owner can watch their workflow from above. A toggle switches between the two. The design is in [`plans/`](plans/).
+- **Don't overfit to the 50 public cases.** Generate our own nasty edge cases (clashing stories, failed tools, missing info, noise) and keep the public ones as a held-out check.
+- **Human side:** route cases to the right person (driver ops, support, claims), and keep a full case log from order to delivery to any incident.
+- **From the kickoff talk (Anthropic):** build the test suite first, test beyond the happy path, give tools timeouts so the agent knows when they fail, use structured outputs, put a human-in-the-loop hook before irreversible actions, let Claude read images and PDFs directly, and iterate prompts against a fixed set of examples.
+
 ## What we build first
 
 The **core incident flow** is what gets scored, so it comes first: Ingest, History Lookup, Triage, Clash Check, Missing Info, Planner, Safety Gate, Human Decision, Action, Verify, Case Log. A starter version lives at [`apps/api/flows/default-incident.json`](../apps/api/flows/default-incident.json). Run it against the 50 public delivery cases as an eval before 16:30.
