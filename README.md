@@ -48,7 +48,8 @@ Rivet reads a delivery problem the way a coordinator would (emails, portal messa
 - [Quickstart](#quickstart) and [the Reality Test run](#the-reality-test-run)
 - [Models and external services](#models-and-external-services)
 - [What is and is not in the scored run](#what-is-and-is-not-in-the-scored-run)
-- [Evidence](#evidence) · [Assumptions](#assumptions) · [Known limitations](#known-limitations) · [What's next](#what-we-would-build-next)
+- [Evidence](#evidence) · [Who this is for and what a pilot looks like](#who-this-is-for-and-what-a-pilot-looks-like)
+- [Assumptions](#assumptions) · [Known limitations](#known-limitations) · [What's next](#what-we-would-build-next)
 - [Data, licences and credits](#data-and-attribution)
 
 ---
@@ -527,6 +528,31 @@ Run 4 in detail: practice cases 0.98 (12 of 12), generated cases 0.90; right kin
 | Stress-test fixtures | 12 | `docs/stress-test/fixtures/` | With rubrics; not yet run through the eval |
 
 The test set is in `data/generated/delivery/`: 243 hard cases with answer keys (120 across twelve difficulty patterns, 123 built from anonymised real complaints in `data/scraped/`). Every answer key was checked by an independent solver that could not see it.
+
+---
+
+## Who this is for, and what a pilot looks like
+
+**Who.** The person who runs a delivery desk at a retailer, a third-party logistics firm or a carrier: a team that sits between customers, a carrier and a merchant, answers escalations all day, and owns none of the decisions it is asked about.
+
+**The job they would hire it for.** Take the first step on every escalation correctly and at once, and bring a person in only where a person is needed, with the case already read for them.
+
+**Why this desk could run it, on what we measured today:**
+
+| A desk lead asks | What we can show |
+|---|---|
+| Will it promise things we can't deliver? | Every outgoing message is checked on its own before it goes. In the latest scored run, 0 of 48 cases broke a must-never rule. |
+| Does it know when to stop? | It sent no message when a person had to decide (0 of 5) and none when nothing was owed (0 of 3). A stopped case arrives as a decision card: why it stopped, the two or three statements it turns on, and what each option would send. |
+| Does it just escalate everything? | It escalated 0 of 38 cases where a message was the answer. |
+| Can I see why it did what it did? | Each step records how it decided, shown block by block on the playbook canvas and in every case's `REASONING.md`. Answers re-render from saved results with no model call. |
+| Can I change how careful it is without an engineer? | Thresholds are numbers in the playbook, not wording in a prompt. |
+| What does it cost and how fast is it? | About 5 cents and 17 to 32 seconds a case: 50 cases in 165 seconds for $2.70. |
+
+**The arithmetic, for a desk to fill in.** At the measured $0.054 a case, 10,000 escalations a month is about $540 of model spend. What that replaces depends on what a coordinator's first touch costs the desk today, which we have not measured and do not assume.
+
+**What a pilot would be.** Two weeks in shadow mode on one desk's escalation inbox: Rivet drafts the next step for every case into its outbox, and coordinators send, edit or reject each draft. Nothing goes out without a person. Measures: the share of drafts sent unchanged, the number of drafts a coordinator had to stop for a prohibited promise (target zero), and time from escalation to first action. Steps people approve every time become the first candidates to run without review.
+
+**What stands between today and that pilot.** No real mailbox, portal or queue is behind the outbox yet. Decisions people make are recorded but do not yet feed back into how careful the agent is. Only delivery cases have been run. The scores above are single runs on 48 cases against answer keys we wrote. Each of these is in [Known limitations](#known-limitations) or [What we would build next](#what-we-would-build-next).
 
 ---
 
