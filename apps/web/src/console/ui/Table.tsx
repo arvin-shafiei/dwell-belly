@@ -28,7 +28,7 @@ export function Th({
     <th
       scope="col"
       className={cx(
-        "sticky top-0 z-[1] h-8 border-b border-white/[0.07] bg-rv-panel px-3 text-[11px] font-medium tracking-[0.05em] whitespace-nowrap text-white/45 uppercase",
+        "sticky top-0 z-[1] h-9 border-b border-rv-line bg-rv-panel px-3 text-rv-caption font-medium whitespace-nowrap text-white/50",
         ALIGN[align],
         className,
       )}
@@ -85,7 +85,7 @@ export function Td({
   return (
     <td
       className={cx(
-        "h-10 border-b border-white/[0.05] px-3 align-middle",
+        "h-11 border-b border-white/[0.05] px-3 align-middle",
         ALIGN[align],
         mono && "font-mono text-[12px]",
         muted ? "text-white/50" : "text-white/85",

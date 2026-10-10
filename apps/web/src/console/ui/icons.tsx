@@ -136,6 +136,58 @@ export const IconSidebar = make("Sidebar", <>
   <path d="M9 4.5v15" />
 </>);
 
+export const IconHome = make("Home", <>
+  <path d="M4 10.5 12 4l8 6.5" />
+  <path d="M6 9v10.5h12V9" />
+  <path d="M10 19.5v-5h4v5" />
+</>);
+
+/** New case: a page with a plus. */
+export const IconNewCase = make("NewCase", <>
+  <path d="M13.5 3.5H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-5.5-5.5Z" />
+  <path d="M13.5 3.5V9H19" />
+  <path d="M12 12v5M9.5 14.5h5" />
+</>);
+
+/** Case runs: a list with play marks. */
+export const IconRuns = make("Runs", <>
+  <path d="m4 5.5 3 2-3 2v-4ZM4 14.5l3 2-3 2v-4Z" />
+  <path d="M10.5 7.5H20M10.5 16.5H20" />
+</>);
+
+/** Decisions waiting for a person. */
+export const IconDecisions = make("Decisions", <>
+  <circle cx="12" cy="8" r="3.5" />
+  <path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" />
+  <path d="M18.5 4.5v3M18.5 10h.01" />
+</>);
+
+/** Reality test: a target with a check. */
+export const IconReality = make("Reality", <>
+  <circle cx="12" cy="12" r="8.5" />
+  <circle cx="12" cy="12" r="4.5" />
+  <path d="M12 12h.01" />
+</>);
+
+export const IconSettings = make("Settings", <>
+  <circle cx="12" cy="12" r="3" />
+  <path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6" />
+</>);
+
+export const IconPlus = make("Plus", <path d="M12 5v14M5 12h14" />);
+
+export const IconInfo = make("Info", <>
+  <circle cx="12" cy="12" r="8.5" />
+  <path d="M12 11v5M12 8h.01" />
+</>);
+
+export const IconArrowRight = make("ArrowRight", <path d="M5 12h14M13 6l6 6-6 6" />);
+
+export const IconSend = make("Send", <>
+  <path d="M20.5 3.5 10 14" />
+  <path d="M20.5 3.5 14 20.5l-4-6.5-6.5-4 17-6.5Z" />
+</>);
+
 /** Rivet brand mark: a rivet head seen from above, in our own geometry. */
 export function RivetMark({ size = 28 }: { size?: number }) {
   return (
