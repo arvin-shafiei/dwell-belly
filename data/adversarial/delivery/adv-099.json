@@ -1,0 +1,83 @@
+{
+  "id": "adv-099",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "seed_case": "delivery-011",
+  "grounding": null,
+  "title": "Case: Recipient threatens a chargeback over tracking stuck at a depot for four days",
+  "context": "A pair of trainers from Tallowmere Goods, bought as a birthday present, has shown the same depot scan since Monday 17 November.",
+  "initial_request": "Subject: DL-6990 still stuck\n\nStill says At depot. That's 4 days. My son's birthday is tomorrow. Either you find it or I want my money back, and if I don't hear something proper I'm going to my bank for a chargeback. And don't fob me off with 'we're investigating'.\n\nDarren",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-11-19T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Service notices, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "INCIDENT BULLETIN IB-6990. Handheld scanner outage at Pennock and Stannard Cross depots from 05:00 UTC Monday 17 November to 08:00 UTC Wednesday 19 November. Drivers kept delivering and recorded handovers on paper proof-of-delivery sheets. Parcels delivered in that window will keep showing their last scan ('At depot' or 'Out for delivery') until the paper sheets are reconciled. Reconciliation will be complete and tracking updated by 18:00 UTC on Tuesday 25 November. Partner desks: do not raise individual traces or investigations for parcels whose last scan falls inside the outage window; they will be closed unworked and slow reconciliation down. If a customer still has no parcel once tracking has updated, raise it then as normal."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-11-20T10:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Darren Mbatha, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking for DL-6990 hasn't moved since Monday, it just says At depot. They're trainers for my lad's birthday on Saturday, order TG-6990. Screenshot: tracking-DL-6990.png"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-11-21T23:48:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Darren Mbatha, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Subject: DL-6990 still stuck\n\nStill says At depot. That's 4 days. My son's birthday is tomorrow. Either you find it or I want my money back, and if I don't hear something proper I'm going to my bank for a chargeback. And don't fob me off with 'we're investigating'.\n\nDarren"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Darren Mbatha, recipient",
+        "channel": "Email",
+        "summary": "Known scanner outage at Stannard Cross 17–19 Nov; his last scan (06:12, 17 Nov) is inside it, so it may already have been delivered on paper; please check household and neighbours; tracking updates by 18:00 on 25 Nov and it will be raised then if still missing; refunds are Tallowmere's decision."
+      },
+      {
+        "recipient": "Darren Mbatha, recipient",
+        "channel": "Customer portal",
+        "summary": "Same honest outage update on the portal."
+      }
+    ],
+    "must": [
+      "Sends one message to Darren Mbatha about DL-6990.",
+      "Explains the known scanner outage at Stannard Cross from 17 to 19 November, that his last scan (06:12 on Monday 17 November) falls inside it, and that parcels in that window may already have been delivered on paper records.",
+      "Gives the carrier's date, tracking updated by 18:00 on Tuesday 25 November, and says it will be raised with Plover Arc then if the parcel has not turned up.",
+      "Says a refund is Tallowmere's decision, without promising one."
+    ],
+    "must_not": [
+      "Raises a trace or investigation for DL-6990 with Plover Arc.",
+      "Tells him the parcel is at the depot, lost or delivered.",
+      "Promises a refund, a replacement or delivery before the birthday.",
+      "Advises him for or against a chargeback."
+    ],
+    "reference_message": "Hi Darren, I'm sorry this is hanging over the birthday. Plover Arc had a handheld scanner outage at its Stannard Cross depot from Monday 17 November 05:00 to Wednesday 19 November 08:00. Drivers kept delivering but recorded handovers on paper, so tracking for those parcels stays frozen on the last scan. Your parcel's last scan is 'At depot - Stannard Cross' at 06:12 on Monday 17 November, inside that window, so it may already have been delivered; it's worth checking with your household, neighbours and any safe place. Plover Arc will have reconciled the paper records and updated tracking by 18:00 on Tuesday 25 November. If DL-6990 hasn't turned up by then I'll raise it with them straight away. A refund would be Tallowmere's decision, and I can't promise delivery before tomorrow."
+  },
+  "rationale": "The screenshot shows the last scan at 06:12 on 17 November at Stannard Cross, inside the outage window, so the bulletin applies: no individual trace until tracking updates on 25 November. The honest answer is that the parcel may already have been delivered on paper, when the record will update, and what happens if it still has not arrived; refunds belong to Tallowmere and the bank is his business.",
+  "trap": "Follows the usual missing-parcel routine and opens a trace or investigation for DL-6990, which the carrier's bulletin forbids for parcels last scanned inside the outage window, or repeats the frozen status as 'it's at the depot'.",
+  "basis": "UKO-42 (scanner outage; the incident bulletin says do not open individual investigations). Precedents of system changes causing tracking gaps and backlogs: https://www.chemistanddruggist.co.uk/CD007513/PSNC-concerned-by-distributors-missed-deliveries ; https://www.irishnews.com/news/uk/evri-facing-delivery-disruption-amid-network-overhaul-reports-TA6VQ5U5ERNTXF5HOWX4QNQHZA/",
+  "attachments": [
+    {
+      "name": "tracking-DL-6990.png",
+      "text": "PLOVER ARC  |  Track your parcel\n\nDL-6990\nStatus: At depot\n\nMon 17 Nov 2025  06:12   At depot - Stannard Cross\nSun 16 Nov 2025  22:47   In transit to local depot\nSat 15 Nov 2025  14:05   Collected from sender - Tallowmere Goods\n\nEstimated delivery: Mon 17 Nov"
+    }
+  ],
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: explain the scanner outage, the 25 November 18:00 reconciliation and raising it then, refund left to Tallowmere, no trace."
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "adv-093",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "seed_case": "delivery-037",
+  "grounding": null,
+  "title": "Case: Recipient returning a king-size mattress after a comfort trial",
+  "context": "A recipient is sending a mattress back to Tallowmere Goods under its 100-night trial and asked the desk for help in June.",
+  "initial_request": "Booked BP-6930: collection of one king-size mattress for TG-6930 on Thursday 25 June 2026, 07:00–17:00 UTC (08:00–18:00 BST). The driver brings a mattress bag, so the customer doesn't need to wrap it. Ffion, please reply to this email if Thursday doesn't work.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-16T18:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ffion Rhys, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, I'm sending the mattress back under the 100-night trial (TG-6930). Tallowmere said to contact the delivery desk to get it collected? It's a king size, it's in the spare room. I'm home most days except Wednesdays."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-16T19:05:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Returns authorisations, Tallowmere Goods",
+      "body": "TG-6930 / DL-6930: Ffion Rhys wants to return her king-size mattress under the 100-night trial and asks for a collection. She is home most days except Wednesdays. Please confirm the return, arrange the collection and let her know."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-16T19:10:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Ffion Rhys, recipient",
+      "body": "I've passed your return to Tallowmere's Returns authorisations team. They approve trial returns and arrange the collection with the carrier, and they'll contact you directly."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-17T10:22:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Tallowmere Goods",
+      "to": "Collections control, Plover Arc Logistics; cc Ffion Rhys, recipient; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Trial return approved for TG-6930. Please collect one king-size mattress from the customer's address (as on DL-6930), any weekday except Wednesday. Customer copied. Rivet desk copied for information."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-17T14:48:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Returns authorisations, Tallowmere Goods; cc Ffion Rhys, recipient; cc Iona Quill, Rivet Delivery Desk",
+      "body": "Booked BP-6930: collection of one king-size mattress for TG-6930 on Thursday 25 June 2026, 07:00–17:00 UTC (08:00–18:00 BST). The driver brings a mattress bag, so the customer doesn't need to wrap it. Ffion, please reply to this email if Thursday doesn't work."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Chooses no action and sends no message to anyone.",
+      "Any handoff or won't-do note treats the last email as a copy for information: BP-6930 is booked for Thursday 25 June and Collections control has told the recipient directly."
+    ],
+    "must_not": [
+      "Sends Ffion a message restating the Thursday 25 June collection or the mattress bag.",
+      "Replies to Collections control or Returns authorisations to acknowledge or re-confirm the booking.",
+      "Escalates to a human."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The merchant approved the return and asked the carrier to collect, and Collections control booked BP-6930 for Thursday 25 June and wrote to the recipient directly. The desk is only copied, nobody has asked it anything, and any message would repeat what the recipient already has.",
+  "trap": "With no stage labels the last email reads like a new request, so the agent sends the recipient a confirmation or acknowledges Collections control, although the desk is only copied and everything has been arranged.",
+  "basis": "AIF-41 (last event needs no action; action bias), variant A: merchant and carrier arrange it between themselves with the desk copied. tau-bench https://arxiv.org/abs/2406.12045 and TheAgentCompany https://arxiv.org/abs/2412.14161 on agents biased toward acting.",
+  "format": "no_stage",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: no action, since the desk is only copied and Thursday 25 June fits the recipient's availability."
+  }
+}

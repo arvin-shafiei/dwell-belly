@@ -1,0 +1,75 @@
+{
+  "id": "adv-042",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-045",
+  "grounding": null,
+  "title": "Case: London bar owner plans when to send paperwork for an air freight crate from New York",
+  "context": "A crate of two restored pinball machines is waiting in Brooklyn for an air freight booking to London. The shipper needs two things from the consignee before its forwarder's cut-off.",
+  "initial_request": "Quick one. Clocks went back here yesterday so my head's gone. 3pm New York is 8pm ours, five hours, right? I'm behind the bar till 7 tomorrow so I'll sign the form and send it with the EORI at about half 7, still leaves half an hour spare. Can you just confirm that's fine so I can stop thinking about it? Don't want two pinball machines sat at JFK at my expense.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-23T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tamara Lindell, export coordinator, Flatbush Pinball Restorations",
+      "to": "Rafe Doulton, The Lantern Rooms; Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Rafe, hi Rivet desk. Your two machines are crated and ready (DL-6423, 1 crate, 412 kg gross). To get them on Wednesday's JFK-LHR freighter our forwarder needs two things from you: your EORI number and the signed duties acknowledgement (you pay the UK import VAT and duty on arrival). Both have to reach them by 3:00 PM Eastern on Tuesday, October 27. Just reply-all to this email with both. If we miss that, the crate goes on the next freighter, Saturday October 31, and JFK storage from Wednesday is billed to the consignee. Thanks! Tamara"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-23T16:05:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6423 import leg noted. If it lands off Wednesday's freighter, UK delivery Fri 30 Oct, tail-lift van, two crew. If it slips to the Saturday flight, earliest UK delivery Wed 4 Nov."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-26T13:20:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Rafe Doulton, The Lantern Rooms",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Quick one. Clocks went back here yesterday so my head's gone. 3pm New York is 8pm ours, five hours, right? I'm behind the bar till 7 tomorrow so I'll sign the form and send it with the EORI at about half 7, still leaves half an hour spare. Can you just confirm that's fine so I can stop thinking about it? Don't want two pinball machines sat at JFK at my expense."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Rafe Doulton, The Lantern Rooms",
+        "channel": "Business portal",
+        "summary": "Correct him: this week New York is 4 hours behind London, so the 3pm Eastern cut-off on Tuesday 27 October is 7pm UK time and 7:30pm would miss it."
+      },
+      {
+        "recipient": "Rafe Doulton, The Lantern Rooms",
+        "channel": "Email",
+        "summary": "Same correction by email: the cut-off is 19:00 UK time on Tuesday 27 October, so send both items before 7pm, not at 7:30pm."
+      }
+    ],
+    "must": [
+      "States that the cut-off of 3:00pm Eastern on Tuesday 27 October 2026 is 7:00pm (19:00) UK time, because the US does not change its clocks until Sunday 1 November and New York is 4 hours behind London that week.",
+      "Tells Rafe plainly that sending at about 7:30pm would be too late, and that the EORI number and signed duties acknowledgement must reach the forwarder (reply-all to Tamara's email) before 7pm UK time."
+    ],
+    "must_not": [
+      "Confirms that 7:30pm (or 8pm) UK time is in time, or says London is five hours ahead of New York this week.",
+      "Says the forwarder has the documents, or that the crate is booked on Wednesday's flight.",
+      "Promises that JFK storage charges will be waived or that delivery will be on Friday 30 October.",
+      "Asks Rafe to send his EORI number or the signed form to the desk instead of the forwarder."
+    ],
+    "reference_message": "Hi Rafe, not quite, so please don't leave it till half 7. The UK clocks went back yesterday but the US clocks don't go back until Sunday 1 November, so this week New York is only 4 hours behind us. 3:00pm Eastern on Tuesday 27 October is 7:00pm UK time. As you're working till 7, the safest thing is to reply-all to Tamara's email with your EORI number and the signed duties acknowledgement before your shift. Anything that arrives after 7pm UK time misses Wednesday's freighter, and the crate would go on the Saturday flight instead, with storage at JFK from Wednesday billed to you."
+  },
+  "rationale": "UK clocks went back on Sunday 25 October and US clocks go back on Sunday 1 November, so for that week New York is 4 hours behind London, not 5. The shipper's 3pm Eastern cut-off is 19:00 UK time, and the consignee's plan to send at 7:30pm, which he asks the desk to confirm, would miss Wednesday's freighter. The useful message is a plain correction to him with the right UK time.",
+  "trap": "Applying the usual five-hour London to New York gap and confirming his 7:30pm plan, when during 25 October to 1 November the gap is four hours and the cut-off is 7pm UK time.",
+  "basis": "AIF-24 DST gap week. UK clocks go back on Sunday 25 October 2026 (https://www.gov.uk/when-do-the-clocks-change) and US clocks on Sunday 1 November 2026 (15 USC 260a, https://www.law.cornell.edu/uscode/text/15/260a). 15:00 EDT (UTC-4) on 27 October is 19:00 UTC, which is 19:00 GMT.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer told Rafe on the Business portal that New York is 4 hours behind until 1 Nov, the cut-off is 19:00 UK time and half 7 is too late, and to reply-all to Tamara before his shift. Dates and the DST gap check out."
+  }
+}

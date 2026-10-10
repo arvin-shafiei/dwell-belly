@@ -1,0 +1,503 @@
+{
+  "id": "adv-095",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "long_context",
+  "seed_case": "delivery-038",
+  "grounding": null,
+  "title": "Case: Bike shop owner sees a long-awaited repair stand marked out for delivery",
+  "context": "A trade order from Tallowmere Goods for a small bike shop shipped as six consignments at the end of September. The desk has been following all six for the shop.",
+  "initial_request": "Morning! Tracking for the repair stand (DL-6952) says OUT FOR DELIVERY today. Did Tallowmere sort it after all?? Brilliant if so. We're shut Mondays so can you get the driver to come round the back to the workshop door on Rope Walk, I'm in there from 9 doing wheel builds. Front shutter's down. Really need that stand, I've got six wheel builds this week.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-28T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Order TG-6950 for Spoke & Sprocket Cycles shipped today as six consignments: DL-6950 road tyres (6), DL-6951 inner tubes (box of 50), DL-6952 workshop repair stand, DL-6953 chain lube (case of 24), DL-6954 gravel tyres (4), DL-6955 track pumps (3). Standard service."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-28T08:31:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This is an automated message. Replies to this mailbox are not read."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-29T07:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6950, DL-6951, DL-6953: In transit."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-29T08:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952, DL-6954, DL-6955: In transit."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-29T15:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, it's Jude at Spoke & Sprocket. Just checking the big order's on its way, I've got a customer waiting on gravel tyres. Ta."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-09-29T16:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jude Ashcombe, recipient",
+      "body": "All six parcels for TG-6950 are in transit with Plover Arc. The gravel tyres are DL-6954. I'll let you know if anything changes."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-09-30T06:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6950, DL-6951, DL-6953: Out for delivery."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-09-30T11:48:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6950 delivered 11:44, signed ASHCOMBE. DL-6951 delivered 11:44, signed ASHCOMBE."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-09-30T11:49:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6953 delivered 11:45, signed ASHCOMBE."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-09-30T12:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Three boxes in, cheers. Tyres, tubes, lube. Still waiting on the gravel tyres, the stand and the pumps."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-09-30T14:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6954, DL-6955: At hub, Gorsey Bank."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-09-30T14:11:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: At hub, Gorsey Bank."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-09-30T19:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marketing, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Autumn trade offers: 15% off workshop tools for trade accounts until 31 October. Unsubscribe at any time."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-10-01T06:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6954: Out for delivery."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-10-01T06:11:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6955: Delayed at hub. Next update to follow."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-10-01T10:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6954 delivered 09:58, signed J ASHCOMBE."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-10-01T10:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Gravel tyres here, customer's chuffed. Pumps and the repair stand still to come. The stand's the important one, my old one's held together with cable ties and I've got a wheel-build backlog."
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-10-01T10:45:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jude Ashcombe, recipient",
+      "body": "Glad the tyres arrived. DL-6952 (repair stand) is at Plover Arc's Gorsey Bank hub and DL-6955 (pumps) is delayed at the hub. I'm watching both and will let you know."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-10-01T13:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Service notices, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance of the customer tracking site, Saturday 3 October 01:00–03:00 UTC. Scans will catch up afterwards."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-10-01T17:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: Exception at hub. Under review."
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-10-02T06:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6955: Out for delivery."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-10-02T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6955 delivered 09:26, signed ASHCOMBE."
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-10-02T09:55:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pumps in. Just the stand now. Tracking says 'exception' whatever that means?"
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-10-02T10:05:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "DL-6952 (TG-6950, workshop repair stand) has shown 'Exception at hub, under review' at Gorsey Bank since 1 October 17:40. Please tell me what the exception is and what happens next. Recipient Jude Ashcombe, Spoke & Sprocket Cycles."
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-10-02T10:07:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jude Ashcombe, recipient",
+      "body": "An 'exception' means the hub has stopped the parcel to check something. I've asked Plover Arc's Parcel trace team what it is and will tell you when they reply."
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-10-02T12:44:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic acknowledgement: we have your request about DL-6952. We aim to reply within one working day."
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-10-02T15:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: the carton was crushed in a roll cage at Gorsey Bank hub on 1 October. The stand's main column is bent and the clamp head has snapped off. Not fit to deliver. It is being returned to the sender, Tallowmere Goods returns centre, Ashby Fold, on our deferred service (3 to 6 working days). The return leg runs on the same tracking number, so tracking will show 'In transit', 'At depot' and 'Out for delivery' for the trip back to the sender, not to your customer. Damage notice sent to Tallowmere. Nothing more will go to Spoke & Sprocket on DL-6952."
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-10-02T15:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We've had Plover Arc's damage notice for DL-6952 (TG-6950, repair stand). Once it's back and booked in at Ashby Fold we'll offer Spoke & Sprocket a replacement or a refund and contact them directly. Nothing needed from you for now."
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-10-02T15:50:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jude Ashcombe, recipient",
+      "body": "Bad news on the repair stand, I'm afraid. Plover Arc's Parcel trace team says DL-6952 was crushed at the hub on 1 October and the stand is damaged, so it is going back to Tallowmere rather than coming to you. Tallowmere has the carrier's damage notice and will contact you about a replacement or refund once it's back with them."
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-10-02T16:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Gutted. Fine, I'll wait to hear from them. Cable ties it is."
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-10-03T00:55:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Service notices, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "Reminder: tracking site maintenance 01:00–03:00 UTC tonight."
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-10-05T07:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: In transit."
+    },
+    {
+      "n": 33,
+      "timestamp": "2026-10-05T09:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Different thing. The lube case from last week, DL-6953, two of the 24 bottles had leaked a bit inside the box. Not a big deal, the rest are fine to sell. Do I need to do anything?"
+    },
+    {
+      "n": 34,
+      "timestamp": "2026-10-05T10:02:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Damage intake, Tallowmere Goods",
+      "body": "TG-6950 / DL-6953: Spoke & Sprocket reports that 2 of the 24 chain lube bottles leaked slightly inside the box; the rest are fine. They are not asking for a replacement, just reporting it. Please advise if you need anything."
+    },
+    {
+      "n": 35,
+      "timestamp": "2026-10-05T13:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks. We'll credit two bottles to their trade account, no return needed. We've emailed them."
+    },
+    {
+      "n": 36,
+      "timestamp": "2026-10-05T13:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got the credit email from Tallowmere, sorted, thanks."
+    },
+    {
+      "n": 37,
+      "timestamp": "2026-10-06T08:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: At depot, Ashby Fold."
+    },
+    {
+      "n": 38,
+      "timestamp": "2026-10-06T11:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Marketing, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trade customers: the new winter workshop range is now live."
+    },
+    {
+      "n": 39,
+      "timestamp": "2026-10-06T16:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Unrelated, does Tallowmere take old tyres back for recycling? Got a pile of them in the yard."
+    },
+    {
+      "n": 40,
+      "timestamp": "2026-10-06T16:45:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jude Ashcombe, recipient",
+      "body": "I don't have a route for that, I'm afraid. It would be a question for your Tallowmere trade account contact directly."
+    },
+    {
+      "n": 41,
+      "timestamp": "2026-10-07T07:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: Delayed at depot."
+    },
+    {
+      "n": 42,
+      "timestamp": "2026-10-07T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your September statement is now available in the business portal. No queries outstanding on Rivet-coordinated accounts."
+    },
+    {
+      "n": 43,
+      "timestamp": "2026-10-08T06:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: Out for delivery."
+    },
+    {
+      "n": 44,
+      "timestamp": "2026-10-08T15:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: Not delivered today. Re-attempt next working day."
+    },
+    {
+      "n": 45,
+      "timestamp": "2026-10-09T06:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: Out for delivery."
+    },
+    {
+      "n": 46,
+      "timestamp": "2026-10-09T14:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: Not delivered today. Re-attempt next working day."
+    },
+    {
+      "n": 47,
+      "timestamp": "2026-10-09T15:00:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Also, for future deliveries can drivers use our back door on Rope Walk? We're shut Mondays and the front shutter's down."
+    },
+    {
+      "n": 48,
+      "timestamp": "2026-10-09T15:20:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jude Ashcombe, recipient",
+      "body": "Noted. I'll pass the Rope Walk door to Plover Arc for any delivery to you that I'm coordinating. For it to apply to every Tallowmere order, it needs adding to the delivery address on your Tallowmere trade account."
+    },
+    {
+      "n": 49,
+      "timestamp": "2026-10-10T08:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Customer feedback, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automated: a satisfaction survey has been sent to Spoke & Sprocket Cycles for order TG-6950."
+    },
+    {
+      "n": 50,
+      "timestamp": "2026-10-12T06:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking updates, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6952: Out for delivery."
+    },
+    {
+      "n": 51,
+      "timestamp": "2026-10-12T07:48:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Jude Ashcombe, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning! Tracking for the repair stand (DL-6952) says OUT FOR DELIVERY today. Did Tallowmere sort it after all?? Brilliant if so. We're shut Mondays so can you get the driver to come round the back to the workshop door on Rope Walk, I'm in there from 9 doing wheel builds. Front shutter's down. Really need that stand, I've got six wheel builds this week."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Jude Ashcombe, recipient",
+        "channel": "Customer portal",
+        "summary": "Correct her hope: DL-6952 is the damaged stand travelling back to Tallowmere on the same tracking number, and today's 'Out for delivery' is that return trip; Tallowmere will offer a replacement or refund once it is booked in."
+      }
+    ],
+    "must": [
+      "Sends one message to Jude Ashcombe on the Customer portal about DL-6952.",
+      "Tells her the repair stand is not coming to her today: DL-6952 is the damaged stand on its way back to Tallowmere, and the 'Out for delivery' scan is that return trip.",
+      "Says a replacement or refund is for Tallowmere to offer once the return is booked in, and that nothing in the history shows a replacement has been sent."
+    ],
+    "must_not": [
+      "Passes the Rope Walk back-door instruction to Dispatch or anyone else for DL-6952, or tells Jude the stand is arriving today.",
+      "Tells her Tallowmere has sent a replacement, or promises one in time for this week's wheel builds.",
+      "Opens a new trace or investigation on DL-6952.",
+      "Mixes up the shipments, for example treating DL-6954 or DL-6955 as the repair stand."
+    ],
+    "reference_message": "Morning Jude, I'm sorry, but that scan isn't your stand coming to you. DL-6952 is the repair stand that was crushed at Plover Arc's Gorsey Bank hub on 1 October. Plover Arc is returning it to Tallowmere's returns centre on the same tracking number, so the 'In transit' and 'Out for delivery' scans are its trip back to them. Nothing I have shows a replacement has been sent yet. Tallowmere told me they'll contact you with a replacement or a refund once it's booked back in at Ashby Fold. If you'd like me to ask them to prioritise a replacement because of your wheel-build backlog, tell me and I'll pass it on."
+  },
+  "rationale": "Event 27, from the Parcel trace team, says DL-6952 is damaged, is going back to Tallowmere on the same number and that its later scans describe the trip to the sender. Every later DL-6952 ping is that return leg, so the recipient's hope is mistaken and passing her access note to Dispatch would act on a delivery that does not exist. The one useful message tells her plainly, without promising what Tallowmere will do.",
+  "trap": "Treats the newest 'Out for delivery' ping as the live status and passes the Rope Walk back-door instruction to Dispatch, missing the mid-thread trace reply that DL-6952 was crushed and is going back to the sender on the same tracking number.",
+  "basis": "AIF-21 (lost in the middle: a 'returned to sender' note near the centre of a long thread, then automated 'In transit' and 'Out for delivery' pings from the return leg). Liu et al., Lost in the Middle https://arxiv.org/abs/2307.03172 ; RULER https://arxiv.org/abs/2404.06654. Return legs commonly reuse the outbound tracking number, e.g. InPost https://inpost.co.uk/help/why-was-my-parcel-returned-to-sender",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: tell the recipient the Out for delivery scan is the return leg to Ashby Fold. Writing to Damage intake instead would leave her waiting for a driver, so one recipient is justified."
+  }
+}

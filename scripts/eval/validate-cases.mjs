@@ -1,26 +1,36 @@
-// Checks generated case files against the schema and the structural rules.
-// Usage: node scripts/eval/validate-cases.mjs [file ...]   (no args: every file in data/generated/delivery)
+// Checks generated and adversarial case files against the schema and the structural rules.
+// Usage: node scripts/eval/validate-cases.mjs [file ...]   (no args: every file in data/generated/delivery and data/adversarial/delivery)
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
-import { GENERATED_DIR } from "./cases.mjs";
+import { ADVERSARIAL_DIR, GENERATED_DIR } from "./cases.mjs";
 import { problems } from "./checks.mjs";
 import { MUTATIONS } from "./mutations.mjs";
-import { GeneratedCaseDraft } from "./schema.mjs";
+import { Event, FORMATS, GeneratedCaseDraft } from "./schema.mjs";
 
 const CaseFile = GeneratedCaseDraft.extend({
-  id: z.string().regex(/^gen-\d{3,4}$/),
+  id: z.string().regex(/^(gen|adv)-\d{3,4}$/),
   track: z.literal("delivery"),
   generated: z.literal(true),
   mutation: z.enum(Object.keys(MUTATIONS)),
   seed_case: z.string().nullable(),
   grounding: z.string().nullable(),
+  // Adversarial cases only. Attachments are written to the raw folder as real files by render-raw.mjs.
+  trap: z.string().optional(),
+  basis: z.string().optional(),
+  format: z.enum(FORMATS).optional(),
+  attachments: z.array(z.object({
+    name: z.string().regex(/^[\w.-]+\.(pdf|png|csv|txt|md|eml|json)$/),
+    text: z.string(),
+    missing: z.boolean().optional(),
+    corrupt: z.boolean().optional(),
+  })).optional(),
+  post_decision_events: z.array(Event).optional(),
 });
 
 const args = process.argv.slice(2);
-const files = args.length
-  ? args
-  : (await readdir(GENERATED_DIR)).filter((n) => n.endsWith(".json")).map((n) => path.join(GENERATED_DIR, n));
+const jsonIn = async (dir) => (await readdir(dir).catch(() => [])).filter((n) => n.endsWith(".json")).map((n) => path.join(dir, n));
+const files = args.length ? args : [...await jsonIn(GENERATED_DIR), ...await jsonIn(ADVERSARIAL_DIR)];
 
 let bad = 0;
 for (const file of files) {
@@ -33,6 +43,10 @@ for (const file of files) {
       found = problems(parsed.data, parsed.data.mutation);
       if (path.basename(file, ".json") !== parsed.data.id) found.push("file name does not match id");
       if (/delivery-\d{3}|DL-0\d\d\b/.test(JSON.stringify(parsed.data.events))) found.push("reuses a public case's shipment reference");
+      if (parsed.data.format === "decision_point_mid" && !parsed.data.post_decision_events?.length) found.push("format decision_point_mid needs post_decision_events");
+      for (const a of parsed.data.attachments ?? []) {
+        if (!JSON.stringify(parsed.data.events).includes(a.name)) found.push(`attachment ${a.name} is never mentioned in the events`);
+      }
     }
   } catch (err) {
     found = [err instanceof Error ? err.message : String(err)];

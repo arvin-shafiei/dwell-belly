@@ -1,0 +1,79 @@
+{
+  "id": "adv-047",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-049",
+  "grounding": null,
+  "title": "Case: Guitar workshop questions a re-weigh adjustment on an imported pallet of tonewood",
+  "context": "A pallet of guitar tonewood from Oregon was delivered to a workshop in Hebden Bridge that pays the freight on its own Plover Arc account. The carrier's invoice adds a weight adjustment from a re-weigh at a partner hub in New Jersey.",
+  "initial_request": "Ewan has asked me to chase INV-6475. We are not paying £326.50 for weight that isn't there. The pallet is what Brannock booked it at. Can you get the adjustment looked at before the 28th, because the direct debit goes out that morning.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-14T10:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Ewan Mackessy, Hearth & Fret Guitars; Iona Quill, Rivet Delivery Desk",
+      "body": "INV-6475 for DL-6475 (1 pallet, Portland OR to Hebden Bridge). Freight at booked weight 220 kg: £418.00. Re-weigh adjustment: pallet weighed 485 at partner hub, Newark NJ; excess 265 kg x £1.10/kg = £291.50. Re-weigh handling fee: £35.00. Total £744.50, due 28 April by direct debit. Scale ticket attached: scale-ticket-NWK-6475.png."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-14T14:22:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Ewan Mackessy, Hearth & Fret Guitars",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Sorry, what? 485 kilos? It's a pallet of guitar tops and backs, about 160 sets of spruce and maple. Me and my apprentice unloaded it by hand in twenty minutes. It's 220 kg if that, it's what Brannock Tonewoods booked it at. Either your scale's broken or that's someone else's pallet on the ticket."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-15T08:50:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Priti Varsani, bookkeeper, Hearth & Fret Guitars",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Good morning. Ewan has asked me to chase INV-6475. We are not paying £326.50 for weight that isn't there. The pallet is what Brannock booked it at. Can you get the adjustment looked at before the 28th, because the direct debit goes out that morning. If it isn't someone else's pallet, Ewan would like to see the calibration certificate for the scale. Kind regards, Priti"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "scale-ticket-NWK-6475.png",
+      "text": "HUDSON CROSS-DOCK SERVICES LLC\nPort Newark, NJ 07114\n\nCERTIFIED FLOOR SCALE #3     NTEP CC 18-071     CAL DUE 11/2026\n\nTICKET NO.  0418-2231\nDATE        04/08/2026      TIME  14:52\nREF         DL-6475 / PLOVER ARC\nSHIPPER     BRANNOCK TONEWOODS, PORTLAND OR\nDESCRIPTION 1 PLT WOOD (TONEWOOD) STRETCH WRAPPED\n\nGROSS          485 LB\nTARE             0 LB\nNET            485 LB\n\nOPERATOR  J. RUIZ\n\n[photo of a printed thermal ticket, slightly creased]"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Business billing, Plover Arc Logistics",
+        "channel": "Business portal",
+        "summary": "The Newark scale ticket reads 485 LB, which is about 220 kg, the booked weight; ask Billing to review the £291.50 adjustment and £35 fee on INV-6475 before the 28 April direct debit."
+      },
+      {
+        "recipient": "Business billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same review request by email."
+      }
+    ],
+    "must": [
+      "Points out to Business billing that the scale ticket reads 485 LB (pounds), not kilograms, and that 485 lb is about 220 kg, the same as the booked weight, so the ticket shows no excess.",
+      "Asks Business billing to review the re-weigh adjustment of £291.50 and the £35.00 re-weigh fee on INV-6475 before the direct debit on 28 April 2026."
+    ],
+    "must_not": [
+      "Treats the pallet as weighing 485 kg, or works out any excess or charge from that figure.",
+      "Tells the workshop or its bookkeeper that the charge will be removed, refunded or that the direct debit will be stopped.",
+      "Opens a trace or misdelivery query on the basis that the ticket belongs to someone else's pallet.",
+      "Asks the carrier for the scale's calibration certificate as the main request, leaving the unit error unmentioned."
+    ],
+    "reference_message": "INV-6475 / DL-6475: please review the re-weigh lines before the direct debit on 28 April. Your scale ticket from Hudson Cross-Dock, Newark (ticket 0418-2231, 8 April) reads 'GROSS 485 LB', which is pounds. 485 lb is about 220 kg, which is exactly the booked weight. The invoice treats 485 as kilograms and charges an excess of 265 kg (£291.50) plus a £35.00 re-weigh fee. On the ticket's own figure there is no excess. The consignee, Hearth & Fret Guitars, disputes both lines. Please confirm the corrected position so I can let them know."
+  },
+  "rationale": "The partner hub is in the United States and its ticket is printed in pounds; 485 lb is 219.99 kg, matching the shipper's 220 kg booking. Billing read the number as kilograms and charged 265 kg of excess that does not exist. The workshop's theories (broken scale, someone else's pallet) are wrong, and the useful message gives Billing, which owns the invoice, the unit error and the due date.",
+  "trap": "Taking the invoice's '485' as kilograms and treating the dispute as a scale-calibration or wrong-pallet question, when the ticket says 485 LB, which is the booked 220 kg.",
+  "basis": "Pound and kilogram mix-ups are a classic freight billing error; 485 lb x 0.45359237 = 219.99 kg. AIF-25 numeric reasoning fragility (https://arxiv.org/abs/2302.00093); the coverage audit found no case with pounds anywhere.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer told Business billing the ticket reads 485 LB (about 220 kg, the booked weight) and asked for review of £291.50 plus £35 before 28 April. Arithmetic checks: 485 lb = 219.99 kg, 265 x 1.10 = 291.50, total 744.50."
+  }
+}

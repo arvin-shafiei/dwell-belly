@@ -21,6 +21,12 @@ export const CHANNELS = [
   "Freight portal", "Broker portal",
 ];
 
+// How render-raw.mjs lays out an adversarial case on disk. "standard" copies the practice cases' layout;
+// the rest are layouts the Reality Test might use instead.
+export const FORMATS = [
+  "standard", "no_stage", "alt_dash", "no_anchors", "single_file", "plain_thread", "newest_first", "decision_point_mid",
+];
+
 export const Event = z.object({
   n: z.number().int(),
   timestamp: z.string(),

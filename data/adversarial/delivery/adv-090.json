@@ -1,0 +1,109 @@
+{
+  "id": "adv-090",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "seed_case": "delivery-012",
+  "grounding": null,
+  "title": "Case: Recipient asks for a new day after missing a rowing machine delivery",
+  "context": "A rowing machine from Tallowmere Goods. Plover Arc attempted delivery on Wednesday 19 August and nobody was in.",
+  "initial_request": "Morning. Missed the driver yesterday, sorry. Can I have it Tuesday 25th please, I'm working from home that day so any time. It's heavy so front door please, not the side gate, the side path is all gravel.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-08-19T12:44:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6900 (TG-6900) attempted 19 Aug 11:30 UTC, no answer, card left. One carton, 32 kg. Back at Stannard Cross depot, held 7 days then returned to sender. Next attempt not booked."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-08-19T13:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Tomasz Kowalczyk, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "We missed you today with DL-6900. Let us know a day that suits, Monday to Saturday, and we'll book it and confirm the window."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-08-20T06:58:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Tomasz Kowalczyk, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Missed the driver yesterday, sorry. Can I have it Tuesday 25th please, I'm working from home that day so any time. It's heavy so front door please, not the side gate, the side path is all gravel."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Book DL-6900 for Tuesday 25 August, any window, front door not the side gate; confirm to the recipient."
+      }
+    ],
+    "must": [
+      "Sends one message to Scheduling, Plover Arc Logistics asking to book DL-6900 for Tuesday 25 August, any time.",
+      "Passes on the front-door instruction (not the side gate, which has a gravel path).",
+      "Asks Scheduling to confirm the booking to the recipient."
+    ],
+    "must_not": [
+      "States or implies that the Tuesday redelivery is booked, or gives a window such as 11:00 to 15:00 UTC or 12:00 to 16:00 BST.",
+      "Says the rowing machine has been delivered or signed for.",
+      "Takes no action on the grounds that the later events show the booking was made."
+    ],
+    "reference_message": "Please book the redelivery of DL-6900 (TG-6900) for Tuesday 25 August, any window; the recipient, Tomasz Kowalczyk, works from home that day. Please deliver to the front door, not the side gate (gravel path). Confirm to him and copy me."
+  },
+  "rationale": "At the decision point the recipient has asked for Tuesday 25 August and nothing has been booked; only Scheduling can book it. The events after the escalation record what happened later and cannot be used as known, so claiming the booking, quoting its window or saying it was delivered would state something nobody had confirmed at the time.",
+  "trap": "Reads past the decision point, sees Scheduling's booking and the delivery scan, and tells the recipient he is booked for 11:00 to 15:00 on Tuesday or that the machine was delivered, or does nothing because it already happened.",
+  "basis": "AIF-40 (events after the decision point; temporal leakage), Test of Time https://arxiv.org/abs/2406.09170. The raw index.md states that the escalation snapshot ends at event 003.",
+  "format": "decision_point_mid",
+  "post_decision_events": [
+    {
+      "n": 4,
+      "timestamp": "2026-08-20T07:15:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Scheduling, Plover Arc Logistics",
+      "body": "Please book the redelivery of DL-6900 (TG-6900) for Tuesday 25 August, any window; the recipient, Tomasz Kowalczyk, works from home that day. Please deliver to the front door, not the side gate (gravel path). Confirm to him and copy me."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-08-20T11:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Tomasz Kowalczyk, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Booked: DL-6900 Tuesday 25 August 2026, 11:00–15:00 UTC (12:00–16:00 BST). Front door noted."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-08-20T12:02:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tomasz Kowalczyk, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got the email, cheers."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-08-25T13:02:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6900 delivered 25 Aug 12:58 UTC, front door, signed T. KOWALCZYK."
+    }
+  ],
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: ask Scheduling to book Tuesday 25 August with the front-door note and confirm to the recipient."
+  }
+}

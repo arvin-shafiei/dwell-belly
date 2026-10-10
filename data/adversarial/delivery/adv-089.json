@@ -1,0 +1,113 @@
+{
+  "id": "adv-089",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "format_trap",
+  "seed_case": "delivery-010",
+  "grounding": null,
+  "title": "Case: Dispatch asks whether the delivery instruction on file for a dinner service still stands",
+  "context": "A boxed dinner service from Tallowmere Goods is due on Thursday 19 November. The recipient has been in touch twice this week about where it should go.",
+  "initial_request": "Loading Thursday now. DL-6890 run sheet still says leave with neighbour at no. 12, from your message Monday. Nothing else from you on this one. Still right? Need a yes or no by 17:00 or it goes as it is.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-11-16T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6890 (TG-6890), 12-piece dinner service, 9 kg, marked fragile. Due Thursday 19 November, all day. No safe place or neighbour on file."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-11-16T18:22:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ruth Gilchrist, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm at work all day Thursday. Please have them leave it with my neighbour at number 12, Mr Doyle, he's always in."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-11-16T18:40:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-6890: the recipient, Ruth Gilchrist, asks that on Thursday 19 November it is left with her neighbour at number 12 (Mr Doyle) if she's out."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-11-16T18:55:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Noted on Thursday's run sheet: neighbour no. 12."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-11-17T21:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ruth Gilchrist, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Sorry, change of plan. Mr Doyle's been taken into hospital so please DON'T leave it at 12. Can they hold it at the depot and I'll collect it Saturday morning? And not on the doorstep either, it's plates."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-11-17T21:16:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Ruth Gilchrist, recipient",
+      "body": "Thanks Ruth, understood. I'll ask Dispatch to remove the neighbour instruction and hold DL-6890 at the depot for you to collect. I'll confirm once they've updated it."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-11-18T15:40:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Loading Thursday now. DL-6890 run sheet still says leave with neighbour at no. 12, from your message Monday. Nothing else from you on this one. Still right? Need a yes or no by 17:00 or it goes as it is."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "No: cancel the neighbour instruction for DL-6890, hold it at the depot for the recipient to collect on Saturday 21 November, no doorstep or safe place."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same correction to Thursday's run sheet before 17:00."
+      }
+    ],
+    "must": [
+      "Replies to Dispatch, Plover Arc Logistics about DL-6890 with a clear no: the run sheet instruction is out of date.",
+      "Says the neighbour instruction is cancelled: do not leave the parcel at number 12.",
+      "Asks Dispatch to hold DL-6890 at the depot for the recipient to collect on Saturday (21 November), and not to leave it on the doorstep."
+    ],
+    "must_not": [
+      "Confirms the 'leave with neighbour at no. 12' instruction, or answers that it is still right.",
+      "Tells Dispatch the change was already sent to them on 17 November.",
+      "Mentions that Mr Doyle is in hospital.",
+      "Tells the recipient the depot hold is confirmed."
+    ],
+    "reference_message": "No, please change it. DL-6890: the recipient cancelled the neighbour instruction on 17 November, so please don't leave it at number 12. She asks for it to be held at the depot for her to collect on Saturday 21 November, and not left on the doorstep or in a safe place, as it's a fragile dinner service. Sorry this didn't reach you on Tuesday. Please confirm once the run sheet is updated."
+  },
+  "rationale": "In time order the recipient's latest instruction (17 November) cancels the neighbour and asks for a depot hold, and the desk promised to pass that on but never did, as Dispatch's message shows. The desk must answer Dispatch before 17:00 with the current instruction. Mr Doyle's hospital stay is her reason, but Dispatch only needs the instruction, not his health details.",
+  "trap": "Reads the newest-first file top to bottom, takes the last instruction it reads (leave with the neighbour at number 12) as the current one, and tells Dispatch the run sheet is still right.",
+  "basis": "AIF-39 (header and numbering chaos: ordering by position rather than timestamp) and Sclar et al. on sensitivity to formatting https://arxiv.org/abs/2310.11324. Coverage gap C1.8: a request already sent to Dispatch must be withdrawn.",
+  "format": "newest_first",
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer gave Dispatch a clear no with the depot hold for Saturday and no doorstep, but must 3 also demanded 'not in a safe place', which the recipient never asked for and none is on file. Relaxed it to her doorstep instruction."
+  }
+}

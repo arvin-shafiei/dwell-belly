@@ -1,0 +1,445 @@
+{
+  "id": "adv-097",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "long_context",
+  "seed_case": "delivery-041",
+  "grounding": null,
+  "title": "Case: Brewery receives a delivery reminder for a day it thought had been moved",
+  "context": "Three pallets of empty glass bottles are travelling from a glassworks to a brewery with Plover Arc freight. The desk has coordinated the delivery booking between the shipper, the carrier and the brewery since late January.",
+  "initial_request": "Just had a reminder from Plover Arc saying BP-6970 is TOMORROW at 7?! The yard's dug up tomorrow, there's literally no surface for a lorry. I thought we were Thursday 10 to 12? Did someone undo it when we said no to the early one? Which is it, I need to tell the crew today and stop a lorry turning up to a hole in the ground.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-01-26T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Anika Shah, Brightwater Glass shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi Iona, new consignment for Fenmore Brewing: 3 pallets of 330 ml amber bottles, 1.4 t, DL-6970. Ready for collection from us on 4 Feb. Fenmore want delivery the week of 9 Feb. Can you coordinate the delivery booking with Plover Arc freight and Fenmore's receiving? Callie Brennan is their contact."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-01-26T10:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "DL-6970: 3 pallets, 1.4 t, collection from Brightwater Glass on 4 Feb, delivery to Fenmore Brewing Co the week of 9 Feb. Please propose delivery slots. Receiving contact: Callie Brennan."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-01-26T10:22:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "Brightwater Glass's 3 pallets of bottles (DL-6970) are due to you the week of 9 Feb. I've asked Plover Arc's Freight planner for slots and will send them to you to choose."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-01-26T14:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6970 collection confirmed for 4 Feb. Delivery slot offered: BP-6970, Tuesday 10 Feb, 07:00–09:00 UTC. Accept by 30 Jan."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-01-26T15:00:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "Plover Arc offers BP-6970: Tuesday 10 Feb, 07:00–09:00 (UK time is the same as UTC in February). They need an answer by 30 Jan. Does it suit?"
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-01-27T09:12:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tuesday 7am works. Book it."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-01-27T09:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Fenmore accepts BP-6970, Tuesday 10 Feb, 07:00–09:00 UTC."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-01-27T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "BP-6970 confirmed, Tue 10 Feb, 07:00–09:00 UTC."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-01-27T11:15:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "BP-6970 is confirmed for Tuesday 10 Feb, 07:00–09:00."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-01-28T08:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal (automated), Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Booking BP-6970 created for DL-6970. Reminders will be sent 24 hours before delivery."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-01-29T16:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Anika Shah, Brightwater Glass shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks for sorting. FYI the pallets are shrink-wrapped and corner-boarded, 1.2 m high each."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-01-30T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Service notices, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "Freight portal maintenance Sunday 1 Feb, 02:00–04:00 UTC."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-02-02T08:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Bad news. Our yard's being resurfaced Mon–Tue next week (9th–10th), contractors booked last minute. Can we move the bottles later in the week? Wed afternoon or Thu late morning best."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-02-02T09:00:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "DL-6970 / BP-6970: Fenmore's yard is closed for resurfacing on 9–10 Feb. Please cancel BP-6970 and offer Wednesday 11 Feb afternoon or Thursday 12 Feb late morning."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-02-02T09:02:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "I've asked Plover Arc to cancel Tuesday and offer Wednesday afternoon or Thursday late morning. BP-6970 stands until they confirm."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-02-02T13:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Can offer BP-6971, Wednesday 11 Feb, 13:00–15:00 UTC. Thursday late morning I'm waiting on a trailer, will know tomorrow. Holding BP-6971 until 12:00 UTC 3 Feb."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-02-02T13:20:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "Plover Arc offers BP-6971, Wednesday 11 Feb, 13:00–15:00, held until 12:00 tomorrow. They'll know about Thursday late morning tomorrow. Wednesday, or wait for Thursday?"
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-02-02T16:55:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Wednesday afternoon the crew's on a brew day. Thursday would be better if they can. Let me know tomorrow."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-02-03T10:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thursday available: BP-6972, Thursday 12 Feb, 10:00–12:00 UTC. Shall I confirm? The BP-6971 hold expires at 12:00 today."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-02-03T10:50:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "Plover Arc can do BP-6972, Thursday 12 Feb, 10:00–12:00. Shall I accept it?"
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-02-03T11:20:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Yes! Thursday 10–12. Accept please."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-02-03T11:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Fenmore accepts BP-6972, Thursday 12 Feb, 10:00–12:00 UTC. Please cancel BP-6970 and release BP-6971."
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-02-03T14:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Done. BP-6972 confirmed: DL-6970, Thursday 12 Feb 2026, 10:00–12:00 UTC, 3 pallets. BP-6970 cancelled. BP-6971 released. BP-6972 is the only live booking for DL-6970. Heads-up: the portal sends its automated reminders off the original booking record, so a cancelled booking can still throw out a reminder. Ignore anything that isn't BP-6972. Confirmation attached: booking-BP-6972.pdf"
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-02-03T14:20:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "Confirmed: BP-6972, Thursday 12 Feb, 10:00–12:00. Tuesday's BP-6970 is cancelled."
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-02-03T14:45:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Perfect, ta."
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-02-03T15:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal (automated), Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Booking BP-6971 released."
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-02-04T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Anika Shah, Brightwater Glass shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Collected this morning, all 3 pallets, driver signed our sheet for 3."
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-02-04T09:31:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal (automated), Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6970: Collected from shipper. 3 pallets."
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-02-04T18:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal (automated), Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6970: At depot, Pennock freight hub."
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-02-05T08:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Any chance it could come earlier on Thursday? If they can do 7–9 the crew can unload before the brew starts at 10."
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-02-05T08:45:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Fenmore asks whether DL-6970 could come earlier on Thursday 12 Feb, 07:00–09:00, instead of 10:00–12:00. If not, BP-6972 stands."
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-02-05T12:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Can offer BP-6974, Thursday 12 Feb, 07:00–09:00 UTC, but only if accepted by 17:00 UTC today. If it isn't accepted, BP-6972 (10:00–12:00) stays as it is."
+    },
+    {
+      "n": 33,
+      "timestamp": "2026-02-05T12:20:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "body": "Plover Arc can offer BP-6974, Thursday 07:00–09:00, if you accept by 17:00 today. Otherwise BP-6972, 10:00–12:00, stays."
+    },
+    {
+      "n": 34,
+      "timestamp": "2026-02-05T15:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ah, just found out the brew's moved to the afternoon so 10–12 is fine. Leave it as it is, don't take the early one."
+    },
+    {
+      "n": 35,
+      "timestamp": "2026-02-05T15:40:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Fenmore declines BP-6974; please keep BP-6972, Thursday 12 Feb, 10:00–12:00 UTC."
+    },
+    {
+      "n": 36,
+      "timestamp": "2026-02-05T16:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Noted, BP-6974 withdrawn, BP-6972 unchanged."
+    },
+    {
+      "n": 37,
+      "timestamp": "2026-02-05T17:01:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal (automated), Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Offer BP-6974 expired (not accepted)."
+    },
+    {
+      "n": 38,
+      "timestamp": "2026-02-06T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Freight charges for DL-6970 have been invoiced to Brightwater Glass's account."
+    },
+    {
+      "n": 39,
+      "timestamp": "2026-02-06T11:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Anika Shah, Brightwater Glass shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Can you let me know once Fenmore have them? Need it for our records."
+    },
+    {
+      "n": 40,
+      "timestamp": "2026-02-06T11:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Anika Shah, Brightwater Glass shipping coordinator",
+      "body": "Will do. Delivery is booked for Thursday 12 Feb, 10:00–12:00 UTC (BP-6972); I'll confirm once Plover Arc records the delivery."
+    },
+    {
+      "n": 41,
+      "timestamp": "2026-02-07T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Service notices, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "Freight hubs operating normally this weekend."
+    },
+    {
+      "n": 42,
+      "timestamp": "2026-02-08T14:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal (automated), Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6970: Held at Pennock freight hub for booked delivery."
+    },
+    {
+      "n": 43,
+      "timestamp": "2026-02-09T07:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight portal (automated), Plover Arc Logistics",
+      "to": "Callie Brennan, Fenmore Brewing Co receiving coordinator; Iona Quill, Rivet Delivery Desk",
+      "body": "Reminder: your delivery BP-6970 (DL-6970, 3 pallets) is due tomorrow, Tuesday 10 Feb, 07:00–09:00 UTC. Please make sure the site is ready to receive."
+    },
+    {
+      "n": 44,
+      "timestamp": "2026-02-09T08:12:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just had a reminder from Plover Arc saying BP-6970 is TOMORROW at 7?! The yard's dug up tomorrow, there's literally no surface for a lorry. I thought we were Thursday 10 to 12? Did someone undo it when we said no to the early one? Which is it, I need to tell the crew today and stop a lorry turning up to a hole in the ground."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Callie Brennan, Fenmore Brewing Co receiving coordinator",
+        "channel": "Business portal",
+        "summary": "The live booking is BP-6972, Thursday 12 Feb, 10:00–12:00; BP-6970 was cancelled on 3 Feb and the reminder comes from its old record; declining BP-6974 left BP-6972 unchanged."
+      }
+    ],
+    "must": [
+      "Sends one message to Callie Brennan on the Business portal about DL-6970.",
+      "Tells her the live booking is BP-6972, Thursday 12 February, 10:00 to 12:00 (UK time is the same as UTC in February), and that BP-6970 for Tuesday was cancelled on 3 February.",
+      "Explains that the reminder comes from the cancelled booking's record, which the Freight planner warned can still send reminders, and that declining the early BP-6974 slot left BP-6972 unchanged."
+    ],
+    "must_not": [
+      "Tells her the delivery is tomorrow, Tuesday 10 February, or treats BP-6970 as live.",
+      "Gives BP-6974 or 07:00 to 09:00 on Thursday as the booking.",
+      "Promises an exact arrival time inside the 10:00 to 12:00 window."
+    ],
+    "reference_message": "Hi Callie, you're right, it's Thursday. The only live booking for DL-6970 is BP-6972, Thursday 12 February, 10:00–12:00. Plover Arc cancelled BP-6970 (Tuesday) on 3 February, and when you turned down the early BP-6974 slot on the 5th they confirmed BP-6972 was unchanged. Their Freight planner warned that the portal can still send reminders from a cancelled booking's record, which is what this one is, so nothing is booked for tomorrow. Please ignore any reminder that isn't BP-6972."
+  },
+  "rationale": "Event 23 is the Freight planner's confirmation: BP-6972 on Thursday 12 February is the only live booking, BP-6970 is cancelled, and stale reminders can still fire from the old record. The later early-slot offer BP-6974 was declined and withdrawn, leaving BP-6972 unchanged. The reminder is exactly the stale message the planner warned of, so the desk answers the brewery today from the confirmed booking.",
+  "trap": "Treats the newest event, an automated reminder for BP-6970 tomorrow, as current and tells the brewery to expect the lorry on Tuesday, or confuses the withdrawn early slot BP-6974 with the live booking.",
+  "basis": "AIF-21 (lost in the middle: the decisive booking confirmation near the centre of a long thread, with later automated noise) and RULER multi-key needles with distractors https://arxiv.org/abs/2404.06654 . Booking systems that keep sending reminders from cancelled records are a familiar defect (UNVERIFIED as a statistic).",
+  "attachments": [
+    {
+      "name": "booking-BP-6972.pdf",
+      "text": "PLOVER ARC LOGISTICS - FREIGHT DELIVERY BOOKING CONFIRMATION\n\nBooking ref:     BP-6972\nStatus:          CONFIRMED\nConsignment:     DL-6970\nShipper:         Brightwater Glass Ltd\nConsignee:       Fenmore Brewing Co\nContents:        3 pallets, empty glass bottles, 1,400 kg\nDelivery date:   Thursday 12 February 2026\nWindow:          10:00-12:00 UTC\n\nReplaces:        BP-6970 (cancelled 03 Feb 2026)\nIssued:          03 Feb 2026, 14:02 UTC\n\nAutomated reminders are generated from the original\nbooking record. Only the booking reference above is live."
+    }
+  ],
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer matched: tell the brewery the reminder comes from cancelled BP-6970 and BP-6972 on Thursday 10:00-12:00 is live. A check with the Freight planner instead would leave her without an answer today despite its written confirmation and warning, so the key is not too narrow."
+  }
+}

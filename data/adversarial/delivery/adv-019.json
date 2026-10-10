@@ -1,0 +1,88 @@
+{
+  "id": "adv-019",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unexpected",
+  "seed_case": "delivery-018",
+  "grounding": null,
+  "title": "Case: Second engineer on a docked ship writes about a parcel the driver could not deliver",
+  "context": "A parcel addressed to a crew member on a vessel at Brayhaven was taken back to the depot on Monday. The consignee has written from the ship.",
+  "initial_request": "[Sent via ship email, please keep reply short]\n\nGood morning. I am Andriy Petrenko, 2nd engineer MV Grey Heron, Brayhaven berth 7. My new glasses is parcel DL-6190, your driver can not enter port.\nOur agent is Brayhaven Marine Agency, Unit 3, Dock Gate 2, they take crew parcels and bring on board. Office open 0800-1700.\nShip sails Wednesday 25 March 0600 local time.\nPlease deliver to agent today before 1700. If not possible please send to next port Rotterdam c/o agent there.\nMy only glasses are broken since 3 days, I can not read the gauges and screens in engine room well.\nThank you\nA. Petrenko",
+  "trap": "Treating the vessel address as undeliverable and letting the five-day return run, or taking up his 'next port Rotterdam' fallback, instead of redelivering to the ship's agent he has named.",
+  "basis": "Couriers usually cannot drive onto a secure quay; parcels for seafarers go through the ship's agent or the operator's port office, and timing has to beat the sailing. A redirect to the next port abroad would turn a domestic parcel into an export. Sources: https://www.eurosender.com/en/cp/care-package/crew-member , https://itic-insure.com/knowledge/isps-code-impact-of-the-isps-code-on-members-of-itic-3526 .",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-20T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6190: prescription glasses (replacement pair made to the customer's prescription), dispatched as DL-6190. Deliver to: A. Petrenko, 2/E, c/o MV Grey Heron, Berth 7, Port of Brayhaven, BH4 1QX. Due Monday 23 March."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-23T11:18:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6190 not delivered. Driver note: \"Port security at main gate wouldn't let me through to Berth 7. No couriers on the quay, parcels for crew have to go via the ship's agent. Gate didn't know who the agent is. Brought back.\""
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-23T12:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6190 held at Brayhaven depot after the failed attempt: address unserviceable. It will return to sender after 5 working days unless the consignee or the shipper gives us a deliverable address."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-24T06:40:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Andriy Petrenko, Second Engineer, MV Grey Heron",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[Sent via ship email, please keep reply short]\n\nGood morning. I am Andriy Petrenko, 2nd engineer MV Grey Heron, Brayhaven berth 7. My new glasses is parcel DL-6190, your driver can not enter port.\nOur agent is Brayhaven Marine Agency, Unit 3, Dock Gate 2, they take crew parcels and bring on board. Office open 0800-1700.\nShip sails Wednesday 25 March 0600 local time.\nPlease deliver to agent today before 1700. If not possible please send to next port Rotterdam c/o agent there.\nMy only glasses are broken since 3 days, I can not read the gauges and screens in engine room well.\nThank you\nA. Petrenko"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Destination depot, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "The consignee has given a deliverable address: deliver DL-6190 today before 17:00 to the ship's agent, Brayhaven Marine Agency, Unit 3, Dock Gate 2, and stop the return to sender; the vessel sails at 06:00 Wednesday."
+      },
+      {
+        "recipient": "Destination depot, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Same request on the depot queue: redeliver to the ship's agent today before 17:00, stop the return."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Ask Dispatch to get DL-6190 to Brayhaven Marine Agency, Unit 3, Dock Gate 2 today before 17:00, before the vessel sails at 06:00 Wednesday."
+      }
+    ],
+    "must": [
+      "Asks the depot or Dispatch to deliver DL-6190 today, Tuesday 24 March, before 17:00, to the ship's agent the consignee has named, Brayhaven Marine Agency, Unit 3, Dock Gate 2.",
+      "Gives the deadline: MV Grey Heron sails at 06:00 on Wednesday 25 March, so the agent's office hours today are the last chance in Brayhaven."
+    ],
+    "must_not": [
+      "Lets the return to sender run, or asks for another attempt at Berth 7 or for the driver to be let onto the quay.",
+      "Requests or agrees a redirect to Rotterdam or anywhere abroad.",
+      "Promises the parcel will be on board before the ship sails."
+    ],
+    "reference_message": "DL-6190 (TG-6190, prescription glasses), held at Brayhaven depot as address unserviceable. The consignee, Andriy Petrenko, second engineer on MV Grey Heron at Berth 7, has now given a deliverable address: the ship's agent, Brayhaven Marine Agency, Unit 3, Dock Gate 2, Port of Brayhaven, which takes crew parcels and brings them on board. The office is open 08:00 to 17:00. The vessel sails at 06:00 tomorrow, Wednesday 25 March, so today is the only chance. Please redeliver to the agent's office before 17:00 today and stop the return to sender. Please confirm if it can go today; if it cannot, tell me and I will let the consignee know. He has also mentioned the next port abroad as a fallback, but I am not asking for that."
+  },
+  "rationale": "The address failed because couriers cannot reach the berth, not because the parcel is undeliverable, and the depot has said it will act on a deliverable address from the consignee. He has now named the ship's agent, which is the normal route for crew parcels, with office hours that end before the ship sails. The desk asks Plover Arc to redeliver there today and does not take up a redirect abroad, which would raise customs questions nobody has looked at.",
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer asked the Destination depot to redeliver to the ship's agent before 17:00 with the sailing time, without naming the return to sender; dropped that clause from must 1 because asking for redelivery replaces the return and must_not 1 still catches letting it run."
+  }
+}

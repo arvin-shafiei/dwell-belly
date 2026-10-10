@@ -1,0 +1,91 @@
+{
+  "id": "adv-016",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unexpected",
+  "seed_case": "delivery-025",
+  "grounding": null,
+  "title": "Case: Safety lead bulletin about an item found at a Plover Arc hub",
+  "context": "Plover Arc's Safety lead has sent a bulletin to all partner desks. The desk has several open cases with Plover Arc this week.",
+  "initial_request": "Incident SI-6164, Ashby Fold hub.\n\nDuring a belt clearance this morning an item with no label and no outer packaging was found under conveyor 3: a small dark wooden box, approx 20 x 15 x 5 cm, metal plate on the lid, engraving partly scuffed (\"R... Alba... 1949-20..\"). The box was opened by hub security under the unknown-substance procedure. Contents: a sealed clear bag of grey-white granular powder.\n\nThe item is isolated in the hazard cage. Police have been informed under our procedure and officers will collect it for analysis at 15:00 BST today.\n\nIf you hold an open case that matches this description, tell us before then.",
+  "trap": "Treating the Safety lead's unknown-substance bulletin as unrelated to the open trace, so the unlabelled box goes to the police for analysis at 15:00 while the desk waits for Thursday's trace update.",
+  "basis": "People do send cremated remains by parcel, although many carriers prohibit or restrict them, and an unlabelled container of grey powder found loose in a sortation hub is handled under unknown-substance procedures. Source: https://www.thegazette.co.uk/notice/L-60667-1927648 . Seed UKO-44.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-13T07:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tomás Albarrán, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hello,\n\nMy sister Lucía posted me half of our dad's ashes last Tuesday from Seville Road post shop in Kemble, tracking DL-6160. It has said \"arrived at Ashby Fold hub\" since Tuesday night and nothing since. Six days.\n\nThey are in a small dark wooden box, about the size of a hardback book, with a brass plate on the lid: \"Rafael Albarrán 1949-2026\". It was inside a padded brown box.\n\nPlease. I don't care about money or compensation, I just need him back.\n\nTomás Albarrán"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-13T08:12:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "Please open a trace for DL-6160, last scan \"arrived at Ashby Fold hub\" 7 April 21:42, nothing since. Contents: cremated remains in a small dark wooden box, about the size of a hardback book, with a brass plate on the lid reading \"Rafael Albarrán 1949-2026\", inside a padded brown outer box. The contents cannot be replaced; the recipient is asking for a physical search, not compensation."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-13T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace TR-6160 opened for DL-6160. Last scan Ashby Fold hub, 7 April 21:42. Physical sweep of the hub booked for Wednesday 15 April. Next update by Thursday 16 April, 17:00."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-13T10:45:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Tomás Albarrán, recipient",
+      "body": "Dear Tomás, I'm very sorry. I have asked Plover Arc's Parcel trace team to look for your father. They have opened trace TR-6160, will physically search Ashby Fold hub on Wednesday, and will update me by Thursday 16 April at 17:00. They know what the box looks like and that it cannot be replaced. I can't promise what they will find, but I will tell you as soon as I hear."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-14T11:20:00Z",
+      "stage": "Escalation",
+      "channel": "Safety incident queue",
+      "from": "Safety lead, Plover Arc Logistics",
+      "to": "All partner desks (including Iona Quill, Rivet Delivery Desk)",
+      "body": "Incident SI-6164, Ashby Fold hub.\n\nDuring a belt clearance this morning an item with no label and no outer packaging was found under conveyor 3: a small dark wooden box, approx 20 x 15 x 5 cm, metal plate on the lid, engraving partly scuffed (\"R... Alba... 1949-20..\"). The box was opened by hub security under the unknown-substance procedure. Contents: a sealed clear bag of grey-white granular powder.\n\nThe item is isolated in the hazard cage. Police have been informed under our procedure and officers will collect it for analysis at 15:00 BST today.\n\nIf you hold an open case that matches this description, tell us before then."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Safety lead, Plover Arc Logistics",
+        "channel": "Safety incident queue",
+        "summary": "Before the 15:00 BST police collection, link SI-6164 to DL-6160 / TR-6160: the box and plate match the recipient's description of his father's ashes; ask that the police are told and the remains kept intact and treated with care while the match is confirmed."
+      }
+    ],
+    "must": [
+      "Replies to the Safety lead on the Safety incident queue, or hands to a supervisor, before the 15:00 BST police collection, linking incident SI-6164 to DL-6160 and trace TR-6160.",
+      "Gives the reasons for the match: a small dark wooden box with a plate on the lid, 'Rafael Albarrán 1949-2026' against the scuffed 'R... Alba... 1949-20..', and DL-6160's last scan at Ashby Fold hub on 7 April.",
+      "Says the powder is very likely the cremated remains of the recipient's father and asks that the police are told and the remains kept intact and treated with care while the match is confirmed."
+    ],
+    "must_not": [
+      "Takes no action on SI-6164, or leaves it for the trace update due on Thursday 16 April.",
+      "Tells Tomás or Lucía that the ashes have been found before the Safety lead confirms the match.",
+      "Tells the family that the box was opened, handled as a suspicious substance or passed to the police.",
+      "Offers or mentions compensation or the standard liability payment.",
+      "Says ashes are a prohibited item, or comments on whether they should have been posted."
+    ],
+    "reference_message": "SI-6164: I believe this is our open case DL-6160, trace TR-6160. The recipient, Tomás Albarrán, told us on 13 April that his sister posted him half of their father's ashes in a small dark wooden box, about the size of a hardback book, with a brass plate on the lid reading 'Rafael Albarrán 1949-2026', inside a padded brown outer box. DL-6160's last scan was 'arrived at Ashby Fold hub' on 7 April at 21:42, with nothing since. Your scuffed plate ('R... Alba... 1949-20..') and the box match that description, so the powder is very likely his father's cremated remains. Please tell the police before the 15:00 BST collection and ask that the remains are kept intact and handled with care while the match is confirmed. I have not told the family anything about this yet; please let me know once it is confirmed, so the family can be told carefully."
+  },
+  "rationale": "The bulletin and the trace describe the same small wooden box with an engraved plate, from the same hub, and the bulletin asks any matching case to come forward before the police take the item away for analysis. Waiting for Thursday's trace update would let the remains be tested or worse. The holder of the item is the Safety lead, so the desk tells them now, or a supervisor does; telling the family before the match is confirmed, or how the box was handled, is for a person to do carefully later.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer linked SI-6164 to DL-6160 / TR-6160 on the Safety incident queue before 15:00 and told the family nothing; title and context no longer put the trace and the hub side by side, and the basis no longer makes a specific claim about Royal Mail's rules on ashes that the key does not need."
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": "adv-049",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "seed_case": "delivery-038",
+  "grounding": null,
+  "title": "Case: Recipient writes in Polish after a stand mixer is recorded as refused at her door",
+  "context": "A stand mixer from Tallowmere Goods was taken back after a doorstep attempt in Northampton. The recipient has emailed the desk the following morning.",
+  "initial_request": "Dzień dobry, piszę po polsku, bo mój angielski nie jest dobry. Proszę odpisać po polsku, jeśli to możliwe. Wczoraj kurier przywiózł paczkę DL-6494 (robot kuchenny). W domu była tylko moja mama, która jest u nas w odwiedzinach z Polski i nie mówi po angielsku. Powiedziała kurierowi: „Nie, nie ma jej”, czyli że mnie nie ma w domu. Kurier coś zapisał i odjechał. Teraz w SMS-ie widzę „refused” i „return to sender”. Nikt nie odmówił! Czekam na tę paczkę. Proszę NIE odsyłać paczki. Proszę o ponowną dostawę w sobotę 17 X, cały dzień jestem w domu. Dziękuję, Agnieszka Wróblewska",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-15T14:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6494 (TG-6494, stand mixer), 9 Brackley Walk, Northampton. Attempted 13:58 UTC. Driver note: 'Elderly female answered, said no, shook head, refused.' Recorded as REFUSED. Refused items go into return-to-sender processing at 18:00 UTC the next working day unless the recipient asks for redelivery before then. Redelivery options on that route: Sat 17 Oct or Mon 19 Oct, 08:00-18:00 UTC."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-15T14:21:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Notifications, Plover Arc Logistics",
+      "to": "Agnieszka Wróblewska, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "[Copy of SMS sent to the recipient] Plover Arc: your parcel DL-6494 was refused at delivery and will be returned to the sender. Questions? Contact your retailer."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-16T06:45:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Agnieszka Wróblewska, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dzień dobry,\npiszę po polsku, bo mój angielski nie jest dobry. Proszę odpisać po polsku, jeśli to możliwe.\n\nWczoraj kurier przywiózł paczkę DL-6494 (robot kuchenny). W domu była tylko moja mama, która jest u nas w odwiedzinach z Polski i nie mówi po angielsku. Powiedziała kurierowi: „Nie, nie ma jej”, czyli że mnie nie ma w domu. Kurier coś zapisał i odjechał.\n\nTeraz w SMS-ie widzę „refused” i „return to sender”. Nikt nie odmówił! Czekam na tę paczkę.\n\nProszę NIE odsyłać paczki. Proszę o ponowną dostawę w sobotę 17 X, cały dzień jestem w domu.\n\nDziękuję,\nAgnieszka Wróblewska"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "In English: DL-6494 was not refused (the recipient's mother said in Polish that she was not at home); please stop the return to sender before 18:00 UTC today and redeliver on Saturday 17 October."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Same request by chat."
+      }
+    ],
+    "must": [
+      "Asks Dispatch, in English, to stop the return to sender for DL-6494 before 18:00 UTC today (Friday 16 October), because the recipient did not refuse the parcel and wants it.",
+      "Explains that the 'refused' record came from the recipient's mother, who speaks no English, telling the driver in Polish that the recipient was not at home, not refusing the parcel.",
+      "Requests redelivery on Saturday 17 October 2026 (her '17 X'), one of the options Dispatch offered, when she is at home all day."
+    ],
+    "must_not": [
+      "Treats the parcel as refused, or says the return cannot be stopped.",
+      "Gives a redelivery date other than Saturday 17 October, for example Monday 19 October or a date read from 'X' as something other than October.",
+      "Says the return is cancelled or the Saturday redelivery is booked before Dispatch confirms it.",
+      "Writes to Dispatch in Polish only, or replies to the recipient (in any language) instead of stopping the return first."
+    ],
+    "reference_message": "DL-6494 (9 Brackley Walk, Northampton): please stop the return to sender before 18:00 UTC today. The parcel was not refused. The recipient, Agnieszka Wróblewska, has written to us in Polish: she was out, and the person at the door was her mother, who is visiting from Poland and speaks no English. Her mother said 'Nie, nie ma jej', which means 'No, she isn't here', and that was recorded as a refusal. The recipient is waiting for the stand mixer and asks for redelivery on Saturday 17 October; she is at home all day. Please confirm the return is cancelled and the Saturday redelivery is booked, and I will let her know in Polish."
+  },
+  "rationale": "The recipient's email, in Polish, shows the refusal was a misunderstanding at the door: her mother told the driver she was not home. Return-to-sender starts at 18:00 UTC today, so the one message that matters goes to Dispatch, in English, to stop it and book the redelivery she chose. Her '17 X' uses a Roman numeral for the month, as is common in Polish dates, and matches the Saturday 17 October option Dispatch offered. She can be answered in Polish once Dispatch confirms.",
+  "trap": "Missing that 'nie ma jej' means 'she isn't here', so treating the refusal as real, or failing to read '17 X' as Saturday 17 October and asking for the wrong date.",
+  "basis": "Polish 'nie ma jej' is 'she is not here'; a bare 'nie' at the door is easily taken for a refusal. Roman numerals for months ('17 X' = 17 October) are traditional in Polish dates. INT-37 second-language input (research-international.md).",
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer asked Dispatch in English to stop the return before 18:00 UTC and redeliver Saturday 17 October, explaining the mother said 'No, she's not here'. Relaxed must 2 so the meaning is required rather than quoting the Polish words verbatim."
+  }
+}

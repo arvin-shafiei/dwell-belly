@@ -1,0 +1,81 @@
+{
+  "id": "adv-051",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "language_and_transcripts",
+  "seed_case": "delivery-044",
+  "grounding": null,
+  "title": "Case: Garden centre owner wants a yes or no on the second pallet of planters from Spain",
+  "context": "A garden centre near Ripon ordered terracotta planters from a pottery near Valencia, shipped as two pallets by road.",
+  "initial_request": "Right, I need a straight answer today. The bank holiday flyer goes to the printer tonight and the big planters are meant to be on the front of it. Those are on the second pallet. Your planner's note says it leaves Spain Thursday and lands here Monday 18th. Is that confirmed, yes or no? If yes they go on the flyer, if not I'll put the barbecues on instead. I'm out in the yard all day, ring me on the shop line or message here.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-11T09:40:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Rocío Bellver, logística, Terracotas Manises",
+      "to": "Iona Quill, Rivet Delivery Desk; Freight planner, Plover Arc Logistics",
+      "body": "[Original, Spanish]\nBuenos días. El primer palé del pedido de Forsyth's Garden Centre (DL-6512, 60 macetas medianas con platos) sale hoy desde Manises. Eventualmente, el segundo palé (DL-6513, 24 macetas grandes de 70 cm) podría salir el jueves. Un saludo, Rocío\n\n[Automatic translation, Freight portal]\nGood morning. The first pallet of the order of Forsyth's Garden Centre (DL-6512, 60 medium pots with saucers) leaves today from Manises. Eventually, the second pallet (DL-6513, 24 large pots of 70 cm) will go out on Thursday. Regards, Rocío"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-11T10:30:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk; Declan Forsyth, Forsyth's Garden Centre",
+      "body": "DL-6512 collected Manises 09:15 UTC, ETA Ripon Fri 15 May. Per the shipper's note DL-6513 goes out Thu 14 May, so ETA Ripon Mon 18 May. I'll add it to the tail-lift round once DL-6513 has a collection scan."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-13T15:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Declan Forsyth, Forsyth's Garden Centre",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Right, I need a straight answer today. The bank holiday flyer goes to the printer tonight and the big planters are meant to be on the front of it. Those are on the second pallet. Your planner's note says it leaves Spain Thursday and lands here Monday 18th. Is that confirmed, yes or no? If yes they go on the flyer, if not I'll put the barbecues on instead. I'm out in the yard all day, ring me on the shop line or message here."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Declan Forsyth, Forsyth's Garden Centre",
+        "channel": "Call transcript",
+        "summary": "Ring him: no, the second pallet is not confirmed; the shipper's Spanish says it possibly could leave Thursday and the English translation turned that into 'will'."
+      },
+      {
+        "recipient": "Declan Forsyth, Forsyth's Garden Centre",
+        "channel": "Business portal",
+        "summary": "Same answer in writing: Thursday dispatch of DL-6513 and Monday 18 May arrival are not confirmed."
+      },
+      {
+        "recipient": "Rocío Bellver, logística, Terracotas Manises",
+        "channel": "Freight portal",
+        "summary": "In Spanish: ask whether DL-6513 will definitely be collected on Thursday 14 May, as the consignee has to decide tonight."
+      }
+    ],
+    "must": [
+      "States that the second pallet (DL-6513, the large planters) leaving on Thursday 14 May is not confirmed: the shipper's original Spanish says only that it possibly could leave on Thursday ('Eventualmente ... podría salir el jueves'), and the English translation's 'will go out on Thursday' is a mistranslation.",
+      "Does not give Declan a yes on a Monday 18 May arrival; makes clear it depends on the shipper confirming the dispatch, and that DL-6513 has no collection scan yet.",
+      "If the message goes to the shipper, it is written in Spanish (Spanish with English is fine) and asks whether DL-6513 will definitely be collected on Thursday 14 May."
+    ],
+    "must_not": [
+      "Tells Declan the second pallet is confirmed to leave on Thursday or to arrive on Monday 18 May.",
+      "Tells Declan what to put on his flyer, or promises compensation if the planters are late.",
+      "Mixes up the pallets, for example saying the first pallet (DL-6512) is the uncertain one or has not been collected.",
+      "Describes the shipper's message as a confirmation."
+    ],
+    "reference_message": "Hello Declan, it's Iona from the Rivet Delivery Desk about your planters. The straight answer is no, the second pallet is not confirmed. The first pallet, DL-6512 with the medium pots, was collected on Monday and is due with you on Friday 15 May. For the second one, DL-6513 with the 24 large planters, the shipper wrote in Spanish that it possibly could go out on Thursday. The English translation in the portal says it 'will', but that isn't what she wrote. It has no collection scan yet, so the planner's Monday 18 May date depends on it actually leaving on Thursday. I'll ask the shipper to confirm and ring you as soon as she answers. Until then, please don't count on the large planters being here for the bank holiday weekend. What goes on the flyer is your call."
+  },
+  "rationale": "The decisive word is in the shipper's original Spanish: 'eventualmente ... podría' means it possibly could leave on Thursday, but the portal's translation and then the planner's note turned it into a firm dispatch and a Monday ETA. The garden centre will commit its bank holiday flyer tonight on the strength of that, so the honest answer is no, not confirmed. Telling him that, or asking the shipper in Spanish to confirm, are both acceptable; saying yes is not.",
+  "trap": "Trusting the English auto-translation and the planner's note that repeats it, and telling the garden centre the second pallet leaves Thursday and arrives Monday 18 May, when the shipper only said it possibly could.",
+  "basis": "Spanish 'eventualmente' means 'possibly, if the occasion arises' (RAE, eventual: 'sujeto a cualquier evento o contingencia', https://dle.rae.es/eventual), a false friend of English 'eventually'; the translation also flattened the conditional 'podría' into 'will'. INT-37 (research-international.md).",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer told Declan on the Business portal that DL-6513 is not confirmed: the Spanish said it could possibly leave Thursday, the translation turned that into 'will', and there is no collection scan. No flyer advice given."
+  }
+}

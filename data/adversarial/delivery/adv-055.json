@@ -1,0 +1,82 @@
+{
+  "id": "adv-055",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "multi_issue",
+  "seed_case": "delivery-002",
+  "grounding": null,
+  "title": "Case: Recipient in a Norwich block asks the desk to sort out three orders at once",
+  "context": "A recipient in a block of flats in Norwich has three Tallowmere orders on the go: a wall mirror, a rug and a pair of curtains she is sending back. Messages about each have reached the desk this week.",
+  "initial_request": "Honestly this week. The mirror's cracked, I've taken the photos but where do I send them? The curtains I'm sending back, I never got any label, checked junk and everything. AND now there's a text saying the rug can't be delivered because of the address?? It's Flat 2B! Same as everything else you've delivered. Can you sort all three please, I'm at work till 6.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-09T15:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6551 / DL-6551 (round wall mirror), delivered Sat 7 Feb. Customer has reported a crack across the glass. Before we can assess we need two photos through the order-linked upload: the whole mirror, and a close-up of the crack. Nothing is time-critical on our side."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-10T10:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Return label team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6556 / DL-6556 (linen curtains, return approved 9 Feb). Label emailed to the address on the order at 10:05 UTC today."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-12T08:10:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6553 (TG-6553, wool rug 160x230) held: address query. 18 Wensum Court, Norwich NR3 has 12 flats and no flat number on the label; driver couldn't deliver Wed. Recipient texted. If we don't have a flat number by 17:00 UTC today it goes into return to sender."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-12T14:45:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Yasmin Rahimi, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Honestly this week. The mirror's cracked, I've taken the photos but where do I send them? The curtains I'm sending back, I never got any label, checked junk and everything. AND now there's a text saying the rug can't be delivered because of the address?? It's Flat 2B! Same as everything else you've delivered. Can you sort all three please, I'm at work till 6."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Destination depot, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Before 17:00 UTC: the flat number for DL-6553 is Flat 2B, 18 Wensum Court, NR3; please stop the return to sender and put the rug back out for delivery."
+      },
+      {
+        "recipient": "Destination depot, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same flat number and request by email."
+      }
+    ],
+    "must": [
+      "Sends the depot the flat number for DL-6553, Flat 2B, 18 Wensum Court, Norwich NR3, and asks it to stop the return to sender, before the 17:00 UTC cut-off today.",
+      "The won't-do list (or a handoff note) records that the cracked mirror photos (DL-6551, Damage intake's order-linked upload) and the missing curtain return label (DL-6556, Return label team) are not dealt with in this message and still need follow-up."
+    ],
+    "must_not": [
+      "Uses the one message on the mirror or the curtains, leaving the rug to go into return to sender at 17:00 UTC.",
+      "Gives Flat 2B against the wrong reference, or puts the mirror or curtains issues in the depot message.",
+      "Tells Yasmin that all three are sorted, or promises a replacement, refund or delivery date.",
+      "Asks Yasmin to email the mirror photos to the desk instead of using the order-linked upload."
+    ],
+    "reference_message": "DL-6553 (wool rug, TG-6553), address query: the recipient, Yasmin Rahimi, has confirmed her flat number. The full address is Flat 2B, 18 Wensum Court, Norwich NR3. Please add it to the consignment, stop the return to sender before today's 17:00 UTC cut-off, and put the rug back out for delivery. She is at work until 18:00 UK time today."
+  },
+  "rationale": "Three orders in three states have three owners: the rug's address query sits with the carrier's depot, the cracked mirror with Damage intake, and the missing return label with the Return label team. Only one has a clock on it: the rug goes back to the sender at 17:00 UTC today unless the depot gets a flat number, and she has just given it. The flat number goes to the depot now; the mirror photos and the label are recorded for follow-up rather than crowding the one message or being dropped.",
+  "trap": "Answering the first two complaints in her message (where to send the mirror photos, the missing label) and leaving the rug, the only item with a cut-off today, to go back to the sender.",
+  "basis": "multi_issue: several shipments in different states with different owners, one with a hard cut-off (coverage audit gap C1.1, no case with two shipments needing two owners).",
+  "review": {
+    "status": "key_fixed",
+    "note": "Blind answer sent Flat 2B to the depot before 17:00 UTC. Must 2 required a handoff note, but both agents leave handoff null when they send a message, so it could never be met on a contact; moved it to the won't-do list."
+  }
+}

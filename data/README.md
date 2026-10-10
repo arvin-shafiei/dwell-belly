@@ -74,6 +74,8 @@ npm run eval -- --agent baseline             # one Claude call per case, no flow
 npm run eval -- --api http://localhost:4000/api/cases
 npm run eval -- --traces traces              # score trace files already on disk
 npm run eval -- --agent baseline --set generated --limit 10
+npm run eval -- --agent flow --set adversarial   # the 100 adversarial cases (data/adversarial/)
+npm run answer -- data/adversarial/raw runs/adversarial   # the same cases as raw folders, through the real loader
 npm run test:eval                            # unit tests for the scoring arithmetic, no API key needed
 ```
 
@@ -86,5 +88,7 @@ Both scripts read `ANTHROPIC_API_KEY` from `apps/api/.env.local`.
 **How an agent plugs in.** `--api` POSTs the view as JSON and expects a `Trace` back (or `{ trace }`), as defined in `docs/plans/2026-10-10-3d-workflow-viz-design.md` §4. The eval reads the `run_end` event (`outcome`, `nextAction`), the `human_decision` card and the planner's `wontDo`. `--traces <dir>` reads `<dir>/<caseId>.json` in the same shape.
 
 **Scoring** (weights in `scripts/eval/score.mjs`): disposition 0.3, recipient 0.2, channel 0.1, content 0.4. Disposition and channel are checked in code. Recipient, content and rule-breaking are judged by Claude against the answer key. Breaking any `must_not` rule sets the case to 0. A case passes at 0.7 or above. Results print by set and by difficulty pattern, and every decision and verdict is saved to `runs/` (gitignored).
+
+**Adversarial cases.** `data/adversarial/` holds 100 more cases in the same shape, written to break the agent where the generated set does not reach: alarming words in harmless cases, regulated goods, safeguarding, injection hidden in attachments and quoted replies, pressure to record something untrue, calendar and arithmetic traps, cross-border rules, attachments that decide the case, awkward file layouts and very long threads. Each also exists as a raw case folder with real PDF and PNG attachments. See `data/adversarial/README.md`, and `docs/research/` for the research behind them.
 
 **Keep the public cases held out.** Tune prompts and thresholds on the generated set, then check the public 50 to confirm nothing regressed.

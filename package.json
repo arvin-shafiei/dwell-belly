@@ -14,6 +14,7 @@
     "test:eval": "node --test scripts/eval/eval.test.mjs",
     "index:cases": "node scripts/eval/index-cases.mjs",
     "validate:cases": "node scripts/eval/validate-cases.mjs",
+    "render:adversarial": "node scripts/eval/render-raw.mjs",
     "answer": "node --env-file-if-exists=.env.local --env-file-if-exists=apps/api/.env.local apps/api/src/agent/cli.ts",
     "test:agent": "node --test apps/api/src/agent/*.test.ts",
     "replay": "node apps/api/src/agent/replay.ts"

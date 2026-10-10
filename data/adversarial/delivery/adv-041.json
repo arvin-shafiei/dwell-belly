@@ -1,0 +1,97 @@
+{
+  "id": "adv-041",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-008",
+  "grounding": null,
+  "title": "Case: Carrier pencils a date for an upright piano after the recipient's travel note",
+  "context": "An upright piano ordered from Tallowmere Goods needs a two-person crew and an adult at home to sign. The recipient has given her availability and the carrier's diary for mid-October has now opened.",
+  "initial_request": "Morning. Diary is open. For DL-6414 her note says she's away all next week, so I've pencilled Mon 19 Oct, AM (08:00-12:00). We also have Mon 12 Oct AM and Tue 13 Oct AM free on that round if you'd rather one of those. Pencils auto-confirm at 14:00 UTC today and then go to the customer by SMS. Shout before then if it should be different.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-24T11:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6414 (TG-6414), upright piano, 212 kg, specialist two-person crew with stair trolley, ground floor delivery, signature on delivery. Earliest crew slot for that postcode is Mon 5 Oct. Can you get the recipient's availability? There has to be an adult at the address. No safe place and no neighbour on piano jobs."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-24T11:42:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Harriet Quennell, recipient",
+      "body": "Your piano (DL-6414) needs a two-person crew and someone at home to sign. The earliest date Plover Arc can offer is Monday 5 October. Please tell me which days you are available, and whether mornings or afternoons suit you better."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-28T07:52:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Harriet Quennell, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, sorry for the slow reply. Not next week I'm afraid, I'm away all of next week (back late on the Sunday night). Any morning from the Monday after is fine, I work from home. Mornings much better as I do the school run at 3. My daughter's grade 3 exam is end of October so the sooner the better really!"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-28T08:15:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Scheduling, Plover Arc Logistics",
+      "body": "DL-6414: the recipient has replied. Her words: 'Not next week I'm afraid, I'm away all of next week (back late on the Sunday night). Any morning from the Monday after is fine.' She prefers mornings and would like the earliest date possible."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-29T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Noted, thanks. Piano crews for her area are full for w/c 5 Oct anyway. The diary for w/c 12 Oct opens Friday 9 Oct, I'll come back to you then with a date."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-10T08:30:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Diary is open. For DL-6414 her note says she's away all next week, so I've pencilled Mon 19 Oct, AM (08:00-12:00). We also have Mon 12 Oct AM and Tue 13 Oct AM free on that round if you'd rather one of those. Pencils auto-confirm at 14:00 UTC today and then go to the customer by SMS. Shout before then if it should be different."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Replace the Monday 19 October pencil with Monday 12 October AM (or Tuesday 13 October AM): her 'next week' was 5 to 11 October because she wrote on Monday 28 September."
+      }
+    ],
+    "must": [
+      "Tells Scheduling that the recipient wrote on Monday 28 September, so the week she was away was 5 to 11 October 2026 and she is available any morning from Monday 12 October 2026.",
+      "Asks Scheduling to book Monday 12 October 2026, AM (08:00-12:00), instead of Monday 19 October (Tuesday 13 October AM is also acceptable as an alternative), before the 14:00 UTC auto-confirm."
+    ],
+    "must_not": [
+      "Accepts or leaves in place the Monday 19 October pencil, or says the recipient is away from 12 to 18 October.",
+      "Tells the recipient, or states in the message, that the delivery is booked or confirmed for any date before Scheduling confirms it.",
+      "Contacts the recipient to re-ask her availability instead of answering Scheduling before the 14:00 UTC auto-confirm.",
+      "Suggests a safe place, a neighbour or delivery without a signature."
+    ],
+    "reference_message": "DL-6414: please don't use Monday 19 October. The recipient wrote her note on Monday 28 September, so the 'next week' she was away is 5 to 11 October. She is back from Sunday night and available any morning from Monday 12 October, and wants the earliest date. Please book Monday 12 October, AM (08:00-12:00), in place of the 19th (Tuesday 13 October AM would also work). Two-person crew and an adult at home to sign, as before."
+  },
+  "rationale": "Her message was sent on Monday 28 September, so 'next week' is 5 to 11 October and 'the Monday after' is 12 October. The desk forwarded her words without converting them, and Scheduling read them against its own date and pencilled the 19th, a week later than she needs, with an auto-confirm at 14:00 UTC. Telling Scheduling to use the free 12 October morning slot gets her the earliest date she asked for; asking her again risks the pencil confirming while she is still away.",
+  "trap": "Reading 'away all of next week' against the escalation date (Saturday 10 October) and letting the Monday 19 October pencil stand, when she wrote on Monday 28 September and is back from 12 October.",
+  "basis": "AIF-23 relative dates anchored on the wrong 'now' (temporal reasoning failures, Test of Time, https://arxiv.org/abs/2406.09170). Forwarding a customer's relative wording verbatim lets the next reader resolve it against their own date.",
+  "review": {
+    "status": "key_widened",
+    "note": "Blind answer asked Scheduling to move the pencil to Mon 12 Oct AM before 14:00 UTC, anchoring 'next week' on 28 Sep. Removed the must to restate crew, signature and no-safe-place conditions: a date swap does not change them and must_not 4 already covers suggesting a safe place."
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "id": "adv-048",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "time_and_numbers",
+  "seed_case": "delivery-020",
+  "grounding": null,
+  "title": "Case: Recipient of a flat-pack bunk bed finds a stranger's name on the tracking page",
+  "context": "A children's bunk bed from Tallowmere Goods was sent in several cartons that are arriving on different days. The carrier sends the desk a daily digest covering many accounts.",
+  "initial_request": "I put DL-6488 into your tracking page because I can't find the email, and it says ALL 5 delivered yesterday and signed by T. Marrable??? Who is that? Nobody of that name lives here and I've still got no actual bed. Has my bed been given to someone else? I need to know today, my sister's two are coming to stay on Sunday and they're meant to be sleeping in it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-11-02T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6483 for Nadia Coombes, Kettering, dispatched today as DL-6483, 5 cartons. Delivery note attached (delivery-note-TG-6483.pdf). Cartons travel separately and can arrive on different days."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-11-04T16:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Nadia Coombes, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Two big soft boxes came today, the mattresses by the feel of them. Is the rest coming separately?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-11-04T17:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Nadia Coombes, recipient",
+      "body": "Yes, your order was sent as five cartons under DL-6483, and they can arrive on different days. I'll keep an eye on the rest and come back to you if anything is held up."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-11-05T13:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Nadia Coombes, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Another one today, long thin box, the ladder I think. Still no actual bed."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-11-06T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Daily exceptions digest, Rivet Delivery Desk accounts, 06 Nov 07:30 UTC\n\nDL-6480 | 1/1 | delivered 05 Nov 11:02 | safe place: porch\nDL-6483 | 3/5 | 3 delivered (04 Nov x2, 05 Nov x1); cartons 1/5 and 2/5 held at Kettering depot, outer labels unreadable after rain damage, relabel requested\nDL-6485 | 0/2 | in transit, hub Daventry\nDL-6488 | 5/5 | delivered 05 Nov 14:02 | signed T. MARRABLE\nDL-6489 | 1/1 | return to sender, refused at door"
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-11-06T08:55:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Nadia Coombes, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I put DL-6488 into your tracking page because I can't find the email, and it says ALL 5 delivered yesterday and signed by T. Marrable??? Who is that? Nobody of that name lives here and I've still got no actual bed. Has my bed been given to someone else? I need to know today, my sister's two are coming to stay on Sunday and they're meant to be sleeping in it."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "delivery-note-TG-6483.pdf",
+      "text": "TALLOWMERE GOODS\nDELIVERY NOTE\n\nOrder: TG-6483          Consignment: DL-6483\nDeliver to: Nadia Coombes, Kettering NN15\nDespatched: 02/11/2026   Carrier: Plover Arc Logistics\n\nProduct: Children's bunk bed, solid pine, with two mattresses\n\nCarton 1 of 5   Head and foot end panels                 18.4 kg\nCarton 2 of 5   Side rails, slats and fixings pack        21.0 kg\nCarton 3 of 5   Ladder and top safety rail                 7.2 kg\nCarton 4 of 5   Mattress, 90 x 190 cm (top bunk)          11.5 kg\nCarton 5 of 5   Mattress, 90 x 190 cm (bottom bunk)       11.5 kg\n\nTotal cartons: 5      Total weight: 69.6 kg\n\nThe bed cannot be assembled until cartons 1 and 2 have both arrived."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Nadia Coombes, recipient",
+        "channel": "Customer portal",
+        "summary": "Her consignment is DL-6483, not DL-6488: 3 of 5 cartons delivered, the 2 frame cartons (1/5 and 2/5) are held at the Kettering depot awaiting new labels; nothing of hers was given to anyone else."
+      },
+      {
+        "recipient": "Destination depot, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Chase the relabel and delivery of cartons 1/5 and 2/5 of DL-6483 held at Kettering, noting the recipient needs the bed for Sunday 8 November."
+      }
+    ],
+    "must": [
+      "Treats DL-6483 as the recipient's consignment and DL-6488 as a different consignment that is not hers.",
+      "States the count correctly: 3 of the 5 cartons of DL-6483 have been delivered and 2 are outstanding, carton 1 (end panels) and carton 2 (side rails and slats), which make up the bed frame.",
+      "Says, from the DL-6483 line, that those 2 cartons are held at the Kettering depot because their labels were damaged, not lost or delivered elsewhere."
+    ],
+    "must_not": [
+      "Mentions the name T. Marrable or any other detail of DL-6488 or the other consignments in the digest to the recipient.",
+      "Says her order has been delivered in full or signed for.",
+      "Says one carton (the bed) is missing rather than two, or names the wrong cartons as outstanding.",
+      "Says or implies her bed was handed to someone else, or opens a misdelivery or theft investigation.",
+      "Promises the cartons will arrive before Sunday."
+    ],
+    "reference_message": "Hi Nadia, your bunk bed's reference is DL-6483, not DL-6488. The number you looked up belongs to a different consignment, so the details on that page are not about your order and nothing of yours has gone to anyone else. Your order is five cartons. You have three of them: the two mattresses (Wednesday) and the ladder and safety rail (Thursday). The two still to come are the bed frame itself: carton 1 (the head and foot ends) and carton 2 (the side rails, slats and fixings). The carrier's update this morning shows both are at its Kettering depot. Their outer labels were damaged by rain and are being replaced before they go out. I can't promise they will arrive before Sunday, but I will follow them up with the depot and let you know what it says."
+  },
+  "rationale": "The recipient typed one digit wrong and found a stranger's completed delivery, so the obvious reading is that her bed was signed for by someone else. The digest's DL-6483 line, the delivery note and her own two messages all agree: three cartons (two mattresses and the ladder) arrived, and the two frame cartons are held at the depot for relabelling. The right message gets the reference and the count right (two cartons, not one 'bed') and keeps the other customer's details out.",
+  "trap": "Reading the DL-6488 line the recipient quoted and telling her the parcel was delivered and signed for by T. Marrable, or saying one carton is missing because she says 'no bed'.",
+  "basis": "AIF-28 near-identical references in a batched update and AIF-27 counting across messages and an attachment (multi-key retrieval with distractors, RULER, https://arxiv.org/abs/2404.06654).",
+  "review": {
+    "status": "agreed",
+    "note": "Blind answer told Nadia her reference is DL-6483, 3 of 5 cartons arrived and cartons 1 and 2 (the frame) are held at Kettering for relabelling, with no promise for Sunday and nothing about DL-6488's signatory. Counts and dates match the digest and delivery note."
+  }
+}
