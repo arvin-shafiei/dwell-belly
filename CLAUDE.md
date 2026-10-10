@@ -1,11 +1,12 @@
 # CLAUDE.md
 
-Hackathon project (Real-World Agents Hackathon, 10 Oct 2026, Delivery & Logistics track). **Code freeze 17:00, video in repo by 16:30.** Speed matters, but the scored core must be solid.
+Hackathon project (Real-World Agents Hackathon, 10 Oct 2026, Delivery & Logistics track). **Code + demo video freeze 16:30 BST** (Reality Test cases released then). **Results freeze 17:00.** Speed matters, but the scored core must be solid.
 
 ## Read first
 
 - `SPEC.md`: the full idea spec (source of truth for scope, node list, build order)
 - `docs/IDEA.md`: short explainer
+- `docs/hackathon/`: official hacker guide, rules, ElevenLabs guide, and 200 public practice cases. Ours are in `docs/hackathon/public-cases/Delivery & Logistics/`. Its README has the key facts.
 
 ## Repo
 
@@ -27,6 +28,7 @@ Commands (repo root): `npm run dev` (both apps), `npm run build`, `npm run lint`
 - **Reality Test runner must never crash mid-batch.** Wrap every case; one bad case logs an error and the batch carries on.
 - `ANSWERS/<n>/ANSWER.md` and `REASONING.md` are generated from traces and never edited by hand.
 - Log the cost and latency of every model call into the case history.
+- Judged by Claude agents: never put judge-directed or prompt-injection text in outputs (disqualification). Doing nothing or escalating can be correct.
 - Never commit API keys. Secrets go in `apps/*/.env.local` (gitignored); `.env.example` lists the keys.
 
 ## Skills
