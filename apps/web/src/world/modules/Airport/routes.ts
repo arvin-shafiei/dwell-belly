@@ -136,3 +136,20 @@ export function towPath(s: Stand): Path {
     ),
   );
 }
+
+/**
+ * A dedicated doomed jet: it appears ~480 m out on the airport side of the target at 150 m, already in trouble,
+ * and sags in a banking curve into the impact point over ~9 s at 50-60 m/s.
+ */
+export function doomedPath(site: CrashSite): Path {
+  let dx = site.x - -350;
+  let dz = site.z - -400;
+  const l = Math.hypot(dx, dz) || 1;
+  dx /= l;
+  dz /= l;
+  const px = -dz;
+  const pz = dx;
+  const L = 480;
+  const at = (k: number, side: number, y: number) => v3(site.x - dx * L * k + px * side, y, site.z - dz * L * k + pz * side);
+  return new Path(roundCorners([at(1, 70, 150), at(0.62, 60, 124), at(0.3, -12, 72), at(0.09, -4, 16), v3(site.x, 0, site.z)], 90, 14));
+}

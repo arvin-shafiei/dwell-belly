@@ -8,6 +8,7 @@ import { useEffect, useMemo } from "react";
 import { emit, on } from "../bus";
 import { nextId } from "../registry";
 import { blockedSet, useWorld } from "../store";
+import Crater from "./Airport/Crater";
 import Crew from "./Airport/Crew";
 import Effects from "./Airport/Effects";
 import Planes from "./Airport/Planes";
@@ -23,6 +24,10 @@ const effects: SimEffects = {
   blocked: () => blockedSet(),
   newId: () => nextId("INC"),
   now: () => performance.now(),
+  addDamage: (d) => useWorld.getState().addDamage(d),
+  updateDamage: (id, patch) => useWorld.getState().updateDamage(id, patch),
+  removeDamage: (id) => useWorld.getState().removeDamage(id),
+  damageState: (id) => useWorld.getState().damage.find((d) => d.id === id)?.state,
 };
 
 export default function Airport() {
@@ -41,9 +46,10 @@ export default function Airport() {
     () => () => {
       const c = sim.crash;
       if (c?.incidentId) {
-        useWorld.getState().unblockEdge(c.edge);
+        for (const k of c.sealed) useWorld.getState().unblockEdge(k);
         useWorld.getState().updateIncident(c.incidentId, { status: "cleared" });
       }
+      if (sim.crater) useWorld.getState().removeDamage(sim.crater.damageId);
       if (sim.emergency) useWorld.getState().updateIncident(sim.emergency.incidentId, { status: "cleared" });
     },
     [sim],
@@ -60,6 +66,7 @@ export default function Airport() {
       <Planes sim={sim} />
       <Crew sim={sim} />
       <Effects sim={sim} />
+      <Crater sim={sim} />
     </group>
   );
 }

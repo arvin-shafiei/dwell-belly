@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 import { CrashTimeline, Director, EmergencyTimeline, evacPose, PASSENGERS } from "./incidents";
 
 const fixed = (v: number) => () => v;
+const IDLE = { emergency: false, crash: false, crews: false };
 
 describe("Director", () => {
   it("fires an emergency every 3-4 minutes when idle", () => {
     const d = new Director(fixed(0.5), { firstEmergency: 100, firstCrash: 1e9 });
     const fired: number[] = [];
     for (let t = 0; t < 800; t += 0.5) {
-      const k = d.step(0.5, false);
+      const k = d.step(0.5, IDLE);
       if (k === "emergency_landing") fired.push(t);
     }
     expect(fired[0]).toBeGreaterThanOrEqual(99);
@@ -23,7 +24,7 @@ describe("Director", () => {
   it("auto crashes are rare: at most one per 6 minutes", () => {
     const d = new Director(Math.random, { firstEmergency: 1e9 });
     const crashes: number[] = [];
-    for (let t = 0; t < 3600; t += 1) if (d.step(1, false) === "plane_crash") crashes.push(t);
+    for (let t = 0; t < 3600; t += 1) if (d.step(1, IDLE) === "plane_crash") crashes.push(t);
     expect(crashes.length).toBeGreaterThan(0);
     for (let i = 1; i < crashes.length; i++) expect(crashes[i] - crashes[i - 1]).toBeGreaterThanOrEqual(360);
   });
@@ -31,13 +32,22 @@ describe("Director", () => {
   it("serves requests right away, and waits while busy", () => {
     const d = new Director(fixed(0.5), { firstEmergency: 1e9, firstCrash: 1e9 });
     d.request("plane_crash");
-    expect(d.step(0.1, true)).toBe(null);
-    expect(d.step(0.1, false)).toBe("plane_crash");
-    expect(d.step(0.1, false)).toBe(null);
+    expect(d.step(0.1, { ...IDLE, crash: true })).toBe(null); // one crash at a time
+    expect(d.step(0.1, { ...IDLE, emergency: true, crews: true })).toBe("plane_crash"); // other incidents don't hold it up
+    expect(d.step(0.1, IDLE)).toBe(null);
     d.request("emergency_landing");
     d.request("emergency_landing"); // de-duplicated
-    expect(d.step(0.1, false)).toBe("emergency_landing");
-    expect(d.step(0.1, false)).toBe(null);
+    expect(d.step(0.1, { ...IDLE, crash: true, crews: true })).toBe("emergency_landing");
+    expect(d.step(0.1, IDLE)).toBe(null);
+  });
+
+  it("automatic incidents wait for a quiet airport", () => {
+    const d = new Director(fixed(0.5), { firstEmergency: 5, firstCrash: 1e9 });
+    for (let t = 0; t < 60; t += 1) expect(d.step(1, { ...IDLE, crews: true })).toBe(null);
+    expect(d.step(1, IDLE)).toBe(null); // grace period after the airport went quiet
+    let fired = false;
+    for (let t = 0; t < 30; t += 1) if (d.step(1, IDLE) === "emergency_landing") fired = true;
+    expect(fired).toBe(true);
   });
 });
 
@@ -71,11 +81,11 @@ describe("EmergencyTimeline", () => {
 });
 
 describe("CrashTimeline", () => {
-  it("burns until the crews arrive, foam puts it out, clears at ~90 s", () => {
+  it("burns until the crews arrive, they fight it ~65 s, then it clears", () => {
     const tl = new CrashTimeline();
     const statuses: [string, number][] = [];
     let clearAt = -1;
-    for (let t = 0; t < 120; t += 0.1) {
+    for (let t = 0; t < 140; t += 0.1) {
       const a = tl.update(0.1, t > 20);
       if (a.status) statuses.push([a.status, t]);
       if (a.clear) clearAt = t;
@@ -84,13 +94,13 @@ describe("CrashTimeline", () => {
     expect(statuses.map((s) => s[0])).toEqual(["responding", "clearing", "cleared"]);
     expect(statuses[0][1]).toBeGreaterThan(19);
     expect(tl.fire).toBe(0);
-    expect(clearAt).toBeGreaterThanOrEqual(89);
-    expect(clearAt).toBeLessThan(100);
+    expect(clearAt).toBeGreaterThanOrEqual(84);
+    expect(clearAt).toBeLessThan(92);
   });
 
   it("foams anyway if crews are slow", () => {
     const tl = new CrashTimeline();
-    for (let t = 0; t < 60; t += 0.5) tl.update(0.5, false);
+    for (let t = 0; t < 70; t += 0.5) tl.update(0.5, false);
     expect(tl.fire).toBeLessThan(1);
   });
 });

@@ -1,13 +1,12 @@
 // Airport fire service: two crash tenders and an ambulance. Airside they cross the grass; to a crash off the
 // airfield they drive the public road graph (left-hand lanes) and finish off-road next to the wreck.
-import { edgeKey, findPath, getNode, lanePosition } from "../../roads";
+import { findPath, getNode, lanePosition, ROAD_NODES } from "../../roads";
 import {
   CREW_EAST_X,
   CREW_HOMES,
   CREW_NORTH_Z,
   CREW_WEST_X,
   SERVICE_ROAD_Z,
-  type CrashSite,
 } from "./layout";
 import { Path, roundCorners, v3, type V3 } from "./path";
 
@@ -120,53 +119,32 @@ function polyLen(pts: V3[]) {
   return l;
 }
 
-/** The end of the closed edge the crews come in from, and how far along it they can drive. */
-export function approachNode(site: CrashSite, blocked: ReadonlySet<string>) {
-  const key = edgeKey(site.a, site.b);
-  const open = new Set(blocked);
-  open.delete(key);
-  let best: { node: string; other: string; nodes: string[] } | null = null;
-  let bestLen = Infinity;
-  for (const [n, o] of [
-    [site.a, site.b],
-    [site.b, site.a],
-  ]) {
-    const nodes = findPath(ROAD_NODE, n, open);
-    if (!nodes || nodes.includes(o)) continue;
-    let len = 0;
-    for (let i = 1; i < nodes.length; i++) {
-      const p = getNode(nodes[i - 1]);
-      const q = getNode(nodes[i]);
-      len += Math.hypot(p.x - q.x, p.z - q.z);
-    }
-    if (len < bestLen) {
-      bestLen = len;
-      best = { node: n, other: o, nodes };
-    }
+/**
+ * The road node the crews drive to: the nearest one to the site that can still be reached from the airport
+ * with the current closures (the cordon around a crash seals off the nodes right next to it).
+ */
+export function approachNode(site: { x: number; z: number }, blocked: ReadonlySet<string>): { node: string; nodes: string[] } | null {
+  const near = [...ROAD_NODES.values()]
+    .map((n) => ({ id: n.id, d: Math.hypot(n.x - site.x, n.z - site.z) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, 14);
+  for (const n of near) {
+    const nodes = findPath(ROAD_NODE, n.id, blocked);
+    if (nodes) return { node: n.id, nodes };
   }
-  return best;
+  return null;
 }
 
-/** Projection of the site onto edge node->other, as t in 0..1. */
-function siteT(node: string, other: string, site: CrashSite) {
-  const a = getNode(node);
-  const b = getNode(other);
-  const dx = b.x - a.x;
-  const dz = b.z - a.z;
-  const l2 = dx * dx + dz * dz || 1;
-  return Math.min(1, Math.max(0, ((site.x - a.x) * dx + (site.z - a.z) * dz) / l2));
-}
-
-/** Where each unit parks around the wreck: short of it on the approach side, fanned out. */
-export function standoff(site: CrashSite, node: string, index: number): { x: number; z: number } {
+/** Where each unit parks: on the line from its road node toward the fire, fanned out, short of the wreck. */
+export function standoff(site: { x: number; z: number }, node: string, index: number, dist: number): { x: number; z: number } {
   const n = getNode(node);
   const dx = n.x - site.x;
   const dz = n.z - site.z;
   const l = Math.hypot(dx, dz) || 1;
   const ux = dx / l;
   const uz = dz / l;
-  const side = (index - 1) * 10;
-  const back = index === 2 ? 30 : 17;
+  const side = (index - 1) * 9;
+  const back = Math.min(l, index === 2 ? dist + 12 : dist);
   return { x: site.x + ux * back - uz * side, z: site.z + uz * back + ux * side };
 }
 
@@ -175,8 +153,8 @@ export interface RoadRoute {
   segs: RoadSeg[];
 }
 
-/** Station -> service road -> road graph -> along the closed edge -> off-road standoff. */
-export function roadOut(u: CrewUnit, site: CrashSite, blocked: ReadonlySet<string>): RoadRoute | null {
+/** Station -> service road -> road graph (left lanes) -> off-road to a standoff point by the fire. */
+export function roadOut(u: CrewUnit, site: { x: number; z: number }, blocked: ReadonlySet<string>, dist: number): RoadRoute | null {
   const ap = approachNode(site, blocked);
   if (!ap) return null;
   const pts: V3[] = [
@@ -186,37 +164,24 @@ export function roadOut(u: CrewUnit, site: CrashSite, blocked: ReadonlySet<strin
     flat(getNode(ROAD_NODE).x - 6, SERVICE_ROAD_Z - 1.5),
   ];
   const segs: RoadSeg[] = [];
-  lanePoints(ap.nodes, pts, segs);
-  const t = Math.max(0, siteT(ap.node, ap.other, site) - 26 / Math.max(1, edgeLen(ap.node, ap.other)));
-  const [ex, ez] = lanePosition(ap.node, ap.other, t);
-  const d0 = polyLen(pts);
-  pts.push(flat(ex, ez));
-  segs.push({ d0, d1: polyLen(pts), from: ap.node, to: ap.other });
-  const so = standoff(site, ap.node, u.index);
+  if (ap.nodes.length > 1) lanePoints(ap.nodes, pts, segs);
+  const so = standoff(site, ap.node, u.index, dist);
   pts.push(flat(so.x, so.z));
   return { pts, segs };
 }
 
-function edgeLen(a: string, b: string) {
-  const p = getNode(a);
-  const q = getNode(b);
-  return Math.hypot(p.x - q.x, p.z - q.z);
-}
-
-/** Back from the wreck to the station by road. */
-export function roadBack(u: CrewUnit, site: CrashSite, blocked: ReadonlySet<string>): RoadRoute | null {
+/** Back from the fire to the station by road. */
+export function roadBack(u: CrewUnit, site: { x: number; z: number }, blocked: ReadonlySet<string>): RoadRoute | null {
   const ap = approachNode(site, blocked);
   if (!ap) return null;
   const pts: V3[] = [flat(u.x, u.z)];
-  const t = Math.max(0, siteT(ap.node, ap.other, site) - 26 / Math.max(1, edgeLen(ap.node, ap.other)));
-  const [ex, ez] = lanePosition(ap.other, ap.node, 1 - t);
-  pts.push(flat(ex, ez));
-  const segs: RoadSeg[] = [{ d0: polyLen(pts), d1: 0, from: ap.other, to: ap.node }];
-  const [nx, nz] = lanePosition(ap.other, ap.node, 1);
-  pts.push(flat(nx, nz));
-  segs[0].d1 = polyLen(pts);
+  const segs: RoadSeg[] = [];
   const back = [...ap.nodes].reverse();
-  lanePoints(back, pts, segs);
+  if (back.length > 1) lanePoints(back, pts, segs);
+  else {
+    const n = getNode(back[0]);
+    pts.push(flat(n.x, n.z));
+  }
   pts.push(flat(getNode(ROAD_NODE).x - 6, SERVICE_ROAD_Z + 1.5));
   pts.push(flat(CREW_EAST_X + 3, SERVICE_ROAD_Z + 1.5));
   pts.push(flat(CREW_EAST_X + 3, u.home.z));

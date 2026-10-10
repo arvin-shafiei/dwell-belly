@@ -18,7 +18,7 @@ const GEAR_L = v3(2.1, 0.3, -0.4);
 const GEAR_R = v3(-2.1, 0.3, -0.4);
 const NOZZLE = v3(0, 3.9, 5.2);
 const m4 = new THREE.Matrix4();
-const DEBRIS = 40;
+const DEBRIS = 70;
 const G = 9.8;
 
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -36,7 +36,7 @@ export default function Effects({ sim }: { sim: AirportSim }) {
   const smokeMesh = useMemo(() => poolMesh(smoke, false), [smoke]);
   const glowMesh = useMemo(() => poolMesh(glow, true), [glow]);
   const lastStep = useRef(-1);
-  const carry = useRef(new Float32Array(16)); // fractional spawn accumulators per emitter slot
+  const carry = useRef(new Float32Array(20)); // fractional spawn accumulators per emitter slot
   const wreck = useRef<WreckState | null>(null);
   const blanket = useRef({ r: 0, x: 0, z: 0 });
 
@@ -48,6 +48,7 @@ export default function Effects({ sim }: { sim: AirportSim }) {
   const flashRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   const foamRef = useRef<THREE.Mesh>(null);
+  const waveRef = useRef<THREE.Mesh>(null);
 
   const built = useMemo(() => {
     const scorch = new THREE.CircleGeometry(1, 24);
@@ -63,6 +64,8 @@ export default function Effects({ sim }: { sim: AirportSim }) {
       scorchMat: new THREE.MeshBasicMaterial({ color: "#14100c", transparent: true, opacity: 0.7, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -5, polygonOffsetUnits: -10 }),
       flash: new THREE.SphereGeometry(1, 16, 10),
       flashMat: new THREE.MeshBasicMaterial({ color: "#ffb347", transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }),
+      wave: new THREE.RingGeometry(0.85, 1, 48).rotateX(-Math.PI / 2),
+      waveMat: new THREE.MeshBasicMaterial({ color: "#ffd9a0", transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }),
       foam,
       foamMat: new THREE.MeshStandardMaterial({ color: "#f4f6f8", roughness: 1, transparent: true, opacity: 0.9, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -7, polygonOffsetUnits: -14 }),
     };
@@ -71,8 +74,8 @@ export default function Effects({ sim }: { sim: AirportSim }) {
   useEffect(
     () => () => {
       for (const w of built.wrecks) for (const g of [w.front, w.rear, w.wing]) g.dispose();
-      for (const g of [built.debris, built.scorch, built.flash, built.foam]) g.dispose();
-      for (const m of [built.charMat, built.debrisMat, built.scorchMat, built.flashMat, built.foamMat]) m.dispose();
+      for (const g of [built.debris, built.scorch, built.flash, built.foam, built.wave]) g.dispose();
+      for (const m of [built.charMat, built.debrisMat, built.scorchMat, built.flashMat, built.foamMat, built.waveMat]) m.dispose();
       smokeMesh.geometry.dispose();
       (smokeMesh.material as THREE.Material).dispose();
       glowMesh.geometry.dispose();
@@ -160,8 +163,9 @@ export default function Effects({ sim }: { sim: AirportSim }) {
       const cols = ["#3a3a3a", "#5b5b5b", "#d9dee4", "#2a2a2a", p.spec.tail, p.spec.body];
       const tmpC = new THREE.Color();
       for (let i = 0; i < DEBRIS; i++) {
-        const along = rnd(-28, 40);
-        const side = rnd(-1, 1) * (6 + Math.abs(along) * 0.35);
+        // thrown wide: mostly forward along the flight path, some sideways and back
+        const along = rnd(-35, 70);
+        const side = rnd(-1, 1) * (10 + Math.abs(along) * 0.45);
         const s = rnd(0.35, 1.9);
         m4.makeRotationFromEuler(new THREE.Euler(rnd(0, 3), rnd(0, 3), rnd(0, 3)));
         m4.scale(new THREE.Vector3(s, s * rnd(0.2, 0.7), s * rnd(0.6, 1.6)));
@@ -193,13 +197,34 @@ export default function Effects({ sim }: { sim: AirportSim }) {
       flashT: 0,
     };
     // the fireball
-    for (let k = 0; k < 110; k++) {
+    // tumbling chunks thrown out of the blast
+    for (let k = 0; k < 90; k++) {
+      const a = rnd(0, Math.PI * 2);
+      const sp = rnd(10, 32);
+      Object.assign(S, {
+        x: sx, y: rnd(1, 4), z: sz,
+        vx: Math.cos(a) * sp + dx * 10, vy: rnd(8, 24), vz: Math.sin(a) * sp + dz * 10,
+        life: rnd(2, 3.5), s0: rnd(0.6, 1.6), s1: rnd(0.5, 1.2), a: 1, r: 0.12, g: 0.11, b: 0.1, gravity: G, drag: 0.15,
+      });
+      smoke.spawn(S);
+    }
+    // dust skirt racing outward with the shockwave
+    for (let k = 0; k < 48; k++) {
+      const a = (k / 48) * Math.PI * 2;
+      Object.assign(S, {
+        x: sx + Math.cos(a) * 6, y: 1.5, z: sz + Math.sin(a) * 6,
+        vx: Math.cos(a) * 30, vy: rnd(0.5, 2), vz: Math.sin(a) * 30,
+        life: rnd(2.2, 3.2), s0: 5, s1: 16, a: 0.6, r: 0.42, g: 0.38, b: 0.33, gravity: -0.3, drag: 1.3,
+      });
+      smoke.spawn(S);
+    }
+    for (let k = 0; k < 160; k++) {
       const a = rnd(0, Math.PI * 2);
       const sp = rnd(5, 20);
       Object.assign(S, {
         x: sx + rnd(-4, 4), y: rnd(1, 5), z: sz + rnd(-4, 4),
         vx: Math.cos(a) * sp + dx * 8, vy: rnd(4, 16), vz: Math.sin(a) * sp + dz * 8,
-        life: rnd(1.0, 2.2), s0: rnd(4, 7), s1: rnd(9, 16), a: 1, r: 1, g: rnd(0.4, 0.65), b: 0.12, gravity: -2, drag: 1.4,
+        life: rnd(1.2, 2.6), s0: rnd(5, 9), s1: rnd(12, 22), a: 1, r: 1, g: rnd(0.4, 0.65), b: 0.12, gravity: -3, drag: 1.3,
       });
       glow.spawn(S);
     }
@@ -267,12 +292,20 @@ export default function Effects({ sim }: { sim: AirportSim }) {
     if (w && cr && cr.tl) {
       const fire = cr.tl.fire;
       w.flashT += dt;
+      const wave = waveRef.current;
+      if (wave) {
+        const k = w.flashT / 1.4;
+        wave.visible = k < 1;
+        wave.position.set(cr.site.x, 1.2, cr.site.z);
+        wave.scale.setScalar(2 + k * 85);
+        (wave.material as THREE.MeshBasicMaterial).opacity = Math.max(0, 1 - k) * 0.9;
+      }
       const flash = flashRef.current;
       if (flash) {
         const k = w.flashT;
         flash.visible = k < 1.6;
         flash.position.set(cr.site.x, 4, cr.site.z);
-        flash.scale.setScalar(4 + Math.min(1, k / 0.35) * 24);
+        flash.scale.setScalar(6 + Math.min(1, k / 0.35) * 34);
         (flash.material as THREE.MeshBasicMaterial).opacity = Math.max(0, 1 - k / 1.6);
       }
       if (light) {
@@ -289,6 +322,30 @@ export default function Effects({ sim }: { sim: AirportSim }) {
     } else {
       if (light) light.intensity = 0;
       if (flashRef.current) flashRef.current.visible = false;
+      if (waveRef.current) waveRef.current.visible = false;
+    }
+
+    // smoking embers in the crater (dying away once the rebuild starts)
+    const crater = sim.crater;
+    if (crater) {
+      const k = crater.stage === "destroyed" ? 1 : Math.max(0, 1 - crater.t / 12);
+      if (k > 0) {
+        emit(17, 14 * k, dt, () => {
+          const a = rnd(0, Math.PI * 2);
+          const r = rnd(0, crater.radius * 0.45);
+          Object.assign(S, {
+            x: crater.x + Math.cos(a) * r, y: 0.4, z: crater.z + Math.sin(a) * r,
+            vx: rnd(-0.3, 0.3), vy: rnd(0.6, 2), vz: rnd(-0.3, 0.3),
+            life: rnd(0.8, 1.8), s0: rnd(0.3, 0.6), s1: 0.1, a: 0.9, r: 1, g: rnd(0.3, 0.5), b: 0.05, gravity: -0.5, drag: 0.4,
+          });
+          glow.spawn(S);
+        });
+        emit(18, 5 * k, dt, () => {
+          const a = rnd(0, Math.PI * 2);
+          const r = rnd(0, crater.radius * 0.5);
+          darkSmoke(crater.x + Math.cos(a) * r, 0.8, crater.z + Math.sin(a) * r, rnd(4, 8), 0.35, rnd(4, 7), 2);
+        });
+      }
     }
 
     // foam arcs from the tenders' roof monitors
@@ -343,6 +400,7 @@ export default function Effects({ sim }: { sim: AirportSim }) {
       <instancedMesh ref={debrisRef} args={[built.debris, built.debrisMat, DEBRIS]} visible={false} frustumCulled={false} />
       <mesh ref={scorchRef} geometry={built.scorch} material={built.scorchMat} visible={false} />
       <mesh ref={foamRef} geometry={built.foam} material={built.foamMat} visible={false} />
+      <mesh ref={waveRef} geometry={built.wave} material={built.waveMat} visible={false} renderOrder={14} />
       <mesh ref={flashRef} geometry={built.flash} material={built.flashMat} visible={false} renderOrder={14} />
       {/* always mounted (adding a light later would recompile every material); dark until something burns */}
       <pointLight ref={lightRef} color="#ff8a33" intensity={0} distance={140} decay={1.6} />

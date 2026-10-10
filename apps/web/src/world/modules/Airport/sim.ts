@@ -1,7 +1,8 @@
 // The airport's brain: air traffic, the incident director, emergency/crash lifecycles and the fire crews.
 // No three.js and no React: side effects on the shared store/bus go through SimEffects, so it is testable.
 import type { WorldEvent } from "../../bus";
-import type { Incident, IncidentStatus } from "../../store";
+import { edgeMidpoint, ROAD_EDGES } from "../../roads";
+import type { DamageZone, Incident, IncidentStatus } from "../../store";
 import {
   airsideBack,
   airsideOut,
@@ -15,8 +16,9 @@ import {
 import { Fleet, type FleetEvent, type Plane } from "./flight";
 import { CrashTimeline, Director, EmergencyTimeline, type DirectorOpts, type PlaneIncident } from "./incidents";
 import {
-  CRASH_SITES,
   crashEdge,
+  DAMAGE_RADIUS,
+  pickCrashSite,
   EMERGENCY_STOP_X,
   RUNWAY_ATTACK,
   RUNWAY_STANDBY,
@@ -34,6 +36,33 @@ export interface SimEffects {
   blocked(): ReadonlySet<string>;
   newId(): string;
   now(): number; // performance.now() ms
+  addDamage(d: DamageZone): void;
+  updateDamage(id: string, patch: Partial<DamageZone>): void;
+  removeDamage(id: string): void;
+  /** Current state of a damage zone, undefined once it has been removed. */
+  damageState(id: string): DamageZone["state"] | undefined;
+}
+
+/** Road edges whose midpoint lies within `r` of (x, z). */
+export function edgesWithin(x: number, z: number, r: number): string[] {
+  const out: { k: string; d: number }[] = [];
+  for (const e of ROAD_EDGES.values()) {
+    const [mx, mz] = edgeMidpoint(e.key);
+    const d = Math.hypot(mx - x, mz - z);
+    if (d <= r) out.push({ k: e.key, d });
+  }
+  return out.sort((a, b) => a.d - b.d).map((o) => o.k);
+}
+
+/** The scar a crash leaves: a crater while destroyed, then a construction pad while the city rebuilds. */
+export interface Crater {
+  damageId: string;
+  x: number;
+  z: number;
+  radius: number;
+  stage: "destroyed" | "rebuilding";
+  /** seconds in the current stage */
+  t: number;
 }
 
 export interface EmergencyRun {
@@ -49,9 +78,12 @@ export interface CrashRun {
   incidentId: string | null; // set at impact
   plane: Plane;
   site: CrashSite;
-  edge: string;
+  /** Roads we closed at impact (and must reopen). */
+  sealed: string[];
   tl: CrashTimeline | null;
 }
+
+const SEAL_REASON = "Plane crash: area sealed off";
 
 /** Smoking engine (left, local +x) in plane-local coordinates. */
 export const SICK_ENGINE: V3 = v3(5.2, 1.3, 2.4);
@@ -72,6 +104,7 @@ export class AirportSim {
   readonly crew: CrewUnit[] = makeCrew();
   emergency: EmergencyRun | null = null;
   crash: CrashRun | null = null;
+  crater: Crater | null = null;
   /** Fleet events of the last step, for one-shot effects (tyre smoke, sparks, fireball). */
   fx: FleetEvent[] = [];
   /** Increments every step, so renderers consume `fx` exactly once. */
@@ -91,6 +124,9 @@ export class AirportSim {
     return !!this.emergency || !!this.crash || this.crew.some((u) => u.state !== "home");
   }
 
+  /** Force the next crash site (tests, debugging). */
+  nextCrashSite: CrashSite | null = null;
+
   request(kind: PlaneIncident) {
     this.director.request(kind);
   }
@@ -101,11 +137,16 @@ export class AirportSim {
     this.fleet.step(dt);
     this.fx = this.fleet.events;
 
-    const kind = this.director.step(dt, this.busy);
+    const kind = this.director.step(dt, {
+      emergency: !!this.emergency,
+      crash: !!this.crash || !!this.crater,
+      crews: this.crew.some((u) => u.state !== "home"),
+    });
     if (kind && !(kind === "emergency_landing" ? this.startEmergency() : this.startCrash())) this.director.retry(kind);
 
     if (this.emergency) this.stepEmergency(dt, this.emergency);
     if (this.crash) this.stepCrash(dt, this.crash);
+    if (this.crater) this.stepCrater(dt, this.crater);
     for (const u of this.crew) stepCrew(u, dt);
   }
 
@@ -145,7 +186,7 @@ export class AirportSim {
       e.sinceStop = 0;
       // move in: tenders either side of the burning engine, ambulance by the evacuees
       const engine = planeLocalToWorld(p, SICK_ENGINE, v3(0, 0, 0));
-      this.crew.forEach((u, i) => {
+      if (!this.crash?.tl) this.crew.forEach((u, i) => {
         const dest = RUNWAY_ATTACK[i];
         // the far tender swings out round the back so it doesn't drive through its colleague
         const pts = i === 1 ? [v3(u.x, 0, u.z), v3(u.x + 8, 0, -437), v3(dest.x - 8, 0, -437), v3(dest.x, 0, dest.z)] : [v3(u.x, 0, u.z), v3(dest.x, 0, dest.z)];
@@ -155,14 +196,16 @@ export class AirportSim {
     }
     if (a.startTow) e.towPending = true;
     if (e.towPending && this.fleet.startTow(p)) e.towPending = false;
-    for (const u of this.crew) u.spraying = u.kind === "fire" && u.state === "onscene" && e.tl.stage === "evacuating";
+    if (!this.crash?.tl)
+      for (const u of this.crew) u.spraying = u.kind === "fire" && u.state === "onscene" && e.tl.stage === "evacuating";
     if (a.clear) {
       this.fxs.emit({ type: "incident:cleared", incidentId: e.incidentId });
       this.fleet.reopenRunway();
-      for (const u of this.crew) {
-        u.spraying = false;
-        dispatch(u, airsideBack(u), [], u.index * 1.5, 14, "returning");
-      }
+      if (!this.crash?.tl)
+        for (const u of this.crew) {
+          u.spraying = false;
+          dispatch(u, airsideBack(u), [], u.index * 1.5, 14, "returning");
+        }
       this.emergency = null;
     }
   }
@@ -170,10 +213,11 @@ export class AirportSim {
   // --- Plane crash -----------------------------------------------------------------
 
   private startCrash(): boolean {
-    const site = CRASH_SITES[Math.floor(this.rand() * CRASH_SITES.length)];
+    const site = this.nextCrashSite ?? pickCrashSite(this.rand);
     const plane = this.fleet.declareCrash(site);
     if (!plane) return false;
-    this.crash = { incidentId: null, plane, site, edge: crashEdge(site), tl: null };
+    this.nextCrashSite = null;
+    this.crash = { incidentId: null, plane, site, sealed: [], tl: null };
     return true;
   }
 
@@ -188,15 +232,20 @@ export class AirportSim {
     if (a.status && c.incidentId) this.setStatus(c.incidentId, a.status);
     for (const u of this.crew) u.spraying = u.kind === "fire" && u.state === "onscene" && c.tl.foaming;
     if (a.clear && c.incidentId) {
-      this.fxs.unblockEdge(c.edge);
+      for (const k of c.sealed) this.fxs.unblockEdge(k);
       this.fxs.emit({ type: "incident:cleared", incidentId: c.incidentId });
-      this.fxs.emit({ type: "road:reopened", edgeKey: c.edge });
+      for (const k of c.sealed) this.fxs.emit({ type: "road:reopened", edgeKey: k });
       this.fleet.releaseCrashed(c.plane);
+      if (this.crater) {
+        this.crater.stage = "rebuilding";
+        this.crater.t = 0;
+        this.fxs.updateDamage(this.crater.damageId, { state: "rebuilding" });
+      }
       const blocked = this.fxs.blocked();
       for (const u of this.crew) {
         u.spraying = false;
         const r = roadBack(u, c.site, blocked);
-        if (r) dispatch(u, r.pts, r.segs, u.index * 1.5, 16, "returning");
+        if (r) dispatch(u, r.pts, r.segs, u.index * 1.5, 18, "returning");
         else dispatch(u, [v3(u.x, 0, u.z), v3(u.home.x, 0, u.home.z)], [], u.index * 1.5, 14, "returning");
       }
       this.crash = null;
@@ -208,25 +257,56 @@ export class AirportSim {
     c.incidentId = id;
     c.tl = new CrashTimeline();
     const what = c.plane.spec.cargo ? "Cargo jet" : "Jet";
+    const cause = `${what} ${c.plane.callsign} crashed`;
+    const { x, z } = c.site;
+
+    // the damage zone: Buildings collapses everything inside it; we draw the crater
+    const damageId = `DMG-${id}`;
+    this.fxs.addDamage({ id: damageId, x, z, radius: DAMAGE_RADIUS, state: "destroyed", cause, createdAt: this.fxs.now() });
+    this.crater = { damageId, x, z, radius: DAMAGE_RADIUS, stage: "destroyed", t: 0 };
+
+    // seal off the area (skip roads someone else has already closed: they own those)
+    const already = this.fxs.blocked();
+    const cand = edgesWithin(x, z, DAMAGE_RADIUS + 10);
+    const own = crashEdge(c.site);
+    if (own && ROAD_EDGES.has(own) && !cand.includes(own)) cand.unshift(own);
+    c.sealed = cand.filter((k) => !already.has(k));
+    for (const k of c.sealed) this.fxs.blockEdge(k, SEAL_REASON);
+
     this.fxs.addIncident({
       id,
       kind: "plane_crash",
-      edgeKey: c.edge,
-      x: c.site.x,
-      z: c.site.z,
+      edgeKey: c.sealed[0] ?? cand[0] ?? "",
+      x,
+      z,
       status: "active",
       createdAt: this.fxs.now(),
-      note: `${what} ${c.plane.callsign} down ${c.site.where}, road closed`,
+      note:
+        c.site.kind === "city"
+          ? `${cause} ${c.site.where}, area sealed off`
+          : `${what} ${c.plane.callsign} down ${c.site.where}, road closed`,
     });
-    this.fxs.blockEdge(c.edge, "Plane crash");
     this.fxs.emit({ type: "incident:created", incidentId: id });
-    this.fxs.emit({ type: "road:blocked", edgeKey: c.edge, reason: "Plane crash" });
+    for (const k of c.sealed) this.fxs.emit({ type: "road:blocked", edgeKey: k, reason: SEAL_REASON });
+
     const blocked = this.fxs.blocked();
     for (const u of this.crew) {
-      const r = roadOut(u, c.site, blocked);
-      if (r) dispatch(u, r.pts, r.segs, u.index * 1.6, 17, "out");
-      else dispatch(u, [v3(u.x, 0, u.z), v3(c.site.x + 20, 0, c.site.z + u.index * 8)], [], u.index * 1.6, 14, "out");
-      u.target = v3(c.site.x, 0, c.site.z);
+      const r = roadOut(u, c.site, blocked, DAMAGE_RADIUS * 0.75);
+      if (r) dispatch(u, r.pts, r.segs, u.index * 1.4, 22, "out");
+      else dispatch(u, [v3(u.x, 0, u.z), v3(x + 24, 0, z + u.index * 8)], [], u.index * 1.4, 18, "out");
+      u.target = v3(x, 0, z);
+    }
+  }
+
+  private stepCrater(dt: number, k: Crater) {
+    k.t += dt;
+    if (k.stage !== "rebuilding") return;
+    const st = this.fxs.damageState(k.damageId);
+    if (!st || st === "restored") this.crater = null;
+    else if (k.t > 150) {
+      // nobody finished the rebuild (Buildings not mounted?): tidy up ourselves
+      this.fxs.removeDamage(k.damageId);
+      this.crater = null;
     }
   }
 

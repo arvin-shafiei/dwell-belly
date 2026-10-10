@@ -71,19 +71,53 @@ export const RUNWAY_ATTACK = [
 /** Landside route to the road network. */
 export const CREW_EAST_X = -428;
 
-/** Crash sites just south of the airport, beside a road so traffic is hit. */
+/** Where a crashing plane comes down. `a`/`b`: a road edge right beside it that is always closed (field sites). */
 export interface CrashSite {
   x: number;
   z: number;
-  a: string; // road edge endpoints (the edge that gets closed)
-  b: string;
-  where: string;
+  kind: "city" | "field";
+  where: string; // for the HUD note, e.g. "into downtown"
+  a?: string;
+  b?: string;
 }
+
+/** The rare alternative: just south of the airport, beside a road so traffic is hit. */
 export const CRASH_SITES: readonly CrashSite[] = [
-  { x: -243, z: -168, a: "h_0", b: "h_15", where: "near the A-Ring NW" },
-  { x: -236, z: -250, a: "h_0", b: "airport_gate", where: "on the airport approach road" },
+  { x: -243, z: -168, kind: "field", a: "h_0", b: "h_15", where: "near the A-Ring NW" },
+  { x: -236, z: -250, kind: "field", a: "h_0", b: "airport_gate", where: "on the airport approach road" },
 ];
-export const crashEdge = (s: CrashSite) => edgeKey(s.a, s.b);
+export const crashEdge = (s: CrashSite) => (s.a && s.b ? edgeKey(s.a, s.b) : null);
+
+/** Radius of the destroyed area (buildings collapse, roads sealed off within DAMAGE_RADIUS + 10). */
+export const DAMAGE_RADIUS = 28;
+
+/** Downtown block centres the jet can hit (none of them is a reserved landmark cell). */
+export const DOWNTOWN_TARGETS: readonly [number, number][] = [-100, -60, 60, 100].flatMap((x) =>
+  [-100, -60, 60, 100].map((z) => [x, z] as [number, number]),
+);
+
+/** Built-up spots in the outer districts. */
+export const DISTRICT_TARGETS: readonly CrashSite[] = [
+  { x: -215, z: 318, kind: "city", where: "into Southbank" },
+  { x: -330, z: 395, kind: "city", where: "into Southbank" },
+  { x: -125, z: 395, kind: "city", where: "into Southbank" },
+  { x: 222, z: -345, kind: "city", where: "into Shoreditch" },
+  { x: 128, z: -385, kind: "city", where: "into Shoreditch" },
+  { x: 250, z: -275, kind: "city", where: "into Shoreditch" },
+  { x: -30, z: -290, kind: "city", where: "into the suburbs" },
+  { x: 30, z: -290, kind: "city", where: "into the suburbs" },
+];
+
+/** 80 % into the city (mostly downtown), 20 % the old field crash south of the airport. */
+export function pickCrashSite(rand: () => number): CrashSite {
+  const r = rand();
+  if (r < 0.2) return CRASH_SITES[Math.floor(rand() * CRASH_SITES.length)];
+  if (r < 0.72) {
+    const [x, z] = DOWNTOWN_TARGETS[Math.floor(rand() * DOWNTOWN_TARGETS.length)];
+    return { x: x + (rand() - 0.5) * 8, z: z + (rand() - 0.5) * 8, kind: "city", where: "into downtown" };
+  }
+  return DISTRICT_TARGETS[Math.floor(rand() * DISTRICT_TARGETS.length)];
+}
 
 /** 0 in daylight, 1 at night; eases in 18:00-20:00 and out 05:00-07:00. */
 export function nightFactor(hours: number): number {

@@ -6,7 +6,7 @@ import {
   approachEntry,
   approachPath,
   climbPath,
-  crashPath,
+  doomedPath,
   decisionDistance,
   emergencyApproachPath,
   emergencyRolloutPath,
@@ -62,11 +62,16 @@ export const PLANE_SPECS: readonly PlaneSpec[] = [
   { callsign: "RV214", tail: "#dc2626", body: "#f6f7f9", cargo: false },
   { callsign: "RV330", tail: "#0f9488", body: "#f6f7f9", cargo: false },
   { callsign: "RV457", tail: "#7c3aed", body: "#f6f7f9", cargo: false },
-  { callsign: "RV880", tail: "#ffffff", body: "#ff6a1a", cargo: true },
+  { callsign: "RV770", tail: "#ffffff", body: "#ff6a1a", cargo: true },
 ];
+
+/** A spare airframe kept off the schedule, so a requested crash or emergency always has a plane right away. */
+export const SPARE_SPEC: PlaneSpec = { callsign: "RV880", tail: "#13233f", body: "#ff6a1a", cargo: true };
 
 export interface Plane {
   id: number;
+  /** Off-schedule airframe used only for incidents. */
+  spare: boolean;
   spec: PlaneSpec;
   callsign: string;
   phase: Phase;
@@ -114,10 +119,12 @@ export class Fleet {
     opts: { count?: number; initial?: boolean } = {},
   ) {
     const count = opts.count ?? PLANE_SPECS.length;
-    for (let i = 0; i < count; i++) {
-      const spec = PLANE_SPECS[i % PLANE_SPECS.length];
+    for (let i = 0; i <= count; i++) {
+      const spare = i === count;
+      const spec = spare ? SPARE_SPEC : PLANE_SPECS[i % PLANE_SPECS.length];
       this.planes.push({
         id: i,
+        spare,
         spec,
         callsign: spec.callsign,
         phase: "gone",
@@ -267,6 +274,7 @@ export class Fleet {
     p.phaseT += dt;
     switch (p.phase) {
       case "gone":
+        if (p.spare) return;
         p.wait -= dt;
         if (p.wait <= 0) {
           if (this.lock.closed || this.time - this.lastSpawn < SPAWN_SPACING_S || !this.spawnArrival(p)) p.wait = 3;
@@ -432,7 +440,10 @@ export class Fleet {
 
   /** Pick an inbound plane, declare an emergency and close the runway. Null if nobody is available yet. */
   declareEmergency(): Plane | null {
-    const gone = this.planes.filter((p) => p.phase === "gone" && !p.crashSite).sort((a, b) => Number(a.spec.cargo) - Number(b.spec.cargo));
+    // scheduled planes first (passenger before cargo), the spare airframe last
+    const gone = this.planes
+      .filter((p) => p.phase === "gone" && !p.crashSite)
+      .sort((a, b) => Number(a.spare) - Number(b.spare) || Number(a.spec.cargo) - Number(b.spec.cargo));
     for (const p of gone) {
       if (this.spawnArrival(p, true)) {
         this.lock.closed = true;
@@ -476,24 +487,17 @@ export class Fleet {
 
   /** A plane loses power and comes down at `site`. Null if nobody is available yet. */
   declareCrash(site: CrashSite): Plane | null {
-    const ahead = (p: Plane) => (site.x - p.pos.x) * p.dir.x + (site.z - p.pos.z) * p.dir.z > 150;
-    const flying = (p: Plane) =>
-      !p.emergency && ((p.phase === "approach" && !p.hasLock) || (p.phase === "climb" && p.pos.y > 12)) && ahead(p);
-    const order = [...this.planes].sort((a, b) => Number(b.spec.cargo) - Number(a.spec.cargo));
-    let pick = order.find(flying) ?? null;
-    if (pick) {
-      if (pick.hasLock) this.lock.release(pick.id);
-      this.setLeg(pick, "crashing", crashPath({ ...pick.pos }, pick.dir, site), Math.max(pick.speed, 40), 46);
-    } else {
-      pick = order.find((p) => p.phase === "gone") ?? null;
-      if (!pick) return null;
-      pick.pos = v3(-1250, 95, -335);
-      pick.dir = v3(1, 0, 0);
-      this.setLeg(pick, "crashing", crashPath({ ...pick.pos }, pick.dir, site), 48, 46);
-    }
-    pick.callsign = pick.spec.cargo ? pick.spec.callsign : `RV${100 + Math.floor(this.rand() * 880)}`;
+    const pick = this.planes.find((p) => p.spare && p.phase === "gone") ?? null;
+    if (!pick) return null;
+    const path = doomedPath(site);
+    path.sample(0, pick.pos);
+    path.tangent(0, pick.dir);
+    pick.yaw = Math.atan2(pick.dir.x, pick.dir.z);
+    this.setLeg(pick, "crashing", path, 50, 62);
+    pick.callsign = pick.spec.callsign;
     pick.stand = null;
     pick.hasLock = false;
+    pick.emergency = false;
     pick.crashSite = site;
     return pick;
   }

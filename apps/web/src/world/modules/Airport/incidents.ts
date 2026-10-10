@@ -34,19 +34,24 @@ export class Director {
     this.pending = [kind, ...this.pending.filter((k) => k !== kind)];
   }
 
-  /** Advance timers; returns the incident to start now, if any. `busy`: an airport incident is in progress. */
-  step(dt: number, busy: boolean): PlaneIncident | null {
+  /**
+   * Advance timers; returns the incident to start now, if any. Requests (HUD buttons) start straight away unless
+   * an incident of the same kind is still running; automatic ones wait until the airport is completely quiet.
+   */
+  step(dt: number, busy: { emergency: boolean; crash: boolean; crews: boolean }): PlaneIncident | null {
     this.emergencyIn -= dt;
     this.crashIn -= dt;
-    if (busy) {
+    const quiet = !busy.emergency && !busy.crash && !busy.crews;
+    if (!quiet) {
       // don't let an automatic one fire the instant the current one ends
       this.emergencyIn = Math.max(this.emergencyIn, 25);
       this.crashIn = Math.max(this.crashIn, 25);
-      return null;
     }
-    let kind: PlaneIncident | null = this.pending.shift() ?? null;
-    if (!kind && this.emergencyIn <= 0) kind = "emergency_landing";
-    if (!kind && this.crashIn <= 0) kind = "plane_crash";
+    let kind: PlaneIncident | null = null;
+    const i = this.pending.findIndex((k) => (k === "emergency_landing" ? !busy.emergency : !busy.crash));
+    if (i >= 0) kind = this.pending.splice(i, 1)[0];
+    else if (quiet && this.emergencyIn <= 0) kind = "emergency_landing";
+    else if (quiet && this.crashIn <= 0) kind = "plane_crash";
     if (kind === "emergency_landing") this.emergencyIn = this.span(EMERGENCY_EVERY);
     if (kind === "plane_crash") this.crashIn = this.span(CRASH_EVERY);
     return kind;
@@ -110,23 +115,24 @@ export class CrashTimeline {
     return this.stage === "done";
   }
   get foaming() {
-    return this.stage === "foam" || (this.stage === "clearing" && this.t - this.foamAt < 45);
+    return this.stage === "foam" || this.stage === "clearing";
   }
 
   update(dt: number, crewOnScene: boolean): TimelineAction {
     this.t += dt;
     const out: TimelineAction = {};
-    if (this.stage === "burning" && (crewOnScene || this.t >= 35)) {
+    if (this.stage === "burning" && (crewOnScene || this.t >= CREW_GIVE_UP_S)) {
       this.stage = "foam";
       this.foamAt = this.t;
       out.status = "responding";
     }
-    if (this.foamAt >= 0) this.fire = Math.max(0, 1 - (this.t - this.foamAt) / 32);
-    if (this.stage === "foam" && this.t >= Math.max(68, this.foamAt + 30)) {
+    // crews fight it for FIGHT_S: the fire dies down over most of that, then they damp down and clear
+    if (this.foamAt >= 0) this.fire = Math.max(0, 1 - (this.t - this.foamAt) / (FIGHT_S * 0.75));
+    if (this.stage === "foam" && this.t >= Math.max(60, this.foamAt + FIGHT_S - 15)) {
       this.stage = "clearing";
       out.status = "clearing";
     }
-    if (this.stage === "clearing" && this.t >= 90) {
+    if (this.stage === "clearing" && this.t >= Math.max(90, this.foamAt + FIGHT_S)) {
       this.stage = "done";
       this.fire = 0;
       out.status = "cleared";
@@ -135,6 +141,10 @@ export class CrashTimeline {
     return out;
   }
 }
+
+/** Seconds the crews spend fighting the fire once on scene; the fire starts dying anyway after CREW_GIVE_UP_S. */
+export const FIGHT_S = 65;
+export const CREW_GIVE_UP_S = 60;
 
 // --- Evacuation: passengers slide down the left-hand (local +x, north when landing east) slides ------
 

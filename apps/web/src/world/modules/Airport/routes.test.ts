@@ -3,7 +3,9 @@ import { inBox, ZONES } from "../../config";
 import { CRASH_SITES, EMERGENCY_STOP_X, HOLD, RWY, STAND_Z, STANDS, TOUCHDOWN_X } from "./layout";
 import type { Path } from "./path";
 import { v3 } from "./path";
+import { DISTRICT_TARGETS, pickCrashSite } from "./layout";
 import {
+  doomedPath,
   approachEntry,
   approachPath,
   climbPath,
@@ -135,6 +137,18 @@ describe("air routes", () => {
       expect(c.end.z).toBeCloseTo(s.z);
       expect(c.end.y).toBe(0);
       everyPoint(c, (_x, y) => expect(y).toBeGreaterThanOrEqual(0));
+    }
+  });
+
+  it("doomed jet path: comes from the sky, ~9 s at 55 m/s, ends at the target", () => {
+    const sites = [...CRASH_SITES, ...DISTRICT_TARGETS, pickCrashSite(() => 0.5), pickCrashSite(() => 0.3)];
+    for (const s of sites) {
+      const p = doomedPath(s);
+      expect(p.start.y).toBeGreaterThan(120);
+      expect(p.length / 55).toBeGreaterThan(7.5);
+      expect(p.length / 55).toBeLessThan(11);
+      expect(p.end).toEqual(v3(s.x, 0, s.z));
+      everyPoint(p, (_x, y) => expect(y).toBeGreaterThanOrEqual(0));
     }
   });
 });
