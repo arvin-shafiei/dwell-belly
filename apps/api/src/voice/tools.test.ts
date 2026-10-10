@@ -81,6 +81,13 @@ test("submitDecision rejects an unknown option and a decided card", () => {
   assert.equal(noCard.ok, false);
 });
 
+test("submitDecision refuses a different option when the card was already decided on an earlier call", () => {
+  const decidedCard: DecisionCard = { ...card, chosen: "option-1" };
+  const other = submitDecision(state({ card: decidedCard }), { option_id: "option-2", spoken_confirmation: "Yes, decline it." });
+  assert.equal(other.ok, false);
+  assert.match(other.reply, /already/i);
+});
+
 test("submitDecision is idempotent for the same callId and option", () => {
   const s = state({ card, calleeName: "Oriol" });
   const first = submitDecision(s, { option_id: "option-1", spoken_confirmation: "Yes, forward it." });

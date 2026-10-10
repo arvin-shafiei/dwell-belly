@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AGENT_API, buildRerunView, runCase, type CaseView, type DecisionCard, type HumanDecision, type ViewEvent } from "./api";
 import { ApproveByVoice } from "./ApproveByVoice";
 import { CallDrawer } from "./CallDrawer";
+import { createRerunClock } from "./rerunClock";
 import { VoiceNoteButton } from "./VoiceNoteButton";
 
 const CASE_ID = "delivery-003";
@@ -17,7 +18,7 @@ export function VoiceBench() {
   const [decision, setDecision] = useState<HumanDecision | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [startedAt] = useState(() => Date.now());
+  const [clock] = useState(() => createRerunClock());
 
   useEffect(() => {
     fetch(`${AGENT_API}/api/data/cases/${CASE_ID}?view=escalation`, { cache: "no-store" })
@@ -35,8 +36,9 @@ export function VoiceBench() {
     setBusy("Re-running the case through the pipeline (30 to 150 s)…");
     setError(null);
     try {
-      const built = await buildRerunView({ view, previousOutbox: outbox, newEvents: pending, elapsedMs: Date.now() - startedAt });
+      const built = await buildRerunView({ view, previousOutbox: outbox, newEvents: pending, elapsedMs: clock.elapsed() });
       const res = await runCase(built.view);
+      clock.markRun();
       setView(built.view);
       setPending([]);
       setOutbox(res.outbox);

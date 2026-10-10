@@ -9,7 +9,11 @@
 // Components may also register at runtime with registerVoiceComponent() (e.g. from a dev bench).
 import type { VoiceComponentName } from "./voiceSlots";
 
-export const VOICE_LOADERS: Partial<Record<VoiceComponentName, () => Promise<Record<string, unknown>>>> = {};
+export const VOICE_LOADERS: Partial<Record<VoiceComponentName, () => Promise<Record<string, unknown>>>> = {
+  VoiceNoteButton: () => import("@/voice/VoiceNoteButton"),
+  CallDrawer: () => import("@/voice/CallDrawer"),
+  ApproveByVoice: () => import("@/voice/ApproveByVoice"),
+};
 
 const registered = new Map<VoiceComponentName, unknown>();
 

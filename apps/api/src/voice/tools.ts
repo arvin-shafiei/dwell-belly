@@ -65,7 +65,9 @@ export function submitDecision(
   const key = `${state.callId}:${args.option_id}`;
   const earlier = decisions.get(key);
   if (earlier) return { ok: true, reply: `That's already recorded: ${earlier.label}.`, decision: earlier, duplicate: true };
-  if (state.decided && state.decided !== args.option_id) return { ok: false, reply: "This decision has already been made on this call." };
+  // A choice made on an earlier call is on the card itself (`chosen`); one made on this call is in `decided`.
+  const prior = state.decided ?? state.card.chosen;
+  if (prior && prior !== args.option_id) return { ok: false, reply: "This decision has already been made." };
   const option = state.card.options.find((o) => o.id === args.option_id);
   if (!option) return { ok: false, reply: "I couldn't match that to an option. Please tell me again which option you choose." };
   const confirmation = args.spoken_confirmation?.trim();

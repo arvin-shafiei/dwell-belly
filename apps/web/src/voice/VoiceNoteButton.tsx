@@ -7,10 +7,13 @@ import { micErrorMessage } from "./transcript";
 
 const extensionFor = (mime: string) => (mime.includes("ogg") ? "ogg" : mime.includes("mp4") ? "m4a" : "webm");
 
-export function VoiceNoteButton({ from, n, at, source = "live_human", onEvent }: {
+// The console's slot passes { caseId, from, onEvent }: number and time are optional, because the
+// re-run builder renumbers new events and stamps them on the case's own timeline.
+export function VoiceNoteButton({ from, n = 0, at = "", source = "live_human", onEvent }: {
   from: string;
-  n: number;
-  at: string;
+  caseId?: string;
+  n?: number;
+  at?: string;
   source?: VoiceSource;
   onEvent: (event: ViewEvent) => void;
 }) {
