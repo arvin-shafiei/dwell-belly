@@ -1,5 +1,5 @@
 "use client";
-// Console tab: Reality Test. The unseen cases at 16:30, shown read-only from ANSWERS/. View lives in ../reality/.
+// Console tab: Reality Test. The run in ANSWERS/ (or a "Try it now" run), shown read-only. View lives in ../reality/.
 import RealityView from "../reality/RealityView";
 
 export default function RealityTab() {

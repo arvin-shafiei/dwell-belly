@@ -181,6 +181,13 @@ export function caseTitle(c: RealityCase): string {
 }
 
 /** Where the judges find this case's files. */
-export function filePath(caseId: string, file: "ANSWER.md" | "REASONING.md" | "trace.json"): string {
-  return `ANSWERS/${caseId}/${file}`;
+export function filePath(caseId: string, file: "ANSWER.md" | "REASONING.md" | "trace.json", root = "ANSWERS"): string {
+  return `${root}/${caseId}/${file}`;
+}
+
+/** What a try run of `n` cases costs, roughly, in words: "3 cases · about 15¢ · real agent". */
+export function tryCostLine(n: number, centsPerCase = 5): string {
+  const cents = n * centsPerCase;
+  const money = cents >= 100 ? `$${(cents / 100).toFixed(2)}` : `${cents}¢`;
+  return `${n} case${n === 1 ? "" : "s"} · about ${money} · real agent`;
 }

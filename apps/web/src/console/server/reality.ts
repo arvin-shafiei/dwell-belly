@@ -7,6 +7,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import type { RealityCase, RealityRunlog, RealitySummary } from "../types";
 import { getDb, repoRoot, type SqlValue } from "./db";
+import { isTrace, summariseTrace } from "./mapping";
 
 export const answersDir = () => process.env.CONSOLE_ANSWERS_DIR ?? path.join(repoRoot(), "ANSWERS");
 
@@ -31,14 +32,14 @@ export async function answerFolders(dir: string, depth = 0): Promise<string[]> {
   return out.sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
 }
 
-/** The case folder named `n` under ANSWERS/, or null. Only folders found by the scan, so no path from the request is joined. */
-export async function findAnswerFolder(n: string): Promise<string | null> {
-  return (await answerFolders(answersDir())).find((dir) => path.basename(dir) === n) ?? null;
+/** The case folder named `n` under `root` (ANSWERS/ by default), or null. Only folders found by the scan, so no path from the request is joined. */
+export async function findAnswerFolder(n: string, root: string = answersDir()): Promise<string | null> {
+  return (await answerFolders(root)).find((dir) => path.basename(dir) === n) ?? null;
 }
 
 /** ANSWER.md and REASONING.md of one case, read from disk. Null when there is no such case folder. */
-export async function realityFiles(n: string): Promise<{ answerMd: string | null; reasoningMd: string | null } | null> {
-  const dir = await findAnswerFolder(n);
+export async function realityFiles(n: string, root: string = answersDir()): Promise<{ answerMd: string | null; reasoningMd: string | null } | null> {
+  const dir = await findAnswerFolder(n, root);
   if (!dir) return null;
   const read = (f: string) => readFile(path.join(dir, f), "utf8").catch(() => null);
   const [answerMd, reasoningMd] = await Promise.all([read("ANSWER.md"), read("REASONING.md")]);
@@ -141,9 +142,47 @@ export async function realityReport(): Promise<{ cases: RealityCase[]; summary: 
   const rows = getDb().prepare(`SELECT id, case_id, title, status, outcome, cost_usd, duration_ms, answer_md, card IS NOT NULL AS has_card
     FROM executions WHERE origin = 'answers'`).all();
   const cases = rows.map(realityCase).sort(byNumber);
-  const dir = answersDir();
+  return { cases, ...(await runlogOf(answersDir(), cases)) };
+}
+
+/** Run log and summary of an output folder. */
+async function runlogOf(dir: string, cases: RealityCase[]): Promise<{ summary: RealitySummary; runlog: RealityRunlog | null }> {
   const runlogText = await readFile(path.join(dir, "RUNLOG.md"), "utf8").catch(() => null);
   const runlog = runlogText === null ? null : parseRunlog(runlogText);
   const hasIndex = await stat(path.join(dir, "INDEX.md")).then((s) => s.isFile(), () => false);
-  return { cases, summary: summariseReality(cases, runlog, hasIndex), runlog };
+  return { summary: summariseReality(cases, runlog, hasIndex), runlog };
+}
+
+/** One case folder read straight from disk (no SQLite), the same fields realityCase() gives. */
+export async function diskCase(dir: string, logged?: RealityRunlog["rows"][number]): Promise<RealityCase> {
+  const read = (f: string) => readFile(path.join(dir, f), "utf8").catch(() => null);
+  const [answerMd, traceText, resultText] = await Promise.all([read("ANSWER.md"), read("trace.json"), read("result.json")]);
+  const parse = (t: string | null): unknown => { try { return t ? JSON.parse(t) : null; } catch { return null; } };
+  const result = parse(resultText) as { outcome?: string; card?: unknown; bundle?: { title?: string }; trace?: unknown } | null;
+  const traceRaw = parse(traceText);
+  const trace = isTrace(traceRaw) ? traceRaw : isTrace(result?.trace) ? result.trace : null;
+  const s = trace ? summariseTrace(trace) : null;
+  const outcome = s?.outcome ?? result?.outcome ?? "error";
+  const failed = !s || s.status === "error";
+  const name = path.basename(dir);
+  return {
+    n: name,
+    caseId: name,
+    title: s?.title ?? result?.bundle?.title ?? answerTitle(answerMd),
+    outcome,
+    decision: decisionLine(answerMd),
+    escalated: outcome === "escalated" || (result?.card !== undefined && result?.card !== null),
+    failed: failed || outcome === "error",
+    costUsd: s?.costUsd ?? logged?.costUsd ?? null,
+    durationMs: s?.durationMs ?? (logged?.seconds != null ? Math.round(logged.seconds * 1000) : null),
+    executionId: null,
+  };
+}
+
+/** Every case folder under `dir`, read from disk: the same report as realityReport() for any output folder. */
+export async function diskReport(dir: string): Promise<{ cases: RealityCase[]; summary: RealitySummary; runlog: RealityRunlog | null }> {
+  const runlogText = await readFile(path.join(dir, "RUNLOG.md"), "utf8").catch(() => null);
+  const log = new Map((runlogText ? parseRunlog(runlogText).rows : []).map((r) => [r.caseName, r]));
+  const cases = (await Promise.all((await answerFolders(dir)).map((f) => diskCase(f, log.get(path.basename(f)))))).sort(byNumber);
+  return { cases, ...(await runlogOf(dir, cases)) };
 }

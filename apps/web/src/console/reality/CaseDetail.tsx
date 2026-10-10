@@ -22,18 +22,28 @@ import { STATUS_LABEL, STATUS_TONE, caseStatus, caseTitle, filePath, type Realit
 interface CaseFiles {
   answerMd?: string | null;
   reasoningMd?: string | null;
+  /** Try runs only: the case input the agent was given. */
+  caseMd?: string | null;
 }
 
-type View = "answer" | "why";
+type View = "answer" | "why" | "case";
 
-export default function CaseDetail({ c, onBack }: { c: RealityCase; onBack: () => void }) {
+export default function CaseDetail({ c, onBack, query = "", root = "ANSWERS" }: {
+  c: RealityCase;
+  onBack: () => void;
+  /** Extra query for the files request ("?source=try&run=..."), empty for ANSWERS/. */
+  query?: string;
+  /** Folder shown as the files' location. */
+  root?: string;
+}) {
   const { navigate } = useConsole();
   const [view, setView] = useState<View>("answer");
   const inline = typeof c.answerMd === "string";
-  const files = useApi<CaseFiles>(inline ? null : `/api/console/reality/${encodeURIComponent(c.caseId)}`);
+  const files = useApi<CaseFiles>(inline ? null : `/api/console/reality/${encodeURIComponent(c.caseId)}${query}`);
   const answer = inline ? c.answerMd : files.data?.answerMd;
   const reasoning = inline ? c.reasoningMd : files.data?.reasoningMd;
-  const text = view === "answer" ? answer : reasoning;
+  const caseMd = files.data?.caseMd;
+  const text = view === "answer" ? answer : view === "why" ? reasoning : caseMd;
   const file = view === "answer" ? "ANSWER.md" : "REASONING.md";
   const s = caseStatus(c);
   const cost = cents(c.costUsd);
@@ -77,18 +87,21 @@ export default function CaseDetail({ c, onBack }: { c: RealityCase; onBack: () =
           <span className="inline-flex items-center gap-1" role="tablist">
             <ViewTab active={view === "answer"} onClick={() => setView("answer")}>Answer</ViewTab>
             <ViewTab active={view === "why"} onClick={() => setView("why")}>Why</ViewTab>
+            {typeof caseMd === "string" && <ViewTab active={view === "case"} onClick={() => setView("case")}>Case</ViewTab>}
           </span>
         }
         actions={
           <span className="font-mono text-[11px] text-white/35" title="The judges read this file. Shown exactly as written; read-only.">
-            {filePath(c.caseId, file)}
+            {filePath(c.caseId, file, root)}
           </span>
         }
       >
         <p className="border-b border-white/[0.05] bg-white/[0.02] px-5 py-2 text-[12px] text-white/45">
           {view === "answer"
             ? "This is the answer file the judges read, exactly as the run wrote it."
-            : "How the agent got there, as written to the reasoning file."}
+            : view === "why"
+              ? "How the agent got there, as written to the reasoning file."
+              : "The case as the agent received it (the organisers' raw files)."}
         </p>
         <div className="px-5 py-4">
           {!inline && files.loading ? (
@@ -101,7 +114,7 @@ export default function CaseDetail({ c, onBack }: { c: RealityCase; onBack: () =
             <Markdown source={text} />
           ) : (
             <EmptyState compact title={files.error ? "Can't open this file here yet" : "This file is empty"}>
-              It is in the repo at <span className="font-mono text-white/70">{filePath(c.caseId, file)}</span>.
+              It is in the repo at <span className="font-mono text-white/70">{filePath(c.caseId, file, root)}</span>.
             </EmptyState>
           )}
         </div>

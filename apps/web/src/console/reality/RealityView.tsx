@@ -1,11 +1,15 @@
 "use client";
-// Reality Test page: the unseen cases run once through the frozen agent at 16:30. Shows the
-// runner's output folder (ANSWERS/) read-only: progress while it runs, then the results.
-import { useMemo } from "react";
+// Reality Test page: unseen cases run once through the frozen agent. Shows a runner's output folder
+// read-only: progress while it runs, then the results. Two sources: the real run in ANSWERS/, and
+// "Try runs" (runs/reality-try/<stamp>/ANSWERS), small real runs of the same command on a few of the
+// organisers' raw practice cases, started from here at any time.
+import { useMemo, useState } from "react";
 import {
   Badge,
+  Button,
   EmptyState,
-  IconClock,
+  IconInbox,
+  IconPlay,
   KpiCard,
   Meter,
   Panel,
@@ -19,7 +23,7 @@ import {
   useConsole,
 } from "../ui";
 import { cents } from "../../ui/plain";
-import { useApi } from "../useApi";
+import { postJson, useApi } from "../useApi";
 import CaseDetail from "./CaseDetail";
 import { TONE_CLASS, TileStatusDot } from "./tone";
 import {
@@ -33,22 +37,53 @@ import {
   runPhase,
   sortCases,
   tally,
+  tryCostLine,
+  type Phase,
   type RealityCase,
   type RealityResponse,
 } from "./logic";
 
+interface TryRun {
+  stamp: string;
+  n: number;
+  startedAt: string;
+  status: "running" | "done" | "failed";
+  exitCode: number | null;
+  estimateCents: number;
+}
+
+interface TryList {
+  runs: TryRun[];
+  available: number;
+  max: number;
+  defaultN: number;
+  centsPerCase: number;
+}
+
+type Source = "answers" | "try";
+
 export default function RealityView() {
   const { params, setParams } = useConsole();
   const openId = params.get("case");
-  // Poll every 3 s until the run is done; then slowly, in case it is rerun.
-  const probe = useApi<RealityResponse>("/api/console/reality", { pollMs: 3000 });
+  const source: Source = params.get("src") === "try" ? "try" : "answers";
+  const tries = useApi<TryList>("/api/console/reality/try", { pollMs: 3000 });
+  const latestTry = tries.data?.runs?.[0];
+  const runStamp = params.get("run") ?? latestTry?.stamp ?? null;
+  const tryRun = tries.data?.runs?.find((r) => r.stamp === runStamp) ?? null;
+  const query = source === "try" && runStamp ? `?source=try&run=${encodeURIComponent(runStamp)}` : "";
+  // Poll every 3 s so cases appear as their answers are written.
+  const probe = useApi<RealityResponse>(source === "try" && !runStamp ? null : `/api/console/reality${query}`, { pollMs: 3000 });
   const data = probe.data && Array.isArray(probe.data.cases) ? probe.data : undefined;
-  const phase = runPhase(data);
+  const basePhase = runPhase(data);
+  const phase: Phase = source === "try" && tryRun?.status === "running" ? "running" : basePhase;
   const t = useMemo(() => tally(data), [data]);
   const cases = useMemo(() => sortCases(data?.cases ?? []), [data]);
   const open = openId ? cases.find((c) => c.caseId === openId) : undefined;
+  const root = source === "try" && runStamp ? `runs/reality-try/${runStamp}/ANSWERS` : "ANSWERS";
 
-  if (open) return <CaseDetail c={open} onBack={() => setParams({ case: null })} />;
+  if (open) return <CaseDetail c={open} query={query} root={root} onBack={() => setParams({ case: null })} />;
+
+  const tryAny = () => setParams({ src: "try", run: null, case: null });
 
   return (
     <div className="h-full overflow-y-auto">
@@ -57,18 +92,37 @@ export default function RealityView() {
         <div>
           <h1 className="text-rv-title font-semibold text-white">Reality Test</h1>
           <p className="mt-1 text-[13px] text-white/55">
-            Unseen cases, run once through the agent. These are the files the judges read.
+            {source === "answers"
+              ? "Unseen cases, run once through the agent. These are the files the judges read."
+              : "Small real runs of the same command on a few practice cases. Not part of the submission."}
           </p>
         </div>
-        <Badge tone="neutral" title="Shown exactly as written by the run. Nothing here can change them.">
-          Read-only
-        </Badge>
+        <div className="flex items-center gap-2">
+          <SourceSwitch source={source} onChange={(src) => setParams({ src: src === "try" ? "try" : null, run: null, case: null })} />
+          <Badge tone="neutral" title="Shown exactly as written by the run. Nothing here can change them.">
+            Read-only
+          </Badge>
+        </div>
       </header>
 
-      {probe.loading && !data ? (
+      {source === "try" && (
+        <TryPanel list={tries.data} current={tryRun} onPick={(stamp) => setParams({ run: stamp, case: null })} />
+      )}
+
+      {source === "try" && !runStamp ? null : probe.loading && !data ? (
         <Skeleton className="h-48 w-full rounded-lg" />
       ) : phase === "waiting" ? (
-        <Waiting error={probe.error && probe.error !== "This isn't ready yet." ? probe.error : undefined} />
+        source === "answers" ? (
+          <NoRun onTry={tryAny} error={probe.error && probe.error !== "This isn't ready yet." ? probe.error : undefined} />
+        ) : (
+          <Panel>
+            <EmptyState compact title={tryRun?.status === "failed" ? "This try run stopped without answers" : "Starting"}>
+              {tryRun?.status === "failed"
+                ? `The runner exited${tryRun.exitCode !== null ? ` with code ${tryRun.exitCode}` : ""}. Its output is in runs/reality-try/${tryRun.stamp}/console.log.`
+                : "Each case shows up here as soon as its answer is written."}
+            </EmptyState>
+          </Panel>
+        )
       ) : (
         <>
           {phase === "running" ? <Progress done={t.done} total={t.total} /> : <Summary t={t} />}
@@ -86,13 +140,99 @@ export default function RealityView() {
   );
 }
 
-function Waiting({ error }: { error?: string }) {
+function SourceSwitch({ source, onChange }: { source: Source; onChange: (s: Source) => void }) {
+  const opts: [Source, string][] = [["answers", "Reality Test (ANSWERS/)"], ["try", "Try runs"]];
+  return (
+    <span className="inline-flex rounded-md border border-white/[0.08] p-0.5" role="tablist">
+      {opts.map(([k, label]) => (
+        <button
+          key={k}
+          type="button"
+          role="tab"
+          aria-selected={source === k}
+          onClick={() => onChange(k)}
+          className={cx(
+            "rounded px-2.5 py-1 text-[12px] font-medium transition-colors",
+            source === k ? "bg-white/[0.08] text-white" : "text-white/50 hover:text-white/80",
+          )}
+        >
+          {label}
+        </button>
+      ))}
+    </span>
+  );
+}
+
+function NoRun({ onTry, error }: { onTry: () => void; error?: string }) {
   return (
     <Panel>
-      <EmptyState icon={<IconClock size={20} />} title="Waiting for the Reality Test at 16:30">
-        <p>Each case shows up here as soon as its answer is written.</p>
+      <EmptyState
+        icon={<IconInbox size={20} />}
+        title="No Reality Test run yet"
+        action={<Button variant="primary" icon={<IconPlay size={13} />} onClick={onTry}>Try it now</Button>}
+      >
+        <p>Each case shows up here as soon as its answer is written to ANSWERS/. To see it work now, run the real agent on a few practice cases.</p>
         {error && <p className="mt-3 text-[12px] text-rv-red/80">{error}</p>}
       </EmptyState>
+    </Panel>
+  );
+}
+
+function TryPanel({ list, current, onPick }: { list: TryList | undefined; current: TryRun | null; onPick: (stamp: string) => void }) {
+  const max = list?.max ?? 10;
+  const [n, setN] = useState(list?.defaultN ?? 3);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const running = list?.runs.some((r) => r.status === "running") ?? false;
+  const start = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await postJson<{ run: TryRun }>("/api/console/reality/try", { n });
+      onPick(res.run.stamp);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Panel title="Try it now" subtitle="Picks practice cases from the organisers' Delivery folder, renames them 1..N, and runs npm run reality on them. Paid: each case is a real agent run.">
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="flex items-center gap-2 text-[13px] text-white/70">
+          Cases
+          <input
+            type="number"
+            min={1}
+            max={max}
+            value={n}
+            onChange={(e) => setN(Math.min(max, Math.max(1, Math.round(Number(e.target.value) || 1))))}
+            className="w-16 rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-white tabular"
+          />
+        </label>
+        <span className="text-[13px] text-white/60 tabular">{tryCostLine(n, list?.centsPerCase ?? 5)}</span>
+        <Button variant="primary" icon={<IconPlay size={13} />} loading={busy} disabled={running || !list?.available} onClick={start}>
+          {running ? "A try run is going" : "Try it now"}
+        </Button>
+        {list && list.runs.length > 0 && (
+          <label className="ml-auto flex items-center gap-2 text-[12px] text-white/50">
+            Run
+            <select
+              value={current?.stamp ?? ""}
+              onChange={(e) => onPick(e.target.value)}
+              className="rounded-md border border-white/[0.1] bg-rv-card px-2 py-1 text-white/80"
+            >
+              {list.runs.map((r) => (
+                <option key={r.stamp} value={r.stamp}>
+                  {r.stamp} · {r.n} cases · {r.status}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+      </div>
+      {error && <p className="mt-2 text-[12px] text-rv-red/80">{error}</p>}
+      {list && list.runs.length === 0 && <p className="mt-2 text-[12px] text-white/45">No try runs yet.</p>}
     </Panel>
   );
 }
