@@ -100,9 +100,9 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
         </label>
       </div>
       {state === "recording" ? (
-        <button onClick={() => recorder.current?.stop()} className="rounded bg-red-600 px-3 py-1.5 font-medium">● Stop and send</button>
+        <button type="button" onClick={() => recorder.current?.stop()} className="rounded bg-red-600 px-3 py-1.5 font-medium">● Stop and send</button>
       ) : (
-        <button onClick={start} disabled={state === "sending"} className="rounded bg-[#ff6a1a] px-3 py-1.5 font-medium disabled:opacity-50">
+        <button type="button" onClick={start} disabled={state === "sending"} className="rounded bg-[#ff6a1a] px-3 py-1.5 font-medium disabled:opacity-50">
           {state === "sending" ? "Transcribing…" : recordLabel}
         </button>
       )}
@@ -117,7 +117,7 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
           <p className="text-amber-300">{error}</p>
           <textarea value={typed} onChange={(e) => setTyped(e.target.value)} rows={2} placeholder="Type the note"
             className="rounded bg-black/30 p-2 text-white placeholder:text-white/30" />
-          <button onClick={sendTyped} disabled={!typed.trim() || state === "sending"} className="rounded border border-white/20 px-3 py-1.5 disabled:opacity-50">Send typed note</button>
+          <button type="button" onClick={sendTyped} disabled={!typed.trim() || state === "sending"} className="rounded border border-white/20 px-3 py-1.5 disabled:opacity-50">Send typed note</button>
         </div>
       )}
     </div>
