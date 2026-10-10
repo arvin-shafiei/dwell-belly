@@ -255,6 +255,20 @@ test("an unfamiliar compound case reaches the general planner with all its decis
   assert.deepEqual(ingest?.kind === "node_end" && ingest.output && "decisionGroups" in ingest.output && ingest.output.decisionGroups, compound.decision_groups);
 });
 
+test("a configured business policy reaches the planner and critic without bypassing safety", async () => {
+  const custom = structuredClone(twoGates);
+  const policy = "For clinic deliveries, verify receiving hours with the site owner before requesting a booking.";
+  custom.nodes.find((n) => n.id === "plan_other")!.config = { policy };
+  const users: string[] = [];
+  const models = fake({ understand: [{ ...understanding, case_type: "unfamiliar" }], decide: [decision, decision], critic: [{ actions: [scores(0.5)] }, { actions: [scores(0.5)] }] });
+  const wrapped: Models = { async structured(call) { users.push(call.user); return models.structured(call); } };
+  const result = await runFlowGraph(bundle, { flow: custom, models: wrapped, mode: "practice", runId: "policy" });
+  assert.ok(users.some((u) => u.includes("<business_policy>") && u.includes(policy)));
+  assert.ok(users.some((u) => u.includes("<outgoing_messages>") && u.includes(policy)), "critic checks the same policy");
+  assert.equal(result.outcome, "escalated");
+  assert.ok(result.outbox.every((o) => o.status !== "recorded"), "a policy never authorises a held message");
+});
+
 test("the Architect's tree routes both conflicting and consistent accounts through their own planner and gate", async () => {
   const opts = (u: Understanding) => ({ flow: BRANCHING_EXAMPLE, models: fake({ understand: [u], decide: [decision], critic: [{ actions: [scores(0)] }] }), mode: "practice" as const, runId: "t", judge: triageAs("lost_or_misdelivered") });
   const agree = await runFlowGraph(bundle, opts(consistent));

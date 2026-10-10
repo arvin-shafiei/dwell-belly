@@ -67,6 +67,7 @@ const Draft = z.object({
       effect: z.enum(["brief", "force_human"]),
       note: z.string().describe("What the planner or the human is told when the rule fires. Plain, role-based, no names."),
     })).nullable().describe("Only on a perspectives node, null on every other node."),
+    policy: z.string().max(4000).nullable().describe("Only on a planner: concrete business requirements for this path, including their applicability and authority. Null otherwise. Never grant safety clearance, identity verification or permission to bypass a gate."),
   })),
   edges: z.array(z.object({
     from: z.string(),
@@ -253,6 +254,7 @@ It must be a strict tree, because it is drawn on a canvas and lines that rejoin 
 - Every leaf is its own case_log, one per path end, named for how that path ends.
 - A bigger tree with duplicated nodes is better than a smaller graph whose lines cross.
 - Give every node a short descriptive "name" saying what it does on this branch, e.g. "Cold-chain safety gate", "Desk approves the refund", "Log: held for a human".
+- Put actual business requirements in each relevant planner's policy field. A node name does not implement a requirement. Preserve working policies when revising a flow. Treat supervisor feedback as a proposed reusable business requirement, not an approval for any particular action. Never relax safety or authority boundaries from feedback.
 
 Where the flow branches:
 - After triage, route by case type into separate sub-paths with different checks. Label each edge with the case type in "when", using the types this business actually meets: for example damage, missing_parcel, cold_chain, address, customs, billing, and "other" for the rest.
@@ -300,6 +302,7 @@ function toFlow(draft: Draft): Flow {
     const node: NamedNode = { id: n.id, type: n.type, runs_on: n.runs_on };
     if (n.name?.trim()) node.name = n.name.trim();
     if (n.type === "safety_gate" && n.gate) node.config = { allow_below: n.gate.allow_below, block_above: n.gate.block_above };
+    if (n.type === "planner" && n.policy?.trim()) node.config = { policy: n.policy.trim() };
     if (n.type === "perspectives" && n.rules?.length) {
       node.config = { rules: Object.fromEntries(n.rules.map((r) => [r.question, { at_least: r.at_least, effect: r.effect, note: r.note }])) };
     }
@@ -436,6 +439,12 @@ export function validateFlow(flow: Flow, options: ValidateOptions = {}): string[
   if (ingests.length === 0) problems.push("no ingest node");
   if (ofType("case_log").length === 0) problems.push("no case_log node");
   if (humans.length === 0) problems.push("no human_decision node");
+  for (const node of byId.values()) {
+    const policy = node.config?.policy;
+    if (policy !== undefined && (node.type !== "planner" || typeof policy !== "string" || policy.length > 4000 || !policy.trim())) {
+      problems.push(`node "${node.id}" policy must be a non-empty planner requirement of at most 4000 characters`);
+    }
+  }
 
   const planningBranches = [["triage", "other"], ["missing_info", "missing"], ["clash_check", "clash"]] as const;
   for (const [type, branch] of planningBranches) for (const id of ofType(type)) {

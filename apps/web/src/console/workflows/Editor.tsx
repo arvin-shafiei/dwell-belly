@@ -9,7 +9,7 @@ import {
 } from "@xyflow/react";
 import type { ExecutionRecord, Flow, FlowNode, ImproveProposal, NodeType, Trace, WorkflowRecord, WorkflowVersion } from "../types";
 import {
-  architectValidate, createVersion, deleteWorkflow, executeCase, listVersions, getExecution, listExecutions, loadWorkflows, saveWorkflow,
+  architectValidate, createVersion, deleteWorkflow, executeCase, executeSample, listVersions, getExecution, listExecutions, loadWorkflows, saveWorkflow,
   type ExecutionSummary,
 } from "./api";
 import { ArchitectPanel } from "./ArchitectPanel";
@@ -25,7 +25,7 @@ import {
   updateEdgeWhen, updateNode, type FlowDoc, type Pos,
 } from "./doc";
 import { EdgePanel, NodePanel } from "./DetailPanel";
-import { ExecuteDialog } from "./ExecuteDialog";
+import { ExecuteDialog, type RunChoice } from "./ExecuteDialog";
 import { ExecutionPicker } from "./ExecutionPicker";
 import { CARD_W, FlowNodeCard, type CardNode } from "./FlowNodeCard";
 import { checkpoint, initHistory, push, redo, replace, undo, type History } from "./history";
@@ -474,7 +474,7 @@ function EditorInner() {
     setAccepting(false);
     if (r.ok) {
       const saved = r.data?.workflow ?? rec;
-      void recordVersion(saved.id, rec.flow, isDraft ? "architect" : "user", isDraft ? "Built with the Architect" : "Saved in the editor");
+      await recordVersion(saved.id, rec.flow, isDraft ? "architect" : "user", isDraft ? "Built with the Architect" : "Saved in the editor");
       setRecords((rs) => {
         const list = rs ?? [];
         return list.some((x) => x.id === saved.id) ? list.map((x) => (x.id === saved.id ? saved : x)) : [...list, saved];
@@ -573,11 +573,13 @@ function EditorInner() {
   useEffect(() => { saveRef.current = () => { if (dirty) void doSave(); }; }, [dirty, doSave]);
 
   // ---------- execute ----------
-  const runCase = useCallback(async (c: { id: string; dataset: string }) => {
+  const runCase = useCallback(async (c: RunChoice) => {
     setDialog(false);
     setRunError(null);
-    setRunning({ caseId: c.id, dataset: c.dataset, since: Date.now() });
-    const r = await executeCase({ caseId: c.id, dataset: c.dataset, workflowId: currentId ?? undefined });
+    setRunning({ caseId: "scenario" in c ? "New sample" : c.id, dataset: "scenario" in c ? "adhoc" : c.dataset, since: Date.now() });
+    const r = "scenario" in c
+      ? await executeSample(currentId!, c.scenario)
+      : await executeCase({ caseId: c.id, dataset: c.dataset, workflowId: currentId ?? undefined });
     if (!r.ok || !r.data?.execution) {
       setRunning(null);
       setRunError("The case didn't run. Try again in a minute.");

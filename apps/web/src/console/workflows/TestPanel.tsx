@@ -8,7 +8,7 @@ import type { Flow, ImproveProposal, ScenarioSetId, TestRun, TestRunCase, Workfl
 import { Icon } from "./icons";
 import { Badge, Btn, SectionLabel } from "./bits";
 import {
-  cancelTestRun, createVersion, getTestRun, improveFlow, listCases, listScenarioSets, listTestRuns, listVersions,
+  cancelTestRun, createVersion, getTestRun, getExecution, improveFlow, listCases, listScenarioSets, listTestRuns, listVersions,
   startTestRun, type ScenarioSetInfo, type TestRunBody,
 } from "./api";
 import {
@@ -16,6 +16,7 @@ import {
   learningCurve, pollReducer, retestBody, reuseLine, type AutoState,
 } from "./testing";
 import { LearningCurve } from "./LearningCurve";
+import { FeedbackForm } from "./FeedbackForm";
 import { caseElapsedMs, caseTitle, fmtElapsed, isFinished, overallProgress, runningLine } from "./practiceProgress";
 import { cents, scrubLeaks } from "../../ui/plain";
 
@@ -166,6 +167,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   const [busyMsg, setBusyMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [accepted, setAccepted] = useState<{ version: number; run: TestRun } | null>(null);
+  const [feedbackRetest, setFeedbackRetest] = useState<{ version: number; caseId: string } | null>(null);
   const [auto, setAuto] = useState<AutoState | null>(null);
   const [confirmAuto, setConfirmAuto] = useState(false);
   const [advanced, setAdvanced] = useState(false);
@@ -312,11 +314,11 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
     if (!workflowId) return null;
     setBusyMsg("Saving the new version…");
     const r = await createVersion(workflowId, {
-      flow: p.flow, createdBy: "improve", note: [p.changes.join("; "), p.rationale].filter(Boolean).join(" — ") || null, parentVersion: p.fromVersion,
+      flow: p.flow, createdBy: "improve", note: [p.feedbackId ? `Feedback ${p.feedbackId}` : "", p.changes.join("; "), p.rationale].filter(Boolean).join("; ") || null, parentVersion: p.fromVersion,
     });
     setBusyMsg(null);
     if (!r.ok || !r.data?.version) {
-      setError("Couldn't save the new version.");
+      setError(r.ok ? "Couldn't save the new version." : r.error);
       return null;
     }
     const v = r.data.version;
@@ -385,6 +387,12 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-4">
         {blocked && <div className="rounded-md bg-[#f59e0b]/10 px-3 py-2 text-[13px] text-[#fcd34d]">{blocked}</div>}
         {!blocked && hint && <div className="rounded-md bg-white/[0.04] px-3 py-2 text-[12.5px] text-white/60">{hint}</div>}
+        <FeedbackForm executionId={selectedExecId} workflowId={workflowId} disabled={disabled}
+          onBusy={setImproving}
+          onProposal={(p) => {
+            setProposal(p);
+            onProposal({ proposal: p, base: versions.find((v) => v.version === p.fromVersion)?.flow ?? null });
+          }} />
 
         {(setId !== "quick" || filter) && !running && (
           <div className="flex items-center gap-2 text-[12.5px] text-white/60">
@@ -483,7 +491,15 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
                 <Btn onClick={reject}>No thanks</Btn>
                 <Btn
                   variant="primary" disabled={proposal.problems.length > 0 || !!busyMsg}
-                  onClick={async () => { const r = run; const v = await accept(proposal); if (v && r) setAccepted({ version: v.version, run: r }); }}
+                  onClick={async () => {
+                    const p = proposal;
+                    const r = run;
+                    const v = await accept(p);
+                    if (v && p.feedbackId && selectedExecId) {
+                      const ex = await getExecution(selectedExecId);
+                      if (ex.ok) setFeedbackRetest({ version: v.version, caseId: ex.data.execution.caseId });
+                    } else if (v && r) setAccepted({ version: v.version, run: r });
+                  }}
                 >
                   Use it
                 </Btn>
@@ -496,6 +512,12 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
           <div className="space-y-2.5 rounded-lg bg-[#22c55e]/[0.07] px-3 py-3">
             <div className="text-[13.5px] text-white/85">Version {accepted.version} saved. Try the same cases again?</div>
             <Btn variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold" onClick={() => void retest()}>Practice again</Btn>
+          </div>
+        )}
+        {feedbackRetest && !running && !autoRunning && workflowId && (
+          <div className="space-y-2 rounded-lg bg-[#22c55e]/[0.07] p-3">
+            <p className="text-[13px] text-white/85">Version {feedbackRetest.version} saved. Check the corrected case, then try another example.</p>
+            <Btn variant="primary" disabled={disabled} onClick={() => void runTest({ workflowId, version: feedbackRetest.version, set: "custom", caseIds: [feedbackRetest.caseId], limit: 1, fresh: true })}>Test the corrected case</Btn>
           </div>
         )}
 

@@ -2,6 +2,7 @@
 import type { Flow, WorkflowVersion } from "../types";
 import { getDb, type SqlValue } from "./db";
 import { getWorkflow, seedWorkflows } from "./store";
+import { flowHash } from "./practiceCache";
 
 const CREATED_BY = ["user", "architect", "improve"] as const;
 
@@ -67,6 +68,13 @@ export async function createVersion(workflowId: string, body: { flow?: unknown; 
     throw new VersionError(`no version ${parent} of ${workflowId}`, 400);
   }
   const next = Number(db.prepare("SELECT MAX(version) AS v FROM workflow_versions WHERE workflow_id = ?").get(workflowId)?.v ?? 0) + 1;
+  if (createdBy === "improve") {
+    const baseline = parent === null ? null : await getVersion(workflowId, parent);
+    const current = getWorkflow(workflowId);
+    if (!baseline || parent !== next - 1 || !current || flowHash(current.flow) !== flowHash(baseline.flow)) {
+      throw new VersionError("The workflow changed after this proposal. Test its current version before improving it", 409);
+    }
+  }
   db.prepare(`INSERT INTO workflow_versions (workflow_id, version, flow, created_at, created_by, note, parent_version) VALUES (?, ?, ?, ?, ?, ?, ?)`)
     .run(workflowId, next, JSON.stringify(body.flow), new Date().toISOString(), createdBy, typeof body.note === "string" ? body.note : null, parent);
   return (await getVersion(workflowId, next))!;

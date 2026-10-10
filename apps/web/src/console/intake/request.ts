@@ -17,7 +17,7 @@ export const DESK = "Rivet Delivery Desk";
 
 /** A message on the page. `source` marks a call transcript made from a recording. */
 export interface DraftMessage extends IntakeMessage {
-  source?: "audio_attachment";
+  source?: "audio_attachment" | "simulated_persona";
 }
 
 export type AttachmentKind = "text" | "pdf" | "image" | "audio" | "other";
@@ -38,7 +38,7 @@ export interface IntakeEvent {
   from: string | null;
   to: string | null;
   body: string;
-  source?: "audio_attachment";
+  source?: "audio_attachment" | "simulated_persona";
 }
 
 /** The body POSTed to /api/console/intake. */
@@ -47,6 +47,7 @@ export interface IntakeRequest {
   events: IntakeEvent[];
   attachments: { name: string; text: string }[];
   workflowId?: string | null;
+  practice?: boolean;
 }
 
 export const MAX_ATTACHMENT_CHARS = 200_000;
@@ -138,7 +139,7 @@ export function parseIntakeRequest(raw: unknown): { ok: true; value: IntakeReque
       from: str(ev.from),
       to: str(ev.to),
       body,
-      ...(ev.source === "audio_attachment" ? { source: "audio_attachment" as const } : {}),
+      ...(r.practice === true ? { source: "simulated_persona" as const } : ev.source === "audio_attachment" ? { source: "audio_attachment" as const } : {}),
     });
   }
   const attachments: { name: string; text: string }[] = [];
@@ -155,7 +156,7 @@ export function parseIntakeRequest(raw: unknown): { ok: true; value: IntakeReque
   const size = events.reduce((n, e) => n + e.body.length, 0) + attachments.reduce((n, a) => n + a.text.length, 0);
   if (size > MAX_CASE_CHARS) return { ok: false, error: "The case is too long. Remove some text or files." };
   const title = (str(r.title) ?? "New case").replace(/\s+/g, " ").trim().slice(0, 120);
-  return { ok: true, value: { title, events, attachments, workflowId: str(r.workflowId) } };
+  return { ok: true, value: { title, events, attachments, workflowId: str(r.workflowId), ...(r.practice === true ? { practice: true } : {}) } };
 }
 
 /** Pasted messages, then added ones; sorted by time when every message has a date. */

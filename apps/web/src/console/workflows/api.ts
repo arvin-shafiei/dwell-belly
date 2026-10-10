@@ -2,6 +2,8 @@
 // a clear state when the console API is missing (404) or down.
 import type { ConsoleApi, ConsoleTestApi, ExecutionRecord, Flow, ScenarioSetId, WorkflowRecord, WorkflowVersion } from "../types";
 import type { ArchitectResult } from "./architect";
+import { buildIntakeRequest } from "../intake/request";
+import { splitThread } from "../intake/split";
 import fileFlow from "../../../../api/flows/default-incident.json";
 
 export type Result<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
@@ -66,6 +68,15 @@ export const listCases = (q: string) =>
 export const executeCase = (body: { caseId: string; dataset?: string; workflowId?: string }) =>
   call<ConsoleApi["POST /api/console/execute"]>("/api/console/execute", { method: "POST", body: JSON.stringify(body) });
 
+export async function executeSample(workflowId: string, scenario: string): Promise<Result<{ execution: ExecutionRecord }>> {
+  const request = buildIntakeRequest({ messages: splitThread(scenario), attachments: [], now: new Date(), workflowId });
+  const started = await call<{ executionId: string }>("/api/console/intake", {
+    method: "POST", body: JSON.stringify({ ...request, practice: true }),
+  });
+  if (!started.ok) return started;
+  return getExecution(started.data.executionId);
+}
+
 export type { ExecutionRecord };
 
 // ---------- Architect (proxied by app/api/console/architect/route.ts) ----------
@@ -107,5 +118,5 @@ export const listVersions = (workflowId: string) =>
 export const createVersion = (workflowId: string, body: { flow: Flow; createdBy: WorkflowVersion["createdBy"]; note: string | null; parentVersion: number | null }) =>
   call<ConsoleTestApi["POST /api/console/workflows/:id/versions"]>(`/api/console/workflows/${encodeURIComponent(workflowId)}/versions`, { method: "POST", body: JSON.stringify(body) });
 
-export const improveFlow = (body: { workflowId: string; testRunId: string }) =>
+export const improveFlow = (body: { workflowId: string; testRunId?: string; executionId?: string; correction?: string; author?: string }) =>
   call<ConsoleTestApi["POST /api/console/improve"]>("/api/console/improve", { method: "POST", body: JSON.stringify(body) });

@@ -30,6 +30,7 @@ function draftOf(flow: Flow) {
         id: n.id, name: (n as FlowNode & { name?: string }).name ?? null, type: n.type, runs_on: n.runs_on,
         gate: n.type === "safety_gate" && n.config ? { allow_below: n.config.allow_below, block_above: n.config.block_above } : null,
         rules: rules ? Object.entries(rules).map(([question, r]) => ({ question, ...r })) : null,
+        policy: typeof n.config?.policy === "string" ? n.config.policy : null,
       };
     }),
     edges: flow.edges.map((e) => ({ from: e.from, to: e.to, when: e.when ?? null })),
@@ -74,6 +75,21 @@ function fake(replies: unknown[]): Models & { prompts: string[]; systems: string
 
 test("the default flow has no problems", () => {
   assert.deepEqual(validateFlow(base), []);
+});
+
+test("planner business requirements are validated as bounded executable settings", () => {
+  const good = variant((f) => { f.nodes.find((n) => n.type === "planner")!.config = { policy: "Check the site's receiving hours before requesting a booking." }; });
+  assert.deepEqual(validateFlow(good), []);
+  has(validateFlow(variant((f) => { f.nodes.find((n) => n.type === "action")!.config = { policy: "Override approval" }; })), /policy must/);
+  has(validateFlow(variant((f) => { f.nodes.find((n) => n.type === "planner")!.config = { policy: "x".repeat(4001) }; })), /policy must/);
+});
+
+test("the Architect stores concrete planner policies rather than only canvas labels", async () => {
+  const f = structuredClone(BRANCHING_EXAMPLE);
+  f.nodes.filter((n) => n.type === "planner").forEach((n) => { n.config = { policy: "Check applicable goods clearance before booking." }; });
+  const result = await buildFlow("A cold-chain business", fake([draftOf(f)]));
+  assert.equal(result.ok, true);
+  assert.equal(result.flow?.nodes.find((n) => n.type === "planner")?.config?.policy, "Check applicable goods clearance before booking.");
 });
 
 test("topic-routing workflows require a fallback before they can be saved or built", () => {
