@@ -28,8 +28,8 @@ export interface ViewEvent {
  * What the agent gets: only the messages known at escalation plus each modifier's extra message.
  * No title, context or expected answer (they would leak the answer).
  */
-export function toCaseView(s: CaseScenario, modifiers: readonly Modifier[]): { id: string; events: ViewEvent[]; mode: "demo" } {
-  const events: ViewEvent[] = s.messages.map((m, i) => ({
+export function toCaseView(s: CaseScenario, modifiers: readonly Modifier[]): { id: string; events: ViewEvent[]; mode: "demo"; context?: string | null } {
+  const events: ViewEvent[] = s.view ? s.view.events.map((e) => ({ ...e })) : s.messages.map((m, i) => ({
     n: i + 1,
     timestamp: "",
     stage: i === s.messages.length - 1 ? "Escalation" : "Context",
@@ -42,7 +42,7 @@ export function toCaseView(s: CaseScenario, modifiers: readonly Modifier[]): { i
     // Modifier messages are invented by the city, so they are marked simulated_persona (the trace is then synthetic).
     events.push({ n: events.length + 1, timestamp: "", stage: "Escalation", channel: "Email", from: "Case update", to: "Rivet Delivery Desk", body: MODIFIERS[mod].extraMessage, source: "simulated_persona" });
   }
-  return { id: `city-${s.id}`, events, mode: "demo" as const };
+  return { id: `city-${s.id}`, events, mode: "demo" as const, ...(s.view?.context ? { context: s.view.context } : {}) };
 }
 
 /** One HUD event to show `atMs` after the replay starts. */

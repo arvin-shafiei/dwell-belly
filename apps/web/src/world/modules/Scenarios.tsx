@@ -8,6 +8,7 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { Group } from "three";
+import { autoCasesStatus } from "../autoCases";
 import { emit, on } from "../bus";
 import { allVehicles, getVehicle } from "../registry";
 import { getNode, ROAD_EDGES } from "../roads";
@@ -68,7 +69,7 @@ export default function Scenarios() {
         d.remove(runId);
         return;
       }
-      const spec = SCENES[sc.scene];
+      const spec = sc.sign ? { ...SCENES[sc.scene], sign: sc.sign } : SCENES[sc.scene];
       const loc = pickLocation(sc.where, {
         rand: rand.current,
         taken: runsRef.current.map((r) => r.loc),
@@ -158,7 +159,8 @@ export default function Scenarios() {
     // expose the per-frame hook
     tickRef.current = (dt: number) => {
       // Pacing: autoplay only stages a new scene when the real agent can take it now (WorkflowDriver queue).
-      d.autoplayOn = autoplay && agentIdle();
+      // The HUD's Auto cases toggle (WorkflowHud/autoCases.tsx) plays real cases instead when it is mounted.
+      d.autoplayOn = autoplay && agentIdle() && !autoCasesStatus.driving;
       const acts = d.tick(dt);
       sceneClock.now = d.now;
       if (acts.length) apply(acts);

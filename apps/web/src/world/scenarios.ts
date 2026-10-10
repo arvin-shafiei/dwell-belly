@@ -39,6 +39,11 @@ export interface CaseScenario {
   messages: { channel: string | null; from: string | null; body: string }[]; // known at escalation
   expected: { summary: string; recipient: string | null; channel: string | null } | null;
   boundaries: string | null;
+  /** Cases from other sets (picked in the HUD, registered at run time): the dataset, a short sign for the
+   * scene, and the eval's escalation view, sent as is instead of `messages`. Absent on the 50 public ones. */
+  dataset?: string;
+  sign?: string;
+  view?: { context: string | null; events: { n: number; timestamp: string; stage: string | null; channel: string | null; from: string | null; to: string | null; body: string }[] };
 }
 
 /**
@@ -114,8 +119,15 @@ export const MODIFIERS: Record<Modifier, { label: string; extraMessage: string; 
 
 export const SCENARIOS: readonly CaseScenario[] = CASE_SCENARIOS;
 
-export function getScenario(id: string) {
-  return CASE_SCENARIOS.find((s) => s.id === id);
+/** Cases from the other sets, added when picked in the HUD (server catalogue; never bundled). */
+const EXTRA = new Map<string, CaseScenario>();
+
+export function registerScenario(s: CaseScenario) {
+  if (!CASE_SCENARIOS.some((c) => c.id === s.id)) EXTRA.set(s.id, s);
+}
+
+export function getScenario(id: string): CaseScenario | undefined {
+  return CASE_SCENARIOS.find((s) => s.id === id) ?? EXTRA.get(id);
 }
 
 /** Every scene and how many public cases use it (for coverage checks). */
