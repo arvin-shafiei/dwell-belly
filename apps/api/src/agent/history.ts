@@ -4,11 +4,14 @@
 // throws; a disk problem comes back as ok=false and the flow carries on without history.
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Outcome } from "../lib/trace.ts";
 import type { RunResult } from "./run.ts";
 import type { Decision, PlannedAction, Understanding } from "./types.ts";
 
-export const DEFAULT_STORE_FILE = path.resolve(import.meta.dirname, "..", "..", "..", "..", ".case-history", "runs.jsonl");
+// Next.js bundles route handlers without import.meta.dirname, so fall back to the module URL.
+const HERE = import.meta.dirname ?? path.dirname(fileURLToPath(import.meta.url));
+export const DEFAULT_STORE_FILE = path.resolve(HERE, "..", "..", "..", "..", ".case-history", "runs.jsonl");
 
 export interface Store { file: string }
 
