@@ -1,0 +1,82 @@
+{
+  "id": "delivery-020",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "020",
+  "title": "Case 020: A multi-parcel order arrives with one parcel still outstanding",
+  "details": {
+    "source_role": "Eris Kael, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-21 09:00:00 UTC",
+    "escalated": "2026-02-21 09:10:00 UTC",
+    "updated": "2026-02-22 14:20:00 UTC",
+    "completed": "2026-02-22 14:20:00 UTC",
+    "primary_task_reference": "TG-020",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "An order consists of three separately tracked parcels. Two are received; the third must be traced by its own identifier.",
+  "initial_request": "I received two of the three cartons for TG-020. The missing carton is DL-020-C. Please locate it; I am available tomorrow.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier to locate the missing parcel using its individual tracking ID.",
+    "recipient": "Parcel trace team, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The recipient confirms receipt of that remaining parcel; the order's parcel count reconciles.",
+  "boundaries": "Closure is for the three-parcel count, not product quality or installation.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-21T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Order TG-020 has parcels DL-020-A, DL-020-B and DL-020-C. A and B have delivery scans; C has an inbound depot scan only. All three are required to complete the order."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-21T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Eris Kael, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I received two of the three cartons for TG-020. The missing carton is DL-020-C. Please locate it; I am available tomorrow."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-21T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "Please trace DL-020-C specifically and arrange its remaining delivery. Do not mark TG-020 complete using only the A and B scans."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-21T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-020-C was in the oversize rack and is now on the 2026-02-22 route. Its route handover scan will be reported separately."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-22T14:20:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Eris Kael, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-020-C arrived at 14:10 UTC on 2026-02-22. I now have A, B and C: three cartons, matching TG-020."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,83 @@
+{
+  "id": "insurance-037",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "037",
+  "title": "Case 037: Estimate for an Open Claim",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-21 10:07:00 UTC",
+    "updated": "2025-07-21 14:35:00 UTC",
+    "completed": "2025-07-21 14:35:00 UTC",
+    "property": "137 Alder Walk, Brackenford, ZZ5 1ZZ",
+    "broker": "Holloway Cover",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I have received Alder & Finch Repairs’ estimate for the damage at 137 Alder Walk, Brackenford, ZZ5 1ZZ. My claim, CLM-037, is already open, but I have not yet sent the estimate to the insurer; could you submit it for me?",
+  "overview": "Rose Baker sent her contractor’s repair estimate to Toby Reed at Holloway Cover. Toby checked the claim reference and property address against the open file, then sent the estimate to Northmere Mutual under the verified claim number. The insurer confirmed receipt, and Toby relayed that confirmation to Rose, clarifying that receipt did not mean the repair cost had been agreed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Forward the contractor’s estimate to Northmere Mutual under the verified claim reference CLM-037 and confirm that the property address matches the open file.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual confirmed receipt of the estimate; it did not thereby agree to the quoted repair cost.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-21T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Rose Baker",
+      "to": "Toby Reed, Holloway Cover",
+      "body": "I’m sending contractor estimate EST-037 dated 18 July 2025 for £2,840.00 for my open claim, CLM-037, concerning 137 Alder Walk, Brackenford, ZZ5 1ZZ. The estimate is attached as repair-estimate.png; I have not sent it to Northmere Mutual yet."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-21T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Toby Reed",
+      "to": "CLM-037 claim file",
+      "body": "I checked the claim reference and confirmed that 137 Alder Walk, Brackenford, ZZ5 1ZZ matches the property recorded on the open file. The contractor’s estimate is ready to submit to Northmere Mutual against this claim."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-21T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Toby Reed, Holloway Cover",
+      "to": "Northmere Mutual Claims Team",
+      "body": "Please find contractor estimate EST-037 dated 18 July 2025 attached as repair-estimate.png for Rose Baker’s open claim, CLM-037, at 137 Alder Walk, Brackenford, ZZ5 1ZZ. Its stated scope totals £2,840.00; this submission does not request automatic approval. The claim reference and property address have been checked against our file."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-21T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Claims Team",
+      "to": "Toby Reed, Holloway Cover",
+      "body": "We confirm receipt of the repair estimate for claim CLM-037. This acknowledgement records receipt only and does not confirm agreement to the quoted cost."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-21T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Toby Reed, Holloway Cover",
+      "to": "Rose Baker",
+      "body": "Northmere Mutual has confirmed receipt of the estimate for CLM-037. This is confirmation that the document arrived, not approval of the contractor’s quoted repair cost."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "repair-estimate.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/037/attachments/repair-estimate.png",
+      "text": "OCR text:\nAlder & Finch Repairs\n\nRepair estimate | EST-037\n\nESTIMATE DETAILS\nPrepared for: Rose Baker | Claim reference: CLM-037\nWork location: 137 Alder Walk, Brackenford, ZZ5 1ZZ\n\nEstimate number: EST-037 | Prepared: 18 July 2025 | Valid until: 17 August 2025\n\nPROPOSED SCOPE AND PRICE\n\nRemove and replace damaged ceiling plasterboard: £940.00\nPlaster finishing of affected ceiling: £1,160.00\n\nRedecorate the affected ceiling: £740.00\n\nEstimated total for the stated scope: £2,840.00\n\nEstimate only; no repair work or insurer approval is evidenced by this document.\n\nSYNTHETIC CALIBRATION DOCUMENT - CASE 037 - NOT REAL INSURANCE",
+      "text_source": "ocr"
+    }
+  ]
+}

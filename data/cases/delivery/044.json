@@ -1,0 +1,82 @@
+{
+  "id": "delivery-044",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "044",
+  "title": "Case 044: One pallet is absent from a business consignment",
+  "details": {
+    "source_role": "Eron Leth, Kestrel Loom receiving coordinator",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-17 09:00:00 UTC",
+    "escalated": "2026-03-17 09:10:00 UTC",
+    "updated": "2026-03-18 14:30:00 UTC",
+    "completed": "2026-03-18 14:30:00 UTC",
+    "primary_task_reference": "KL-044",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A four-pallet consignment arrived with only three pallets. The carrier must trace the individually identified missing pallet and the consignee must reconcile receipt.",
+  "initial_request": "Please trace DL-044-P4 separately. We can receive the missing pallet on 2026-03-18 afternoon at the same receiving bay.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier to trace the missing pallet by its individual identifier.",
+    "recipient": "Freight trace team, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The consignee confirms receipt of the missing pallet and signs the reconciled count.",
+  "boundaries": "Reconciled pallet receipt is not a contents inspection or contractual payment acceptance.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-17T09:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Eron Leth, Kestrel Loom receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Inline receiving count KL-044: DL-044-P1, P2 and P3 accepted; P4 absent. Expected four pallets, received three. The count is signed in our business portal."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-17T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Eron Leth, Kestrel Loom receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please trace DL-044-P4 separately. We can receive the missing pallet on 2026-03-18 afternoon at the same receiving bay."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-17T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight trace team, Plover Arc Logistics",
+      "body": "Trace DL-044-P4 and arrange its remaining delivery to the verified KL-044 receiving bay. Current signed count is three of four; do not close using P1–P3 alone."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-17T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Freight trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "P4 was held on a separate transfer trailer. We located it and scheduled the remaining delivery for 2026-03-18, 13:00–16:00 UTC."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-18T14:30:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Business portal",
+      "from": "Eron Leth, Kestrel Loom receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-044-P4 received at 14:20 UTC on 2026-03-18. I signed revised count KL-044-R: P1, P2, P3 and P4, four of four accepted."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,73 @@
+{
+  "id": "banking-024",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "024",
+  "title": "Case 024: Reason for the Card Restriction",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-03 09:00:00 UTC",
+    "updated": "2025-09-03 12:08:00 UTC",
+    "completed": "2025-09-03 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Rowan wants to know why their H&V card became temporarily unavailable after it was declined during a grocery purchase, and whether the restriction has been lifted.",
+  "overview": "Rowan contacted H&V through secure chat after seeing the card-unavailable status in the secure portal. The agent checked the permitted explanation and disclosure limit in the card journal. H&V confirmed that the permitted category was a temporary security-related restriction; no lifting of the restriction was confirmed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the card journal for the permitted restriction category and the limit on what can be disclosed.",
+    "recorded_event": null
+  },
+  "outcome": "H&V provided the permitted category: a temporary security-related restriction. The restriction's exact basis was not shown, and no release or timing was promised.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-03T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Rowan Ellery",
+      "body": "Status: Your card is temporarily unavailable. This status does not show the reason."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-03T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Rowan Ellery",
+      "to": "H&V Customer Support",
+      "body": "I’m the cardholder and my card was declined while I was paying for groceries. Please tell me the category of the restriction and whether it has been lifted."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-03T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V Customer Support Agent",
+      "to": "H&V Card Journal",
+      "body": "I’m checking the permitted category for this restriction and the limit on what I may disclose to Rowan."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-03T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V Card Journal",
+      "to": "H&V Customer Support Agent",
+      "body": "Permitted category: temporary security-related restriction. Exact basis is not shown. Do not provide operational detail or confirm that the restriction will be lifted."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-03T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Rowan Ellery",
+      "body": "I can confirm that your card has a temporary security-related restriction. I can’t provide further operational detail, and this confirmation does not mean the restriction has been lifted or say when it may be."
+    }
+  ],
+  "attachments": []
+}

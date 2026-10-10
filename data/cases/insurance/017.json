@@ -1,0 +1,75 @@
+{
+  "id": "insurance-017",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "017",
+  "title": "Case 017: Temporarily Vacant Property",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-22 10:07:00 UTC",
+    "updated": "2025-05-22 14:35:00 UTC",
+    "completed": "2025-05-22 14:35:00 UTC",
+    "property": "117 Alder Walk, Brackenford, ZZ2 8ZZ",
+    "broker": "Sam, Beckford Risk",
+    "insurer": "Cedar Vale Insurance"
+  },
+  "context": null,
+  "initial_request": "I’m writing to let you know that my house at 117 Alder Walk, Brackenford, ZZ2 8ZZ will be empty between tenancies. Could you advise what I need to do?",
+  "overview": "Hannah Wood told her broker, Sam at Beckford Risk, that her house would be vacant between tenancies. Sam asked for the expected period and circumstances, then notified Cedar Vale Insurance after Hannah supplied the details. Cedar Vale Insurance confirmed receipt of the notification; no terms for the vacant period were promised.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, ask Hannah for the expected start and end of the vacant period and the circumstances, then notify Cedar Vale Insurance once she provides them.",
+    "recorded_event": null
+  },
+  "outcome": "Cedar Vale Insurance confirmed receipt of the notification.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-22T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Hannah Wood",
+      "to": "Sam, Beckford Risk",
+      "body": "I’m writing to let you know that my house at 117 Alder Walk, Brackenford, ZZ2 8ZZ will be empty between tenancies. Could you advise what I need to do?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-22T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Sam, Beckford Risk",
+      "to": "Hannah Wood",
+      "body": "Thanks for letting me know. When do the current tenants leave, when do you expect the next tenancy to begin, and will anyone be checking the house while it is empty?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-22T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Hannah Wood",
+      "to": "Sam, Beckford Risk",
+      "body": "The current tenants are due to leave at the end of this week, and the next tenancy is expected to begin about six weeks later. There will be no building work, and I can arrange for the property to be checked weekly."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-22T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Sam, Beckford Risk",
+      "to": "Cedar Vale Insurance",
+      "body": "I’m notifying you that Hannah Wood’s property at 117 Alder Walk, Brackenford, ZZ2 8ZZ is expected to be unoccupied between tenancies for about six weeks. The current tenants leave at the end of this week, a new tenancy is expected about six weeks later, and weekly checks can be arranged; please record this notification."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-22T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Cedar Vale Insurance",
+      "to": "Sam, Beckford Risk",
+      "body": "We confirm receipt of your notification concerning the expected vacancy at 117 Alder Walk, Brackenford, ZZ2 8ZZ. This confirms receipt only and does not set out any terms for the period of vacancy."
+    }
+  ],
+  "attachments": []
+}

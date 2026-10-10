@@ -1,0 +1,82 @@
+{
+  "id": "delivery-033",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "033",
+  "title": "Case 033: Courier misses a booked return collection",
+  "details": {
+    "source_role": "Virin Lask, customer",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-06 09:00:00 UTC",
+    "escalated": "2026-03-06 09:10:00 UTC",
+    "updated": "2026-03-07 11:40:00 UTC",
+    "completed": "2026-03-07 11:40:00 UTC",
+    "primary_task_reference": "RT-033",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A scheduled return collection was missed. The collection team has the approved return reference and needs a replacement window within the customer’s availability.",
+  "initial_request": "Nobody collected my return. I can be home on 2026-03-07, 10:00–14:00. Please book another collection within that window.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the collection team to rebook within the customer's confirmed availability.",
+    "recipient": "Collections control, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The courier confirms collection and issues the matching receipt.",
+  "boundaries": "Collection receipt establishes carrier custody only, not merchant receipt or refund.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-06T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Collection for RT-033 was missed on the previous route day; parcel remains with customer. Approved return and packaging requirements are unchanged. Rebooking is at no charge."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-06T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Virin Lask, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Nobody collected my return. I can be home on 2026-03-07, 10:00–14:00. Please book another collection within that window."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-06T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Collections control, Plover Arc Logistics",
+      "body": "Please rebook RT-033 within 2026-03-07, 10:00–14:00 UTC and provide the actual collection receipt after pickup, not just a booking status."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-06T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Collections control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "RT-033 is rebooked for 2026-03-07, 11:00–13:00 UTC, no charge. The parcel has not yet been collected."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-07T11:40:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Dispatch chat",
+      "from": "Collection driver, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Collected RT-033 at 11:35 UTC on 2026-03-07. Inline receipt COL-033: one sealed return carton, accepted into carrier custody, customer copy issued in the return portal."
+    }
+  ],
+  "attachments": []
+}

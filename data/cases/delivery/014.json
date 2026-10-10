@@ -1,0 +1,82 @@
+{
+  "id": "delivery-014",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "014",
+  "title": "Case 014: Driver arrives after the business receiving desk closes",
+  "details": {
+    "source_role": "Rellin Vos, Vellum Rack receiving coordinator",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-15 09:00:00 UTC",
+    "escalated": "2026-02-15 09:10:00 UTC",
+    "updated": "2026-02-15 10:05:00 UTC",
+    "completed": "2026-02-15 10:05:00 UTC",
+    "primary_shipment": "DL-014",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The driver’s arrival was after the consignee’s receiving hours. The next attempt needs a staffed window, not a general opening time.",
+  "initial_request": "Our shop may be open late, but the receiving desk is not. Please check with me before booking another delivery.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Contact the business receiving coordinator to obtain the next staffed window.",
+    "recipient": "Rellin Vos, Vellum Rack receiving coordinator",
+    "channel": "Business portal",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "Dispatch confirms a new attempt within the agreed receiving hours.",
+  "boundaries": "Shop opening hours and staffed receiving hours are different facts.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-15T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-014 reached Vellum Rack Supplies after its receiving desk closed on the previous route day. The driver retained the parcel. We need a staffed receiving window to retry."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-15T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Rellin Vos, Vellum Rack receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our shop may be open late, but the receiving desk is not. Please check with me before booking another delivery."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-15T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Rellin Vos, Vellum Rack receiving coordinator",
+      "body": "What is the next staffed receiving window for DL-014? Please include the correct receiving entrance so dispatch can book the attempt."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-15T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Business portal",
+      "from": "Rellin Vos, Vellum Rack receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Use 2026-02-16, 10:00–13:00 UTC, at receiving door R2. I will have a receiving clerk there throughout that window."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-15T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Business dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Your relayed window is booked: DL-014, 2026-02-16, 10:00–13:00 UTC, receiving door R2. This confirms the next attempt, not receipt."
+    }
+  ],
+  "attachments": []
+}

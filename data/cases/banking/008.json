@@ -1,0 +1,73 @@
+{
+  "id": "banking-008",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "008",
+  "title": "Case 008: The purpose recorded with the transfer",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-02 09:00:00 UTC",
+    "updated": "2025-08-02 12:08:00 UTC",
+    "completed": "2025-08-02 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I paid Mallow Pottery Works for a kiln repair and have forgotten the purpose text I entered. They have emailed asking me to clarify it; please tell me what my transfer instruction recorded.",
+  "overview": "Elena Marlow contacted H&V through secure chat after Mallow Pottery Works asked her to clarify the purpose of a transfer. After completing identity checks, the agent searched the bank's record and provided Elena with the purpose text stored with her payment instruction. H&V did not send it to the supplier, and the supplier's recognition of the payment remains unknown.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Search H&V's payment journal for the purpose field on Elena's transfer instruction.",
+    "recorded_event": null
+  },
+  "outcome": "H&V's record showed the purpose as “Deposit for kiln repair estimate”. Elena received that recorded text in the secure portal. Whether Mallow Pottery Works recognises the payment is unknown.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-02T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "Mallow Pottery Works",
+      "to": "Elena Marlow",
+      "body": "I’m following up about your payment for the kiln repair. Please clarify the purpose of the transfer. “Please clarify the purpose.”"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-02T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Elena Marlow",
+      "to": "H&V service agent",
+      "body": "I’ve completed the identity checks in this secure chat. I paid Mallow Pottery Works for a kiln repair, but I can’t remember the purpose text I entered; please look up what my instruction recorded."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-02T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V payment journal",
+      "body": "I’m searching the purpose field on Elena Marlow’s transfer instruction under case HV-008. I’ll provide her with the bank’s recorded text only and won’t send or rewrite a message to the supplier."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-02T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V payment journal",
+      "to": "H&V service agent",
+      "body": "Purpose field on the matching transfer instruction: “Deposit for kiln repair estimate”."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-02T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V service agent",
+      "to": "Elena Marlow",
+      "body": "I found the purpose recorded with your transfer instruction: “Deposit for kiln repair estimate”. This is the text in H&V’s record; I have not sent it to Mallow Pottery Works."
+    }
+  ],
+  "attachments": []
+}

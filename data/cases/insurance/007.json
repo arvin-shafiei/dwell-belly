@@ -1,0 +1,92 @@
+{
+  "id": "insurance-007",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "007",
+  "title": "Case 007: Resending the Existing Policy",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-04-22 10:07:00 UTC",
+    "updated": "2025-04-22 15:42:00 UTC",
+    "completed": "2025-04-22 15:42:00 UTC",
+    "property": "107 Alder Walk, Brackenford, ZZ1 7ZZ",
+    "broker": "Fieldstone Cover, represented by Max",
+    "insurer": "Northmere Mutual Insurance"
+  },
+  "context": null,
+  "initial_request": "I have the policy for 107 Alder Walk, Brackenford, ZZ1 7ZZ, but I can’t find my copy. Could you send it to me again?",
+  "overview": "Ruby asked Max at Fieldstone Cover for a copy of the policy already held on file. Max escalated an internal check of the stored policy version and insured address; Policy Records confirmed both matched the file. Max sent the existing copy without changing its terms, and Ruby confirmed that she received a readable file.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Verify the stored policy version and insured address against Ruby’s record, then send the existing policy copy unchanged.",
+    "recorded_event": null
+  },
+  "outcome": "Ruby confirmed that she received a readable copy of the policy.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-04-22T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ruby Hale",
+      "to": "Max, Fieldstone Cover",
+      "body": "Could you send me another copy of the policy for 107 Alder Walk, Brackenford, ZZ1 7ZZ? I can’t locate the copy I was given."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-04-22T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Max, Fieldstone Cover",
+      "to": "Fieldstone Cover Policy Records",
+      "body": "Please check the insured address and version of the policy copy held on Ruby Hale’s file before I resend it. I’ll wait for confirmation so I can send the existing document without altering it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-04-22T12:21:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Fieldstone Cover Policy Records",
+      "to": "Max, Fieldstone Cover",
+      "body": "The stored policy INS-007 (version 1, issued 31 March 2025) names Ruby Hale and lists 107 Alder Walk, Brackenford, ZZ1 7ZZ, for 1 April 2025 to 31 March 2026. Its schedule and simplified terms are the current copy in our records."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-04-22T13:28:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Max, Fieldstone Cover",
+      "to": "Case file",
+      "body": "The address and stored policy version have been checked against Ruby’s file. I’ll resend that copy as held, with no changes to its terms."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-04-22T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Max, Fieldstone Cover",
+      "to": "Ruby Hale",
+      "body": "I’ve attached the existing policy copy, policy-copy.pdf, for 107 Alder Walk, Brackenford, ZZ1 7ZZ. It is the version verified against your file and has not been changed."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-04-22T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ruby Hale",
+      "to": "Max, Fieldstone Cover",
+      "body": "I’ve received the policy-copy.pdf file, and it opens clearly. Thank you."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "policy-copy.pdf",
+      "type": "pdf",
+      "path": "raw/Insurance Claims Processing/007/attachments/policy-copy.pdf",
+      "text": "Northmere Mutual Insurance\nProperty insurance policy | INS-007\nPOLICY SCHEDULE\nNamed insured: Ruby Hale\nInsured property: 107 Alder Walk, Brackenford, ZZ1 7ZZ\nIssued: 31 March 2025 | Version: 1 (unchanged stored copy)\nPeriod: 1 April 2025 00:00 to 31 March 2026 23:59 (UK local time)\nUse: owner-occupied dwelling | Premium: £420.00 for the period\nINSURED SECTIONS AND LIMITS\nBuildings: up to £250,000 for physical damage caused by fire, storm or escape of water.\nContents: up to £25,000 for physical damage from the same stated causes.\nEscape-of-water excess: £350; other covered damage excess: £200 per event.\nPOLICY CONDITIONS\nReport a loss promptly to Northmere Mutual Insurance with INS-007, location, date and circumstances.\nTake safe, reasonable steps to limit further damage; keep evidence and receipts.\nThe insurer reviews the cause, terms and excess before deciding any claim.\nChanges in occupancy or use must be reported; they do not alter cover without insurer agreement.\nEXCLUSIONS AND CANCELLATION\nWear and tear, gradual deterioration and deliberate damage by the insured are not insured causes.\nThere is no automatic cover for a newly acquired second property.\nRequest cancellation from the insurer; any effective date and premium adjustment require its confirmation.\nThis is the complete simplified contract for this fictional calibration scenario; no real-world cover is provided.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

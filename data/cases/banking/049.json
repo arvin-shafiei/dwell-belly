@@ -1,0 +1,81 @@
+{
+  "id": "banking-049",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "049",
+  "title": "Case 049: Acquiring Report Ready",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-23 09:00:00 UTC",
+    "updated": "2025-10-23 12:08:00 UTC",
+    "completed": "2025-10-23 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need the acquiring report for 1–7 July 2025 to review the card sales and adjustments for my shop.",
+  "overview": "Mara Venn selected the reporting period in H&V’s secure portal, then escalated when the report file was not yet available. After checking her authority, the agent asked H&V’s acquiring service to place the report for her. The secure portal subsequently showed the report as available. That status confirms report availability, not receipt of the sales proceeds.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent’s immediate action was to ask H&V’s acquiring service to prepare and place the report for the selected period for the authorised manager.",
+    "recorded_event": null
+  },
+  "outcome": "The portal showed the report for 1–7 July 2025 as available, with a report total of £236.00. This does not establish that any funds were credited.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-23T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Mara Venn",
+      "to": "H&V business portal",
+      "body": "I selected 1–7 July 2025 for North Quay Printworks’ acquiring report. I need the file to review the card sales and adjustments."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-23T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Venn",
+      "to": "H&V service agent",
+      "body": "I’m the authorised manager for the shop. The report for the period I selected is not showing as available, so I’m asking you to escalate the file request."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-23T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V acquiring service",
+      "body": "I checked the manager’s authority for this business. Please prepare and place the acquiring report for 1–7 July 2025 in the secure portal for the authorised user."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-23T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V acquiring service",
+      "to": "H&V service agent",
+      "body": "I placed the report for 1–7 July 2025 in the secure portal. Its report total is £236.00; placement confirms report availability only, not a settlement credit."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-23T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V business portal",
+      "to": "Mara Venn",
+      "body": "Report status: Available. File: merchant-report-049.csv. Period: 1–7 July 2025; card sales: £240.00; adjustments: -£4.00; report total: £236.00. Availability does not confirm that funds were credited."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "merchant-report-049.csv",
+      "type": "csv",
+      "path": "raw/Banking & Financial Services/049/attachments/merchant-report-049.csv",
+      "text": "period,card_sales_gbp,adjustments_gbp,report_total_gbp\n2025-07-01_to_2025-07-07,240.00,-4.00,236.00",
+      "text_source": "original"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "banking-034",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "034",
+  "title": "Case 034: Explaining a service fee",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-23 09:00:00 UTC",
+    "updated": "2025-09-23 12:08:00 UTC",
+    "completed": "2025-09-23 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I can see a £3.20 fee beside a foreign-currency cash withdrawal in my H&V secure portal, but I don't understand what the charge is for or how its amount was determined. Please check the fee against the tariff that applied to that transaction.",
+  "overview": "Mara Ellery queried a £3.20 fee shown against a foreign-currency cash withdrawal. After the request was escalated under case HV-034, an H&V agent compared the transaction record with the tariff applicable on its processing date. H&V sent a secure explanation identifying the fee basis and confirming the amount matched the applicable tariff entry. No refund decision was made.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Compare the recorded transaction type with the H&V tariff in force on the transaction's processing date.",
+    "recorded_event": null
+  },
+  "outcome": "H&V explained that the £3.20 debit was the fee for the recorded foreign-currency cash withdrawal, applied under the tariff entry in force on the processing date, and confirmed the amount matched that entry. Whether any refund is due remains undecided.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-23T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "A £3.20 service fee is shown beside your foreign-currency cash withdrawal. The transaction and fee are listed in your secure portal."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-23T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellery",
+      "to": "H&V service agent",
+      "body": "I don't understand the £3.20 fee shown against this withdrawal. Please escalate this and check which tariff entry applied and how it accounts for the amount."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-23T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V transaction records",
+      "body": "I am starting the review by matching the recorded transaction type and processing date against the tariff in force on that date. Case HV-034; no refund or account change is authorised by this review."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-23T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V case record",
+      "body": "I checked the transaction record against the applicable tariff entry. The record identifies a foreign-currency cash withdrawal, and the £3.20 fee matches the entry applicable to that transaction on its processing date."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-23T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "I have checked the transaction against the tariff in force on its processing date. The £3.20 debit is the fee for the recorded foreign-currency cash withdrawal, and its amount matches the applicable tariff entry. This explains the charge; no refund decision has been made."
+    }
+  ],
+  "attachments": []
+}

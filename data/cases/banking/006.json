@@ -1,0 +1,73 @@
+{
+  "id": "banking-006",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "006",
+  "title": "Case 006: Two Similar Transfers",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-07-29 09:00:00 UTC",
+    "updated": "2025-07-29 12:08:00 UTC",
+    "completed": "2025-07-29 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Mira, the account holder, wants H&V to establish whether two similar outgoing transfer entries are one instruction shown twice or two separate instructions, and asks whether the second can be stopped or returned.",
+  "overview": "Mira saw two similar entries to the same utility payee for the same amount in her secure portal and escalated because she intended to make only one transfer. H&V checked the independent references for her own payment instructions and confirmed there were two separate instructions with different statuses.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At escalation, compare the number and independent references of Mira’s payment instructions in H&V’s journal before advising or making any change.",
+    "recorded_event": null
+  },
+  "outcome": "H&V confirmed two separate payment instructions: one completed and one pending. No cancellation or return of the second instruction was initiated.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-29T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Mira Ellison",
+      "body": "Your payment activity shows two similar outgoing transfer entries to North Quay Utilities for £84.20. One is marked Completed and the other Pending."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-29T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mira Ellison",
+      "to": "H&V agent",
+      "body": "I own this account and only meant to make one transfer. Please check whether these are separate instructions, and whether the pending one has been stopped or returned."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-29T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "H&V payment instruction journal",
+      "body": "I’m checking the count and independent instruction references for Mira’s own payment instructions before advising. I have not cancelled or returned either instruction."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-29T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V payment instruction journal",
+      "to": "H&V agent",
+      "body": "Journal match: two distinct instruction references for the same payee and amount. One instruction is Completed; the other is Pending."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-29T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Mira Ellison",
+      "body": "I’ve confirmed these are two separate payment instructions, not one instruction duplicated in the display. One is Completed and the other is Pending; I have not cancelled or initiated a return for the pending instruction."
+    }
+  ],
+  "attachments": []
+}

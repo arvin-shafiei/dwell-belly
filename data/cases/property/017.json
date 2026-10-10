@@ -1,0 +1,151 @@
+{
+  "id": "property-017",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "017",
+  "title": "Case 017: Kitchen Extractor Fan Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2026-09-11 08:37:27 UTC",
+    "updated": "2026-09-21 03:42:31 UTC",
+    "completed": "2026-09-21 03:42:31 UTC",
+    "property": "Flat 1, 31 Juniper Mews, Cedarford, ZZ7 7ZZ"
+  },
+  "context": null,
+  "initial_request": "Extractor fan in kitchen does not seem to work (turn on). May be a simple technician fix. Thank you",
+  "overview": "The tenant reported that the kitchen extractor fan did not appear to turn on. Northbridge Lettings contacted the landlord, who advised that a switch to the right-hand side of the hob needed to be switched on. The tenant located the button and confirmed the fan was working. The job was closed as completed without payment.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The tenant found the switch following the landlord’s instructions and confirmed that the extractor fan was working. The job was closed without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-11T08:37:27Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Extractor fan in kitchen does not seem to work (turn on). May be a simple technician fix. Thank you"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-11T08:38:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-13T22:59:18Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 1, 31 Juniper Mews, Cedarford, ZZ7 7ZZ\n\nGood day Clara\n\nI see your request for the Extractor fan, I will contact the landlord to see what we can do to get someone to come and see to it.\n\nKind regards\n\nNolan"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-13T23:05:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 1, 31 Juniper Mews, Cedarford, ZZ7 7ZZ\n\nGood day\n\nI have received a maintenance request from the tenant regarding the extractor fan. Please see below description from the tenant, and the attached Picture.\n\n**(Extractor fan in kitchen does not seem to work (turn on). May be a simple technician fix)**\n\nPlease let me know what you would like to do and if you would like to use your own contractor for this or would you prefer us to get one of our contractors to see to this?\n\nKind regards\n\nAttachment referenced: picture; unavailable."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-13T23:05:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-09-14T02:25:05Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Message received from landlord/tenant. Please review and proceed manually."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-09-14T02:25:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "Thank you!"
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-09-15T22:29:06Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "There is a switch to the righthand side of the hob when needs to be switched on."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-09-16T00:10:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 1, 31 Juniper Mews, Cedarford, ZZ7 7ZZ\n\nGood afternoon Clara,\n\nI trust you are well.\n\nThe landlord has advised that there is a switch to the right-hand side of the hob which needs to be switched on. Please could you check this and let me know if everything is working correctly?\n\nKind regards,\nImogen\nNorthbridge Lettings"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-09-16T00:10:40Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Internal",
+      "body": "Landlord suggested tenant check on the right hand of the hob there should be a switch. Awaiting tenant response."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-09-16T08:55:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "The customer confirms that the extractor fan is working after locating the button."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-09-21T03:41:54Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 1, 31 Juniper Mews, Cedarford, ZZ7 7ZZ\n\nThank you, we will close this job down now.\n\nKind Regards\n\nEllis"
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-09-21T03:42:31Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Internal",
+      "body": "Clarke was able to turn on extractor"
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-09-21T03:42:31Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Internal",
+      "body": "Task has been completed without payment"
+    }
+  ],
+  "attachments": []
+}

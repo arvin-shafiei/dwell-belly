@@ -1,0 +1,73 @@
+{
+  "id": "banking-021",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "021",
+  "title": "Case 021: Has My Replacement Card Been Sent?",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-28 09:00:00 UTC",
+    "updated": "2025-08-28 12:08:00 UTC",
+    "completed": "2025-08-28 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need to know whether the replacement card ordered for my H&V account has actually been dispatched. The secure portal confirmed that my request was accepted, but I cannot see confirmation of delivery or dispatch.",
+  "overview": "Mara Ellison contacted H&V through secure chat to escalate the status of her replacement card request, which the secure portal had previously confirmed as accepted. The agent checked the card journal, which confirmed that dispatch had been registered. The card’s receipt by Mara remains unknown.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent’s immediate step is to check the card journal for a recorded dispatch entry.",
+    "recorded_event": null
+  },
+  "outcome": "The card journal confirms that dispatch was registered. There is no confirmation that Mara has received the card.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-28T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Your replacement card request has been accepted. This confirms the request was received; it does not confirm dispatch or delivery."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-28T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "Harrow & Vale Bank plc agent",
+      "body": "I’m following up because the portal only says my replacement card request was accepted. Please check whether dispatch has been registered; I don’t have confirmation that the card has arrived."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-28T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "Card journal",
+      "body": "I’m checking the card journal for the dispatch record associated with case HV-021. The customer has asked whether dispatch was registered; please return the recorded status only."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-28T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "Card journal",
+      "to": "H&V agent",
+      "body": "Dispatch status: registered. Receipt by the customer is not recorded."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-28T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Card status: dispatch registered. We do not have confirmation that you have received the card."
+    }
+  ],
+  "attachments": []
+}

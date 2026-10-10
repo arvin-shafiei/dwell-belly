@@ -7,7 +7,7 @@ Downloaded 2026-10-10. These are copies; the originals win if they differ.
 | [`hacker-guide.md`](hacker-guide.md) | Event guide: agenda, tracks, prizes, judging, submission, fair play | Notion Hacker Guide |
 | [`rules.md`](rules.md) | Official Rules, Judging & Submission Guide v1 | Google Doc export |
 | [`elevenlabs-guide.md`](elevenlabs-guide.md) | ElevenLabs Hacker Guide (embedded image removed) | Google Doc export |
-| [`public-cases/`](public-cases/) | 200 synthetic practice cases, 50 per track. **Ours: `Delivery & Logistics/`** | github.com/DwellyOrg/HackatonPublicCases |
+| [`../../data/`](../../data/README.md) | 200 synthetic practice cases (moved to `data/`, raw + parsed JSON) | github.com/DwellyOrg/HackatonPublicCases |
 
 ## Key facts
 

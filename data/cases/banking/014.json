@@ -1,0 +1,73 @@
+{
+  "id": "banking-014",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "014",
+  "title": "Case 014: Direct Debit mandate status",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-14 09:00:00 UTC",
+    "updated": "2025-08-14 12:08:00 UTC",
+    "completed": "2025-08-14 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I saw a Direct Debit collection to Northmere Water Services on my March statement, but I have not seen another one. Please tell me whether the mandate is currently active; I am not asking you to cancel it or assess what I owe the organisation.",
+  "overview": "Mara Ellery, the account holder, asked H&V to check the bank-record status of her Direct Debit mandate after seeing a historic collection on her March 2025 statement. The agent checked the mandate record and H&V displayed its current status in the secure portal. This confirms the bank-side status only; it does not establish any obligation to Northmere Water Services.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent's first action was to request a current status check from H&V's mandate journal, without making any change to the mandate.",
+    "recorded_event": null
+  },
+  "outcome": "The secure portal shows the Northmere Water Services Direct Debit mandate as Active, checked on 14 August 2025. Any obligation to the organisation remains unassessed; the absence of newer collections does not by itself mean the mandate was cancelled.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-14T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "Your statement for the period ending 31 March 2025 shows a Direct Debit collection to Northmere Water Services. This is a historic statement entry."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-14T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellery",
+      "to": "H&V service agent",
+      "body": "I saw that collection on my March statement and have not seen another one. Could you check whether the mandate is currently active? Please don't cancel it; I only need its status."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-14T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V mandate journal",
+      "body": "For case HV-014, please check the current bank-record status of Mara Ellery's Northmere Water Services Direct Debit mandate. I am requesting a status check only and am not making a change."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-14T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V mandate journal",
+      "to": "H&V service agent",
+      "body": "I checked the payer-side mandate record on 14 August 2025. The Northmere Water Services Direct Debit mandate status is Active."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-14T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "Direct Debit mandate — Northmere Water Services — Status: Active. Status checked 14 August 2025."
+    }
+  ],
+  "attachments": []
+}

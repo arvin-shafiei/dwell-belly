@@ -1,0 +1,73 @@
+{
+  "id": "banking-046",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "046",
+  "title": "Case 046: Revoke a former employee’s role",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-17 09:00:00 UTC",
+    "updated": "2025-10-17 12:08:00 UTC",
+    "completed": "2025-10-17 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I am the verified business administrator for Larkmere Studio Ltd. The secure portal still shows former employee Owen Bell as an active Payroll Approver. Please revoke that role; we will review any operations previously authorised under it separately.",
+  "overview": "Mara saw Owen Bell’s Payroll Approver role listed as active in the business secure portal and escalated the issue by verified call. After checking her mandate and confirming the specific role to remove, the agent submitted the protected revocation instruction. H&V’s admin log then confirmed that the role was revoked.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Submit Mara’s verified instruction to the H&V admin process to revoke Owen Bell’s Payroll Approver role.",
+    "recorded_event": null
+  },
+  "outcome": "H&V’s admin log confirms that Owen Bell’s Payroll Approver role was revoked. The status of any operations previously authorised under that role remains under separate review.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-17T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "Active role: Payroll Approver. Assigned user: Owen Bell. Business: Larkmere Studio Ltd."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-17T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellery",
+      "to": "H&V business banking agent",
+      "body": "My identity and administrator mandate have been checked. I confirm that Owen Bell is a former employee and instruct H&V to revoke his Payroll Approver role; please keep the review of any earlier operations separate."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-17T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V business banking agent",
+      "to": "H&V admin process",
+      "body": "I am submitting the verified administrator’s instruction to revoke Owen Bell’s Payroll Approver role for Larkmere Studio Ltd. The administrator’s mandate and the role to be removed have been checked."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-17T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V admin process",
+      "to": "H&V business banking agent",
+      "body": "Revocation instruction processed. The admin-log status is available to the business administrator in the secure portal."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-17T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "Admin log: Payroll Approver role for Owen Bell — REVOKED."
+    }
+  ],
+  "attachments": []
+}

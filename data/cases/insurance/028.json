@@ -1,0 +1,84 @@
+{
+  "id": "insurance-028",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "028",
+  "title": "Case 028: Possible duplicate premium debit",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-06-24 10:07:00 UTC",
+    "updated": "2025-06-24 15:42:00 UTC",
+    "completed": "2025-06-24 15:42:00 UTC",
+    "property": "128 Hazel Walk, Brackenford, ZZ4 1ZZ",
+    "broker": "Pat at Hawthorn Risk",
+    "insurer": "Crownmere Insurance"
+  },
+  "context": null,
+  "initial_request": "I own the property at 128 Hazel Walk, Brackenford, ZZ4 1ZZ, and I can see two £286.40 debits on 18 and 20 June 2025. Could you check what each payment was for? I have not been able to tell whether they are duplicates.",
+  "overview": "Lydia reported two debits of the same amount to Pat at Hawthorn Risk. Pat recorded the transaction details, including a masked payment reference, and asked Crownmere Insurance's financial team to reconcile them. The team matched the 18 June debit to June's instalment and the 20 June debit to July's instalment collected in advance. Pat passed that result to Lydia, who confirmed she had received it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Send the two transaction amounts, transaction dates (18 and 20 June 2025), and masked reference to Crownmere Insurance's financial team for reconciliation, without promising a refund.",
+    "recorded_event": null
+  },
+  "outcome": "Crownmere Insurance's financial team confirmed that the 20 June £286.40 debit was July's instalment collected in advance rather than a second June payment, and Pat communicated this result to Lydia.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-06-24T10:07:00Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Lydia King",
+      "to": "Pat at Hawthorn Risk",
+      "body": "I’m calling about two £286.40 debits showing on 18 and 20 June 2025 for the property at 128 Hazel Walk, Brackenford, ZZ4 1ZZ. They look identical to me, but I don’t know whether both were for the same instalment."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-06-24T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Pat at Hawthorn Risk",
+      "to": "Hawthorn Risk case record",
+      "body": "Lydia reports two debits of £286.40 on 18 and 20 June 2025 and provided a masked payment reference ending 41. The purpose of each transaction has not yet been verified."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-06-24T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Pat at Hawthorn Risk",
+      "to": "Crownmere Insurance Financial Team",
+      "body": "Please reconcile the two reported £286.40 debits for Lydia King, policy billing reference INS-028, dated 18 and 20 June 2025, with a masked payment reference ending 41. She is asking whether the second debit duplicates the first; please confirm the recorded purpose of each transaction."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-06-24T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Crownmere Insurance Financial Team",
+      "to": "Pat at Hawthorn Risk",
+      "body": "We have checked the billing record against the transactions dated 18 and 20 June 2025. The debit on 18 June is for the June premium instalment; the 20 June debit is for the July instalment collected in advance under this account's schedule. Both are £286.40. The second is not another collection of the June instalment."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-06-24T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Pat at Hawthorn Risk",
+      "to": "Lydia King",
+      "body": "Crownmere Insurance's financial team has checked the two transactions and confirmed that 18 June's £286.40 was the June instalment and 20 June's £286.40 was the July instalment collected in advance, not a duplicate of June's payment. I’m passing on their finding so you can match it to your own transaction records."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-06-24T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Lydia King",
+      "to": "Pat at Hawthorn Risk",
+      "body": "Thanks, I’ve received the financial team's explanation that the second debit was for a separate instalment. I’ll check the two entries against that information."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,82 @@
+{
+  "id": "delivery-006",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "006",
+  "title": "Case 006: Customer requests collection from a staffed pickup point",
+  "details": {
+    "source_role": "Pella Rusk, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-07 09:00:00 UTC",
+    "escalated": "2026-02-07 09:10:00 UTC",
+    "updated": "2026-02-08 14:35:00 UTC",
+    "completed": "2026-02-08 14:35:00 UTC",
+    "primary_shipment": "DL-006",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The customer has already selected an available staffed pickup point. Routing confirms this parcel is eligible for redirection before delivery.",
+  "initial_request": "Please send DL-006 to Copperfin Counter, rather than my home. I can collect there on 2026-02-08.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the routing team to move an eligible shipment to the customer's chosen available pickup point.",
+    "recipient": "Routing, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The pickup point confirms the parcel is available and the customer receives collection instructions.",
+  "boundaries": "Ready for collection is not collected. Do not invent a universal identification requirement.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-07T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-006 is redirectable without charge before route release. Copperfin Counter has space and is open 10:00–18:00 UTC on 2026-02-08. We need the customer’s recorded choice before transfer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-07T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Pella Rusk, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please send DL-006 to Copperfin Counter, rather than my home. I can collect there on 2026-02-08."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-07T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Routing, Plover Arc Logistics",
+      "body": "Pella has chosen Copperfin Counter in the verified order thread. Please redirect eligible parcel DL-006 and notify us only when the counter has physically received it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-08T14:25:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Pickup-point portal",
+      "from": "Copperfin Counter supervisor",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-006 was scanned into our staffed stock at 14:20 UTC. It is available for collection until 2026-02-10, 18:00. Bring the collection reference and the identification specified in the order notice."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-08T14:35:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Pella Rusk, recipient",
+      "body": "Copperfin Counter confirms DL-006 is ready. Collect during 10:00–18:00 UTC by 2026-02-10 at 18:00, using the reference in your order notice and its stated identification requirement."
+    }
+  ],
+  "attachments": []
+}

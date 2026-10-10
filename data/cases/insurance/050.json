@@ -1,0 +1,84 @@
+{
+  "id": "insurance-050",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "050",
+  "title": "Case 050: Estimator Contact for a Property Claim",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-08-29 10:07:00 UTC",
+    "updated": "2025-08-29 15:42:00 UTC",
+    "completed": "2025-08-29 15:42:00 UTC",
+    "property": "150 Beech Walk, Brackenford, ZZ6 5ZZ",
+    "broker": "Firbank Cover",
+    "insurer": "Northmere Insurance"
+  },
+  "context": null,
+  "initial_request": "I own the property at 150 Beech Walk, Brackenford, ZZ6 5ZZ. Northmere Insurance has asked for the estimator's contact, and I need help confirming what contact can be shared and making sure it is limited to this claim.",
+  "overview": "Northmere Insurance asked Firbank Cover agent Sky Morgan to obtain the estimator Martin Clark's work contact for questions about the repair estimate already recorded on claim CLM-050. Sky checked with Lauren Davis for Martin's protected-portal work handle contractor/EST-050 and permission to share it. After Lauren confirmed Martin had agreed to sharing his work contact for this claim, Sky sent only that fictional protected-portal handle through a protected channel. Northmere Insurance confirmed receipt; no decision on the estimate was recorded.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, confirm Martin Clark's current work contact and permission to share it with Northmere Insurance for this claim, and disclose only his work contact—not a personal number.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Insurance confirmed that it received Martin Clark's work contact; no decision on the estimate is recorded.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-29T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Rowan Patel, Northmere Insurance claims handler",
+      "to": "Sky Morgan, Firbank Cover",
+      "body": "The repair estimate is already recorded under claim CLM-050, and I need to clarify a few points with its author. Please obtain Martin Clark's appropriate work contact; we do not need his personal number."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-29T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Sky Morgan, Firbank Cover",
+      "to": "Lauren Davis",
+      "body": "Northmere Insurance has asked for Martin's contact so its handler can clarify points about the repair estimate. Before I pass anything on, could you confirm his current work contact and that he agrees to its being shared with the insurer for this claim?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-29T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Lauren Davis",
+      "to": "Sky Morgan, Firbank Cover",
+      "body": "Martin has confirmed that you may share his work contact with Northmere Insurance for this claim. Martin has enabled his work messaging handle contractor/EST-050 in the shared protected claims portal; the assigned Northmere handler can message him through that handle for CLM-050. Please use that route only, not his personal number."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-29T13:28:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Sky Morgan, Firbank Cover",
+      "to": "Firbank Cover internal claim record",
+      "body": "Lauren confirmed Martin's permission to share his work contact with Northmere Insurance for CLM-050. I will pass only his fictional protected-portal work handle contractor/EST-050 to the assigned handler, not a personal contact."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-29T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Sky Morgan, Firbank Cover",
+      "to": "Rowan Patel, Northmere Insurance claims handler",
+      "body": "Lauren has confirmed Martin's permission to share his work contact for this claim. I have supplied Martin's protected-portal work handle contractor/EST-050 through the claim channel; the assigned handler can contact him there about the estimate. No personal contact details were included."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-29T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Rowan Patel, Northmere Insurance claims handler",
+      "to": "Sky Morgan, Firbank Cover",
+      "body": "I confirm that Northmere Insurance received Martin Clark's protected-portal work handle contractor/EST-050 through the claim channel and can use it to ask about the estimate. This confirms receipt only; the estimate remains under review."
+    }
+  ],
+  "attachments": []
+}

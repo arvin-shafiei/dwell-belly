@@ -1,0 +1,84 @@
+{
+  "id": "insurance-020",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "020",
+  "title": "Case 020: Sale of Insured Home",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-31 10:07:00 UTC",
+    "updated": "2025-05-31 15:42:00 UTC",
+    "completed": "2025-05-31 15:42:00 UTC",
+    "property": "120 Beech Walk, Brackenford, ZZ3 2ZZ",
+    "broker": "Fairholt Cover",
+    "insurer": "Northmere Insurance"
+  },
+  "context": null,
+  "initial_request": "I’ve sold my home at 120 Beech Walk, Brackenford, ZZ3 2ZZ, and would like my property policy stopped. Please let me know what you need from me to deal with this.",
+  "overview": "Ethan told Meg Rowan at Fairholt Cover that he had sold the insured home and wanted the policy stopped, but initially gave no completion date. Meg asked him to confirm the date and his requested action; after Ethan replied, Meg sent the request to Northmere Insurance. The insurer reviewed the sale and cancellation request but declined to backdate cancellation to 18 May on the information supplied. It confirmed the policy remains active and asked Ethan for a prospective cancellation date; Meg relayed this and made clear no premium adjustment had been agreed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Meg needed to obtain Ethan’s completion date and then send his request to stop the policy to Northmere Insurance.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Insurance reviewed the cancellation request and confirmed that the policy remains active, not cancelled on 18 May; Meg informed Ethan of the status and the need to confirm a prospective date if he still wishes to cancel.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-31T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ethan Brooks",
+      "to": "Meg Rowan, Fairholt Cover",
+      "body": "I’ve sold my home at 120 Beech Walk, Brackenford, ZZ3 2ZZ, and want to stop the property policy. I haven’t included the completion date here; please tell me what you need to take this forward."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-31T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Meg Rowan, Fairholt Cover",
+      "to": "Ethan Brooks",
+      "body": "Please confirm the date ownership transferred and whether you want us to ask Northmere Insurance to end the policy. I’ll need that information before I can pass on a clear request."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-31T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ethan Brooks",
+      "to": "Meg Rowan, Fairholt Cover",
+      "body": "Ownership transferred on 18 May 2025, and I want the policy stopped in connection with the sale. Please send that request to the insurer and let me know what it says."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-31T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Meg Rowan, Fairholt Cover",
+      "to": "Northmere Insurance",
+      "body": "Ethan Brooks has reported the sale of 120 Beech Walk, Brackenford, ZZ3 2ZZ, with ownership transferring on 18 May 2025. He has asked for the property policy to be stopped in connection with the sale; please process the request and confirm the status shown on your records."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-31T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Insurance",
+      "to": "Meg Rowan, Fairholt Cover",
+      "body": "We have reviewed the sale notification and Ethan's request to stop the policy. We cannot backdate a cancellation to 18 May 2025 on the information supplied; the policy remains active. If Ethan still wishes to cancel, please obtain his preferred prospective cancellation date for our review. Any premium adjustment would be considered separately."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-05-31T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Meg Rowan, Fairholt Cover",
+      "to": "Ethan Brooks",
+      "body": "Northmere Insurance has reviewed your sale notification and cancellation request. It says it cannot backdate cancellation to 18 May 2025 on the information supplied, and that the policy remains active. If you still wish to cancel, please confirm your preferred prospective date so I can pass it on; the insurer would consider any premium adjustment separately."
+    }
+  ],
+  "attachments": []
+}

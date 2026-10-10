@@ -1,0 +1,82 @@
+{
+  "id": "delivery-026",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "026",
+  "title": "Case 026: Parcel was handed to the wrong address and the carrier located it",
+  "details": {
+    "source_role": "Neris Fawn, intended recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-27 09:00:00 UTC",
+    "escalated": "2026-02-27 09:10:00 UTC",
+    "updated": "2026-02-28 13:30:00 UTC",
+    "completed": "2026-02-28 13:30:00 UTC",
+    "primary_shipment": "DL-026",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "Carrier review has located a misdelivered parcel. Recovery should be managed by the carrier without exposing the other household’s details.",
+  "initial_request": "Please have the carrier recover my parcel and deliver it to my verified address. I do not want to contact the other household myself.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier to arrange recovery and correct redelivery without sharing third-party contact details.",
+    "recipient": "Recovery team, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The intended recipient confirms receipt and the carrier records the corrected handover.",
+  "boundaries": "Do not reveal the wrong-address resident’s name, address or contact details. No contents-quality claim.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-27T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-026 was handed over at the wrong stop. We contacted that address using carrier records and located the sealed parcel. Third-party contact details are restricted to our recovery team."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-27T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Neris Fawn, intended recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please have the carrier recover my parcel and deliver it to my verified address. I do not want to contact the other household myself."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-27T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Recovery team, Plover Arc Logistics",
+      "body": "Arrange carrier recovery and correct redelivery of DL-026 to Neris’s verified order address. Keep the other household’s details within your team and confirm the corrected handover."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-28T13:20:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Recovery team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our driver recovered DL-026 and handed it to Neris at the correct order address at 13:10 UTC on 2026-02-28. The incorrect stop record is corrected; recovery and redelivery scans are present."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-28T13:30:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Neris Fawn, intended recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I received DL-026 at 13:10 UTC today. The parcel marking matches my order."
+    }
+  ],
+  "attachments": []
+}

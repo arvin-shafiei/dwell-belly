@@ -1,0 +1,169 @@
+{
+  "id": "property-014",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "014",
+  "title": "Case 014: Front Door Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-06-06 11:55:37 UTC",
+    "updated": "2024-06-07 21:45:09 UTC",
+    "completed": "2024-06-07 09:17:48 UTC",
+    "property": "Flat 12, 52 Meadow Row, Kingshaven, ZZ9 5ZZ"
+  },
+  "context": null,
+  "initial_request": "Front door you have to slam to shut like the back. when fridge man arrived he even commented and said it will cause a shatter in glass- he said he was also going to report to you.",
+  "overview": "The tenant reported that the front door was increasingly difficult to close and had to be slammed; the contractor also reported that the door and frame wobbled. The new fridge freezer had been fitted. The agency contacted the landlord, who suggested using the key to open the latch before closing the door and said a contractor could look at it next month if needed. The tenant tried the key method, found it worked, and agreed to monitor the door and report any recurrence. The request was completed without payment.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The tenant tried opening the latch with the key before closing the door, and it worked. She will continue using this method, monitor the issue and let the agency know if it recurs. The request was closed without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-06-06T11:55:37Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request description: Front door you have to slam to shut like the back. when fridge man arrived he even commented and said it will cause a shatter in glass- he said he was also going to report to you."
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-06-06T11:55:37Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "**[AI Intake Classification]**\n\n**Tenant said:**\n\n> Front door you have to slam to shut like the back. when fridge man arrived he even commented and said it will cause a shatter in glass- he said he was also going to report to you.\n\n**Issue:**\n\nAppliances\n**Severity:** ROUTINE\n**Confidence:** medium\n\n**Tenant's clarifying Q&A:**\n\n**Q:** What is the make and model of the fridge or freezer? This is usually on a label inside the fridge compartment.\n**A:** *(not answered)*\n**Q:** Is it the fridge, the freezer, or both that are affected?\n**A:** *(not answered)*\n**Q:** Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n**A:** *(not answered)*\n**Q:** Are there any pets at the property?\n**A:** *(not answered)*"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-06-06T11:56:30Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-06-06T12:01:07Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Oliver called to tell me this - he said that the door frame and door literally wobble when trying to shut this door.cl"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-06-06T12:05:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 12, 52 Meadow Row, Kingshaven, ZZ9 5ZZ\n\nGood afternoon,\n\nTo confirm the new fridge freezer has been fitted at Flat 12, 52 Meadow Row, Kingshaven, ZZ9 5ZZ.\n\nYour tenant has reported an issue with the front door, which our contractor has also phoned up to report.\n\nThe front door is become increasing difficult to shut they are having to slam this shut and the whole door and frame wobble.\n\nPlease let me know if we can get someone out to have a look at this.\n\nKind regards\n\nAva"
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-06-06T12:05:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 12, 52 Meadow Row, Kingshaven, ZZ9 5ZZ\n\nThank you for reporting the front door, our contractor has called me to also report.\n\nWe will contact your landlord and come back to you.\n\nKind regards\n\nAva"
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-06-06T12:05:59Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Ava Sawyer. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-06-07T07:44:13Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode.\nValidation: (Priority cannot be decreased to 5. Current priority is 7.)"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-06-07T07:44:13Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "The customer mentions a workaround for a recurrent door issue and suggests the contractor can look at it next month."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-06-07T09:13:59Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Email from landlord:\n\nIt’s done this before, instead of slamming it I would put key in to open latch up then close the door.\n\nIt’s actually better in some ways because you can’t lock yourself out which I did a few times.\n\nCan they try this first then we’ll get contractor to look at it next month?.cl"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-06-07T09:14:07Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "The caller, Miles, discussed an issue with her front door with the agent, Fletcher. The landlord suggested using the key to open the latch before closing the door as a solution, which Miles agreed to try."
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-06-07T09:16:06Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "spoke to Fletcher informed her of what landlord used to do and she said actually she did that this morning and worked - so she is going to monitor it and let us know if issue going forward.ava"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-06-07T09:17:15Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 12, 52 Meadow Row, Kingshaven, ZZ9 5ZZ\n\nGood morning,\n\nI just wanted to let you know i have spoken with your tenant and she actually did that this morning with using of the key and then closing it and it worked so she is going to continue to do this and let us know if becomes an issue. So I will close this down unless she comes back to us.\n\nThank you\n\nKind regards\n\nAva\nNorthbridge Lettings"
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-06-07T09:17:48Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "LL INFORMED US ON THE KNACK OF HOW TO CLOSE THE DOOR - TT DOING THIS WAY FOR NOW AND IF BECOMES ISSUE WILL LET US KNOW.COMPLETE.AVA"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-06-07T09:17:48Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-06-07T21:45:09Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Thank you Ava"
+    }
+  ],
+  "attachments": []
+}

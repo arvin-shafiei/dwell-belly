@@ -1,0 +1,73 @@
+{
+  "id": "banking-017",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "017",
+  "title": "Case 017: The Standing Order That Did Not Run",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-20 09:00:00 UTC",
+    "updated": "2025-08-20 12:08:00 UTC",
+    "completed": "2025-08-20 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need to know whether my monthly standing order for rent was sent and, if it was not, why. The recipient says they have not received it.",
+  "overview": "Mara Ellery contacted Harrow & Vale Bank after the recipient of her monthly rent standing order said no payment was visible. She asked the bank to check the specific scheduled run. The agent checked the standing-order journal, and the secure portal displayed that it was not executed because there were insufficient cleared funds at the scheduled processing time.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the journal entry for Mara’s specific scheduled standing-order run and establish its recorded status and reason.",
+    "recorded_event": null
+  },
+  "outcome": "The secure portal shows “Not executed — insufficient cleared funds at the scheduled processing time.” H&V’s records show that no payment was made for that run; the customer has not been advised to pay again without first checking for any new or pending activity.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-20T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "Elm Quay Property Services",
+      "to": "Mara Ellery",
+      "body": "I can’t see your monthly rent payment for this cycle. Please check with your bank whether it was sent."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-20T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellery",
+      "to": "Harrow & Vale Bank plc agent",
+      "body": "I’ve been told my rent payment hasn’t arrived. Please check the scheduled standing-order run and tell me whether H&V executed it and what status the bank has recorded."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-20T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "Harrow & Vale Bank plc agent",
+      "to": "H&V standing-order journal",
+      "body": "I am checking the journal entry for Mara Ellery’s scheduled monthly rent standing order. I need the recorded outcome and any reason shown for that specific run."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-20T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V standing-order journal",
+      "to": "Harrow & Vale Bank plc agent",
+      "body": "I found the scheduled run recorded as not executed. The journal reason is insufficient cleared funds at the scheduled processing time."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-20T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "Standing-order status: Not executed — insufficient cleared funds at the scheduled processing time."
+    }
+  ],
+  "attachments": []
+}

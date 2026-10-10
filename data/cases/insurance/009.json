@@ -1,0 +1,92 @@
+{
+  "id": "insurance-009",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "009",
+  "title": "Case 009: Typo in the Property Policy Address",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-04-28 10:07:00 UTC",
+    "updated": "2025-04-28 15:42:00 UTC",
+    "completed": "2025-04-28 15:42:00 UTC",
+    "property": "109 Maple Walk, Brackenford, ZZ1 9ZZ",
+    "broker": "Heathmere Brokers",
+    "insurer": "Alderfen Mutual"
+  },
+  "context": null,
+  "initial_request": "I checked the policy against my application and noticed that the property address is wrong: it includes a flat number that should not be there. Please arrange for the insurer to issue a corrected policy showing 109 Maple Walk, Brackenford, ZZ1 9ZZ.",
+  "overview": "Emma Kerr reported that the issued policy showed an incorrect flat number, while her application gave the correct address. Josh at Heathmere Brokers confirmed he would request a reissued document rather than edit the PDF, asked Alderfen Mutual to correct it, and then sent the replacement policy to Emma. Emma confirmed she received it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Ask Alderfen Mutual to reissue the policy with the exact address 109 Maple Walk, Brackenford, ZZ1 9ZZ; do not amend the PDF independently.",
+    "recorded_event": null
+  },
+  "outcome": "The corrected policy was received and forwarded to Emma, who confirmed receipt.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-04-28T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Emma Kerr",
+      "to": "Josh, Heathmere Brokers",
+      "body": "I have checked the issued policy against my application and it lists a flat number that is not part of my address. The correct property address is 109 Maple Walk, Brackenford, ZZ1 9ZZ; could you arrange a corrected policy?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-04-28T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Josh, Heathmere Brokers",
+      "to": "Emma Kerr",
+      "body": "Thanks for flagging the mismatch. I will ask Alderfen Mutual to reissue the document with the address exactly as shown on your application, rather than changing the PDF myself."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-04-28T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Josh, Heathmere Brokers",
+      "to": "Alderfen Mutual",
+      "body": "Please reissue Emma Kerr’s policy with the property address shown exactly as 109 Maple Walk, Brackenford, ZZ1 9ZZ. The issued copy includes an incorrect flat number; the application records the address without one."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-04-28T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alderfen Mutual",
+      "to": "Josh, Heathmere Brokers",
+      "body": "Attached is the reissued policy showing 109 Maple Walk, Brackenford, ZZ1 9ZZ. The replacement file is named corrected-policy.pdf. Reissue version 2 corrects the printed address on INS-009 without altering the 1 April 2025 to 31 March 2026 period or its terms."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-04-28T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Josh, Heathmere Brokers",
+      "to": "Emma Kerr",
+      "body": "Alderfen Mutual has supplied the corrected policy, and I have attached corrected-policy.pdf for you. It shows the address as 109 Maple Walk, Brackenford, ZZ1 9ZZ."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-04-28T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Emma Kerr",
+      "to": "Josh, Heathmere Brokers",
+      "body": "I have received corrected-policy.pdf and checked the address; it now matches 109 Maple Walk, Brackenford, ZZ1 9ZZ. Thank you for sending it over."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "corrected-policy.pdf",
+      "type": "pdf",
+      "path": "raw/Insurance Claims Processing/009/attachments/corrected-policy.pdf",
+      "text": "Alderfen Mutual\nReissued property policy | INS-009\nCORRECTED POLICY SCHEDULE\nPolicyholder: Emma Kerr\nInsured property: 109 Maple Walk, Brackenford, ZZ1 9ZZ (no flat number)\nPolicy reference: INS-009 | Reissue: version 2, 28 April 2025\nOriginal issued version: 1; previously printed 'Flat 2, 109 Maple Walk' in error.\nPeriod: 1 April 2025 00:00 to 31 March 2026 23:59 (UK local time)\nUse: owner-occupied dwelling | Premium: £438.00 for the period\nINSURED SECTIONS AND LIMITS\nBuildings up to £240,000; contents up to £20,000 for fire, storm and sudden escape of water.\nExcess per covered event: £300 for escape of water, £200 for other insured damage.\nPOLICY CONDITIONS\nReport losses promptly with policy reference INS-009 and the known circumstances.\nMake safe, reasonable steps to limit damage and retain supporting documents.\nWear and tear, gradual deterioration and intentional damage by the insured are excluded.\nAny claim and payment are subject to the insurer's separate assessment of the stated terms.\nREISSUE RECORD\nAlderfen Mutual issued version 2 solely to correct the printed address.\nThe originally stated period, premium, limits and terms are unchanged by this document.\nThis is the complete simplified contract for this fictional calibration scenario; no real-world cover is provided.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

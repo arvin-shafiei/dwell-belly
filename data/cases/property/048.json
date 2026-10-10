@@ -1,0 +1,349 @@
+{
+  "id": "property-048",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "048",
+  "title": "Case 048: Bathroom Window Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-12-05 10:30:31 UTC",
+    "updated": "2024-12-17 00:50:21 UTC",
+    "completed": "2024-12-17 00:50:21 UTC",
+    "property": "Flat 20, 120 Lantern Quay, Northbridge, ZZ8 2ZZ"
+  },
+  "context": null,
+  "initial_request": "Bathroom window will not open -please can you fix",
+  "overview": "The tenant reported that the bathroom window would not open. Northbridge Lettings obtained landlord approval, assigned Riverside Solutions, and arranged a visit. The provider reported replacing the handle, gearbox, and hinges because of multiple faults. The request was closed after the final checks were completed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "Riverside Solutions confirmed the window repair was completed, with the handle, gearbox, and hinges replaced.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-12-05T10:30:31Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Hi,the bathroom window no longer opens ,it got stuck"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-12-05T10:31:20Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-12-06T02:15:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 20, 120 Lantern Quay, Northbridge, ZZ8 2ZZ\n\nGood Morning\n\nThe tenant has reported that the bathroom window does not open -can i get this fixed please\n\nregards\n\nRuben"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-12-06T02:15:48Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Kendall. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-12-06T02:54:06Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-12-06T02:54:06Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Hi Ruben,\nYes please get that sorted. Thank you.\nFelix"
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-12-06T03:25:39Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-12-06T03:26:53Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Changed original task description:\n\nBathroom window will not open -please can you fix"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-12-06T03:27:09Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-12-06T03:28:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Amelia Ingram,\n\nOur maintenance provider **Riverside Solutions** will be attending your property for a **Window Repair Request**.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: Bathroom window will not open -please can you fix\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-12-06T03:28:20Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Riverside Solutions,\n\nThis is a new **Window Repair Request** for the property at Flat 20, 120 Lantern Quay, Northbridge, ZZ8 2ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900975\n**Tenant Name:** Amelia Ingram\n**Request description:** Bathroom window will not open -please can you fix\n**List of attached files:** A photo of the window was referenced, but the attachment is unavailable.\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-12-06T03:29:00Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-12-06T03:29:15Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Kendall. Reason: Waiting for Provider"
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-12-12T03:54:32Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-12-12T03:55:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Riverside Solutions,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Window Repair Request at Flat 20, 120 Lantern Quay, Northbridge, ZZ8 2ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900975\nTenant Name: Amelia Ingram\n**Request description:** Bathroom window will not open -please can you fix\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-12-13T08:43:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "The window repair at Flat 7, 177 Beacon Close, Kingshaven, ZZ7 3ZZ has been completed, with the handle, gearbox, and hinges all replaced."
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-12-13T08:44:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "The window repair at Flat 7, 177 Beacon Close, Kingshaven, ZZ7 3ZZ is complete. All necessary components, including the handle, gearbox, and hinges, were replaced due to multiple faults."
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-12-13T08:44:16Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Visit date selected - 12/12/2024 03:57 pm"
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-12-13T08:45:22Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Riverside Solutions,\n\nWe are providing the confirmed appointment details for the **Window Repair Request** at Flat 20, 120 Lantern Quay, Northbridge, ZZ8 2ZZ:\n\nConfirmed Time Slot: 12/12/2024 03:57 pm\nPets:\nContact Details: 07700 900975 (enter this code when calling)\nTenant Name: Amelia Ingram\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-12-13T08:45:22Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Amelia Ingram,\n\nWe are providing the confirmed appointment details for the **Window Repair Request** at Flat 20, 120 Lantern Quay, Northbridge, ZZ8 2ZZ:\nConfirmed Time Slot: 12/12/2024 03:57 pm\nMaintenance Provider Name: Riverside Solutions\nContact Details: 07700 900056 (enter this code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-12-15T09:42:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-12-15T09:51:39Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Address: Flat 20, 120 Lantern Quay, Northbridge, ZZ8 2ZZ\n\nHi\nyes thats fine\n\nRuben"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-12-15T09:51:47Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Kendall. Reason: Waiting for Provider"
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-12-17T00:46:55Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Added document(s): quote (contents unavailable)."
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-12-17T00:46:56Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-12-17T00:47:22Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Quote was approved by landlord"
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-12-17T00:47:22Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription missing in maintenance_actions.comment]"
+    },
+    {
+      "n": 28,
+      "timestamp": "2024-12-17T00:48:16Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 29,
+      "timestamp": "2024-12-17T00:48:28Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 30,
+      "timestamp": "2024-12-17T00:48:35Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 31,
+      "timestamp": "2024-12-17T00:49:21Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription missing in maintenance_actions.comment]"
+    },
+    {
+      "n": 32,
+      "timestamp": "2024-12-17T00:49:47Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** all works completed"
+    },
+    {
+      "n": 33,
+      "timestamp": "2024-12-17T00:49:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 34,
+      "timestamp": "2024-12-17T00:49:56Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 35,
+      "timestamp": "2024-12-17T00:50:01Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Keys return confirmed\nValidation: (Priority cannot be decreased to 0. Current priority is 3.)"
+    },
+    {
+      "n": 36,
+      "timestamp": "2024-12-17T00:50:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

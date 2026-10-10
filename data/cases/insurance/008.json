@@ -1,0 +1,92 @@
+{
+  "id": "insurance-008",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "008",
+  "title": "Case 008: Certificate for the property owner",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-04-25 10:07:00 UTC",
+    "updated": "2025-04-25 15:42:00 UTC",
+    "completed": "2025-04-25 15:42:00 UTC",
+    "property": "108 Hazel Walk, Brackenford, ZZ1 8ZZ",
+    "broker": "Wrenbrook Brokers",
+    "insurer": "Northmere General Insurance"
+  },
+  "context": null,
+  "initial_request": "Hello Lara, I understand that my policy for 108 Hazel Walk, Brackenford, ZZ1 8ZZ is in place, but I cannot find the certificate in your file. Could you please send me a copy?",
+  "overview": "Adam Vale asked his broker, Lara at Wrenbrook Brokers, for the certificate for his insured property. Lara confirmed it was not in the broker's file and requested it from Northmere General Insurance using policy reference INS-008. The insurer sent the certificate to Lara, who forwarded it to Adam; Adam confirmed that he received it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, request the certificate directly from Northmere General Insurance using policy reference INS-008.",
+    "recorded_event": null
+  },
+  "outcome": "The certificate received from Northmere General Insurance was sent to Adam, who confirmed receipt.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-04-25T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Adam Vale",
+      "to": "Lara, Wrenbrook Brokers",
+      "body": "Hello Lara, I understand that my policy for 108 Hazel Walk, Brackenford, ZZ1 8ZZ is in place, but I cannot find the certificate in your file. Could you please send me a copy?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-04-25T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Lara, Wrenbrook Brokers",
+      "to": "Wrenbrook Brokers policy file",
+      "body": "The policy is recorded as in place, but there is no certificate in our file. I will request the document from Northmere General Insurance using reference INS-008."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-04-25T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Lara, Wrenbrook Brokers",
+      "to": "Northmere General Insurance",
+      "body": "Please send the insurance certificate for Adam Vale's policy, reference INS-008, covering 108 Hazel Walk, Brackenford, ZZ1 8ZZ. We do not have a copy in our file."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-04-25T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere General Insurance",
+      "to": "Lara, Wrenbrook Brokers",
+      "body": "We have issued certificate CERT-008 for Adam Vale under policy INS-008, for 108 Hazel Walk, Brackenford, ZZ1 8ZZ. It states the period 1 April 2025 to 31 March 2026; insurance-certificate.png is attached and may be forwarded to him."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-04-25T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Lara, Wrenbrook Brokers",
+      "to": "Adam Vale",
+      "body": "Northmere General Insurance has sent us the certificate for your policy. I am forwarding insurance-certificate.png (CERT-008) for 108 Hazel Walk, Brackenford, ZZ1 8ZZ, which states the period 1 April 2025 to 31 March 2026."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-04-25T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Adam Vale",
+      "to": "Lara, Wrenbrook Brokers",
+      "body": "Thanks, I have received insurance-certificate.png. That is the certificate I was looking for."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "insurance-certificate.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/008/attachments/insurance-certificate.png",
+      "text": "OCR text:\nNorthmere General Insurance\n\nCertificate of property insurance | INS-008\n\nISSUED CERTIFICATE\n\nPolicyholder: Adam Vale\n\nInsured property: 108 Hazel Walk, Brackenford, ZZ1 8ZZ\n\nPolicy reference: INS-008 | Certificate reference: CERT-008\nIssue date: 25 April 2025 | Issuer: Northmere General Insurance\n\nPolicy period: 1 April 2025 00:00 to 31 March 2026 23:59 (UK local time)\n\nCERTIFIED COVER\n\nOwner-occupied residential buildings insurance; buildings limit £260,000.\n\nSpecified insured causes: fire, storm and sudden escape of water, subject to the policy\nterms.\n\nThis certificate evidences the stated policy period, not acceptance of any particular claim.\n\nFor changes or a claim, refer to INS-008 when contacting the issuing insurer.\n\nDOCUMENT CONTROL\n\nIssued by the insurer to Lara at Wrenbrook Brokers for forwarding to Adam Vale.\n\nSynthetic calibration certificate; not valid evidence of any real-world insurance.\n\nSYNTHETIC CALIBRATION DOCUMENT - CASE 008 - NOT REAL INSURANCE",
+      "text_source": "ocr"
+    }
+  ]
+}

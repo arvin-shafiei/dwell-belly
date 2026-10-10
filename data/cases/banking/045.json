@@ -1,0 +1,73 @@
+{
+  "id": "banking-045",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "045",
+  "title": "Case 045: New employee access request",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-15 09:00:00 UTC",
+    "updated": "2025-10-15 12:08:00 UTC",
+    "completed": "2025-10-15 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Nadia asked H&V to arrange secure-portal access for a new colleague so they could help with the company’s payment administration. Nadia does not have authority to assign user roles, and the company administrator’s approval was still required.",
+  "overview": "Nadia first requested access by email, then contacted H&V through secure chat to ask what should happen next. The agent confirmed that Nadia’s request could not itself authorise access, checked the company administrator’s authority, and sent that administrator an approval request through the secure portal. H&V’s journal confirmed delivery for review; access has not been granted.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent sent the access request to the verified company administrator through the secure portal for approval.",
+    "recorded_event": null
+  },
+  "outcome": "The journal confirms the request was delivered to the administrator for review. Administrator approval is pending, and the colleague has not been given access.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-15T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "Nadia Bell",
+      "to": "Harrow & Vale Bank business support",
+      "body": "I work in finance operations at Merefield Design Studio Ltd. Please arrange secure-portal access for our new colleague, who will help with payment administration. I’m not the company administrator, so I can’t approve or assign their role."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-15T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Nadia Bell",
+      "to": "H&V business support agent",
+      "body": "I’m following up to find out the next step for the access request. I still need the company administrator to approve it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-15T10:34:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "H&V business support agent",
+      "to": "Nadia Bell",
+      "body": "I can’t grant access based on your email or your employee role. I’ll check the authorised company-administrator record and, if confirmed, send the request to that administrator for approval."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-15T11:21:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V business support agent",
+      "to": "Verified company administrator for Merefield Design Studio Ltd",
+      "body": "I’ve sent the new-user access request to you through the secure portal for approval. No access has been granted; the request is awaiting your decision."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-15T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V access-request journal",
+      "to": "Verified company administrator for Merefield Design Studio Ltd",
+      "body": "Request delivered to administrator for review. Status: Awaiting administrator approval."
+    }
+  ],
+  "attachments": []
+}

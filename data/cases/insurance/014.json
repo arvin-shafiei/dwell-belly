@@ -1,0 +1,75 @@
+{
+  "id": "insurance-014",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "014",
+  "title": "Case 014: Have the details stayed the same? — Case 014",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-13 10:07:00 UTC",
+    "updated": "2025-05-13 14:35:00 UTC",
+    "completed": "2025-05-13 14:35:00 UTC",
+    "property": "114 Cedar Walk, Brackenford, ZZ2 5ZZ",
+    "broker": "Larchgate Brokers",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I’m happy to check the property details for the renewal. Please let me know exactly which recorded details you need me to confirm.",
+  "overview": "For the renewal of the property at 114 Cedar Walk, Brackenford, ZZ2 5ZZ, Northmere Mutual asked Larchgate Brokers to confirm whether the declared property details had changed. Pia asked Jamie to check the specific recorded details, Jamie confirmed those details were unchanged, and Pia relayed that limited response to the insurer. Northmere Mutual acknowledged receipt; no renewal decision was made in this exchange.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, ask Jamie to check and confirm the listed property details rather than responding on Jamie’s behalf.",
+    "recorded_event": null
+  },
+  "outcome": "Jamie’s response confirming no changes to the listed details was passed to Northmere Mutual; the renewal decision remains separate.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-13T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Pia Rowan, Larchgate Brokers",
+      "body": "For the renewal review of 114 Cedar Walk, Brackenford, ZZ2 5ZZ, please confirm whether the property information currently recorded with us has changed. Please obtain confirmation from Jamie Nash before replying."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-13T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Pia Rowan, Larchgate Brokers",
+      "to": "Jamie Nash",
+      "body": "Northmere Mutual has asked us to check the property details for your renewal. Please confirm whether the recorded owner-occupied use, three-bedroom layout, brick walls, slate roof, and absence of business use or material alterations are all still correct."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-13T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Jamie Nash",
+      "to": "Pia Rowan, Larchgate Brokers",
+      "body": "I confirm that the owner-occupied use, three-bedroom layout, brick walls, slate roof, and absence of business use or material alterations are unchanged. My confirmation is limited to those details you listed."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-13T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Pia Rowan, Larchgate Brokers",
+      "to": "Northmere Mutual",
+      "body": "Jamie Nash has confirmed that the listed details for 114 Cedar Walk, Brackenford, ZZ2 5ZZ remain unchanged: owner-occupied use, three bedrooms, brick walls, a slate roof, and no business use or material alterations. This response is limited to those items."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-13T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Pia Rowan, Larchgate Brokers",
+      "body": "We acknowledge receipt of Jamie Nash’s response regarding the listed property details. The renewal decision will be considered separately."
+    }
+  ],
+  "attachments": []
+}

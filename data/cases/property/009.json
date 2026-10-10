@@ -1,0 +1,232 @@
+{
+  "id": "property-009",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "009",
+  "title": "Case 009: Front garden maintenance follow-up",
+  "details": {
+    "source_role": "Agency manager",
+    "status": "Completed",
+    "created": "2024-02-01 10:21:56 UTC",
+    "updated": "2024-03-06 09:46:31 UTC",
+    "completed": "2024-03-06 09:44:07 UTC",
+    "property": "Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ"
+  },
+  "context": null,
+  "initial_request": "FRONT GARDEN - PICKED UP AT INSPECTION",
+  "overview": "Northbridge Lettings followed up with the tenant about front garden maintenance noted at an inspection, requesting photographs to confirm completion. The tenant initially said the work was delayed because of a family medical situation, then said it would be completed and photos sent. After further follow-ups and a discussion about emails not coming through, the agency confirmed the tenant's email had arrived. No attachments are available in the record.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "After receiving the photograph of the completed garden work, the task was closed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-02-01T10:22:45Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nGood afternoon,\n\nFollowing on from your recent inspection, i wanted to check you managed to sort the front garden maintenance. If you can please provide some photos to confirm this is done.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-02-01T10:22:57Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "WAITING FOR TENANT"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-02-08T09:20:59Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nGood afternoon,\n\nFollowing on from your recent inspection, i wanted to check you managed to sort the front garden maintenance. If you can please provide some photos to confirm this is done.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-02-08T09:21:06Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nGood afternoon,\n\nFollowing on from your recent inspection, i wanted to check you managed to sort the front garden maintenance. If you can please provide some photos to confirm this is done.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-02-08T09:21:19Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "waiting for tenant"
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-02-13T10:07:02Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "The agent, Ruben, checks in on the progress of a front garden project with the caller. The caller explains that they have not completed the task yet due to a family medical situation, but plan to work on it over the weekend and agrees to send a photo once done."
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-02-13T10:09:32Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "spoke to Nora Bennett he is going it this wkend - his mum has been in hospital so has been busy with her - but she is out now so will do it this wkend and then send pic. An image of the current condition is referenced as attached, but is unavailable."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-02-13T10:09:42Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "waiting for tenant"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-02-20T09:37:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nGood afternoon, hope you are well.\n\nI just wanted to check you managed to get the garden done at the weekend, if you can please provide some upto date photos once it has been completed.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-02-20T09:37:42Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Internal",
+      "body": "Waiting for tenant response"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-02-26T10:27:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nGood afternoon,\n\nPlease can you let me know if you have now finished the garden at Flat 2, 72 Lantern Quay, Eastmere, ZZ4 0ZZ. If you can please provide me with some photos.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-02-26T10:27:29Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Internal",
+      "body": "WAITING FOR TENANT RESPONSE"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-02-26T10:39:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "Sorry for the delay will be finished this evening will get photos to you tomorrow morning\n\nThanks"
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-02-26T11:21:19Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Internal",
+      "body": "EMAIL FROM Bennett - Sorry for the delay will be finished this evening will get photos to you tomorrow morning\n\nThanks.Isaac"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-02-26T11:21:27Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Internal",
+      "body": "WAITING FOR TENANT RESPONSE"
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-03-01T12:07:21Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nGood afternoon,\n\nPlease can you let me know if you have now finished the garden at Flat 2, 72 Lantern Quay, Eastmere, ZZ4 0ZZ. If you can please provide me with some photos.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-03-01T12:07:29Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nGood afternoon,\n\nPlease can you let me know if you have now finished the garden at Flat 2, 72 Lantern Quay, Eastmere, ZZ4 0ZZ. If you can please provide me with some photos.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-03-01T12:07:40Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "waiting for Bennett"
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-03-06T09:39:49Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "The caller, Ruben, checked on the progress of a garden job and discussed issues with an email not being received. They agreed to resend the email and discussed how to resolve it if it still didn't come through."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-03-06T09:42:24Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "The email content provided does not contain the client's answer, only the original message from Isaac Clarke to the client."
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-03-06T09:43:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "spoke to Bennett he said that he has sent email but we havent received it- he has re snt it while on phone still not come through - so agreed if not got in couple of days will email him for him to reply to my email.Isaac"
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-03-06T09:43:54Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 4, 174 Beacon Close, Westmarsh, ZZ5 5ZZ\n\nThank you it has come through this time.\n\nKind regards\n\nIsaac"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-03-06T09:44:07Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "complete done.Isaac"
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,73 @@
+{
+  "id": "banking-015",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "015",
+  "title": "Case 015: Cancel future Direct Debit collections",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-16 09:00:00 UTC",
+    "updated": "2025-08-16 12:08:00 UTC",
+    "completed": "2025-08-16 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I want H&V to cancel my active Direct Debit mandate to Northmere Fitness so it cannot be used for future collections.",
+  "overview": "Mara Ellison saw an active Northmere Fitness Direct Debit mandate in her secure portal and asked H&V to cancel it. After completing identification checks by phone, she gave the bank her instruction. The agent checked the collection-stage information, submitted that instruction, and the secure portal then showed the mandate as cancelled.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "After the identification checks, review whether any collection may already be processing, then submit Mara’s cancellation instruction through H&V’s protected process.",
+    "recorded_event": null
+  },
+  "outcome": "The secure portal shows the Northmere Fitness Direct Debit mandate as cancelled. Any collection already in processing and Mara’s agreement with Northmere Fitness remain separate matters; no refund or end to any debt is confirmed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-16T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Direct Debit mandate: Northmere Fitness — Active."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-16T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I’ve completed your identification checks. Please cancel my Northmere Fitness Direct Debit mandate; I understand this is an instruction to my bank, not a cancellation of my agreement with the recipient."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-16T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V case record HV-015",
+      "body": "I completed the required identification checks and reviewed the collection-stage information. I cannot rule out a collection already being processed, so that needs separate reconciliation."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-16T11:21:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V service agent",
+      "to": "H&V Direct Debit service",
+      "body": "I have submitted Mara Ellison’s checked instruction to cancel the Northmere Fitness mandate. This submission records her instruction; I am not authorising it on her behalf."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-16T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Direct Debit mandate: Northmere Fitness — Cancelled."
+    }
+  ],
+  "attachments": []
+}

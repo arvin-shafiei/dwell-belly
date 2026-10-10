@@ -1,0 +1,82 @@
+{
+  "id": "delivery-019",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "019",
+  "title": "Case 019: Severe weather suspends the delivery route",
+  "details": {
+    "source_role": "Tessa Jorn, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-20 09:00:00 UTC",
+    "escalated": "2026-02-20 09:10:00 UTC",
+    "updated": "2026-02-20 10:05:00 UTC",
+    "completed": "2026-02-20 10:05:00 UTC",
+    "primary_shipment": "DL-019",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "An operator weather decision suspends the route. The correct task is to relay a verified update and review time, not invent a replacement arrival estimate.",
+  "initial_request": "I saw the weather alert. Can you tell me whether my parcel is coming today and when I should expect an update?",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask dispatch for its approved disruption update and next scheduled review time.",
+    "recipient": "Dispatch, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The customer receives the verified suspension notice and review time; no unsupported arrival promise is made.",
+  "boundaries": "A review time is not a route-restart time or guaranteed delivery time.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-20T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Route safety control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route MQ-19 is suspended due to severe weather. DL-019 is secure in depot stock. Dispatch will review conditions at 15:00 UTC today; there is no approved delivery estimate."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-20T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Tessa Jorn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I saw the weather alert. Can you tell me whether my parcel is coming today and when I should expect an update?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-20T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "Please provide the approved disruption wording and next review time for DL-019. I need a verified customer update, not an unapproved arrival estimate."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-20T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Approved update: the delivery route is suspended and DL-019 remains at the depot. Conditions will be reviewed at 15:00 UTC today. We cannot currently promise delivery today."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-20T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Tessa Jorn, recipient",
+      "body": "Dispatch confirms the route is suspended and your parcel remains at the depot. Its next review is at 15:00 UTC today. No delivery estimate has been approved yet."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,90 @@
+{
+  "id": "delivery-031",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "031",
+  "title": "Case 031: Return approved but the customer has no return label",
+  "details": {
+    "source_role": "Kessa Ulm, customer",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-04 09:00:00 UTC",
+    "escalated": "2026-03-04 09:10:00 UTC",
+    "updated": "2026-03-04 10:05:00 UTC",
+    "completed": "2026-03-04 10:05:00 UTC",
+    "primary_shipment": "DL-031",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The merchant approved a return, but has not issued its printable label. A real synthetic label facsimile is included for exercise completeness, not actual shipping.",
+  "initial_request": "The return is approved but there is nothing to print in my order. Please obtain my return label.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the merchant's returns team to issue the missing label.",
+    "recipient": "Return label team, Tallowmere Goods",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The customer confirms receipt of a usable label matching the approved return.",
+  "boundaries": "Label issuance is not return collection, warehouse receipt or refund.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-04T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns support, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return RT-031 for TG-031 / DL-031 is approved. The label field is empty. Our authorised label team needs to issue the label against RT-031 before the customer can prepare the return."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-04T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Kessa Ulm, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The return is approved but there is nothing to print in my order. Please obtain my return label."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-04T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Return label team, Tallowmere Goods",
+      "body": "Please issue the missing printable return label for RT-031, matching TG-031 and original shipment DL-031. Send it in the verified returns thread."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-04T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Return label team, Tallowmere Goods",
+      "to": "Kessa Ulm, customer; Iona Quill, Rivet Delivery Desk",
+      "body": "Return label RL-031 is issued for RT-031. [Open the synthetic printable label](attachments/return-label.pdf). For this fictional service, place the printed label on the return carton and use the approved drop-off route. The file is an exercise facsimile, not a live shipping label."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-04T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Kessa Ulm, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I can open and print RL-031. It shows RT-031, TG-031 and DL-031, matching my approved return. I have not dropped the parcel off yet."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "return-label.pdf",
+      "type": "pdf",
+      "path": "raw/Delivery & Logistics/031/attachments/return-label.pdf",
+      "text": "SYNTHETIC EXERCISE - NOT A LIVE DOCUMENT\n\n\nPrintable return label RL-031\n\nIssued: 2026-03-04 09:50 UTC\n\n\n\nIssuer: Tallowmere Goods - Return label team\n\n\n\nCustomer: Kessa Ulm | Return RT-031 | Order TG-031\n\n\n\nOriginal shipment: DL-031\n\n\n\nReturn destination: Tallowmere Goods, synthetic returns bay R1, Merrow Quay.\n\n\n\nExercise route: approved staffed drop-off; place this label on the carton.\n\n\n\nNo live routing barcode, postage, personal address or payment link is included.\n\n\n\nValid only as a fictional label facsimile in this calibration exercise.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

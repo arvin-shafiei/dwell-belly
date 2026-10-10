@@ -1,0 +1,84 @@
+{
+  "id": "insurance-029",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "029",
+  "title": "Case 029: Leak and Ceiling Damage",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-06-27 10:07:00 UTC",
+    "updated": "2025-06-27 15:42:00 UTC",
+    "completed": "2025-06-27 15:42:00 UTC",
+    "property": "129 Maple Walk, Brackenford, ZZ4 2ZZ",
+    "broker": "Northcote Cover",
+    "insurer": "Alderwick General Insurance"
+  },
+  "context": null,
+  "initial_request": "My tenant has told me there is a wet patch on the ceiling at 129 Maple Walk, Brackenford, ZZ4 2ZZ. Please help me notify the insurer; I am still finding out when it began and how much is affected.",
+  "overview": "Harvey Brown told Daisy Reed at Northcote Cover that his tenant had reported a wet ceiling at 129 Maple Walk, Brackenford, ZZ4 2ZZ. Daisy asked for the timing and circumstances and urged Harvey to arrange safe containment of the active leak without waiting for the insurance process. Harvey described the visible damage and confirmed that a qualified emergency contractor was working to isolate the leak. Daisy submitted the claim notification to Alderwick General Insurance, which confirmed that the claim had been registered. No decision on cover was made.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Harvey should continue working with the qualified emergency contractor to keep the leak safely contained, and give Daisy the confirmed timeline, circumstances and extent of damage as they become clear.",
+    "recorded_event": null
+  },
+  "outcome": "The claim has been registered; no decision on cover has been made.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-06-27T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Harvey Brown",
+      "to": "Daisy Reed, Northcote Cover",
+      "body": "My tenant has reported a wet patch on the ceiling at 129 Maple Walk, Brackenford, ZZ4 2ZZ. I am checking when it first appeared and whether any other areas are affected, and would like to notify the insurer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-06-27T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Daisy Reed, Northcote Cover",
+      "to": "Harvey Brown",
+      "body": "Please tell me when the tenant first noticed the water, what they observed and which parts of the property appear affected. If water is still entering, arrange safe containment through a qualified emergency contractor straight away; please do not wait for the claim process or attempt unsafe repairs yourself."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-06-27T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Harvey Brown",
+      "to": "Daisy Reed, Northcote Cover",
+      "body": "The tenant noticed dampness on the bedroom ceiling recently, but we do not yet know exactly when the leak began or its source. There is visible water staining, and I have arranged for a qualified emergency contractor to isolate the active leak while they investigate."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-06-27T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Daisy Reed, Northcote Cover",
+      "to": "Alderwick General Insurance",
+      "body": "I am submitting a claim notification for Harvey Brown concerning reported water damage to the ceiling at 129 Maple Walk, Brackenford, ZZ4 2ZZ. The tenant recently noticed dampness and visible staining; the precise start time, source and full extent remain under investigation, and a qualified emergency contractor is working to isolate the leak."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-06-27T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alderwick General Insurance",
+      "to": "Daisy Reed, Northcote Cover",
+      "body": "We confirm that the claim has been registered. This confirmation records registration only and is not a decision on cover."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-06-27T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Daisy Reed, Northcote Cover",
+      "to": "Harvey Brown",
+      "body": "Alderwick General Insurance has confirmed that your claim is registered. No decision on cover has been made, so please continue the safe containment work and send me the confirmed timing, circumstances and extent of damage when you have them."
+    }
+  ],
+  "attachments": []
+}

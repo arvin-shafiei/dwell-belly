@@ -1,0 +1,81 @@
+{
+  "id": "banking-040",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "040",
+  "title": "Case 040: Confirmation of a Specific Payment",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-05 09:00:00 UTC",
+    "updated": "2025-10-05 12:08:00 UTC",
+    "completed": "2025-10-05 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need a copy of the bank record for my £74.00 payment to a repair contractor, so I can share evidence of the payment with them. I can see the transaction in my secure portal, but need a document showing its current stage.",
+  "overview": "Mara Ellison asked H&V for a record of a specific outgoing payment after finding it in her secure portal transaction history. The agent selected that operation for document generation, and H&V made the resulting payment record available to Mara in the secure portal. The record shows the payment as sent; whether it has been credited to the recipient remains unconfirmed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent’s immediate step was to select payment HV-040 in the document service and request a record for that operation.",
+    "recorded_event": null
+  },
+  "outcome": "The secure portal provided payment-record-040.pdf for payment HV-040, dated 14 July 2025, for £74.00, with bank status SENT. The record does not confirm credit to the recipient; acknowledgment of payment by the recipient remains open.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-05T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "I show an outgoing payment of £74.00 dated 14 July 2025 in your transaction history. Its reference is HV-040 and its bank status is SENT."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-05T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I need a record for this particular payment to give my repair contractor. I can see HV-040 in my history, but I need a document showing its stage; I understand that the contractor’s confirmation of receipt is separate."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-05T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V document service",
+      "body": "I matched the customer’s request to payment HV-040 in the authenticated secure-portal session. Please generate the payment record for this operation for delivery to the customer’s secure portal."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-05T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V document service",
+      "to": "H&V service agent",
+      "body": "Record HV-040 generated for the payment dated 14 July 2025, amount £74.00. The bank status on the record is SENT."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-05T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "I’ve made payment-record-040.pdf available in your secure portal for payment HV-040. It records the £74.00 payment dated 14 July 2025 as SENT and does not confirm credit to the recipient."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "payment-record-040.pdf",
+      "type": "pdf",
+      "path": "raw/Banking & Financial Services/040/attachments/payment-record-040.pdf",
+      "text": "HARROW & VALE BANK PLC | SYNTHETIC PAYMENT RECORD\n\n\nRecord HV-040 | 14 July 2025\n\n\nPayment amount: £74.00\n\n\nBank status: SENT\n\n\nThis record does not confirm credit to the recipient.\n\n\nRouting details intentionally withheld.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

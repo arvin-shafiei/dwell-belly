@@ -1,0 +1,82 @@
+{
+  "id": "delivery-016",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "016",
+  "title": "Case 016: Pickup locker is full",
+  "details": {
+    "source_role": "Zerin Pave, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-17 09:00:00 UTC",
+    "escalated": "2026-02-17 09:10:00 UTC",
+    "updated": "2026-02-17 15:20:00 UTC",
+    "completed": "2026-02-17 15:20:00 UTC",
+    "primary_shipment": "DL-016",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The destination locker has no free compartment. The carrier needs to offer a viable alternate, then confirm readiness after the recipient chooses.",
+  "initial_request": "I need the parcel before the locker retry date. Please send me the carrier’s alternative collection option.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier to offer an available alternative collection location to the recipient.",
+    "recipient": "Locker routing, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The recipient accepts an option and the new location confirms readiness for collection.",
+  "boundaries": "An accepted alternative alone is not readiness; this case has an actual counter scan. Collection remains open.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-17T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Locker routing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-016 cannot be placed in Copperfin Locker because all suitable compartments are occupied. The parcel remains in depot stock. We can offer staffed Sedgeglass Counter or retry the locker after two days."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-17T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Zerin Pave, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I need the parcel before the locker retry date. Please send me the carrier’s alternative collection option."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-17T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Locker routing, Plover Arc Logistics",
+      "body": "Please offer Zerin the available staffed Sedgeglass Counter option through the verified order thread and obtain their choice before routing DL-016."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-17T15:10:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Dispatch chat",
+      "from": "Locker routing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Zerin accepted Sedgeglass Counter at 09:42 UTC. We transferred DL-016; the counter’s 15:05 receipt scan confirms it is ready until 2026-02-20, 18:00 UTC."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-17T15:20:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Zerin Pave, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I received the ready-for-collection notice for Sedgeglass Counter and its hours. That alternative works for me."
+    }
+  ],
+  "attachments": []
+}

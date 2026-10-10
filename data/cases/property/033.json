@@ -1,0 +1,421 @@
+{
+  "id": "property-033",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "033",
+  "title": "Case 033: Bathroom Tap Plumbing Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2026-10-03 22:58:43 UTC",
+    "updated": "2026-10-15 00:16:26 UTC",
+    "completed": "2026-10-15 00:16:26 UTC",
+    "property": "Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ"
+  },
+  "context": null,
+  "initial_request": "The tap in the bathroom has started to squirt water out when the shower is running",
+  "overview": "The tenant reported that the bathroom tap squirted water when the shower was running. The landlord approved instructing a contractor and later approved the quote for the recommended work. The contractor reported that the bath taps needed replacing and recommended changing the TRV. After the work was scheduled, the contractor confirmed it was completed and provided images and an invoice. The request was closed after the recorded checks were completed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The contractor confirmed the plumbing work was complete and supplied images and an invoice; the request was closed after the checks were completed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-03T22:58:43Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: The tap in the bathroom has started to squirt water out when the shower is running"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-03T22:59:27Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-04T00:23:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ\n\nGood morning,\n\nThe tenant of this property has reported the following. Can you please advise if you wish for me to instruct a contractor to attend or if you want to arrange your own contractor?\n\nRequest description: The tap in the bathroom has started to squirt water out when the shower is running\n\nKind regards"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-04T00:23:51Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Address: Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ\n\nGood morning,\n\nThank you for your repair request, we have sent the information to your landlord asking permission on how to proceed. We will be in further contact as soon as possible.\n\nKind regards"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-04T00:24:06Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Held awaiting response from landlord."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-04T00:24:07Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Held awaiting response from landlord."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-10-04T02:09:28Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-10-04T02:09:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "The customer, Freya Mercer, agrees to have a contractor instructed for the property issue reported on Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-10-04T02:14:32Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-10-04T02:15:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Leo Fletcher,\n\nOur maintenance provider **Juniper Solutions** will be attending your property for a **Plumbing request**.\n\nThey will contact you soon to triage the problem or prepare the quote if needed.\n\nRequest description: The tap in the bathroom has started to squirt water out when the shower is running\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-10-04T02:15:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Juniper Solutions,\n\nThis is a new **Plumbing request** for the property at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900324\n**Tenant Name:** Leo Fletcher\n**Request description:** The tap in the bathroom has started to squirt water out when the shower is running\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-10-04T02:21:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-10-04T02:21:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer confirms that a service and gas safety check is scheduled for today and plans to have the engineer look at the tap issue during the visit."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-10-04T02:37:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Visit date confirmed/rescheduled - 2026-10-03 00:00"
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-10-04T02:37:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Juniper Solutions,\n\nWe are providing the confirmed appointment details for the **Plumbing request** at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ:\n\nConfirmed Time Slot: All day (03/10/2026)\nPets: N/A\nContact Details: 07700 900324\nTenant Name: Leo Fletcher\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-10-04T02:37:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Leo Fletcher,\n\nWe are providing the confirmed appointment details for the **Plumbing request** at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ:\nConfirmed Time Slot: All day (03/10/2026)\nMaintenance Provider Name: Juniper Solutions\nContact Details: 07700 900677\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-10-05T14:55:35Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-10-07T01:42:38Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Held awaiting update from contractor."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-10-07T05:27:35Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The engineer has attended the plumbing request, identified that bath taps need replacing, and recommended changing the TRV. A quote is attached for the work."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-10-07T05:44:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ\n\nGood afternoon,\n\nPlease find attached a quote for this property. Can you please advise if you approve for me to raise an order for these works.\n\nKind regards\n\nAttachment: [attachment-03-document]"
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-10-07T05:44:09Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Held awaiting response from the landlord regarding quote."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-10-07T08:41:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-10-07T08:41:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "The customer, Freya Mercer, approves the request to proceed with raising an order for works related to the property at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ."
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-10-08T01:26:17Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Added document(s): quote"
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-10-08T01:26:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-10-08T01:26:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Quote was approved by landlord"
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-10-08T01:26:53Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription absent from maintenance comment]"
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-10-08T01:27:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Leo Fletcher,\n\nOur maintenance provider will be in touch soon to schedule a suitable time to carry out the approved work for **Plumbing request**.\n\nRequest description: The tap in the bathroom has started to squirt water out when the shower is running\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-10-08T01:27:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Juniper Solutions,\n\nLandlord approved your quote for the **Plumbing request** at the property located at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ is ready to be scheduled.\n\nPlease contact the tenant to arrange a suitable time to carry out these works.\n\nContact Details: 07700 900677\nTenant Name: Leo Fletcher\nRequest description: The tap in the bathroom has started to squirt water out when the shower is running\n\nWe request that you arrange this appointment at your earliest convenience to ensure a smooth experience for our customers.\n\n**Please ensure a photo or video (where applicable) is provided upon completion of the works along with the invoice. If you did not include a photo or video with your quotation, kindly take one prior to commencing the works, so we can present the landlord with 'before and after' evidence of the completed work.**"
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-10-08T01:27:27Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Job was updated to start stage to arrange visit"
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-10-09T01:28:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Juniper Solutions,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Plumbing request at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900677\nTenant Name: Leo Fletcher\n**Request description:** The tap in the bathroom has started to squirt water out when the shower is running\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-10-09T01:32:29Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "The customer confirmed that the appointment is booked for 13 October 2026, mid-day."
+    },
+    {
+      "n": 33,
+      "timestamp": "2026-10-09T01:33:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit date selected - 13/10/2026 12:00 pm"
+    },
+    {
+      "n": 34,
+      "timestamp": "2026-10-09T01:34:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Juniper Solutions,\n\nWe are providing the confirmed appointment details for the **Plumbing request** at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ:\n\nConfirmed Time Slot: 13 October 2026, mid-day (13/10/2026)\nPets: N/A\nContact Details: 07700 900324\nTenant Name: Leo Fletcher\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 35,
+      "timestamp": "2026-10-09T01:34:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Leo Fletcher,\n\nWe are providing the confirmed appointment details for the **Plumbing request** at Flat 19, 159 Juniper Mews, Kingshaven, ZZ9 2ZZ:\nConfirmed Time Slot: 13 October 2026, mid-day (13/10/2026)\nMaintenance Provider Name: Juniper Solutions\nContact Details: 07700 900677\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 36,
+      "timestamp": "2026-10-13T02:55:29Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hello, this is Northbridge Lettings! Your Plumbing request appointment is scheduled for 13/10/2026 12:00 pm. To reschedule call 07700 900677"
+    },
+    {
+      "n": 37,
+      "timestamp": "2026-10-14T23:41:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer confirms that the plumbing work at Flat 21, 161 Meadow Row, Cedarford, ZZ5 7ZZ is completed and provides attached images and an invoice."
+    },
+    {
+      "n": 38,
+      "timestamp": "2026-10-14T23:41:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Work results isset, please select next stage"
+    },
+    {
+      "n": 39,
+      "timestamp": "2026-10-15T00:03:11Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 40,
+      "timestamp": "2026-10-15T00:10:55Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:**\n Not required."
+    },
+    {
+      "n": 41,
+      "timestamp": "2026-10-15T00:10:55Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 42,
+      "timestamp": "2026-10-15T00:11:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "We need to check the key return before completing the request"
+    },
+    {
+      "n": 43,
+      "timestamp": "2026-10-15T00:16:02Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Keys return confirmed\n\nValidation: (Priority cannot be decreased to 0. Current priority is 1.)"
+    },
+    {
+      "n": 44,
+      "timestamp": "2026-10-15T00:16:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,82 @@
+{
+  "id": "delivery-030",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "030",
+  "title": "Case 030: A high-value shipment lacks an accessible proof-of-delivery record",
+  "details": {
+    "source_role": "Iven Thoss, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-03 09:00:00 UTC",
+    "escalated": "2026-03-03 09:10:00 UTC",
+    "updated": "2026-03-03 10:05:00 UTC",
+    "completed": "2026-03-03 10:05:00 UTC",
+    "primary_shipment": "DL-030",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The recipient confirms receipt of a high-value camera accessory, but the order view lacks the handover record. Carrier support may release a redacted inline record to this verified recipient.",
+  "initial_request": "I did receive the camera accessory. Please obtain the matching handover record so I can reconcile the delivery time in my order history.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Request the permitted handover record from carrier support.",
+    "recipient": "Secure shipment support, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The carrier supplies the matching record and the verified recipient confirms the recorded handover; no document is treated as universal proof by itself.",
+  "boundaries": "Record and recipient acknowledgement support this handover only; neither proves contents quality or all future disputes.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-03T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Secure shipment support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-030 belongs to authenticated recipient Iven Thoss. Its delivery flag is present but the customer-facing handover record has not populated. We may release the shipment-specific redacted record through this verified thread."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-03T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Iven Thoss, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I did receive the camera accessory. Please obtain the matching handover record so I can reconcile the delivery time in my order history."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-03T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Secure shipment support, Plover Arc Logistics",
+      "body": "Please provide the permitted redacted handover record for DL-030 through Iven’s verified order thread. Do not expose driver or unrelated recipient personal details."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-03T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Secure shipment support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Inline handover record: reference POD-030; shipment DL-030; receiver Iven Thoss; 2026-03-03 08:20 UTC; status handed to named recipient; order destination matched. The redacted record is now visible in the customer thread."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-03T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Iven Thoss, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "POD-030 matches my DL-030 parcel and the 08:20 handover. I confirm I received it myself."
+    }
+  ],
+  "attachments": []
+}

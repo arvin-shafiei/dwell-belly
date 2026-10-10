@@ -46,8 +46,27 @@ Incident flow:  Ingest → History → Triage → Clash → Group → Missing In
 | **Code** | maths, thresholds, routing, logging, actions |
 | **OR-Tools** | route replanning |
 
+## What the data and rules tell us
+
+From the 50 public delivery cases ([`data/`](../data/README.md)) and the [hackathon rules](hackathon/README.md):
+
+- **We are the coordination desk, not the carrier.** Every case is an escalation to "Rivet Delivery Desk". The carrier ("Plover Arc Logistics") controls bookings, routes and drivers, and the merchant ("Tallowmere Goods") controls refunds and replacements. Our actions are mostly *asking the right party for the right thing on the right channel*, not changing things directly.
+- **The scored skill is choosing the next action.** Each case has a snapshot of events up to escalation (usually 2), and then a recorded next action: who to contact, which channel, what to say. The answer is often a single well-aimed message.
+- **Boundaries matter as much as actions.** Cases spell out what *not* to do: don't promise an exact arrival time, don't say a parcel was delivered when it wasn't, don't decide compensation the merchant hasn't, don't ask for entry codes you don't need. The Safety Gate and Planner must respect these.
+- **Inputs are messages, not telemetry.** There are 11 channels (email, customer portal, dispatch chat, call transcripts, depot, warehouse, freight and broker queues, safety incident queue, business portal, pickup-point portal) and about 20 kinds of sender. There's no GPS, fleet or ETA data.
+- **Case types:** slot changes, address fixes, access problems, missed or failed deliveries, damage (with photos), lost or misdelivered parcels, cold-chain breaches, returns and labels, pallet and freight logistics, customs and import charges, billing disputes.
+- **The Reality Test adds harder versions:** conflicting stories, failed actions, missing context, noise and longer histories. Doing nothing or escalating can be correct. Coverage beats brilliance.
+
+**What this changes:**
+
+1. The core incident flow is even more clearly the product. Its output per case is: what we know, what clashes, the next action (recipient + channel + message), what we won't do and why, and whether a human is needed.
+2. The **Missing Info** node moves into the core, because "ask the right party first" is the most common correct answer.
+3. **Clash Check** stays core (driver vs customer vs tracking).
+4. The **Watch flow, Replan Route (OR-Tools) and the fleet/GPS checks have no data**. They're demo extras with a small fake fleet, not something the Reality Test will score.
+5. **Practice loop:** run every public delivery case using `?view=escalation`, and compare against `next_action`. This is our eval set.
+
 ## What we build first
 
-The **core incident flow** is what gets scored, so it comes first: Ingest, History Lookup, Triage, Clash Check, Planner, Safety Gate, Human Decision, Action, Verify, Case Log. A starter version lives at [`apps/api/flows/default-incident.json`](../apps/api/flows/default-incident.json).
+The **core incident flow** is what gets scored, so it comes first: Ingest, History Lookup, Triage, Clash Check, Missing Info, Planner, Safety Gate, Human Decision, Action, Verify, Case Log. A starter version lives at [`apps/api/flows/default-incident.json`](../apps/api/flows/default-incident.json). Run it against the 50 public delivery cases as an eval before 16:30.
 
-After that: Group Check, Replan Route, Promise Tracker, Missing Info → the watch flow → extras (Learner, Architect, Self-Test, voice).
+After that: Group Check, Promise Tracker → extras (watch flow and Replan Route with a fake fleet, Learner, Architect, Self-Test, voice).

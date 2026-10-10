@@ -1,0 +1,75 @@
+{
+  "id": "insurance-027",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "027",
+  "title": "Case 027: Which Home Was Billed?",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-06-21 10:07:00 UTC",
+    "updated": "2025-06-21 14:35:00 UTC",
+    "completed": "2025-06-21 14:35:00 UTC",
+    "property": "127 Alder Walk, Brackenford, ZZ3 9ZZ",
+    "broker": "Wychwood Brokers",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I can see a bill for £684.20, but I own two insured properties and can't tell which one it relates to. Could you check the policy and let me know the property address?",
+  "overview": "Chris asked Bella at Wychwood Brokers to identify which of his two properties was associated with an insurer bill. Bella compared the policy number quoted in Chris's email with the policy register, then asked Northmere Mutual's billing team to verify the policy-to-address match. Billing confirmed the insured property, and Bella gave Chris the verified address.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the bill's policy number against the policy register and ask Northmere Mutual Billing to confirm the associated insured property address before replying to Chris.",
+    "recorded_event": null
+  },
+  "outcome": "Chris received a verified identification that the bill relates to the insured property at 127 Alder Walk, Brackenford, ZZ3 9ZZ.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-06-21T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Chris Adams",
+      "to": "Bella Hart, Wychwood Brokers",
+      "body": "I can see a bill for £684.20, and its wording gives policy PH-44182, but I have policies for both 127 Alder Walk, Brackenford, ZZ3 9ZZ and 14 Rowan Court, Brackenford, ZZ3 8ZX. Could you confirm which property this bill is for?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-06-21T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Bella Hart, Wychwood Brokers",
+      "to": "Case file",
+      "body": "I checked the policy register: PH-44182 is recorded for 127 Alder Walk, Brackenford, ZZ3 9ZZ, while PH-44197 is for 14 Rowan Court, Brackenford, ZZ3 8ZX. As the bill is a billing item and the correspondence address may not identify the insured property, I will ask Northmere Mutual Billing to verify the match before replying."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-06-21T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Bella Hart, Wychwood Brokers",
+      "to": "Northmere Mutual Billing",
+      "body": "Please verify the property associated with the bill for £684.20 showing policy PH-44182. Our register lists PH-44182 for 127 Alder Walk, Brackenford, ZZ3 9ZZ; please confirm the insured property address rather than relying on any correspondence address."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-06-21T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Billing",
+      "to": "Bella Hart, Wychwood Brokers",
+      "body": "We have checked the billing record for £684.20 and confirm it is linked to policy PH-44182. The insured property for that policy is 127 Alder Walk, Brackenford, ZZ3 9ZZ; the correspondence address is not the insured property address."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-06-21T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Bella Hart, Wychwood Brokers",
+      "to": "Chris Adams",
+      "body": "Northmere Mutual Billing has confirmed that the £684.20 bill showing policy PH-44182 relates to the insured property at 127 Alder Walk, Brackenford, ZZ3 9ZZ. That is the property address, not a correspondence address."
+    }
+  ],
+  "attachments": []
+}

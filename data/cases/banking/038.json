@@ -1,0 +1,81 @@
+{
+  "id": "banking-038",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "038",
+  "title": "Case 038: Account confirmation available in the secure portal",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-01 09:00:00 UTC",
+    "updated": "2025-10-01 12:08:00 UTC",
+    "completed": "2025-10-01 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need a bank document confirming my account relationship for my records. Please make it available to me in the secure portal; I am not asking for a transfer.",
+  "overview": "Mara Ellison requested an account confirmation through H&V’s secure portal and escalated the request in secure chat. After checking that the request was from the verified account holder, the agent asked the document service to issue the permitted confirmation to her secure portal only. The document service confirmed that the file was available there.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Submit a request to the document service to issue the permitted account confirmation in Mara’s secure portal only.",
+    "recorded_event": null
+  },
+  "outcome": "The account confirmation is available in the secure portal. Whether Mara or any intended recipient uses it is not confirmed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-01T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Mara Ellison",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I need a bank document confirming my account relationship for my records. Please make it available to me in the secure portal; I am not asking for a transfer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-01T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I’m escalating my request for an account confirmation. I only need the document in my own secure portal, not sent to anyone else."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-01T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V document service",
+      "body": "I’ve matched case HV-038 to the verified account holder’s request and checked the permitted document option. I’m requesting an account confirmation for release to her secure portal only."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-01T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V document service",
+      "to": "H&V service agent",
+      "body": "Issued: account-confirmation-038.pdf. Status: available to the verified account holder in the secure portal. Account relationship: active at issue date, 1 October 2025."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-01T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Your account confirmation is available in your secure portal as account-confirmation-038.pdf. It is dated 1 October 2025 and states that the account relationship was active at the issue date; it is not a payment instruction."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "account-confirmation-038.pdf",
+      "type": "pdf",
+      "path": "raw/Banking & Financial Services/038/attachments/account-confirmation-038.pdf",
+      "text": "HARROW & VALE BANK PLC | SYNTHETIC ACCOUNT CONFIRMATION\n\n\nDocument HV-038 | 1 October 2025\n\n\nIssued to the verified account holder in the secure portal.\n\n\nAccount relationship: active at issue date.\n\n\nAccount number and sort code intentionally withheld in this training copy.\n\n\nThis is not a payment instruction.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

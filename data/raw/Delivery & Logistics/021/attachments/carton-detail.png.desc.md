@@ -1,0 +1,1 @@
+Image description: synthetic rendered scene, detail crop of the same DL-021 carton's top-right corner. The corner is crushed inward, forming a triangular dent; the packing tape over it is intact and not torn. No puncture or opening visible.

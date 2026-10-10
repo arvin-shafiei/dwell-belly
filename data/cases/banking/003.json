@@ -1,0 +1,73 @@
+{
+  "id": "banking-003",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "003",
+  "title": "Case 003: Transfer Awaiting Authorisation",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-07-23 09:00:00 UTC",
+    "updated": "2025-07-23 12:08:00 UTC",
+    "completed": "2025-07-23 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I saved a transfer instruction for an invoice in my secure portal, but there is no sent confirmation. Please check whether it has been submitted and tell me what stage it is at.",
+  "overview": "Elise Rowan escalated a missing sent confirmation for a saved transfer instruction. The agent checked the instruction stage using the identifier in the secure session and confirmed the journal status is “Awaiting authorisation”. The instruction has not yet been authorised or executed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the instruction's stage against the identifier already associated with Elise's secure session; do not authorise it on her behalf.",
+    "recorded_event": null
+  },
+  "outcome": "The journal shows “Awaiting authorisation”. Authorisation and execution are still pending; the saved draft is not represented as a sent payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-23T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Elise Rowan",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I created and saved a transfer instruction for an invoice in my secure portal. I have not seen a confirmation that it was sent."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-23T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Elise Rowan",
+      "to": "H&V service agent",
+      "body": "I’m escalating this because the instruction still has no sent confirmation. Please check its current stage and tell me whether I need to authorise it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-23T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V instruction journal",
+      "body": "I’m checking the instruction stage against the identifier in Elise’s secure session. I will not authorise the payment on her behalf."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-23T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V instruction journal",
+      "to": "H&V service agent",
+      "body": "“Awaiting authorisation”"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-23T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Elise Rowan",
+      "body": "The journal shows “Awaiting authorisation”. This means the instruction is awaiting your authorisation; it has not yet been authorised or executed."
+    }
+  ],
+  "attachments": []
+}

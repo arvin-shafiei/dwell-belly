@@ -1,0 +1,73 @@
+{
+  "id": "delivery-011",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "011",
+  "title": "Case 011: Shipment tracking has not updated after depot arrival",
+  "details": {
+    "source_role": "Mera Olt, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-12 09:00:00 UTC",
+    "escalated": "2026-02-12 09:10:00 UTC",
+    "updated": "2026-02-12 09:50:00 UTC",
+    "completed": "2026-02-12 09:50:00 UTC",
+    "primary_shipment": "DL-011",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "Tracking stopped at the arrival scan, so the depot must locate the actual parcel rather than repeat the public tracking status.",
+  "initial_request": "The tracker has not changed since early this morning. Could someone check whether the parcel is actually at the depot?",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the destination depot for a physical scan and shipment location.",
+    "recipient": "Destination depot, Plover Arc Logistics",
+    "channel": "Depot work queue",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The depot supplies a fresh scan and verified location; delivery remains open.",
+  "boundaries": "A physical depot scan is not proof of dispatch or delivery.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-12T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-011 last public scan: destination depot arrival at 06:15 UTC on 2026-02-12. No sort or route scan is visible. Our system does not currently confirm the storage position."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-12T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Mera Olt, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The tracker has not changed since early this morning. Could someone check whether the parcel is actually at the depot?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-12T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Plover Arc Logistics",
+      "body": "Please physically locate DL-011 and provide a new scan with its storage position. The existing arrival status alone does not answer Mera’s question."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-12T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "At 09:45 UTC we found DL-011 in sort cage C-17 and scanned the label. The new location scan is now visible. It has not been allocated to a van yet."
+    }
+  ],
+  "attachments": []
+}

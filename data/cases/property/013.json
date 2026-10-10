@@ -1,0 +1,340 @@
+{
+  "id": "property-013",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "013",
+  "title": "Case 013: Integrated Dishwasher Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-10-01 13:35:29 UTC",
+    "updated": "2024-11-05 16:51:19 UTC",
+    "completed": "2024-10-12 15:25:15 UTC",
+    "property": "Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ"
+  },
+  "context": null,
+  "initial_request": "Dishwasher starts then beeps and powers light flashes.  Just stops working. It’s  an integrated dishwasher .",
+  "overview": "The tenant reported that the integrated dishwasher started, beeped and flashed its power light before stopping. Northbridge Lettings assigned Harbour Surveying, sent appointment reminders, and arranged a visit. The provider later reported the job completed; the agency confirmed the dishwasher had been repaired on site and was working again. The invoice amount was £162.85. Final checks included landlord confirmation and confirmation that the keys had been returned before the request was closed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The agency confirmed that the dishwasher was repaired on site and was working again.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-10-01T13:36:16Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-10-01T13:52:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ\n\nHi Clara, the tenant at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ has reported that the integrated dishwasher has stopped working. It starts, beeps and the power light flashes and stops working. I will proceed and send an appliance engineer to see if this can be repaired. Regards,"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-10-01T13:52:29Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Changed original task description: Dishwasher starts then beeps and powers light flashes.  Just stops working. It’s  an integrated dishwasher ."
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-10-01T13:52:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-10-01T13:53:17Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Nora Palmer,\n\nOur maintenance provider Harbour Surveying will be attending your property for a Dishwasher Repair Request.\n\nThey will contact you soon to arrange a suitable time to quote for the job.\nThen we will need to approve the quote with Landlord and instruct maintenance provider to do the job. It might take a while, and we do our best to do it as quick as possible\n\nRequest description: Dishwasher starts then beeps and powers light flashes.  Just stops working. It’s  an integrated dishwasher .\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-10-01T13:53:17Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Harbour Surveying,\n\nThis is a new Dishwasher Repair Request for the property at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ.\n\nPlease contact the tenant to arrange a suitable time to quote for this job.\n\nContact Details: 07700 900752\nTenant Name: Nora Palmer\nRequest description: Dishwasher starts then beeps and powers light flashes.  Just stops working. It’s  an integrated dishwasher .\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers.\n\nPlease include in your email, along with the quote, the estimated time required to complete the work after receiving the landlord’s approval.\n\nPlease remember that along with a quotation, you must provide a photo or video (where applicable) clearly highlighting what needs to be changed and explaining why."
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-10-01T13:53:17Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-10-01T16:21:39Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The call was a voicemail recording prompt asking the caller to leave a message after the tone."
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-10-01T16:30:32Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Contractor",
+      "body": "The call prompt asks the caller to leave a message after the tone."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-10-01T17:33:21Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller is trying to get details about a dishwasher model for a job assigned by Meadow Solutions. The customer cannot immediately provide the dishwasher info since they are not near it. They discuss contact numbers for follow-up, agreeing to communicate through text messages."
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-10-01T17:40:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "[Text/transcription absent from maintenance_actions.comment]"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-10-04T11:56:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Harbour Surveying,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address:\n\nThe Dishwasher Repair Request at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900752\nTenant Name: Nora Palmer\nRequest description: Dishwasher starts then beeps and powers light flashes.  Just stops working. It’s  an integrated dishwasher .\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-10-04T11:56:16Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ."
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-10-05T11:57:15Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Harbour Surveying,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address:\n\nThe Dishwasher Repair Request at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900752\nTenant Name: Nora Palmer\nRequest description: Dishwasher starts then beeps and powers light flashes.  Just stops working. It’s  an integrated dishwasher .\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-10-05T11:57:15Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ."
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-10-06T11:58:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "3+ reminders have been sent to provider. Please check what’s happening."
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-10-06T13:07:15Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "[Text/transcript absent from maintenance_actions.comment]"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-10-07T12:44:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ\n\nPerfect thank you"
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-10-07T12:44:02Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-10-07T12:44:20Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Visit date confirmed/rescheduled - 08/10/2024 08:30"
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-10-07T12:45:15Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Harbour Surveying,\n\nWe are providing the confirmed appointment details for the **Dishwasher Repair Request** at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ:\n\nConfirmed Time Slot: AM appointment (08/10/2024)\nPets: N/A\nContact Details: 07700 900752\nTenant Name: Nora Palmer\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-10-07T12:45:15Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ."
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-10-07T12:45:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Nora Palmer,\n\nWe are providing the confirmed appointment details for the **Dishwasher Repair Request** at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ:\nConfirmed Time Slot: AM appointment (08/10/2024)\nMaintenance Provider Name: Harbour Surveying\nContact Details: 07700 900769\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-10-07T12:58:16Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hello, this is Northbridge Lettings! Your Dishwasher Repair Request appointment is scheduled for 08/10/2024 08:30 am. To reschedule call 07700 900769"
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-10-10T12:58:16Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-10-11T12:33:17Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting on response"
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-10-12T14:54:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer, Langley from Harbour Surveying, sent an invoice for a completed job at Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ."
+    },
+    {
+      "n": 28,
+      "timestamp": "2024-10-12T15:14:15Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ\n\nHi Clara, I hope you are well. We sent Harbour Surveying to Flat 2, 42 Beacon Close, Bellmere, ZZ4 2ZZ - They have repaired the dishwasher on site and it is all up and running. I will pass the invoice of £162.85 to come from the rent Regards,"
+    },
+    {
+      "n": 29,
+      "timestamp": "2024-10-12T15:14:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 30,
+      "timestamp": "2024-10-12T15:14:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 31,
+      "timestamp": "2024-10-12T15:16:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 32,
+      "timestamp": "2024-10-12T15:17:15Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "We need to check the key return before completing the request"
+    },
+    {
+      "n": 33,
+      "timestamp": "2024-10-12T15:24:58Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Keys return confirmed"
+    },
+    {
+      "n": 34,
+      "timestamp": "2024-10-12T15:25:15Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    },
+    {
+      "n": 35,
+      "timestamp": "2024-11-05T16:47:01Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller was trying to contact Northbridge Lettings but was mistakenly connected to someone named Oakley or Rowan. The caller realizes the error and ends the call."
+    }
+  ],
+  "attachments": []
+}

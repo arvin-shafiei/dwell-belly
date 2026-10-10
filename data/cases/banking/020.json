@@ -1,0 +1,73 @@
+{
+  "id": "banking-020",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "020",
+  "title": "Case 020: What to Check Before Closing an Account",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-26 09:00:00 UTC",
+    "updated": "2025-08-26 12:08:00 UTC",
+    "completed": "2025-08-26 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I’m planning to close my H&V account after I move my regular payments. Please tell me what active instructions are linked to it and what I should consider before closing it.",
+  "overview": "Case HV-020 concerns Elena Wren’s request to understand regular payment instructions before closing her account. After she raised the issue in an authenticated secure chat, the agent checked the bank’s payer-side instruction register and arranged delivery of a protected overview. The account was not closed, and no payments were moved or changed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent’s immediate step at escalation is to reconcile the active recurring instructions in H&V’s register, without making changes.",
+    "recorded_event": null
+  },
+  "outcome": "A protected overview listing the active instructions was delivered through the secure portal. Account closure and payment transfers were not carried out; separate account-closure conditions still need to be checked.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-26T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "Elena Wren",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I’m planning to close my account once I’ve moved my regular payments. Could you tell me what active instructions are linked to it and what I should consider before closing?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-26T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Elena Wren",
+      "to": "H&V agent",
+      "body": "I’ve signed in and completed the account-holder checks. I want to know which regular payments are still active before I make any closure plans."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-26T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "H&V instruction register",
+      "body": "I’m checking the active recurring instructions on this account before discussing closure. The account-holder authority has been confirmed; please return the current payer-side register entries only. Do not make changes."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-26T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V instruction register",
+      "to": "H&V agent",
+      "body": "Review complete. The register lists an active monthly standing order to Willowmere Lettings and an active direct debit mandate for Northmere Energy. No instruction has been changed."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-26T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Elena Wren",
+      "body": "Your protected overview of active instructions has been delivered here. It lists the Willowmere Lettings standing order and the Northmere Energy direct debit mandate recorded by H&V; it does not confirm the recipients’ records or any payment outcome. Your account remains open, and no payments have been moved or changed."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,313 @@
+{
+  "id": "property-011",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "011",
+  "title": "Case 011: Dishwasher Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2026-11-29 05:07:59 UTC",
+    "updated": "2026-12-13 05:45:21 UTC",
+    "completed": "2026-12-13 05:45:21 UTC",
+    "property": "Flat 12, 78 Copperfield Walk, Kingshaven, ZZ3 1ZZ"
+  },
+  "context": null,
+  "initial_request": "Request summary with context: The Riverside Services dishwasher runs perpetually and does not complete its cycle, suggesting a malfunction.\n\nTenant's original query: Dish washer repair, the dish washer turns on, fills up and seems to wash but never ever stops it’s cycle\n\nAdditional details provided:\n- Has this issue been persistent, or did it start recently? Started recently\n- Are there any pets at the property? Yes two guinea pigs",
+  "overview": "The tenant reported that the dishwasher had recently started running without completing its cycle. The landlord approved an inspection and later authorised the quoted repair. The provider found water in the base and a loose flow-through heater connection, removed the water, tightened the connection, and tested the appliance; it was then running as it should. The provider also reported that a dial was missing and quoted £95 including parts, labour and VAT for its replacement. The tenant was told the replacement knob would be installed by them. The record says the request was closed after final checks.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider removed water from the dishwasher base, tightened a loose connection and tested the appliance, which was running as it should. A replacement dial was identified as needed and quoted at £95 including parts, labour and VAT; the tenant was told they would install the replacement knob themselves. The request was marked closed after final checks.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-11-29T05:07:59Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Request summary with context: The Riverside Services dishwasher runs perpetually and does not complete its cycle, suggesting a malfunction.\n\nTenant's original query: Dish washer repair, the dish washer turns on, fills up and seems to wash but never ever stops it’s cycle\n\nAdditional details provided:\n- Has this issue been persistent, or did it start recently? Started recently\n- Are there any pets at the property? Yes two guinea pigs"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-11-29T05:07:59Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[AI Intake Classification]\n\nTenant said:\n  Dish washer repair, the dish washer turns on, fills up and seems to wash but never ever stops it’s cycle\n\nIssue:\n  Appliances · Dishwasher not completing cycle\n  Severity: ROUTINE — While the dishwasher is not completing its cycle, it does not prevent the use of other kitchen appliances and does not pose an immediate risk.\n  Confidence: high\n  Containment steps shown to tenant:\n    1. Photograph the dishwasher and any error messages or unusual lights on its display after it has stopped working. This will help identify the issue.\n  Summary: The Riverside Services dishwasher runs perpetually and does not complete its cycle, suggesting a malfunction.\n\nTenant's clarifying Q&A:\n  Q: Has this issue been persistent, or did it start recently?\n  A: Started recently\n  Q: Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n  A: No\n  Q: Are there any pets at the property?\n  A: Yes two guinea pigs"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-11-29T05:09:32Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-11-29T05:46:40Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 12, 78 Copperfield Walk, Kingshaven, ZZ3 1ZZ\n\nGood afternoon Turner,\n\nI have had a report from the tenants regarding the dishwasher having some issues. At the moment it doesn't complete a cycle.\n\nWould you be happy for me to get a contractor out to have a look at this for you.\n\nPlease let me know your thoughts on this.\n\nKind regards\n\nClarke"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-11-29T05:46:42Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-12-02T05:47:33Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No landlord/tenant response after 3 days. Please review manually."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-12-02T05:48:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-12-03T11:34:00Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Message received from landlord/tenant. Please review and proceed manually."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-12-03T11:34:01Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Yes please go ahead.\n\nThank you!\n\nSent from my iPhone"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-12-06T00:59:05Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-12-06T00:59:22Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-12-06T01:00:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Amelia Nolan,\n\nOur maintenance provider Oakfield Homes will be attending your property for a Dishwasher Repair Request.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: Request summary with context: The Riverside Services dishwasher runs perpetually and does not complete its cycle, suggesting a malfunction.\n\nTenant's original query: Dish washer repair, the dish washer turns on, fills up and seems to wash but never ever stops it’s cycle\n\nAdditional details provided:\n- Has this issue been persistent, or did it start recently? Started recently\n- Are there any pets at the property? Yes two guinea pigs\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-12-06T01:00:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Oakfield Homes,\n\nThis is a new Dishwasher Repair Request for the property at Flat 12, 78 Copperfield Walk, Kingshaven, ZZ3 1ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900529\nTenant Name: Amelia Nolan\nRequest description: Request summary with context: The Riverside Services dishwasher runs perpetually and does not complete its cycle, suggesting a malfunction.\n\nTenant's original query: Dish washer repair, the dish washer turns on, fills up and seems to wash but never ever stops it’s cycle\n\nAdditional details provided:\n- Has this issue been persistent, or did it start recently? Started recently\n- Are there any pets at the property? Yes two guinea pigs\n\nAttached file: Provider-referenced dishwasher photo; the attachment is unavailable.\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-12-06T03:44:26Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The call is from Ashford at Cedar Maintenance regarding a dishwasher issue. The caller requests Amelia Nolan to call back at 07700 900730."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-12-06T03:45:16Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller attempted to connect to the Alder Maintenance maintenance line but was unable to initiate a call to Ruben Kendall due to a possible restriction."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-12-06T04:15:15Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. \n        If not, please return this request to auto mode."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-12-06T04:25:30Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ava Oakley. Reason: Waiting for Provider. Comment: waiting for appointment to be booked"
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-12-06T05:12:24Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller, Amelia, agreed to a scheduled maintenance appointment for the dishwasher set for tomorrow morning."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-12-07T06:14:02Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "From: Oakfield Homes \nTo: Juniper Surveying\n\nGood afternoon,\n\nHope you are well 😊\n\nWe attended to investigate the dishwasher. Upon our inspection we found that there is water in the base. We have removed water and ran the appliance on a test to find a loose connection from the flow through heater. We have tightened the connection and retested. The appliance was running as it should. We did find that it will require a replacement dial as this was missing.\n\nThe cost of this repair will be £95 including parts, labour and VAT. Please notify us if you would like to proceed, as we will need to order parts to conduct this repair.\n\nThe price quoted may vary should additional parts/material be required on site to complete the repair.\n\nIf you require assistance or have any questions, please do not hesitate to ask.\n\nKind Regards,\n\nAshford"
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-12-07T06:17:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 12, 78 Copperfield Walk, Kingshaven, ZZ3 1ZZ\n\nGood afternoon,\n\nFurther to our contractor attending today they found the following:\n\nUpon our inspection we found that there is water in the base. We have removed water and ran the appliance on a test to find a loose connection from the flow through heater. We have tightened the connection and retested. The appliance was running as it should. We did find that it will require a replacement dial as this was missing.\n\nThe cost of this repair will be £95 including parts, labour and VAT. Please notify us if you would like to proceed, as we will need to order parts to conduct this repair.\n\nThe price quoted may vary should additional parts/material be required on site to complete the repair.\n\nAre you happy to go ahead with this?\n\nPlease let me know your thoughts on this.\n\nKind regards\n\nClarke"
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-12-07T06:17:40Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ava Oakley. Reason: Waiting for Landlord. Comment: waiting for authorisation"
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-12-07T06:39:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Please go ahead"
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-12-07T06:43:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 12, 78 Copperfield Walk, Kingshaven, ZZ3 1ZZ\n\nGood afternoon,\n\nWe have just heard from the landlord and we have the go ahead so please can you arrange for the work to be completed.\n\nMany thanks\n\nClarke"
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-12-07T06:43:57Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ava Oakley. Reason: Waiting for Provider. Comment: waiting for appointment after approval given"
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-12-09T05:54:46Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The agent calls to schedule a repair appointment for the customer's dishwasher, which is already arranged for tomorrow between 12 and 5. The customer is informed that a knob needs replacement, which they will install themselves."
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-12-13T05:24:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-12-13T05:24:57Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-12-13T05:43:52Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription absent in maintenance_actions.comment]"
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-12-13T05:44:14Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription absent in maintenance_actions.comment]"
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-12-13T05:44:25Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** Invoice uploaded. The invoice is unavailable."
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-12-13T05:44:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-12-13T05:45:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

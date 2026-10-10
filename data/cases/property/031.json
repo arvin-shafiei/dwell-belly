@@ -1,0 +1,268 @@
+{
+  "id": "property-031",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "031",
+  "title": "Case 031: Plumbing request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-07-18 01:05:36 UTC",
+    "updated": "2024-08-08 10:57:30 UTC",
+    "completed": "2024-08-08 10:57:30 UTC",
+    "property": "Flat 14, 134 Copperfield Walk, Cedarford, ZZ4 4ZZ"
+  },
+  "context": null,
+  "initial_request": "The toilet cistern keeps filling with water and never stops. I have received a letter from Oakfield Services about a water leakage over two weeks ago.",
+  "overview": "The tenant reported a toilet cistern that would not stop filling and a water-leakage letter received more than two weeks earlier. Landlord approval was confirmed and a maintenance provider was assigned. The provider and tenant arranged a visit; the tenant said the plumbing team could attend while they were away. The provider later indicated the job was done and was waiting on an invoice. An invoice was reported as attached and later uploaded, but its contents are unavailable. The provider requested closure, saying the work was completed on 17 April (synthetic date: 26 July). After final checks, the request was marked completed and closed. A document-upload step was skipped because no other documents were required; the record also notes that landlord confirmation was needed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider confirmed the cistern repair was completed and uploaded an invoice. The request was closed after final checks.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-07-18T01:05:36Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request description: The toilet cistern keeps filling with water and never stops. I have received a letter from Oakfield Services about a water leakage over two weeks ago."
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-07-18T01:06:32Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-07-18T07:29:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-07-18T07:29:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-07-18T07:30:35Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Oliver Jenkins,\n\nOur maintenance provider **Meadow Solutions** will be attending your property for a **Plumbing request**.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: The toilet cistern keeps filling with water and never stops. I have received a letter from Oakfield Services about a water leakage over two weeks ago.\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-07-18T07:30:36Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Meadow Solutions,\n\nThis is a new **Plumbing request** for the property at Flat 14, 134 Copperfield Walk, Cedarford, ZZ4 4ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900138 *(enter this code when calling)*\n**Tenant Name:** Oliver Jenkins\n**Request description:** The toilet cistern keeps filling with water and never stops. I have received a letter from Oakfield Services about a water leakage over two weeks ago.\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-07-18T12:55:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "I am happy for the plumbing team to come even when I am not home."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-07-19T07:30:39Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Meadow Solutions,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Plumbing request at Flat 14, 134 Copperfield Walk, Cedarford, ZZ4 4ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900138 *(enter this code when calling)*\nTenant Name: Oliver Jenkins\n**Request description:** The toilet cistern keeps filling with water and never stops. I have received a letter from Oakfield Services about a water leakage over two weeks ago.\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-07-23T05:33:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Meadow Solutions,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address:\n\nThe Plumbing request at Flat 14, 134 Copperfield Walk, Cedarford, ZZ4 4ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900138 (enter this code when calling)\nTenant Name: Oliver Jenkins\nRequest description: The toilet cistern keeps filling with water and never stops. I have received a letter from Oakfield Services about a water leakage over two weeks ago.\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-07-23T07:13:53Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller from Harbour Services inquired about scheduling a maintenance visit on Saturday. They agreed on a time frame between 2 and 5 pm, and the agent confirmed their availability."
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-07-23T07:19:32Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit date selected - 26/07/2024 02:00 pm"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-07-23T07:20:32Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Meadow Solutions,\n\nWe are providing the confirmed appointment details for the Plumbing request at Flat 14, 134 Copperfield Walk, Cedarford, ZZ4 4ZZ:\n\nConfirmed Time Slot: between 2 and 5 (26/07/2024)\nPets:\nContact Details: 07700 900138 (enter this code when calling)\nTenant Name: Oliver Jenkins\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-07-23T07:20:33Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Oliver Jenkins,\n\nWe are providing the confirmed appointment details for the Plumbing request at Flat 14, 134 Copperfield Walk, Cedarford, ZZ4 4ZZ:\nConfirmed Time Slot: between 2 and 5 (26/07/2024)\nMaintenance Provider Name: Meadow Solutions\nContact Details: 07700 900830 (enter this code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-07-26T09:40:39Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hello, this is Keystone Solutions! Your Plumbing request appointment is scheduled for between 2 and 5 (26/07/2024). To reschedule call 07700 900830"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-07-27T10:05:33Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Email received from provider, but expected data could not be extracted. Please review manually."
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-07-27T10:05:33Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Text/transcription unavailable."
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-07-27T11:28:13Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-07-27T11:28:43Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Isaac Bennett. Reason: Waiting for Provider. Comment: Mercer said done waiting on invoice"
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-07-30T04:01:24Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Invoice attached."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-07-30T06:04:13Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Contractor",
+      "to": "Not specified",
+      "body": "Provider uploaded invoice"
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-08-01T03:38:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Please close job. This job has been completed and invoice downloaded."
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-08-07T07:41:24Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Please close this job, it was completed on the 26/07.\n\nThanks"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-08-08T10:48:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-08-08T10:57:05Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Text/transcription unavailable."
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-08-08T10:57:19Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** No other docs required"
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-08-08T10:57:19Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-08-08T10:57:30Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

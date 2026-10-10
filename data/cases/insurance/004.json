@@ -1,0 +1,84 @@
+{
+  "id": "insurance-004",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "004",
+  "title": "Case 004: Consent to Quote — 104 Cedar Walk, Brackenford",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-04-13 10:07:00 UTC",
+    "updated": "2025-04-13 15:42:00 UTC",
+    "completed": "2025-04-13 15:42:00 UTC",
+    "property": "104 Cedar Walk, Brackenford, ZZ1 4ZZ",
+    "broker": "Willowgate Insurance",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I have received the quote for 104 Cedar Walk, Brackenford, ZZ1 4ZZ and would like to accept the terms as stated. Please pass my written acceptance to the insurer and let me know what happens next.",
+  "overview": "Theo emailed his acceptance of the quoted terms to his agent, Sophie at Willowgate Insurance. Sophie raised an internal note to ensure the acceptance was sent against the correct quote, then forwarded Theo’s written consent to Northmere Mutual. The insurer confirmed receipt and described the next stage of processing; Sophie relayed that update to Theo.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Sophie needed to forward Theo’s written acceptance to Northmere Mutual against quote reference INS-004.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual confirmed receipt of Theo’s consent and advised that the next stage is processing; no policy issue or approval of cover was confirmed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-04-13T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Theo West",
+      "to": "Sophie, Willowgate Insurance",
+      "body": "I have received the quote for 104 Cedar Walk, Brackenford, ZZ1 4ZZ and accept the terms as stated in quote reference INS-004. Please pass my acceptance to Northmere Mutual and let me know when they confirm receipt."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-04-13T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Sophie, Willowgate Insurance",
+      "to": "Willowgate Insurance team",
+      "body": "Theo has accepted the terms of quote INS-004 for 104 Cedar Walk, Brackenford, ZZ1 4ZZ by email. Please confirm the correct submission route so I can ensure his consent is recorded against the right quote."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-04-13T12:21:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Willowgate Insurance team",
+      "to": "Sophie, Willowgate Insurance",
+      "body": "Please send Theo’s written acceptance to Northmere Mutual and include reference INS-004 in the message. Record their response as confirmation of receipt and any stated next processing step, without treating it as policy issuance."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-04-13T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Sophie, Willowgate Insurance",
+      "to": "Northmere Mutual",
+      "body": "I am forwarding Theo West’s written acceptance of the terms of quote INS-004 for 104 Cedar Walk, Brackenford, ZZ1 4ZZ. Please confirm receipt and advise the next stage of processing."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-04-13T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Sophie, Willowgate Insurance",
+      "body": "We confirm receipt of Theo West’s acceptance for quote INS-004 relating to 104 Cedar Walk, Brackenford, ZZ1 4ZZ. The next stage is processing the submission, and we will provide a further update when that stage is complete."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-04-13T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Sophie, Willowgate Insurance",
+      "to": "Theo West",
+      "body": "Northmere Mutual has confirmed receipt of your acceptance for quote INS-004 and advised that processing is the next stage. This confirms receipt only; the insurer has not confirmed that a policy has been issued."
+    }
+  ],
+  "attachments": []
+}

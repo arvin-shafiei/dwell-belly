@@ -1,0 +1,178 @@
+{
+  "id": "property-018",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "018",
+  "title": "Case 018: Garden Maintenance Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-12-16 07:54:00 UTC",
+    "updated": "2026-01-06 01:31:56 UTC",
+    "completed": "2026-01-06 01:31:56 UTC",
+    "property": "Flat 17, 67 Willowmere Road, Alderwick, ZZ7 4ZZ"
+  },
+  "context": null,
+  "initial_request": "Request summary with context: Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\nTenant's original query: Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds",
+  "overview": "Tenant Freya Palmer reported that a tree and weeds in a communal garden had become overgrown and too large to maintain. Northbridge Lettings sought landlord approval, assigned Riverside Services, and sent the provider repeated reminders to arrange a visit. The agency later told the landlord that the garden maintenance had been completed and would be invoiced off the rent. The landlord acknowledged the message. An invoice was noted as added, but no attachment was provided in the case record.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The agency reported that the garden work was done and would be invoiced off the rent; the landlord acknowledged the message. The request was marked complete by a supervisor.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-12-16T07:54:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Request summary with context: Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\nTenant's original query: Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-12-16T07:54:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[AI Intake Classification]\n\n**Tenant said:**\n  Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds\n\n**Issue:**\n  External & Communal · Overgrown tree and weeds\n  **Severity:** ROUTINE — No immediate safety risk or property damage described, this is general garden overgrowth.\n  **Confidence:** medium\n  **Assumptions:**\n    • Assuming this is a private garden rather than a communal area.\n    • Assuming the overgrown tree is not contacting power lines or causing immediate hazard.\n    • Assuming previous gardener visits were ad hoc and not part of an ongoing service.\n  **Containment steps shown to tenant:**\n    1. Photograph the current condition now, including wide shots of the whole garden and close-ups of the overgrown tree and any areas blocking paths, doors, windows, or touching fences.\n    2. Keep essential access paths clear by carefully pulling small weeds by hand while wearing gloves, or trimming light growth at ground level with hand shears.\n    3. Move bins, furniture, and belongings away from encroaching branches or thorny plants to avoid damage and maintain access.\n  **Summary:** Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\n**Tenant's clarifying Q&A:**\n  **Q:** Is anyone's safety currently at risk?\n  **A:** *(not answered)*\n  **Q:** Is the overgrowth within your private garden or a communal area, and is any part coming from a neighbouring property?\n  **A:** communal area\n  **Q:** How tall is the tree and is it touching the building, fences, paths, or any overhead cables?\n  **A:** *(not answered)*\n  **Q:** Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n  **A:** *(not answered)*\n  **Q:** Are there any pets at the property?\n  **A:** *(not answered)*"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-12-16T07:54:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-12-17T01:49:51Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 17, 67 Willowmere Road, Alderwick, ZZ7 4ZZ\n\nHello Freya, thank you for your maintenance requests. I am looking into them and trying to get them resolved for you. The gardener is on annual leave and will be booked in at the earliest convinience upon his return.\nMany thanks,\n\nLangley"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-12-17T01:50:05Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-12-17T01:50:27Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-12-17T01:51:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Freya Palmer,\n\nOur maintenance provider Riverside Services will be attending your property for a Garden Maintenance Request.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: Request summary with context: Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\nTenant's original query: Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-12-17T01:51:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Riverside Services,\n\nThis is a new Garden Maintenance Request for the property at Flat 17, 67 Willowmere Road, Alderwick, ZZ7 4ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900504, ext 900418 (enter this code when calling)\nTenant Name: Freya Palmer\nRequest description: Request summary with context: Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\nTenant's original query: Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds\nList of attached files: Attachment #1 (garden photograph referenced by provider; unavailable)\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-12-18T01:52:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Riverside Services,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address.\n\nThe Garden Maintenance Request at Flat 17, 67 Willowmere Road, Alderwick, ZZ7 4ZZ\n\nPlease contact the tenant to arrange the appointment.\n\nContact details: 07700 900710\nTenant name: Freya Palmer\nRequest description: Request summary with context: Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\nTenant's original query: Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-12-20T01:53:45Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Riverside Services,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address.\n\nThe Garden Maintenance Request at Flat 17, 67 Willowmere Road, Alderwick, ZZ7 4ZZ\n\nPlease contact the tenant to arrange the appointment.\n\nContact details: 07700 900710\nTenant name: Freya Palmer\nRequest description: Request summary with context: Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\nTenant's original query: Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-12-23T00:55:39Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Riverside Services,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address.\n\nThe Garden Maintenance Request at Flat 17, 67 Willowmere Road, Alderwick, ZZ7 4ZZ\n\nPlease contact the tenant to arrange the appointment.\n\nContact details: 07700 900710\nTenant name: Freya Palmer\nRequest description: Request summary with context: Garden vegetation, including a tree and weeds, has become overgrown and too large for the tenant to maintain.\n\nTenant's original query: Garden is a mess to big to maintain myself we had at least 1 gardener come out once a year to sort this over grown tree weeds\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-12-25T00:56:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "3+ reminders have been sent to provider. Please check what’s happening."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-01-03T00:13:18Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 17, 67 Willowmere Road, Alderwick, ZZ7 4ZZ\n\nHello Henry, hope you are well. Just letting you know the garden maintenance has been done now and will be invoiced off the rent. Thank you Langley"
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-01-03T00:17:19Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-01-03T00:17:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Thanks Langley,\n\nHave a great weekend.\n\nHenry\n\nSent from Oakfield Utilities"
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-01-06T01:31:56Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Added document(s): invoice. The invoice attachment is unavailable in the case record."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-01-06T01:31:56Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed by supervisor"
+    }
+  ],
+  "attachments": []
+}

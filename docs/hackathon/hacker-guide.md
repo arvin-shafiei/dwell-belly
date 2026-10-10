@@ -4,7 +4,7 @@
 
 👋 Welcome, builders! Everything you need for the Dwelly London AI Hackathon — AI Transformation of Services — in one place. Please read it before the day and set up your tools in advance so you can start building at 10:00 sharp.
 
-📄 Synthetic cases: https://github.com/DwellyOrg/HackatonPublicCases (local copy: [`public-cases/`](public-cases/))
+📄 Synthetic cases: https://github.com/DwellyOrg/HackatonPublicCases (local copy: [`../../data/raw/`](../../data/raw/))
 
 ## 📍 Event at a glance
 

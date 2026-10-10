@@ -1,0 +1,75 @@
+{
+  "id": "insurance-011",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "011",
+  "title": "Case 011: Renewal Quotation",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-04 10:07:00 UTC",
+    "updated": "2025-05-04 14:35:00 UTC",
+    "completed": "2025-05-04 14:35:00 UTC",
+    "property": "111 Birch Walk, Brackenford, ZZ2 2ZZ",
+    "broker": "Moorbank Cover",
+    "insurer": "Alderwick Mutual"
+  },
+  "context": null,
+  "initial_request": "I own the property at 111 Birch Walk, Brackenford, ZZ2 2ZZ, and would like Moorbank Cover to explain the renewal terms and the response deadline so I can decide whether to renew.",
+  "overview": "Alderwick Mutual sent renewal terms to Owen at Moorbank Cover. Owen flagged the response deadline, sent the terms to Beth, and Beth confirmed receipt while saying she would review the details. No renewal acceptance was recorded.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Owen should send Beth the insurer’s renewal offer and stated response deadline before that deadline; her receipt is now confirmed, but no acceptance is recorded.",
+    "recorded_event": null
+  },
+  "outcome": "Beth confirmed receipt of the renewal terms and said she intended to review them; the renewal was not accepted.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-04T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alderwick Mutual",
+      "to": "Owen, Moorbank Cover",
+      "body": "Renewal offer REN-011 for Beth Mills, 111 Birch Walk, Brackenford, ZZ2 2ZZ: 1 June 2025 to 31 May 2026, premium £512.00 for the year, buildings limit £250,000 for fire, storm and sudden escape of water, standard excess £250 per covered event. Other terms of her existing policy remain unchanged; please provide Beth’s response by 25 May 2025. This offer is not itself an active renewal."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-04T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Owen, Moorbank Cover",
+      "to": "Moorbank Cover case file",
+      "body": "The renewal offer has arrived, and Beth has not yet responded. I need to pass the terms and the insurer’s stated response deadline to her before the deadline."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-04T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Owen, Moorbank Cover",
+      "to": "Beth Mills",
+      "body": "Alderwick Mutual offers renewal REN-011 for 111 Birch Walk, Brackenford, ZZ2 2ZZ from 1 June 2025 to 31 May 2026: £512.00 for the year, buildings limit £250,000 for fire, storm and sudden escape of water, standard excess £250 per covered event; other existing terms unchanged. Please review these terms and reply by the insurer’s 25 May deadline. I have not accepted it on your behalf; renewal is not automatic."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-04T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Beth Mills",
+      "to": "Owen, Moorbank Cover",
+      "body": "Thanks, I confirm I’ve received the renewal terms. I intend to check the details before deciding, so please don’t treat this as acceptance of the renewal."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-04T14:35:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Owen, Moorbank Cover",
+      "to": "Moorbank Cover case file",
+      "body": "Beth has confirmed receipt and said she intends to review the terms. Her reply does not accept the renewal; follow up with her after she has had an opportunity to check the details."
+    }
+  ],
+  "attachments": []
+}

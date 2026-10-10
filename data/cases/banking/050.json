@@ -1,0 +1,73 @@
+{
+  "id": "banking-050",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "050",
+  "title": "Case 050: Status of a Supplier Payment",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-25 09:00:00 UTC",
+    "updated": "2025-10-25 12:08:00 UTC",
+    "completed": "2025-10-25 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I’m an authorised signatory for Northmere Studio Ltd. Our supplier says it has not received the payment we authorised for a materials invoice. Please tell me what stage H&V’s records show for that payment.",
+  "overview": "Mara Ellison, an authorised company signatory, asked H&V to check a specific supplier payment after the supplier reported that the funds had not arrived. H&V’s payment team checked its record and reported the payment stage as “sent” to Mara through the secure portal. This confirms H&V’s recorded stage only; it does not establish receipt by the supplier or resolve the supply dispute.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "I asked H&V’s payment team to check the recorded stage of the specific authorised payment.",
+    "recorded_event": null
+  },
+  "outcome": "H&V reported “sent” for the payment in its journal and communicated that status to the authorised signatory. Whether the supplier has received the funds and the commercial dispute remain open.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-25T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V business portal",
+      "to": "Mara Ellison",
+      "body": "Payment authorisation recorded for the materials invoice from Alder Quay Supplies."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-25T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I’m the company signatory for this payment. Alder Quay Supplies says it has not received the funds; please check the stage shown in H&V’s records."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-25T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V payment team",
+      "body": "I’m escalating this specific payment under case HV-050. Please check and confirm the payment stage recorded in H&V’s journal."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-25T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V payment team",
+      "to": "H&V service agent",
+      "body": "I checked the payment journal. The recorded stage is “sent”; this record does not confirm receipt by the recipient’s bank or supplier."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-25T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V payment team",
+      "to": "Mara Ellison",
+      "body": "Our payment journal shows this payment as “sent”. This is the stage recorded by H&V; we cannot confirm from that record whether the supplier has received the funds."
+    }
+  ],
+  "attachments": []
+}

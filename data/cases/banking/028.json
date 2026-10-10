@@ -1,0 +1,82 @@
+{
+  "id": "banking-028",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "028",
+  "title": "Case 028: New phone number in profile",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-11 09:00:00 UTC",
+    "updated": "2025-09-11 12:55:00 UTC",
+    "completed": "2025-09-11 12:55:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need to replace the phone number on my H&V profile. I no longer have access to the old phone, and I want to use the bank’s approved confirmation process.",
+  "overview": "Elowen Mercer first requested a profile phone-number change by email, explaining that her old phone was unavailable. After H&V completed its identification checks during an official-channel call, an agent started the secure profile-change process. Elowen then confirmed the change through the secure portal, which reported that the profile number had been updated. Her original email was a request, not authorisation.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "After completing the prescribed identification checks on the verified call, start H&V’s secure phone-number change process and leave confirmation to the customer.",
+    "recorded_event": null
+  },
+  "outcome": "The secure portal confirmed that the phone number in Elowen Mercer’s profile was updated after her confirmation. The earlier email was not treated as authorisation.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-11T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "Elowen Mercer",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I need to change the phone number on my profile because I no longer have access to my old phone. Please tell me the approved way to confirm a replacement; this email is a request, not my authorisation to make the change."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-11T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Elowen Mercer",
+      "to": "H&V service agent",
+      "body": "After you completed H&V’s identification checks, I explained that the old phone is unavailable and asked for this to be escalated. I can confirm the replacement number through a secure bank process."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-11T10:34:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V service agent",
+      "to": "H&V secure profile-change process",
+      "body": "I have started the approved phone-number change process following the verified call. I have not changed the profile number or bypassed the old-device check; the customer must confirm the change securely."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-11T11:21:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V secure profile-change process",
+      "to": "Elowen Mercer",
+      "body": "Please review the replacement number entered in this secure process and confirm whether you want it applied to your profile. No change will be made until you confirm."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-11T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Elowen Mercer",
+      "to": "H&V secure profile-change process",
+      "body": "I have reviewed the replacement number in the secure process and confirm that I want it applied to my profile."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-09-11T12:55:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V secure profile-change system",
+      "to": "Elowen Mercer",
+      "body": "Phone number updated. The phone number in your profile has been updated following your secure confirmation."
+    }
+  ],
+  "attachments": []
+}

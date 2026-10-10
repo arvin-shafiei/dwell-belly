@@ -1,0 +1,1 @@
+Image description (written during data prep, not by the case authors): synthetic rendered scene, not a real photo. A closed brown cardboard carton with a white label reading DL-021 / TG-021. Tape runs across the top and is intact; the box looks unopened. The top-right corner is dented inward. No other visible damage.

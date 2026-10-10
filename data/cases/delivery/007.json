@@ -1,0 +1,82 @@
+{
+  "id": "delivery-007",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "007",
+  "title": "Case 007: Pickup deadline is too short for the recipient",
+  "details": {
+    "source_role": "Ciro Fale, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-08 09:00:00 UTC",
+    "escalated": "2026-02-08 09:10:00 UTC",
+    "updated": "2026-02-08 10:05:00 UTC",
+    "completed": "2026-02-08 10:05:00 UTC",
+    "primary_shipment": "DL-007",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The parcel is already at a pickup counter. A short extension is allowed by that operator; only the operator may approve it.",
+  "initial_request": "My work trip ends on 2026-02-10. Could you keep DL-007 for me until 2026-02-11? I do not want it returned.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Request an extension from the pickup-point operator within its stated policy.",
+    "recipient": "Sedgeglass Counter supervisor",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The operator confirms the new collection deadline and the recipient is notified.",
+  "boundaries": "An extension does not prove the customer collected the parcel.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-08T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Sedgeglass Counter supervisor",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-007 is held until 2026-02-09, 18:00 UTC. Our local policy allows a single two-day extension if requested before expiry and stock capacity permits. We currently have capacity."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-08T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ciro Fale, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My work trip ends on 2026-02-10. Could you keep DL-007 for me until 2026-02-11? I do not want it returned."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-08T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Sedgeglass Counter supervisor",
+      "body": "Please approve the permitted two-day extension of DL-007 to 2026-02-11, 18:00 UTC, at Ciro’s request. Let us know once the return timer has been updated."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-08T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Sedgeglass Counter supervisor",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Extension accepted. The collection deadline is now 2026-02-11, 18:00 UTC and the return timer uses that date. This is the one permitted extension."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-08T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Ciro Fale, recipient",
+      "body": "The counter has confirmed your new deadline: 2026-02-11 at 18:00 UTC. Your parcel is still awaiting collection."
+    }
+  ],
+  "attachments": []
+}

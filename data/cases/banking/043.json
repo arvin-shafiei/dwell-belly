@@ -1,0 +1,73 @@
+{
+  "id": "banking-043",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "043",
+  "title": "Case 043: Waiting for the Second Signatory",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-11 09:00:00 UTC",
+    "updated": "2025-10-11 12:08:00 UTC",
+    "completed": "2025-10-11 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I gave my first consent to Northmere Studio Ltd’s payroll payment package. I need to know whether it is waiting for my co-signer or has moved on; I can’t see any separate payment submissions in the portal.",
+  "overview": "Mara Ellery escalated case HV-043 after giving the first consent to her company’s payroll payment package and asked what stage it had reached. The agent checked the signing queue against the mandate. The status confirmed that the package is waiting for the second signatory’s consent; no individual payment submissions are shown.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the package’s signing queue against the business mandate before responding, without approving or releasing anything on either signer’s behalf.",
+    "recorded_event": null
+  },
+  "outcome": "The package is confirmed as awaiting the second signatory’s consent. No second consent is recorded, and no individual payment submissions are shown.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-11T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Mara Ellery",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I give my first consent to Northmere Studio Ltd’s payroll payment package. Please confirm whether it is waiting for my co-signer or has moved on; I can’t see any separate payment submissions."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-11T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellery",
+      "to": "H&V service agent",
+      "body": "I’ve given my consent, but I’m unsure what happens next. Please check the package status and tell me whether the second signatory still needs to act."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-11T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V signing log",
+      "body": "I’m checking the package’s signing queue against the business mandate before responding. I will not approve or release anything on either signer’s behalf."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-11T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V case record HV-043",
+      "body": "I’ve checked the queue against the mandate: Mara Ellery is confirmed as the first signatory, and the second signatory must provide their own consent. The queue shows no second consent and no individual payment submissions."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-11T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "Package status: Awaiting second signatory consent. First consent recorded; no second consent is recorded. No individual payment submissions are shown."
+    }
+  ],
+  "attachments": []
+}

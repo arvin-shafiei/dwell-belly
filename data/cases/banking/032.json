@@ -1,0 +1,90 @@
+{
+  "id": "banking-032",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "032",
+  "title": "Case 032: Archived Statement Request",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-19 09:00:00 UTC",
+    "updated": "2025-09-19 12:55:00 UTC",
+    "completed": "2025-09-19 12:55:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need a copy of my January 2024 statement for my household records. Please let me know if it is available.",
+  "overview": "Mara Ellison requested an archived January 2024 statement through secure chat. The agent checked the account-holder mandate and asked the archive group to confirm availability before ordering the permitted period. H&V confirmed the statement was ready in the secure portal; there is no evidence that Mara downloaded it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check with the archive service whether the January 2024 statement is available and can be ordered, without promising availability or a fee in advance.",
+    "recorded_event": null
+  },
+  "outcome": "The January 2024 statement, statement HV-032, is ready in the secure portal as statement-032.pdf. The customer may still need to download it; any applicable charge is determined by the current tariff.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-19T09:00:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I’m the account holder and need my January 2024 statement for my household records. Could you check whether an archived copy is available?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-19T09:47:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V archive group",
+      "body": "I’ve checked the account-holder mandate in this secure session. Please confirm whether the January 2024 statement is available and can be ordered; I haven’t promised availability or a fee."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-19T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V archive group",
+      "to": "H&V service agent",
+      "body": "The archive check confirms that the January 2024 statement is available to order. Any applicable charge is subject to the current tariff."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-19T11:21:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V service agent",
+      "to": "H&V statement service",
+      "body": "I’m ordering the permitted January 2024 statement period for case HV-032, following the archive availability check and the account-holder’s request."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-19T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V statement service",
+      "to": "H&V service agent",
+      "body": "Statement HV-032 | January 2024 | status: ready for secure-portal access."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-09-19T12:55:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Your January 2024 statement is ready in this secure portal as statement-032.pdf. It shows a closing balance of £188.00; the statement is available, but this message does not confirm that it has been downloaded."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "statement-032.pdf",
+      "type": "pdf",
+      "path": "raw/Banking & Financial Services/032/attachments/statement-032.pdf",
+      "text": "HARROW & VALE BANK PLC | SYNTHETIC ARCHIVE STATEMENT\n\n\nStatement HV-032 | January 2024 | customer copy in secure portal\n\n\nOpening balance: £200.00\n\n\n18 Jan 2024 | Local travel | -£12.00\n\n\n31 Jan 2024 | Closing balance | £188.00\n\n\nNo account or payment routing details are included.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

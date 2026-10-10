@@ -1,0 +1,82 @@
+{
+  "id": "delivery-043",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "043",
+  "title": "Case 043: Freight collection needs confirmed pallet dimensions and weight",
+  "details": {
+    "source_role": "Nessa Dray, Orris Span shipping coordinator",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-16 09:00:00 UTC",
+    "escalated": "2026-03-16 09:10:00 UTC",
+    "updated": "2026-03-16 10:05:00 UTC",
+    "completed": "2026-03-16 10:05:00 UTC",
+    "primary_shipment": "DL-043",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "Freight allocation is paused because pallet dimensions and weight are missing. The shipper must provide measured values before the planner allocates a vehicle.",
+  "initial_request": "We have the pallet ready. Please tell me which measurements the carrier needs to finish the booking.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the shipper for measured dimensions and weight before carrier allocation.",
+    "recipient": "Nessa Dray, Orris Span shipping coordinator",
+    "channel": "Business portal",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The carrier accepts the updated booking data and confirms the collection allocation.",
+  "boundaries": "Customer measurements are not an independent carrier weighing; allocation is not collection.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-16T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight booking desk, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-043 has one pallet at Orris Span Fabrication, but its dimensions and weight fields are blank. We cannot allocate a collection vehicle from an unspecified pallet size."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-16T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Nessa Dray, Orris Span shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We have the pallet ready. Please tell me which measurements the carrier needs to finish the booking."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-16T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Nessa Dray, Orris Span shipping coordinator",
+      "body": "Please provide measured length, width and total height including pallet, plus gross weight including packaging, for DL-043. We will pass those actual measurements to the carrier."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-16T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Business portal",
+      "from": "Nessa Dray, Orris Span shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Measured DL-043: 120 × 100 × 145 cm including pallet, gross weight 310 kg including packaging. One non-stackable pallet; our calibrated warehouse scale supplied the weight."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-16T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We accepted the measurements you submitted for DL-043: 120 × 100 × 145 cm, 310 kg gross, one non-stackable pallet. Collection allocation confirmed for 2026-03-17, 11:00–14:00 UTC. Pickup is pending."
+    }
+  ],
+  "attachments": []
+}

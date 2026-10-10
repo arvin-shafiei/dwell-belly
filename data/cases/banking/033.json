@@ -1,0 +1,81 @@
+{
+  "id": "banking-033",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "033",
+  "title": "Case 033: Transactions export",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-21 09:00:00 UTC",
+    "updated": "2025-09-21 12:08:00 UTC",
+    "completed": "2025-09-21 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need a CSV export of my transactions from 6 May through 9 May 2025 for my own budgeting. The export screen is unclear, and I want to know when the file is available in my secure portal.",
+  "overview": "Mara Ellison, a verified H&V account holder, requested a CSV export for 6–9 May 2025 and escalated because the secure-portal export process was unclear. H&V requested the permitted export for her secure portal and made the resulting file available there. Whether the file works with any third-party accounting software has not been checked.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Request the data service to create the permitted CSV export for the verified owner's secure portal, limited to the requested period.",
+    "recorded_event": null
+  },
+  "outcome": "The file transactions-033.csv is available in Mara's secure portal for 6–9 May 2025. Third-party accounting software compatibility remains unverified.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-21T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Mara Ellison",
+      "to": "H&V",
+      "body": "I’m requesting a CSV export of my transactions from 6 May through 9 May 2025 for my own budgeting. I’m not sure how to tell whether the export has been created."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-21T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V agent",
+      "body": "I’m escalating this because the export process is unclear to me. Please let me know when the file for that period is available in my secure portal."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-21T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "Data service",
+      "body": "I’ve confirmed the authenticated profile and the customer’s secure-portal request. Please create the permitted CSV export for the verified account holder’s secure portal, covering 6–9 May 2025 only; do not send the data to a third party."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-21T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "Data service",
+      "to": "H&V agent",
+      "body": "Export created for the requested period and made available for placement in the customer’s secure portal."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-21T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Mara Ellison",
+      "body": "Your CSV export for 6–9 May 2025 is available in your secure portal as transactions-033.csv."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "transactions-033.csv",
+      "type": "csv",
+      "path": "raw/Banking & Financial Services/033/attachments/transactions-033.csv",
+      "text": "date,description,amount_gbp\n2025-05-06,Local travel,-8.40\n2025-05-09,Groceries,-21.60",
+      "text_source": "original"
+    }
+  ]
+}

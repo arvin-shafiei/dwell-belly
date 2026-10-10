@@ -1,0 +1,73 @@
+{
+  "id": "banking-004",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "004",
+  "title": "Case 004: Why the transfer was declined",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-07-25 09:00:00 UTC",
+    "updated": "2025-07-25 12:08:00 UTC",
+    "completed": "2025-07-25 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I am the account holder and made a transfer to Northmere Housing Co-operative on 14 July 2025. The secure portal says it was not completed, but I cannot see why. Please explain the reason.",
+  "overview": "Mara Ellery asked H&V to explain why her transfer to Northmere Housing Co-operative was marked “Not completed” in the secure portal. The agent checked the transaction journal and used its permitted customer-facing wording to explain that the receiving bank declined the transfer. No new transfer was made.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the transaction journal for the decline code on Mara Ellery’s transfer and confirm the wording H&V is permitted to share.",
+    "recorded_event": null
+  },
+  "outcome": "The secure portal now explains that the receiving bank declined the transfer. No new transfer was made.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-25T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "Transfer to Northmere Housing Co-operative — status: “Not completed”."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-25T09:47:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Mara Ellery",
+      "to": "H&V service team",
+      "body": "I am the account holder and this was my transfer. Please tell me why it was not completed; the portal shows the status but no reason."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-25T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V transaction journal",
+      "body": "I am checking the decline code for Mara Ellery’s transfer to Northmere Housing Co-operative dated 14 July 2025. Please return the code and the customer-facing wording permitted for this transaction."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-25T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V transaction journal",
+      "to": "H&V service agent",
+      "body": "I found a decline code recorded for this transfer. The permitted customer-facing wording is: “The receiving bank declined the transfer.”"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-25T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellery",
+      "body": "I checked the transfer record. The receiving bank declined the transfer, so H&V did not complete it. No new transfer has been made."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,75 @@
+{
+  "id": "insurance-003",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "003",
+  "title": "Case 003: Offer Awaiting the Owner",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-04-10 10:07:00 UTC",
+    "updated": "2025-04-10 14:35:00 UTC",
+    "completed": "2025-04-10 14:35:00 UTC",
+    "property": "103 Elm Walk, Brackenford, ZZ1 3ZZ",
+    "broker": "Bracken Cover",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "Could you check on the property-insurance terms for 103 Elm Walk, Brackenford, ZZ1 3ZZ and let me know when there is an offer for me to review?",
+  "overview": "Florence asked Dan at Bracken Cover for an update on insurance terms for her property. Northmere Mutual sent Dan an offer showing a premium of £486 for 12 months of proposed cover and requesting a response within 21 days. Dan noted that the terms needed to be passed to Florence, then emailed them to her. Florence confirmed receipt and said she would review them; she did not make a purchase decision.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Dan should pass Northmere Mutual's offer terms to Florence for review without suggesting that she has accepted them.",
+    "recorded_event": null
+  },
+  "outcome": "Florence confirmed receipt of the offer and said she would review it; she has not decided to buy.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-04-10T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Florence Blake",
+      "to": "Dan, Bracken Cover",
+      "body": "Could you check on the insurance terms for 103 Elm Walk, Brackenford, ZZ1 3ZZ? I have not seen an offer yet and would like to review it when it is available."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-04-10T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Dan, Bracken Cover",
+      "body": "For 103 Elm Walk, Brackenford, ZZ1 3ZZ, our offer is £486 for 12 months of proposed cover. Please provide your response within 21 days; these are offer terms, not confirmation that cover has started."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-04-10T12:21:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Dan, Bracken Cover",
+      "to": "Dan, Bracken Cover",
+      "body": "Northmere Mutual has sent its offer for Florence's property, and she has not yet seen the terms. I need to pass the insurer's terms to her for review without implying that she has agreed to buy."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-04-10T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Dan, Bracken Cover",
+      "to": "Florence Blake",
+      "body": "Northmere Mutual has provided offer terms for 103 Elm Walk, Brackenford, ZZ1 3ZZ: £486 for 12 months of proposed cover, with a response requested within 21 days. These are the insurer's terms for you to consider; I am not recording any decision to proceed on your behalf."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-04-10T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Florence Blake",
+      "to": "Dan, Bracken Cover",
+      "body": "Thanks, I confirm I have received the offer terms. I will review them and let you know if I decide to proceed."
+    }
+  ],
+  "attachments": []
+}

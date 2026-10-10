@@ -1,0 +1,82 @@
+{
+  "id": "delivery-008",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "008",
+  "title": "Case 008: Recipient needs a defined delivery slot rather than an all-day estimate",
+  "details": {
+    "source_role": "Nemi Thale, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-09 09:00:00 UTC",
+    "escalated": "2026-02-09 09:10:00 UTC",
+    "updated": "2026-02-09 10:05:00 UTC",
+    "completed": "2026-02-09 10:05:00 UTC",
+    "primary_shipment": "DL-008",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A small appliance is booked on an all-day service. Scheduling must quote available timed slots and confirm the customer’s acceptance of any charge.",
+  "initial_request": "I cannot stay in all day. Please find out whether there is a two-hour slot and what it costs before changing the service.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Request available timed slots from the scheduling team.",
+    "recipient": "Scheduling, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "Scheduling confirms the customer's selected slot and any agreed service charge; delivery remains pending.",
+  "boundaries": "Scheduling reports the accepted charge; the desk does not set prices or assert payment.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-09T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-008 currently has an all-day booking for 2026-02-10. Timed delivery may be available; only scheduling can quote live capacity and the upgrade charge."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-09T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Nemi Thale, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I cannot stay in all day. Please find out whether there is a two-hour slot and what it costs before changing the service."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-09T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Scheduling, Plover Arc Logistics",
+      "body": "Please quote available two-hour windows for DL-008 on 2026-02-10, with the total upgrade charge. Do not change the booking until Nemi accepts."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-09T09:35:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Nemi Thale, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "We can offer 2026-02-10, 12:00–14:00 UTC for a total upgrade charge of GBP 6.00. Reply in this verified booking thread to accept before 16:00 UTC today."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-09T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Nemi accepted the 12:00–14:00 slot and GBP 6.00 charge in the booking thread at 09:46 UTC. We confirmed DL-008 for 2026-02-10, 12:00–14:00 UTC at 09:48. Delivery remains pending."
+    }
+  ],
+  "attachments": []
+}

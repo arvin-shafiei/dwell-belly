@@ -1,0 +1,93 @@
+{
+  "id": "insurance-013",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "013",
+  "title": "Case 013: Renewal Status Check",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-10 10:07:00 UTC",
+    "updated": "2025-05-10 16:49:00 UTC",
+    "completed": "2025-05-10 16:49:00 UTC",
+    "property": "113 Elm Walk, Brackenford, ZZ2 4ZZ",
+    "broker": "Westfen Cover, represented by Ellie Ward",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I sent in the renewal request for my property at 113 Elm Walk, Brackenford, ZZ2 4ZZ. Could you check whether it has been processed?",
+  "overview": "Nora asked Ellie at Westfen Cover for an update on her renewal request. With no fresh insurer response recorded in the CRM, Ellie asked Northmere Mutual to confirm the current status. The insurer said the request had been received for processing and the renewal documents were still being prepared. Ellie checked that update against the insurer’s reply before passing it to Nora, who confirmed receipt.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, verify the insurer’s reply against the renewal inquiry record before sending the status update to Nora.",
+    "recorded_event": null
+  },
+  "outcome": "Ellie informed Nora that Northmere Mutual had received the renewal request for processing and was still preparing the renewal documents; Nora confirmed receipt. This was a status update, not confirmation that renewed cover had taken effect.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-10T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Nora Grant",
+      "to": "Ellie Ward, Westfen Cover",
+      "body": "I sent in the renewal request for 113 Elm Walk, Brackenford, ZZ2 4ZZ. Could you let me know whether Northmere Mutual has processed it?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-10T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Ellie Ward",
+      "to": "Westfen Cover CRM",
+      "body": "The renewal request is recorded as sent, but there is no fresh response from Northmere Mutual in the CRM. I’ll ask the insurer for the current status before replying to Nora."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-10T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ellie Ward, Westfen Cover",
+      "to": "Renewals Team, Northmere Mutual",
+      "body": "Could you please confirm the current status of Nora Grant’s renewal request for 113 Elm Walk, Brackenford, ZZ2 4ZZ? Our record shows it was sent, but we have no recent update to pass on."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-10T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Renewals Team, Northmere Mutual",
+      "to": "Ellie Ward, Westfen Cover",
+      "body": "We have received the renewal request for processing, and the renewal documents are still being prepared. This update does not confirm that renewed cover has taken effect."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-10T14:35:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Ellie Ward",
+      "to": "Westfen Cover CRM",
+      "body": "I checked the insurer’s reply against the renewal inquiry record and confirmed it relates to Nora’s request. The latest status is receipt for processing, with the renewal documents still being prepared."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-05-10T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ellie Ward, Westfen Cover",
+      "to": "Nora Grant",
+      "body": "Northmere Mutual has confirmed that it received your renewal request for processing, and says the renewal documents are still being prepared. This is a status update only, not confirmation that renewed cover has taken effect."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-05-10T16:49:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Nora Grant",
+      "to": "Ellie Ward, Westfen Cover",
+      "body": "Thanks for checking with Northmere Mutual. I’ve received your update."
+    }
+  ],
+  "attachments": []
+}

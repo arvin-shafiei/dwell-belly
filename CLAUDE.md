@@ -6,7 +6,8 @@ Hackathon project (Real-World Agents Hackathon, 10 Oct 2026, Delivery & Logistic
 
 - `SPEC.md`: the full idea spec (source of truth for scope, node list, build order)
 - `docs/IDEA.md`: short explainer
-- `docs/hackathon/`: official hacker guide, rules, ElevenLabs guide, and 200 public practice cases. Ours are in `docs/hackathon/public-cases/Delivery & Logistics/`. Its README has the key facts.
+- `docs/hackathon/`: official hacker guide, rules, ElevenLabs guide, Its README has the key facts.
+- `data/`: the 200 public practice cases, raw (`data/raw/`) and parsed (`data/cases/<track>/NNN.json`, `data/index.json`). Ours are `delivery-*`. Rebuild with `npm run data`. Read via `apps/api/src/lib/data.ts`. Evaluate with `?view=escalation` so the outcome isn't leaked. See `data/README.md`.
 
 ## Repo
 

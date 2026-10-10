@@ -1,0 +1,1 @@
+Image description: synthetic photographic simulation, case 038, fictional property. Wide view of a cream painted wall above a white skirting board and wooden floor. A brown water-type stain about hand-to-forearm size sits mid-wall, with a thin vertical hairline crack running from upper wall down through the stain to the skirting.

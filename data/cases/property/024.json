@@ -1,0 +1,313 @@
+{
+  "id": "property-024",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "024",
+  "title": "Case 024: Oven repair request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2026-08-04 00:45:42 UTC",
+    "updated": "2026-08-26 01:28:41 UTC",
+    "completed": "2026-08-26 00:58:43 UTC",
+    "property": "Flat 6, 56 Juniper Mews, Northbridge, ZZ1 0ZZ"
+  },
+  "context": null,
+  "initial_request": "Oven not/cooking warming food\n\nFor reference it takes more than double the amount of time to cook anything than usual\nE.g. nuggets or chips still uncooked after 1.30hrs",
+  "overview": "The tenant reported that the oven was not heating food properly, saying cooking took more than twice as long as usual. Northbridge Lettings first sent a manual with suggested settings. The tenant replied that the oven had not worked since moving in despite trying those settings and asked for an inspection. The landlord approved sending an appliance repair contractor, and Lantern Works was assigned. A manual and a photo were referenced in emails; both attachments remain unavailable, so their contents are not known. The tenant also sent unrelated requests or updates about a fence, a conservatory roof leak, and another previously reported issue. The agency later said the fence and oven had been fixed, recorded receipt of an invoice, and completed the request without payment.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "Northbridge Lettings told the tenant that the oven had been fixed and the request was closed. The request was marked completed without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-08-04T00:45:42Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request description: Oven not/cooking warming food\n\nFor reference it takes more than double the amount of time to cook anything than usual\nE.g. nuggets or chips still uncooked after 1.30hrs"
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-08-04T00:46:19Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-08-05T00:58:45Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 6, 56 Juniper Mews, Northbridge, ZZ1 0ZZ\n\nHello, the cooker was working fine with the previous tenant so perhaps on the wrong setting. Please find attached a manual explaining the settings. From reviewing it myself I suggest turn the left dial 3 turns and turn the heat to 200. Hope this helps. Thanks, Oliver\n\nAttachment: Referenced oven manual (unavailable; contents unseen)."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-08-05T00:59:02Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Awaiting TT response"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-08-05T01:12:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-08-05T01:12:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "The customer reports that the oven has not worked since moving in, despite trying the recommended settings, and requests someone be sent to inspect the problem."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-08-05T01:25:32Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 6, 56 Juniper Mews, Northbridge, ZZ1 0ZZ\n\nHello, thank you for your response. Please bear with me and I will be back in touch. Many thanks, Oliver"
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-08-05T01:26:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 6, 56 Juniper Mews, Northbridge, ZZ1 0ZZ\n\nHello, hope you are okay. The oven is not working, please can i send an appliance repair contractor to take a look at this. Many thanks, Oliver"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-08-05T01:26:43Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Awaiting landlord response"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-08-05T03:15:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Hi, yes please."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-08-05T03:31:02Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-08-05T03:31:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Imogen Clarke,\n\nOur maintenance provider **Lantern Works** will be attending your property for an **Oven Repair Request**.\n\nThey will contact you soon to arrange a suitable time to quote for the job.\nThen we will need to approve the quote with the landlord and instruct the maintenance provider to do the job. It might take a while, and we will do our best to do it as quickly as possible.\n\nRequest description: Oven not/cooking warming food\n\nFor reference it takes more than double the amount of time to cook anything than usual\nE.g. nuggets or chips still uncooked after 1.30hrs\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-08-05T03:31:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance provider",
+      "body": "Dear Lantern Works,\n\nThis is a new **Oven Repair Request** for the property at Flat 6, 56 Juniper Mews, Northbridge, ZZ1 0ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900512\n**Tenant Name:** Imogen Clarke\n**Request description:** Oven not/cooking warming food\n\nFor reference it takes more than double the amount of time to cook anything than usual\nE.g. nuggets or chips still uncooked after 1.30hrs\n\n**List of attached files:**\n- Attachment #1 (photo; unavailable)\n\nIf the job requires a quotation, please reply to this email with a quote, photos and the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-08-05T20:14:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-08-05T20:14:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "The customer is requesting an update on when the fence will be repaired."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-08-26T00:51:53Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Hi Imogen\n\nGood news — the **fence and oven** have both been fixed and everything’s now sorted! We’ll go ahead and close off the job on our end.\n\nThanks so much for working with us to get these issues sorted out — really appreciate your patience.\n\nBest,"
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-08-26T00:53:40Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Invoice received"
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-08-26T00:53:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-08-26T00:53:49Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-08-26T00:54:49Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** Invoice sections not in use right now for HC. invoices visible in the portal"
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-08-26T00:54:49Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-08-26T00:55:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "We need to check the key return before completing the request"
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-08-26T00:55:33Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Keys return confirmed\nValidation: (Priority cannot be decreased to 0. Current priority is 1.)"
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-08-26T00:56:09Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Manually updated via workflow mode"
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-08-26T00:56:19Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Keys return confirmed\nValidation: (Priority cannot be decreased to 0. Current priority is 1.)"
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-08-26T00:57:03Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Manually updated via synthetic-1e733a7ddad6"
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-08-26T00:57:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Keys return confirmed\nValidation: (Priority cannot be decreased to 0. Current priority is 1.)"
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-08-26T00:58:04Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Manually updated via synthetic-1e733a7ddad6"
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-08-26T00:58:43Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Invoice sections not in use right now for HC. invoices visible on Keystone Solutions"
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-08-26T00:58:43Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-08-26T01:28:41Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-08-26T01:28:41Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "The customer is inquiring about an update on a previously reported issue regarding a leaking conservatory roof."
+    }
+  ],
+  "attachments": []
+}

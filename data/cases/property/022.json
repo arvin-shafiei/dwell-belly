@@ -1,0 +1,232 @@
+{
+  "id": "property-022",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "022",
+  "title": "Case 022: Front Door Lock Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-11-17 13:57:17 UTC",
+    "updated": "2024-11-21 12:22:26 UTC",
+    "completed": "2024-11-21 12:22:26 UTC",
+    "property": "Flat 23, 155 Willowmere Road, Alderwick, ZZ5 2ZZ"
+  },
+  "context": null,
+  "initial_request": "Front door lock, the keys gets very hard to turn to unlock, thos sometimes leads to me standing at the door fiddling with the keys for a couple of minutes just so I can go outside.",
+  "overview": "The tenant reported that the front door keys were difficult to turn, sometimes leaving them at the door for a couple of minutes. A maintenance provider was assigned and appointment arrangements were made. After some delay and follow-up, the repair was confirmed complete, including a lock change; the provider brought in a new key, which was added to the office key set and copied. The request was closed after checks were completed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The contractor confirmed the work was complete, including replacement of the lock; the new key was then added to the office set and copied.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-11-17T13:57:17Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Front door lock, the keys gets very hard to turn to unlock, thos sometimes leads to me standing at the door fiddling with the keys for a couple of minutes just so I can go outside."
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-11-17T13:57:28Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-11-17T15:52:10Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-11-17T15:55:31Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "The customer was contacted by Miles from Northbridge Lettings to address an issue with their door lock. The contractor is currently in the customer's area, and the customer agreed to be home around half past two to meet the contractor. Miles confirmed the arrangement with the customer."
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-11-17T15:57:38Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "spk to Maya he is in that area at the moment if tt about in next hour- Ava"
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-11-17T15:59:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Visit date confirmed/rescheduled - 2024-11-17 14:30"
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-11-17T16:00:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Oliver Sawyer,\n\nWe are providing the confirmed appointment details for the **Lock Repair Request** at Flat 23, 155 Willowmere Road, Alderwick, ZZ5 2ZZ:\n\nConfirmed Time Slot: tenant should be in in next hour (17/11/2024)\nPets: na\nContact Details: 07700 900246\nTenant Name: Amelia Oakley\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-11-17T16:00:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Amelia Oakley,\n\nWe are providing the confirmed appointment details for the **Lock Repair Request** at Flat 23, 155 Willowmere Road, Alderwick, ZZ5 2ZZ:\nConfirmed Time Slot: tenant should be in in next hour (17/11/2024)\nMaintenance Provider Name: Oliver Sawyer\nContact Details: 07700 900246\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-11-17T16:55:31Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Maintenance provider",
+      "to": "Tenant",
+      "body": "A caller is checking if the recipient is at home; the recipient states they are about 10 minutes away."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-11-17T17:07:46Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Maintenance provider",
+      "body": "The call transcript is a brief greeting."
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-11-18T12:18:53Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Maintenance provider",
+      "to": "Tenant",
+      "body": "The caller informs the customer that they are on their way to the customer's location with two locks in the van and expects to arrive in about an hour depending on traffic. The customer confirms they will not be going out."
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-11-19T16:58:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-11-20T16:18:11Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance provider",
+      "body": "The customer called to inquire about the status of work done at Flat 22, 42 Harbour View, Alderwick, ZZ3 3ZZ. Both tasks were completed, including a lock change. The conversation included discussions on invoicing procedures, mentioning the use of job IDs when replying to emails, and the possibility of using email software like Alder Utilities for invoicing. The customer expressed concern over receiving numerous emails and considered organizing them into folders or using a new email address. There was also mention of dropping off keys for another property at Flat 18, 68 Harbour View, Eastmere, ZZ7 9ZZ."
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-11-20T16:31:39Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-11-20T16:31:43Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-11-20T16:33:31Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Maya done repair - he will drop new key off and send invoice"
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-11-21T01:08:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-11-21T01:08:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The email confirms an appointment for a lock repair request at Flat 23, 155 Willowmere Road, Alderwick, ZZ5 2ZZ and provides job details."
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-11-21T12:19:14Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Text/transcription unavailable."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-11-21T12:21:28Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "21.11.24 Maya brought new key in added to keys and copied - Ava"
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-11-21T12:21:45Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. Reason provided: job complete"
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-11-21T12:21:46Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-11-21T12:22:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

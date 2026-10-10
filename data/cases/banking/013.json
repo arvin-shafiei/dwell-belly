@@ -1,0 +1,82 @@
+{
+  "id": "banking-013",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "013",
+  "title": "Case 013: Cancellation of a Future Payment Instruction",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-12 09:00:00 UTC",
+    "updated": "2025-08-12 12:55:00 UTC",
+    "completed": "2025-08-12 12:55:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I set up a recurring payment for my studio rent and want H&V to cancel the next scheduled run before it starts. Please confirm that the future instruction is cancelled.",
+  "overview": "Elodie Mercer contacted H&V about an active recurring rent payment instruction. After identification checks, the bank checked the mandate and confirmed the next run had not started. Elodie then confirmed the cancellation in the secure portal, and H&V's instruction log recorded the future run as cancelled.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check that the instruction is within Elodie's mandate and that the next run has not started, then submit her secure-portal cancellation through H&V's protected instruction process.",
+    "recorded_event": null
+  },
+  "outcome": "H&V's instruction log confirms the future run was cancelled. Any payments already sent were not reversed or returned.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-12T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Elodie Mercer",
+      "body": "Your recurring studio-rent payment instruction is active. The next scheduled run has not started."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-12T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Elodie Mercer",
+      "to": "H&V agent",
+      "body": "I completed your identification checks. I want to cancel the next run of my studio-rent instruction; please escalate this and tell me how to confirm it securely."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-12T10:34:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Elodie Mercer",
+      "to": "H&V",
+      "body": "I confirm that I want to cancel the future run of my recurring studio-rent payment instruction."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-12T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "H&V protected instruction process",
+      "body": "I checked that Elodie Mercer has authority over this instruction and that its next run has not started. I am submitting her secure-portal cancellation confirmation for instruction HV-013."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-12T12:08:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V instruction log",
+      "to": "H&V agent",
+      "body": "HV-013 — Future run cancelled. No payment was in progress when the cancellation was recorded."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-12T12:55:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Elodie Mercer",
+      "body": "The future run of your recurring studio-rent payment instruction is cancelled. This does not reverse or return any payments already sent."
+    }
+  ],
+  "attachments": []
+}

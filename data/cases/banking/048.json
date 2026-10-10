@@ -1,0 +1,73 @@
+{
+  "id": "banking-048",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "048",
+  "title": "Case 048: The buyer said payment was sent",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-21 09:00:00 UTC",
+    "updated": "2025-10-21 12:08:00 UTC",
+    "completed": "2025-10-21 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Please check whether the payment our buyer says they sent for our workshop invoice has reached our H&V business account.",
+  "overview": "Mara Ellison escalated a missing incoming payment query for Alder Quay Studio Ltd. The buyer had messaged the company saying they had paid, but the credit had not been reconciled against the invoice. H&V checked the company account's incoming activity and could not identify a matching credit at the time of the check.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the company's incoming account activity for an identifiable credit matching the payment details available to H&V.",
+    "recorded_event": null
+  },
+  "outcome": "H&V's check found no identifiable incoming credit at that time. This does not establish whether the buyer sent a payment or what its status is with the buyer's bank, and the invoice has not been confirmed as paid.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-21T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "Buyer",
+      "to": "Alder Quay Studio Ltd.",
+      "body": "I've sent payment for the workshop invoice. Please let me know when it reaches you."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-21T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison, Alder Quay Studio Ltd.",
+      "to": "H&V business support",
+      "body": "I'm the authorised accountant for our business. Our buyer says they sent payment for the workshop invoice, but I can't reconcile it in our incoming activity. Please check whether an identifiable credit has reached our account."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-21T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V business support agent",
+      "to": "H&V account transaction journal",
+      "body": "I’m checking Alder Quay Studio Ltd.’s incoming account activity for an identifiable credit matching the payment details available to the bank."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-21T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V account transaction journal",
+      "to": "H&V business support agent",
+      "body": "No identifiable incoming credit matching the available payment details is shown in the account activity checked."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-21T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison, Alder Quay Studio Ltd.",
+      "body": "We checked your business account's incoming activity and could not identify a matching credit at the time of the check. This check does not confirm the status of a payment in the buyer's bank, or confirm that your invoice has been paid."
+    }
+  ],
+  "attachments": []
+}

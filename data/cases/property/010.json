@@ -1,0 +1,168 @@
+{
+  "id": "property-010",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "010",
+  "title": "Case 010: Solar panel readings photo request",
+  "details": {
+    "source_role": "Agency manager",
+    "status": "Completed",
+    "created": "2024-11-04 23:55:34 UTC",
+    "updated": "2025-01-17 06:06:30 UTC",
+    "completed": "2025-01-17 05:23:45 UTC",
+    "property": "Flat 10, 180 Alder Lane, Cedarford, ZZ3 4ZZ"
+  },
+  "context": null,
+  "initial_request": "Solar panel readings every 3 months w photo needed from Ts for LL. Next due Mid June.",
+  "overview": "Northbridge Lettings requested a clear photo of the tenant’s solar panel readings for the property. After follow-ups, the tenant agreed to send a photo, which was forwarded to the landlord. The landlord confirmed receipt and said the next readings would be needed on 15th September.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The solar panel readings photo was sent to the landlord, who confirmed receiving it and said the next readings would be needed on 15th September.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-11-04T23:55:53Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Not yet relevant"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-11-19T00:04:15Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "waiting for june"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-12-02T02:36:45Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "waiting for june"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-12-16T02:11:17Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "waiting for mid june"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-12-31T03:45:20Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "waiting for mid june"
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-01-11T02:08:30Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 10, 180 Alder Lane, Cedarford, ZZ3 4ZZ\n\nGood afternoon,\n\nPlease could you send us a clear photo of your solar panel readings?\n\nThank you."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-01-11T02:08:49Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "await T reply"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-01-13T00:01:30Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "The caller from Oakfield Compliance agreed to send a photo of solar panel readings to the agent."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-01-13T00:46:49Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "await photos"
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-01-17T02:39:41Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Address: Flat 10, 180 Alder Lane, Cedarford, ZZ3 4ZZ\n\nGood afternoon,\n\nPlease could you send us a clear photo of your solar panel readings?\n\nThank you."
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-01-17T02:40:02Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "await photos"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-01-17T02:42:42Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "Thanks & Regards, Miles Fletcher, 07700 900978"
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-01-17T05:23:33Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 10, 180 Alder Lane, Cedarford, ZZ3 4ZZ\n\nGood afternoon,\n\nPlease see the attached photo of solar panel readings for mid June. Let us know when you next need these.\n\nKind regards\n\nAttachment: attachment-80-document\n\nAttachments: [attachment-01-photograph-of-a-solar-photovoltaic-generation-me.pdf](attachments/attachment-01-photograph-of-a-solar-photovoltaic-generation-me.pdf)"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-01-17T05:23:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "done complete"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-01-17T06:06:30Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Thank you for sending the reading. The next time I will need it is 15th September.\nAva"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "attachment-01-photograph-of-a-solar-photovoltaic-generation-me.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/010/attachments/attachment-01-photograph-of-a-solar-photovoltaic-generation-me.pdf",
+      "text": "Northbridge Lettings\n\nPhotograph of a solar photovoltaic\ngeneration meter\nPhotographic record of the solar panel reading for Flat 10, 180 Alder Lane, Cedarford, ZZ3 4ZZ.\n\n\nSingle Phase Watt Meter\n\n1000 imp/kWh\n\nSolar PV System Point of emergency switching\n\nI ON\n\nJuniper Utilities\n\nObservations\n       The meter’s digital display appears to show 16845.\n       The meter is fitted with a red rotary isolator; its position is marked I ON.\n       A yellow warning label identifies the switch as the solar PV system emergency switching\n       point.\n\nFindings\n       The photograph records a reading on a single-phase watt meter associated with a solar PV\n       system.\n\nConclusions\n       The image serves as a photographic record of the solar panel meter reading.\n\nImage evidence\n\n    Neutral image placeholder\n\n    Meter at Flat 10, 180 Alder Lane, Cedarford, ZZ3 4ZZ; the display appears to read 16845,\n    with a solar PV emergency-switching warning and the red isolator marked I ON.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

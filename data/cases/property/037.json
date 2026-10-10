@@ -1,0 +1,250 @@
+{
+  "id": "property-037",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "037",
+  "title": "Case 037: Shower Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-03-26 06:23:04 UTC",
+    "updated": "2024-04-06 10:46:31 UTC",
+    "completed": "2024-04-06 10:46:31 UTC",
+    "property": "Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ"
+  },
+  "context": null,
+  "initial_request": "Shower cable leading to the shower handle is damaged and leaking. \nPlease replace",
+  "overview": "The tenant reported a leaking, damaged shower cable and asked for it to be replaced. The landlord approved replacement of the shower hose. Northbridge Lettings assigned Beacon Utilities, and a repair visit was arranged for Thursday, 4 April 2024, between 12 and 4. The provider reported that it replaced the snapped shower hose and sent an attachment-91-document; the landlord was informed and the request was marked complete.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The contractor replaced the snapped shower hose and sent an attachment-91-document.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-03-26T06:23:04Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request description: Shower cable leading to the shower handle is damaged and leaking.\n\nHope this will be looked into as soon as possible. \n\nThank you."
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-03-26T06:23:48Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-03-27T11:12:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ\n\nHi Freya,\n\nI trust you are doing well.\n\nWe have been informed that the shower cable leading to the shower handle is damaged and leaking.\n\nAs this relates to a fixed bathroom installation, please let us know if you would like to arrange the repair directly, or if you would prefer for us to organise this on your behalf.\n\nKind regards"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-03-27T11:12:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ\n\nGood day Eliza,\n\nThank you for reporting the issue with the shower.\n\nTo help us arrange the repair as quickly as possible, could you please send a few photos showing the damaged shower cable and where the leak is coming from?\n\nWe will update you shortly once arrangements are in place.\n\nKind regards,"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-03-27T11:13:05Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "LL to approve contractor"
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-03-27T11:21:48Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-03-27T11:21:48Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Please get the shower hose replaced."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-03-27T17:53:55Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Changed original task description: task description has been changed to:\n\nShower cable leading to the shower handle is damaged and leaking. \nPlease replace"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-03-27T17:54:22Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-03-27T17:54:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Eliza Oakley,\n\nOur maintenance provider **Beacon Utilities** will be attending your property for a **Shower Repair Request**.\n\nThey will contact you soon to triage the problem or prepare the quote if needed.\n\nRequest description: Shower cable leading to the shower handle is damaged and leaking. \nPlease replace\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-03-27T17:54:48Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Beacon Utilities,\n\nThis is a new **Shower Repair Request** for the property at Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900758\n**Tenant Name:** Eliza Oakley\n**Request description:** Shower cable leading to the shower handle is damaged and leaking. \nPlease replace\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-03-28T17:55:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Beacon Utilities,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Shower Repair Request at Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900758\nTenant Name: Eliza Oakley\n**Request description:** Shower cable leading to the shower handle is damaged and leaking. \nPlease replace\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-03-30T17:56:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Beacon Utilities,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Shower Repair Request at Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900758\nTenant Name: Eliza Oakley\n**Request description:** Shower cable leading to the shower handle is damaged and leaking. \nPlease replace\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-04-02T16:58:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Beacon Utilities,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Shower Repair Request at Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900758\nTenant Name: Eliza Oakley\n**Request description:** Shower cable leading to the shower handle is damaged and leaking. \nPlease replace\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-04-03T12:17:31Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The call is requesting the customer to input a six-digit code."
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-04-03T18:14:08Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Contractor",
+      "body": "The customer returned a missed call regarding a leaking shower at their property. They discussed scheduling an appointment for a repair on Thursday afternoon between 12 and 4, and agreed on the timing. The repair person will call when they are on their way."
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-04-04T16:28:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-04-04T16:32:19Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Visit date confirmed/rescheduled - 2024-04-04 12:00"
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-04-04T16:32:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Beacon Utilities,\n\nWe are providing the confirmed appointment details for the **Shower Repair Request** at Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ:\n\nConfirmed Time Slot: 12-4pm (04/04/2024)\nPets: NA\nContact Details: 07700 900758\nTenant Name: Eliza Oakley\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-04-04T16:32:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Eliza Oakley,\n\nWe are providing the confirmed appointment details for the **Shower Repair Request** at Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ:\nConfirmed Time Slot: 12-4pm (04/04/2024)\nMaintenance Provider Name: Beacon Utilities\nContact Details: 07700 900712\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-04-06T06:16:49Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Replaced snapped shower hose.\n\nPlease see attached attachment-91-document"
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-04-06T06:17:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Work results isset, please select next stage"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-04-06T10:45:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 14, 44 Lantern Quay, Alderwick, ZZ9 8ZZ\n\nHello,\n\nFlat 8, 68 Willowmere Road, Bellmere, ZZ4 0ZZ, shower hose was replaced - FYI.\nThanks"
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-04-06T10:46:31Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Added document(s): attachment-91-document (unavailable; contents not provided)."
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-04-06T10:46:31Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Unspecified",
+      "body": "Task has been completed by supervisor"
+    }
+  ],
+  "attachments": []
+}

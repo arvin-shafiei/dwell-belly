@@ -1,0 +1,75 @@
+{
+  "id": "insurance-001",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "001",
+  "title": "Case 001: First quotation for a rental flat",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-04-04 10:07:00 UTC",
+    "updated": "2025-04-04 14:35:00 UTC",
+    "completed": "2025-04-04 14:35:00 UTC",
+    "property": "101 Birch Walk, Brackenford, ZZ1 1ZZ",
+    "broker": "Alderbrook Cover",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I’d like a buildings insurance quotation for my flat at 101 Birch Walk, Brackenford, ZZ1 1ZZ, which I’m planning to let. Please let me know what information you need to obtain a quote.",
+  "overview": "Macy Harper asked Erin Cole of Alderbrook Cover for a quotation for her flat to be let. Erin requested the planned letting start, use and property details; Macy supplied them, and Erin submitted the completed information to Northmere Mutual. The insurer confirmed that it had accepted the quotation request, but had not provided a price or issued a policy.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Erin’s escalation was to obtain Macy’s planned letting start and the missing use and property details, then submit the completed information to Northmere Mutual for a quotation. The next step is to await the insurer’s pricing response and relay it to Macy.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual accepted the request for a quotation; no price or policy has been provided.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-04-04T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Macy Harper",
+      "to": "Erin Cole, Alderbrook Cover",
+      "body": "I’d like a buildings insurance quotation for my flat at 101 Birch Walk, Brackenford, ZZ1 1ZZ, as I’m preparing to let it. Could you tell me what details you need from me?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-04-04T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Erin Cole, Alderbrook Cover",
+      "to": "Macy Harper",
+      "body": "I can arrange a quotation, but first please confirm when the letting is expected to start, how the flat will be used and its main construction and layout details. Please also let me know whether you intend a standard residential tenancy or short-term stays."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-04-04T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Macy Harper",
+      "to": "Erin Cole, Alderbrook Cover",
+      "body": "The letting should begin in about six weeks and will be a standard residential tenancy to one household, not short-term stays. It is a purpose-built, two-bedroom, second-floor flat in a brick block, and I’m not planning any building work."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-04-04T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Erin Cole, Alderbrook Cover",
+      "to": "Northmere Mutual Underwriting",
+      "body": "Please provide a buildings quotation for Macy Harper’s flat at 101 Birch Walk, Brackenford, ZZ1 1ZZ. The planned letting is in about six weeks to one household on a standard residential tenancy; the property is a purpose-built, two-bedroom, second-floor flat in a brick block, with no building work planned."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-04-04T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Jon Bell, Northmere Mutual Underwriting",
+      "to": "Erin Cole, Alderbrook Cover",
+      "body": "We have accepted the request for a quotation for the rental flat and recorded the details supplied for rating. A price has not yet been issued, and this confirmation is not an offer of cover or a policy."
+    }
+  ],
+  "attachments": []
+}

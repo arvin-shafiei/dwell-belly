@@ -1,0 +1,82 @@
+{
+  "id": "delivery-005",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "005",
+  "title": "Case 005: Recipient asks for an authorised household member to receive the parcel",
+  "details": {
+    "source_role": "Lira Venn, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-06 09:00:00 UTC",
+    "escalated": "2026-02-06 09:10:00 UTC",
+    "updated": "2026-02-06 10:05:00 UTC",
+    "completed": "2026-02-06 10:05:00 UTC",
+    "primary_shipment": "DL-005",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A standard parcel permits a nominated adult household receiver under the carrier’s fictional service rules. No restricted or identity-specific goods are involved.",
+  "initial_request": "I need to step out during the window. Could my adult brother receive this parcel instead? I have not added his name to the booking.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the recipient to nominate a receiver under the operator's stated service conditions.",
+    "recipient": "Lira Venn, recipient",
+    "channel": "Customer portal",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "Dispatch confirms the approved receiver is recorded; handover remains pending.",
+  "boundaries": "This policy is limited to the stated ordinary parcel; nomination is not delivery.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-06T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recipient services, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-005 uses our ordinary household parcel service. A verified recipient may nominate an adult household member by name in the order portal. Nomination must be recorded before the route is released."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-06T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Lira Venn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I need to step out during the window. Could my adult brother receive this parcel instead? I have not added his name to the booking."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-06T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Lira Venn, recipient",
+      "body": "Please confirm the name of the adult household member you authorise to receive DL-005. Our recipient services team will record the nomination under this parcel’s service rules."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-06T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Lira Venn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I nominate my adult brother, Halen Venn, to receive DL-005 at my delivery address. This is just for this shipment."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-06T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Recipient services, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Following your submission of the verified portal nomination, Halen Venn is the approved alternate receiver for DL-005. The route record is updated; handover is pending."
+    }
+  ],
+  "attachments": []
+}

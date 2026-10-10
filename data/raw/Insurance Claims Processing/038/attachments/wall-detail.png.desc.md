@@ -1,0 +1,1 @@
+Image description: synthetic photographic simulation, case 038. Close-up of the same wall: diffuse brown stain with soft edges, and a thin jagged vertical crack passing through it. Plaster surface looks intact apart from the crack; no peeling.

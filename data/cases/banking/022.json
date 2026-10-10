@@ -1,0 +1,73 @@
+{
+  "id": "banking-022",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "022",
+  "title": "Case 022: Lost card blocked",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-30 09:00:00 UTC",
+    "updated": "2025-08-30 12:08:00 UTC",
+    "completed": "2025-08-30 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I noticed my H&V debit card was missing after a visit to Alder Quay Market. Please block it immediately.",
+  "overview": "After completing H&V's identification checks on a call, Mara Ellison asked for her missing card to be blocked. The agent escalated case HV-022 and submitted the verified instruction to H&V's card system. The card journal confirmed the card was marked blocked, and H&V notified Mara through the secure portal.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Submit the verified block instruction to H&V's card system.",
+    "recorded_event": null
+  },
+  "outcome": "The card journal confirmed that the card was marked blocked. Any disputed transactions remain a separate matter for review; no outcome on them is recorded here.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-30T09:00:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "After H&V completed its identification checks, I reported that my debit card was missing after a visit to Alder Quay Market. I asked you to block it immediately; no security details were recorded in the call note."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-30T09:47:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V card team",
+      "body": "I have opened case HV-022 and escalated Mara Ellison's verified request for an immediate card block. Her instruction was confirmed during the checked call."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-30T10:34:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V service agent",
+      "to": "H&V card system",
+      "body": "I have submitted the verified instruction to block Mara Ellison's missing card under case HV-022."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-30T11:21:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V card system",
+      "to": "H&V service agent",
+      "body": "Card journal status: BLOCKED. The card is marked blocked."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-30T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Mara Ellison",
+      "body": "The card journal confirms that your card is marked blocked. Any disputed transactions are handled separately and have not been assessed as part of this block confirmation."
+    }
+  ],
+  "attachments": []
+}

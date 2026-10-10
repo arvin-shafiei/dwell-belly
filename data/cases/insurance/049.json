@@ -1,0 +1,92 @@
+{
+  "id": "insurance-049",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "049",
+  "title": "Case 049: Written Neighbour Claim",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-08-26 10:07:00 UTC",
+    "updated": "2025-08-26 15:42:00 UTC",
+    "completed": "2025-08-26 15:42:00 UTC",
+    "property": "149 Maple Walk, Brackenford, ZZ6 4ZZ",
+    "broker": "Wyvern Cover",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I’ve received a letter from my neighbour about ceiling damage possibly linked to 149 Maple Walk, Brackenford, ZZ6 4ZZ. I’ve only been able to summarise it so far; please tell me how to provide the full letter and have it passed to my insurer.",
+  "overview": "Amy Wilson told Dan at Wyvern Cover that her neighbour had made a written claim about possible water damage, but Dan did not yet have the full letter or its date of receipt. Dan asked Amy to provide both through a protected channel and not to admit liability. Amy supplied Alex Rowe's complete letter dated 24 August 2025 (received 25 August), and Dan submitted it to Northmere Mutual, and the insurer confirmed receipt. The claim remains unresolved.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At escalation, ask Amy to upload the full letter and its date of receipt through the protected document channel, then refer the complete claim to Northmere Mutual without admitting liability.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual confirmed receipt of the neighbour’s claim; no decision on liability or cover has been made.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-26T10:07:00Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Amy Wilson",
+      "to": "Dan, Wyvern Cover",
+      "body": "I’ve received a letter dated 24 August from my neighbour Alex Rowe about water damage they think might be connected to 149 Maple Walk, Brackenford, ZZ6 4ZZ. I can explain the gist, but I don’t have the full wording to hand."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-26T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Dan, Wyvern Cover",
+      "to": "Amy Wilson",
+      "body": "Please send the complete letter and tell me the date you received it using our protected document channel, so I can pass the actual wording to Northmere Mutual. Please don’t admit responsibility or respond to the neighbour about the claim while we arrange this."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-26T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Amy Wilson",
+      "to": "Dan, Wyvern Cover",
+      "body": "I received Alex Rowe's letter on 25 August 2025 and have uploaded the complete neighbour-letter.png through the protected document channel. Alex reports a damp hallway ceiling noticed on 23 August and requests that I refer the allegation to my insurer; I have not agreed that my property caused it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-26T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Dan, Wyvern Cover",
+      "to": "Claims Intake, Northmere Mutual",
+      "body": "I am submitting Alex Rowe's written claim concerning alleged water damage possibly associated with 149 Maple Walk, Brackenford, ZZ6 4ZZ, under reference CLM-049. The complete letter, neighbour-letter.png, dated 24 August and received on 25 August, have been passed through the protected claim channel for your review; this submission is not an admission of liability."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-26T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Claims Intake, Northmere Mutual",
+      "to": "Dan, Wyvern Cover",
+      "body": "We confirm receipt of the neighbour’s claim and the accompanying letter under reference CLM-049. This acknowledgement confirms receipt only and does not determine liability or cover."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-26T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Dan, Wyvern Cover",
+      "to": "Amy Wilson",
+      "body": "Northmere Mutual has confirmed receipt of your neighbour’s claim and the letter you supplied. The dispute is not resolved, and you should not respond to the neighbour on the substance of the claim unless authorised."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "neighbour-letter.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/049/attachments/neighbour-letter.png",
+      "text": "OCR text:\nAlex Rowe | adjoining property\n\nNeighbour's written damage claim\n\nLETTER DETAILS\nDated: 24 August 2025 | To: Amy Wilson\nFrom: Alex Rowe, adjoining property, 150 Maple Walk, Brackenford, ZZ6 4ZX\n\nRegarding possible water ingress from: 149 Maple Walk, Brackenford, ZZ6 4ZZ\n\nSTATEMENT OF CLAIM\n\nOn 23 August | noticed a new damp mark spreading across my hallway ceiling.\n\nThe wet area is next to the wall adjoining 149 Maple Walk. | do not know where the water began.\nThe paint is lifting and the ceiling may need drying and repair. | have not obtained a repair price.\n| ask you to pass this account to your property insurer and have the damage assessed.\n\nPlease arrange any contact about this matter through the insurer's protected claim channel.\n\n| am not asking you to admit responsibility in order to forward this letter.\n\nSigned: Alex Rowe. This is a wholly fictional letter for calibration, not a real claim.\n\nSYNTHETIC CALIBRATION DOCUMENT - CASE 049 - NOT REAL INSURANCE",
+      "text_source": "ocr"
+    }
+  ]
+}

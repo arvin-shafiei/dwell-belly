@@ -1,0 +1,84 @@
+{
+  "id": "insurance-045",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "045",
+  "title": "Case 045: Decision on Claim Received",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-08-14 10:07:00 UTC",
+    "updated": "2025-08-14 15:42:00 UTC",
+    "completed": "2025-08-14 15:42:00 UTC",
+    "property": "145 Willow Walk, Brackenford, ZZ5 9ZZ",
+    "broker": "Norwick Cover",
+    "insurer": "Fenwick Mutual"
+  },
+  "context": null,
+  "initial_request": "I understand Fenwick Mutual has sent a decision on the claim for 145 Willow Walk, Brackenford, ZZ5 9ZZ, but I have not seen it. Please pass on the insurer’s wording so I can read its position.",
+  "overview": "Fenwick Mutual sent its written decision on claim CLM-045 to Matt at Norwick Cover. Matt recorded that the decision needed to be relayed without his own interpretation, asked the insurer to confirm the wording for onward communication, and then sent the confirmed wording to Clara. Clara replied that she had received it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Forward Fenwick Mutual’s confirmed decision wording to Clara verbatim, without reinterpreting its grounds.",
+    "recorded_event": null
+  },
+  "outcome": "Clara confirmed that she received the insurer’s decision.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-14T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Fenwick Mutual Claims Team",
+      "to": "Matt, Norwick Cover",
+      "body": "For CLM-045 at 145 Willow Walk, Brackenford, ZZ5 9ZZ, we have decided that the reported sudden escape of water from the kitchen supply pipe and the resulting damaged plaster fall under the policy's escape-of-water section. The £250 escape-of-water excess applies; repair costs are still being assessed and we have not authorised a payment amount. Please give Clara Hill this decision as our position."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-14T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Matt, Norwick Cover",
+      "to": "CLM-045 claim record",
+      "body": "Clara has not yet seen Fenwick Mutual’s written decision. Escalate the wording for confirmation before passing it on, and do not add my own interpretation of the insurer’s grounds."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-14T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Matt, Norwick Cover",
+      "to": "Fenwick Mutual Claims Team",
+      "body": "Please confirm the exact decision wording you want relayed to Clara Hill for CLM-045. I will pass on your position without adding an interpretation."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-14T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Fenwick Mutual Claims Team",
+      "to": "Matt, Norwick Cover",
+      "body": "Please relay this wording for CLM-045: “The reported sudden escape of water from the kitchen supply pipe and resulting damaged plaster fall under our policy's escape-of-water section. The £250 excess applies. Repair costs are still being assessed; no payment amount has been authorised.” This is Fenwick Mutual’s decision, not a settlement figure."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-14T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Matt, Norwick Cover",
+      "to": "Clara Hill",
+      "body": "Fenwick Mutual’s decision on CLM-045 is: “The reported sudden escape of water from the kitchen supply pipe and resulting damaged plaster fall under our policy's escape-of-water section. The £250 excess applies. Repair costs are still being assessed; no payment amount has been authorised.” I am passing on the insurer’s wording without adding my own interpretation."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-14T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Clara Hill",
+      "to": "Matt, Norwick Cover",
+      "body": "Thank you; I confirm that I have received Fenwick Mutual’s decision."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,82 @@
+{
+  "id": "banking-019",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "019",
+  "title": "Case 019: Standing order date change",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-24 09:00:00 UTC",
+    "updated": "2025-08-24 12:55:00 UTC",
+    "completed": "2025-08-24 12:55:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I want to move the date of my active monthly standing order to Willow Yard Studios from 18 September 2025 to 22 September 2025. Please check whether the next run can still be changed and send the change to me for secure confirmation.",
+  "overview": "Maeve Ellery asked H&V to change the date of her active standing order. The secure portal showed the existing next-run date; an agent checked that the instruction was not yet being processed, then sent the change for Maeve's confirmation. After she confirmed securely, the portal showed the new next-run date. The payment itself remains in the future.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Send the checked date change to Maeve through the secure portal for her confirmation.",
+    "recorded_event": null
+  },
+  "outcome": "After Maeve's secure confirmation, H&V's portal showed 22 September 2025 as the standing order's next run date. The payment has not yet been made.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-24T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V secure portal",
+      "to": "Maeve Ellery",
+      "body": "Standing order status: active. Next scheduled run: 18 September 2025."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-24T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Maeve Ellery",
+      "to": "H&V service agent",
+      "body": "I’m escalating my request to move the next run of my standing order to Willow Yard Studios from 18 September to 22 September 2025. Please check its processing stage and send any eligible change to me for confirmation."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-24T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V case record",
+      "body": "I checked the active standing order and its next-run stage. The 18 September 2025 run is not yet being processed, so I can send the requested date change to Maeve for her secure confirmation."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-24T11:21:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V service agent",
+      "to": "Maeve Ellery",
+      "body": "I’ve checked that the next run is not yet being processed and have sent the requested change from 18 September to 22 September 2025 for your secure confirmation. I have not changed the instruction on your behalf."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-24T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Maeve Ellery",
+      "to": "H&V secure portal",
+      "body": "I confirm the change to 22 September 2025 for the next run of my standing order."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-24T12:55:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V secure portal",
+      "to": "Maeve Ellery",
+      "body": "Standing order update confirmed. Next scheduled run: 22 September 2025. Payment status: not yet made."
+    }
+  ],
+  "attachments": []
+}

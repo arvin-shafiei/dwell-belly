@@ -1,0 +1,425 @@
+{
+  "id": "property-004",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "004",
+  "title": "Case 004: Checkout Clean",
+  "details": {
+    "source_role": "Agency manager",
+    "status": "Completed",
+    "created": "2025-10-23 20:28:07 UTC",
+    "updated": "2025-11-14 00:01:08 UTC",
+    "completed": "2025-11-14 00:01:08 UTC",
+    "property": "Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ"
+  },
+  "context": null,
+  "initial_request": "Quote for:\n\nLiving space:\n1. Vacuum\n2. Light clean\n\nEn-Suite:\n1. Limescale removal",
+  "overview": "Northbridge Lettings requested a quote for vacuuming and lightly cleaning the living space and removing limescale in the en-suite at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ. The provider’s quote was approved by the landlord, with the work scheduled after the checkout works. The provider later confirmed the clean was complete and that the invoice had been sent. Northbridge Lettings forwarded the invoice to the landlord. The final checks noted that before-and-after photos were not uploaded; the request was then closed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider confirmed that the clean was complete and sent the invoice. Northbridge Lettings forwarded it to the landlord, and the request was closed after final checks. Before-and-after photos were not uploaded.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-23T20:28:07Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Request description: Quote for:\n\nLiving space:\n1. Vacuum\n2. Light clean\n\nEn-Suite:\n1. Limescale removal"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-23T20:28:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-23T20:28:33Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-23T20:29:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Property is **NOT TENANTED** — moved to Paused\nThe property is currently not tenanted, so the request has been automatically moved to Paused.\nPlease review and resolve this manually."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-24T01:32:44Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-10-24T01:32:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nHi\n\nCan you please quote to clean the following as per the checkout report:\n\nLiving space:\n\n1. Vacuum\n\n2. Light clean\n\nEn-Suite:\n\n1. Limescale removal\n\nThank you!\n\nRegards\n\nAmelia\n\nAttachment: attachment-86-document (unavailable)\n\nAttachments: [attachment-01-checkout-inspection-report.pdf](attachments/attachment-01-checkout-inspection-report.pdf)"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-10-24T01:33:39Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Put on hold by Amelia Mercer. Reason: Waiting for Provider"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-10-24T01:48:09Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-10-24T01:48:09Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer confirms that the quote has been sent."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-10-24T01:53:11Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nGood afternoon\n\nAttached, please find the quote to have the property cleaned as per the check out report.\n\nThe clean will be for the tenant. Please let me know if Stonebridge Solutions may proceed.\n\nRegards\n\nAmelia\n\nAttachment: attachment-63-document (unavailable).\n\nAttachments: [attachment-02-cleaning-quotation.pdf](attachments/attachment-02-cleaning-quotation.pdf)"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-10-24T01:53:24Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-10-24T19:01:49Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Pls go ahead."
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-10-24T22:30:52Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nGood afternoon\n\nThank you. I will action this once the check out works are completed.\n\nRegards\n\nAmelia"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-10-24T22:31:16Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Other. Comment: Follow up if check out works was completed"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-10-25T16:19:12Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-10-25T16:19:13Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nGood morning\n\nYour quote for this clean has been approved.\n\nI'm just waiting on the check out works to be completed. Once done, I will let you know to go and clean.\n\nRegards\n\nAmelia"
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-10-25T18:34:49Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Thankyou xx\nKind Regards \nClara Grant"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-10-25T19:13:11Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Other. Comment: Follow up if check out works was completed"
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-10-31T22:06:01Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Check out works will be completed next week"
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-10-31T22:06:17Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Other. Comment: Follow up on check out works"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-11-06T22:52:53Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Other. Comment: Follow up on check out works"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-11-07T01:00:35Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-11-07T01:00:35Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nHi\n\nThe check out works will be completed on Sunday. Will you be able to go through on Friday to do the clean?\n\nRegards\n\nAmelia"
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-11-07T01:00:52Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Waiting for Provider"
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-11-08T01:19:48Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-11-08T01:19:48Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nHi\n\nThe check out works will be completed on Sunday. Will you be able to go through on Friday to do the clean?\n\nRegards\n\nAmelia"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-11-08T01:19:57Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Waiting for Provider"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-11-09T02:03:02Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 29,
+      "timestamp": "2025-11-09T02:03:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nHi\n\nI confirm that you will be going on Friday to do the clean.\n\nRegards\n\nAmelia"
+    },
+    {
+      "n": 30,
+      "timestamp": "2025-11-09T02:03:16Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Waiting for Provider"
+    },
+    {
+      "n": 31,
+      "timestamp": "2025-11-09T02:19:52Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Yes x\nKind Regards \nClara Grant"
+    },
+    {
+      "n": 32,
+      "timestamp": "2025-11-09T21:19:23Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Waiting for Provider"
+    },
+    {
+      "n": 33,
+      "timestamp": "2025-11-13T22:56:30Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 34,
+      "timestamp": "2025-11-13T22:56:30Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nHi\n\nHas the clean been done? Can you please forward the invoice?\n\nThank you\n\nRegards\n\nAmelia"
+    },
+    {
+      "n": 35,
+      "timestamp": "2025-11-13T22:56:37Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Amelia Mercer. Reason: Waiting for Provider"
+    },
+    {
+      "n": 36,
+      "timestamp": "2025-11-13T23:36:51Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Hi 👋 \nYes job complete and invoice just sent to you\n:-)\nKind Regards \nClara Grant"
+    },
+    {
+      "n": 37,
+      "timestamp": "2025-11-14T00:00:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nGood afternoon\n\nI hope you are well. Attached, please find the invoice for the check out clean that was done.\n\nRegards\n\nAmelia\n\nAttachment: attachment-20-document\n\nAttachments: [attachment-03-cleaning-invoice.pdf](attachments/attachment-03-cleaning-invoice.pdf)"
+    },
+    {
+      "n": 38,
+      "timestamp": "2025-11-14T00:00:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 39,
+      "timestamp": "2025-11-14T00:00:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 40,
+      "timestamp": "2025-11-14T00:00:43Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. Reason provided:\nNo before and after photos"
+    },
+    {
+      "n": 41,
+      "timestamp": "2025-11-14T00:00:44Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 42,
+      "timestamp": "2025-11-14T00:01:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "attachment-01-checkout-inspection-report.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/004/attachments/attachment-01-checkout-inspection-report.pdf",
+      "text": "Northbridge Lettings\n\nCheckout inspection report\nRecords the checkout condition and cleanliness of Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ,\nincluding defects and photographs. The report provides the basis for the cleaning request covering\nvacuuming and light cleaning of the living space and limescale removal in the en-suite.\n\n\nReport title: Check Out. Appointment date: 23 June 2026. Assessor: Northbridge Lettings.\n\nThe report describes the property room by room and records condition, cleanliness, defects and\nphotographs. It states that an element or item without an assessor comment is taken to be in good,\nclean, serviceable condition and without defects.\n\nThe report is based on a visual inspection. Inaccessible and loft areas are not inspected. Fixtures\nand fittings may be listed without testing their working condition. The report does not necessarily\nidentify structural defects or advise on repairs or their costs.\n\nGuidance notes state that the property and contents are expected to be left in a similar condition\nand state of cleanliness to the report prepared before the tenancy. Cleaning should be thorough\nand the property left tidy.\n\nThe report says that smoke and carbon monoxide alarms will have been checked and will be in\nworking order as of the report date; tenants are responsible for keeping them in working order and\nreporting faults other than battery replacement.\n\nChecklist: no entries shown. Notes: no comments shown. Keys: no details or comments shown.\nExternal areas: Not applicable.\n\nAssessor declaration: “I confirm that this report reflects my assessment of the property.” Signature\nreceived: 24 October 2025, 11:01:09.\n\n Inspection      Report    Date        Condition Cleanliness Defects Photos Tenant\n area                                                                       comments\n Studio Living Previous 15             Good        Good           1         32        0\n Space                  August\n                        2025\n En Suite        Previous 15           Good        Good           2         24        0\n                          August\n                          2025\n Studio Living Current     23 June     Fair        Poor           2         35        No comment\n Space                     2026                                                       shown\n En Suite        Current   23 June     Poor        Poor           3         19        No comment\n                           2026                                                       shown\n\n Utility       Date                  Reading                   Location Serial            Supply\n type                                                                   number            type\n Electricity   15 August 2025        All Inclusive, No\n               (Previous)            Reading Required\n Electricity   23 June 2026          All Inclusive, No\n               (Current)             Reading Required\n\fDate                               Tested?   General detector comments\n15 August 2025 (Previous)          Yes       Tested centrally by building maintenance\n23 June 2026 (Current)             Yes       Tested centrally by building maintenance\n\nDate                                                            Description\n15 August 2025 (Previous report)                                Not applicable\n23 June 2026 (Current report)                                   Not applicable\n\nInspection   Date     Condition Cleanliness Description and defects\narea\nStudio       15       Good         Good        Grey carpet fitted to floor is in good clean\nLiving       August                            condition. Cream walls are in good clean\nSpace        2025                              condition with some small marks and various\n                                               locations as highlighted. UPVC window and\n                                               blinds are in good clean condition and operate\n                                               as expected. TV is firmly fitted to wall and is\n                                               accompanied by remote. Wardrobe is in fair\n                                               condition and operates as expected. Sockets\n                                               and switches in good clean condition. Bed and\n                                               mattress in good clean condition. Lighting\n                                               works as expected. Suspended ceiling in good\n                                               clean condition. Wall defects.\nStudio       23       Fair         Poor        As per inventory with following defects, Carpet\nLiving       June                              requires vacuum; Windowsill dusty and dirty;\nSpace        2026                              Carpet requires vacuum; Light clean required.\nEn Suite     15       Good         Good        White painted door in good clean condition.\n             August                            Cream painted ceiling in good clean condition\n             2025                              with small area where paint is peeling. UPVC\n                                               window in good clean condition. Light fitting in\n                                               good condition but works intermittently,\n                                               possibly due to too much light in the room at\n                                               time of inventory. Cream painted walls in good\n                                               clean condition. Plastic clad walls in good\n                                               clean condition. Shower equipment in good\n                                               clean condition and free of limescale, brand-\n                                               new. Shower tray in good clean condition.\n                                               Lino and flooring in good clean condition. Sink\n                                               and tap in good clean condition and free of\n                                               limescale. Close coupled WC in good clean\n                                               condition. Shelving unit shows some dents to\n                                               the edge, tiles in good clean condition. Dented\n                                               shelf; Peeling paint.\nEn Suite     23       Poor         Poor        Door in fair condition. Ceiling shows flaking\n             June                              paint. Shower area requires clean for\n             2026                              limescale. Facing and tap required for\n                                               limescale toilet condition. Flooring in fair\n                                               condition. Limescale; Failed pop-up plug\n                                               mechanism; Flaking paint.\n\fSection                 Rating          Meaning\nInspection areas        Excellent       Unused or new condition.\n(condition)\nInspection areas        Good            Minor signs of wear, but no obvious faults in\n(condition)                             appearance or functionality.\nInspection areas        Fair            Signs of wear / minor damage present.\n(condition)\nInspection areas        Poor            Showing signs of extensive wear - ie. stains, marks,\n(condition)                             rips or chips present.\nInspection areas        Unacceptable Not fit for purpose in present state - ie. badly damaged\n(condition)                          or faulty.\nInspection areas        Excellent       Cleaned to a high standard.\n(cleanliness)\nInspection areas        Good            Cleaned to a good standard.\n(cleanliness)\nInspection areas        Fair            Cleaned to a fair standard.\n(cleanliness)\nInspection areas        Poor            Light cleaning required.\n(cleanliness)\nInspection areas        Unacceptable Professional cleaning required.\n(cleanliness)\nItems (condition)       Excellent       Unused or new condition.\nItems (condition)       Good            May have minor signs of wear, but no obvious faults in\n                                        appearance or functionality.\nItems (condition)       Fair            Signs of wear / minor damage present.\nItems (condition)       Poor            Showing signs of extensive wear - ie. stains, marks,\n                                        rips or chips present.\nItems (condition)       Unacceptable Not fit for purpose in present state - ie. badly damaged\n                                     or faulty.\nItems (cleanliness)     Excellent       Cleaned to a high standard.\nItems (cleanliness)     Good            Cleaned to a good standard.\nItems (cleanliness)     Fair            Cleaned to a fair standard (see 'issues' and photo's)\nItems (cleanliness)     Poor            Light cleaning required (see 'issues' and photo's)\nItems (cleanliness)     Unacceptable Professional cleaning required (see 'issues' and\n                                     photo's)\n\n\nObservations\n     The report compares a previous inspection dated 15 August 2025 with the current inspection\n     dated 23 June 2026.\n     The current living space is rated Fair for condition and Poor for cleanliness. The carpet\n     requires vacuuming, the windowsill is dusty and dirty, and a light clean is required.\n\f    The current en-suite is rated Poor for condition and Poor for cleanliness. The shower area,\n    facing and tap require limescale cleaning; the report also records a failed pop-up plug\n    mechanism and flaking paint.\n    Electricity is listed as all-inclusive, with no meter reading required, in both the previous and\n    current report.\n    Smoke detectors are marked tested in both reports, with the comment “Tested centrally by\n    building maintenance.”\n    The current report summary records 35 photographs for the living space and 19 for the en-\n    suite. The previous report summary records 32 and 24 photographs respectively.\n    Tenant comments are recorded as 0 in the previous report; the current report shows no\n    tenant comments.\n\nFindings\n    Living space, previous report: Good condition and Good cleanliness. The grey fitted carpet\n    and cream walls were described as in good clean condition, with some small marks in\n    various locations. The UPVC window and blinds were in good clean condition and operated\n    as expected. The TV was firmly wall-fitted and accompanied by a remote. The wardrobe was\n    in fair condition and operated as expected. Sockets, switches, bed, mattress and suspended\n    ceiling were described as in good clean condition; lighting worked as expected. “Wall\n    defects” was also recorded.\n    Living space, current report: Fair condition and Poor cleanliness. The report states: “As per\n    inventory with following defects, Carpet requires vacuum Windowsill dusty and dirty Carpet\n    requires vacuum Light clean required”.\n    En-suite, previous report: Good condition and Good cleanliness. The white painted door,\n    UPVC window, cream painted walls, plastic-clad walls, shower tray, lino and flooring, sink\n    and tap, and close-coupled WC were described as in good clean condition. The ceiling had a\n    small area of peeling paint; the light fitting worked intermittently, possibly due to too much\n    light in the room at the time of inventory. Shower equipment was described as brand-new\n    and free of limescale. The shelving unit had dents to the edge; tiles were in good clean\n    condition. “Dented shelf” and “Peeling paint” were noted.\n    En-suite, current report: Poor condition and Poor cleanliness. The door was in fair condition,\n    the ceiling had flaking paint, the shower area required cleaning for limescale, and the\n    flooring was in fair condition. The report also states: “Facing and tap required for limescale\n    toilet condition.”\n    The current report summary lists living-space defects as “Carpet requires vacuum” and\n    “Light clean required”; en-suite defects are “Limescale”, “Failed pop-up plug mechanism”\n    and “Flaking paint”.\n    The declaration identifies Northbridge Lettings as assessor. No assessor email is included in\n    this extraction.\n\nConclusions\n    The checkout report identifies vacuuming and light cleaning as required in the living space,\n    and limescale removal as required in the en-suite.\n    The report also records condition issues that are distinct from the cleaning items: a failed en-\n    suite pop-up plug mechanism and flaking paint.\n\nImage evidence\n\n  Neutral image placeholder\n\n  Cover photograph: a numbered room plaque identifies the inspected room; it is not a\n  condition or cleaning photograph.\n\fNeutral image placeholder\n\nDetector photograph in the previous-report section: shows a ceiling-mounted detector. The\nreport records detectors tested centrally by building maintenance.\n\n\n\n\nNeutral image placeholder\n\nPrevious living-space photographs (32): general overview photographs documenting the\nroom and its contents as a reference for the earlier condition. Images marked “Wall\ndefects” identify wall defects.\n\n\n\n\nNeutral image placeholder\n\nCurrent living-space photographs (35): general overview photographs document the room,\nfurnishings, window, blinds and floor. One image is captioned “Carpet requires vacuum”;\ntwo images are captioned “Light clean required.” The inspection text also records a dusty\nand dirty windowsill.\n\n\n\n\nNeutral image placeholder\n\nPrevious en-suite photographs (24): general overview photographs document the en-suite\nand fittings as a reference for the earlier condition. Images labelled “Dented shelf” show\nthe shelving defect; an image labelled “Peeling paint” records the paint issue.\n\n\n\n\nNeutral image placeholder\n\nCurrent en-suite photographs (19): general overview photographs document the shower\narea, sanitary fittings and surfaces. Five images are labelled “Limescale,” one is labelled\n“Failed pop-up plug mechanism,” and one is labelled “Flaking paint.” These captions\ncorrespond to the defects recorded in the report.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-02-cleaning-quotation.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/004/attachments/attachment-02-cleaning-quotation.pdf",
+      "text": "Northbridge Lettings\n\nCleaning quotation\nQuote for checkout cleaning at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\n\n\nAmelia\n\n24/10/2025\n\nQUOTE\n\nAddress: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ\n\nLiving space:\n\n1. Vacuum\n\n2. Light clean\n\nEn-Suite:\n\n1. Limescale removal\n\nCleaning as per checkout instructions\n\nTOTAL £90\n\n Area                              Line item                                    Quantity\n Living space                      Vacuum                                       1\n Living space                      Light clean                                  1\n En-suite                          Limescale removal                            1\n\n Description                                                 Amount\n Total                                                       £90\n\n\nObservations\n         The document is a cleaning quotation from Stonebridge Solutions.\n         No tax amount or tax treatment is stated.\n         A job ID appears in the source document but is omitted as an operational identifier.\n\nFindings\n         The quotation covers vacuuming and light cleaning of the living space and limescale removal\n         in the en-suite.\n         The stated total is £90.\n\nConclusions\n         The quoted cleaning scope corresponds to the requested checkout-clean tasks.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-03-cleaning-invoice.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/004/attachments/attachment-03-cleaning-invoice.pdf",
+      "text": "Northbridge Lettings\n\nCleaning invoice\nInvoice for checkout cleaning at Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\n\n\nInvoice addressed to Amelia.\n\nInvoice date: 14/11/2025.\n\nJob and invoice identifiers are omitted.\n\nAddress: Flat 2, 172 Alder Lane, Bellmere, ZZ3 1ZZ.\n\nCleaning as per checkout instructions.\n\nTotal: £90.\n\n Area                                         Service\n Living space                                 Vacuum\n Living space                                 Light clean\n En-suite                                     Limescale removal\n\n Description                                                   Amount\n Total                                                         £90\n\n\nObservations\n         The invoice identifies the cleaning provider as Stonebridge Solutions Contract Cleaning.\n         No separate tax amount or tax rate is shown.\n\nFindings\n         The living space cleaning includes vacuuming and a light clean.\n         The en-suite cleaning includes limescale removal.\n         The invoice gives one total of £90; no individual service prices or quantities are stated.\n\nConclusions\n         The invoice records the requested checkout cleaning work and a total charge of £90.\n\nImage evidence\n\n    Neutral image placeholder\n\n    Invoice page listing checkout cleaning work for the living space and en-suite, with a total of\n    £90.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

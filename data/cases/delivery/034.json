@@ -1,0 +1,73 @@
+{
+  "id": "delivery-034",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "034",
+  "title": "Case 034: Returned parcel has reached the carrier depot but not the merchant warehouse",
+  "details": {
+    "source_role": "Elrin Kove, customer",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-07 09:00:00 UTC",
+    "escalated": "2026-03-07 09:10:00 UTC",
+    "updated": "2026-03-08 13:00:00 UTC",
+    "completed": "2026-03-08 13:00:00 UTC",
+    "primary_task_reference": "RT-034",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The return is in carrier transit, with no merchant receipt. Tracing should end in a warehouse confirmation rather than an inferred refund.",
+  "initial_request": "My return has been sitting at the depot. Could you trace it to the merchant? I need to know when they actually have it.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier's returns team to trace the parcel to the merchant.",
+    "recipient": "Returns trace team, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The merchant warehouse confirms physical receipt; refund approval remains separate.",
+  "boundaries": "Merchant physical receipt does not establish accepted condition, refund approval or payment.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-07T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "RT-034 last scan: return depot, 2026-03-07 07:40 UTC. No merchant receiving scan is visible. The carrier still holds the return."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-07T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Elrin Kove, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My return has been sitting at the depot. Could you trace it to the merchant? I need to know when they actually have it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-07T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Returns trace team, Plover Arc Logistics",
+      "body": "Please trace RT-034 through to merchant receipt. Ask the merchant receiving team to confirm physical acceptance rather than use a departure scan as proof."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-08T13:00:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Warehouse receiving, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "RT-034 physically received at our returns bay at 12:50 UTC on 2026-03-08. Inline receipt WH-034 records one return carton for TG-034. Inspection and refund decisions are still pending."
+    }
+  ],
+  "attachments": []
+}

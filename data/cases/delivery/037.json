@@ -1,0 +1,73 @@
+{
+  "id": "delivery-037",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "037",
+  "title": "Case 037: Customer needs an eligible heavy item collected from inside the home",
+  "details": {
+    "source_role": "Lorin Esh, customer",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-10 09:00:00 UTC",
+    "escalated": "2026-03-10 09:10:00 UTC",
+    "updated": "2026-03-10 09:50:00 UTC",
+    "completed": "2026-03-10 09:50:00 UTC",
+    "primary_task_reference": "RT-037",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A merchant-approved return is too heavy for a parcel courier. The authorised specialist team must match the declared access and crew requirements.",
+  "initial_request": "Please arrange the in-home collection. The access record is still correct, and I can be home on 2026-03-11. I cannot move the cabinet myself.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Request the merchant's available specialist collection service with confirmed access details.",
+    "recipient": "Specialist returns scheduler, Tallowmere Goods",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The authorised team confirms the appropriate crew and collection slot; no unsupported handling instructions are given.",
+  "boundaries": "Do not instruct the customer to lift, dismantle or drag the item; booking does not prove safe collection.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-10T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Specialist returns, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "RT-037 covers a 54 kg cabinet. This approved return includes in-home collection by our two-person specialist crew. Access record: ground floor, level entrance, 110 cm clear doorway. Ordinary parcel collection is not suitable."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-10T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Lorin Esh, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please arrange the in-home collection. The access record is still correct, and I can be home on 2026-03-11. I cannot move the cabinet myself."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-10T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Specialist returns scheduler, Tallowmere Goods",
+      "body": "Book RT-037 with the authorised two-person in-home crew for 2026-03-11. Customer confirms the ground-floor level access and 110 cm doorway; do not ask them to move the cabinet."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-10T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Specialist returns scheduler, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Specialist booking SP-037 confirmed for 2026-03-11, 13:00–16:00 UTC. Two-person crew assigned for the 54 kg cabinet with the declared access. Crew will assess the site on arrival; collection is pending."
+    }
+  ],
+  "attachments": []
+}

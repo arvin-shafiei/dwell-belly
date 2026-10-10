@@ -1,0 +1,84 @@
+{
+  "id": "insurance-034",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "034",
+  "title": "Case 034: Fire Loss Notification — 134 Cedar Walk",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-12 10:07:00 UTC",
+    "updated": "2025-07-12 15:42:00 UTC",
+    "completed": "2025-07-12 15:42:00 UTC",
+    "property": "134 Cedar Walk, Brackenford, ZZ4 7ZZ",
+    "broker": "Silvermere Brokers",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I need to report a fire at my property, 134 Cedar Walk, Brackenford, ZZ4 7ZZ. I have provided the incident date, what happened and a written description of the damage, and would like the insurer to register the claim.",
+  "overview": "Amelia Rowe gave her broker, Kit at Silvermere Brokers, the incident details and a written description of the fire damage. Kit recorded that the information was sufficient for an initial submission and sent the claim to Northmere Mutual without waiting for further material. Northmere Mutual confirmed registration and provided a claim reference, which Kit passed on to Amelia; this confirmation does not establish cover or liability.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Submit the facts and written damage description already provided to Northmere Mutual; do not wait for additional material that has not been requested.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual confirmed that the claim was registered and provided reference CLM-034.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-12T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Amelia Rowe",
+      "to": "Kit, Silvermere Brokers",
+      "body": "I am reporting a fire at 134 Cedar Walk, Brackenford, ZZ4 7ZZ, on 11 July 2025. The fire began in the kitchen and caused smoke damage there, with visible damage to a run of kitchen units and the nearby wall; the fire service attended, and emergency response and site safety arrangements are being handled separately."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-12T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Amelia Rowe",
+      "to": "Kit, Silvermere Brokers",
+      "body": "For the initial claim account, the damage I can describe is concentrated around the kitchen units and adjoining wall, with smoke affecting the kitchen area. I have given you the incident circumstances and the date, 11 July 2025, so please use those details to notify the insurer."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-12T12:21:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Kit, Silvermere Brokers",
+      "to": "Silvermere Brokers claim file",
+      "body": "Amelia has supplied the incident date, circumstances and a written description of the reported fire damage at 134 Cedar Walk. The information is sufficient for an initial claim submission, so I will escalate it to Northmere Mutual now rather than wait for unrequested additions."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-12T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Kit, Silvermere Brokers",
+      "to": "Northmere Mutual Claims Team",
+      "body": "Please register a property claim for Amelia Rowe at 134 Cedar Walk, Brackenford, ZZ4 7ZZ. Her account gives the incident date and circumstances: a kitchen fire on 11 July 2025 attended by the fire service, with reported damage to kitchen units and the adjoining wall and smoke damage in the kitchen; emergency response and safety arrangements are being managed separately."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-12T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Claims Team",
+      "to": "Kit, Silvermere Brokers",
+      "body": "We confirm that the claim for Amelia Rowe has been registered under reference CLM-034. This registration confirmation is not a decision on policy cover or liability."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-07-12T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Kit, Silvermere Brokers",
+      "to": "Amelia Rowe",
+      "body": "Northmere Mutual has confirmed registration of your fire claim under reference CLM-034. This confirms registration only and is not an approval of cover or a decision on liability."
+    }
+  ],
+  "attachments": []
+}

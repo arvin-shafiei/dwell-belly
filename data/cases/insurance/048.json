@@ -1,0 +1,93 @@
+{
+  "id": "insurance-048",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "048",
+  "title": "Case 048: Neighbour reports water leak at 148 Hazel Walk",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-08-23 10:07:00 UTC",
+    "updated": "2025-08-23 16:49:00 UTC",
+    "completed": "2025-08-23 16:49:00 UTC",
+    "property": "148 Hazel Walk, Brackenford, ZZ6 3ZZ",
+    "broker": "Westbrook Risk (Kira)",
+    "insurer": "Alderline Mutual"
+  },
+  "context": null,
+  "initial_request": "I have been told by my neighbour, Fran Morris, that water is appearing in her home and may be coming from somewhere near my property at 148 Hazel Walk, Brackenford, ZZ6 3ZZ. Please tell me what information you need to pass this to the person handling the claim.",
+  "overview": "Declan reported Fran's concern to Kira at Westbrook Risk. Kira requested a clearer description and Fran's permission for a contact route to be shared with the assigned handler, while advising prompt safe action to contain the leak. Declan supplied Fran's description and confirmed her permission to share her agreed contact route through the protected claim channel. Declan arranged an emergency plumber, who isolated the supply and stopped further visible flow; cause and extent still require assessment. Kira sent only the necessary information to assigned handler Hollis Reed, who confirmed receipt; the source of the water and responsibility for any damage remain undetermined.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At escalation, ask Declan for Fran’s description and permission to share her preferred contact route, then pass only the necessary information to the assigned handler through the protected channel. Separately, arrange prompt qualified assessment and safe containment of the active leak.",
+    "recorded_event": null
+  },
+  "outcome": "The assigned handler received the written description and Fran's authorized contact route through the protected claim channel; responsibility for the damage has not been established.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-23T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Declan Cross",
+      "to": "Kira, Westbrook Risk",
+      "body": "Fran Morris, my neighbour, has told me that water is showing in her home and may be coming from near 148 Hazel Walk, Brackenford, ZZ6 3ZZ. I do not yet know the source or how extensive the damage is, and the leak may still be active."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-23T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Kira, Westbrook Risk",
+      "to": "Declan Cross",
+      "body": "Please send me Fran's description of what she has seen and confirm that she agrees to a contact route being shared with the assigned handler for this claim. As the water may still be coming through, arrange prompt assessment and containment by a qualified tradesperson; do not wait for an insurance decision or attempt unsafe repairs yourself."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-23T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Declan Cross",
+      "to": "Kira, Westbrook Risk",
+      "body": "Fran says there is a damp patch on her ceiling below my bathroom, but she cannot identify the source or confirm the extent, and water is still appearing. She has expressly agreed that I may pass her preferred contact route to the assigned handler for this matter; please keep that information within the protected claim channel. I have contacted a qualified emergency plumber to assess and contain the leak; they have not yet confirmed the source."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-23T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Kira, Westbrook Risk",
+      "to": "Declan Cross",
+      "body": "Thank you; I have your description and confirmation of Fran's permission. I will pass only the relevant description and her agreed contact route to the assigned handler through the protected claim channel, and this does not establish where the leak originated or who is responsible."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-23T14:35:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Kira, Westbrook Risk",
+      "to": "Hollis Reed, assigned handler at Alderline Mutual",
+      "body": "For the claim concerning 148 Hazel Walk, Fran reports a damp patch on her ceiling below Declan's bathroom, with water still appearing; Declan has arranged an emergency plumber, but the source and extent are unknown. Declan confirms Fran has authorized sharing her preferred contact route, which is recorded in the restricted claim channel for your use on this matter only."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-23T15:42:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Hollis Reed, assigned handler at Alderline Mutual",
+      "to": "Kira, Westbrook Risk",
+      "body": "Received the written description and Fran's authorized contact route through the protected claim channel. Receipt does not determine the source of the water or responsibility for any damage."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-08-23T16:49:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Declan Cross",
+      "to": "Kira, Westbrook Risk",
+      "body": "The qualified emergency plumber has attended and isolated the supply to stop further visible water flow; Fran says no new water is appearing at the moment. The source and full extent still need assessment, and I will pass on the plumber's findings when available. This safety step is separate from the insurer's handling of Fran's account."
+    }
+  ],
+  "attachments": []
+}

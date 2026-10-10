@@ -1,0 +1,82 @@
+{
+  "id": "banking-012",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "012",
+  "title": "Case 012: New standing-order amount",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-10 09:00:00 UTC",
+    "updated": "2025-08-10 12:55:00 UTC",
+    "completed": "2025-08-10 12:55:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Mira wants to increase her monthly standing order to the fictional Westmere Garden Cooperative from £42.00 to £68.00. She has not yet authorised the change.",
+  "overview": "Mira raised the request in H&V’s secure chat after the secure portal showed her existing standing-order amount. The agent checked that she was the verified owner and could change the order, then sent the amendment for her confirmation in the secure portal. After she confirmed it there, the portal displayed the new amount.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Send Mira the standing-order amendment in her secure portal session for her to confirm; do not change the order based on the chat alone.",
+    "recorded_event": null
+  },
+  "outcome": "After Mira confirmed the change in the secure portal, H&V recorded the standing order at £68.00 per month. Its applicable date is the date shown in the system record; the update does not guarantee the next payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-10T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V system",
+      "to": "Mira Ellery",
+      "body": "Standing order to Westmere Garden Cooperative: £42.00 per month."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-10T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mira Ellery",
+      "to": "H&V agent",
+      "body": "I want to increase this standing order to £68.00 a month. The portal still shows £42.00, and I haven’t confirmed a change yet."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-10T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "H&V case record HV-012",
+      "body": "I checked that Mira is the verified owner of this standing order and may amend it. Her chat request is not authorisation, so the order remains unchanged until she confirms in the secure portal."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-10T11:21:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V agent",
+      "to": "Mira Ellery",
+      "body": "I’ve sent the change from £42.00 to £68.00 per month for your confirmation in this session. I have not changed the standing order."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-10T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Mira Ellery",
+      "to": "H&V",
+      "body": "I confirm the change to £68.00 per month for my standing order to Westmere Garden Cooperative."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-10T12:55:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V system",
+      "to": "Mira Ellery",
+      "body": "Standing order updated: £68.00 per month. The applicable date is recorded in your standing-order record. This update does not guarantee the next payment."
+    }
+  ],
+  "attachments": []
+}

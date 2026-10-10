@@ -1,0 +1,84 @@
+{
+  "id": "insurance-015",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "015",
+  "title": "Case 015: The Flat Is No Longer Let",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-16 10:07:00 UTC",
+    "updated": "2025-05-16 15:42:00 UTC",
+    "completed": "2025-05-16 15:42:00 UTC",
+    "property": "115 Willow Walk, Brackenford, ZZ2 6ZZ",
+    "broker": "Matt at Pinehaven Risk",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I’m writing to let you know that the tenancy at 115 Willow Walk, Brackenford, ZZ2 6ZZ has ended. The flat is no longer being let, and I’d like to know what I need to do about my insurance.",
+  "overview": "Grace Ford told her broker, Matt at Pinehaven Risk, that the tenancy at 115 Willow Walk, Brackenford, ZZ2 6ZZ had ended, without giving the end date or explaining how the flat was being used. Matt asked for those details, then notified Northmere Mutual after Grace replied that she had moved into the flat. Northmere Mutual confirmed receipt of the update and outlined further steps, which Matt relayed to Grace.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the clarification stage, Matt needed to establish the tenancy end date and the flat’s current use, then notify Northmere Mutual.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual confirmed receipt of the information and advised further steps; it did not confirm that the policy had been changed or cancelled.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-16T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Grace Ford",
+      "to": "Matt at Pinehaven Risk",
+      "body": "The tenancy at 115 Willow Walk, Brackenford, ZZ2 6ZZ has ended, and I am no longer letting the flat. I’m not sure what information you need from me to update the insurance."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-16T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Matt at Pinehaven Risk",
+      "to": "Grace Ford",
+      "body": "Thanks for letting me know. Could you confirm the date the tenancy ended and how the flat is being used now, as the policy was arranged for a let property?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-16T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Grace Ford",
+      "to": "Matt at Pinehaven Risk",
+      "body": "The tenancy ended on 30 April 2025. I have moved into the flat myself and am living there as my home."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-16T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Matt at Pinehaven Risk",
+      "to": "Northmere Mutual",
+      "body": "I’m notifying you of a change in the use of the property at 115 Willow Walk, Brackenford, ZZ2 6ZZ. The tenancy ended on 30 April 2025, and Grace Ford now lives there as her home; please advise the next steps."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-16T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Matt at Pinehaven Risk",
+      "body": "We confirm receipt of this information. We will review the occupancy details and advise you if any further information is needed; please pass on any further changes in use to us through the usual channel."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-05-16T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Matt at Pinehaven Risk",
+      "to": "Grace Ford",
+      "body": "Northmere Mutual has confirmed receipt of the update and says it will review the occupancy details and let me know if it needs anything further. This is advice on next steps only; the insurer has not confirmed a change or cancellation of the policy."
+    }
+  ],
+  "attachments": []
+}

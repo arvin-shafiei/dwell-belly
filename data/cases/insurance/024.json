@@ -1,0 +1,83 @@
+{
+  "id": "insurance-024",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "024",
+  "title": "Case 024: Confirmation of a Recorded Payment",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-06-12 10:07:00 UTC",
+    "updated": "2025-06-12 14:35:00 UTC",
+    "completed": "2025-06-12 14:35:00 UTC",
+    "property": "124 Cedar Walk, Brackenford, ZZ3 6ZZ",
+    "broker": "Faye at Redmere Risk",
+    "insurer": "Alder Crown Insurance"
+  },
+  "context": null,
+  "initial_request": "I can see that my payment is recorded on the insurer's system. Please could you obtain and send me a receipt for it?",
+  "overview": "Ryan Ellis asked his broker, Faye at Redmere Risk, for a receipt because Alder Crown Insurance's system showed his payment as recorded. Faye asked the insurer's Payment Team to provide a receipt against that record, received receipt RCP-024 as receipt.png for £286.40 paid on 11 June 2025, and forwarded it to Ryan, who confirmed that he received it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Request the receipt for the recorded payment from Alder Crown Insurance's authorized Payment Team.",
+    "recorded_event": null
+  },
+  "outcome": "Ryan confirmed that he received the payment receipt.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-06-12T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ryan Ellis",
+      "to": "Faye at Redmere Risk",
+      "body": "Alder Crown Insurance's system shows my payment as recorded, but I do not have a receipt. Could you please ask them to send one for the payment relating to 124 Cedar Walk, Brackenford, ZZ3 6ZZ?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-06-12T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Faye at Redmere Risk",
+      "to": "Alder Crown Insurance Payment Team",
+      "body": "Ryan Ellis has asked for a receipt for the payment recorded on his property account for 124 Cedar Walk, Brackenford, ZZ3 6ZZ. Please check the payment record and provide the corresponding receipt; we need a receipt rather than an invoice."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-06-12T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alder Crown Insurance Payment Team",
+      "to": "Faye at Redmere Risk",
+      "body": "We have checked the £286.40 payment recorded on 11 June 2025 and are sending receipt RCP-024 as receipt.png. It records the payment against Ryan Ellis's property at 124 Cedar Walk, Brackenford, ZZ3 6ZZ."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-06-12T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Faye at Redmere Risk",
+      "to": "Ryan Ellis",
+      "body": "Alder Crown Insurance's Payment Team has provided the receipt for the payment recorded on your account. I have forwarded receipt.png, RCP-024, for the £286.40 payment dated 11 June 2025 on 124 Cedar Walk, Brackenford, ZZ3 6ZZ."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-06-12T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ryan Ellis",
+      "to": "Faye at Redmere Risk",
+      "body": "I received receipt.png, thank you. That is the payment receipt I was asking for."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "receipt.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/024/attachments/receipt.png",
+      "text": "OCR text:\nAlder Crown Insurance Payment Team\n\nPayment Receipt\n\nReceipt for payment recorded by Alder Crown Insurance.\nCustomer: Ryan Ellis.\n\nProperty: 124 Cedar Walk, Brackenford, ZZ3 6ZZ.\nDocument type: payment receipt.\n\nReceipt number: RCP-024\n\nPayment date: 11 June 2025\n\nAmount received: £286.40\n\nSynthetic case 024 | 124 Cedar Walk, Brackenford, ZZ3 6ZZ",
+      "text_source": "ocr"
+    }
+  ]
+}

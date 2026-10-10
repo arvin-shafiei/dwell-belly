@@ -1,0 +1,82 @@
+{
+  "id": "delivery-041",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "041",
+  "title": "Case 041: Pallet delivery lacks a receiving-dock appointment",
+  "details": {
+    "source_role": "Freight dispatch, Plover Arc Logistics",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-14 09:00:00 UTC",
+    "escalated": "2026-03-14 09:10:00 UTC",
+    "updated": "2026-03-14 10:05:00 UTC",
+    "completed": "2026-03-14 10:05:00 UTC",
+    "primary_shipment": "DL-041",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The pallet is booked for a business consignee whose warehouse requires a receiving-dock appointment. Carrier and consignee must use the same reference and time.",
+  "initial_request": "Please book with authorised receiving coordinator Ossa Rell. Obtain the dock reference, time and receiving entrance for our driver.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Contact the consignee's receiving coordinator to book an available dock slot.",
+    "recipient": "Ossa Rell, Arcloom receiving coordinator",
+    "channel": "Business portal",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The consignee and carrier confirm the same appointment reference and time.",
+  "boundaries": "An appointment reference establishes coordinated booking, not pallet receipt.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-14T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pallet DL-041 for Arcloom Components has no receiving appointment. We can reach its dock on 2026-03-15 afternoon, but will not send the truck without a consignee appointment."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-14T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Freight dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please book with authorised receiving coordinator Ossa Rell. Obtain the dock reference, time and receiving entrance for our driver."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-14T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Ossa Rell, Arcloom receiving coordinator",
+      "body": "Please offer an available receiving-dock appointment for pallet DL-041 on 2026-03-15 afternoon, with dock reference and entrance."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-14T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Business portal",
+      "from": "Ossa Rell, Arcloom receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Appointment ARC-041 is reserved for 2026-03-15, 14:00–15:00 UTC at dock D3. Our receiving team will be staffed for this slot."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-14T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Freight dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We accept ARC-041, 2026-03-15 14:00–15:00 UTC, dock D3, for DL-041. The carrier booking and consignee appointment now match; delivery has not occurred."
+    }
+  ],
+  "attachments": []
+}

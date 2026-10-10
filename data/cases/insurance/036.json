@@ -1,0 +1,75 @@
+{
+  "id": "insurance-036",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "036",
+  "title": "Case 036: Door Without an Address",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-18 10:07:00 UTC",
+    "updated": "2025-07-18 14:35:00 UTC",
+    "completed": "2025-07-18 14:35:00 UTC",
+    "property": "136 Rowan Walk, Brackenford, ZZ4 9ZZ",
+    "broker": "Birchwater Cover, represented by Mia",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "The door at one of my houses is damaged, but I have two properties and haven’t said which one. Can you help me report it?",
+  "overview": "Henry Walsh first reported a damaged door without identifying which of his two homes was affected. Mia asked him to identify the property and say whether the entrance needed urgent protection; Henry then provided the address, 136 Rowan Walk, Brackenford, ZZ4 9ZZ, and confirmed that the entrance was temporarily secured. Mia recorded the message as a notification on the correct property policy and confirmed this to Henry.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, ask Henry which property is affected and whether the entrance needs urgent protection before linking the message to a policy.",
+    "recorded_event": null
+  },
+  "outcome": "Henry’s message was processed in the correct case as a notification; no insurance claim outcome or cover decision is stated.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-18T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Henry Walsh",
+      "to": "Mia, Birchwater Cover",
+      "body": "A door at one of my houses has been damaged. I own two properties, so I’m not sure which policy you should put this under yet."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-18T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Mia, Birchwater Cover",
+      "to": "Henry Walsh",
+      "body": "Could you confirm which property the damaged door is at before I link your message to a policy? Please also let me know whether the entrance needs urgent protection; if it is unsafe, keep clear and arrange appropriate help rather than attempting repairs yourself."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-18T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Henry Walsh",
+      "to": "Mia, Birchwater Cover",
+      "body": "It is the property at 136 Rowan Walk, Brackenford, ZZ4 9ZZ. The entrance has been temporarily secured, so it does not need further urgent protection at present."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-18T13:28:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Mia, Birchwater Cover",
+      "to": "Property policy record for 136 Rowan Walk, Brackenford, ZZ4 9ZZ",
+      "body": "Henry identified this as the affected property and confirmed the entrance is temporarily secured. I have linked his door-damage message to the correct property policy as a notification, not recorded it as a claim submission."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-18T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Mia, Birchwater Cover",
+      "to": "Henry Walsh",
+      "body": "Thanks for confirming the address. I’ve recorded your message about the damaged door against the correct property policy as a notification; this confirms the message was processed, not a decision on cover or a claim outcome."
+    }
+  ],
+  "attachments": []
+}

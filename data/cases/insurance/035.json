@@ -1,0 +1,75 @@
+{
+  "id": "insurance-035",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "035",
+  "title": "Case 035: Heating Damage to Floor",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-15 10:07:00 UTC",
+    "updated": "2025-07-15 14:35:00 UTC",
+    "completed": "2025-07-15 14:35:00 UTC",
+    "property": "135 Willow Walk, Brackenford, ZZ4 8ZZ",
+    "broker": "Marshgate Risk",
+    "insurer": "Alderwick Mutual"
+  },
+  "context": null,
+  "initial_request": "My heating has stopped working and the floor is wet. Could you help me report this to my insurer and let me know what information you need?",
+  "overview": "Sarah reported a heating failure and wet flooring to Ian at Marshgate Risk. Ian requested the incident date, a clearer description of the damage and confirmation that a heating engineer had been called, while keeping safe containment separate from the insurance claim. Sarah supplied those details, and Ian submitted the claim to Alderwick Mutual and confirmed that it had been sent; no decision on the damage has been made.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Ian should obtain the incident date and damage description from Sarah, confirm that she has called a heating engineer, and submit the claim; the submission is now recorded.",
+    "recorded_event": null
+  },
+  "outcome": "The claim has been submitted to Alderwick Mutual; no decision on the damage has been made.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-15T10:07:00Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Sarah Page",
+      "to": "Ian, Marshgate Risk",
+      "body": "The heating has stopped working and I have found water on the floor near a radiator. I do not yet know how much of the floor is affected, and I have called a heating engineer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-15T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ian, Marshgate Risk",
+      "to": "Sarah Page",
+      "body": "Please tell me when the incident happened and describe the wet area and any other damage you have noticed. Separately from the claim, please do not attempt to repair the heating equipment yourself; if water is still escaping, contact the heating engineer promptly and only use an accessible shut-off if it is safe to do so."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-15T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Sarah Page",
+      "to": "Ian, Marshgate Risk",
+      "body": "The heating failed on 14 July 2025, and I noticed water on the hallway floor beside a radiator; the floorboards are damp over a small area, with no other damage that I can see. I have called a heating engineer, but the visit and any findings are still pending."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-15T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ian, Marshgate Risk",
+      "to": "Alderwick Mutual",
+      "body": "I am submitting Sarah Page's property claim for heating-related water damage at 135 Willow Walk, Brackenford, ZZ4 8ZZ. The reported incident date is 14 July 2025; Sarah describes a small damp area of hallway floorboards beside a radiator, and a heating engineer has been called."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-15T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Ian, Marshgate Risk",
+      "to": "Sarah Page",
+      "body": "I have submitted your claim to Alderwick Mutual. The insurer has not yet acknowledged or assigned a claim reference, and it has not made a decision about the damage; we can provide the engineer's findings when they become available."
+    }
+  ],
+  "attachments": []
+}

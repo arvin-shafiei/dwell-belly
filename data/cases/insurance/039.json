@@ -1,0 +1,84 @@
+{
+  "id": "insurance-039",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "039",
+  "title": "Case 039: Claim reference for the customer",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-27 10:07:00 UTC",
+    "updated": "2025-07-27 15:42:00 UTC",
+    "completed": "2025-07-27 15:42:00 UTC",
+    "property": "139 Maple Walk, Brackenford, ZZ5 3ZZ",
+    "broker": "Clovermere Brokers",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I reported a property claim for 139 Maple Walk, Brackenford, ZZ5 3ZZ, but I don’t have the claim reference. Could you let me know what number I should use in future correspondence?",
+  "overview": "Tilly asked her broker for the reference for her reported property claim. Northmere Mutual provided the registered claim reference to Luke at Clovermere Brokers, who recorded the check and sent the number to Tilly for future correspondence. Tilly confirmed that she had received it; no other decision was made.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Send Tilly the verified claim reference and explain that she can use it in future correspondence.",
+    "recorded_event": null
+  },
+  "outcome": "Tilly confirmed that she received claim reference CLM-039.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-27T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tilly Jones",
+      "to": "Luke, Clovermere Brokers",
+      "body": "I reported a property claim for 139 Maple Walk, Brackenford, ZZ5 3ZZ, but I don’t have its reference. Could you check what number I should use when I write about it?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-27T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Luke, Clovermere Brokers",
+      "body": "We have registered Tilly Jones’s property claim for 139 Maple Walk, Brackenford, ZZ5 3ZZ under reference CLM-039. Please use this reference for future correspondence; registration alone does not confirm cover or liability."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-27T12:21:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Luke, Clovermere Brokers",
+      "to": "Clovermere Brokers claim file",
+      "body": "Checked Northmere Mutual’s notice against Tilly Jones’s claim and the property address; the reference is CLM-039. I’ll pass it to Tilly for use in future correspondence."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-27T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Luke, Clovermere Brokers",
+      "to": "Tilly Jones",
+      "body": "Northmere Mutual has registered your property claim under reference CLM-039. Please quote that number in future correspondence about your claim; it is a reference only and does not indicate a decision on cover or liability."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-27T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tilly Jones",
+      "to": "Luke, Clovermere Brokers",
+      "body": "Thanks, I’ve received the claim reference CLM-039 and will use it in future correspondence."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-07-27T15:42:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Luke, Clovermere Brokers",
+      "to": "Clovermere Brokers claim file",
+      "body": "Tilly confirmed receipt of claim reference CLM-039. No other claim decision or outcome was communicated."
+    }
+  ],
+  "attachments": []
+}

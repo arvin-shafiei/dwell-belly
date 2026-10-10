@@ -1,0 +1,142 @@
+{
+  "id": "property-035",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "035",
+  "title": "Case 035: Shower Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-10-12 02:51:06 UTC",
+    "updated": "2025-10-12 23:23:41 UTC",
+    "completed": "2025-10-12 23:23:40 UTC",
+    "property": "Flat 23, 63 Meadow Row, Bellmere, ZZ6 6ZZ"
+  },
+  "context": null,
+  "initial_request": "I would like to report an issue with the shower in my property.\n\nThe water pressure from the shower has become very low compared to its normal performance. In addition, the shower hose/pipe appears to be loose where it connects to the shower head, and I am concerned that it may be damaged or starting to break.\n\nThe low water pressure is affecting normal use of the shower. I would appreciate it if someone could inspect the shower, hose, and connections to determine the cause of the problem and carry out any necessary repairs.",
+  "overview": "The tenant reported very low shower water pressure and a loose shower hose/pipe. The issue was classified as routine plumbing. The landlord was sent a shower picture and planned to obtain parts and arrange fitting. The tenant acknowledged the update. The landlord later confirmed the issue had been sorted, and the task was marked complete without payment.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The landlord confirmed that he had resolved the shower issue.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-12T02:51:06Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: I would like to report an issue with the shower in my property.\n\nThe water pressure from the shower has become very low compared to its normal performance. In addition, the shower hose/pipe appears to be loose where it connects to the shower head, and I am concerned that it may be damaged or starting to break.\n\nThe low water pressure is affecting normal use of the shower. I would appreciate it if someone could inspect the shower, hose, and connections to determine the cause of the problem and carry out any necessary repairs."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-12T02:51:06Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "**[AI Intake Classification]**\n\n**Tenant said:**\n\nI would like to report an issue with the shower in my property.\n\nThe water pressure from the shower has become very low compared to its normal performance. In addition, the shower hose/pipe appears to be loose where it connects to the shower head, and I am concerned that it may be damaged or starting to break.\n\nThe low water pressure is affecting normal use of the shower. I would appreciate it if someone could inspect the shower, hose, and connections to determine the cause of the problem and carry out any necessary repairs.\n\n**Issue:**\nPlumbing\n**Severity:** ROUTINE\n**Confidence:** medium\n\n**Tenant's clarifying Q&A:**\n\n**Q:** Where in the property is the leak coming from — which room, and is it from a visible pipe, under a sink, or from behind a wall?\n**A:** it’s the shower in the bathroom\n\n**Q:** How severe is the pipe leak — is it a slow drip, a steady trickle, or a more significant flow?\n**A:** the flow is very less\n\n**Q:** Have you been able to turn off the water supply to the affected pipe using an isolation valve or the mains stopcock?\n**A:** (not answered)\n\n**Q:** Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n**A:** (not answered)\n\n**Q:** Are there any pets at the property?\n**A:** no"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-12T02:51:51Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-12T03:00:19Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "The call discusses maintenance issues at the flat, particularly problems with the shower hose and costs associated with water damage affecting a smoke detector and ceiling repairs. They also touch upon property work completed, such as carpet cleaning and new smoke detectors, and tasks related to renting out the property."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-12T03:07:32Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 23, 63 Meadow Row, Bellmere, ZZ6 6ZZ\n\nHi Isaac\n\nPicture of the shower attached\n\nKind Regards\n\nImogen Harper\n\nReferenced shower picture attachment unavailable."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-10-12T03:08:35Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Address: Flat 23, 63 Meadow Row, Bellmere, ZZ6 6ZZ\n\nHi Palmer\n\nI have sent the picture of the shower to the landlord he is going to get the parts and he will get in touch with you to arrange to come out and fit them.\n\nKind Regards\n\nImogen Harper"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-10-12T03:08:58Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Imogen Harper. Reason: Waiting for Landlord. Comment: did Isaac get the pic and is he going to do"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-10-12T03:51:29Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-10-12T03:51:29Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "That's great, thank you."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-10-12T03:52:37Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Imogen Harper. Reason: Waiting for Landlord. Comment: did Isaac get pic and is he doing"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-10-12T23:23:23Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "ll rang and confirmed this is all done - mw"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-10-12T23:23:40Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "ll confirmed he has sorted this"
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-10-12T23:23:41Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    }
+  ],
+  "attachments": []
+}

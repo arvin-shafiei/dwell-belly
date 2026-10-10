@@ -1,0 +1,81 @@
+{
+  "id": "delivery-049",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "049",
+  "title": "Case 049: Duplicate delivery service charge appears on a business invoice",
+  "details": {
+    "source_role": "Vera Senn, Mossline Press finance coordinator",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-22 09:00:00 UTC",
+    "escalated": "2026-03-22 09:10:00 UTC",
+    "updated": "2026-03-22 09:50:00 UTC",
+    "completed": "2026-03-22 09:50:00 UTC",
+    "primary_shipment": "DL-049",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "Two invoice lines have the same shipment, service and date. The authorised billing team must confirm duplication and issue a credit note and revised balance.",
+  "initial_request": "Please ask billing to review the duplicate before we pay this invoice. We have not paid either line.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier's authorised billing team to review the two matching charge lines.",
+    "recipient": "Business billing, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "Billing issues a credit note for the confirmed duplicate and the revised invoice reconciles.",
+  "boundaries": "A credit note is an accounting adjustment, not cash received. GBP 36.00 minus GBP 18.00 equals GBP 18.00 due.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-22T09:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Vera Senn, Mossline Press finance coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Inline invoice INV-049: line 1 delivery service DL-049, 2026-03-22, GBP 18.00; line 2 delivery service DL-049, 2026-03-22, GBP 18.00; invoice total GBP 36.00. Both lines have the same service key. No separate service is listed."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-22T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Vera Senn, Mossline Press finance coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please ask billing to review the duplicate before we pay this invoice. We have not paid either line."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-22T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Business billing, Plover Arc Logistics",
+      "body": "Please review INV-049’s two GBP 18.00 lines for the same DL-049 delivery service and date. If duplication is confirmed, issue the authorised credit and revised invoice balance."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-22T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Duplicate confirmed: line 2 repeats line 1, not a second service. [Credit and revised statement](attachments/credit-statement.pdf): CN-049 credits GBP 18.00 against INV-049; revised amount due GBP 18.00. No money has been refunded because nothing was paid."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "credit-statement.pdf",
+      "type": "pdf",
+      "path": "raw/Delivery & Logistics/049/attachments/credit-statement.pdf",
+      "text": "SYNTHETIC EXERCISE - NOT A LIVE DOCUMENT\n\n\nCredit CN-049 and revised statement\n\nIssued: 2026-03-22 09:50 UTC\n\n\n\nIssuer: Plover Arc Logistics - Business billing\n\n\n\nCustomer: Mossline Press | Invoice: INV-049 | Shipment: DL-049\n\n\n\nOriginal line 1: delivery service, 2026-03-22, GBP 18.00\n\n\n\nOriginal line 2: duplicate of line 1, GBP 18.00 | Original total: GBP 36.00\n\n\n\nCredit note CN-049: GBP 18.00 against duplicate line 2.\n\n\n\nRevised amount due: GBP 18.00 (36.00 - 18.00). Nothing has been paid.\n\n\n\nAccounting credit only; no cash refund or bank transfer has occurred.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "id": "insurance-038",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "038",
+  "title": "Case 038: Further Images for the Claim File",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-24 10:07:00 UTC",
+    "updated": "2025-07-24 14:35:00 UTC",
+    "completed": "2025-07-24 14:35:00 UTC",
+    "property": "138 Hazel Walk, Brackenford, ZZ5 2ZZ",
+    "broker": "Wellfield Risk",
+    "insurer": "Fenmere Insurance"
+  },
+  "context": null,
+  "initial_request": "I’m Edward Wade, the owner of 138 Hazel Walk, Brackenford, ZZ5 2ZZ. After the wall inspection, I sent Lena two synthetic photographic-style simulations to pass on, but I understand they are not yet in the insurer’s claim file. Could you make sure they are submitted against my open claim?",
+  "overview": "Edward sent Lena two synthetic photographic-style views of the same fictional damaged wall after an inspection. Lena checked the open claim reference and file contents, then submitted the labelled views to Fenmere Insurance. Fenmere confirmed they had been added to the claim file, while the damage assessment remained unfinished; Lena relayed that confirmation to Edward.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Lena should submit wall-wide-view.png and wall-detail.png to Fenmere Insurance against the open claim CLM-038 and ask the insurer to confirm that they are on file.",
+    "recorded_event": null
+  },
+  "outcome": "Fenmere Insurance confirmed that the two synthetic photographic-style wall views were added to the open claim file; the damage assessment is not yet complete.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-24T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Edward Wade",
+      "to": "Lena, Wellfield Risk",
+      "body": "Hi Lena, following the inspection at 138 Hazel Walk, Brackenford, ZZ5 2ZZ, I’m sending wall-wide-view.png and wall-detail.png. These are synthetic photographic-style simulations of one fictional wall (the detail is a crop of the wide view), not photos of a real property, and I’d be grateful if you could check that they are included with my open claim."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-24T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Lena, Wellfield Risk",
+      "to": "Wellfield Risk case file",
+      "body": "I checked the claim reference, CLM-038, against the materials currently listed and the two synthetic wall views are not recorded in the insurer’s file. Escalating this for submission against the existing open claim; the images are photographic-style simulations, not actual site photos or an expert report or evidence of the cause of damage."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-24T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Lena, Wellfield Risk",
+      "to": "Fenmere Insurance Claims Team",
+      "body": "Please add wall-wide-view.png and wall-detail.png to the open claim CLM-038 for 138 Hazel Walk, Brackenford, ZZ5 2ZZ. These are synthetic photographic-style simulations of the reported wall damage, not photographs of an actual property; please confirm once they are on the claim file."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-24T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Fenmere Insurance Claims Team",
+      "to": "Lena, Wellfield Risk",
+      "body": "We confirm that wall-wide-view.png and wall-detail.png have been added to the file for open claim CLM-038. The damage assessment is still in progress."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-24T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Lena, Wellfield Risk",
+      "to": "Edward Wade",
+      "body": "Fenmere has confirmed that both synthetic wall views are now on the file for your open claim, CLM-038. Its damage assessment is still in progress, so this confirmation does not indicate a completed assessment."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "wall-detail.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/038/attachments/wall-detail.png",
+      "text": "Image description: synthetic photographic simulation, case 038. Close-up of the same wall: diffuse brown stain with soft edges, and a thin jagged vertical crack passing through it. Plaster surface looks intact apart from the crack; no peeling.\n\nOCR text:\nSYNTHETIC PHOTOGRAPHIC SIMULATION — WALL DETAIL\norld photograph",
+      "text_source": "description+ocr"
+    },
+    {
+      "name": "wall-wide-view.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/038/attachments/wall-wide-view.png",
+      "text": "Image description: synthetic photographic simulation, case 038, fictional property. Wide view of a cream painted wall above a white skirting board and wooden floor. A brown water-type stain about hand-to-forearm size sits mid-wall, with a thin vertical hairline crack running from upper wall down through the stain to the skirting.\n\nOCR text:\nSYNTHETIC PHOTOGRAPHIC SIMULATION — WALL WIDE VIEW\nCase 038 - fictional property - not a real-world photograph",
+      "text_source": "description+ocr"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "insurance-031",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "031",
+  "title": "Case 031: Storm damage reported to roof",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-03 10:07:00 UTC",
+    "updated": "2025-07-03 14:35:00 UTC",
+    "completed": "2025-07-03 14:35:00 UTC",
+    "property": "131 Birch Walk, Brackenford, ZZ4 4ZZ",
+    "broker": "Greystone Cover",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I’m Kate Holden, and I need to report damage to the roof of my home at 131 Birch Walk, Brackenford, ZZ4 4ZZ. Please tell me what information you need and how to proceed safely.",
+  "overview": "Kate reported roof damage after a storm and said the room below was still dry. Leo at Greystone Cover requested a clearer account and advised safe precautions; Kate then described a roofer’s inspection. Leo submitted a damage notification to Northmere Mutual, which confirmed that the claim was registered. The cause and policy coverage remain under assessment.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At escalation, ask Kate when she noticed the roof damage and what the roofer observed, advise safe temporary protection separately, then submit her factual account to the insurer.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual has registered the claim; the cause of the roof damage and whether it is covered remain under assessment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-03T10:07:00Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Kate Holden",
+      "to": "Leo, Greystone Cover",
+      "body": "I’ve noticed damage to the roof at 131 Birch Walk, Brackenford, ZZ4 4ZZ, after the recent storm. The room beneath it is dry for now, but I’m not sure when the damage happened."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-03T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Leo, Greystone Cover",
+      "to": "Kate Holden",
+      "body": "Could you let me know when you first noticed the damage and describe what you can see, along with what the roofer has observed if they have inspected it? Please keep people away from any affected area, arrange suitable urgent protection with a qualified roofer if needed, and do not go onto the roof yourself."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-03T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Kate Holden",
+      "to": "Leo, Greystone Cover",
+      "body": "A roofer inspected the roof this morning and told me several tiles are displaced and part of the flashing is loose; I first noticed the problem after the overnight storm. The room below remains dry, and the roofer is arranging temporary protection from a safe position."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-03T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Leo, Greystone Cover",
+      "to": "Northmere Mutual Claims Team",
+      "body": "Please register a property damage notification for Kate Holden’s home at 131 Birch Walk, Brackenford, ZZ4 4ZZ. She reports displaced roof tiles and loose flashing noticed after a storm, and says the room below is currently dry; the cause and any applicable cover are not yet established."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-03T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Claims Team",
+      "to": "Leo, Greystone Cover",
+      "body": "We have registered the property damage notification as claim CLM-031. The cause of the damage and the policy response remain under assessment."
+    }
+  ],
+  "attachments": []
+}

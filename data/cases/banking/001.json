@@ -1,0 +1,73 @@
+{
+  "id": "banking-001",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "001",
+  "title": "Case 001: Was the one-off transfer sent?",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-07-19 09:00:00 UTC",
+    "updated": "2025-07-19 12:08:00 UTC",
+    "completed": "2025-07-19 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I can see a £420 debit for my one-off payment to Alder & Reed Workshop, but I need to know whether H&V sent it.",
+  "overview": "Mara Ellison queried a one-off £420 transfer after seeing it debited from her account. H&V checked its own transfer journal and confirmed the transfer was marked as sent; there is no confirmation that the recipient bank received or credited it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the specific transfer's status in H&V's own journal.",
+    "recorded_event": null
+  },
+  "outcome": "H&V's journal recorded the transfer as sent, and the response was recorded in the secure portal. Receipt or credit by the recipient bank was not confirmed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-19T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "One-off transfer to Alder & Reed Workshop: debit shown in your account activity."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-19T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I arranged this £420 payment for a bookcase and can see the debit. Has H&V sent it? Please check the transfer status."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-19T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V transfer journal",
+      "body": "I am checking the journal entry for Mara Ellison's specific one-off £420 transfer to Alder & Reed Workshop. Please return the recorded transfer status."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-19T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V transfer journal",
+      "to": "H&V service agent",
+      "body": "Transfer status: SENT. This is H&V's outgoing-transfer record; recipient-bank receipt or credit is not confirmed."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-19T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Your secure portal status is “Sent”. H&V's journal records the transfer as sent, and our response has been recorded. This does not confirm receipt or credit by the recipient bank."
+    }
+  ],
+  "attachments": []
+}

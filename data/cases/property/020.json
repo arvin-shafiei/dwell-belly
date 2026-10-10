@@ -1,0 +1,213 @@
+{
+  "id": "property-020",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "020",
+  "title": "Case 020: Property inspection",
+  "details": {
+    "source_role": "auto",
+    "status": "Completed",
+    "created": "2024-02-07 00:49:50 UTC",
+    "updated": "2024-02-18 22:20:32 UTC",
+    "completed": "2024-02-17 03:44:45 UTC",
+    "property": "Flat 12, 162 Beacon Close, Cedarford, ZZ9 5ZZ"
+  },
+  "context": null,
+  "initial_request": "Inspection",
+  "overview": "A property inspection was scheduled for the morning of 11 May 2026. The tenant requested a change because their dog might be overly excited; after confirming the new arrangement, the inspection was rescheduled for the afternoon of 13 May 2026. The landlord was sent a report stating that no issues were identified. The landlord later raised an unapproved dog flap installation and asked about retrieving a spare front door key after a lock change.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The inspection was completed, and the report stated that no issues were identified. A report was referenced in the email, but its contents are unavailable. The landlord subsequently raised the dog flap and spare key matters.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-02-08T03:34:22Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "AM slot, any time morning"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-02-08T03:34:23Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hi, Your property inspection for Flat 12, 162 Beacon Close, Cedarford, ZZ9 5ZZ has been scheduled for 13/02/2024 between 8:00AM and 12:00PM. Please be advised that as part of the inspection report, the inspector will be taking photos to provide to your landlord. If you do not wish to be present, we will access using our management key. Thanks, Oakfield Services"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-02-08T03:34:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Scheduled property inspection for 13/02/2024 between 8:00AM and 12:00PM"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-02-08T03:34:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit time approved: 2024-02-13 11:00:00"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-02-08T03:54:34Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-02-08T03:54:34Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "The customer requests to change the inspection date to Friday, 15th February due to a concern about their dog being overly excited."
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-02-08T04:54:50Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Spoke to T confirmed this should be fine (have a dog and Mrs home on this date) please change and get this booked in and cancel over inspection, send email to T once done as confirmation if not auto sent to them."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-02-08T04:57:24Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "PM slot, any time afternoon"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-02-08T04:57:24Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Please note that the inspection at Flat 12, 162 Beacon Close, Cedarford, ZZ9 5ZZ has been rescheduled to 15/02/2024 between 12:00PM and 5:00PM"
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-02-08T04:57:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Scheduled property inspection changed to to  new time 15/02/2024 between 12:00PM and 5:00PM"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-02-08T04:57:25Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "PM slot, any time afternoon"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-02-08T04:57:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Rescheduled visit time to: 2024-02-15 14:00:00"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-02-15T04:49:50Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Hi, Just a friendly reminder that you have a property inspection appointment at Flat 12, 162 Beacon Close, Cedarford, ZZ9 5ZZ on 15/02/2024 between 12:00PM and 5:00PM. Thanks, Oakfield Services"
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-02-15T04:49:50Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Scheduled property inspection for 15/02/2024 between 12:00PM and 5:00PM"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-02-16T04:49:50Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please add results of inspection"
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-02-17T03:44:45Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "[Text/transcription absent from maintenance_actions.comment]"
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-02-17T03:44:45Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Dear Oliver Bennett:\n\nWe recently completed an inspection at Flat 12, 162 Beacon Close, Cedarford, ZZ9 5ZZ. Please find below a detailed summary of findings and related questions.\n\nNo issues were identified during the inspection.\n\nDownload the full inspection report here.\n\nPlease contact us if you have any additional questions.\n\nAttachments: [attachment-01-property-inspection-report.pdf](attachments/attachment-01-property-inspection-report.pdf)"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-02-17T03:44:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Inspection document uploaded.\n\n**Inspection issues:** NO\n**Issue date:** 2024-02-16\n**Expires On:** 2024-08-14"
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-02-18T22:20:32Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-02-18T22:20:32Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Felix Clarke addresses a dog flap installation that was not approved and inquires about the retrieval of a spare front door key following a lock change."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "attachment-01-property-inspection-report.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/020/attachments/attachment-01-property-inspection-report.pdf",
+      "text": "Northbridge Lettings\n\nProperty inspection report\nRecord the inspection condition and cleanliness of Flat 12, 162 Beacon Close, Cedarford, ZZ9\n5ZZ, and identify any noted defects.\n\n\nInspection for Flat 12, 162 Beacon Close, Cedarford, ZZ9 5ZZ. Appointment date: 16 February\n2024. Assessor: assessor named in the report. Agency: Northbridge Lettings.\n\nThe report provides an impartial, room-by-room schedule of condition for the main property\nfeatures and any contents. Where the assessor makes no comment on an element or item, it is\ntaken to be in good, clean, serviceable condition and without defects. Defects or elements in poor\ncondition observed during inspection are to be identified in the narrative and evidenced with\nphotographs.\n\nDescriptions such as ‘silver’, ‘chrome’ and ‘oak’ refer to appearance and not necessarily the actual\nmaterial. Listed items are described for identification. Items are described as new only when in a\nnew or newly refurbished building, or still in manufacturer wrapping. In a property that is not new or\nnewly refurbished, some wear and tear is assumed unless otherwise noted.\n\nThe report preparer is not an expert on fabrics, woods, materials, antiques or similar items. The\nreport will not necessarily mention structural defects and does not advise on repairs or their cost.\nFixtures and fittings are listed and described, but may not have been tested.\n\nThe assessor visually inspects the interior of the main building and contents, and generally\ninspects the remainder of the building, including exterior cosmetic elements and permanent\noutbuildings. Inaccessible areas and loft areas are not inspected. Belongings left by the landlord in\na locked room or outbuildings are not inspected and remain the landlord’s responsibility. Items of\nlittle monetary value are listed and described generically.\n\nThe report remains the property of the instructing party and shall not be used without written\npermission.\n\nAt the end of the tenancy, the property and its contents are expected to be in a similar condition\nand state of cleanliness to that recorded before the tenancy began. Damage believed to exceed\nfair wear and tear may need repair or replacement, with the cost deducted from the tenant’s\ndeposit. Receipts should be retained and produced if required.\n\nIf cleaning is unsatisfactory, a managing agent or landlord may instruct a professional cleaner; the\ncost if this will be deducted from the tenant’s deposit. Receipts should be retained where\nprofessional cleaners are used. Cleaning must be thorough and the property left tidy at the end of\nthe tenancy.\n\nCarpets should be professionally cleaned before the end of the tenancy in accordance with the\ninventory or tenancy agreement. Vinyl or tile flooring should be clean and free from cracks or tears.\nCurtains should be professionally cleaned in accordance with the inventory or tenancy agreement.\n\nThe decor should remain in the same state and condition as at the start of the tenancy. Charges\nmay be incurred if picture hooks, nails, screws or screw holes are added and not removed or\nrepaired satisfactorily. Excessive marks and fingerprints should be removed; fingerprints on walls\nand doors are considered a cleaning issue, although reasonable wear and tear is expected.\n\nRefrigerators and freezers should be defrosted, switched off and left open to avoid smelling.\nOvens, hobs, extractor units and microwaves should be cleaned thoroughly of burnt-on deposits\nand grease, including doors and seals. Gardens, where applicable, should be left neat and tidy,\nwith lawns cut, borders and planters weeded, hedges trimmed, and pathways and patios weeded\nand swept.\n\fSmoke and carbon monoxide alarms were checked and recorded as working on the report date.\nThe tenant is responsible for keeping them in working order throughout the tenancy. Faults other\nthan battery replacement should be reported immediately.\n\nAssessor declaration: the report reflects the assessor’s assessment of the property. Signature\nreceived 16 February 2024 at 16:32:45.\n\n Section                Rating         Meaning\n Inspection areas —     Excellent      Brand new property or recently refurbished area. No signs\n condition                             of damage.\n Inspection areas —     Good           May have negligible signs of wear, but no serious faults in\n condition                             appearance or functionality.\n Inspection areas —     Fair           Signs of wear/minor damage present. Small chips, marks\n condition                             and/or other imperfections present.\n Inspection areas —     Poor           Showing extensive signs of wear. Large chips, marks\n condition                             and/or other defects that can be considered serious.\n Inspection areas —     Unacceptable Not fit for purpose. Extensively damaged and likely to\n condition                           need professional repair.\n Inspection areas —     Excellent      Immaculate. Cleaned to a professional standard.\n cleanliness\n Inspection areas —     Good           May have some very minor dust or marks, but generally in\n cleanliness                           a satisfactory state of cleanliness.\n Inspection areas —     Fair           Showing average signs of dust, dirt and/or marks. May\n cleanliness                           benefit from light cleaning.\n Inspection areas —     Poor           Showing extensive signs of dust, dirt and/or marks.\n cleanliness                           Requires cleaning to bring back to a satisfactory state.\n Inspection areas —     Unacceptable Extremely dirty and not fit for purpose. Requires thorough\n cleanliness                         cleaning to a professional standard.\n\n Item                                                                                Result\n Carbon monoxide detectors tested and working                                        Yes\n Smoke / heat detectors tested and working                                           Yes\n Evidence of smoking                                                                 No\n Evidence of condensation                                                            No\n Evidence of damp                                                                    No\n Evidence of non-tenants                                                             No\n Evidence of pets                                                                    Yes\n Property generally maintained to a good standard                                    Yes\n\n Inspection area               Condition         Cleanliness          Defects         Photos\n Entrance/Hallway              Good              Good                 0               0\n Toilet                        Good              Good                 0               0\n\fInspection area              Condition       Cleanliness       Defects           Photos\nLiving Room                  Good            Good              0                 0\nKitchen                      Good            Good              0                 0\nUtility Room                 Good            Good              0                 0\nStairs/Landing               Good            Good              0                 0\nBathroom                     Good            Good              0                 0\nBedroom 1                    Good            Good              1                 0\nBedroom 2                    Good            Good              0                 0\nBedroom 3                    Good            Good              0                 0\nEn Suite                     Good            Good              0                 0\n\nInspection area   Entry        Date       Condition Cleanliness Description\nEntrance/Hallway General       16         Good      Good\n                 Overview      February\n                               2024\nToilet            General      16         Good      Good\n                  Overview     February\n                               2024\nLiving Room       General      16         Good      Good\n                  Overview     February\n                               2024\nKitchen           General      16         Good      Good\n                  Overview     February\n                               2024\nUtility Room      General      16         Good      Good           Tenant's have installed a\n                  Overview     February                            dog flap here.\n                               2024\nStairs/Landing    General      16         Good      Good\n                  Overview     February\n                               2024\nBathroom          General      16         Good      Good\n                  Overview     February\n                               2024\nBedroom 1         General      16         Good      Good           Downstairs front\n                  Overview     February                            bedroom. Sticker type\n                               2024                                markings to w2 next to\n                                                                   the window, look like the\n                                                                   stickers from some\n                                                                   command strips, tenant\n                                                                   will need to remove and\n                                                                   make good.\nBedroom 2         General      16         Good      Good\n                  Overview     February\n                               2024\n\fInspection area      Entry        Date          Condition Cleanliness Description\nBedroom 3            General      16            Good       Good\n                     Overview     February\n                                  2024\nEn Suite             General      16            Good       Good\n                     Overview     February\n                                  2024\n\nArea         Entry         Condition Cleanliness Defect\nBedroom      General       Good          Good          Sticker type markings to the wall next to the\n1            Overview                                  window, look like the stickers from some\n                                                       command strips; tenant will need to remove\n                                                       and make good.\n\n\nObservations\n       Overall condition was described as good.\n       The tenants have a small dog and a fish tank.\n       A dog flap has been installed in the back door, noted in the general comments and utility-\n       room overview.\n       The garden was described as being kept tidy.\n       Bedroom 1 is described as the downstairs front bedroom. Sticker-type markings were noted\n       on the wall beside the window, described as looking like stickers from command strips. The\n       tenant was to remove them and make good.\n       All 11 inspection areas were rated Good for condition and Good for cleanliness.\n       Bedroom 1 was the only area with a recorded defect. The report summary records zero\n       photos for every inspection area.\n\nFindings\n       Checklist: carbon monoxide detectors tested and working — Yes.\n       Checklist: smoke / heat detectors tested and working — Yes.\n       Checklist: evidence of smoking — No.\n       Checklist: evidence of condensation — No.\n       Checklist: evidence of damp — No.\n       Checklist: evidence of non-tenants — No.\n       Checklist: evidence of pets — Yes.\n       Checklist: property generally maintained to a good standard — Yes.\n       Bedroom 1 defect: sticker-type markings to the wall next to the window, apparently from\n       command strips; tenant to remove and make good. Condition Good; cleanliness Good.\n\nConclusions\n       The inspection recorded the property and all listed rooms as Good for condition and\n       cleanliness.\n       One defect was recorded: sticker-type marks on the Bedroom 1 wall beside the window, for\n       the tenant to remove and make good.\n       The report notes a dog flap installation and pets, while the checklist records no evidence of\n       damp, condensation, smoking or non-tenants.\n\fImage evidence\n\n  Neutral image placeholder\n\n  Exterior/frontage view of the property, including the front entrance and windows.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

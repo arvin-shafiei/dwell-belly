@@ -1,0 +1,367 @@
+{
+  "id": "property-045",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "045",
+  "title": "Case 045: Kitchen Window and Patio Door Window Repair",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-01-14 10:23:51 UTC",
+    "updated": "2025-04-04 12:05:07 UTC",
+    "completed": "2025-04-04 11:13:52 UTC",
+    "property": "Flat 26, 116 Copperfield Walk, Alderwick, ZZ7 8ZZ"
+  },
+  "context": null,
+  "initial_request": "Kitchen window + patio door windows",
+  "overview": "The tenant requested repairs relating to the kitchen window and patio door windows. The agency asked whether the landlord had requested the work; the tenant said it had not been requested by the landlord. The landlord then arranged for his own contractors to assess and quote for the windows, with the patio door glass noted as a possible future item. There were follow-ups while the visit and work were pending. The landlord ultimately confirmed the work was done, and the request was marked completed without payment. A later landlord email asked about a new appointment with tenants at a different address.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The landlord confirmed that the window work was completed. The request was closed as completed without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-01-14T10:23:51Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Kitchen window + patio door windows"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-01-14T10:24:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-01-15T07:50:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Job Id: NBL-045-9445\nAddress: Flat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nHello,\n\nThank you for submitting your request.\n\nWas this requested by your landlord?\n\nThanks\nClara"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-01-15T07:50:39Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Tenant"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-01-15T08:29:07Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-01-15T08:29:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Northbridge Lettings",
+      "body": "Due to the phone call no it's not requested by landlord"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-01-15T08:47:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-045-9445\nAddress: Flat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nHi Theo,\n\nPlease see below photos of the windows. Someone from the office has spoken to her about it, I am just trying to find out who and what was said. She is not being forthcoming.\n\nThanks\nClara\n\n[Three referenced window-photo attachments unavailable.]"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-01-15T08:47:42Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-01-22T07:53:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Job Id: NBL-045-9445\nAddress: Flat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nHello Dawson,\n\nI have forwarded the pictures to landlord. I am assuming that you are reporting that your windows are blown?\n\nYou have not provided much information and just sent pictures through.\n\nThanks\nClara"
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-01-22T07:56:51Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Tenant. Comment: awaiting TT reply"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-01-24T08:03:01Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Landlord. Comment: LL is arranging a visit with his own contractors - \nFrom: Theo Palmer \nSent: 21 January 2025 11:41\nTo: Ruben Mercer \nCc: Clara Harper \nSubject: Re: INVOICE\n\nHi Oakley,\n\nI have paid your invoice for Flat 24, 94 Beacon Close, Northbridge, ZZ1 0ZZ. Please can you contact Clara Harper Northbridge Lettings to arrange for you to go to Flat 29, 39 Beacon Close, Kingshaven, ZZ4 9ZZ to quote for replacing the lead crossed windows only. They will mention the patio door glass blown a little bit which you can quote for the future, but I only have budget for the windows for now. Any questions please let me know.\n\nKind Regards,\n\nTheo Palmer"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-01-30T09:41:09Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "LL has orginised for his own contractors to attend.\n\nHello,\n\nTenant just called back and gave authorisation to pass on her details.\n\nFreya\ncase045.86830aba7f@example.com\n07700 900698\n\nMany thanks\nClara\n\nFrom: Clara Harper\nSent: 24 January 2025 10:52\nTo: 'Ruben Mercer' \nCc: Theo Palmer \nSubject: RE: SURVEY Palmer\n\nGood morning Oakley,\n\nThank you for your email.\n\nI have called tenants to get authorisation to pass on the details to you guys so I will reach back out when I’ve spoken to them.\n\nMany thanks\nClara\n\nFrom: Ruben Mercer \nSent: 24 January 2025 08:34\nTo: Clara Harper \nSubject: SURVEY Palmer\n\nGood Morning Clara\n\nWe have been asked to contact you by Eliza Ingram Regarding measuring for some windows.\n\nFlat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nDo we have any contact details so we can arrange a survey.\n\nKind Regards\n\nOakley\nLantern Surveying"
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-01-30T09:41:41Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Other. Comment: awaiting for LLs contractors to attend"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-02-13T09:30:03Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Isaac Fletcher. Reason: Waiting for Provider. Comment: Awaiting LL provider to attend - Clara will follow up upon her return"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-02-15T10:56:12Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Job Id: NBL-045-9445\nAddress: Flat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nHi Theo,\n\nDo you know if the window was sorted?\n\nThanks\nClara"
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-02-15T10:56:24Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-02-15T12:31:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Just had a quote and asked him to proceed.\n\nThanks\n\nTheo\nSent from my iPhone"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-02-15T13:03:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-045-9445\n**Address:** Flat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nBrill, thanks. I'll keep this job open until its finished.\n\nThanks"
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-02-15T13:03:35Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Provider"
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-02-15T13:13:04Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Theo has arranged for a window specialist to contact the requester and assess the state of the windows at a location called Flat 12, 32 Juniper Mews, Willowbank, ZZ3 7ZZ. He does not guarantee any action will be taken but confirms an assessment will occur."
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-02-15T13:36:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-045-9445\n**Address:** Flat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nOk, thanks Theo.\n\nI will notify them."
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-02-15T13:36:32Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Provider"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-03-01T14:34:50Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-045-9445\n**Address:** Flat 12, 182 Meadow Row, Kingshaven, ZZ5 7ZZ\n\nHi Theo,\n\nI've not heard from the window man re Flat 15, 135 Copperfield Walk, Westmarsh, ZZ3 2ZZ, have they said anything to you?\n\nThanks\nClara"
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-03-01T14:35:04Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-03-01T14:53:06Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "No , probably still waiting for them to be made."
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-03-01T14:54:08Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Other. Comment: No worries, thank you"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-03-06T11:40:37Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Other. Comment: still awaiting window company to call and arrange a visit"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-03-13T11:07:35Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Provider. Comment: still awaiting window company to call and arrange a visit"
+    },
+    {
+      "n": 29,
+      "timestamp": "2025-03-20T13:32:04Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Other. Comment: still awaiting window company to call and arrange a visit"
+    },
+    {
+      "n": 30,
+      "timestamp": "2025-03-26T11:15:45Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Other. Comment: as per above"
+    },
+    {
+      "n": 31,
+      "timestamp": "2025-03-29T12:45:10Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Other. Comment: Visitng on Tuesday 6th June"
+    },
+    {
+      "n": 32,
+      "timestamp": "2025-04-04T11:06:52Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Job Id: NBL-045-9445\nAddress: Flat 26, 116 Copperfield Walk, Alderwick, ZZ7 8ZZ\n\nHi Theo,\n\nHow was the visit on Monday?\n\nThanks\nClara"
+    },
+    {
+      "n": 33,
+      "timestamp": "2025-04-04T11:07:01Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 34,
+      "timestamp": "2025-04-04T11:08:11Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Good, all done!"
+    },
+    {
+      "n": 35,
+      "timestamp": "2025-04-04T11:13:33Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Fab, I will close this request on my side then"
+    },
+    {
+      "n": 36,
+      "timestamp": "2025-04-04T11:13:53Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "LL completed by himself"
+    },
+    {
+      "n": 37,
+      "timestamp": "2025-04-04T11:13:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    },
+    {
+      "n": 38,
+      "timestamp": "2025-04-04T12:05:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Theo is inquiring if a new appointment date has been arranged with the tenants at Flat 5, 25 Harbour View, Cedarford, ZZ3 9ZZ."
+    }
+  ],
+  "attachments": []
+}

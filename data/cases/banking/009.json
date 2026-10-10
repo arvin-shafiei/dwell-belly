@@ -1,0 +1,73 @@
+{
+  "id": "banking-009",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "009",
+  "title": "Case 009: Confirming the amount sent",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-04 09:00:00 UTC",
+    "updated": "2025-08-04 12:08:00 UTC",
+    "completed": "2025-08-04 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I remember entering £684.20 in the transfer draft, but the final payment line shows £648.20. Please confirm the amount H&V actually sent.",
+  "overview": "Mara Ellwood queried the difference between the amount she remembered from a draft and the amount shown on her completed transfer to her property manager. After H&V completed its identification checks on a call, an agent checked the payment journal. It confirmed that H&V sent £648.20; the amount received by the recipient has not been established.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the H&V payment journal against the final instruction for the completed transfer.",
+    "recorded_event": null
+  },
+  "outcome": "The H&V journal and secure portal confirm that £648.20 was sent. The amount received by the recipient is not established.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-04T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellwood",
+      "body": "Final payment line: £648.20 sent to your property manager."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-04T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellwood",
+      "to": "H&V service agent",
+      "body": "You’ve completed your identification checks. I remember the transfer draft as £684.20, but the final line shows £648.20. Please check the amount in the completed instruction; I’m not asking you to rely on my memory of the draft."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-04T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V payment journal",
+      "body": "I’m checking the final instruction and execution record for Mara Ellwood’s completed property-manager transfer. Please confirm the amount H&V sent."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-04T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V payment journal",
+      "to": "H&V service agent",
+      "body": "The final instruction and execution record show £648.20. H&V sent £648.20; this record does not establish the amount received by the recipient."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-04T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellwood",
+      "body": "We checked the H&V payment journal: the amount sent was £648.20. The journal confirms the amount sent by H&V, not the amount received by the recipient."
+    }
+  ],
+  "attachments": []
+}

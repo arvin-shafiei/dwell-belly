@@ -1,0 +1,493 @@
+{
+  "id": "property-036",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "036",
+  "title": "Case 036: Shower Tap Repair",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2026-09-24 12:28:30 UTC",
+    "updated": "2026-11-07 07:14:06 UTC",
+    "completed": "2026-11-07 07:14:06 UTC",
+    "property": "Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ"
+  },
+  "context": null,
+  "initial_request": "shower pull knob is broken. every time i need to use the shower the cap comes off. i have a video but there’s no way to attach here.",
+  "overview": "Tenant Noah Bennett reported that the shower pull knob was broken and its cap came off whenever the shower was used. Northbridge Lettings obtained landlord approval, assigned Keystone Services, and arranged visits. The provider reported that a previously fitted tap was faulty, ordered a replacement part, and later confirmed the new bath tap had been fitted. The landlord had raised concerns about delays and missing photos; the referenced photos were not available in the case attachments.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider confirmed the replacement bath tap was fitted at no charge because the previously fitted tap was faulty. The request was marked complete without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-24T12:28:30Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: shower pull knob is broken. every time i need to use the shower the cap comes off. i have a video but there’s no way to attach here."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-24T12:29:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-25T04:20:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ\n\nGood morning Sawyer,\n\nI have had a report from the tenant that the shower knob is broken and that every time she uses the shower the cap comes off.\n\nI have attached photos for your reference.\n\nPlease let me know if you are happy for me to send a contractor out to mend it if possible.\n\nMany thanks\n\nLeo"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-25T04:21:08Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Bennett. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-09-25T08:57:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-09-25T08:57:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Yes please!\nThanks\nSawyer"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-09-25T09:16:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-09-25T09:16:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-09-25T09:17:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Noah Bennett,\n\nOur maintenance provider **Keystone Services** will be attending your property for a **Shower Repair Request**.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: shower pull knob is broken. every time i need to use the shower the cap comes off. i have a video but there’s no way to attach here.\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-09-25T09:17:26Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Isaac Kendall! Please check your email regarding the property at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ.\n\nPlease check the email for the job details."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-09-25T09:17:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Keystone Services,\n\nThis is a new **Shower Repair Request** for the property at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900128 (enter this code when calling)\n**Tenant Name:** Noah Bennett\n**Request description:** shower pull knob is broken. every time i need to use the shower the cap comes off. i have a video but there’s no way to attach here.\n**List of attached files:**\n- attachment-37-document (unavailable)\n- attachment-92-document (unavailable)\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-09-25T14:34:26Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The conversation is at the beginning where the agent asks the customer to input a six-digit code to proceed."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-09-26T09:18:26Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Isaac Kendall! Please check your email regarding the property at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ.\n\nPlease check the email for the job details."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-09-26T09:18:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Keystone Services,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Shower Repair Request at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900128 (enter this code when calling)\nTenant Name: Noah Bennett\n**Request description:** shower pull knob is broken. every time i need to use the shower the cap comes off. i have a video but there’s no way to attach here.\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-09-27T02:55:17Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The agent contacted the caller regarding a maintenance issue with their shower. They arranged for the visit to take place on Wednesday morning between nine and half past nine."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-09-27T03:26:24Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit date selected - 29/09/2026 09:00 am"
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-09-27T03:27:24Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Isaac Kendall! Please check your email regarding the property at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ."
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-09-27T03:27:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Keystone Services,\n\nWe are providing the confirmed appointment details for the **Shower Repair Request** at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ:\n\nConfirmed Time Slot: between nine and half past nine (29/09/2026)\nPets: N/A\nContact Details: 07700 900128 (enter this code when calling)\nTenant Name: Noah Bennett\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-09-27T03:27:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Noah Bennett,\n\nWe are providing the confirmed appointment details for the **Shower Repair Request** at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ:\nConfirmed Time Slot: between nine and half past nine (29/09/2026)\nMaintenance Provider Name: Keystone Services\nContact Details: 07700 900128 (enter this code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-09-29T03:00:24Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hello, this is Isaac Kendall! Your Shower Repair Request appointment is scheduled for between nine and half past nine (29/09/2026). To reschedule call 07700 900128"
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-10-02T03:00:28Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-10-02T03:14:12Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Isaac Kendall! Please check your email regarding the property at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ."
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-10-02T03:14:12Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ\n\nGood morning Oliver,\n\nPlease could you update me on this job and if it is completed please send me your invoice.\n\nMany thanks\n\nLeo"
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-10-02T03:14:20Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-10-02T13:47:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Oliver has ordered a new part because the new tap he installed in February was faulty. He will replace the part free of charge and finish the job once the part arrives."
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-10-03T03:00:29Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-10-03T03:04:35Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Bennett. Reason: Waiting for Provider"
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-10-07T09:28:46Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Contractor",
+      "body": "The caller inquired about fixing a shower and the agent clarified that it cannot be done on a bank holiday Wednesday, suggesting next Wednesday instead. The caller confirmed understanding."
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-10-08T05:32:16Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "Oliver, a plumber, discusses scheduling an installation with the agent. They agree on an early Saturday morning timing."
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-10-14T01:27:36Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Contractor",
+      "body": "The caller describes an issue with both the shower and tap running simultaneously when a button is pressed. The agent indicates they will come back to assist."
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-10-14T09:28:10Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Good afternoon,\n\nI have spoken to Oliver Turner this afternoon, he has apologised that there has been so many issues with the taps. I understand a new tap has now been ordered.\n\nHe is off work until the end of next week but has assured me that as soon as he returns he will attend to your home and fit the new tap.\n\nOnce again sorry for any inconvenience.\n\nKind Regards\n\nFreya Quinn\nProperty Manager"
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-10-15T04:01:13Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Bennett. Reason: Waiting for Provider. Comment: Provider on leave until the end of next week but confirmed that work will be completed then"
+    },
+    {
+      "n": 33,
+      "timestamp": "2026-10-29T03:10:48Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Isaac Kendall! Please check your email regarding the property at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ."
+    },
+    {
+      "n": 34,
+      "timestamp": "2026-10-29T03:10:49Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ\n\nGood morning Oliver,\n\nPlease can you let me have an update or the invoice for this job.\n\nMany thanks\n\nLeo"
+    },
+    {
+      "n": 35,
+      "timestamp": "2026-10-29T03:11:06Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Bennett. Reason: Waiting for Landlord. Comment: waiting for an update"
+    },
+    {
+      "n": 36,
+      "timestamp": "2026-10-30T01:30:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 37,
+      "timestamp": "2026-10-30T01:30:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Oliver is planning to book a repair job with the tenant and will inform when it is completed."
+    },
+    {
+      "n": 38,
+      "timestamp": "2026-10-30T02:01:53Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller, Oliver the plumber, confirmed the delivery of new taps and scheduled an appointment for installation on Wednesday, November 4th, at around 9:30 to 10:00 AM."
+    },
+    {
+      "n": 39,
+      "timestamp": "2026-10-30T02:06:21Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "All booked in\n9.30am Wednesday 4th"
+    },
+    {
+      "n": 40,
+      "timestamp": "2026-10-30T02:20:22Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "The customer requests an update on the status of the shower repair, hoping it was completed without additional charges."
+    },
+    {
+      "n": 41,
+      "timestamp": "2026-10-30T03:13:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ\n\nGood morning Sawyer,\n\nThe contractor has booked to go out to the property to fit the taps on 03/11/26 so I will be able to let you know more after that.\n\nIf you have any queries, please do not hesitate to contact me.\n\nMany thanks\n\nLeo"
+    },
+    {
+      "n": 42,
+      "timestamp": "2026-10-30T03:13:56Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Bennett. Reason: Waiting for Provider"
+    },
+    {
+      "n": 43,
+      "timestamp": "2026-10-30T04:26:10Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Sawyer expressed disappointment over missing photos and the delay in addressing the shower issue. Hopes for a resolution soon and mentions the taps are under guarantee."
+    },
+    {
+      "n": 44,
+      "timestamp": "2026-10-30T04:40:40Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Bennett. Reason: Waiting for Provider"
+    },
+    {
+      "n": 45,
+      "timestamp": "2026-11-06T03:06:45Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Leo to chase the provider for details. The landlord has requested pictures and has concerns about the time period of works."
+    },
+    {
+      "n": 46,
+      "timestamp": "2026-11-06T03:07:55Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Imogen Mercer. Reason: Waiting for Provider. Comment: Leo to chase provider for details on works to be done for shower - Leo to chase the provider for details. The landlord has requested pictures and has concerns about the time period of works"
+    },
+    {
+      "n": 47,
+      "timestamp": "2026-11-07T06:53:56Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Isaac Kendall! Please check your email regarding the property at Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 48,
+      "timestamp": "2026-11-07T06:53:56Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 13, 73 Juniper Mews, Northbridge, ZZ1 6ZZ\n\nGood afternoon Oliver,\n\nPlease can you update me on this, send invoice if completed and photos as the landlord is concerned about the time period of the works.\n\nMany thanks\n\nLeo"
+    },
+    {
+      "n": 49,
+      "timestamp": "2026-11-07T06:54:16Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Bennett. Reason: Waiting for Provider. Comment: waiting for update/invoice and pictures"
+    },
+    {
+      "n": 50,
+      "timestamp": "2026-11-07T07:00:38Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Hi Leo this job is complete a new bath tap was fitted no charge as it was a faulty tap i fitted back in february Oliver"
+    },
+    {
+      "n": 51,
+      "timestamp": "2026-11-07T07:14:06Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No charge as faulty tap now replaced"
+    },
+    {
+      "n": 52,
+      "timestamp": "2026-11-07T07:14:06Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    }
+  ],
+  "attachments": []
+}

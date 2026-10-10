@@ -1,0 +1,268 @@
+{
+  "id": "property-023",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "023",
+  "title": "Case 023: Balcony Door Lock Repair",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-07-25 02:24:28 UTC",
+    "updated": "2025-07-28 05:33:45 UTC",
+    "completed": "2025-07-28 05:33:45 UTC",
+    "property": "Flat 20, 110 Meadow Row, Northbridge, ZZ2 5ZZ"
+  },
+  "context": null,
+  "initial_request": "The tenant has reported that the locking mechanism on the glass door which leads out to the balcony is not turning / locking. Can you please get in touch with them to schedule a date and time to attend the property and quote to have the issue resolved. Thank you.",
+  "overview": "The tenant reported that the balcony-door lock would not turn or lock. The landlord approved arranging a repair, and Northbridge Lettings assigned Juniper Surveying. The provider tried to contact the tenant to arrange access, later confirmed the job was done and the invoice had been sent. Final checks, including confirmation that the keys were returned, were completed and the request was closed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider confirmed the balcony-door repair was completed and the invoice had been sent. The request was closed after final checks and confirmation of the key return.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-25T02:24:28Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request description: Key lock not working, can’t lock door"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-25T02:24:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-25T04:26:06Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 20, 110 Meadow Row, Northbridge, ZZ2 5ZZ\n\nHi there Isaac,\n\nI hope you are well.\n\nThe tenant has reported that the locking mechanism on the glass door which leads out to the balcony is not turning / locking.\n\nPlease kindly let me know if you are happy for us to send someone to attend to this?\n\nKind regards,"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-25T04:27:06Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Hello, this is Northbridge Lettings! REMINDER to please check your email regarding a lock issue at Flat 20, 110 Meadow Row, Northbridge, ZZ2 5ZZ. Your prompt response will greatly be appreciated. Kindest regards."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-25T04:29:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode. Validation: (Priority cannot be decreased to 5. Current priority is 7.)"
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-07-25T04:29:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Hi Oliver\n\nYes that sounds like it needs sorting fairly soon.\n\nThanks\n\nIsaac\n\nSent from Riverside Homes"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-07-25T04:30:22Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Changed original task description: task description has been changed to: The tenant has reported that the locking mechanism on the glass door which leads out to the balcony is not turning / locking. Can you please get in touch with them to schedule a date and time to attend the property and quote to have the issue resolved. Thank you."
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-07-25T04:33:55Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-07-25T04:34:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings system",
+      "to": "Tenant",
+      "body": "Dear Theo Ingram,\n\nOur maintenance provider **Juniper Surveying** will be attending your property for a **Lock Repair Request**.\n\nThey will contact you soon to triage the problem or prepare the quote if needed.\n\nRequest description: The tenant has reported that the locking mechanism on the glass door which leads out to the balcony is not turning / locking. Can you please get in touch with them to schedule a date and time to attend the property and quote to have the issue resolved. Thank you.\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-07-25T04:34:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings system",
+      "to": "Contractor",
+      "body": "Dear Juniper Surveying,\n\nThis is a new **Lock Repair Request** for the property at Flat 20, 110 Meadow Row, Northbridge, ZZ2 5ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900353\n**Tenant Name:** Theo Ingram\n**Request description:** The tenant has reported that the locking mechanism on the glass door which leads out to the balcony is not turning / locking. Can you please get in touch with them to schedule a date and time to attend the property and quote to have the issue resolved. Thank you.\n**List of attached files:**\n- Attachment #1 (attachment-59-document)\n- Attachment #2 (attachment-42-document)\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-07-25T04:34:46Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 20, 110 Meadow Row, Northbridge, ZZ2 5ZZ."
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-07-25T05:50:29Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The locksmith left a voicemail for Freya Langley to organize a time for fixing the balcony door."
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-07-25T05:55:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. \n        If not, please return this request to auto mode. \nValidation: (Priority cannot be decreased to 5. Current priority is 7.)"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-07-25T06:07:21Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings system",
+      "to": "Tenant",
+      "body": "Hello, this is Northbridge Lettings! Freya from Juniper Surveying is trying to reach you to look at the lock for the balcony door. Please call them back as soon as possible on 07700 900461. Thank you."
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-07-25T06:07:33Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings system",
+      "to": "Tenant",
+      "body": "Hello, this is Northbridge Lettings! Freya from Juniper Surveying is trying to reach you to look at the lock for the balcony door. Please call them back as soon as possible on 07700 900461. Thank you."
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-07-25T06:07:53Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings system",
+      "to": "Not specified",
+      "body": "Have the tenants called Freya back?"
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-07-27T04:06:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Juniper Surveying",
+      "body": "Address: Flat 20, 110 Meadow Row, Northbridge, ZZ2 5ZZ\n\nHi there,\n\nHave the tenants managed to call you back?\n\nKindest regards,"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-07-27T04:06:05Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Juniper Surveying",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 20, 110 Meadow Row, Northbridge, ZZ2 5ZZ."
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-07-27T04:07:02Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Have the tenants made contact with Freya?"
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-07-27T04:07:42Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Juniper Surveying",
+      "to": "Northbridge Lettings",
+      "body": "I’ve done the job and sent you the invoice yesterday"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-07-27T06:43:30Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-07-27T06:43:43Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-07-27T06:46:24Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** No further documents to add"
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-07-27T06:46:24Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-07-27T06:46:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "We need to check the key return before completing the request"
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-07-28T05:33:33Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Keys return confirmed\n\nValidation: (Priority cannot be decreased to 0. Current priority is 1.)"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-07-28T05:33:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

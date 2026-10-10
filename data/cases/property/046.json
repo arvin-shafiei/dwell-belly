@@ -1,0 +1,493 @@
+{
+  "id": "property-046",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "046",
+  "title": "Case 046: Bedroom Window Repair",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-09-11 21:53:55 UTC",
+    "updated": "2025-10-07 12:32:30 UTC",
+    "completed": "2025-10-07 12:32:30 UTC",
+    "property": "Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ"
+  },
+  "context": null,
+  "initial_request": "Bedroom window is not closing  properly one of the hinges are rusted",
+  "overview": "The tenant reported that a bedroom window would not close properly because one hinge was rusted. The landlord approved a contractor visit and later approved the quoted hinge replacement cost of £90 plus VAT. The contractor arranged an appointment, and the agency later followed up for confirmation of the work and an invoice. The agency informed the landlord that the window issue was resolved and sent the invoice. The request was closed after the agency completed its checks.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "Northbridge Lettings confirmed to the landlord that the window issue had been resolved and forwarded the contractor's invoice. The request was subsequently closed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-11T21:53:55Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request description: Bedroom window is not closing  properly one of the hinges are rusted"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-11T21:54:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-12T08:49:20Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nHello Grace,\n\nHope you are well.\n\nTenant has reported below:-\nBedroom window is not closing properly one of the hinges are rusted.\n\nWould you be happy for me to send a contractor and get this fixed?\n\nThanks\nClara"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-12T08:51:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nHello Freya,\n\nThank you for your email.\n\nI have reported this to your landlord and just awaiting for his authorisation to go ahead and get a contractor out and get this fixed.\n\nEither myself or contractor will be in touch directly to arrange a visit.\n\nThanks\nClara"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-12T08:51:23Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-09-12T10:06:24Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-09-12T10:06:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Felix agrees to have a contractor look at the window when convenient."
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-09-12T11:35:42Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nHello Felix,\n\nThank you for confirming and will do.\n\nClara"
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-09-12T11:35:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-09-12T11:36:04Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-09-12T11:36:43Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Freya Grant,\n\nOur maintenance provider Lantern Utilities will be attending your property for a Window Repair Request.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: Bedroom window is not closing  properly one of the hinges are rusted\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-09-12T11:36:43Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Lantern Utilities,\n\nThis is a new Window Repair Request for the property at Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900777 (enter the provided calling code when calling)\nTenant Name: Freya Grant\nRequest description: Bedroom window is not closing  properly one of the hinges are rusted\nList of attached files: [Provider property photo attachment unavailable]\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-09-12T11:37:20Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-09-12T11:41:36Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-09-12T11:56:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Afternoon,\n\nOur hinges are £90 plus VAT, can we please do while there\n\nThanks\nJenkins"
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-09-12T15:45:21Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nHi Grace,\n\nTo replace the hinge would be £90 plus VAT. Are you happy to go ahead?\n\nThanks\nClara"
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-09-12T15:46:18Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-09-12T16:03:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Hi, \n\nYes, I'm happy to ahead with that,\n\nThanks,\n\nFelix"
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-09-12T16:37:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nThank you"
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-09-12T16:38:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nHi Jenkins,\n\nYes, go ahead please.\n\nThanks\nClara"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-09-12T16:38:17Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-09-15T12:31:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Afternoon\n\nWill let you know when this is booked in\n\nThanks Mercer"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-09-15T16:42:18Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-09-16T08:55:24Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Mercer is requesting the tenant's mobile number."
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-09-16T09:16:12Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nHi Mercer,\n\nFreya Grant\n07700 900298\n\nMaya Dawson\n07700 900860"
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-09-16T09:16:52Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-09-16T09:40:32Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Booked in 30 September 2025\n\nThanks Mercer"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-09-16T09:41:34Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nFab, thank you for letting me know.\n\nClara"
+    },
+    {
+      "n": 29,
+      "timestamp": "2025-09-16T09:42:01Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Visit date confirmed/rescheduled - 30/09/2025 10:00"
+    },
+    {
+      "n": 30,
+      "timestamp": "2025-09-16T09:42:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Lantern Utilities,\n\nWe are providing the confirmed appointment details for the **Window Repair Request** at Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ:\n\nConfirmed Time Slot: 10:00 - 17:00 (30/09/2025)\nPets: N/A\nContact Details: 07700 900777 (enter this code when calling)\nTenant Name: Freya Grant\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 31,
+      "timestamp": "2025-09-16T09:42:45Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Freya Grant,\n\nWe are providing the confirmed appointment details for the **Window Repair Request** at Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ:\n\nConfirmed Time Slot: 10:00 - 17:00 (30/09/2025)\nMaintenance Provider Name: Lantern Utilities\nContact Details: 07700 900777 (enter this code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 32,
+      "timestamp": "2025-09-16T09:44:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Email received from provider, but expected data could not be extracted. Please review manually."
+    },
+    {
+      "n": 33,
+      "timestamp": "2025-09-16T09:44:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "😀"
+    },
+    {
+      "n": 34,
+      "timestamp": "2025-09-16T09:52:42Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Manually updated"
+    },
+    {
+      "n": 35,
+      "timestamp": "2025-09-29T10:37:34Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Hello, this is Northbridge Lettings! Your Window Repair Request appointment is scheduled for 10:00 - 17:00 (30/09/2025). To reschedule call 07700 900777"
+    },
+    {
+      "n": 36,
+      "timestamp": "2025-10-02T10:37:37Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 37,
+      "timestamp": "2025-10-02T11:48:37Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 38,
+      "timestamp": "2025-10-07T10:41:42Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Hi guys,\n\nJust checking if this was done and if you could please send a invoice. if you could send it in PDF, that would be great as the other formats are not being supported.\n\nThanks\nClara\n\nAddress: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ"
+    },
+    {
+      "n": 39,
+      "timestamp": "2025-10-07T10:41:50Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Clara Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 40,
+      "timestamp": "2025-10-07T10:51:29Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 41,
+      "timestamp": "2025-10-07T10:51:29Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Morning\n\nAttached invoice\n\nThanks Mercer"
+    },
+    {
+      "n": 42,
+      "timestamp": "2025-10-07T11:16:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nHello Felix,\n\nHope you are well.\n\nJust to make you aware, the window issue was now resolved.\n\nPlease see attached invoice for your records. I will process this on the system as normal.\n\nMany thanks\nClara"
+    },
+    {
+      "n": 43,
+      "timestamp": "2025-10-07T11:17:09Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 23, 143 Willowmere Road, Alderwick, ZZ2 6ZZ\n\nSorry, please see attached\n\nAttachment: contractor invoice (unavailable)."
+    },
+    {
+      "n": 44,
+      "timestamp": "2025-10-07T11:17:20Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "not required"
+    },
+    {
+      "n": 45,
+      "timestamp": "2025-10-07T11:17:20Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 46,
+      "timestamp": "2025-10-07T11:17:24Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 47,
+      "timestamp": "2025-10-07T11:18:05Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "No text/transcription available in the maintenance comment."
+    },
+    {
+      "n": 48,
+      "timestamp": "2025-10-07T11:18:11Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. Reason provided: not applicable"
+    },
+    {
+      "n": 49,
+      "timestamp": "2025-10-07T11:18:11Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 50,
+      "timestamp": "2025-10-07T11:18:31Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "We need to check the key return before completing the request"
+    },
+    {
+      "n": 51,
+      "timestamp": "2025-10-07T12:31:24Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Keys return confirmed\nValidation: (Priority cannot be decreased to 0. Current priority is 1.)"
+    },
+    {
+      "n": 52,
+      "timestamp": "2025-10-07T12:32:30Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

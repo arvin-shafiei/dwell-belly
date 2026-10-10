@@ -1,0 +1,1 @@
+Image description: synthetic photographic simulation, case 040, fictional property. Empty room, cream walls, white skirting, grey carpet. On the back wall, low down just above the skirting, an irregular brown stain with tide-mark edges and slightly flaking paint/plaster at its upper edge. No crack visible.

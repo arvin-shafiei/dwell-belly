@@ -1,0 +1,73 @@
+{
+  "id": "banking-035",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "035",
+  "title": "Case 035: Request to Review a Fee",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-25 09:00:00 UTC",
+    "updated": "2025-09-25 12:08:00 UTC",
+    "completed": "2025-09-25 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Mara wants H&V to review whether a £4.50 paper statement fee, dated 18 June 2025, was correctly applied. She says she had chosen electronic statements and disputes the fee.",
+  "overview": "H&V notified Mara of the paper statement fee through its secure portal. After completing identification checks on a call, she asked for the tariff application to be reviewed. The agent registered the specific transaction and her reason with the Tariff Team; the team confirmed that the request was accepted for review.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Register the request with the Tariff Team, identifying the £4.50 fee dated 18 June 2025 and Mara’s reason for disputing its application.",
+    "recorded_event": null
+  },
+  "outcome": "The Tariff Team confirmed that the request was accepted for review. No fee cancellation or refund was confirmed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-25T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "A £4.50 paper statement fee dated 18 June 2025 has been applied to your account. This notification does not confirm whether the fee will be changed."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-25T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "After completing H&V’s identification checks, I asked you to review the £4.50 paper statement fee dated 18 June 2025. I had chosen electronic statements, so I dispute how the tariff was applied."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-25T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "Tariff Team",
+      "body": "I have registered Mara Ellison’s request for review of the £4.50 paper statement fee dated 18 June 2025. Her reason is that she had chosen electronic statements; her inline request reads, “please check how the tariff was applied.”"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-25T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V request log",
+      "to": "H&V service agent",
+      "body": "Request HV-035 registered and routed to the Tariff Team. Registration does not indicate a decision on the fee."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-25T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V Tariff Team",
+      "to": "Mara Ellison",
+      "body": "We have accepted your request for review of the tariff application for the paper statement fee dated 18 June 2025. This confirms acceptance for review only; no cancellation or refund has been confirmed."
+    }
+  ],
+  "attachments": []
+}

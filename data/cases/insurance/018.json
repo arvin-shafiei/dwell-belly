@@ -1,0 +1,75 @@
+{
+  "id": "insurance-018",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "018",
+  "title": "Case 018: New Correspondence Address",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-25 10:07:00 UTC",
+    "updated": "2025-05-25 14:35:00 UTC",
+    "completed": "2025-05-25 14:35:00 UTC",
+    "property": "118 Hazel Walk, Brackenford, ZZ2 9ZZ",
+    "broker": "Calderbrook Brokers",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "Please update my correspondence address to 42 Fern Row, Brackenford, ZZ2 8ZX. The insured property is still 118 Hazel Walk, Brackenford, ZZ2 9ZZ, and that address should remain unchanged.",
+  "overview": "Dylan asked Tess Morgan at Calderbrook Brokers to update his correspondence address while keeping the insured property address unchanged. Tess recorded the distinction, submitted the correspondence-address change to Northmere Mutual, received confirmation that the update was made, and informed Dylan.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Submit only the change to the correspondence address, 42 Fern Row, Brackenford, ZZ2 8ZX, and retain 118 Hazel Walk, Brackenford, ZZ2 9ZZ as the insured property address.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual confirmed that Dylan's correspondence address was updated; the insured property address remains 118 Hazel Walk, Brackenford, ZZ2 9ZZ.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-25T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Dylan Pearce",
+      "to": "Tess Morgan, Calderbrook Brokers",
+      "body": "Could you update my correspondence address to 42 Fern Row, Brackenford, ZZ2 8ZX? My insured property is still 118 Hazel Walk, Brackenford, ZZ2 9ZZ, so please leave that address as it is."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-25T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Tess Morgan",
+      "to": "Internal case record",
+      "body": "Dylan has requested a change to his correspondence address only: 42 Fern Row, Brackenford, ZZ2 8ZX. Keep the insured property address at 118 Hazel Walk, Brackenford, ZZ2 9ZZ; escalate the distinction before sending the update to Northmere Mutual."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-25T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tess Morgan, Calderbrook Brokers",
+      "to": "Northmere Mutual",
+      "body": "Please update the policy correspondence address for Dylan Pearce to 42 Fern Row, Brackenford, ZZ2 8ZX. This request is for correspondence only; the insured property remains 118 Hazel Walk, Brackenford, ZZ2 9ZZ."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-25T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Tess Morgan, Calderbrook Brokers",
+      "body": "We have updated Dylan Pearce's correspondence address to 42 Fern Row, Brackenford, ZZ2 8ZX. The insured property address remains 118 Hazel Walk, Brackenford, ZZ2 9ZZ."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-25T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tess Morgan, Calderbrook Brokers",
+      "to": "Dylan Pearce",
+      "body": "Northmere Mutual has confirmed the correspondence-address update to 42 Fern Row, Brackenford, ZZ2 8ZX. They have confirmed that the insured property address remains 118 Hazel Walk, Brackenford, ZZ2 9ZZ."
+    }
+  ],
+  "attachments": []
+}

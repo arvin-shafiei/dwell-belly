@@ -1,0 +1,304 @@
+{
+  "id": "property-042",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "042",
+  "title": "Case 042: Washing Machine Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-02-23 18:22:17 UTC",
+    "updated": "2024-02-28 20:51:40 UTC",
+    "completed": "2024-02-28 20:51:39 UTC",
+    "property": "Flat 20, 120 Alder Lane, Cedarford, ZZ9 0ZZ"
+  },
+  "context": null,
+  "initial_request": "The washing machine is not heating the water during wash cycles set to 60°C or higher. As a result, it is unable to properly wash clothing that requires hot water according to the care instructions.\n\nCould someone please arrange for an engineer or maintenance person to inspect the machine and carry out any necessary repairs",
+  "overview": "The tenant reported that the washing machine did not heat water on cycles of 60°C or higher. The landlord approved an engineer visit, and the provider attended. The engineer replaced the wiring to the heating element. The landlord was updated, and the request was closed after the final checks. The referenced photographs remain unavailable; their contents are not described.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The engineer repaired the washing machine by replacing the wiring to the heating element. The landlord was informed, and the request was closed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-02-23T18:22:17Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: The washing machine is not heating the water during wash cycles set to 60°C or higher. As a result, it is unable to properly wash clothing that requires hot water according to the care instructions.\n\nCould someone please arrange for an engineer or maintenance person to inspect the machine and carry out any necessary repairs"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-02-23T18:22:17Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[AI Intake Classification]\n\nTenant said:\n  The washing machine is not heating the water during wash cycles set to 60°C or higher. As a result, it is unable to properly wash clothing that requires hot water according to the care instructions.\n\nCould someone please arrange for an engineer or maintenance person to inspect the machine and carry out any necessary repairs\n\nIssue:\n  Heating & Hot Water\n  Severity: ROUTINE\n  Confidence: medium\n\nTenant's clarifying Q&A:\n  Q: What is the make and model of your boiler? This is usually printed on a label on the front of the unit, and is needed for all heating and hot water issues.\n  A: It’s the washing machine, Harbour Surveying\n  Q: Is your hot water also affected, or is it only the heating that is not working?\n  A: No\n  Q: Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n  A: No\n  Q: Are there any pets at the property?\n  A: No"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-02-23T18:23:46Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-02-23T19:13:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Job reference: NBL-042\n      \nAddress: Flat 20, 120 Alder Lane, Cedarford, ZZ9 0ZZ\n      \n\nDear Mercer,\n\nI hope you are well.\n\nWe have received a maintenance report from the tenant regarding the washing machine at the property.\n\nThe tenant has advised that the Harbour Surveying washing machine is not heating the water during wash cycles set to 60°C or higher. As a result, they are unable to properly wash clothing that requires higher-temperature cycles in accordance with the garment care instructions.\n\nThe tenant has confirmed that this issue relates solely to the washing machine and that there are no problems with the property's general hot water supply. Based on the information provided, it is possible that the appliance has developed a fault with its heating element or thermostat, although this would need to be confirmed by an engineer.\n\nI have attached the photograph supplied by the tenant for your reference.\n\nPlease let me know if you would be happy for me to arrange for our appliance engineer to attend and investigate the fault.\n\nKind regards,\n\n \n\n      Attachment(s):\n      \nReferenced photograph unavailable."
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-02-23T19:14:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Job reference: NBL-042\n      \nAddress: Flat 20, 120 Alder Lane, Cedarford, ZZ9 0ZZ\n      \n\nDear Noah,\n\nThank you for reporting the issue with the washing machine.\n\nI understand that the Harbour Surveying washing machine is not heating the water during wash cycles set to 60°C or above, which is affecting its ability to properly clean certain items of clothing.\n\nI have now raised this matter with the landlord and provided the details and photograph you submitted. I am currently awaiting their instruction regarding the next steps.\n\nOnce I receive a response, I will update you as soon as possible. In the meantime, if the issue worsens or you notice any additional faults with the appliance, please let me know.\n\nThank you for your patience.\n\nKind regards,"
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-02-23T19:14:18Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Henry Langley. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-02-23T20:22:16Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-02-23T20:22:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Yes please arrange an engineer, thank you"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-02-23T20:49:06Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-02-23T20:52:16Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-02-23T21:00:38Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-02-23T21:01:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Noah Jenkins,\n\nOur maintenance provider **Lantern Services** will be attending your property for a **Washing Machine Repair Request**.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: The washing machine is not heating the water during wash cycles set to 60°C or higher. As a result, it is unable to properly wash clothing that requires hot water according to the care instructions.\n\nCould someone please arrange for an engineer or maintenance person to inspect the machine and carry out any necessary repairs\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-02-23T21:01:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Lantern Services,\n\nThis is a new **Washing Machine Repair Request** for the property at Flat 20, 120 Alder Lane, Cedarford, ZZ9 0ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900566 (enter this code when calling)\n**Tenant Name:** Noah Jenkins\n**Request description:** The washing machine is not heating the water during wash cycles set to 60°C or higher. As a result, it is unable to properly wash clothing that requires hot water according to the care instructions.\n\nCould someone please arrange for an engineer or maintenance person to inspect the machine and carry out any necessary repairs\n**List of attached files:**\n- Attachment #1 (unavailable)\n- Attachment #2 (unavailable)\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-02-23T21:59:24Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "Good afternoon,\n\nI hope you’re well.\n\nThank you for following up. I’ll keep an eye on it.\n\nKind regards,\nNoah"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-02-23T22:49:31Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller is inquiring about arranging a time to check a broken washing machine. They discuss possible times for a visit, deciding on a tentative timeframe in the afternoon."
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-02-23T22:55:21Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Contractor",
+      "body": "The agent and the caller discuss rescheduling an appointment to Tuesday at 1pm. The caller agrees to call in the morning for a more precise time."
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-02-23T23:20:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit date selected - 23/02/2024 03:25 pm"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-02-23T23:21:40Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Lantern Services,\n\nWe are providing the confirmed appointment details for the **Washing Machine Repair Request** at Flat 20, 120 Alder Lane, Cedarford, ZZ9 0ZZ:\n\nConfirmed Time Slot: 3.25, 3.30 (23/02/2024)\nPets: multiple tenants in this property\nContact Details: 07700 900566 (enter the code when calling)\nTenant Name: Noah Jenkins\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-02-23T23:21:40Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Noah Jenkins,\n\nWe are providing the confirmed appointment details for the **Washing Machine Repair Request** at Flat 20, 120 Alder Lane, Cedarford, ZZ9 0ZZ:\n\nConfirmed Time Slot: 3.25, 3.30 (23/02/2024)\nMaintenance Provider Name: Lantern Services\nContact Details: 07700 900566 (enter the code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-02-26T00:35:41Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-02-27T01:17:34Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold. Reason: Waiting for Provider. Comment: waiting on contractors invoice"
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-02-27T20:19:56Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "Harper inquired about a washing machine repair and requested a callback to schedule his visit."
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-02-28T00:10:19Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-02-28T00:10:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The email provides details about an invoice from Lantern Services for GBP 75.11, due by July 22, 2026, and offers options for viewing the invoice online."
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-02-28T20:49:22Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 20, 120 Alder Lane, Cedarford, ZZ9 0ZZ\n\nGood afternooon Mercer,\n\nI hope that you are well.\n\nJust to update you, the appliance engineer successfully repaired the issue by replacing the wiring to the heating element for a cost of £75 + VAT.\n\nKind regards,"
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-02-28T20:49:51Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-02-28T20:49:54Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 28,
+      "timestamp": "2024-02-28T20:50:27Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "[Text/transcription not present in the maintenance action comment]"
+    },
+    {
+      "n": 29,
+      "timestamp": "2024-02-28T20:50:48Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** Job completed on call out, no photos or quote"
+    },
+    {
+      "n": 30,
+      "timestamp": "2024-02-28T20:50:49Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 31,
+      "timestamp": "2024-02-28T20:51:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

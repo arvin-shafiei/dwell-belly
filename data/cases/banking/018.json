@@ -1,0 +1,73 @@
+{
+  "id": "banking-018",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "018",
+  "title": "Case 018: Two Future Payments",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-22 09:00:00 UTC",
+    "updated": "2025-08-22 12:08:00 UTC",
+    "completed": "2025-08-22 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I can see two future payments of £34.80 to Northmere Heating. Please check whether they are duplicates and remove the duplicate.",
+  "overview": "Mara Ellison contacted H&V after the secure portal showed two future payment lines to the same payee. The agent checked H&V's instruction journal and confirmed the entries arose from separate instructions: a standing order and a direct debit mandate. Neither was cancelled because the customer had not specified which instruction to change.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the types and internal references of both instructions in H&V's journal before considering any change.",
+    "recorded_event": null
+  },
+  "outcome": "H&V confirmed that the two future entries have separate instruction records: one standing order and one direct debit mandate. Neither was cancelled; the customer must identify which instruction, if any, they want changed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-22T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V secure portal",
+      "to": "Mara Ellison",
+      "body": "Two future payment lines of £34.80 to Northmere Heating are shown. Their relationship has not been established."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-22T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "After completing H&V's identity checks, I asked you to escalate this and remove the duplicate. I do not know which line is the duplicate."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-22T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V instruction journal",
+      "body": "I am checking the type and internal reference of each instruction behind the two future lines. I have not cancelled either instruction."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-22T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V instruction journal",
+      "to": "H&V service agent",
+      "body": "The entries match separate instruction records: one customer standing order and one direct debit mandate. Their types and internal references are distinct."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-22T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V service agent",
+      "to": "Mara Ellison",
+      "body": "I have confirmed that these are two separate instructions: a standing order and a direct debit mandate for the same payee. I have not cancelled either; if you want a change, please identify which instruction so we can confirm your request before acting."
+    }
+  ],
+  "attachments": []
+}

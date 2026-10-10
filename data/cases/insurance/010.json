@@ -1,0 +1,75 @@
+{
+  "id": "insurance-010",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "010",
+  "title": "Case 010: Second Property Owner",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-01 10:07:00 UTC",
+    "updated": "2025-05-01 14:35:00 UTC",
+    "completed": "2025-05-01 14:35:00 UTC",
+    "property": "110 Beech Walk, Brackenford, ZZ2 1ZZ",
+    "broker": "Rowanfield Risk",
+    "insurer": "Alderwick Underwriting"
+  },
+  "context": null,
+  "initial_request": "I already have a policy for my first flat and would like a separate quote for my other home at 110 Beech Walk, Brackenford, ZZ2 1ZZ.",
+  "overview": "Callum Price told Holly at Rowanfield Risk that he wanted a quote for a second property, while confirming that his first flat already had a policy. Holly requested the new property's address, type, use and desired start date; Callum supplied those details. Holly submitted a separate quotation request to Alderwick Underwriting, which confirmed that the request had been registered.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Gather any further property or underwriting details needed for the separate quotation, and do not add the property to Callum's existing flat policy automatically.",
+    "recorded_event": null
+  },
+  "outcome": "A separate quotation request for the second property was registered by Alderwick Underwriting.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-01T10:07:00Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Callum Price",
+      "to": "Holly, Rowanfield Risk",
+      "body": "I already have a policy for my first flat, but I also have another home and would like to find out what it would cost to insure that separately. I can send you the details once I know what you need."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-01T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Holly, Rowanfield Risk",
+      "to": "Callum Price",
+      "body": "I can make a separate quotation enquiry for the other property. Please send its full address, property type, how it is used and when you would like cover to start."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-01T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Callum Price",
+      "to": "Holly, Rowanfield Risk",
+      "body": "The address is 110 Beech Walk, Brackenford, ZZ2 1ZZ; it is a semi-detached house used as my own residence, not let to tenants. Please quote on the basis of a requested start date of 1 June 2025. I will not treat that requested date as cover starting unless I accept terms and the insurer confirms them."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-01T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Holly, Rowanfield Risk",
+      "to": "Alderwick Underwriting",
+      "body": "Please register a separate quotation request for Callum Price's second property at 110 Beech Walk, Brackenford, ZZ2 1ZZ. It is a semi-detached house used as his own residence, with a requested start of 1 June 2025 (subject to his acceptance and insurer confirmation); this request is not an instruction to amend his existing flat policy."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-01T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alderwick Underwriting",
+      "to": "Holly, Rowanfield Risk",
+      "body": "We have registered the separate quotation request for 110 Beech Walk, Brackenford, ZZ2 1ZZ. This confirms receipt of the enquiry only and does not confirm or add insurance cover."
+    }
+  ],
+  "attachments": []
+}

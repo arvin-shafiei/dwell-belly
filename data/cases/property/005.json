@@ -1,0 +1,380 @@
+{
+  "id": "property-005",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "005",
+  "title": "Case 005: Check-Out Cleaning",
+  "details": {
+    "source_role": "Agency manager",
+    "status": "Completed",
+    "created": "2024-11-02 13:58:25 UTC",
+    "updated": "2025-05-24 15:07:46 UTC",
+    "completed": "2024-12-12 17:27:29 UTC",
+    "property": "Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ"
+  },
+  "context": null,
+  "initial_request": "Following the tenant vacating please provide an estimate to; \n1) Clean property through out as per check out to include all appliances, freezer defrost  and a carpet clean in bedroom two.",
+  "overview": "Northbridge Lettings requested a quote for a full check-out clean at Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ, including appliances, freezer defrosting and carpet cleaning in bedroom two. The provider supplied a cleaning quote and the landlord approved it, including carpet cleaning. The provider later requested the checkout report and the agency sent it. The cleaning was scheduled, and the check clean was recorded as completed with keys returned ready for move-in. The agency subsequently requested an invoice; the record includes follow-up about sending it, but does not confirm that it was received.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The cleaning was completed, the keys were returned, and the property was ready for move-in.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-11-02T13:58:25Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Following the tenant vacating please provide an estimate to; \n1) Clean property through out as per check out to include all appliances, freezer defrost  and a carpet clean in bedroom two."
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-11-02T13:58:30Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Property: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ — NOT TENANTED (current status: published) — moved to PAUSE. Please solve this manually"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-11-02T14:01:07Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-11-02T14:02:15Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nHi Ava, - Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ, Following the tenant vacating please provide an estimate to;\n1) Clean property through out as per check out to include all appliances, freezer defrost and a carpet clean in bedroom two."
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-11-03T14:49:09Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription unavailable in maintenance_actions.comment]"
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-11-09T15:33:32Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Hi Please can you attach checkout to the requests please? xx"
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-11-10T09:33:42Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nHi Ava, please see attached the check out report. Regards\n\nAttachment: attachment-45-document\n\nAttachments: [attachment-01-check-out-inspection-report.pdf](attachments/attachment-01-check-out-inspection-report.pdf)"
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-11-10T09:34:11Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription unavailable in maintenance_actions.comment]"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-11-10T10:52:52Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The email is a response concerning a cleaning request, requesting an estimate for cleaning an apartment following a tenant's departure."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-11-10T10:52:57Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Thanks chick, I have just uploaded this quote to the original request. Please let me know if any probs. Thanks"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-11-10T11:21:01Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nNo sorry Ava the quote for Flat 27, 117 Lantern Quay, Kingshaven, ZZ4 6ZZ hasnt attached. I wonder why so stange!"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-11-10T11:26:24Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[No text/transcription available in the maintenance action comment]"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-11-13T15:32:39Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nHi Palmer, Please see cleaning quote attached. Please let me know if you wish to proceed? Do you want her to proceed but not the carpets? Regards\n\nAttachment: [Checkout report requested by the provider and sent by the agency; attachment unavailable]\n\nAttachments: [attachment-02-cleaning-quote.pdf](attachments/attachment-02-cleaning-quote.pdf)"
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-11-13T15:32:46Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[No text/transcription available in the maintenance action comment]"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-11-15T10:15:21Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nHi Palmer,\n\nPlease see cleaning quote attached.\n\nPlease let me know if you wish to proceed? Do you want her to proceed but not the carpets?\n\nRegards\n\nAttachment: [Cleaning quote attachment; unavailable]\n\nAttachments: [attachment-03-cleaning-quote.pdf](attachments/attachment-03-cleaning-quote.pdf)"
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-11-16T09:24:32Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Hi Kendall,\nYes please go ahead. Let them do the carpets too.\nThank you\nPalmer"
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-11-16T14:06:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nHi Ava, please proceed with the quote for cleaning. Please ensure both bedroom carpets are cleaned please. Regards,"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-11-16T14:18:31Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription absent from the maintenance action comment]"
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-11-17T13:37:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Thankyou"
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-11-17T15:31:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Hi, Shouldn’t it say quote approved on Northbridge Lettings? It looks like its waiting for me to send quote still? x"
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-11-20T11:09:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-11-20T11:09:10Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-11-20T15:43:53Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription absent from the maintenance action comment]"
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-11-27T13:39:43Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Ava cleaning on Saturday AM."
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-11-27T13:40:09Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Check clean completed and keys returned ready for move in on 30/11/2024."
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-12-04T02:11:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nHi Ava,\n\nCan you kindly send me the invoice for the cleaning that was done at this property.\n\nBest Regards,"
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-12-04T02:12:01Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for invoice"
+    },
+    {
+      "n": 28,
+      "timestamp": "2024-12-05T15:55:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer, Ava, requests Ruben to email them directly so they can reply."
+    },
+    {
+      "n": 29,
+      "timestamp": "2024-12-07T11:43:30Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Can you kindly send me the invoice for the cleaning that was done at this property."
+    },
+    {
+      "n": 30,
+      "timestamp": "2024-12-12T09:18:21Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-005-0163\nAddress: Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nHi Ava,\n\nI am a bit confused,\n\nCan you not reply to this email with the invoice please?\n\nBest Regards,"
+    },
+    {
+      "n": 31,
+      "timestamp": "2024-12-12T09:18:37Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription missing from comment]"
+    },
+    {
+      "n": 32,
+      "timestamp": "2024-12-12T09:43:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer is confused and requests a reply to the email with the invoice."
+    },
+    {
+      "n": 33,
+      "timestamp": "2024-12-12T09:47:37Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Ava Nolan is asking if Ruben received an email attachment that was sent a minute ago."
+    },
+    {
+      "n": 34,
+      "timestamp": "2024-12-12T17:26:41Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 35,
+      "timestamp": "2024-12-12T17:26:54Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 36,
+      "timestamp": "2024-12-12T17:26:59Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Keys return confirmed"
+    },
+    {
+      "n": 37,
+      "timestamp": "2024-12-12T17:27:29Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "attachment-01-check-out-inspection-report.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/005/attachments/attachment-01-check-out-inspection-report.pdf",
+      "text": "Northbridge Lettings\n\nCheck-out inspection report\nRecords the condition, cleanliness, meter information, defects and photographic evidence for the\ncheck-out inspection of Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ.\n\n\nAppointment date: 25 February 2025. Assessor: Northbridge Lettings.\n\nThe report provides a visual, room-by-room schedule of condition and contents. Where the\nassessor makes no comment about an element or item, it is treated as being in good, clean,\nserviceable condition and without defects. Observed defects and poor condition are described and\nsupported by photographs.\n\nThe report is not a structural survey or repair-cost assessment. Fixtures and fittings are listed but\nmay not have been tested. Inaccessible and loft areas are not inspected; locked rooms and\noutbuildings containing landlord belongings are not inspected. The report remains the property of\nthe instructing party and is not to be used without written permission.\n\nEnd-of-tenancy guidance: the property and its contents are expected to be left in a similar\ncondition and state of cleanliness to the pre-tenancy report, allowing for fair wear and tear. Repair,\nreplacement or professional cleaning costs may be deducted from the tenant's deposit; receipts\nshould be retained where work is carried out. Cleaning should be thorough and the property left\ntidy. Carpets and curtains should be professionally cleaned where required by the inventory or\ntenancy agreement; vinyl or tile flooring should be clean and free of cracks or tears. Decor should\nbe left in the same state as at the start of the tenancy; hooks, nails, screws and holes may need to\nbe removed or repaired, and excessive marks and fingerprints removed. Refrigerators and\nfreezers should be defrosted, switched off and left open. Ovens, hobs, extractor units and\nmicrowaves should be cleaned, including burnt-on deposits, grease, doors and seals. Applicable\ngardens should be left neat and tidy. Smoke and carbon monoxide alarms were stated to have\nbeen checked and working as of the report date; tenants are responsible for keeping them in\nworking order and reporting faults other than battery replacement.\n\nThe report's condition ratings range from Excellent (unused or new) through Good, Fair and Poor\nto Unacceptable (not fit for purpose in its present state). Cleanliness ratings range from Excellent\n(cleaned to a high standard) through Good and Fair to Poor (light cleaning required) and\nUnacceptable (professional cleaning required).\n\n Area                          Condition              Cleanliness           Defects       Photos\n Entrance/Hallway              Fair                   Poor                  2             10\n Bedroom 1                     Poor                   Unacceptable          3             15\n Bedroom 1 en-suite            Fair                   Poor                  3             13\n Living Room                   Poor                   Fair                  2             12\n Kitchen                       Poor                   Unacceptable          5             20\n Bathroom                      Poor                   Unacceptable          4             23\n Bedroom 2                     Unacceptable           Unacceptable          2             17\n\n Energy        Date            Reading or note                     Location Serial           Meter\n type                                                                       number           type\n Electricity   25 February     Need To Be Requested From\n               2025            Buildings Management\n\fEnergy        Date            Reading or note                    Location Serial             Meter\ntype                                                                      number             type\nWater         25 February     1220\n              2025\n\nCategory        Area                  Recorded defects\nGeneral         Bedroom 1             Chest of drawers missing\nCleaning        Entrance/Hallway      Requires light clean\nCleaning        Bedroom 1             Carpet not vacuumed\nCleaning        Bedroom 1 en-suite    General clean required\nCleaning        Living Room           Dusty flooring\nCleaning        Kitchen               Dirty sink; dirty hob; dirty floor; freezer requires defrost\nCleaning        Bathroom              Dirty sink; dirty bath and shower; dirty flooring; dirty toilet\nCleaning        Bedroom 2             Carpet requires clean\nMaintenance     Entrance/Hallway      Damaged overhead closer requires repair\nMaintenance     Bedroom 1             Balcony doors stuck\nMaintenance     Bedroom 1 en-suite    Extractor fan does not activate; peeling paint\nMaintenance     Living Room           Coffee stain on walls\nMaintenance     Kitchen               Cupboards peeling\nMaintenance     Bedroom 2             Damage to walls\n\n\nObservations\n    No external areas were applicable.\n    The water meter reading was 1220 on 25 February 2025. An electricity reading was not\n    available in the report; it says it needs to be requested from building management.\n    The detector section records Tested? No. No detector comments are provided.\n    The inspection records cleaning issues in the entrance/hallway, bedroom 1, bedroom 1 en-\n    suite, living room, kitchen, bathroom and bedroom 2, and maintenance or condition defects\n    in several of those areas.\n    The assessor declaration states that the report reflects the assessor's assessment. The\n    signature was received on 2 November 2024 at 10:44:14.\n\nFindings\n    Entrance/Hallway — Condition Fair; cleanliness Poor. Front door, ceiling, lighting, walls and\n    cupboard were recorded as per inventory. Cleaning was required; the summary notes a light\n    clean. The overhead door closer was damaged and requires repair.\n    Bedroom 1 — Condition Poor; cleanliness Unacceptable. Door, ceiling and lighting were\n    recorded as per inventory with no issues. Walls had very minor marks considered consistent\n    with fair wear and tear. Balcony was recorded as per inventory with no issues; blinds and\n    radiator were recorded as per inventory. Flooring/carpet was dirty and required vacuum\n    cleaning. Chest of drawers was missing. Wardrobe was recorded as per inventory with no\n    issues. Balcony doors did not open and were recorded as stuck.\n\f    Bedroom 1 en-suite — Condition Fair; cleanliness Poor. Door, ceiling, radiator, flooring and\n    toilet were recorded as per inventory with no issues, except the walls showed a peeling area.\n    Basin and shower required cleaning. The extractor fan was non-functional and did not\n    activate.\n    Living Room — Condition Poor; cleanliness Fair. Laminate flooring was dusty and required\n    cleaning. Door, ceiling, balcony, balcony windows and radiator were recorded as per\n    inventory with no issues, except blinds had bent slats not mentioned in the inventory. A\n    coffee stain was recorded on the walls.\n    Kitchen — Condition Poor; cleanliness Unacceptable. Walls and tiled splashback were\n    recorded as per inventory. Cupboard fronts and internal cabinets were clean; the oven was\n    clean. The hob and metal splashback were very dirty, worktops were dirty, and the sink and\n    taps were filthy and required professional cleaning. Washing machine and fridge were in fair\n    condition. Freezer required defrosting and cleaning. Melamine kitchen cabinets were\n    peeling.\n    Bathroom — Condition Poor; cleanliness Unacceptable. Door, ceiling and lighting were\n    recorded as per inventory. Flooring, sink, bath, shower enclosure and equipment, toilet, dark\n    grey painted walls and mirror were dirty and required professional cleaning. Wallpaper walls\n    were in poor condition. The area above the toilet was in very poor condition and required\n    renewal.\n    Bedroom 2 — Condition Unacceptable; cleanliness Unacceptable. Door, ceiling, lighting,\n    window and blinds were recorded as per inventory with no issues. White-painted walls had\n    gouges not mentioned in the inventory. Radiator issues were noted. Flooring was in very\n    poor condition and required professional cleaning; the carpet required cleaning.\n\nConclusions\n    The report records a broad requirement for cleaning, with Unacceptable cleanliness ratings\n    in bedroom 1, the kitchen, bathroom and bedroom 2.\n    Reported maintenance or condition matters include a damaged hallway overhead closer,\n    stuck balcony doors in bedroom 1, a non-functioning en-suite extractor fan, peeling en-suite\n    paint, a coffee stain on living-room walls, peeling kitchen cupboards, gouged bedroom 2\n    walls and radiator issues in bedroom 2.\n    The report is an inspection record and does not state that any cleaning or repairs were\n    subsequently completed.\n\nImage evidence\n\n  Neutral image placeholder\n\n  Water meter photograph: shows the water meter; the recorded reading is 1220.\n\n\n\n\n  Neutral image placeholder\n\n  Detector photograph: shows a ceiling-mounted detector. The report records that detectors\n  were not tested.\n\n\n\n\n  Neutral image placeholder\n\fEntrance/Hallway, 9 general overview photographs: show the entrance, hallway, doors,\nflooring and adjoining areas. One additional photograph is specifically captioned as\nshowing the damaged overhead closer requiring repair.\n\n\n\n\nNeutral image placeholder\n\nBedroom 1, 15 photographs: general views show the room, flooring, wardrobe and balcony\ndoors. The room record notes dirty carpet, missing chest of drawers and balcony doors\nthat do not open.\n\n\n\n\nNeutral image placeholder\n\nBedroom 1 en-suite, 13 photographs: general views show the toilet, basin, shower\nenclosure and room surfaces. Defect photographs show the inactive extractor fan and\npeeling paint.\n\n\n\n\nNeutral image placeholder\n\nLiving Room, 12 photographs: general views show the room, windows, blinds and laminate\nflooring. Defect photographs show the coffee stain on the wall and dusty flooring.\n\n\n\n\nNeutral image placeholder\n\nKitchen, 20 photographs: general views show the kitchen, cupboards, worktops,\nappliances, sink and floor. Defect photographs show the dirty sink, dirty hob, dirty floor,\nfreezer requiring defrosting and peeling cupboards.\n\n\n\n\nNeutral image placeholder\n\nBathroom, 23 photographs: general views show the bathroom fixtures and tiled flooring.\nDefect photographs show the dirty sink, dirty bath and shower, dirty flooring and dirty toilet.\n\n\n\n\nNeutral image placeholder\n\nBedroom 2, 17 photographs: general views show the bedroom, window, walls and carpet.\nDefect photographs show wall damage and carpet requiring cleaning.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-02-cleaning-quote.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/005/attachments/attachment-02-cleaning-quote.pdf",
+      "text": "Northbridge Lettings\n\nCleaning quote\nQuote for end-of-tenancy cleaning at Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ.\n\n\nStonebridge Works\n\nTo: Northbridge Lettings, Kendall\n\n05/03/25\n\nJob ID: NBL-005-0163\n\nQUOTE\n\nFlat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nGeneral EOT cleaning however deep cleaning in bathroom and kitchen due to heavy limescale and\ngrime in both.\n\nShampoo bedroom two carpet £45\n\nDefrost freezer £25\n\nGeneral EOT cleaning with deeper cleaning in the bathroom and kitchen due to heavy limescale\nand grime in both: £135\n\nyours sincerely\n\nAva Nolan\n\n Service                                                                                Amount\n General end-of-tenancy cleaning, with deeper cleaning in the bathroom and kitchen      £135\n due to heavy limescale and grime\n Shampoo bedroom two carpet                                                             £45\n Defrost freezer                                                                        £25\n Calculated sum of listed charges; no total stated in the document                      £205\n\n\nObservations\n      The quote specifies deeper cleaning in the bathroom and kitchen due to heavy limescale\n      and grime.\n      The quote includes shampooing the carpet in bedroom two and defrosting the freezer.\n      No tax amount or tax status is stated.\n\nFindings\n      The quote lists three priced services: general end-of-tenancy cleaning with deeper bathroom\n      and kitchen cleaning (£135), bedroom two carpet shampooing (£45), and freezer defrosting\n      (£25).\n      The listed charges total £205 when added; the document does not state a total.\n\fConclusions\n    The quote is for cleaning at Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ. The listed\n    charges add up to £205, but this is a calculated sum, not a stated quote total.\n\nImage evidence\n\n  Neutral image placeholder\n\n  The page displays a cleaning quote, branded by the cleaning provider, listing three\n  services and their individual charges.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-03-cleaning-quote.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/005/attachments/attachment-03-cleaning-quote.pdf",
+      "text": "Northbridge Lettings\n\nCleaning quote\nQuote for end-of-tenancy cleaning at Flat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ.\n\n\nTo: Northbridge Lettings, Kendall\n\nDate: 05/03/25\n\nJob ID: NBL-005-0163\n\nQUOTE\n\nFlat 10, 160 Alder Lane, Westmarsh, ZZ8 9ZZ\n\nGeneral EOT cleaning however deep cleaning in bathroom and kitchen due to heavy limescale and\ngrime in both. £135\n\nshampoo bedroom 2 carpet £45\n\nDefrost freezer £25\n\nyours sincerely\n\nAva Nolan\n\n Item                                                                            Quantity Amount\n General end-of-tenancy cleaning, including deep cleaning in the bathroom        1       £135\n and kitchen due to heavy limescale and grime in both\n Shampoo bedroom two carpet                                                      1       £45\n Defrost freezer                                                                 1       £25\n Calculated total                                                                        £205\n\n\nObservations\n        The quote is dated 05/03/25.\n        The quote includes contractor branding, represented as Stonebridge Works.\n\nFindings\n        The quote covers general end-of-tenancy cleaning and deep cleaning in the bathroom and\n        kitchen due to heavy limescale and grime in both.\n        It separately prices shampooing the bedroom two carpet and defrosting the freezer.\n        The recipient line includes an agency-brand fragment in the source; it is represented as\n        Northbridge Lettings.\n\nConclusions\n        The listed items total £205, calculated from the three quoted amounts.\n        No tax amount, rate, or treatment is stated.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

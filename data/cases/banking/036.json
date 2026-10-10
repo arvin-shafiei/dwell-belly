@@ -1,0 +1,82 @@
+{
+  "id": "banking-036",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "036",
+  "title": "Case 036: New correspondence address",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-27 09:00:00 UTC",
+    "updated": "2025-09-27 12:55:00 UTC",
+    "completed": "2025-09-27 12:55:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I have moved within the UK and want H&V to update the address used for my correspondence.",
+  "overview": "Mara Ellison first notified H&V of her move by email, then escalated the request through a secure portal session. After completing identity checks and reviewing the profile workflow’s requirements, the agent opened the change process. Mara confirmed the request securely, and H&V confirmed that the new address is marked as current without displaying it in full.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent’s immediate step at escalation was to open the profile-change process after completing identity checks and checking the system’s requirements.",
+    "recorded_event": null
+  },
+  "outcome": "H&V confirmed that the new address is marked as current. It remains unknown whether correspondence already sent was redirected or delivered.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-27T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "Mara Ellison",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I have moved within the UK and am writing to let you know. Please update the address you use for my correspondence; I understand this email alone does not change my profile."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-27T09:47:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Mara Ellison",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I’m escalating my request to change my correspondence address. I have completed the identity checks in this secure session and can confirm the change when the profile process asks me to."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-27T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V profile change process",
+      "body": "I have checked Mara’s identity and reviewed the workflow’s requirements. I’m opening the address-change process for case HV-036; no address is recorded in this note."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-27T11:21:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Mara Ellison",
+      "to": "H&V profile change process",
+      "body": "I confirm that I want H&V to use the new address I provided through the secure profile process for future correspondence."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-27T12:08:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V profile change process",
+      "body": "I have submitted the verified request with the confirmations required by the workflow. I have not changed the address on Mara’s behalf without her secure confirmation."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-09-27T12:55:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Your new address is marked as current for correspondence. This confirmation does not establish whether any correspondence already sent was redirected or delivered."
+    }
+  ],
+  "attachments": []
+}

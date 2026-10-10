@@ -1,0 +1,84 @@
+{
+  "id": "insurance-012",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "012",
+  "title": "Case 012: Accepted Renewal",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-07 10:07:00 UTC",
+    "updated": "2025-05-07 15:42:00 UTC",
+    "completed": "2025-05-07 15:42:00 UTC",
+    "property": "112 Ash Walk, Brackenford, ZZ2 3ZZ",
+    "broker": "Ternwick Brokers, represented by Katie Vale",
+    "insurer": "Westmere General Insurance"
+  },
+  "context": null,
+  "initial_request": "I have reviewed renewal offer INS-012 for my property at 112 Ash Walk, Brackenford, ZZ2 3ZZ, and I accept it. Please pass my acceptance to the insurer and let me know when it confirms the renewal.",
+  "overview": "Katie Vale sent Finn Morton the renewal offer for his property. Finn accepted offer INS-012 by email, and Katie forwarded his acceptance to Westmere General Insurance. The insurer replied confirming the renewal for the 12-month period stated in the offer; Katie relayed that confirmation to Finn, who acknowledged receiving it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Katie was to send Finn’s acceptance of offer INS-012 to Westmere General Insurance before the offer deadline; she did so by email.",
+    "recorded_event": null
+  },
+  "outcome": "Westmere General Insurance confirmed the renewal for the 12-month period stated in offer INS-012.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-07T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Katie Vale, Ternwick Brokers",
+      "to": "Finn Morton",
+      "body": "Westmere General Insurance's renewal offer INS-012 for 112 Ash Walk, Brackenford, ZZ2 3ZZ covers 1 June 2025 to 31 May 2026: annual premium £540.00, buildings limit £275,000 for fire, storm and sudden escape of water, £250 standard excess per covered event; other existing terms remain unchanged. Please reply by 20 May 2025 if you wish to accept; it is not renewed merely because we sent this offer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-07T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Finn Morton",
+      "to": "Katie Vale, Ternwick Brokers",
+      "body": "I have reviewed offer INS-012 for 1 June 2025 to 31 May 2026 at £540.00 and accept the renewal as presented. Please pass my acceptance to Westmere General Insurance."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-07T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Katie Vale, Ternwick Brokers",
+      "to": "Westmere General Insurance",
+      "body": "Finn Morton has accepted renewal offer INS-012 for 112 Ash Walk, Brackenford, ZZ2 3ZZ. Please confirm the renewal and the period that will apply."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-07T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Westmere General Insurance",
+      "to": "Katie Vale, Ternwick Brokers",
+      "body": "We confirm the renewal under offer INS-012 for 1 June 2025 to 31 May 2026 at £540.00 for the year, on the stated limit, excess and otherwise unchanged terms. Please advise Finn Morton of this confirmation."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-07T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Katie Vale, Ternwick Brokers",
+      "to": "Finn Morton",
+      "body": "Westmere General Insurance has confirmed the renewal under offer INS-012 for 1 June 2025 to 31 May 2026 at £540.00 on the offered terms. I’m passing on the insurer’s confirmation."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-05-07T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Finn Morton",
+      "to": "Katie Vale, Ternwick Brokers",
+      "body": "Received, thank you. I understand that the insurer has confirmed the renewal for the period stated in the offer."
+    }
+  ],
+  "attachments": []
+}

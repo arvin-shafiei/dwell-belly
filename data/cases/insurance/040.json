@@ -1,0 +1,99 @@
+{
+  "id": "insurance-040",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "040",
+  "title": "Case 040: The Requested Views of the Damaged Wall",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-07-30 10:07:00 UTC",
+    "updated": "2025-07-30 15:42:00 UTC",
+    "completed": "2025-07-30 15:42:00 UTC",
+    "property": "140 Beech Walk, Brackenford, ZZ5 4ZZ",
+    "broker": "Rosebank Risk, handled by Kim",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I’m the owner of 140 Beech Walk, Brackenford, ZZ5 4ZZ, and I need help with my open property claim. I don’t have the specific views of the damaged wall the insurer is asking for, and I want to know what I can safely provide.",
+  "overview": "On the open claim for 140 Beech Walk, Brackenford, ZZ5 4ZZ, Northmere Mutual asked Rosebank Risk for a full view of the damaged wall and a close-up. Kim relayed that precise request to Alfie Young and cautioned him not to take risks to obtain images. Alfie sent two clearly identified photographic-style simulations of one fictional wall, not photos of a real property, and Kim forwarded them to the insurer, which confirmed receipt. No claim decision was made.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the evidence-request stage, ask Alfie for the two specific views Northmere Mutual identified—a full view of the damaged wall and a close-up—and remind him not to approach any unsafe area to obtain them.",
+    "recorded_event": null
+  },
+  "outcome": "The two synthetic photographic-style views were sent to Northmere Mutual, which confirmed receipt; no decision was made.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-30T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alfie Young",
+      "to": "Kim, Rosebank Risk",
+      "body": "I’m following up about my open claim for 140 Beech Walk, Brackenford, ZZ5 4ZZ. I don’t currently have clear images of the damaged wall, so please let me know what specific evidence Northmere Mutual needs and how I can provide it safely."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-30T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Kim, Rosebank Risk",
+      "body": "For the open claim, please provide one image showing the damaged wall in full and a separate close-up of the damaged area. We do not currently have those two views on file."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-30T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Kim, Rosebank Risk",
+      "to": "Alfie Young",
+      "body": "Northmere Mutual has specifically requested a full view of the damaged wall and a close-up. Please only provide views you can obtain safely; do not enter or approach any unsafe part of the building for the sake of images."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-30T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alfie Young",
+      "to": "Kim, Rosebank Risk",
+      "body": "I’ve attached attachments/wall-overview.png and attachments/wall-close-up.png to show the two requested views. They are synthetic photographic-style simulations of the same fictional wall (the close-up is cropped from the overview), not photos of a real property, and I prepared them without approaching an unsafe area."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-30T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Kim, Rosebank Risk",
+      "to": "Northmere Mutual",
+      "body": "For the open claim at 140 Beech Walk, Brackenford, ZZ5 4ZZ, I’m forwarding the two requested views: attachments/wall-overview.png and attachments/wall-close-up.png. They are synthetic photographic-style simulations, not photographs of an actual property."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-07-30T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Kim, Rosebank Risk",
+      "body": "We confirm receipt of attachments/wall-overview.png and attachments/wall-close-up.png for the open claim. No claim decision is recorded in this acknowledgement."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "wall-close-up.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/040/attachments/wall-close-up.png",
+      "text": "Image description: synthetic photographic simulation, case 040. Close-up of the low wall stain: dark brown centre, ragged tide-mark outline, and paint/plaster lifting or bubbling along the top edge, consistent with moisture coming up or through the wall. No crack visible.\n\nOCR text:\nSYNTHETIC PHOTOGRAPHIC SIMULATION — WALL CLOSE UP\nCase 040 - fictional property - not a real-world photograph",
+      "text_source": "description+ocr"
+    },
+    {
+      "name": "wall-overview.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/040/attachments/wall-overview.png",
+      "text": "Image description: synthetic photographic simulation, case 040, fictional property. Empty room, cream walls, white skirting, grey carpet. On the back wall, low down just above the skirting, an irregular brown stain with tide-mark edges and slightly flaking paint/plaster at its upper edge. No crack visible.\n\nOCR text:\nSYNTHETIC PHOTOGRAPHIC SIMULATION — WALL OVERVIEW\nCase 040 - fictional property - not a real-world photograph",
+      "text_source": "description+ocr"
+    }
+  ]
+}

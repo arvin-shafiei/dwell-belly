@@ -1,0 +1,495 @@
+{
+  "id": "property-008",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "008",
+  "title": "Case 008: Check-Out Works",
+  "details": {
+    "source_role": "Agency manager",
+    "status": "Completed",
+    "created": "2025-04-03 02:34:11 UTC",
+    "updated": "2025-06-17 02:24:25 UTC",
+    "completed": "2025-06-02 21:33:15 UTC",
+    "property": "Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ"
+  },
+  "context": null,
+  "initial_request": "Following the tenant vacating please provide an estimate to; \nRepaint bedroom any other rooms if needed\nReplace bedroom carpet that is burnt\nReplace bathroom flooring \nRepair broken plug \nRepair dripping bath tap \nRepair damaged shelf in bathroom",
+  "overview": "After the tenant vacated, the manager requested an estimate to repaint the bedroom and any other rooms if needed, replace a burnt bedroom carpet and the bathroom flooring, and repair a broken plug, dripping bath tap and damaged bathroom shelf. The landlord requested a second quote for comparison. Following quote follow-ups and discussion of an outstanding invoice for earlier work, the landlord approved the lower quote from Eliza Bennett; the provider agreed to proceed. The work was completed, and an invoice was sent to the landlord. The tap did not need replacing, reducing the final cost from the original quote. No photos were attached, and the request was closed after checks were completed. The landlord later approved payment.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The requested works were completed, and the final cost was lower than the original quote because the tap did not need replacing. The invoice was sent to the landlord, who approved payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-04-03T02:34:11Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Following the tenant vacating please provide an estimate to; \nRepaint bedroom any other rooms if needed\nReplace bedroom carpet that is burnt\nReplace bathroom flooring \nRepair broken plug \nRepair dripping bath tap \nRepair damaged shelf in bathroom"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-04-03T02:34:35Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-04-03T02:35:29Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHello, Following the tenant vacating please provide an estimate to; Repaint bedroom any other rooms if needed Replace bedroom carpet that is burnt Replace bathroom flooring Repair broken plug Repair dripping bath tap Repair damaged shelf in bathroom. Regards\n\nAttachments: [attachment-01-check-out-inspection-report.pdf](attachments/attachment-01-check-out-inspection-report.pdf)"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-04-03T02:35:29Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-008-3466\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-04-03T21:51:32Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Hold for quote"
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-04-06T19:25:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Langley, please see attached Estimate for Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ - please let me know if you wish to proceed. Regards\n\nAttachments: [attachment-03-check-out-inspection-report.pdf](attachments/attachment-03-check-out-inspection-report.pdf), [attachment-03-check-out-inspection-report.pdf](attachments/attachment-03-check-out-inspection-report.pdf)"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-04-06T19:26:00Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Hold for LL to respond"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-04-06T19:37:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-04-06T19:37:17Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Morning, Can try one other subcontractor to quote for comparison? Best"
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-04-06T20:06:45Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Landlord wants second quote"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-04-06T20:06:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "New provider has been assigned to the task"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-04-06T20:07:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Property is **NOT TENANTED** — moved to Paused\n\nThe property is currently not tenanted, so the request has been automatically moved to Paused.\nPlease review and resolve this manually."
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-04-06T20:17:50Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Hold for TT to respond"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-04-07T23:33:11Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Asked Northbridge Lettings"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-04-09T21:28:35Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Chased Northbridge Lettings for outcome"
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-04-10T23:38:49Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Unspecified",
+      "body": "Holding for Meadow Compliance to quote under another job"
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-04-17T23:27:40Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Holding for second quote"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-04-24T19:18:59Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Chased Kendall"
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-04-30T20:18:14Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Chased kendall again"
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-05-02T00:49:07Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Sent quote to LL hold for response"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-05-04T20:52:52Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Langley, Have you come to a decision regarding the two quotes on the empties at Flat 5, 115 Juniper Mews, Westmarsh, ZZ1 1ZZ? Flat 1, 101 Meadow Row, Eastmere, ZZ2 8ZZ? Regards"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-05-04T20:53:04Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Hold for LL to confirm quotes"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-05-04T22:50:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "The customer discusses completing roof relayer work for Flat 18, 8 Alder Lane, Alderwick, ZZ9 7ZZ before interior refurbishment due to rainwater penetration, and inquires about the quoted price for Flat 3, 43 Willowmere Road, Northbridge, ZZ3 2ZZ."
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-05-06T02:44:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Langley,\n\nThe roofer is expected to finish the roof works to 12 by Thursday hopefully. I will ask Oscar to inspect following completion.\n\nEliza Bennett has quoted £1,370.00.\n\nKendall has quoted £1700.00+VAT\n\nI assume you wish to proceed with the cheaper option? This is the contractor who also did the previous refurb. He was chasing the invoice - has that been paid? Regards"
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-05-06T02:44:19Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Hold for Langley"
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-05-08T01:24:03Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-008-3466\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ."
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-05-08T01:24:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Langley, Alder Compliance is chasing payment everyday for the previous Flat 5, 115 Juniper Mews, Westmarsh, ZZ1 1ZZ - Can you please confirm when you will be paying this invoice? Regards"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-05-14T20:55:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Langley, Can you please confirm if Eliza Bennett was paid for the previous refurb and if you have come to a decision on the quotes.\n\nFlat 13, 83 Harbour View, Eastmere, ZZ5 3ZZ;\n\nEliza Bennett has quoted £1,370.00.\n\nKendall has quoted £1700.00+VAT\n\nRegards,"
+    },
+    {
+      "n": 29,
+      "timestamp": "2025-05-14T20:55:42Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Hold for response from Langley"
+    },
+    {
+      "n": 30,
+      "timestamp": "2025-05-14T21:57:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Can you resend the invoice to check, please?"
+    },
+    {
+      "n": 31,
+      "timestamp": "2025-05-15T00:15:53Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Hold for Eliza to confirm address"
+    },
+    {
+      "n": 32,
+      "timestamp": "2025-05-16T00:35:14Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Chased LL again"
+    },
+    {
+      "n": 33,
+      "timestamp": "2025-05-22T00:24:53Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Langley. Reason: Waiting for Provider. Comment: Asked if he charged VAT"
+    },
+    {
+      "n": 34,
+      "timestamp": "2025-05-22T20:37:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Sorry Langley, I don't know if there has been some confusion. Eliza Bennett doesn't charge VAT.\n\nFlat 5;\n\nEliza Bennett has quoted £1,370.00.\n\nKendall has quoted £1700.00+VAT\n\nRegards"
+    },
+    {
+      "n": 35,
+      "timestamp": "2025-05-22T20:37:11Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Langley. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 36,
+      "timestamp": "2025-05-25T19:00:58Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Langley,\n\nFlat 5;\n\nEliza Bennett has quoted £1,370.00. - doesnt include VAT\n\nKendall has quoted £1700.00+VAT - Doesn't include VAT but 20 will be added on quote.\nPlease let me know how you wish to proceed.\nRegards,"
+    },
+    {
+      "n": 37,
+      "timestamp": "2025-05-25T19:01:16Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Langley. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 38,
+      "timestamp": "2025-05-25T19:26:15Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Please go ahead with Eliza. Best"
+    },
+    {
+      "n": 39,
+      "timestamp": "2025-05-25T21:26:11Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Asked Eliza if she is willing to proceed with the work - LL took a long time to pay on previous jon"
+    },
+    {
+      "n": 40,
+      "timestamp": "2025-05-25T21:26:22Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Langley. Reason: Waiting for Provider"
+    },
+    {
+      "n": 41,
+      "timestamp": "2025-05-26T23:25:43Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Langley. Reason: Waiting for Provider. Comment: Eliza proceeding with works"
+    },
+    {
+      "n": 42,
+      "timestamp": "2025-06-02T20:49:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 43,
+      "timestamp": "2025-06-02T20:49:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 44,
+      "timestamp": "2025-06-02T20:49:36Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Langley. Reason: Waiting for Provider. Comment: Hold for invoice"
+    },
+    {
+      "n": 45,
+      "timestamp": "2025-06-02T21:32:51Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-008-3466\nAddress: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ\n\nHi Langley, Please see attached invoice for Flat 13, 83 Harbour View, Eastmere, ZZ5 3ZZ - works are now complete. Eliza informed me the tap didn't need replacing so it was cheaper then the original quote. Please pass this for payment. Regards\n\nAttachment: attachment-87-document (unavailable)\n\nAttachments: [attachment-04-invoice.pdf](attachments/attachment-04-invoice.pdf)"
+    },
+    {
+      "n": 46,
+      "timestamp": "2025-06-02T21:33:02Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. Reason provided: No photos attached"
+    },
+    {
+      "n": 47,
+      "timestamp": "2025-06-02T21:33:02Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 48,
+      "timestamp": "2025-06-02T21:33:15Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    },
+    {
+      "n": 49,
+      "timestamp": "2025-06-17T02:24:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Ok to pay."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "attachment-01-check-out-inspection-report.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/008/attachments/attachment-01-check-out-inspection-report.pdf",
+      "text": "Northbridge Lettings\n\nCheck-out inspection report\nRecords the observed condition and cleanliness of the bedroom and bathroom at Flat 5, 55\nLantern Quay, Cedarford, ZZ2 4ZZ after the tenancy, with defect notes and photographs.\n\n\nAppointment date: 5 January 2026. Assessor: Northbridge Lettings. Inspection: check-out.\n\nThe report describes the condition of the property room by room. Where no comment is made on\nan element or item, it is treated as being in good, clean, serviceable condition and without defects.\nObserved defects are described and evidenced with photographs.\n\nThe report is a visual inspection. Inaccessible and loft areas are not inspected. Fixtures and fittings\nmay not have been tested. The report does not necessarily identify structural defects, provide\nrepair advice or estimate repair costs. Descriptive material terms are used for appearance and\nidentification, not necessarily to identify actual materials.\n\nGuidance notes: At the end of a tenancy, the property and its contents are expected to be in a\nsimilar condition and state of cleanliness to the pre-tenancy report, allowing for fair wear and tear.\nItems damaged beyond fair wear and tear may need repair or replacement; receipts should be\nretained. If cleaning is unsatisfactory, a professional cleaner may be instructed. Cleaning should be\nthorough and the property left tidy. Carpets should be professionally cleaned in line with the\ninventory or tenancy agreement; vinyl or tile floors should be clean and free from cracks or tears.\nDecor should be returned to its recorded condition; excessive marks and fingerprints may be\ntreated as a cleaning issue. Alarms are stated to have been checked and to be working as of the\nreport date; faults other than battery replacement should be reported immediately.\n\nSmoke and carbon monoxide detectors: tested — Yes. No general detector comments are\nrecorded.\n\nBedroom inspection, dated 5 January 2026: condition Poor; cleanliness Poor. Door, ceiling,\nlighting, window, blinds, wardrobe and television were recorded as per inventory; the ceiling\nincluded a watermark. Lighting worked as expected. Walls were already scuffed and scratched at\ninventory, but the stain marks were new. Flooring had burn damage recorded as per inventory and\nmultiple stains requiring professional cleaning. Mattress staining was not noted on the inventory.\nTable missing. Defects noted: stained radiator cover; stained/scuffed walls; burn damage to carpet;\ncarpet stains; evidence of water ingress to ceiling; stained mattress; dirty boxing; missing table and\nchair.\n\nBathroom inspection, dated 5 January 2026: condition Unacceptable; cleanliness Poor. Door,\nceiling and lighting were recorded as per inventory. Plastic-clad walls and other walls were in fair\ncondition. Bath required cleaning for limescale and dirt; shower, bathing equipment and basin tap\nrequired limescale cleaning. Bath tap dripping. Boxing required repainting or repair due to water\negress from the shower area. Shelving unit burnt or stained. Toilet was in fair condition; basin was\ndamaged and plug broken. Some waste items had been dumped. Light cleaning was required due\nto limescale. Water damage was present on boxing and flooring; flooring was stained. Defects\nnoted: light cleaning required due to limescale; water damage on boxing and flooring; stained\nflooring; broken plug; dumped items; shelf defects; dripping bath tap.\n\nSummary of defects — Bedroom: condition Poor; cleanliness Poor. Stained radiator cover;\nstained/scuffed walls; burn damage to carpet; carpet stains; evidence of water ingress to ceiling;\nstained mattress; dirty boxing; missing table and chair.\n\nSummary of defects — Bathroom: condition Unacceptable; cleanliness Poor. Light cleaning\nrequired due to limescale; water damage on boxing and flooring; stained flooring; broken plug;\ndumped items; shelf defects; dripping bath tap.\n\nAssessor declaration: The assessor confirms that the report reflects their assessment of Flat 5, 55\nLantern Quay, Cedarford, ZZ2 4ZZ. Signature received: 3 April 2025 at 15:51:25. The contact\n\femail is represented synthetically as assessor@example.com.\n\n Section                 Rating          Meaning\n Inspection areas —      Excellent       Unused or new condition.\n condition\n Inspection areas —      Good            Minor signs of wear, but no obvious faults in\n condition                               appearance or functionality.\n Inspection areas —      Fair            Signs of wear or minor damage present.\n condition\n Inspection areas —      Poor            Extensive wear, such as stains, marks, rips or chips.\n condition\n Inspection areas —      Unacceptable Not fit for purpose in present state, such as badly\n condition                            damaged or faulty.\n Inspection areas —      Excellent       Cleaned to a high standard.\n cleanliness\n Inspection areas —      Good            Cleaned to a good standard.\n cleanliness\n Inspection areas —      Fair            Cleaned to a fair standard.\n cleanliness\n Inspection areas —      Poor            Light cleaning required.\n cleanliness\n Inspection areas —      Unacceptable Professional cleaning required.\n cleanliness\n Items — condition       Excellent       Unused or new condition.\n Items — condition       Good            May have minor signs of wear, but no obvious faults in\n                                         appearance or functionality.\n Items — condition       Fair            Signs of wear or minor damage present.\n Items — condition       Poor            Extensive wear, such as stains, marks, rips or chips.\n Items — condition       Unacceptable Not fit for purpose in present state, such as badly\n                                      damaged or faulty.\n Items — cleanliness     Excellent       Cleaned to a high standard.\n Items — cleanliness     Good            Cleaned to a good standard.\n Items — cleanliness     Fair            Cleaned to a fair standard; see issues and\n                                         photographs.\n Items — cleanliness     Poor            Light cleaning required; see issues and photographs.\n Items — cleanliness     Unacceptable Professional cleaning required; see issues and\n                                      photographs.\n\n Inspection area          Condition              Cleanliness           Defects        Photos\n Bedroom                  Poor                   Poor                  8              35\n Bathroom                 Unacceptable           Poor                  7              24\n\fGeneral detector details                Tested?        General detector comments\nNot specified                           Yes            No comments recorded\n\nArea         Date      Condition       Cleanliness Description and recorded defects\nBedroom      5         Poor            Poor          Door, ceiling, window, blinds, wardrobe and\n             January                                 television as per inventory; ceiling included\n             2026                                    a watermark. Lighting worked as expected.\n                                                     Walls were scuffed and scratched at\n                                                     inventory; stain marks were new. Flooring\n                                                     had previously recorded burn damage and\n                                                     multiple stains requiring professional\n                                                     cleaning. Mattress staining not noted on\n                                                     inventory. Table missing. Defects: stained\n                                                     radiator cover; stained/scuffed walls; carpet\n                                                     burn damage; carpet stains; evidence of\n                                                     water ingress to ceiling; stained mattress;\n                                                     dirty boxing; missing table and chair.\nBathroom 5             Unacceptable Poor             Door, ceiling and lighting as per inventory.\n         January                                     Plastic-clad walls and other walls in fair\n         2026                                        condition. Bath required limescale and dirt\n                                                     cleaning; shower, bathing equipment and\n                                                     basin tap required limescale cleaning. Bath\n                                                     tap dripping. Boxing required repainting or\n                                                     repair due to water egress from shower\n                                                     area. Shelving unit burnt or stained. Toilet in\n                                                     fair condition; basin damaged and plug\n                                                     broken. Some waste items dumped. Light\n                                                     cleaning required due to limescale. Water\n                                                     damage present on boxing and flooring;\n                                                     flooring stained. Defects: limescale\n                                                     cleaning; water damage; stained flooring;\n                                                     broken plug; dumped items; shelf defects;\n                                                     dripping bath tap.\n\n\nObservations\n       The bedroom received Poor ratings for both condition and cleanliness.\n       The bathroom received an Unacceptable condition rating and a Poor cleanliness rating.\n       The report states that lighting worked as expected in the bedroom.\n       The bedroom ceiling had a watermark, and the report records evidence of water ingress to\n       the ceiling.\n       The bedroom carpet had previously recorded burn damage and had multiple stains requiring\n       professional cleaning.\n       The bedroom mattress was stained; this was not noted on the inventory.\n       The bedroom table was missing; the defect summary records a missing table and chair.\n       The bathroom had limescale and dirt requiring cleaning, water damage to boxing and\n       flooring, stained flooring, a broken plug, dumped waste items, shelf defects and a dripping\n       bath tap.\n       The bathroom shelving unit was described as burnt or stained, and the boxing required\n       repainting or repair due to water egress from the shower area.\n       Detectors were marked as tested Yes; no detector comments were entered.\n\nFindings\n\f    The bedroom had multiple recorded defects, including new wall stain marks, carpet staining,\n    a mattress stain not listed in the inventory, a stained radiator cover, dirty boxing, and missing\n    furniture.\n    The bathroom had cleaning needs and condition defects, including limescale, water damage,\n    damaged basin/plug, shelf defects and a dripping bath tap.\n    The report contains photographs for both inspected areas. The summary records 35\n    bedroom photographs and 24 bathroom photographs.\n\nConclusions\n    The report records a Poor condition and cleanliness rating for the bedroom and an\n    Unacceptable condition and Poor cleanliness rating for the bathroom.\n    The report is an assessment of observed condition and cleanliness; it does not provide\n    repair recommendations or costs.\n\nImage evidence\n\n  Neutral image placeholder\n\n  Bedroom photo 1 of 35: General bedroom view showing carpet, wall and room perimeter.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom photo 2 of 35: General view showing the bedroom ceiling and lighting.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom photo 3 of 35: General view toward the doorway and carpet.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom photo 4 of 35: General bedroom view showing walls and carpet.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom photo 5 of 35: General view of ceiling and room interior.\n\fNeutral image placeholder\n\nBedroom photo 6 of 35: General view of the bed and bedroom furnishings.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 7 of 35: General view of the room and carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 8 of 35: General view of the room, furnishings and window.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 9 of 35: General view of the doorway and carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 10 of 35: General view of the window area and furnishings.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 11 of 35: General view of carpet and room perimeter.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 12 of 35: General view of the bedroom interior.\n\fNeutral image placeholder\n\nBedroom photo 13 of 35: Staining on the radiator cover.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 14 of 35: Staining on the radiator cover.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 15 of 35: Stained and scuffed wall surface.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 16 of 35: Stained and scuffed wall surface.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 17 of 35: Stained and scuffed wall surface.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 18 of 35: Stained and scuffed wall surface.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 19 of 35: Stained and scuffed wall surface.\n\fNeutral image placeholder\n\nBedroom photo 20 of 35: Stained and scuffed wall surface.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 21 of 35: Burn damage to the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 22 of 35: Staining on the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 23 of 35: Staining on the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 24 of 35: Staining on the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 25 of 35: Staining on the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 26 of 35: Staining on the carpet.\n\fNeutral image placeholder\n\nBedroom photo 27 of 35: Staining on the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 28 of 35: Staining on the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 29 of 35: Staining on the carpet.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 30 of 35: Evidence of water ingress to the ceiling.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 31 of 35: Staining on the mattress.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 32 of 35: Staining on the mattress.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 33 of 35: Staining on the mattress.\n\fNeutral image placeholder\n\nBedroom photo 34 of 35: Dirt on the boxing.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 35 of 35: Dirt on the boxing.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 1 of 24: General bathroom view showing the bath, basin and shower area.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 2 of 24: General bathroom view showing the fixtures and flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 3 of 24: General view of the bathroom ceiling and light.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 4 of 24: General view of the basin and bathroom fittings.\n\n\n\n\nNeutral image placeholder\n\fBathroom photo 5 of 24: General view of the bathroom interior.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 6 of 24: Limescale requiring light cleaning on bathroom fittings.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 7 of 24: Limescale requiring light cleaning on bathroom fittings.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 8 of 24: Limescale requiring light cleaning on bathroom fittings.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 9 of 24: Limescale requiring light cleaning on bathroom fittings.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 10 of 24: Water damage present on boxing and flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 11 of 24: Water damage present on boxing and flooring.\n\n\n\n\nNeutral image placeholder\n\fBathroom photo 12 of 24: Water damage present on boxing and flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 13 of 24: Water damage present on boxing and flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 14 of 24: Water damage present on boxing and flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 15 of 24: Staining on the bathroom flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 16 of 24: Staining on the bathroom flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 17 of 24: Broken basin plug.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 18 of 24: Dumped items in the bathroom.\n\n\n\n\nNeutral image placeholder\n\fBathroom photo 19 of 24: Dumped items in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 20 of 24: Dumped items in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 21 of 24: Defect to the bathroom shelf.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 22 of 24: Defect to the bathroom shelf.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 23 of 24: Defect to the bathroom shelf.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 24 of 24: Dripping bath tap.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-02-estimate.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/008/attachments/attachment-02-estimate.pdf",
+      "text": "Northbridge Lettings\n\nEstimate\nEstimate for check-out works at Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ.\n\n\nEstimate issued 3 April 2025.\n\nFrom: Alder Compliance. Supplier email: supplier@example.com.\n\nBilled to: Maya Langley, Northbridge Lettings. Contact email: case008.contact1@example.com.\n\nThe estimate covers sanding, filling and painting the bathroom with damp paint; painting all walls\nand the ceiling in the main room; replacing the bathroom lino; repairing the plug socket and shelf;\nand replacing the bathroom tap. It notes: “Carpet in the main room can stay as it’s not that bad.”\n\n Description                                                          Qty Price          Amount\n                                                                          (GBP)          (GBP)\n Sand, fill and paint bathroom with damp paint; paint all walls and 1       £1,370.00    £1,370.00\n ceiling in main room; replace bathroom lino; repair plug socket\n and shelf; replace bathroom tap. Main-room carpet can stay as it\n is not that bad.\n Total                                                                                   £1,370.00\n\n\nObservations\n         The estimate is a single-page document with one priced line item.\n         The quoted scope says the main-room carpet can remain, despite the initial request to\n         replace the burnt bedroom carpet.\n         The bathroom tap is included for replacement in this estimate; the case overview later\n         records that it did not need replacing.\n\nFindings\n         Quantity: 1.\n         Price and line amount: £1,370.00.\n         Total: £1,370.00.\n         No tax or VAT amount is itemized.\n\nConclusions\n         The estimate quotes £1,370.00 for the listed works. The amount shown is the same as the\n         total.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-03-check-out-inspection-report.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/008/attachments/attachment-03-check-out-inspection-report.pdf",
+      "text": "Northbridge Lettings\n\nCheck-out inspection report\nRecords the condition and cleanliness of the bedroom and bathroom at Flat 5, 55 Lantern Quay,\nCedarford, ZZ2 4ZZ after the tenancy, with descriptions and photographic evidence of defects.\n\n\nCheck-out inspection. Appointment date: 5 January 2026. Assessor: Northbridge Lettings.\nProperty: Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ.\n\nThe report provides a room-by-room visual schedule of condition. Where no comment is made\nabout an element or item, it is taken to be in good, clean, serviceable condition and without\ndefects. Observed defects are described and supported by photographs. Material terms such as\n“silver”, “chrome” and “oak” describe appearance and may not identify the actual material. Items\nare described for identification; items are called new only in a new or newly refurbished building or\nwhile still in manufacturer wrapping. In an existing property, wear and tear is assumed unless\notherwise noted.\n\nLimitations: the assessor is not an expert in fabrics, woods, materials, antiques or similar items.\nThe report does not necessarily identify structural defects, advise on repairs, or state repair costs.\nFixtures and fittings are listed but may not have been tested. The inspection is visual and covers\nthe inside of the main building and contents, plus a general inspection of the remainder of the\nbuilding, including exterior cosmetic elements and permanent outbuildings. Inaccessible and loft\nareas are not inspected. Belongings left by the landlord in locked rooms or outbuildings are not\ninspected and remain the landlord’s responsibility. Items of little monetary value may be described\ngenerically.\n\nOwnership: the report remains the property of the instructing party and must not be used without\nwritten permission.\n\nGuidance: at the end of a tenancy, the property and contents are expected to be in a similar\ncondition and state of cleanliness to that recorded before the tenancy. Damage considered beyond\nfair wear and tear may need repair or replacement, with the cost deducted from the tenant’s\ndeposit; receipts should be retained and produced if required. If cleaning is unsatisfactory, a\nmanaging agent or landlord may instruct professional cleaners, with the cost deducted from the\ndeposit; receipts should be retained. The property should be left tidy and thoroughly cleaned.\n\nThe report’s cleaning guidance says carpets should be professionally cleaned in accordance with\nthe inventory or tenancy agreement, and vinyl or tile flooring should be clean and free from cracks\nor tears. Curtains should be professionally cleaned where required by the inventory or tenancy\nagreement. Decor should be in the same state and condition as at the start of the tenancy.\nCharges may apply for picture hooks, nails, screws or screw holes not removed or repaired\nsatisfactorily; excessive marks and fingerprints should be removed. Fingerprints on walls and\ndoors are considered a cleaning issue. Refrigerators and freezers should be defrosted, switched\noff and left open. Ovens, hobs, extractor units and microwaves should be cleaned of burnt-on\ndeposits and grease, including doors and seals. Gardens, where applicable, should be left neat\nand tidy, with lawns cut, borders and planters weeded, hedges trimmed, and paths and patios\nweeded and swept.\n\nThe guidance states that smoke and carbon monoxide alarms were checked and working on the\nreport date. The tenant is responsible for keeping them in working order during the tenancy; faults\nother than battery replacement should be reported immediately.\n\nCondition glossary: Excellent means unused or new; Good means minor wear without obvious\nfaults in appearance or function; Fair means wear or minor damage; Poor means extensive wear\nsuch as stains, marks, rips or chips; Unacceptable means not fit for purpose, such as being badly\ndamaged or faulty.\n\nCleanliness glossary for inspection areas: Excellent means cleaned to a high standard; Good\nmeans cleaned to a good standard; Fair means cleaned to a fair standard; Poor means light\n\fcleaning is required; Unacceptable means professional cleaning is required. For items, Fair, Poor\nand Unacceptable refer to the issues and photographs as applicable.\n\nDetector check: tested — Yes. No general detector comments were recorded.\n\nBedroom description: door as per inventory. Ceiling as per inventory, including existing water-\ningress staining. Lighting works as expected. Walls were scuffed and scratched at inventory; new\nstaining was noted. Window and blinds are as per inventory. Flooring has pre-existing burn\ndamage and multiple stains requiring professional cleaning. Mattress has staining not noted on the\ninventory. Wardrobe and television are as per inventory. Table missing. A radiator cover is stained.\n\nBathroom description: door, ceiling and lighting as per inventory. Plastic-clad walls are in fair\ncondition. Bath requires cleaning for limescale and dirt; shower and bathing equipment and basin\ntap require limescale cleaning. Bath tap is dripping. Walls are in fair condition. Boxing requires\nrepainting or repair due to water egress from the shower area. Shelving unit is burnt or stained.\nToilet is in fair condition. Basin is damaged and plug is broken. Some waste items have been\ndumped. Light cleaning is required due to limescale.\n\nAssessor declaration: the assessor confirms that the report reflects their assessment of the\nproperty. Assessor: Northbridge Lettings. Email: assessor@example.com. Signature received: 3\nApril 2025 15:51:25.\n\n Inspection area            Condition              Cleanliness          Defects         Photos\n Bedroom                    Poor                   Poor                 8               35\n Bathroom                   Unacceptable           Poor                 7               24\n\n General detector details               Tested?        General detector comments\n                                        Yes\n\n Area        Date      Condition        Cleanliness Description and defects\n Bedroom     5         Poor             Poor          Door as per inventory. Ceiling as per\n             January                                  inventory, including water-ingress staining.\n             2026                                     Lighting works as expected. Walls were\n                                                      scuffed and scratched at inventory; new\n                                                      staining noted. Window and blinds as per\n                                                      inventory. Flooring has pre-existing burn\n                                                      damage and multiple stains requiring\n                                                      professional cleaning. Mattress stained, not\n                                                      noted on inventory. Wardrobe and television\n                                                      as per inventory. Table missing. Stained\n                                                      radiator cover. Defects: stained radiator\n                                                      cover; stained or scuffed walls; carpet burn\n                                                      damage; carpet stains; evidence of water\n                                                      ingress to ceiling; stained mattress; dirty\n                                                      boxing; missing table and chair.\n Bathroom 5            Unacceptable Poor              Door, ceiling and lighting as per inventory.\n          January                                     Plastic-clad walls in fair condition. Bath\n          2026                                        requires cleaning for limescale and dirt.\n                                                      Shower and bathing equipment and basin\n                                                      tap require limescale cleaning. Bath tap\n                                                      dripping. Walls in fair condition. Boxing\n                                                      requires repainting or repair due to water\n                                                      egress from shower area. Shelving unit\n                                                      burnt or stained. Toilet in fair condition.\n                                                      Basin damaged and plug broken. Some\n                                                      waste items dumped. Light cleaning\n\fArea         Date       Condition       Cleanliness Description and defects\n                                                      required due to limescale. Defects: light\n                                                      cleaning required due to limescale; water\n                                                      damage to boxing and flooring; stained\n                                                      flooring; broken plug; dumped items; shelf\n                                                      defects; dripping bath tap.\n\nCategory       Rating          Meaning\nCondition      Excellent       Unused or new condition.\nCondition      Good            Minor signs of wear, but no obvious faults in appearance or\n                               functionality.\nCondition      Fair            Signs of wear or minor damage present.\nCondition      Poor            Extensive wear, for example stains, marks, rips or chips.\nCondition      Unacceptable Not fit for purpose in its present state, for example badly damaged\n                            or faulty.\nCleanliness Excellent          Cleaned to a high standard.\nCleanliness Good               Cleaned to a good standard.\nCleanliness Fair               Cleaned to a fair standard.\nCleanliness Poor               Light cleaning required.\nCleanliness Unacceptable Professional cleaning required.\n\n\nObservations\n       The bedroom was rated Poor for condition and Poor for cleanliness.\n       The bathroom was rated Unacceptable for condition and Poor for cleanliness.\n       The report records water-ingress staining on the bedroom ceiling and water damage to\n       bathroom boxing and flooring.\n       The report notes pre-existing bedroom burn damage to the carpet, as well as multiple carpet\n       stains requiring professional cleaning.\n       The report records a missing table and chair in the bedroom; the room description separately\n       states that the table is missing.\n       The bathroom defects include a broken plug, damaged basin, defective shelf, dripping bath\n       tap, stained flooring, limescale and dumped waste items.\n       The smoke and carbon monoxide detector check is recorded as tested: Yes.\n\nFindings\n       The report summary records 8 bedroom defects and 35 bedroom photographs.\n       The report summary records 7 bathroom defects and 24 bathroom photographs.\n       The bedroom defect list is: stained radiator cover; stained or scuffed walls; carpet burn\n       damage; carpet stains; evidence of water ingress to ceiling; stained mattress; dirty boxing;\n       missing table and chair.\n       The bathroom defect list is: light cleaning required due to limescale; water damage to boxing\n       and flooring; stained flooring; broken plug; dumped items; shelf defects; dripping bath tap.\n\nConclusions\n\f    The check-out inspection identified substantial condition and cleaning issues in both\n    inspected areas, with the bathroom condition rated Unacceptable and the bedroom condition\n    rated Poor.\n    The report provides visual evidence of the listed defects but does not provide repair advice\n    or cost estimates.\n\nImage evidence\n\n  Neutral image placeholder\n\n  Bedroom overview photographs (3): general views of the bedroom, including its door,\n  ceiling, window, flooring and furnishings.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom radiator-cover photographs (2): show staining on the radiator cover.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom wall photographs (6): show stained or scuffed wall surfaces.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom carpet burn-damage photograph (1): close view documenting burn damage to\n  the carpet.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom carpet-stain photographs (8): close views documenting multiple carpet stains.\n\n\n\n\n  Neutral image placeholder\n\n  Bedroom ceiling photograph (1): documents evidence of water ingress to the ceiling.\n\fNeutral image placeholder\n\nBedroom mattress photographs (3): show staining on the mattress.\n\n\n\n\nNeutral image placeholder\n\nBedroom boxing photographs (2): show dirty boxing.\n\n\n\n\nNeutral image placeholder\n\nBathroom overview photographs (3): general views of the bathroom and its fixtures.\n\n\n\n\nNeutral image placeholder\n\nBathroom limescale-cleaning photographs (4): show areas identified as requiring light\ncleaning due to limescale.\n\n\n\n\nNeutral image placeholder\n\nBathroom water-damage photographs (7): document water damage to the boxing and\nflooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom flooring photographs (2): show stained flooring.\n\n\n\n\nNeutral image placeholder\n\nBathroom plug photograph (1): documents the broken plug.\n\fNeutral image placeholder\n\nBathroom dumped-items photographs (3): show waste items left in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nBathroom shelf photographs (3): document shelf defects.\n\n\n\n\nNeutral image placeholder\n\nBathroom tap photograph (1): documents the dripping bath tap.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-04-invoice.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/008/attachments/attachment-04-invoice.pdf",
+      "text": "Northbridge Lettings\n\nInvoice\nInvoice for completed check-out works at Flat 5, 55 Lantern Quay, Cedarford, ZZ2 4ZZ.\n\n\nIssued 09/03/2026.\n\nFrom: Alder Compliance.\n\nBilled to: Maya Langley, Northbridge Lettings; maya.langley@example.com.\n\nWork description: Sand, Fill and paint bathroom with damp paint. Paint all walls and ceiling in main\nroom. Replace Lino in bathroom. Repair plug socket Repair shelf.\n\nPayment instructions are present on the invoice; bank details have been omitted.\n\n Description                                                  Quantity Price           Amount\n                                                                       (GBP)           (GBP)\n Sand, Fill and paint bathroom with damp paint. Paint all     1           £1,190.00    £1,190.00\n walls and ceiling in main room. Replace Lino in bathroom.\n Repair plug socket Repair shelf.\n\n\nObservations\n      The invoice lists one combined line item for the works.\n      Supplier contact details and postal address are omitted. Invoice and job reference numbers\n      are omitted as operational identifiers.\n      No photos are included.\n\nFindings\n      The invoice describes painting the bathroom with damp paint, painting all walls and the\n      ceiling in the main room, replacing bathroom lino, repairing a plug socket and repairing a\n      shelf.\n      Quantity: 1. Unit price: £1,190.00. Line amount: £1,190.00.\n      Total: £1,190.00. No tax amount or tax breakdown is stated.\n\nConclusions\n      The invoice total for the listed works is £1,190.00.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

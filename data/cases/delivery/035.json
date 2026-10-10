@@ -1,0 +1,73 @@
+{
+  "id": "delivery-035",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "035",
+  "title": "Case 035: Merchant has received the return but the refund review has not started",
+  "details": {
+    "source_role": "Melli Orven, customer",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-08 09:00:00 UTC",
+    "escalated": "2026-03-08 09:10:00 UTC",
+    "updated": "2026-03-08 09:50:00 UTC",
+    "completed": "2026-03-08 09:50:00 UTC",
+    "primary_task_reference": "TG-035",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The merchant warehouse has a receipt but the authorised refunds team has no review case. The next action is to submit that receipt to start review.",
+  "initial_request": "The warehouse says it has my return, but my order has no refund review. Please pass the receipt to the team that handles it.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Send the receipt reference to the merchant's authorised refunds team.",
+    "recipient": "Refunds team, Tallowmere Goods",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The team confirms the review is registered and provides its next update date; payment is not claimed.",
+  "boundaries": "Registered review is not an approved refund or money received.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-08T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse receiving, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Inline receipt WH-035: RT-035 for TG-035 physically received at 08:10 UTC today. We can confirm receipt, but our receiving role does not approve refunds."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-08T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Melli Orven, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The warehouse says it has my return, but my order has no refund review. Please pass the receipt to the team that handles it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-08T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Refunds team, Tallowmere Goods",
+      "body": "Please register the refund review for TG-035 / RT-035 using warehouse receipt WH-035. Notify us of the case reference and next update date; receipt alone is not refund approval."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-08T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Refunds team, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Review RF-035 is registered with WH-035. We will update the order thread by 2026-03-10, 16:00 UTC. Eligibility, amount and payment remain undecided."
+    }
+  ],
+  "attachments": []
+}

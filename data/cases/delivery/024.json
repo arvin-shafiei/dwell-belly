@@ -1,0 +1,73 @@
+{
+  "id": "delivery-024",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "024",
+  "title": "Case 024: Tracking says delivered but the recipient has no parcel",
+  "details": {
+    "source_role": "Sorin Vaal, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-25 09:00:00 UTC",
+    "escalated": "2026-02-25 09:10:00 UTC",
+    "updated": "2026-02-25 09:50:00 UTC",
+    "completed": "2026-02-25 09:50:00 UTC",
+    "primary_shipment": "DL-024",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The system displays delivery, but the verified recipient reports no receipt. Registration of an investigation is the task outcome, not a finding of loss or fraud.",
+  "initial_request": "No one in my household has the parcel. I see delivered on the tracker. Please have the carrier investigate where it went.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Request a delivery investigation from the carrier with the verified shipment details.",
+    "recipient": "Delivery investigations, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The carrier registers the investigation and provides a case reference and next update time.",
+  "boundaries": "The recipient report and scan conflict, but neither establishes fraud, confirmed loss or reimbursement.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-25T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-024 displays delivered at 08:10 UTC today. We have not reviewed the handover record or route stop. Only the shipment and recipient account match are verified."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-25T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Sorin Vaal, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "No one in my household has the parcel. I see delivered on the tracker. Please have the carrier investigate where it went."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-25T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Delivery investigations, Plover Arc Logistics",
+      "body": "Please open a delivery investigation for DL-024: verified recipient reports no receipt despite the 08:10 delivered scan. Review the handover and route records; do not assume a loss decision."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-25T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Delivery investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Investigation INV-024 is registered against DL-024. We will provide the next update by 2026-02-26, 16:00 UTC. No finding or compensation decision has yet been made."
+    }
+  ],
+  "attachments": []
+}

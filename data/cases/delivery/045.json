@@ -1,0 +1,90 @@
+{
+  "id": "delivery-045",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "045",
+  "title": "Case 045: Import shipment is waiting for the shipper's commercial invoice",
+  "details": {
+    "source_role": "Ossmere Trade Desk, appointed customs broker",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-18 09:00:00 UTC",
+    "escalated": "2026-03-18 09:10:00 UTC",
+    "updated": "2026-03-18 10:05:00 UTC",
+    "completed": "2026-03-18 10:05:00 UTC",
+    "primary_shipment": "DL-045",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A fictional import broker is appointed, but its requested commercial-invoice fields are incomplete. Shipper provision and broker receipt are distinct from customs clearance.",
+  "initial_request": "Please request the complete invoice from authorised shipper Mavelle Export Studio. Do not fill in values or origin on their behalf.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Request the missing invoice fields specified by the appointed customs broker from the shipper.",
+    "recipient": "Fera Noll, Mavelle Export Studio shipping lead",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The broker confirms receipt of a complete document package; customs clearance is not claimed.",
+  "boundaries": "Fictional broker requirements are not universal customs law; document completeness is not clearance.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-18T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Ossmere Trade Desk, appointed customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For DL-045 / order OS-045 we need the shipper’s commercial invoice showing seller, buyer, invoice date and reference, goods description, quantity, unit value, currency, total and origin declaration. These are the missing fields in this file; no clearance decision has been made."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-18T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Broker portal",
+      "from": "Ossmere Trade Desk, appointed customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please request the complete invoice from authorised shipper Mavelle Export Studio. Do not fill in values or origin on their behalf."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-18T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Fera Noll, Mavelle Export Studio shipping lead",
+      "body": "Please supply your commercial invoice for DL-045 / OS-045 with the fields the appointed broker listed: seller, buyer, date/reference, description, quantity, unit value/currency/total and origin declaration. The broker must review it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-18T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Fera Noll, Mavelle Export Studio shipping lead",
+      "to": "Ossmere Trade Desk, appointed customs broker; Iona Quill, Rivet Delivery Desk",
+      "body": "Our issued synthetic [commercial invoice CI-045](attachments/commercial-invoice.pdf) is supplied for DL-045 / OS-045. It covers 12 woven pouches at GBP 8.00 each, GBP 96.00 total, made in the fictional origin jurisdiction Aster Reach. Please review the stated fields."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-18T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Ossmere Trade Desk, appointed customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "CI-045 is received and all fields requested for this document package are complete. The package can proceed to our processing queue. Customs clearance and charges remain undecided."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "commercial-invoice.pdf",
+      "type": "pdf",
+      "path": "raw/Delivery & Logistics/045/attachments/commercial-invoice.pdf",
+      "text": "SYNTHETIC EXERCISE - NOT A LIVE DOCUMENT\n\n\nCommercial invoice CI-045\n\nIssued: 2026-03-18 09:50 UTC\n\n\n\nSeller: Mavelle Export Studio | Authorised issuer: Fera Noll\n\n\n\nBuyer: Ossmere Shelf Supply, Merrow Quay (fictional buyer)\n\n\n\nShipment: DL-045 | Order: OS-045 | Currency: GBP\n\n\n\nGoods: woven pouches | Quantity: 12 | Unit value: GBP 8.00\n\n\n\nInvoice goods total: GBP 96.00 (12 x GBP 8.00). No other charges on this invoice.\n\n\n\nShipper origin declaration: made in Aster Reach (fictional jurisdiction).\n\n\n\nFor broker document review only. Not a customs clearance certificate.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

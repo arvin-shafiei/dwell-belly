@@ -1,0 +1,73 @@
+{
+  "id": "banking-026",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "026",
+  "title": "Case 026: A Safe Route to a Forgotten PIN",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-07 09:00:00 UTC",
+    "updated": "2025-09-07 12:08:00 UTC",
+    "completed": "2025-09-07 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Maren forgot the PIN for her H&V debit card and wants to use the bank’s safe process to regain access without sharing the PIN in a message.",
+  "overview": "Maren raised her forgotten PIN in secure chat. The agent escalated case HV-026 to the Access team, then opened the prescribed PIN procedure for her in the secure portal after the required check was complete. The portal confirmed that the procedure had started; no PIN was disclosed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The secure PIN procedure is available in Maren’s portal for her to continue.",
+    "recorded_event": null
+  },
+  "outcome": "The PIN procedure was launched. The case does not establish that Maren knows or has received her PIN.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-07T09:00:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Maren Ellwood",
+      "to": "H&V agent",
+      "body": "I’ve forgotten the PIN for my H&V debit card and need to use it again. Please tell me the safe way to deal with this; I won’t send my PIN in chat."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-07T09:47:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "Access team",
+      "body": "I’m escalating HV-026 for the prescribed PIN route. The required customer check is complete in the secure portal; I have not asked for or recorded a PIN."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-07T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "Access team",
+      "to": "H&V agent",
+      "body": "The prescribed PIN procedure is available for this case. Please open it for the checked customer in the secure portal; the PIN must not be sent in correspondence."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-07T11:21:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V agent",
+      "to": "Maren Ellwood",
+      "body": "I’ve opened the prescribed PIN procedure for you in the secure portal, following the completed check. Please continue through that procedure there; I cannot see your PIN."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-07T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V secure system",
+      "to": "Maren Ellwood",
+      "body": "Status: PIN procedure started. No PIN has been issued in this conversation."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,421 @@
+{
+  "id": "property-019",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "019",
+  "title": "Case 019: Garden Maintenance Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-01-17 12:57:22 UTC",
+    "updated": "2025-04-16 09:16:13 UTC",
+    "completed": "2025-04-16 09:16:13 UTC",
+    "property": "Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ"
+  },
+  "context": null,
+  "initial_request": "Hi dear Maintenance team,\nAs this garden is part of the house included in our tenancy, we would like it to be cleaned and finished properly. The ground also needs to be levelled and covered with stones (gravel) so that we can use the space safely. We would like to sit there in the afternoon, but at the moment it is not possible due to the condition.\n\nI have attached pictures for your reference. Could you please arrange:\n• Removal of all rubbish and construction waste\n• Levelling of the ground\n• Proper gravel/stone covering\n• Making the garden safe and usable",
+  "overview": "The tenant asked for the garden to be cleared of rubbish and construction waste, levelled, covered with gravel or stones, and made safe and usable. The landlord approved removal after the contractor's quote was revised from £500+VAT to around £600 because the material required specialist disposal. The tenant was contacted to confirm access, and a contractor later cleared the garden. The agency told the landlord it would process the invoice and deduct it from the rental amount. The referenced garden pictures and invoice are unavailable.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The garden was cleared, the landlord was sent the invoice, and the request was closed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-01-17T12:57:22Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Hi dear Maintenance team,\nAs this garden is part of the house included in our tenancy, we would like it to be cleaned and finished properly. The ground also needs to be levelled and covered with stones (gravel) so that we can use the space safely. We would like to sit there in the afternoon, but at the moment it is not possible due to the condition.\n\nI have attached pictures for your reference. Could you please arrange:\n• Removal of all rubbish and construction waste\n• Levelling of the ground\n• Proper gravel/stone covering\n• Making the garden safe and usable\n\nThe referenced garden pictures are unavailable."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-01-17T12:58:22Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-01-17T20:11:01Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ\n\nHello Jenkins, hope you are well. The tenant has been in touch to say the following: 'As this garden is part of the house included in our tenancy, we would like it to be cleaned and finished properly. The ground also needs to be levelled and covered with stones (gravel) so that we can use the space safely. We would like to sit there in the afternoon, but at the moment it is not possible due to the condition. I have attached pictures for your reference. Could you please arrange: Removal of all rubbish and construction waste, Levelling of the ground, Proper gravel/stone covering, Making the garden safe and usable.\nplease let me know your plans and how you wish for me to respond. Thank you"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-01-17T20:11:43Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ\n\nHello, thank you for lodging your request this has now been passed to the landlord and will be back in touch with an update when we have one. Thanks, Grant"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-01-17T20:12:46Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-01-20T20:13:13Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No landlord/tenant response after 3 days. Please review manually."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-01-31T14:55:03Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task manager was manually updated"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-01-31T14:55:03Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maya is now property manager and dealing with Oakley to get sorted"
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-01-31T16:05:38Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Quote to sort was £500+VAT - landlord has approved and Harbour Compliance is going ahead next week."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-01-31T16:06:43Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Other. Comment: Contact landlord and get funds up front for invoices"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-02-04T14:26:55Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Waiting for Provider"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-02-08T11:29:51Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ\n\nHi Jenkins,\n\nHope you are well.\n\nI have tried to call you but was unable to leave a voicemail.\n\nCan you please give me a call when you have a minute.\n\nThanks\nMaya"
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-02-08T11:30:07Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-02-11T16:24:12Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Other. Comment: need to call landlord"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-02-14T14:30:45Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Other. Comment: Oakley is checking her contact - awaiting reply"
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-02-21T10:37:47Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Other. Comment: Called tenant to ask if Oakley's contractor can go this afternoon to quote. Tenant is at home."
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-03-06T14:46:57Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Other. Comment: still waiting for Jenkins to call back"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-03-13T12:53:32Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Tenant called to chase update on the back garden maintenance.\n\nI have explained that we are trying to get hold of landlord for approval."
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-03-15T15:01:35Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ\n\nHi Jenkins,\n\nHope you are well.\n\nJust getting in contact re the garden maintenance. Oakley has spoke to her contractor and they are able to get rid of all the material in the garden but the quote is going to be around £600 as the material that was left in the garden is a specialised builders material that needs disposing of properly.\n\nI know this is a large quote so please let me know your thoughts.\n\nThanks\nMaya"
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-03-15T15:01:43Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-03-22T14:33:43Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-03-25T14:53:29Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ\n\nHi Jenkins,\n\nHope you are well.\n\nJust wondering if you had any thoughts on previous email.\n\nThanks\nMaya"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-03-25T14:53:46Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Palmer. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-03-25T14:56:07Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-03-25T14:56:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Please go ahead with the removal."
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-03-25T15:10:47Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya. Reason: Other. Comment: Asked Oakley - getting it arranged"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-03-27T15:45:55Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya. Reason: Other. Comment: as per above"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-04-02T15:50:42Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya. Reason: Other. Comment: as per above"
+    },
+    {
+      "n": 29,
+      "timestamp": "2025-04-09T16:12:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ\n\nHello,\nI have tried to call several times and had no call back.\nContractor is able to attend tomorrow or Thursday to clear the garden.\nPlease confirm asap.\nThanks\nMaya"
+    },
+    {
+      "n": 30,
+      "timestamp": "2025-04-09T16:12:29Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya. Reason: Waiting for Tenant"
+    },
+    {
+      "n": 31,
+      "timestamp": "2025-04-12T07:35:45Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya. Reason: Other. Comment: This was done, awaiting the invoice from contractor"
+    },
+    {
+      "n": 32,
+      "timestamp": "2025-04-15T11:16:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 33,
+      "timestamp": "2025-04-16T09:08:08Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Contractor send the invoice via email - new provider so has no access to the portal and I was unable to send a job through."
+    },
+    {
+      "n": 34,
+      "timestamp": "2025-04-16T09:08:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 35,
+      "timestamp": "2025-04-16T09:08:33Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 36,
+      "timestamp": "2025-04-16T09:10:20Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Landlord had a quote and agreed"
+    },
+    {
+      "n": 37,
+      "timestamp": "2025-04-16T09:10:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 38,
+      "timestamp": "2025-04-16T09:10:36Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 25, 185 Copperfield Walk, Alderwick, ZZ4 0ZZ\n\nHi Jenkins,\n\nI hope you are well.\n\nJust to make you aware that the garden has now been cleared.\n\nPlease see attached invoice for your record. I will process this on my side and deduct it off the rental amount.\n\nMany thanks\nMaya\n\n[Invoice attachment unavailable: attachment-83-document]"
+    },
+    {
+      "n": 39,
+      "timestamp": "2025-04-16T09:10:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 40,
+      "timestamp": "2025-04-16T09:12:23Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Text/transcription unavailable in the maintenance comment."
+    },
+    {
+      "n": 41,
+      "timestamp": "2025-04-16T09:14:59Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription missing from the maintenance action comment]"
+    },
+    {
+      "n": 42,
+      "timestamp": "2025-04-16T09:15:08Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** not applicable"
+    },
+    {
+      "n": 43,
+      "timestamp": "2025-04-16T09:15:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 44,
+      "timestamp": "2025-04-16T09:16:13Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": []
+}

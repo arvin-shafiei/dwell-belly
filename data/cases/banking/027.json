@@ -1,0 +1,73 @@
+{
+  "id": "banking-027",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "027",
+  "title": "Case 027: Access Restored",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-09 09:00:00 UTC",
+    "updated": "2025-09-09 12:08:00 UTC",
+    "completed": "2025-09-09 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I can’t sign in to my H&V profile after several unsuccessful attempts. Please help me regain access safely so I can review my household spending.",
+  "overview": "Mara Ellison escalated repeated sign-in failures for her H&V profile. After H&V identification checks on a verified call, the agent directed her to the bank’s secure recovery process. The recovery system completed its checks and recorded that access was restored.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent directs Mara to complete recovery through the official secure portal; the agent does not handle her password or verification details.",
+    "recorded_event": null
+  },
+  "outcome": "H&V’s system recorded that profile access was restored. No other banking operations were changed or authorised.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-09T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V app",
+      "to": "Mara Ellison",
+      "body": "Sign-in declined. Use H&V’s secure recovery process to restore access."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-09T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I’ve completed H&V’s identification checks for this call. I still can’t sign in to my profile, and I need help restoring access; I’m not sharing any password or verification code."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-09T10:34:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "H&V service agent",
+      "to": "Mara Ellison",
+      "body": "I’m directing you to the recovery option in H&V’s secure portal. Complete the checks there; I won’t ask you to tell me your password or a verification code."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-09T11:21:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V recovery system",
+      "to": "Mara Ellison",
+      "body": "Recovery checks completed securely. Return to sign-in."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-09T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V app",
+      "to": "Mara Ellison",
+      "body": "Access restored and recorded by the system. You can now sign in."
+    }
+  ],
+  "attachments": []
+}

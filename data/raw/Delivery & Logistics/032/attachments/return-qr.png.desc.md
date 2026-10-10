@@ -1,0 +1,1 @@
+Image description: synthetic printer-free return token, not a live shipping authorisation. References RT-032 / TG-032. Shows a QR code. QR payload and fallback token: DL032R. Supported at: Copperfin Returns Counter. Hours 10:00-18:00 UTC. Issuer: Tallowmere Goods. Issued 2026-03-05 09:50 UTC.

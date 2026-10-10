@@ -1,0 +1,259 @@
+{
+  "id": "property-016",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "016",
+  "title": "Case 016: Garden Door Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-10-11 00:06:34 UTC",
+    "updated": "2025-10-24 21:56:35 UTC",
+    "completed": "2025-10-24 21:56:35 UTC",
+    "property": "Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ"
+  },
+  "context": null,
+  "initial_request": "From Tenant:\nI seem to have a slight problem with my back / garden door. It is a little difficult to close. It could possibly be the heat, but it is also creaking and not closing smoothly. The hinges seem to be misaligned.\n\nPlease fix if simple quote if expensive. Thanks!",
+  "overview": "The tenant reported that the back/garden door was difficult to close, creaking and not closing smoothly, and said its hinges appeared misaligned. The landlord approved sending a contractor after the approval email had been missed in spam. Beacon Works arranged a visit. The provider later reported that the door was working well after naturally settling, so no repair or invoice was required. The request was completed without payment.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The door was functioning well after naturally settling; no repair or invoice was required. The request was completed without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-11T00:06:34Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Hi. I seem to have a slight problem with my back / garden door. It is a little difficult to close. It could possibly be the heat, but it is also creaking and not closing smoothly. The hinges seem to be misaligned. Is there a possibility I could arrange for it to be looked at? I am available all day Friday, and from 4pm Saturday to Tuesday except for THIS Tuesday as I have an opticians appointment. \nThanks in advance. \nHarriet Rowan at Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-11T00:07:46Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-11T17:41:13Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ\n\nGood morning,\n\nThe tenant has reported the following maintenance - please see their below email and attached photo.\n\n'Hi. I seem to have a slight problem with my back / garden door. It is a little difficult to close. It could possibly be the heat, but it is also creaking and not closing smoothly. The hinges seem to be misaligned. Is there a possibility I could arrange for it to be looked at? I am available all day Friday, and from 4pm Saturday to Tuesday except for THIS Tuesday as I have an opticians appointment. Thanks in advance.'\n\nPlease advise if you would like us to send one of our contractors to attend to this issue and resolve where possible (or quote if significant), or if you would prefer to deal with it yourself.\n\nKind regards,\n\nA photo of the door was referenced as an attachment; the attachment is unavailable."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-11T17:41:15Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-14T17:41:49Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No landlord/tenant response after 3 days. Please review manually."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-10-17T16:29:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ\n\nGood morning,\n\nThe tenant has reported the following maintenance - please see their below email and attached photo.\n\n'I seem to have a slight problem with my back / garden door. It is a little difficult to close. It could possibly be the heat, but it is also creaking and not closing smoothly. The hinges seem to be misaligned.'\n\nPlease advise if you would like us to send one of our contractors to attend to this issue and resolve where possible (or quote if significant), or if you would prefer to deal with it yourself.\n\nKind regards,\n\nA photo of the door was referenced as an attachment; the attachment is unavailable."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-10-17T16:29:46Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Nolan. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-10-17T22:56:31Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-10-17T22:56:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "The customer acknowledges the email placement in the spam folder and approves the sending of a contractor to check the door."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-10-18T22:10:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-10-18T22:16:59Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Changed original task description:\n\nTask description has been changed to:\n\nFrom Tenant:\nI seem to have a slight problem with my back / garden door. It is a little difficult to close. It could possibly be the heat, but it is also creaking and not closing smoothly. The hinges seem to be misaligned.\n\nPlease fix if simple quote if expensive. Thanks!"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-10-18T22:17:11Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-10-18T22:17:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Harriet Rowan,\n\nOur maintenance provider Beacon Works will be attending your property for a Door Repair Request.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: From Tenant:\nI seem to have a slight problem with my back / garden door. It is a little difficult to close. It could possibly be the heat, but it is also creaking and not closing smoothly. The hinges seem to be misaligned.\n\nPlease fix if simple quote if expensive. Thanks!\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-10-18T22:17:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Beacon Works,\n\nThis is a new Door Repair Request for the property at Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900088 (enter the code when calling)\nTenant Name: Harriet Rowan\nRequest description: From Tenant:\nI seem to have a slight problem with my back / garden door. It is a little difficult to close. It could possibly be the heat, but it is also creaking and not closing smoothly. The hinges seem to be misaligned.\n\nPlease fix if simple quote if expensive. Thanks!\nList of attached files: attachment-43-document (unavailable)\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-10-19T21:20:04Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller confirms a maintenance visit to fix a door handle is rescheduled to Friday at 3pm."
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-10-19T21:22:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Booked for tenants convenience Friday 24 October 3pm"
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-10-19T21:22:47Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit date selected - 24/10/2025 03:00 pm"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-10-19T21:23:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Beacon Works,\n\nWe are providing the confirmed appointment details for the **Door Repair Request** at Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ:\n\nConfirmed Time Slot: Friday 24 October 3pm (24/10/2025)\nPets: N/A\nContact Details: 07700 900387\nTenant Name: Harriet Rowan\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-10-19T21:23:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Harriet Rowan,\n\nWe are providing the confirmed appointment details for the **Door Repair Request** at Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ:\nConfirmed Time Slot: Friday 24 October 3pm (24/10/2025)\nMaintenance Provider Name: Beacon Works\nContact Details: 07700 900387\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-10-23T21:31:46Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hello, this is Cedar Homes! Your Door Repair Request appointment is scheduled for Friday 24 October 3pm (24/10/2025). To reschedule call 07700 900387"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-10-24T21:27:31Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Email received from provider, but expected data could not be extracted. Please review manually."
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-10-24T21:27:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer informs that the door repair job is complete and no invoice is required as the door is functioning well after naturally settling."
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-10-24T21:54:56Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ\n\nBrilliant thank you Dawson.\n\nKind regards,\n\nMaya"
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-10-24T21:55:52Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 17, 113 Juniper Mews, Northbridge, ZZ8 6ZZ\n\nHi Ellis,\n\nJust to let you know that the invoice was needed for this one as the door is functioning well after naturally settling.\n\nKind regards,\n\nMaya"
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-10-24T21:56:35Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "done complete"
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-10-24T21:56:35Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,82 @@
+{
+  "id": "delivery-001",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "001",
+  "title": "Case 001: Recipient cannot attend the scheduled delivery window",
+  "details": {
+    "source_role": "Vessa Lorne, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-02 09:00:00 UTC",
+    "escalated": "2026-02-02 09:10:00 UTC",
+    "updated": "2026-02-02 10:05:00 UTC",
+    "completed": "2026-02-02 10:05:00 UTC",
+    "primary_shipment": "DL-001",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A desk-lamp parcel is at the destination depot. The recipient cannot use the original slot. Dispatch, not the desk, controls booking changes.",
+  "initial_request": "I have a work meeting during the morning delivery. Could you help move my lamp delivery? Please use this order-linked message thread.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the recipient to choose from dispatcher-confirmed alternative slots.",
+    "recipient": "Vessa Lorne, recipient",
+    "channel": "Customer portal",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "Dispatch confirms the selected replacement slot; delivery itself remains pending.",
+  "boundaries": "Do not promise arrival at a precise minute or say the lamp has been delivered.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-02T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-001 is booked for 2026-02-03, 09:00–12:00 UTC. Our rescheduling inventory currently has 2026-02-03 15:00–18:00 or 2026-02-04 10:00–13:00. There is no rescheduling charge."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-02T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Vessa Lorne, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I have a work meeting during the morning delivery. Could you help move my lamp delivery? Please use this order-linked message thread."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-02T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Vessa Lorne, recipient",
+      "body": "Dispatch has offered 2026-02-03 15:00–18:00 or 2026-02-04 10:00–13:00, both at no charge. Which should I ask them to book?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-02T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Vessa Lorne, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please choose 2026-02-03 15:00–18:00. I will be home then."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-02T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Following your booking request with Vessa’s selection, DL-001 is now reserved for 2026-02-03 15:00–18:00. The morning slot has been removed. This is a booking confirmation, not a completed delivery."
+    }
+  ],
+  "attachments": []
+}

@@ -1,11 +1,14 @@
 {
   "name": "delivery-ops-agent",
   "private": true,
-  "workspaces": ["apps/*"],
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "dev": "concurrently -n api,web -c blue,green \"npm run dev -w api\" \"npm run dev -w web\"",
     "build": "npm run build -w api && npm run build -w web",
-    "lint": "npm run lint -w api && npm run lint -w web"
+    "lint": "npm run lint -w api && npm run lint -w web",
+    "data": "node scripts/build-data.mjs"
   },
   "devDependencies": {
     "concurrently": "^9"

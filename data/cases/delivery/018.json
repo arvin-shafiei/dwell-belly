@@ -1,0 +1,82 @@
+{
+  "id": "delivery-018",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "018",
+  "title": "Case 018: Shipment is approaching its return-to-sender deadline",
+  "details": {
+    "source_role": "Exception desk, Plover Arc Logistics",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-19 09:00:00 UTC",
+    "escalated": "2026-02-19 09:10:00 UTC",
+    "updated": "2026-02-19 10:05:00 UTC",
+    "completed": "2026-02-19 10:05:00 UTC",
+    "primary_shipment": "DL-018",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The parcel’s return timer is nearing its cutoff. The carrier permits a new collection arrangement if the verified recipient chooses before that cutoff.",
+  "initial_request": "No recipient choice is recorded. Please contact authorised recipient Nalo Vere now, before the cutoff, rather than let the return timer expire.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Contact the recipient to choose a permitted redelivery or collection option before the stated cutoff.",
+    "recipient": "Nalo Vere, recipient",
+    "channel": "Call transcript",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The carrier confirms the agreed option and cancels the scheduled return.",
+  "boundaries": "Only carrier confirmation establishes cancellation of the return; collection remains pending.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-19T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Exception desk, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-018 will enter return-to-sender processing at 16:00 UTC today unless a customer selects redelivery on 2026-02-20 or depot collection on 2026-02-20. Both options are currently available."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-19T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Dispatch chat",
+      "from": "Exception desk, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "No recipient choice is recorded. Please contact authorised recipient Nalo Vere now, before the cutoff, rather than let the return timer expire."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-19T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Call transcript",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Nalo Vere, recipient",
+      "body": "DL-018 is due to return at 16:00 UTC today. Would you like redelivery on 2026-02-20 or depot collection on 2026-02-20? Please select an option so the carrier can stop the return."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-19T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Call transcript",
+      "from": "Nalo Vere, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Please choose depot collection on 2026-02-20. I can attend during the depot’s collection hours."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-19T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Exception desk, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We applied your recorded customer choice at 09:55 UTC, before cutoff. Return-to-sender is cancelled; DL-018 is assigned to depot collection on 2026-02-20, 10:00–17:00 UTC. It has not been collected."
+    }
+  ],
+  "attachments": []
+}

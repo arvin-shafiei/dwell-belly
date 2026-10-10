@@ -1,0 +1,349 @@
+{
+  "id": "property-047",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "047",
+  "title": "Case 047: Bedroom Window Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-02-21 03:01:42 UTC",
+    "updated": "2024-06-11 19:30:18 UTC",
+    "completed": "2024-06-11 19:30:18 UTC",
+    "property": "Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ"
+  },
+  "context": null,
+  "initial_request": "Hello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!",
+  "overview": "The tenant reported a bedroom window that would not close properly. The tenant initially also reported a blocked toilet, then clarified that their mother had fixed it and that only the window needed attention. Northbridge Lettings contacted the landlord, who said he had arranged a plumber to visit; the agency later assigned a maintenance provider and sent repeated appointment reminders. The request was placed on hold several times while awaiting updates. The landlord’s contractor ultimately confirmed the window repair was complete, and the task was completed without payment.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The landlord’s contractor confirmed the job was complete. The task was marked completed without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-02-21T03:01:42Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Hello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-02-21T03:02:24Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-02-22T00:08:42Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Address: Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ\n\nGood Afternoon,\n\nThank you for bringing this to our attention. We shall inform the landlord and ask if we may send out a contractor to assist and quote on the repairs.\n\nKind Regards\n\nAshford"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-02-22T00:11:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ\n\nGood Afternoon,\n\nI hope that you are well.\n\nPlease see below issues reported by the tenant:\n\nHello. Can you please send a plumber to fix the toilet? By mistake the toilet freshener was flushed and now the toilet is stuck. And also if someone can come and fix the window from the bedroom because it isn’t closing properly. Thank you!\n\nPlease advise if we may send one of our contractors out to assist or if you prefer to send one of your own preferred contractors?\n\nKind Regards\n\nAshford"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-02-22T00:11:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-02-22T00:11:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "Hi.My mother managed to fix the toilet.You can just send somebody to fix the window,thank you!"
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-02-22T00:11:34Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for response from landlord"
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-02-22T00:11:34Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task priority was manually updated"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-02-22T00:19:26Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-02-22T00:19:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Hi,\n\nI have arranged plumber to visit Flat 18, 88 Alder Lane, Willowbank, ZZ3 5ZZ tomorrow morning to check what is the issue.\n\nRegards,\n\nIsaac Oakley"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-02-22T15:53:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ\n\nGood Morning,\n\nI hope that you are well.\n\nThe tenant informed us that they were able to sort out the toilet. It is just the window issue that needs to be assessed now.\n\nKind Regards\n\nAshford"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-02-22T15:53:31Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Hello, this is Northbridge Lettings! Please check your email for Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ. Thank you! Meadow Solutions"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-02-22T15:54:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Address: Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ\n\nGood Morning,\n\nI hope that you are well.\n\nThank you for letting us know. We have informed the landlord and we await his response.\n\nKind Regards\n\nAshford"
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-02-22T15:55:11Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for response from LL"
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-03-01T20:47:13Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Changed original task description:\n- task name has been changed to:\nWindow Repair Request\n- task description has been changed to:\nHello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!"
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-03-01T20:48:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-03-01T20:49:24Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Eliza Jenkins,\n\nOur maintenance provider Oscar Turner will be attending your property for a Window Repair Request.\n\nThey will contact you soon to triage the problem or prepare the quote if needed.\n\nRequest description: Hello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-03-01T20:49:24Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Oscar Turner,\n\nThis is a new Window Repair Request for the property at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900447\nTenant Name: Eliza Jenkins\nRequest description: Hello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-03-01T20:49:24Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Meadow Solutions! Please check your email regarding the property at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-03-04T18:52:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Oscar Turner,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Window Repair Request at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900447\nTenant Name: Eliza Jenkins\nRequest description: Hello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-03-04T18:52:23Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Meadow Solutions! Please check your email regarding the property at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ."
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-03-06T18:53:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Oscar Turner,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Window Repair Request at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900447\nTenant Name: Eliza Jenkins\nRequest description: Hello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-03-06T18:53:23Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Meadow Solutions! Please check your email regarding the property at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ."
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-03-08T18:54:22Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Oscar Turner,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Window Repair Request at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900447\nTenant Name: Eliza Jenkins\nRequest description: Hello. can come and fix the window from the bedroom because it isn’t closing properly.Thank you!\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-03-08T18:54:22Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Hello, this is Northbridge Lettings! Please check your email regarding the property at Flat 24, 150 Copperfield Walk, Kingshaven, ZZ3 7ZZ."
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-03-10T18:55:23Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "3+ reminders have been sent to provider. Please check what’s happening."
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-03-11T18:26:36Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Held awaiting update from Dawson."
+    },
+    {
+      "n": 28,
+      "timestamp": "2024-03-19T21:51:12Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Held awaiting update from Dawson."
+    },
+    {
+      "n": 29,
+      "timestamp": "2024-04-03T22:56:12Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Langley. Reason: Waiting for Provider. Comment: Held awaiting update from Dawson."
+    },
+    {
+      "n": 30,
+      "timestamp": "2024-04-10T19:54:54Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Langley. Reason: Waiting for Landlord. Comment: Held awaiting update from Dawson."
+    },
+    {
+      "n": 31,
+      "timestamp": "2024-04-24T19:01:20Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Langley. Reason: Waiting for Landlord. Comment: Held awaiting update from Dawson."
+    },
+    {
+      "n": 32,
+      "timestamp": "2024-05-01T19:47:46Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Langley. Reason: Waiting for Landlord. Comment: Held awaiting update from Dawson."
+    },
+    {
+      "n": 33,
+      "timestamp": "2024-05-16T19:26:28Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Langley. Reason: Waiting for Landlord. Comment: Held awaiting update from Dawson."
+    },
+    {
+      "n": 34,
+      "timestamp": "2024-05-30T18:57:02Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ruben Langley. Reason: Waiting for Landlord. Comment: Held awaiting update from Dawson."
+    },
+    {
+      "n": 35,
+      "timestamp": "2024-06-11T19:30:18Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord's contractor confirmed job complete."
+    },
+    {
+      "n": 36,
+      "timestamp": "2024-06-11T19:30:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    }
+  ],
+  "attachments": []
+}

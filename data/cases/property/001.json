@@ -1,0 +1,421 @@
+{
+  "id": "property-001",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "001",
+  "title": "Case 001: Communal Garden and Hedge Maintenance Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-10-10 19:20:49 UTC",
+    "updated": "2025-12-11 21:54:17 UTC",
+    "completed": "2025-12-11 21:51:18 UTC",
+    "property": "Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ"
+  },
+  "context": null,
+  "initial_request": "Communal  garden full of weeds, hedge along side path overgrown, peice of no man's land at side  of my property  was going to be cleared  last summer and wasn't thanks",
+  "overview": "The tenant reported weeds in the communal garden, an overgrown hedge along the side path, and an uncleared area beside the property. The landlord sought contractor quotes, approved the gardening works, and the tenant was updated that work was planned. The records later note a tree-removal job and confirm completion, with the landlord paying the contractor directly.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The communal garden works were completed; the landlord pays the contractor directly.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-10T19:20:49Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Communal  garden full of weeds, hedge along side path overgrown, peice of no man's land at side  of my property  was going to be cleared  last summer and wasn't thanks"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-10T19:20:49Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "**[AI Intake Classification]**\n\n**Tenant said:**\n  Communal  garden full of weeds, hedge along side path overgrown, peice of no man's land at side  of my property  was going to be cleared  last summer and wasn't thanks\n\n**Issue:**\n  External & Communal\n  **Severity:** ROUTINE\n  **Confidence:** medium\n\n**Tenant's clarifying Q&A:**\n  **Q:** Where is the affected fence, gate, or boundary located at the property — for example front garden, rear garden, or side passage?\n  **A:** Front and back hedge and weeds\n  **Q:** Is this a garden or boundary gate, or is it a main entry gate that affects access to the property?\n  **A:** Path access to backbone properties\n  **Q:** Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n  **A:** No\n  **Q:** Are there any pets at the property?\n  **A:** 1 cat"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-10T19:21:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-11T18:33:56Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Hi Rowan,\n\nWe've had the below email and images attached from Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ.\n\n> \"Communal  garden full of weeds, hedge along side path overgrown, peice of no man's land at side  of my property  was going to be cleared  last summer and wasn't thanks\"\n\nCan you confirm how you'd like us to respond.\n\nThank you.\n\nAttachments: attachment-44-document (unavailable); attachment-17-document (unavailable)"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-11T18:33:59Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-10-11T22:29:11Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Message received from landlord/tenant. Please review and proceed manually."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-10-11T22:29:12Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "The customer, Grace Nolan, informs Harper that he had a site meeting with Freya from Riverside Services and is awaiting quotes for various works. He plans to follow up on Monday if the quotes are not received by then."
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-10-12T16:02:31Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Sawyer. Reason: Waiting for Landlord. Comment: follow up on Monday"
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-10-16T18:06:55Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ\n\nHello Rowan\n\nBit of a duplicate here regards the gardening works, have you got the quote from Riverside Services yet for the gardening works you requested at the synthetic-bca83b5565b3?"
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-10-16T18:07:56Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Landlord. Comment: Waiting for LL response"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-10-17T00:18:11Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Leo Ashford informs he hasn't spoken to Freya yet and is currently handling other tasks. He hopes to address the issue by Sunday."
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-10-17T15:15:54Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Landlord. Comment: LL will come back to me when he has a quote from his contractor."
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-10-22T16:39:17Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ\n\nHi Rowan\n\nAny update from Riverside Services regarding the garden maintenance works at synthetic-f00fcbada17f?"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-10-22T18:33:11Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Landlord. Comment: Still waiting for LL to update me"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-10-23T04:11:10Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "The customer is unable to provide an update yet and will follow up later in the week."
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-10-23T16:07:35Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Landlord. Comment: LL not had any contact with hos provider this week so will hopefully catch up later this week and then update me."
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-10-30T20:30:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ\n\nHello Rowan\n\nAny update from Riverside Services regarding the communal garden works here?"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-10-30T20:30:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-11-02T20:30:25Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No landlord/tenant response after 3 days. Please review manually."
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-11-02T22:47:22Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-11-03T19:34:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Message received from landlord/tenant. Please review and proceed manually."
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-11-03T19:34:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Felix Kendall confirms receipt of quotes from Freya and agrees to proceed with the garden maintenance works."
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-11-05T14:46:58Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ\n\nGood news Rowan.\n\nOnce you have a start date from Riverside Services please let me know and I will keep the tenants at Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ and 44 informed as they are the only tenants that have reported these issues."
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-11-05T14:57:23Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Landlord. Comment: LL waiting for a date from provider."
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-11-05T15:02:09Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ\n\nHello Henry,\n\nJust letting you know that a contractor, Riverside Services, has been instructed to do the communal garden works required.\n\nThe landlord will confirm a start date to me soon; once I have this, I will let you know."
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-11-05T20:22:10Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Yeah, I've asked Freya to let me know when she's starting/booked it in for & I'll then advise you accordingly. Could you please advise both T's, in the meantime, that works have been quoted & go ahead given. Thanks Leo"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-11-05T22:28:21Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Already notified the tenants Rowan"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-11-05T22:28:52Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: Waiting for Provider to book in"
+    },
+    {
+      "n": 29,
+      "timestamp": "2025-11-05T22:41:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Great, cheers Leo 🙂👍"
+    },
+    {
+      "n": 30,
+      "timestamp": "2025-11-06T14:37:15Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: Waiting for Provider to book in"
+    },
+    {
+      "n": 31,
+      "timestamp": "2025-11-06T18:02:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 26, 46 Copperfield Walk, Kingshaven, ZZ5 7ZZ\n\nHello Henry,\n\nThe contractor is hoping to start the gardening works around 19 November 2025."
+    },
+    {
+      "n": 32,
+      "timestamp": "2025-11-19T15:47:01Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: Waiting for provider to confirm a start date"
+    },
+    {
+      "n": 33,
+      "timestamp": "2025-11-20T17:10:39Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: Job starting today by landlord contractor, big job so contact next week for an update."
+    },
+    {
+      "n": 34,
+      "timestamp": "2025-11-26T16:04:24Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 35,
+      "timestamp": "2025-11-26T16:04:55Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 36,
+      "timestamp": "2025-11-26T16:05:17Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: This is an external job for the development and not for the tenants so no contact needed."
+    },
+    {
+      "n": 37,
+      "timestamp": "2025-11-30T22:13:52Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: Pigeon nesting in tree he needs to trim back so move to next Friday and see if gone/done."
+    },
+    {
+      "n": 38,
+      "timestamp": "2025-12-07T21:59:26Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: Waiting for provider to confirm all done."
+    },
+    {
+      "n": 39,
+      "timestamp": "2025-12-10T19:27:05Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "The agent, Leo from Juniper Homes, is calling Freya to request an update on the works at the synthetic-eae38b44a3ac and has provided a phone number for Freya to call back."
+    },
+    {
+      "n": 40,
+      "timestamp": "2025-12-10T19:28:41Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Leo Ashford. Reason: Waiting for Provider. Comment: Waiting for provider to confirm all done."
+    },
+    {
+      "n": 41,
+      "timestamp": "2025-12-11T21:42:26Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "The agent informs the caller that the call may be recorded for training and monitoring purposes."
+    },
+    {
+      "n": 42,
+      "timestamp": "2025-12-11T21:49:55Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Leo and Freya discuss a job involving removing a tree, confirming details about invoicing and completion."
+    },
+    {
+      "n": 43,
+      "timestamp": "2025-12-11T21:51:18Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Job done and LL pays directly"
+    },
+    {
+      "n": 44,
+      "timestamp": "2025-12-11T21:51:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    }
+  ],
+  "attachments": []
+}

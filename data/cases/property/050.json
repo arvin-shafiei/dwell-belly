@@ -1,0 +1,421 @@
+{
+  "id": "property-050",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "050",
+  "title": "Case 050: Bedroom Window Repair",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-06-26 18:25:28 UTC",
+    "updated": "2024-07-05 01:53:40 UTC",
+    "completed": "2024-07-04 01:08:03 UTC",
+    "property": "Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ"
+  },
+  "context": null,
+  "initial_request": "Bedroom window not shutting, handle not engaging.",
+  "overview": "The tenant reported that the bedroom window handle turned but did not engage, leaving the window unable to close properly. The agency sought landlord approval, arranged for a maintenance provider to inspect and repair it, and later told the landlord the repair was complete and sent an invoice. The request was closed after checks were completed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The bedroom window repair was completed. The agency informed the landlord and sent an invoice for their records; the request was then closed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-06-26T18:25:28Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Bedroom window not shutting, handle not engaging."
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-06-26T18:25:28Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[AI Intake Classification]\n\n**Tenant said:**\n  Bedroom window not shutting, handle not engaging.\n\n**Issue:**\n  Windows & Glazing\n  **Severity:** ROUTINE\n  **Confidence:** medium\n\n**Tenant's clarifying Q&A:**\n  **Q:** Which window or glazed door is affected, which room is it in, and on which floor of the property?\n  **A:** Bedroom window\n  **Q:** How many windows or doors are affected, and which rooms are they in?\n  **A:** 1\n  **Q:** Can you describe what happens when you try to open the window? For example, does the handle turn but nothing moves, or does it feel stuck?\n  **A:** Handle turns but doesn't click in\n  **Q:** Is the window still able to close and latch securely, or is it stuck open or unable to close properly?\n  **A:** Unable to close properly\n  **Q:** Is the glazing misted or condensation visible between the panes, suggesting the window seal has failed?\n  **A:** Not applicable\n  **Q:** Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n  **A:** No\n  **Q:** Are there any pets at the property?\n  **A:** No"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-06-26T18:26:15Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-06-26T18:53:01Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nHi Nolan,\n\nHope you are well.\n\nTenant has reported that her bedroom window handle is not engaging. Please see attached picture,\n\nAre you happy for me to send a contractor to sort?\n\nThanks\nImogen"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-06-26T18:54:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nHello Harriet,\n\nThank you for your email.\n\nI reported this to your lanlord and will come back to you with further steps as soon aspossible,.\n\nThank you\n\nImogen"
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-06-26T18:55:01Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nPlease see attached picture."
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-06-26T18:55:16Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Imogen Quinn. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-06-26T18:56:02Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-06-26T18:56:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Hi Imogen, yes please send someone to take a look.\n\nThanks again,\n\nNolan"
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-06-26T19:00:42Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nHi Nolan,\n\nOf course. I'll get our contractor to sort.\n\nThanks\nImogen"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-06-26T19:00:49Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-06-26T19:01:06Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-06-26T19:02:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Harriet Turner,\n\nOur maintenance provider Stonebridge Works will be attending your property for a Window Repair Request.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: Bedroom window not shutting, handle not engaging.\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-06-26T19:02:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance Provider",
+      "body": "Job Id: NBL-050-2635\nDear Stonebridge Works,\n\nThis is a new Window Repair Request for the property at Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900009 (enter the call code when calling)\nTenant Name: Harriet Turner\nRequest description: Bedroom window not shutting, handle not engaging.\nList of attached files: attachment-359-document (unavailable; unseen contents not described)\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-06-26T19:03:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance Provider",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nHello guys,\nHope you are well.\nAre you able to sort below?\nRequest description: Bedroom window not shutting, handle not engaging.\nThanks\nImogen\n\nAttachment(s): attachment-359-document (unavailable; unseen contents not described)"
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-06-29T17:05:10Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance Provider",
+      "body": "Job Id: NBL-050-2635\nDear Stonebridge Works,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Window Repair Request at Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900009 (enter the call code when calling)\nTenant Name: Harriet Turner\nRequest description: Bedroom window not shutting, handle not engaging.\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-06-29T18:37:44Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Email received from provider, but expected data could not be extracted. Please review manually."
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-06-29T18:37:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer mentions that either the handle or the lock is broken and provides the cost for replacement."
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-06-29T19:00:22Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-050-2635\nHi Nolan,\n\nHope you've had a good weekend.\n\nPlease see below potential quotes for the windw repair -\n\nIt seems like either the handle or the lock has broken.\n\nA new handle would be £35 + VAT\nA new lock would be £90 + VAT\n\nAre you happy with these?\n\nThanks\nImogen"
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-06-29T19:04:11Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Imogen Quinn. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-06-29T19:43:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Hi Imogen,\n\nYes please proceed,\n\nThanks again,\n\nNolan"
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-06-29T19:50:51Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-050-2635\nWill do, thanks Nolan"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-06-29T19:51:17Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-050-2635\nHi Miles,\n\nThank you.\n\nPlease go ahead with whatever needed.\n\nThanks\nImogen"
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-06-29T19:51:28Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-050-2635\nTenant: Eliza Langley\nPhone: 07700 900931"
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-06-29T19:51:37Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Imogen Quinn. Reason: Waiting for Provider"
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-06-29T20:15:54Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Hi Imogen,\n\nBooked in for 8 July 2024\n\nMiles"
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-06-29T20:17:43Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nBrill, thank you"
+    },
+    {
+      "n": 28,
+      "timestamp": "2024-06-29T20:18:17Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Visit date confirmed/rescheduled - 2024-07-08 10:00"
+    },
+    {
+      "n": 29,
+      "timestamp": "2024-06-29T20:19:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-050-2635\nDear Stonebridge Works,\n\nWe are providing the confirmed appointment details for the **Window Repair Request** at Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ:\n\nConfirmed Time Slot: 10:00 - 16:00 (08/07/2024)\nPets: N/A\nContact Details: 07700 900009 (enter this code when calling)\nTenant Name: Harriet Turner\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 30,
+      "timestamp": "2024-06-29T20:19:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Harriet Turner,\n\nWe are providing the confirmed appointment details for the **Window Repair Request** at Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ:\nConfirmed Time Slot: 10:00 - 16:00 (08/07/2024)\nMaintenance Provider Name: Stonebridge Works\nContact Details: 07700 900009 (enter this code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 31,
+      "timestamp": "2024-07-03T22:17:46Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Email received from provider, but expected data could not be extracted. Please review manually."
+    },
+    {
+      "n": 32,
+      "timestamp": "2024-07-03T22:17:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Cedar Solutions sent an invoice and requested prompt payment, along with a suggestion to leave a review on social media or Lantern Surveying. They expressed gratitude for the business and a future collaboration."
+    },
+    {
+      "n": 33,
+      "timestamp": "2024-07-03T22:39:38Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nHi Miles,\n\nThank you.\n\nSorry, can you please re-send as pdf - many thanks"
+    },
+    {
+      "n": 34,
+      "timestamp": "2024-07-03T22:39:49Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Imogen Quinn. Reason: Waiting for Provider"
+    },
+    {
+      "n": 35,
+      "timestamp": "2024-07-03T22:43:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Hi Imogen,\n\nHere it is as a PDF\n\nMiles"
+    },
+    {
+      "n": 36,
+      "timestamp": "2024-07-04T01:05:41Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Job Id: NBL-050-2635\nAddress: Flat 3, 171 Willowmere Road, Alderwick, ZZ6 0ZZ\n\nHi Nolan,\n\nHope you are well.\n\nJust to make you aware that the window repair is now complete. Please see attached invoice for your record. I will process on my side as normal.\n\nMany thanks\nImogen\n\n[Attachment unavailable: invoice PDF]"
+    },
+    {
+      "n": 37,
+      "timestamp": "2024-07-04T01:06:03Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord was given a quote of £49.40 incl VAT"
+    },
+    {
+      "n": 38,
+      "timestamp": "2024-07-04T01:06:03Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 39,
+      "timestamp": "2024-07-04T01:06:07Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 40,
+      "timestamp": "2024-07-04T01:06:46Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription absent from the maintenance action comment]"
+    },
+    {
+      "n": 41,
+      "timestamp": "2024-07-04T01:06:58Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** not applicable"
+    },
+    {
+      "n": 42,
+      "timestamp": "2024-07-04T01:06:58Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 43,
+      "timestamp": "2024-07-04T01:08:03Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    },
+    {
+      "n": 44,
+      "timestamp": "2024-07-05T01:53:40Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Thanks again Imogen :)"
+    }
+  ],
+  "attachments": []
+}

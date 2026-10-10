@@ -1,0 +1,73 @@
+{
+  "id": "banking-005",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "005",
+  "title": "Case 005: Request about a transfer to the wrong recipient",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-07-27 09:00:00 UTC",
+    "updated": "2025-07-27 12:08:00 UTC",
+    "completed": "2025-07-27 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I sent a £286.40 transfer for a shared pottery-studio bill to the wrong saved recipient. Please register a request to seek its return.",
+  "overview": "Leona Mercer contacted Harrow & Vale Bank plc after noticing that a transfer shown as sent in her secure portal had gone to the wrong saved recipient. After completing identification checks on a verified call, she asked H&V to initiate the prescribed return request. The payment team registered the request; no return of the money is confirmed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent will submit a request to the payment team to register a return request for the verified transfer.",
+    "recorded_event": null
+  },
+  "outcome": "The payment team confirmed that the return request was registered. Whether the money will be returned remains unconfirmed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-27T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Leona Mercer",
+      "body": "Transfer status: sent. This status confirms the transfer was sent from your H&V account; it does not confirm that the recipient has returned the money."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-27T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Leona Mercer",
+      "to": "H&V service agent",
+      "body": "I selected the wrong saved recipient for my pottery-studio bill transfer. My identity checks are complete, and I want H&V to register a request to seek the money's return."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-27T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V payment team",
+      "body": "I have verified the payer and checked the transfer details for case HV-005. Please register the prescribed request to seek a return; the customer has confirmed the recipient was selected in error."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-27T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V payment team",
+      "to": "H&V service agent",
+      "body": "I have registered the return request for case HV-005 against the verified transfer. Registration does not confirm that the money will be returned."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-27T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V payment team",
+      "to": "Leona Mercer",
+      "body": "Request status: registered. H&V has registered your request to seek a return of the transfer; a return of the money is not confirmed."
+    }
+  ],
+  "attachments": []
+}

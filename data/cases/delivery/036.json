@@ -1,0 +1,73 @@
+{
+  "id": "delivery-036",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "036",
+  "title": "Case 036: Business sender needs collection of several labelled cartons",
+  "details": {
+    "source_role": "Fesk Rowan, Orris Fold Studio shipping coordinator",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-09 09:00:00 UTC",
+    "escalated": "2026-03-09 09:10:00 UTC",
+    "updated": "2026-03-09 09:50:00 UTC",
+    "completed": "2026-03-09 09:50:00 UTC",
+    "primary_task_reference": "OF-036",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A business shipper needs capacity for four labelled cartons. Collection planning controls vehicle allocation and manifest acceptance.",
+  "initial_request": "Could you confirm a collection vehicle can take all four together? We cannot release a partial consignment.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the collection planner to confirm capacity for the stated carton count, sizes and weights.",
+    "recipient": "Collection planner, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The planner confirms the collection booking and shipment manifest; pickup remains pending.",
+  "boundaries": "Capacity reservation and accepted manifest do not prove collection.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-09T09:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Fesk Rowan, Orris Fold Studio shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Inline packing list OF-036: 4 labelled cartons, each 40 × 30 × 25 cm and 5 kg, total 20 kg; labels DL-036-A through DL-036-D. Ready at dispatch door S1 from 10:00 UTC on 2026-03-10."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-09T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Fesk Rowan, Orris Fold Studio shipping coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Could you confirm a collection vehicle can take all four together? We cannot release a partial consignment."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-09T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Collection planner, Plover Arc Logistics",
+      "body": "Please confirm capacity for all four cartons on OF-036: each 40 × 30 × 25 cm, 5 kg; total 20 kg. Request collection 2026-03-10 from 10:00 UTC, dispatch door S1. Accept A–D as one manifest."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-09T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Collection planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Booking COL-036 confirmed for 2026-03-10, 10:00–12:00 UTC. Capacity reserved for all four cartons, 20 kg total. Inline accepted manifest MN-036 lists DL-036-A, B, C and D. Pickup has not occurred."
+    }
+  ],
+  "attachments": []
+}

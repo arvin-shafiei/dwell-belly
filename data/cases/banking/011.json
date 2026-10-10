@@ -1,0 +1,73 @@
+{
+  "id": "banking-011",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "011",
+  "title": "Case 011: When will my standing order run?",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-08-08 09:00:00 UTC",
+    "updated": "2025-08-08 12:08:00 UTC",
+    "completed": "2025-08-08 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I need to know the date my active monthly standing order is next due to run. I have forgotten its schedule and want to plan my household budget.",
+  "overview": "Mara Ellison escalated through secure chat after seeing in the secure portal that her standing order was active but not recalling its next run date. The agent checked the bank's standing-order record and relayed the date shown there.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent's first action at escalation is to ask H&V's standing-order journal to verify the next scheduled run date.",
+    "recorded_event": null
+  },
+  "outcome": "H&V's record shows the next run date as 3 September 2025, and that date was shown to Mara in the secure portal. The future payment has not been executed, and the scheduled date does not guarantee when funds will reach the recipient.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-08T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Standing order status: Active. The next run date is not displayed in this status view."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-08T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I can see that my monthly household contribution standing order is active, but I cannot remember when it is next due. Please check the date for me; I am planning my budget."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-08T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V standing-order journal",
+      "body": "Please check the record for Mara Ellison's active monthly standing order and confirm its next scheduled run date. I am checking the recorded date only; I am not changing or authorising the instruction."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-08T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V standing-order journal",
+      "to": "H&V service agent",
+      "body": "Record check complete: the standing order is active. Its next scheduled run date is 3 September 2025; the future payment has not been executed."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-08T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "I checked the standing-order record. Your active instruction is next scheduled to run on 3 September 2025. This is the scheduled run date, not a guarantee of when the recipient will receive the money; the future payment has not yet been made."
+    }
+  ],
+  "attachments": []
+}

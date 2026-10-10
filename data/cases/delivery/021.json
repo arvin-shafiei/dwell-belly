@@ -1,0 +1,97 @@
+{
+  "id": "delivery-021",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "021",
+  "title": "Case 021: Outer packaging is damaged and the merchant needs evidence",
+  "details": {
+    "source_role": "Lessa Vire, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-22 09:00:00 UTC",
+    "escalated": "2026-02-22 09:10:00 UTC",
+    "updated": "2026-02-22 10:05:00 UTC",
+    "completed": "2026-02-22 10:05:00 UTC",
+    "primary_shipment": "DL-021",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A carton has a dented corner. The merchant requires two customer image views before it can assess packaging damage; the request does not determine compensation.",
+  "initial_request": "The outside corner of my carton is dented. I have not opened it. Tell me which views your merchant needs for the damage assessment.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the customer for the merchant's specified photos through its approved upload channel.",
+    "recipient": "Lessa Vire, recipient",
+    "channel": "Customer portal",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The merchant confirms receipt of sufficient evidence for assessment; compensation remains undecided.",
+  "boundaries": "Rendered scene simulations are not real photographs or proof of actual physical damage. Receipt of these fictional evidence views does not establish contents condition or compensation.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-22T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For TG-021 / DL-021 we need a full carton view with the shipment marking visible and a closer view of the dented corner. Use the order-linked upload channel. Do not ask the customer to unpack an item they consider unsafe."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-22T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Lessa Vire, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The outside corner of my carton is dented. I have not opened it. Tell me which views your merchant needs for the damage assessment."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-22T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Lessa Vire, recipient",
+      "body": "Please upload the full carton with DL-021 marking and a close view of the dented corner through the order-linked upload channel. Do not unpack it if unsafe. The merchant will assess the evidence before deciding a remedy."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-22T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Customer portal",
+      "from": "Lessa Vire, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The two requested image views are submitted: [full carton](attachments/carton-overview.png) and [corner detail](attachments/carton-detail.png). These files are explicitly labelled synthetic rendered scene simulations for this fictional exercise, not actual customer photographs."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-02-22T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Damage intake, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We received both requested views for TG-021 / DL-021 at 09:55 UTC. They are sufficient to open the packaging-damage assessment. Contents condition and compensation have not been decided."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "carton-detail.png",
+      "type": "png",
+      "path": "raw/Delivery & Logistics/021/attachments/carton-detail.png",
+      "text": "Image description: synthetic rendered scene, detail crop of the same DL-021 carton's top-right corner. The corner is crushed inward, forming a triangular dent; the packing tape over it is intact and not torn. No puncture or opening visible.\n\nOCR text:\nSYNTHETIC RENDERED SCENE SIMULATION\nNot an actual customer photograph | DL-021/TG-021\nDetail crop of the same top right comer shownin the full view.",
+      "text_source": "description+ocr"
+    },
+    {
+      "name": "carton-overview.png",
+      "type": "png",
+      "path": "raw/Delivery & Logistics/021/attachments/carton-overview.png",
+      "text": "Image description (written during data prep, not by the case authors): synthetic rendered scene, not a real photo. A closed brown cardboard carton with a white label reading DL-021 / TG-021. Tape runs across the top and is intact; the box looks unopened. The top-right corner is dented inward. No other visible damage.\n\nOCR text:\nSYNTHETIC RENDERED SCENE SIMULATION\nNot an actual customer photograph | DL-021/TG-021\nFull carton view; dented top-right comer; unopened exterior.",
+      "text_source": "description+ocr"
+    }
+  ]
+}

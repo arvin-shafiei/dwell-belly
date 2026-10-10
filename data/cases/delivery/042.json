@@ -1,0 +1,73 @@
+{
+  "id": "delivery-042",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "042",
+  "title": "Case 042: Warehouse has no forklift for a booked pallet delivery",
+  "details": {
+    "source_role": "Voren Tesk, Fenwick Spur receiving coordinator",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-15 09:00:00 UTC",
+    "escalated": "2026-03-15 09:10:00 UTC",
+    "updated": "2026-03-15 09:50:00 UTC",
+    "completed": "2026-03-15 09:50:00 UTC",
+    "primary_shipment": "DL-042",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The consignee has no forklift. The carrier planner can offer a tail-lift service only under the confirmed pallet and site conditions.",
+  "initial_request": "Our booking account authorises me to accept up to GBP 30.00 total extra service cost. Please arrange the carrier’s suitable option if it fits that limit.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier planner to arrange the appropriate unloading service under the agreed booking terms.",
+    "recipient": "Freight planner, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The planner confirms a suitable vehicle and agreed service cost; unloading remains pending.",
+  "boundaries": "No manual-lifting advice. Planner allocation and authorised cost are not payment or completed unloading.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-15T09:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight account services, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Inline verified booking record DL-042: one 280 kg pallet; consignee declares no forklift, level hard-surfaced delivery bay and clear vehicle access. Registered coordinator Voren Tesk has a verified business-portal channel and spending authority for up to GBP 30.00 total additional unloading cost. Consignee staff are not authorised to manually unload the pallet."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-15T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Voren Tesk, Fenwick Spur receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our booking account authorises me to accept up to GBP 30.00 total extra service cost. Please arrange the carrier’s suitable option if it fits that limit."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-15T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "Please arrange an appropriate unloading service for DL-042, one 280 kg pallet at the declared level hard-surfaced bay. No consignee forklift. Verified coordinator Voren authorises up to GBP 30.00 total extra cost."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-15T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tail-lift vehicle and trained unloading crew allocated for DL-042 on 2026-03-16, 09:00–12:00 UTC. Total service addition GBP 24.00 under the recorded authority. Driver will assess conditions on arrival; no unloading has occurred."
+    }
+  ],
+  "attachments": []
+}

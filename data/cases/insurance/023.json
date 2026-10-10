@@ -1,0 +1,92 @@
+{
+  "id": "insurance-023",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "023",
+  "title": "Case 023: Invoice for Accounting",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-06-09 10:07:00 UTC",
+    "updated": "2025-06-09 15:42:00 UTC",
+    "completed": "2025-06-09 15:42:00 UTC",
+    "property": "123 Elm Walk, Brackenford, ZZ3 5ZZ",
+    "broker": "Fernwick Insurance",
+    "insurer": "Alderwick Mutual"
+  },
+  "context": null,
+  "initial_request": "Could you send me the invoice for policy INS-023 for 1 June 2025 to 31 May 2026? I need it for my accounting records for 123 Elm Walk, Brackenford, ZZ3 5ZZ.",
+  "overview": "Molly Burke asked her agent, Neil at Fernwick Insurance, for the invoice for policy INS-023. Neil did not have the document on file, so he requested it from Alderwick Mutual's billing team. The billing team issued and sent the invoice to Neil, who forwarded invoice.png to Molly. Molly confirmed that she received it.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Request the invoice for INS-023 from Alderwick Mutual's billing team, then forward it to Molly.",
+    "recorded_event": null
+  },
+  "outcome": "Molly confirmed that she received the invoice; no payment confirmation is recorded.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-06-09T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Molly Burke",
+      "to": "Neil",
+      "body": "Could you send me the invoice for policy INS-023 for the 1 June 2025 to 31 May 2026 policy year? I need it for my accounting records for 123 Elm Walk, Brackenford, ZZ3 5ZZ."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-06-09T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Neil",
+      "to": "Molly Burke",
+      "body": "I don't have the invoice on file, but I can request it from Alderwick Mutual's billing team. I'll forward it to you when they send it over."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-06-09T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Neil",
+      "to": "Alderwick Mutual Billing Team",
+      "body": "Please send me the invoice for policy INS-023 for the 1 June 2025 to 31 May 2026 policy year. The policyholder, Molly Burke, needs a copy for her accounting records."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-06-09T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Alderwick Mutual Billing Team",
+      "to": "Neil",
+      "body": "Attached is invoice INV-023 for policy INS-023, issued 2 June 2025 for 1 June 2025 to 31 May 2026, with a £684.00 total due 30 June 2025. This is an invoice, not a receipt. You may forward the attached invoice to Molly Burke."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-06-09T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Neil",
+      "to": "Molly Burke",
+      "body": "Alderwick Mutual's billing team has sent the invoice for INS-023. I've forwarded invoice.png, reference INV-023, for 1 June 2025 to 31 May 2026; the total billed is £684.00, due 30 June 2025 (not a confirmation of payment)."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-06-09T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Molly Burke",
+      "to": "Neil",
+      "body": "I've received invoice.png, thank you. I have it for my accounting records."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "invoice.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/023/attachments/invoice.png",
+      "text": "OCR text:\nAlderwick Mutual Billing Team\n\nInvoice | INV-023\n\nBILL TO\n\nPolicyholder: Molly Burke\n\nProperty: 123 Elm Walk, Brackenford, ZZ3 5ZZ\n\nPolicy reference: INS-023 | Invoice reference: INV-023\nIssue date: 2 June 2025 | Due date: 30 June 2025\n\nBilling period: 1 June 2025 to 31 May 2026\n\nCHARGES\n\nAnnual property insurance premium: £684.00\n\nOther charges: £0.00 | Total invoiced: £684.00\n\nThis invoice is not a receipt and does not confirm that a payment has cleared.\n\nFor safe payment instructions, use the insurer's existing authenticated billing channel.\n\nSYNTHETIC CALIBRATION DOCUMENT - CASE 023 - NOT REAL INSURANCE",
+      "text_source": "ocr"
+    }
+  ]
+}

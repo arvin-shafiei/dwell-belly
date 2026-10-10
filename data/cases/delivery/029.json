@@ -1,0 +1,73 @@
+{
+  "id": "delivery-029",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "029",
+  "title": "Case 029: Refrigerated food arrives outside the merchant's documented temperature conditions",
+  "details": {
+    "source_role": "Enna Vosk, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-02 09:00:00 UTC",
+    "escalated": "2026-03-02 09:10:00 UTC",
+    "updated": "2026-03-02 09:50:00 UTC",
+    "completed": "2026-03-02 09:50:00 UTC",
+    "primary_shipment": "DL-029",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A refrigerated grocery delivery has an out-of-range logger reading under the merchant’s own order conditions. Food-safety staff must decide the disposition.",
+  "initial_request": "I have not eaten anything from this box. The logger shows 9.2 °C. Please get the merchant to tell me what to do and whether they will replace it.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Escalate the recorded temperature evidence to the merchant's food-safety team, without advising consumption.",
+    "recipient": "Brineleaf Pantry food-safety lead",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The authorised team confirms its disposition and remedy for this order; no general safety judgment is made by the agent.",
+  "boundaries": "The range is an attributed fictional merchant condition, not a universal legal rule. The agent makes no independent food-safety assessment.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-02T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry food-safety intake",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Order BP-029 / DL-029 uses our documented chilled-delivery range of 0–5 °C at handover. Inline logger excerpt: sensor BL-29, handover capture 2026-03-02 08:50 UTC, 9.2 °C. This is outside our range; only food-safety staff may authorise disposition."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-02T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Enna Vosk, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I have not eaten anything from this box. The logger shows 9.2 °C. Please get the merchant to tell me what to do and whether they will replace it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-02T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Brineleaf Pantry food-safety lead",
+      "body": "Please assess BP-029 using the recorded 9.2 °C handover reading against your 0–5 °C order condition. The customer has not consumed the contents. Please issue your disposition and order-specific remedy; I am not advising consumption."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-02T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Brineleaf Pantry food-safety lead",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For BP-029, do not consume the contents. Follow our order-portal disposal instructions without opening any leaking packs. We have authorised no-charge replacement order BP-029-R. Its delivery is not yet booked."
+    }
+  ],
+  "attachments": []
+}

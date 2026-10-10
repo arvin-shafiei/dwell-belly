@@ -1,0 +1,82 @@
+{
+  "id": "delivery-039",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "039",
+  "title": "Case 039: Merchant shipped a replacement but the original parcel then also arrived",
+  "details": {
+    "source_role": "Dessa Kelm, customer",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-12 09:00:00 UTC",
+    "escalated": "2026-03-12 09:10:00 UTC",
+    "updated": "2026-03-13 10:50:00 UTC",
+    "completed": "2026-03-13 10:50:00 UTC",
+    "primary_task_reference": "TG-039",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "A delayed original and a replacement have both reached the customer. The merchant must choose which unit to return and authorise its collection.",
+  "initial_request": "Both floor lights arrived. I have kept the replacement and left the original carton sealed. Please tell me how to return the duplicate.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Request the merchant's instructions for an authorised duplicate return.",
+    "recipient": "Duplicate returns, Tallowmere Goods",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The merchant confirms collection of the agreed duplicate and reconciles the order quantities.",
+  "boundaries": "Carrier recovery reconciles the duplicate quantity; do not assert warehouse inspection or product quality.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order reconciliation, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-039 ordered one floor light. Original DL-039-O and replacement DL-039-R now both have handover scans. Customer should not be charged for a duplicate without our authorised reconciliation."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Dessa Kelm, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Both floor lights arrived. I have kept the replacement and left the original carton sealed. Please tell me how to return the duplicate."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Duplicate returns, Tallowmere Goods",
+      "body": "Please authorise the return of the sealed original unit DL-039-O. Dessa will retain DL-039-R. Arrange carrier collection and confirm the reconciled quantity after pickup."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-12T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Duplicate returns, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Duplicate return DR-039 authorised for DL-039-O at no charge, collection 2026-03-13 10:00–12:00 UTC. Keep DL-039-R."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-13T10:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Order reconciliation, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Carrier collection receipt COL-039 confirms the original was collected at 10:35 UTC on 2026-03-13. TG-039 is reconciled: two delivered, one duplicate recovered, one retained by customer. No additional charge is due."
+    }
+  ],
+  "attachments": []
+}

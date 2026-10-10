@@ -1,0 +1,73 @@
+{
+  "id": "banking-047",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "047",
+  "title": "Case 047: Company Payment Limit",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-19 09:00:00 UTC",
+    "updated": "2025-10-19 12:08:00 UTC",
+    "completed": "2025-10-19 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Maeve wants to know the current outgoing-payment limit on her company profile before arranging a substantial supplier payment.",
+  "overview": "Maeve saw a planned supplier payout in the business portal and asked H&V to confirm the applicable company limit. The agent checked her authority to view limits and the active setting before sharing it securely.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check Maeve’s viewing mandate and the active company payment-limit setting in H&V’s limit register before responding.",
+    "recorded_event": null
+  },
+  "outcome": "H&V confirmed that the current limit is £20,000 per outgoing payment. No limit increase was made, and the payout was not submitted or executed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-19T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Maeve Calder",
+      "to": "H&V Business Support",
+      "body": "I can see a planned supplier payout in the portal, but I have not submitted it. I need to know the current outgoing-payment limit for our company profile before I arrange it."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-19T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Maeve Calder",
+      "to": "H&V Business Support agent",
+      "body": "Please confirm our current company payment limit. I’m authorised to view limits, and I need the setting for a substantial supplier payment."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-19T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V Business Support agent",
+      "to": "H&V Limit Register",
+      "body": "I’m checking Maeve Calder’s authority to view company limits and the active payment-limit setting before sharing any information."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-19T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V Limit Register",
+      "to": "H&V Business Support agent",
+      "body": "Mandate check confirms Maeve Calder may view company limits. The active setting is a maximum of £20,000 per outgoing payment."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-19T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V Business Support",
+      "to": "Maeve Calder",
+      "body": "Your current company-profile limit is £20,000 per outgoing payment. No limit change or payment has been made; this confirmation does not authorise a payment above the limit."
+    }
+  ],
+  "attachments": []
+}

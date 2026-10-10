@@ -1,0 +1,286 @@
+{
+  "id": "property-039",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "039",
+  "title": "Case 039: Washing Machine Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2025-09-05 00:33:55 UTC",
+    "updated": "2026-01-19 05:43:23 UTC",
+    "completed": "2025-09-16 04:11:12 UTC",
+    "property": "Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ"
+  },
+  "context": null,
+  "initial_request": "Washing machine clicking while rotating -it doesn’t sound healthy.\nIt is still working at this point.",
+  "overview": "The tenant reported that the washing machine clicked while rotating but remained operational. Northbridge Lettings checked whether anything inside the machine was causing the noise, contacted the landlord, and arranged for an appliance engineer to inspect it. An appointment was booked for the mapped Monday, 13 September 2025, between 12 and 2. The provider later confirmed the work was done and sent an invoice; the request was closed after the final checks.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider confirmed that the washing machine repair was completed and attached an invoice. The request was closed after the final checks.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-05T00:33:55Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Washing machine clicking while rotating -it doesn’t sound healthy.\nIt is still working at this point."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-05T00:34:13Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please approve selection of provider and category"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-07T04:52:48Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Job Id: NBL-039-2915\nAddress: Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ\n\nHi Nora\n\nThank you for reporting this.\n\nCan I just double check that there is nothing inside the machine hitting the sides that could be causing this noise while it is spinning?\n\nI have let the landlord know and if there is nothing inside the machine, we will get someone sent out to take a look.\n\nThank you"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-07T04:53:13Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Felix Jenkins. Reason: Waiting for Tenant. Comment: Checking with Oakley that nothing is stuck in machine before sending someone out"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-07T05:11:14Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to tenant. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-09-07T05:11:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "Nora reports a mechanical clicking noise from the machine during washes and offers to provide a video if needed."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-09-07T08:43:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Job Id: NBL-039-2915\nAddress: Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ\n\nHi Nora\n\nThank you for confirming.\n\nI have asked the landlord and will get back to you as soon as possible."
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-09-07T08:55:12Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Felix Jenkins. Reason: Waiting for Landlord. Comment: Waiting to hear back from LL"
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-09-10T08:40:27Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Job Id: NBL-039-2915\nAddress: Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ\n\nHi Nora\n\nI have asked Ava Fletcher to get in touch to arrange access to come and have a look, he is our appliance engineer so he should be able to get to the bottom of it! Thank you for your patience."
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-09-10T08:40:40Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-09-10T08:41:12Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Nora Ellis,\n\nOur maintenance provider **Keystone Works** will be attending your property for a **Washing Machine Repair Request**.\n\nThey will contact you soon to triage the problem or prepare the quote if needed.\n\nRequest description: Washing machine clicking while rotating -it doesn’t sound healthy.\nIt is still working at this point.\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-09-10T08:41:13Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance provider",
+      "body": "Job Id: NBL-039-2915\nDear Keystone Works,\n\nThis is a new **Washing Machine Repair Request** for the property at Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\n**Contact Details:** 07700 900148 (enter this code when calling)\n**Tenant Name:** Nora Ellis\n**Request description:** Washing machine clicking while rotating -it doesn’t sound healthy.\nIt is still working at this point.\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-09-11T02:40:16Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Maintenance provider",
+      "to": "Tenant",
+      "body": "An automated call system for the Beacon Homes maintenance line asking the caller to input a six-digit code and giving options to connect to Noah Kendall."
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-09-11T02:40:59Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Maintenance provider",
+      "to": "Tenant",
+      "body": "The call connects to the Beacon Homes Maintenance Line where the caller is prompted to enter a six-digit code. The call is then directed to Theo Palmer."
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-09-11T07:43:02Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Maintenance provider",
+      "body": "Imogen Ashford received a call regarding a noisy washing machine. An appointment was set for Sunday between twelve and two at her location on Flat 20, 130 Harbour View, Bellmere, ZZ8 2ZZ."
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-09-11T08:41:14Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance provider",
+      "body": "Job Id: NBL-039-2915\nDear Keystone Works,\n\nThis is a friendly reminder that we are awaiting the confirmation that the appointment has been booked with the tenant at the following address\n\nThe Washing Machine Repair Request at Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact Details: 07700 900148 (enter this code when calling)\nTenant Name: Nora Ellis\n**Request description:** Washing machine clicking while rotating -it doesn’t sound healthy.\nIt is still working at this point.\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-09-11T09:17:09Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Maintenance provider",
+      "to": "Agency / system",
+      "body": "Hi\nIts booked Monday 12 till 2"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-09-11T09:17:12Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit date selected - 13/09/2025 12:00 pm"
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-09-11T09:18:12Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Maintenance provider",
+      "body": "Job Id: NBL-039-2915\nDear Keystone Works,\n\nWe are providing the confirmed appointment details for the **Washing Machine Repair Request** at Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ:\n\nConfirmed Time Slot: Monday 12 till 2 (13/09/2025)\nPets: N/A\nContact Details: 07700 900148 (enter this code when calling)\nTenant Name: Nora Ellis\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-09-11T09:18:13Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Nora Ellis,\n\nWe are providing the confirmed appointment details for the **Washing Machine Repair Request** at Flat 29, 19 Copperfield Walk, Northbridge, ZZ9 1ZZ:\nConfirmed Time Slot: Monday 12 till 2 (13/09/2025)\nMaintenance Provider Name: Keystone Works\nContact Details: 07700 900237 (enter this code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-09-13T04:40:13Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hello, this is Keystone Homes! Your Washing Machine Repair Request appointment is scheduled for Monday 12 till 2 (13/09/2025). To reschedule call 07700 900237"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-09-16T01:06:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Maintenance provider",
+      "to": "Agency / system",
+      "body": "Hi This one is done attached is my invoice Ava"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-09-16T01:06:12Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Work results isset, please select next stage"
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-09-16T04:09:21Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-09-16T04:09:59Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription unavailable in maintenance_actions.comment]"
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-09-16T04:10:07Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. **Reason provided:** no quotes needed"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-09-16T04:10:07Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-09-16T04:11:12Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-01-19T05:43:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "Harriet Dawson confirms receipt of an email about the setup of a Direct Debit with Meadow Maintenance."
+    }
+  ],
+  "attachments": []
+}

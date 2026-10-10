@@ -1,0 +1,73 @@
+{
+  "id": "delivery-048",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "048",
+  "title": "Case 048: International shipment is cleared but awaiting last-mile handover",
+  "details": {
+    "source_role": "Ari Veld, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-21 09:00:00 UTC",
+    "escalated": "2026-03-21 09:10:00 UTC",
+    "updated": "2026-03-21 09:50:00 UTC",
+    "completed": "2026-03-21 09:50:00 UTC",
+    "primary_shipment": "DL-048",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The international carrier has a recorded clearance release, but the last-mile carrier has not yet confirmed receipt. Transfer support must establish physical handover.",
+  "initial_request": "My international tracker says released. Please find out whether the local carrier actually has the parcel and give me its tracking reference.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier's transfer team for the local carrier reference and handover status.",
+    "recipient": "Harbor Thread International transfer team",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The local carrier confirms physical receipt and a usable tracking reference; delivery remains pending.",
+  "boundaries": "Clearance and local receipt do not establish final delivery or a promised arrival time.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-21T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Harbor Thread International transfer support",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-048 is released for onward transport under recorded clearance reference CLR-048, 2026-03-21 07:30 UTC. Last-mile assignment is Plover Arc Logistics; no last-mile receipt is visible yet. Clearance does not mean delivery."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-21T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ari Veld, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My international tracker says released. Please find out whether the local carrier actually has the parcel and give me its tracking reference."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-21T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Harbor Thread International transfer team",
+      "body": "Please confirm DL-048’s physical last-mile handover and obtain the matching local reference from Plover Arc. A planned assignment alone is insufficient."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-21T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Last-mile intake, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Physical receipt confirmed at our transfer bay at 09:45 UTC. International DL-048 maps to local PA-048-L. That reference is active in the local order tracking view; route allocation is pending."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,73 @@
+{
+  "id": "banking-007",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "007",
+  "title": "Case 007: International Transfer Status",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-07-31 09:00:00 UTC",
+    "updated": "2025-07-31 12:08:00 UTC",
+    "completed": "2025-07-31 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I can see that H&V recorded my international transfer as sent, but I cannot tell what stage it has reached. Please check its current status and tell me whether receipt by the beneficiary has been confirmed.",
+  "overview": "Mara Ellwood asked H&V to clarify the progress of an international transfer after the secure portal showed it as sent. The agent escalated the request to H&V's Payment Team for an available trace. H&V's trace showed the instruction sent onward from H&V, with downstream status still pending; receipt by the beneficiary was not confirmed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "The agent asked H&V's Payment Team to check the available trace for case HV-007 and report the current stage.",
+    "recorded_event": null
+  },
+  "outcome": "H&V's trace showed the transfer instruction sent onward from H&V, with downstream status pending. Whether the beneficiary received it remains unknown.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-31T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Mara Ellwood",
+      "body": "H&V has recorded your international payment instruction as sent."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-31T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellwood",
+      "to": "H&V service agent",
+      "body": "I can see the sent status, but I need to know what stage the transfer has reached. Can you check whether there is confirmation that the beneficiary received it?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-31T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V Payment Team",
+      "body": "Please check the available trace for case HV-007 and tell me the current recorded stage. Please distinguish H&V's status from any confirmation of receipt by the beneficiary."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-31T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V Payment Team",
+      "to": "H&V service agent",
+      "body": "Our current trace shows the instruction sent onward from H&V. The downstream processing status is pending, and our trace does not confirm receipt by the beneficiary."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-31T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V service agent",
+      "to": "Mara Ellwood",
+      "body": "I checked the available H&V trace. It shows your instruction sent onward from H&V, with downstream processing status pending; we do not have confirmation that the beneficiary received it."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,2426 @@
+[
+  {
+    "id": "banking-001",
+    "track": "banking",
+    "number": "001",
+    "title": "Case 001: Was the one-off transfer sent?",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/001.json"
+  },
+  {
+    "id": "banking-002",
+    "track": "banking",
+    "number": "002",
+    "title": "Case 002: Expected Incoming Payment",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/002.json"
+  },
+  {
+    "id": "banking-003",
+    "track": "banking",
+    "number": "003",
+    "title": "Case 003: Transfer Awaiting Authorisation",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/003.json"
+  },
+  {
+    "id": "banking-004",
+    "track": "banking",
+    "number": "004",
+    "title": "Case 004: Why the transfer was declined",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/004.json"
+  },
+  {
+    "id": "banking-005",
+    "track": "banking",
+    "number": "005",
+    "title": "Case 005: Request about a transfer to the wrong recipient",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/005.json"
+  },
+  {
+    "id": "banking-006",
+    "track": "banking",
+    "number": "006",
+    "title": "Case 006: Two Similar Transfers",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/006.json"
+  },
+  {
+    "id": "banking-007",
+    "track": "banking",
+    "number": "007",
+    "title": "Case 007: International Transfer Status",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/007.json"
+  },
+  {
+    "id": "banking-008",
+    "track": "banking",
+    "number": "008",
+    "title": "Case 008: The purpose recorded with the transfer",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/008.json"
+  },
+  {
+    "id": "banking-009",
+    "track": "banking",
+    "number": "009",
+    "title": "Case 009: Confirming the amount sent",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/009.json"
+  },
+  {
+    "id": "banking-010",
+    "track": "banking",
+    "number": "010",
+    "title": "Case 010: Refund visible in the account",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/010.json"
+  },
+  {
+    "id": "banking-011",
+    "track": "banking",
+    "number": "011",
+    "title": "Case 011: When will my standing order run?",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/011.json"
+  },
+  {
+    "id": "banking-012",
+    "track": "banking",
+    "number": "012",
+    "title": "Case 012: New standing-order amount",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/012.json"
+  },
+  {
+    "id": "banking-013",
+    "track": "banking",
+    "number": "013",
+    "title": "Case 013: Cancellation of a Future Payment Instruction",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/013.json"
+  },
+  {
+    "id": "banking-014",
+    "track": "banking",
+    "number": "014",
+    "title": "Case 014: Direct Debit mandate status",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/014.json"
+  },
+  {
+    "id": "banking-015",
+    "track": "banking",
+    "number": "015",
+    "title": "Case 015: Cancel future Direct Debit collections",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/015.json"
+  },
+  {
+    "id": "banking-016",
+    "track": "banking",
+    "number": "016",
+    "title": "Case 016: Disputed Direct Debit amount",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/016.json"
+  },
+  {
+    "id": "banking-017",
+    "track": "banking",
+    "number": "017",
+    "title": "Case 017: The Standing Order That Did Not Run",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/017.json"
+  },
+  {
+    "id": "banking-018",
+    "track": "banking",
+    "number": "018",
+    "title": "Case 018: Two Future Payments",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/018.json"
+  },
+  {
+    "id": "banking-019",
+    "track": "banking",
+    "number": "019",
+    "title": "Case 019: Standing order date change",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/019.json"
+  },
+  {
+    "id": "banking-020",
+    "track": "banking",
+    "number": "020",
+    "title": "Case 020: What to Check Before Closing an Account",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/020.json"
+  },
+  {
+    "id": "banking-021",
+    "track": "banking",
+    "number": "021",
+    "title": "Case 021: Has My Replacement Card Been Sent?",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/021.json"
+  },
+  {
+    "id": "banking-022",
+    "track": "banking",
+    "number": "022",
+    "title": "Case 022: Lost card blocked",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/022.json"
+  },
+  {
+    "id": "banking-023",
+    "track": "banking",
+    "number": "023",
+    "title": "Case 023: Unrecognised card purchase",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/023.json"
+  },
+  {
+    "id": "banking-024",
+    "track": "banking",
+    "number": "024",
+    "title": "Case 024: Reason for the Card Restriction",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/024.json"
+  },
+  {
+    "id": "banking-025",
+    "track": "banking",
+    "number": "025",
+    "title": "Case 025: Why a Card Attempt Was Declined",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/025.json"
+  },
+  {
+    "id": "banking-026",
+    "track": "banking",
+    "number": "026",
+    "title": "Case 026: A Safe Route to a Forgotten PIN",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/026.json"
+  },
+  {
+    "id": "banking-027",
+    "track": "banking",
+    "number": "027",
+    "title": "Case 027: Access Restored",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/027.json"
+  },
+  {
+    "id": "banking-028",
+    "track": "banking",
+    "number": "028",
+    "title": "Case 028: New phone number in profile",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/028.json"
+  },
+  {
+    "id": "banking-029",
+    "track": "banking",
+    "number": "029",
+    "title": "Case 029: Is the new device linked?",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/029.json"
+  },
+  {
+    "id": "banking-030",
+    "track": "banking",
+    "number": "030",
+    "title": "Case 030: Replacement card request",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/030.json"
+  },
+  {
+    "id": "banking-031",
+    "track": "banking",
+    "number": "031",
+    "title": "Case 031: June statement in the secure portal",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [
+      "statement-031.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/031.json"
+  },
+  {
+    "id": "banking-032",
+    "track": "banking",
+    "number": "032",
+    "title": "Case 032: Archived Statement Request",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [
+      "statement-032.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/032.json"
+  },
+  {
+    "id": "banking-033",
+    "track": "banking",
+    "number": "033",
+    "title": "Case 033: Transactions export",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [
+      "transactions-033.csv"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/033.json"
+  },
+  {
+    "id": "banking-034",
+    "track": "banking",
+    "number": "034",
+    "title": "Case 034: Explaining a service fee",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/034.json"
+  },
+  {
+    "id": "banking-035",
+    "track": "banking",
+    "number": "035",
+    "title": "Case 035: Request to Review a Fee",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/035.json"
+  },
+  {
+    "id": "banking-036",
+    "track": "banking",
+    "number": "036",
+    "title": "Case 036: New correspondence address",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/036.json"
+  },
+  {
+    "id": "banking-037",
+    "track": "banking",
+    "number": "037",
+    "title": "Case 037: Profile Name Typo",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/037.json"
+  },
+  {
+    "id": "banking-038",
+    "track": "banking",
+    "number": "038",
+    "title": "Case 038: Account confirmation available in the secure portal",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [
+      "account-confirmation-038.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/038.json"
+  },
+  {
+    "id": "banking-039",
+    "track": "banking",
+    "number": "039",
+    "title": "Case 039: Permitted sign-in list for my profile",
+    "status": "Completed (narrow service outcome)",
+    "events": 6,
+    "attachments": [
+      "sessions-039.txt"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/039.json"
+  },
+  {
+    "id": "banking-040",
+    "track": "banking",
+    "number": "040",
+    "title": "Case 040: Confirmation of a Specific Payment",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [
+      "payment-record-040.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/040.json"
+  },
+  {
+    "id": "banking-041",
+    "track": "banking",
+    "number": "041",
+    "title": "Case 041: Payroll file receipt confirmation",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [
+      "batch-041.csv"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/041.json"
+  },
+  {
+    "id": "banking-042",
+    "track": "banking",
+    "number": "042",
+    "title": "Case 042: Payment batch validation report",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [
+      "validation-042.txt"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/042.json"
+  },
+  {
+    "id": "banking-043",
+    "track": "banking",
+    "number": "043",
+    "title": "Case 043: Waiting for the Second Signatory",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/043.json"
+  },
+  {
+    "id": "banking-044",
+    "track": "banking",
+    "number": "044",
+    "title": "Case 044: One Line in the Supplier Batch",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/044.json"
+  },
+  {
+    "id": "banking-045",
+    "track": "banking",
+    "number": "045",
+    "title": "Case 045: New employee access request",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/045.json"
+  },
+  {
+    "id": "banking-046",
+    "track": "banking",
+    "number": "046",
+    "title": "Case 046: Revoke a former employee’s role",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/046.json"
+  },
+  {
+    "id": "banking-047",
+    "track": "banking",
+    "number": "047",
+    "title": "Case 047: Company Payment Limit",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/047.json"
+  },
+  {
+    "id": "banking-048",
+    "track": "banking",
+    "number": "048",
+    "title": "Case 048: The buyer said payment was sent",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/048.json"
+  },
+  {
+    "id": "banking-049",
+    "track": "banking",
+    "number": "049",
+    "title": "Case 049: Acquiring Report Ready",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [
+      "merchant-report-049.csv"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/banking/049.json"
+  },
+  {
+    "id": "banking-050",
+    "track": "banking",
+    "number": "050",
+    "title": "Case 050: Status of a Supplier Payment",
+    "status": "Completed (narrow service outcome)",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/banking/050.json"
+  },
+  {
+    "id": "delivery-001",
+    "track": "delivery",
+    "number": "001",
+    "title": "Case 001: Recipient cannot attend the scheduled delivery window",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/001.json"
+  },
+  {
+    "id": "delivery-002",
+    "track": "delivery",
+    "number": "002",
+    "title": "Case 002: Apartment number missing from the delivery address",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/002.json"
+  },
+  {
+    "id": "delivery-003",
+    "track": "delivery",
+    "number": "003",
+    "title": "Case 003: Driver cannot access a gated residential building",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/003.json"
+  },
+  {
+    "id": "delivery-004",
+    "track": "delivery",
+    "number": "004",
+    "title": "Case 004: Recipient requests a call shortly before arrival",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/004.json"
+  },
+  {
+    "id": "delivery-005",
+    "track": "delivery",
+    "number": "005",
+    "title": "Case 005: Recipient asks for an authorised household member to receive the parcel",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/005.json"
+  },
+  {
+    "id": "delivery-006",
+    "track": "delivery",
+    "number": "006",
+    "title": "Case 006: Customer requests collection from a staffed pickup point",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/006.json"
+  },
+  {
+    "id": "delivery-007",
+    "track": "delivery",
+    "number": "007",
+    "title": "Case 007: Pickup deadline is too short for the recipient",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/007.json"
+  },
+  {
+    "id": "delivery-008",
+    "track": "delivery",
+    "number": "008",
+    "title": "Case 008: Recipient needs a defined delivery slot rather than an all-day estimate",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/008.json"
+  },
+  {
+    "id": "delivery-009",
+    "track": "delivery",
+    "number": "009",
+    "title": "Case 009: Bulky delivery requires the recipient to clear an access route",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/009.json"
+  },
+  {
+    "id": "delivery-010",
+    "track": "delivery",
+    "number": "010",
+    "title": "Case 010: Recipient wants delivery held during a short absence",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/010.json"
+  },
+  {
+    "id": "delivery-011",
+    "track": "delivery",
+    "number": "011",
+    "title": "Case 011: Shipment tracking has not updated after depot arrival",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/011.json"
+  },
+  {
+    "id": "delivery-012",
+    "track": "delivery",
+    "number": "012",
+    "title": "Case 012: Promised delivery day missed after vehicle breakdown",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/012.json"
+  },
+  {
+    "id": "delivery-013",
+    "track": "delivery",
+    "number": "013",
+    "title": "Case 013: Recipient disputes a recorded failed delivery attempt",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/013.json"
+  },
+  {
+    "id": "delivery-014",
+    "track": "delivery",
+    "number": "014",
+    "title": "Case 014: Driver arrives after the business receiving desk closes",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/014.json"
+  },
+  {
+    "id": "delivery-015",
+    "track": "delivery",
+    "number": "015",
+    "title": "Case 015: Parcel has been routed to the wrong local depot",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/015.json"
+  },
+  {
+    "id": "delivery-016",
+    "track": "delivery",
+    "number": "016",
+    "title": "Case 016: Pickup locker is full",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/016.json"
+  },
+  {
+    "id": "delivery-017",
+    "track": "delivery",
+    "number": "017",
+    "title": "Case 017: Delivery notification contains an unusable tracking link",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/017.json"
+  },
+  {
+    "id": "delivery-018",
+    "track": "delivery",
+    "number": "018",
+    "title": "Case 018: Shipment is approaching its return-to-sender deadline",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/018.json"
+  },
+  {
+    "id": "delivery-019",
+    "track": "delivery",
+    "number": "019",
+    "title": "Case 019: Severe weather suspends the delivery route",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/019.json"
+  },
+  {
+    "id": "delivery-020",
+    "track": "delivery",
+    "number": "020",
+    "title": "Case 020: A multi-parcel order arrives with one parcel still outstanding",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/020.json"
+  },
+  {
+    "id": "delivery-021",
+    "track": "delivery",
+    "number": "021",
+    "title": "Case 021: Outer packaging is damaged and the merchant needs evidence",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [
+      "carton-detail.png",
+      "carton-overview.png"
+    ],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/021.json"
+  },
+  {
+    "id": "delivery-022",
+    "track": "delivery",
+    "number": "022",
+    "title": "Case 022: A delivered household item is confirmed broken",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/022.json"
+  },
+  {
+    "id": "delivery-023",
+    "track": "delivery",
+    "number": "023",
+    "title": "Case 023: A leaking parcel is reported at the depot",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/023.json"
+  },
+  {
+    "id": "delivery-024",
+    "track": "delivery",
+    "number": "024",
+    "title": "Case 024: Tracking says delivered but the recipient has no parcel",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/024.json"
+  },
+  {
+    "id": "delivery-025",
+    "track": "delivery",
+    "number": "025",
+    "title": "Case 025: Carrier confirms a parcel is lost after investigation",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/025.json"
+  },
+  {
+    "id": "delivery-026",
+    "track": "delivery",
+    "number": "026",
+    "title": "Case 026: Parcel was handed to the wrong address and the carrier located it",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/026.json"
+  },
+  {
+    "id": "delivery-027",
+    "track": "delivery",
+    "number": "027",
+    "title": "Case 027: Customer receives another customer's parcel",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/027.json"
+  },
+  {
+    "id": "delivery-028",
+    "track": "delivery",
+    "number": "028",
+    "title": "Case 028: Wrong item inside a correctly addressed parcel",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/028.json"
+  },
+  {
+    "id": "delivery-029",
+    "track": "delivery",
+    "number": "029",
+    "title": "Case 029: Refrigerated food arrives outside the merchant's documented temperature conditions",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/029.json"
+  },
+  {
+    "id": "delivery-030",
+    "track": "delivery",
+    "number": "030",
+    "title": "Case 030: A high-value shipment lacks an accessible proof-of-delivery record",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/030.json"
+  },
+  {
+    "id": "delivery-031",
+    "track": "delivery",
+    "number": "031",
+    "title": "Case 031: Return approved but the customer has no return label",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [
+      "return-label.pdf"
+    ],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/031.json"
+  },
+  {
+    "id": "delivery-032",
+    "track": "delivery",
+    "number": "032",
+    "title": "Case 032: Customer cannot print a return label",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [
+      "return-qr.png"
+    ],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/032.json"
+  },
+  {
+    "id": "delivery-033",
+    "track": "delivery",
+    "number": "033",
+    "title": "Case 033: Courier misses a booked return collection",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/033.json"
+  },
+  {
+    "id": "delivery-034",
+    "track": "delivery",
+    "number": "034",
+    "title": "Case 034: Returned parcel has reached the carrier depot but not the merchant warehouse",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/034.json"
+  },
+  {
+    "id": "delivery-035",
+    "track": "delivery",
+    "number": "035",
+    "title": "Case 035: Merchant has received the return but the refund review has not started",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/035.json"
+  },
+  {
+    "id": "delivery-036",
+    "track": "delivery",
+    "number": "036",
+    "title": "Case 036: Business sender needs collection of several labelled cartons",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/036.json"
+  },
+  {
+    "id": "delivery-037",
+    "track": "delivery",
+    "number": "037",
+    "title": "Case 037: Customer needs an eligible heavy item collected from inside the home",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/037.json"
+  },
+  {
+    "id": "delivery-038",
+    "track": "delivery",
+    "number": "038",
+    "title": "Case 038: Failed delivery has returned to sender and the customer still wants the order",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/038.json"
+  },
+  {
+    "id": "delivery-039",
+    "track": "delivery",
+    "number": "039",
+    "title": "Case 039: Merchant shipped a replacement but the original parcel then also arrived",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/039.json"
+  },
+  {
+    "id": "delivery-040",
+    "track": "delivery",
+    "number": "040",
+    "title": "Case 040: Cancelled order is packed but has not left the merchant warehouse",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/040.json"
+  },
+  {
+    "id": "delivery-041",
+    "track": "delivery",
+    "number": "041",
+    "title": "Case 041: Pallet delivery lacks a receiving-dock appointment",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/041.json"
+  },
+  {
+    "id": "delivery-042",
+    "track": "delivery",
+    "number": "042",
+    "title": "Case 042: Warehouse has no forklift for a booked pallet delivery",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/042.json"
+  },
+  {
+    "id": "delivery-043",
+    "track": "delivery",
+    "number": "043",
+    "title": "Case 043: Freight collection needs confirmed pallet dimensions and weight",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/043.json"
+  },
+  {
+    "id": "delivery-044",
+    "track": "delivery",
+    "number": "044",
+    "title": "Case 044: One pallet is absent from a business consignment",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/044.json"
+  },
+  {
+    "id": "delivery-045",
+    "track": "delivery",
+    "number": "045",
+    "title": "Case 045: Import shipment is waiting for the shipper's commercial invoice",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [
+      "commercial-invoice.pdf"
+    ],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/045.json"
+  },
+  {
+    "id": "delivery-046",
+    "track": "delivery",
+    "number": "046",
+    "title": "Case 046: Import broker needs the consignee to appoint it before processing",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/046.json"
+  },
+  {
+    "id": "delivery-047",
+    "track": "delivery",
+    "number": "047",
+    "title": "Case 047: Customer asks for an explanation of a carrier-issued import charge",
+    "status": "Completed — specific coordination task only",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/047.json"
+  },
+  {
+    "id": "delivery-048",
+    "track": "delivery",
+    "number": "048",
+    "title": "Case 048: International shipment is cleared but awaiting last-mile handover",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/048.json"
+  },
+  {
+    "id": "delivery-049",
+    "track": "delivery",
+    "number": "049",
+    "title": "Case 049: Duplicate delivery service charge appears on a business invoice",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [
+      "credit-statement.pdf"
+    ],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/049.json"
+  },
+  {
+    "id": "delivery-050",
+    "track": "delivery",
+    "number": "050",
+    "title": "Case 050: Customer requests reimbursement of a guaranteed-delivery surcharge after confirmed delay",
+    "status": "Completed — specific coordination task only",
+    "events": 4,
+    "attachments": [],
+    "escalation_snapshot": {
+      "first_event": 1,
+      "last_event": 2
+    },
+    "file": "cases/delivery/050.json"
+  },
+  {
+    "id": "insurance-001",
+    "track": "insurance",
+    "number": "001",
+    "title": "Case 001: First quotation for a rental flat",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/001.json"
+  },
+  {
+    "id": "insurance-002",
+    "track": "insurance",
+    "number": "002",
+    "title": "Case 002: Missing Start Date in Property Application",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/002.json"
+  },
+  {
+    "id": "insurance-003",
+    "track": "insurance",
+    "number": "003",
+    "title": "Case 003: Offer Awaiting the Owner",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/003.json"
+  },
+  {
+    "id": "insurance-004",
+    "track": "insurance",
+    "number": "004",
+    "title": "Case 004: Consent to Quote — 104 Cedar Walk, Brackenford",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/004.json"
+  },
+  {
+    "id": "insurance-005",
+    "track": "insurance",
+    "number": "005",
+    "title": "Case 005: Year of Construction for the Calculation",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/005.json"
+  },
+  {
+    "id": "insurance-006",
+    "track": "insurance",
+    "number": "006",
+    "title": "Case 006: Where Is the Policy Being Processed?",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/006.json"
+  },
+  {
+    "id": "insurance-007",
+    "track": "insurance",
+    "number": "007",
+    "title": "Case 007: Resending the Existing Policy",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [
+      "policy-copy.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/007.json"
+  },
+  {
+    "id": "insurance-008",
+    "track": "insurance",
+    "number": "008",
+    "title": "Case 008: Certificate for the property owner",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [
+      "insurance-certificate.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/008.json"
+  },
+  {
+    "id": "insurance-009",
+    "track": "insurance",
+    "number": "009",
+    "title": "Case 009: Typo in the Property Policy Address",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [
+      "corrected-policy.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/009.json"
+  },
+  {
+    "id": "insurance-010",
+    "track": "insurance",
+    "number": "010",
+    "title": "Case 010: Second Property Owner",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/010.json"
+  },
+  {
+    "id": "insurance-011",
+    "track": "insurance",
+    "number": "011",
+    "title": "Case 011: Renewal Quotation",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/011.json"
+  },
+  {
+    "id": "insurance-012",
+    "track": "insurance",
+    "number": "012",
+    "title": "Case 012: Accepted Renewal",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/012.json"
+  },
+  {
+    "id": "insurance-013",
+    "track": "insurance",
+    "number": "013",
+    "title": "Case 013: Renewal Status Check",
+    "status": "Completed",
+    "events": 7,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/013.json"
+  },
+  {
+    "id": "insurance-014",
+    "track": "insurance",
+    "number": "014",
+    "title": "Case 014: Have the details stayed the same? — Case 014",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/014.json"
+  },
+  {
+    "id": "insurance-015",
+    "track": "insurance",
+    "number": "015",
+    "title": "Case 015: The Flat Is No Longer Let",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/015.json"
+  },
+  {
+    "id": "insurance-016",
+    "track": "insurance",
+    "number": "016",
+    "title": "Case 016: New Tenant Has Moved In",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/016.json"
+  },
+  {
+    "id": "insurance-017",
+    "track": "insurance",
+    "number": "017",
+    "title": "Case 017: Temporarily Vacant Property",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/017.json"
+  },
+  {
+    "id": "insurance-018",
+    "track": "insurance",
+    "number": "018",
+    "title": "Case 018: New Correspondence Address",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/018.json"
+  },
+  {
+    "id": "insurance-019",
+    "track": "insurance",
+    "number": "019",
+    "title": "Case 019: New Buildings Sum Insured",
+    "status": "Completed",
+    "events": 7,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/019.json"
+  },
+  {
+    "id": "insurance-020",
+    "track": "insurance",
+    "number": "020",
+    "title": "Case 020: Sale of Insured Home",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/020.json"
+  },
+  {
+    "id": "insurance-021",
+    "track": "insurance",
+    "number": "021",
+    "title": "Case 021: Missed Scheduled Instalment",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/021.json"
+  },
+  {
+    "id": "insurance-022",
+    "track": "insurance",
+    "number": "022",
+    "title": "Case 022: Payment Made but Not Showing",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/022.json"
+  },
+  {
+    "id": "insurance-023",
+    "track": "insurance",
+    "number": "023",
+    "title": "Case 023: Invoice for Accounting",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [
+      "invoice.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/023.json"
+  },
+  {
+    "id": "insurance-024",
+    "track": "insurance",
+    "number": "024",
+    "title": "Case 024: Confirmation of a Recorded Payment",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [
+      "receipt.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/024.json"
+  },
+  {
+    "id": "insurance-025",
+    "track": "insurance",
+    "number": "025",
+    "title": "Case 025: Premium balance notification — 125 Willow Walk, Brackenford",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/025.json"
+  },
+  {
+    "id": "insurance-026",
+    "track": "insurance",
+    "number": "026",
+    "title": "Case 026: Payment Method Change — Case 026",
+    "status": "Completed",
+    "events": 7,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/026.json"
+  },
+  {
+    "id": "insurance-027",
+    "track": "insurance",
+    "number": "027",
+    "title": "Case 027: Which Home Was Billed?",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/027.json"
+  },
+  {
+    "id": "insurance-028",
+    "track": "insurance",
+    "number": "028",
+    "title": "Case 028: Possible duplicate premium debit",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/028.json"
+  },
+  {
+    "id": "insurance-029",
+    "track": "insurance",
+    "number": "029",
+    "title": "Case 029: Leak and Ceiling Damage",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/029.json"
+  },
+  {
+    "id": "insurance-030",
+    "track": "insurance",
+    "number": "030",
+    "title": "Case 030: Discovery Date Missing from Leak Claim",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/030.json"
+  },
+  {
+    "id": "insurance-031",
+    "track": "insurance",
+    "number": "031",
+    "title": "Case 031: Storm damage reported to roof",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/031.json"
+  },
+  {
+    "id": "insurance-032",
+    "track": "insurance",
+    "number": "032",
+    "title": "Case 032: Broken Window",
+    "status": "Completed",
+    "events": 7,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/032.json"
+  },
+  {
+    "id": "insurance-033",
+    "track": "insurance",
+    "number": "033",
+    "title": "Case 033: Reported loss of property from a rented home",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/033.json"
+  },
+  {
+    "id": "insurance-034",
+    "track": "insurance",
+    "number": "034",
+    "title": "Case 034: Fire Loss Notification — 134 Cedar Walk",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/034.json"
+  },
+  {
+    "id": "insurance-035",
+    "track": "insurance",
+    "number": "035",
+    "title": "Case 035: Heating Damage to Floor",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/035.json"
+  },
+  {
+    "id": "insurance-036",
+    "track": "insurance",
+    "number": "036",
+    "title": "Case 036: Door Without an Address",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/036.json"
+  },
+  {
+    "id": "insurance-037",
+    "track": "insurance",
+    "number": "037",
+    "title": "Case 037: Estimate for an Open Claim",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [
+      "repair-estimate.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/037.json"
+  },
+  {
+    "id": "insurance-038",
+    "track": "insurance",
+    "number": "038",
+    "title": "Case 038: Further Images for the Claim File",
+    "status": "Completed",
+    "events": 5,
+    "attachments": [
+      "wall-detail.png",
+      "wall-wide-view.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/038.json"
+  },
+  {
+    "id": "insurance-039",
+    "track": "insurance",
+    "number": "039",
+    "title": "Case 039: Claim reference for the customer",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/039.json"
+  },
+  {
+    "id": "insurance-040",
+    "track": "insurance",
+    "number": "040",
+    "title": "Case 040: The Requested Views of the Damaged Wall",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [
+      "wall-close-up.png",
+      "wall-overview.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/040.json"
+  },
+  {
+    "id": "insurance-041",
+    "track": "insurance",
+    "number": "041",
+    "title": "Case 041: Inspection Slot Selection",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/041.json"
+  },
+  {
+    "id": "insurance-042",
+    "track": "insurance",
+    "number": "042",
+    "title": "Case 042: Confirmed Client Time",
+    "status": "Completed",
+    "events": 7,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/042.json"
+  },
+  {
+    "id": "insurance-043",
+    "track": "insurance",
+    "number": "043",
+    "title": "Case 043: No News on the Claim",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/043.json"
+  },
+  {
+    "id": "insurance-044",
+    "track": "insurance",
+    "number": "044",
+    "title": "Case 044: Emergency Repair Invoice — CLM-044",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [
+      "repair-invoice.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/044.json"
+  },
+  {
+    "id": "insurance-045",
+    "track": "insurance",
+    "number": "045",
+    "title": "Case 045: Decision on Claim Received",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/045.json"
+  },
+  {
+    "id": "insurance-046",
+    "track": "insurance",
+    "number": "046",
+    "title": "Case 046: Expected Transfer Timing — Case 046",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/046.json"
+  },
+  {
+    "id": "insurance-047",
+    "track": "insurance",
+    "number": "047",
+    "title": "Case 047: Payment Not Yet Received",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/047.json"
+  },
+  {
+    "id": "insurance-048",
+    "track": "insurance",
+    "number": "048",
+    "title": "Case 048: Neighbour reports water leak at 148 Hazel Walk",
+    "status": "Completed",
+    "events": 7,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/048.json"
+  },
+  {
+    "id": "insurance-049",
+    "track": "insurance",
+    "number": "049",
+    "title": "Case 049: Written Neighbour Claim",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [
+      "neighbour-letter.png"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/049.json"
+  },
+  {
+    "id": "insurance-050",
+    "track": "insurance",
+    "number": "050",
+    "title": "Case 050: Estimator Contact for a Property Claim",
+    "status": "Completed",
+    "events": 6,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/insurance/050.json"
+  },
+  {
+    "id": "property-001",
+    "track": "property",
+    "number": "001",
+    "title": "Case 001: Communal Garden and Hedge Maintenance Request",
+    "status": "Completed",
+    "events": 44,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/001.json"
+  },
+  {
+    "id": "property-002",
+    "track": "property",
+    "number": "002",
+    "title": "Case 002: Blocked toilet at Flat 3, 15 Willowmere Road, Alderwick, ZZ3 2ZZ",
+    "status": "Completed",
+    "events": 49,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/002.json"
+  },
+  {
+    "id": "property-003",
+    "track": "property",
+    "number": "003",
+    "title": "Case 003: Checkout Cleaning Estimate and Invoice",
+    "status": "Completed",
+    "events": 23,
+    "attachments": [
+      "attachment-01-checkout-inspection-report.pdf",
+      "attachment-02-cleaning-invoice.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/property/003.json"
+  },
+  {
+    "id": "property-004",
+    "track": "property",
+    "number": "004",
+    "title": "Case 004: Checkout Clean",
+    "status": "Completed",
+    "events": 42,
+    "attachments": [
+      "attachment-01-checkout-inspection-report.pdf",
+      "attachment-02-cleaning-quotation.pdf",
+      "attachment-03-cleaning-invoice.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/property/004.json"
+  },
+  {
+    "id": "property-005",
+    "track": "property",
+    "number": "005",
+    "title": "Case 005: Check-Out Cleaning",
+    "status": "Completed",
+    "events": 37,
+    "attachments": [
+      "attachment-01-check-out-inspection-report.pdf",
+      "attachment-02-cleaning-quote.pdf",
+      "attachment-03-cleaning-quote.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/property/005.json"
+  },
+  {
+    "id": "property-006",
+    "track": "property",
+    "number": "006",
+    "title": "Case 006: Check-Out Works: Carpet Replacement and Repainting",
+    "status": "Completed",
+    "events": 27,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/006.json"
+  },
+  {
+    "id": "property-007",
+    "track": "property",
+    "number": "007",
+    "title": "Case 007: Check-Out Works: Lounge Lighting and Ceiling Repair",
+    "status": "Completed",
+    "events": 37,
+    "attachments": [
+      "attachment-01-check-out-inspection-report.pdf",
+      "attachment-02-tax-invoice.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/property/007.json"
+  },
+  {
+    "id": "property-008",
+    "track": "property",
+    "number": "008",
+    "title": "Case 008: Check-Out Works",
+    "status": "Completed",
+    "events": 49,
+    "attachments": [
+      "attachment-01-check-out-inspection-report.pdf",
+      "attachment-02-estimate.pdf",
+      "attachment-03-check-out-inspection-report.pdf",
+      "attachment-04-invoice.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/property/008.json"
+  },
+  {
+    "id": "property-009",
+    "track": "property",
+    "number": "009",
+    "title": "Case 009: Front garden maintenance follow-up",
+    "status": "Completed",
+    "events": 23,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/009.json"
+  },
+  {
+    "id": "property-010",
+    "track": "property",
+    "number": "010",
+    "title": "Case 010: Solar panel readings photo request",
+    "status": "Completed",
+    "events": 15,
+    "attachments": [
+      "attachment-01-photograph-of-a-solar-photovoltaic-generation-me.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/property/010.json"
+  },
+  {
+    "id": "property-011",
+    "track": "property",
+    "number": "011",
+    "title": "Case 011: Dishwasher Repair Request",
+    "status": "Completed",
+    "events": 32,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/011.json"
+  },
+  {
+    "id": "property-012",
+    "track": "property",
+    "number": "012",
+    "title": "Case 012: Dishwasher Door Repair",
+    "status": "Completed",
+    "events": 31,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/012.json"
+  },
+  {
+    "id": "property-013",
+    "track": "property",
+    "number": "013",
+    "title": "Case 013: Integrated Dishwasher Repair Request",
+    "status": "Completed",
+    "events": 35,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/013.json"
+  },
+  {
+    "id": "property-014",
+    "track": "property",
+    "number": "014",
+    "title": "Case 014: Front Door Repair Request",
+    "status": "Completed",
+    "events": 16,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/014.json"
+  },
+  {
+    "id": "property-015",
+    "track": "property",
+    "number": "015",
+    "title": "Case 015: Front Door Repair Request",
+    "status": "Completed",
+    "events": 19,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/015.json"
+  },
+  {
+    "id": "property-016",
+    "track": "property",
+    "number": "016",
+    "title": "Case 016: Garden Door Repair Request",
+    "status": "Completed",
+    "events": 26,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/016.json"
+  },
+  {
+    "id": "property-017",
+    "track": "property",
+    "number": "017",
+    "title": "Case 017: Kitchen Extractor Fan Repair Request",
+    "status": "Completed",
+    "events": 14,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/017.json"
+  },
+  {
+    "id": "property-018",
+    "track": "property",
+    "number": "018",
+    "title": "Case 018: Garden Maintenance Request",
+    "status": "Completed",
+    "events": 17,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/018.json"
+  },
+  {
+    "id": "property-019",
+    "track": "property",
+    "number": "019",
+    "title": "Case 019: Garden Maintenance Request",
+    "status": "Completed",
+    "events": 44,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/019.json"
+  },
+  {
+    "id": "property-020",
+    "track": "property",
+    "number": "020",
+    "title": "Case 020: Property inspection",
+    "status": "Completed",
+    "events": 20,
+    "attachments": [
+      "attachment-01-property-inspection-report.pdf"
+    ],
+    "escalation_snapshot": null,
+    "file": "cases/property/020.json"
+  },
+  {
+    "id": "property-021",
+    "track": "property",
+    "number": "021",
+    "title": "Case 021: Key Replacement Request",
+    "status": "Completed",
+    "events": 29,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/021.json"
+  },
+  {
+    "id": "property-022",
+    "track": "property",
+    "number": "022",
+    "title": "Case 022: Front Door Lock Repair Request",
+    "status": "Completed",
+    "events": 23,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/022.json"
+  },
+  {
+    "id": "property-023",
+    "track": "property",
+    "number": "023",
+    "title": "Case 023: Balcony Door Lock Repair",
+    "status": "Completed",
+    "events": 27,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/023.json"
+  },
+  {
+    "id": "property-024",
+    "track": "property",
+    "number": "024",
+    "title": "Case 024: Oven repair request",
+    "status": "Completed",
+    "events": 32,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/024.json"
+  },
+  {
+    "id": "property-025",
+    "track": "property",
+    "number": "025",
+    "title": "Case 025: Oven Repair Request",
+    "status": "Completed",
+    "events": 64,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/025.json"
+  },
+  {
+    "id": "property-026",
+    "track": "property",
+    "number": "026",
+    "title": "Case 026: Oven Repair Request",
+    "status": "Completed",
+    "events": 38,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/026.json"
+  },
+  {
+    "id": "property-027",
+    "track": "property",
+    "number": "027",
+    "title": "Case 027: Blocked Bath Drain Request",
+    "status": "Completed",
+    "events": 17,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/027.json"
+  },
+  {
+    "id": "property-028",
+    "track": "property",
+    "number": "028",
+    "title": "Case 028: Loose Water Pipe in the Back Garden",
+    "status": "Completed",
+    "events": 14,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/028.json"
+  },
+  {
+    "id": "property-029",
+    "track": "property",
+    "number": "029",
+    "title": "Case 029: Cracked basin repair request",
+    "status": "Completed",
+    "events": 22,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/029.json"
+  },
+  {
+    "id": "property-030",
+    "track": "property",
+    "number": "030",
+    "title": "Case 030: Plumbing request: slow-filling toilet and bathroom tap",
+    "status": "Completed",
+    "events": 42,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/030.json"
+  },
+  {
+    "id": "property-031",
+    "track": "property",
+    "number": "031",
+    "title": "Case 031: Plumbing request",
+    "status": "Completed",
+    "events": 27,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/031.json"
+  },
+  {
+    "id": "property-032",
+    "track": "property",
+    "number": "032",
+    "title": "Case 032: Toilet flush mechanism repair",
+    "status": "Completed",
+    "events": 36,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/032.json"
+  },
+  {
+    "id": "property-033",
+    "track": "property",
+    "number": "033",
+    "title": "Case 033: Bathroom Tap Plumbing Request",
+    "status": "Completed",
+    "events": 44,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/033.json"
+  },
+  {
+    "id": "property-034",
+    "track": "property",
+    "number": "034",
+    "title": "Case 034: Shower Repair Request",
+    "status": "Completed",
+    "events": 17,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/034.json"
+  },
+  {
+    "id": "property-035",
+    "track": "property",
+    "number": "035",
+    "title": "Case 035: Shower Repair Request",
+    "status": "Completed",
+    "events": 13,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/035.json"
+  },
+  {
+    "id": "property-036",
+    "track": "property",
+    "number": "036",
+    "title": "Case 036: Shower Tap Repair",
+    "status": "Completed",
+    "events": 52,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/036.json"
+  },
+  {
+    "id": "property-037",
+    "track": "property",
+    "number": "037",
+    "title": "Case 037: Shower Repair Request",
+    "status": "Completed",
+    "events": 25,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/037.json"
+  },
+  {
+    "id": "property-038",
+    "track": "property",
+    "number": "038",
+    "title": "Case 038: Washing Machine Replacement Request",
+    "status": "Completed",
+    "events": 13,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/038.json"
+  },
+  {
+    "id": "property-039",
+    "track": "property",
+    "number": "039",
+    "title": "Case 039: Washing Machine Repair Request",
+    "status": "Completed",
+    "events": 29,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/039.json"
+  },
+  {
+    "id": "property-040",
+    "track": "property",
+    "number": "040",
+    "title": "Case 040: Washing Machine Repair Request",
+    "status": "Completed",
+    "events": 13,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/040.json"
+  },
+  {
+    "id": "property-041",
+    "track": "property",
+    "number": "041",
+    "title": "Case 041: Washing Machine Repair Request",
+    "status": "Completed",
+    "events": 25,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/041.json"
+  },
+  {
+    "id": "property-042",
+    "track": "property",
+    "number": "042",
+    "title": "Case 042: Washing Machine Repair Request",
+    "status": "Completed",
+    "events": 31,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/042.json"
+  },
+  {
+    "id": "property-043",
+    "track": "property",
+    "number": "043",
+    "title": "Case 043: Washing Machine Repair Request",
+    "status": "Completed",
+    "events": 25,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/043.json"
+  },
+  {
+    "id": "property-044",
+    "track": "property",
+    "number": "044",
+    "title": "Case 044: Window Handle Repair Request",
+    "status": "Completed",
+    "events": 27,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/044.json"
+  },
+  {
+    "id": "property-045",
+    "track": "property",
+    "number": "045",
+    "title": "Case 045: Kitchen Window and Patio Door Window Repair",
+    "status": "Completed",
+    "events": 38,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/045.json"
+  },
+  {
+    "id": "property-046",
+    "track": "property",
+    "number": "046",
+    "title": "Case 046: Bedroom Window Repair",
+    "status": "Completed",
+    "events": 52,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/046.json"
+  },
+  {
+    "id": "property-047",
+    "track": "property",
+    "number": "047",
+    "title": "Case 047: Bedroom Window Repair Request",
+    "status": "Completed",
+    "events": 36,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/047.json"
+  },
+  {
+    "id": "property-048",
+    "track": "property",
+    "number": "048",
+    "title": "Case 048: Bathroom Window Repair Request",
+    "status": "Completed",
+    "events": 36,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/048.json"
+  },
+  {
+    "id": "property-049",
+    "track": "property",
+    "number": "049",
+    "title": "Case 049: Shed Door Repair Request",
+    "status": "Completed",
+    "events": 14,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/049.json"
+  },
+  {
+    "id": "property-050",
+    "track": "property",
+    "number": "050",
+    "title": "Case 050: Bedroom Window Repair",
+    "status": "Completed",
+    "events": 44,
+    "attachments": [],
+    "escalation_snapshot": null,
+    "file": "cases/property/050.json"
+  }
+]

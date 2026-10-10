@@ -1,0 +1,73 @@
+{
+  "id": "banking-030",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "030",
+  "title": "Case 030: Replacement card request",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-15 09:00:00 UTC",
+    "updated": "2025-09-15 12:08:00 UTC",
+    "completed": "2025-09-15 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Maren’s debit card had become unreliable, so she submitted a replacement request. She contacted H&V to find out whether the card was being made and whether it had been sent.",
+  "overview": "Maren asked H&V for an update on her replacement card. After completing identity checks in secure chat, the agent checked the card journal and confirmed that the replacement was in manufacture. Dispatch and delivery were not confirmed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "After identity checks, the agent checked the existing replacement request in the card journal.",
+    "recorded_event": null
+  },
+  "outcome": "H&V confirmed the replacement request reference HV-030 and that the card was in manufacture. No dispatch or delivery confirmation was available.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-15T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V secure portal",
+      "to": "Maren Ellery",
+      "body": "Replacement request accepted. Reference: HV-030."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-15T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Maren Ellery",
+      "to": "H&V agent",
+      "body": "I submitted a replacement request because my card has become unreliable. Could you check whether it is being made and whether it has been sent?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-15T10:34:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "H&V agent",
+      "to": "Maren Ellery",
+      "body": "I’ve completed H&V’s identity checks in this secure chat. I’ll check the existing replacement record and won’t make any changes to your account."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-15T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "H&V card journal",
+      "body": "I checked the card journal for reference HV-030. The record shows the replacement is in manufacture; it does not confirm dispatch or delivery."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-15T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Maren Ellery",
+      "body": "Replacement request HV-030: card in manufacture. Dispatch and delivery are not confirmed."
+    }
+  ],
+  "attachments": []
+}

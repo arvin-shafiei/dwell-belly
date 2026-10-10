@@ -1,0 +1,81 @@
+{
+  "id": "banking-041",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "041",
+  "title": "Case 041: Payroll file receipt confirmation",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-07 09:00:00 UTC",
+    "updated": "2025-10-07 12:08:00 UTC",
+    "completed": "2025-10-07 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Please confirm whether my June 2025 payroll file, batch-041.csv, was received. I need to know the file's receipt status; I am not asking the bank to authorise payments on the company's behalf.",
+  "overview": "Mara Ellison escalated a query about a payroll file uploaded through H&V's business portal. The agent checked the import journal and confirmed that the file was received. No validation, payment authorisation, or payment execution was confirmed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the import journal for the receipt record for batch-041.csv.",
+    "recorded_event": null
+  },
+  "outcome": "H&V confirmed receipt of batch-041.csv for the June 2025 payroll, with two listed entries totalling £805.00. Validation, authorisation, and payment execution remain unconfirmed; receipt does not mean the file's rows have been processed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-07T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Mara Ellison, authorised file uploader",
+      "to": "H&V business portal",
+      "body": "I uploaded batch-041.csv for Northmere Studio Ltd.'s June 2025 payroll under reference HV-041. It lists Staff A at £420.00 and Staff B at £385.00; please confirm whether the file was received."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-07T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I am the company's authorised file uploader, and I can see that I submitted batch-041.csv, but I cannot tell whether H&V received it. Please check receipt only; I am not asking you to approve or release any payment."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-07T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V import journal",
+      "body": "I am checking the import journal for receipt of batch-041.csv under reference HV-041, as my first step in this escalation."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-07T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V case record HV-041",
+      "body": "I found an import-journal entry recording receipt of batch-041.csv. The entry confirms receipt only; it does not confirm validation, authorisation, or payment."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-07T12:08:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V",
+      "to": "Mara Ellison",
+      "body": "Receipt confirmed: batch-041.csv, reference HV-041, June 2025 payroll. This confirms that the file was received only; validation, payment authorisation, and payment execution are not confirmed."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "batch-041.csv",
+      "type": "csv",
+      "path": "raw/Banking & Financial Services/041/attachments/batch-041.csv",
+      "text": "row_id,internal_payee_label,amount_gbp\n1,Staff A,420.00\n2,Staff B,385.00",
+      "text_source": "original"
+    }
+  ]
+}

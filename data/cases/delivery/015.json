@@ -1,0 +1,73 @@
+{
+  "id": "delivery-015",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "015",
+  "title": "Case 015: Parcel has been routed to the wrong local depot",
+  "details": {
+    "source_role": "Kiva Rell, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-16 09:00:00 UTC",
+    "escalated": "2026-02-16 09:10:00 UTC",
+    "updated": "2026-02-17 13:45:00 UTC",
+    "completed": "2026-02-17 13:45:00 UTC",
+    "primary_shipment": "DL-015",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "Routing acknowledges the label was sorted to the wrong local depot. Only the receiving depot can confirm the transfer’s physical completion.",
+  "initial_request": "The tracker shows a depot in the wrong area. Can you get my parcel to the local depot before arranging delivery?",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the carrier routing team to transfer it to the correct depot.",
+    "recipient": "Routing control, Plover Arc Logistics",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The correct depot confirms physical receipt by scan; final delivery remains pending.",
+  "boundaries": "Correct-depot receipt does not prove last-mile delivery.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-16T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-015 is at North Sedgeglass depot; its destination is Merrow Quay, served by East Copperfin depot. Routing error confirmed. No delivery attempt is scheduled."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-16T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Kiva Rell, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The tracker shows a depot in the wrong area. Can you get my parcel to the local depot before arranging delivery?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-16T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Routing control, Plover Arc Logistics",
+      "body": "Please transfer DL-015 from North Sedgeglass to East Copperfin. Send the destination receipt scan, not just a planned linehaul entry."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-17T13:45:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Depot work queue",
+      "from": "East Copperfin depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-015 was physically received and scanned here at 13:40 UTC on 2026-02-17. It is in inbound cage E-04, awaiting route allocation."
+    }
+  ],
+  "attachments": []
+}

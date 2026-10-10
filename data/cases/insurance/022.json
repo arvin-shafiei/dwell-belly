@@ -1,0 +1,84 @@
+{
+  "id": "insurance-022",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "022",
+  "title": "Case 022: Payment Made but Not Showing",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-06-06 10:07:00 UTC",
+    "updated": "2025-06-06 15:42:00 UTC",
+    "completed": "2025-06-06 15:42:00 UTC",
+    "property": "122 Ash Walk, Brackenford, ZZ3 4ZZ",
+    "broker": "Brookfell Brokers",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I transferred my property-insurance premium, but I understand it is not showing in the insurer’s records yet. Could you help check where it has gone?",
+  "overview": "Noah told Jen Vale at Brookfell Brokers that he had transferred the premium for 122 Ash Walk, Brackenford, ZZ3 4ZZ, although Northmere Mutual’s payment log did not yet show it. Jen requested a safe transaction reference, then sent the relevant payment details to Northmere Mutual’s financial team for reconciliation. The team confirmed the payment was found and allocated to the policy, and Jen relayed that result to Noah.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, obtain the transfer date, amount and transaction reference without card details, then ask Northmere Mutual’s financial team to reconcile the payment against the policy.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual’s reconciliation result—that the payment was found and allocated to the policy—was communicated to Noah.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-06-06T10:07:00Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Noah Hart",
+      "to": "Jen Vale",
+      "body": "I transferred £486.20 on 2 June 2025 for the premium on 122 Ash Walk, Brackenford, ZZ3 4ZZ. You mentioned the payment is not showing in Northmere Mutual’s log, so could you help trace it?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-06-06T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Jen Vale",
+      "to": "Noah Hart",
+      "body": "I’ll ask Northmere Mutual’s financial team to check the payment. Please reply with the transfer date, amount and transaction reference, but do not send card details or security information."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-06-06T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Noah Hart",
+      "to": "Jen Vale",
+      "body": "The transfer was dated 2 June 2025 for £486.20, and its reference is BF-731904. Those are the transaction details; I have not included any card information."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-06-06T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Jen Vale",
+      "to": "Northmere Mutual Financial Team",
+      "body": "Please reconcile Noah Hart’s £486.20 transfer dated 2 June 2025, reference BF-731904, against policy INS-022 for 122 Ash Walk, Brackenford, ZZ3 4ZZ. The insurer’s log did not show the payment when he first contacted us."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-06-06T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Financial Team",
+      "to": "Jen Vale",
+      "body": "Our reconciliation found the £486.20 transfer dated 2 June 2025 under reference BF-731904 and allocated it to policy INS-022. The payment was not showing in the initial log."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-06-06T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Jen Vale",
+      "to": "Noah Hart",
+      "body": "Northmere Mutual’s financial team has completed its reconciliation and confirmed that your £486.20 transfer was found and allocated to policy INS-022. That is the result of their check."
+    }
+  ],
+  "attachments": []
+}

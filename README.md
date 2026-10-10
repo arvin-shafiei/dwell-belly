@@ -15,7 +15,11 @@ apps/
          src/app/api/health     GET  health check
          src/app/api/flows      GET  list flows
          src/app/api/cases      GET/POST cases (stub)
+         src/app/api/data/cases GET synthetic cases (list, one, ?view=escalation)
   web/   Next.js frontend (Tailwind), port 3000
+data/             200 synthetic practice cases: raw + parsed JSON (see data/README.md)
+scripts/          build-data.mjs parses data/raw -> data/cases + data/index.json
+docs/             IDEA.md, hackathon guide + rules
 .claude/skills/   superpowers + typesafe-ai skills for Claude Code
 ```
 
@@ -28,7 +32,7 @@ cp apps/web/.env.example apps/web/.env.local
 npm run dev        # api on :4000, web on :3000
 ```
 
-Other scripts: `npm run build`, `npm run lint`.
+Other scripts: `npm run build`, `npm run lint`, `npm run data` (rebuild parsed cases).
 
 ## Models / APIs
 

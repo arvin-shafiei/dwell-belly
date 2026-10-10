@@ -1,0 +1,73 @@
+{
+  "id": "banking-029",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "029",
+  "title": "Case 029: Is the new device linked?",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-13 09:00:00 UTC",
+    "updated": "2025-09-13 12:08:00 UTC",
+    "completed": "2025-09-13 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I started registering a new tablet for H&V mobile banking, but I am not sure the process finished. Please tell me whether the device is linked and whether it can be used for banking operations.",
+  "overview": "Mara Ellison escalated case HV-029 after starting registration of a new tablet in the H&V app and being unsure whether it had completed. The agent checked the device-linking state in the access log and the secure portal showed that confirmation is still pending.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the device-linking state in the access log.",
+    "recorded_event": null
+  },
+  "outcome": "The device-linking stage is known: it is awaiting confirmation. The device has not yet been admitted for banking operations.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-13T09:00:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Mara Ellison",
+      "to": "Harrow & Vale Bank plc",
+      "body": "I started registering my new tablet in the H&V app while setting it up. I left the screen before I could tell whether registration had finished."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-13T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Mara Ellison",
+      "to": "H&V service agent",
+      "body": "I’m following up because I need to know whether this tablet is linked before I try to use it for banking. Could you check its current status?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-13T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "Access log",
+      "body": "I’m checking the device-linking state for Mara Ellison’s new tablet under case HV-029. Please return the recorded status only."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-13T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "Access log",
+      "to": "H&V service agent",
+      "body": "Device status: Awaiting confirmation."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-13T12:08:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Mara Ellison",
+      "body": "Device status: Awaiting confirmation. This tablet has not yet been admitted for banking operations."
+    }
+  ],
+  "attachments": []
+}

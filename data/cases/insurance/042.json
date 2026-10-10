@@ -1,0 +1,93 @@
+{
+  "id": "insurance-042",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "042",
+  "title": "Case 042: Confirmed Client Time",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-08-05 10:07:00 UTC",
+    "updated": "2025-08-05 16:49:00 UTC",
+    "completed": "2025-08-05 16:49:00 UTC",
+    "property": "142 Ash Walk, Brackenford, ZZ5 6ZZ",
+    "broker": "Merehaven Brokers",
+    "insurer": "Fenwick Vale Insurance"
+  },
+  "context": null,
+  "initial_request": "I can attend the proposed inspection on 12 August 2025 at 10:30 am and can provide access to 142 Ash Walk, Brackenford, ZZ5 6ZZ. Please let the insurer know that this time works for me.",
+  "overview": "Mark confirmed the proposed 12 August 2025 at 10:30 am inspection and access arrangements with Naomi at Merehaven Brokers. Naomi noted that the insurer still needed to be informed, sent the time to Fenwick Vale Insurance, and received confirmation that it had been recorded on the insurer’s side. She relayed that confirmation to Mark, who acknowledged it. Naomi also sent the agreed appointment to the inspection organiser for visit coordination.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At escalation, send Mark's confirmed 12 August 2025, 10:30 am inspection slot to Fenwick Vale Insurance for confirmation; then pass the agreed appointment to the organiser.",
+    "recorded_event": null
+  },
+  "outcome": "The 12 August 2025, 10:30 am inspection was confirmed by Mark and Fenwick Vale Insurance and communicated to the organiser.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-05T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Mark Rose",
+      "to": "Naomi, Merehaven Brokers",
+      "body": "The proposed inspection on Tuesday 12 August 2025 at 10:30 am works for me, and I can provide access to 142 Ash Walk, Brackenford, ZZ5 6ZZ. Please pass my confirmation on to the insurer."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-05T11:14:00Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Naomi, Merehaven Brokers",
+      "to": "Internal case file",
+      "body": "Mark has confirmed the proposed 12 August 2025 at 10:30 am slot and access at 142 Ash Walk. Fenwick Vale Insurance has not yet been told of his choice; I need to send it for their record."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-05T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Naomi, Merehaven Brokers",
+      "to": "Fenwick Vale Insurance",
+      "body": "Mark Rose has confirmed that the proposed inspection on 12 August 2025 at 10:30 am works for him and that access is available at 142 Ash Walk, Brackenford, ZZ5 6ZZ. Please confirm that this time has been recorded on your side."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-05T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Fenwick Vale Insurance",
+      "to": "Naomi, Merehaven Brokers",
+      "body": "We have recorded the inspection on 12 August 2025 at 10:30 am as agreed on our side. Please pass the confirmed time to the inspection organiser for visit coordination."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-05T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Naomi, Merehaven Brokers",
+      "to": "Mark Rose",
+      "body": "Fenwick Vale Insurance has confirmed that the 12 August 2025 at 10:30 am inspection time is recorded on its side. I will pass the confirmed time to the inspection organiser for coordination."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-05T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Mark Rose",
+      "to": "Naomi, Merehaven Brokers",
+      "body": "Understood, thank you. I confirm that 12 August 2025 at 10:30 am is the appointment agreed on my side."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-08-05T16:49:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Naomi, Merehaven Brokers",
+      "to": "Fenwick Vale Insurance inspection organiser",
+      "body": "Fenwick Vale Insurance and Mark Rose have both confirmed the inspection for 12 August 2025 at 10:30 am at 142 Ash Walk, Brackenford, ZZ5 6ZZ. Please coordinate the visit using this agreed appointment."
+    }
+  ],
+  "attachments": []
+}

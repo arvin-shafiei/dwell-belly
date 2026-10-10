@@ -1,0 +1,81 @@
+{
+  "id": "banking-042",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "042",
+  "title": "Case 042: Payment batch validation report",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-09 09:00:00 UTC",
+    "updated": "2025-10-09 12:08:00 UTC",
+    "completed": "2025-10-09 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I uploaded a supplier payment batch for Fenwick Workshop, but it did not pass validation. Please make the row-level error report available to me so I can review what needs correcting.",
+  "overview": "Nadia Fenwick, an authorised file uploader with permission to view validation reports, escalated a failed payment-batch validation through secure chat. The bank’s import service provided a report identifying a missing payee label on row 2. No corrected batch was submitted and no payment execution was confirmed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Request the validation report from the import service for Nadia as an authorised report viewer.",
+    "recorded_event": null
+  },
+  "outcome": "The validation report for batch HV-042 is available in the secure portal and identifies a missing required payee label on row 2. No corrected batch has been received, and no payment execution is confirmed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-09T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Nadia Fenwick",
+      "body": "Validation status: FAILED. The payment batch did not pass validation."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-09T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Nadia Fenwick",
+      "to": "H&V service agent",
+      "body": "I uploaded batch HV-042 for Fenwick Workshop, but I can’t see which rows need attention. I’m authorised to view the report; please help me access it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-09T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V import service",
+      "body": "I’ve checked Nadia Fenwick’s permission to view validation reports. Please retrieve the validation report for batch HV-042 for her secure-portal access."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-09T11:21:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "Harrow & Vale Bank plc",
+      "to": "Nadia Fenwick",
+      "body": "Your validation report, validation-042.txt, is available in the secure portal. Batch HV-042 | 16 July 2025; Validation status: FAILED; Row 2: missing required payee label. No corrected batch received; no payment execution confirmed."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-09T12:08:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "H&V service agent",
+      "to": "Nadia Fenwick",
+      "body": "I can confirm that validation-042.txt is available in your secure portal and reports a missing required payee label on row 2. No corrected batch has been submitted; you can review the report and decide whether to prepare and submit a correction."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "validation-042.txt",
+      "type": "txt",
+      "path": "raw/Banking & Financial Services/042/attachments/validation-042.txt",
+      "text": "HARROW & VALE BANK PLC | SYNTHETIC VALIDATION REPORT\nBatch HV-042 | 16 July 2025\nValidation status: FAILED\nRow 2: missing required payee label.\nNo corrected batch received; no payment execution confirmed.",
+      "text_source": "original"
+    }
+  ]
+}

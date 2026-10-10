@@ -1,0 +1,349 @@
+{
+  "id": "property-032",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "032",
+  "title": "Case 032: Toilet flush mechanism repair",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2026-10-11 04:57:49 UTC",
+    "updated": "2026-11-01 07:01:16 UTC",
+    "completed": "2026-11-01 07:01:16 UTC",
+    "property": "Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ"
+  },
+  "context": null,
+  "initial_request": "Issue with toilet flusher in second bedroom.\nAssuming this is straightforward and cheap enough but please quote if it's a big job! Thank you",
+  "overview": "The tenant reported a problem with the toilet flusher in the second bedroom. The landlord approved sending a contractor and later approved a £165 + VAT quote for a new flusher. The provider and tenant arranged a visit, with a call one hour before arrival requested. The provider subsequently confirmed the repair was complete and the invoice had been uploaded; the request was marked completed.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider confirmed that the toilet flush mechanism repair was complete and that the invoice had been uploaded.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-11T04:57:49Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Issue with toilet flusher in second bedroom."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-11T04:58:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-12T06:16:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ\n\nHi Ellis,\n\nThe tenants have reported an issue with the toilet flushing button in the second bedroom toilet at Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ. I have attached a photo.\n\nPlease advise if you would like us to send one of our contractors to attend to this issue and resolve where possible (or quote if significant), or if you would prefer to deal with it yourself.\n\nKind regards,\n\nHarriet\n\nAttachment: attachment-62-document (unavailable)"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-10-12T06:17:09Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-10-12T07:00:46Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-10-12T07:00:46Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Yes please mend it"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-10-12T08:05:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-10-12T08:09:23Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Changed original task description:\nIssue with toilet flusher in second bedroom.\nAssuming this is straightforward and cheap enough but please quote if it's a big job! Thank you"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-10-12T08:09:34Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-10-12T08:10:06Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Grace Bennett & Maya Jenkins,\n\nOur maintenance provider Riverside Maintenance will be attending your property for a Plumbing request.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: Issue with toilet flusher in second bedroom.\nAssuming this is straightforward and cheap enough but please quote if it's a big job! Thank you\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-10-12T08:10:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Riverside Maintenance,\n\nThis is a new Plumbing request for the property at Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900080 (enter this code when calling)\nTenant Name: Grace Bennett & Maya Jenkins\nRequest description: Issue with toilet flusher in second bedroom.\nAssuming this is straightforward and cheap enough but please quote if it's a big job! Thank you\nList of attached files:\n- Photo 1 (attachment unavailable)\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\n\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-10-12T09:05:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The email is a quote response from Riverside Maintenance for a plumbing job at Flat 10, 130 Lantern Quay, addressing an issue with a toilet flusher. The quote is for £172.51 + VAT."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-10-12T09:06:03Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Visit date selected - 11/10/2026 04:15 pm"
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-10-12T09:07:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Riverside Maintenance,\n\nWe are providing the confirmed appointment details for the Plumbing request at Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ:\nConfirmed Time Slot: 11/10/2026 04:15 pm\nPets: N/A\nContact Details: 07700 900080 (enter this code when calling)\nTenant Name: Grace Bennett & Maya Jenkins\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-10-12T09:07:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Grace Bennett & Maya Jenkins,\n\nWe are providing the confirmed appointment details for the Plumbing request at Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ:\nConfirmed Time Slot: 11/10/2026 04:15 pm\nMaintenance Provider Name: Riverside Maintenance\nContact Details: 07700 900605 (enter this code when calling)\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-10-12T10:57:41Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "[Text/transcription unavailable in maintenance_actions.comment]"
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-10-14T09:09:59Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-10-15T03:56:55Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ\n\nGood morning,\n\nThe plumber has sent over a quote for the toilet flusher of a cost of £172.51 + VAT. Please let me know if they can proceed.\n\nKind regards,\n\nHarriet"
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-10-15T03:57:06Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-10-15T08:20:08Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-10-18T09:23:20Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ\n\nGood afternoon,\n\nJust a quick email to check in that you had sen the quote and had chance to consider it. As a reminder, the plumber said it would be a new toilet flusher at a cost of £172.51 + VAT. Please let me know if they can proceed.\n\nKind regards,\n\nHarriet"
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-10-18T09:23:34Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Harper. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-10-18T10:11:51Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-10-18T10:11:51Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "👍"
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-10-19T06:35:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Address: Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ\n\nHi, please proceed with a new toilet flusher at a cost of £172.51 + VAT. Thank you!\n\nHarriet"
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-10-19T06:35:39Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Harper. Reason: Waiting for Provider"
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-10-20T03:04:09Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The agent instructs the caller to input a six-digit code provided to them to continue the call."
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-10-20T03:52:55Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The call involves an agent asking the caller to input a six-digit code to proceed with the maintenance line service."
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-10-21T03:17:58Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The caller contacted Alder Compliance, and the agent requested the caller to input a six-digit code for connection."
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-10-21T03:31:34Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Tenant",
+      "to": "Contractor",
+      "body": "Theo Quinn is returning a missed call and confirms his location as Flat 10, 130 Lantern Quay, Willowbank, ZZ5 1ZZ."
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-10-22T02:53:09Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Harper. Reason: Waiting for Tenant. Comment: T and provider booking it in"
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-10-25T01:37:16Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The call discussed scheduling a plumbing repair for May 1st at Flat 29, 129 Lantern Quay, Northbridge, ZZ7 0ZZ, with the time slot from 8 AM to 12 PM and agreed to receive a call one hour before arrival."
+    },
+    {
+      "n": 33,
+      "timestamp": "2026-10-25T05:48:28Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Harper. Reason: Waiting for Provider. Comment: visit schedule may 1st"
+    },
+    {
+      "n": 34,
+      "timestamp": "2026-11-01T05:33:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "The customer confirmed that the plumbing job is complete and the invoice has been uploaded."
+    },
+    {
+      "n": 35,
+      "timestamp": "2026-11-01T07:01:16Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Added document(s): invoice. The invoice attachment is unavailable."
+    },
+    {
+      "n": 36,
+      "timestamp": "2026-11-01T07:01:16Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed by supervisor"
+    }
+  ],
+  "attachments": []
+}

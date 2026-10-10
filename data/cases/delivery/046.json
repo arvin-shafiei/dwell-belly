@@ -1,0 +1,82 @@
+{
+  "id": "delivery-046",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "046",
+  "title": "Case 046: Import broker needs the consignee to appoint it before processing",
+  "details": {
+    "source_role": "Celand Arc Imports account administrator",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-03-19 09:00:00 UTC",
+    "escalated": "2026-03-19 09:10:00 UTC",
+    "updated": "2026-03-19 10:05:00 UTC",
+    "completed": "2026-03-19 10:05:00 UTC",
+    "primary_shipment": "DL-046",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The broker has not been appointed. The consignee’s authorised director must complete its stated mandate process before the broker can act.",
+  "initial_request": "Account register excerpt: Mara Vesk, director, is the authorised signatory for broker appointment on DL-046. Her verified business-portal channel is active. Please ask her to complete the mandate; our operator account cannot sign it.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the consignee's authorised representative to complete the broker's stated appointment process.",
+    "recipient": "Mara Vesk, Celand Arc authorised director",
+    "channel": "Business portal",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The broker confirms acceptance of the appointment; shipment clearance remains pending.",
+  "boundaries": "Director title alone is not authority; the independent account register and verified acceptance establish this limited appointment.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-19T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Ossmere Trade Desk, customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-046 is waiting for a consignee mandate. Our fictional procedure requires the registered authorised signatory to accept the shipment-specific mandate in the verified business portal. No passport or banking credentials are required in this exercise."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-19T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Celand Arc Imports account administrator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Account register excerpt: Mara Vesk, director, is the authorised signatory for broker appointment on DL-046. Her verified business-portal channel is active. Please ask her to complete the mandate; our operator account cannot sign it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-19T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Mara Vesk, Celand Arc authorised director",
+      "body": "Please complete Ossmere’s shipment-specific broker mandate for DL-046 through your verified business portal. The account register records your signing authority; the broker must confirm acceptance."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-19T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Business portal",
+      "from": "Mara Vesk, Celand Arc authorised director",
+      "to": "Ossmere Trade Desk, customs broker; Iona Quill, Rivet Delivery Desk",
+      "body": "I accepted mandate MND-046 for DL-046 in the verified portal at 09:42 UTC. It authorises Ossmere to process this shipment, not unrelated payments or future mandates."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-19T10:05:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Broker portal",
+      "from": "Ossmere Trade Desk, customs broker",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "MND-046 is accepted against the registered signatory Mara Vesk. Broker appointment is complete for DL-046; clearance is still pending."
+    }
+  ],
+  "attachments": []
+}

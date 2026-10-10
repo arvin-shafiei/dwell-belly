@@ -1,0 +1,92 @@
+{
+  "id": "insurance-044",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "044",
+  "title": "Case 044: Emergency Repair Invoice — CLM-044",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-08-11 10:07:00 UTC",
+    "updated": "2025-08-11 15:42:00 UTC",
+    "completed": "2025-08-11 15:42:00 UTC",
+    "property": "144 Cedar Walk, Brackenford, ZZ5 8ZZ",
+    "broker": "Eastmere Risk",
+    "insurer": "Northmere Mutual Insurance"
+  },
+  "context": null,
+  "initial_request": "I’m following up on the open claim for 144 Cedar Walk, Brackenford, ZZ5 8ZZ. The emergency repair has been completed, and I’d like help providing the contractor’s invoice to the insurer; so far, I’ve only shared a description of the work.",
+  "overview": "For the open claim CLM-044, Seb Taylor told Eastmere Risk that emergency repairs at 144 Cedar Walk, Brackenford, ZZ5 8ZZ had been completed and that the broker had only a description of the work. Northmere Mutual Insurance requested the contractor’s invoice; Rachel at Eastmere Risk asked Seb for the invoice rather than a stated total. Seb supplied it, Rachel sent it to the insurer, and the insurer confirmed receipt. That confirmation records receipt of the document only, not cover or payment.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Rachel asked Seb to obtain and send the contractor’s invoice, rather than just a figure, then forwarded it to Northmere Mutual Insurance against CLM-044; both steps are recorded as completed, with no further decision implied.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual Insurance confirmed that it received the contractor’s invoice for CLM-044; no cover or payment decision is recorded.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-08-11T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Seb Taylor",
+      "to": "Rachel, Eastmere Risk",
+      "body": "The emergency repair at 144 Cedar Walk, Brackenford, ZZ5 8ZZ has been completed, with the safety arrangements handled separately. I understand you have the description of the work, but not the contractor’s invoice; could you help provide the invoice to the insurer for CLM-044?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-08-11T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Insurance Claims Team",
+      "to": "Rachel, Eastmere Risk",
+      "body": "For the open claim CLM-044, please send us the contractor’s invoice for the completed emergency repair at 144 Cedar Walk, Brackenford, ZZ5 8ZZ. The work description on file is not the invoice document we requested."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-08-11T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Rachel, Eastmere Risk",
+      "to": "Seb Taylor",
+      "body": "Northmere Mutual Insurance has requested the contractor’s invoice for CLM-044. Please ask the contractor for the invoice itself and send it to me; a description of the work or a total amount alone will not meet this request."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-08-11T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Seb Taylor",
+      "to": "Rachel, Eastmere Risk",
+      "body": "Attached is the contractor’s invoice REP-044, issued 10 August 2025 for emergency repair completed on 9 August at 144 Cedar Walk, Brackenford, ZZ5 8ZZ. Labour £420.00 and materials £264.00 total £684.00; this is an invoice, not a statement that an insurer has agreed to pay."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-08-11T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Rachel, Eastmere Risk",
+      "to": "Northmere Mutual Insurance Claims Team",
+      "body": "Please find contractor invoice REP-044, dated 10 August 2025 and totalling £684.00, attached as repair-invoice.png for CLM-044. I am sending it in response to your request; this submission does not address or presume the claim decision."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-08-11T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Insurance Claims Team",
+      "to": "Rachel, Eastmere Risk",
+      "body": "We confirm receipt of the contractor’s invoice for CLM-044. This is an acknowledgement of the document only; the acknowledgement does not confirm cover or payment."
+    }
+  ],
+  "attachments": [
+    {
+      "name": "repair-invoice.png",
+      "type": "png",
+      "path": "raw/Insurance Claims Processing/044/attachments/repair-invoice.png",
+      "text": "OCR text:\nAlder & Flint Emergency Repairs\n\nEmergency repair invoice | REP-044\n\nINVOICE DETAILS\n\nInvoice reference: REP-044 | Issued: 10 August 2025\nCustomer: Seb Taylor | Claim reference for filing: CLM-044\nWork location: 144 Cedar Walk, Brackenford, ZZ5 8ZZ\n\nCompleted: 9 August 2025 | Payment status: not stated\n\nCOMPLETED EMERGENCY WORK\n\nTemporary weatherproofing and replacement of damaged roof covering.\nLabour: £420.00 | Materials: £264.00\n\nTotal charged: £684.00 (no additional charges on this invoice)\n\nDocumenting this cost does not establish that the insurer will reimburse it.\n\nSYNTHETIC CALIBRATION DOCUMENT - CASE 044 - NOT REAL INSURANCE",
+      "text_source": "ocr"
+    }
+  ]
+}

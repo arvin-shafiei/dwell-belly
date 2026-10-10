@@ -1,0 +1,93 @@
+{
+  "id": "insurance-019",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "019",
+  "title": "Case 019: New Buildings Sum Insured",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-05-28 10:07:00 UTC",
+    "updated": "2025-05-28 16:49:00 UTC",
+    "completed": "2025-05-28 16:49:00 UTC",
+    "property": "119 Maple Walk, Brackenford, ZZ3 1ZZ",
+    "broker": "Will Mercer, Briarfield Risk",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I would like a quotation to increase the buildings sum insured for my home at 119 Maple Walk, Brackenford, ZZ3 1ZZ, from £360,000 to £420,000. Please treat this as a request for terms only; I am not authorising a change to my policy.",
+  "overview": "Zoe asked Will Mercer at Briarfield Risk to obtain terms for increasing her buildings sum insured from £360,000 to £420,000. Will requested a recalculation from Northmere Mutual and clarified that Zoe had not authorised an amendment. The insurer provided conditional revised terms, which Will passed to Zoe; she confirmed receipt without instructing the broker to proceed.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "If Zoe wants to pursue the increase, request a recalculation from Northmere Mutual for the requested £420,000 sum without treating the request as authority to amend the policy.",
+    "recorded_event": null
+  },
+  "outcome": "A recalculation proposal was received and passed on to Zoe; the buildings sum insured remains unchanged.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-05-28T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Zoe Clark",
+      "to": "Will Mercer, Briarfield Risk",
+      "body": "Please obtain a quotation to increase the buildings sum insured for my home at 119 Maple Walk, Brackenford, ZZ3 1ZZ, from £360,000 to £420,000. This is only a request for terms, not permission to change my policy."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-05-28T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Will Mercer, Briarfield Risk",
+      "to": "Northmere Mutual",
+      "body": "Please recalculate the terms on Zoe Clark’s current policy for a buildings sum insured of £420,000, compared with the current £360,000. Zoe is seeking a quotation only and has not authorised an amendment."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-05-28T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Will Mercer, Briarfield Risk",
+      "body": "We can review the requested sum, but please confirm that £420,000 is the figure to use and that no change is to be made unless the policyholder later gives instructions. We will then provide the recalculated terms."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-05-28T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Will Mercer, Briarfield Risk",
+      "to": "Northmere Mutual",
+      "body": "Confirmed: please calculate terms using a buildings sum insured of £420,000. This remains a quotation request only, with no instruction to amend the policy."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-05-28T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual",
+      "to": "Will Mercer, Briarfield Risk",
+      "body": "The recalculated terms show an additional premium of £57.60, including Insurance Premium Tax, for the remaining policy period at a £420,000 buildings sum insured. These terms are subject to final underwriting checks and do not alter the current policy; cover remains based on £360,000 unless an amendment is subsequently requested and confirmed."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-05-28T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Will Mercer, Briarfield Risk",
+      "to": "Zoe Clark",
+      "body": "Northmere Mutual has returned terms for the requested £420,000 buildings sum insured: an additional £57.60, including Insurance Premium Tax, for the remaining policy period, subject to final underwriting checks. I have passed the proposal on for your consideration; your current sum remains £360,000 unless an amendment is later requested and confirmed."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-05-28T16:49:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Zoe Clark",
+      "to": "Will Mercer, Briarfield Risk",
+      "body": "Thank you, I have received the quotation and will review it. I am not asking you to make a change to the policy at this stage."
+    }
+  ],
+  "attachments": []
+}

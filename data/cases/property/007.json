@@ -1,0 +1,373 @@
+{
+  "id": "property-007",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "007",
+  "title": "Case 007: Check-Out Works: Lounge Lighting and Ceiling Repair",
+  "details": {
+    "source_role": "Agency manager",
+    "status": "Completed",
+    "created": "2025-09-27 14:10:08 UTC",
+    "updated": "2025-10-08 16:45:37 UTC",
+    "completed": "2025-10-08 16:45:37 UTC",
+    "property": "Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ"
+  },
+  "context": null,
+  "initial_request": "Please quote for the following works based on the check out report:\n\n Lounge:\n1. Two spotlights not working\n2. Fix water damage to ceiling tile",
+  "overview": "The landlord approved the provider’s £198.37 plus VAT quote to replace two spotlights and one ceiling board after a leak. The provider later completed the works and sent an invoice and photos. The agency forwarded the invoice to the landlord and closed the request after its final checks. A note states that one or more documents were not uploaded because there were no before and after photos.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The works were reported as completed, the invoice was sent to the landlord for payment, and the request was closed after final checks.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-27T14:10:09Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Please quote for the following works based on the check out report:\n\n Lounge:\n1. Two spotlights not working\n2. Fix water damage to ceiling tile"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-27T14:10:14Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-27T14:10:30Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-27T14:11:23Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-27T14:11:23Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nAddress: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ\n\nHi Clarke\n\nPlease quote for the following works based on the check out report:\n\n Lounge:\n1. Two spotlights not working\n2. Fix water damage to ceiling tile\n\nThank you\n\nRegards\n\nMaya\n\nAttachment(s): attachment-07-document\n\nAttachments: [attachment-01-check-out-inspection-report.pdf](attachments/attachment-01-check-out-inspection-report.pdf)"
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-09-27T14:11:49Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-09-27T15:33:31Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-09-27T15:33:31Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Clarke provides a quote of £198.37 plus VAT for replacing two spotlights and one ceiling board."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-09-27T15:35:43Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Job Id: NBL-007-0235\nAddress: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ\n\nGood afternoon\n\nI hope you are well. As per the check out report the two spotlights and one ceiling board has to be replaced due to a leak.\n\nClarke is quoting £198.37 plus VAT.\n\nPlease let me know if he may proceed.\n\nRegards\nMaya"
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-09-27T15:35:53Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Ashford. Reason: Waiting for Landlord"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-09-28T16:27:19Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Pls go ahead"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-10-01T17:11:06Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-10-01T17:11:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Quote was approved by landlord"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-10-01T17:11:54Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[Text/transcription is absent from the maintenance comment]"
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-10-01T17:12:50Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Property is **NOT TENANTED** — moved to Paused\nThe property is currently not tenanted, so the request has been automatically moved to Paused.\nPlease review and resolve this manually."
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-10-01T17:15:43Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-10-01T17:15:43Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nAddress: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ\n\nHi\n\nYour quote for this job has been approved.\n\nPlease let me know when you will be able to attend\n\nRegards\nMaya"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-10-01T17:15:52Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-10-03T15:26:16Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-10-03T15:26:16Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nAddress: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ\n\nHi Clarke\n\nPlease let me know when you will be able to attend to the works.\n\nRegards\nMaya"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-10-03T15:26:53Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Sent message as well"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-10-03T15:27:04Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-10-03T15:30:35Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Harriet offers to book the job for Monday, inquires about the location of the keys."
+    },
+    {
+      "n": 24,
+      "timestamp": "2025-10-07T12:53:48Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 25,
+      "timestamp": "2025-10-07T12:53:48Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nAddress: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ\n\nGood afternoon\n\nThe keys for the studio will be with the caretaker.\n\nRegards\nMaya"
+    },
+    {
+      "n": 26,
+      "timestamp": "2025-10-07T12:53:55Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 27,
+      "timestamp": "2025-10-07T15:11:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Hi.\n\nThank you, we will get this in this week.\nThanks again\nClarke\nSent from my synthetic-0a70e2da48b2"
+    },
+    {
+      "n": 28,
+      "timestamp": "2025-10-07T16:53:58Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\nPlease do not reply."
+    },
+    {
+      "n": 29,
+      "timestamp": "2025-10-07T16:53:58Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Job Id: NBL-007-0235\nAddress: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ\n\nHi\n\nThank you!\n\nRegards\nMaya"
+    },
+    {
+      "n": 30,
+      "timestamp": "2025-10-07T16:54:12Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Maya Ashford. Reason: Waiting for Provider"
+    },
+    {
+      "n": 31,
+      "timestamp": "2025-10-08T16:28:25Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings",
+      "body": "Clarke sent the invoice and photos related to the job via synthetic-aa7ecc7f940d."
+    },
+    {
+      "n": 32,
+      "timestamp": "2025-10-08T16:44:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 33,
+      "timestamp": "2025-10-08T16:44:54Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Job Id: NBL-007-0235\nAddress: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ\n\nGood afternoon\n\nI hope you are well. The works at the studio has been completed. Please see attached the invoice for payment.\n\nRegards\n\nMaya\n\nAttachment: attachment-65-document (invoice; contents not described)\n\nAttachments: [attachment-02-tax-invoice.pdf](attachments/attachment-02-tax-invoice.pdf)"
+    },
+    {
+      "n": 34,
+      "timestamp": "2025-10-08T16:44:58Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 35,
+      "timestamp": "2025-10-08T16:45:12Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Skipped uploading one or more documents. Reason provided: No before and after photos"
+    },
+    {
+      "n": 36,
+      "timestamp": "2025-10-08T16:45:13Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 37,
+      "timestamp": "2025-10-08T16:45:37Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "attachment-01-check-out-inspection-report.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/007/attachments/attachment-01-check-out-inspection-report.pdf",
+      "text": "Northbridge Lettings\n\nCheck-out inspection report\nRecord the condition, cleanliness, contents, defects and photographic evidence observed during a\ncheck-out inspection at Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\n\n\nCheck-out report. Appointment date: 25 August 2026. Assessor: Northbridge Lettings.\n\nThe assessor confirms that the report reflects their assessment of the property. Signature received:\n27 September 2025 14:00:39.\n\nThe report describes the main features of the property room by room and records observed\ndefects with photographs. The inspection was visual; inaccessible and loft areas were not\ninspected. Fixtures and fittings may not have been tested. The report does not provide repair\nadvice or costs and may not identify structural defects.\n\nThe report guidance states that at the end of a tenancy the property and contents are expected to\nbe in a similar condition and cleanliness to the start-of-tenancy report. Damage beyond fair wear\nand tear may require repair or replacement, with costs potentially deducted from the tenant’s\ndeposit. Unsatisfactory cleaning may require professional cleaning, with costs potentially deducted\nfrom the deposit. Receipts for repair, replacement or professional cleaning should be retained if\nrequired.\n\nThe report guidance says the property should be left tidy and cleaning thorough. It refers to\ncleaning carpets and curtains as required by the agreement; leaving vinyl or tile flooring clean and\nfree from cracks or tears; maintaining decor and repairing added picture hooks, nails, screws or\nscrew holes; removing excessive marks and fingerprints; defrosting, switching off and leaving\nrefrigerators and freezers open; cleaning ovens, hobs, extractor units and microwaves; and tidying\ngardens where applicable.\n\nThe report guidance states smoke and carbon monoxide alarms will have been checked and\nworking as of the report date, and that tenants are responsible for keeping them in working order\nduring the tenancy. Faults other than battery replacement should be reported immediately.\n\nCondition rating guidance: Excellent means unused or new; Good means minor wear with no\nobvious appearance or function faults; Fair means wear or minor damage; Poor means extensive\nwear such as stains, marks, rips or chips; Unacceptable means not fit for purpose, badly damaged\nor faulty.\n\nCleanliness rating guidance for inspection areas: Excellent means cleaned to a high standard;\nGood means cleaned to a good standard; Fair means cleaned to a fair standard; Poor means light\ncleaning is required; Unacceptable means professional cleaning is required. For item cleanliness,\nFair, Poor and Unacceptable ratings direct the reader to the issues and photographs.\n\nLounge description: Double sofa; grey carpets; off-white coloured walls; all clean and in good\norder. Two spotlights not working. Cieling tile water damage. Maintenance.\n\nBedroom description: 3/4 bed with mattress protector; double wardrobe; TV on wall bracket;\nremote; table and chair. All in good clean order.\n\nBathroom description: Walk-in shower and screen; towel rail radiator; toilet; toilet brush; sink on\nvanity unit; small wall mirror. Room is not clean and some items left. Items left. Cleaning required.\n\nAssessor declaration: The report reflects the assessor’s assessment of the property. Assessor:\nNorthbridge Lettings. Email: assessor@example.com.\n\n Inspection area              Condition          Cleanliness            Defects         Photos\n Lounge area                  Good               Good                   2               7\n\fInspection area               Condition            Cleanliness               Defects          Photos\nBedroom area                  Fair                 Fair                      0                4\nBathroom                      Fair                 Poor                      2                20\n\nArea          Inspection    Condition Cleanliness Description and recorded issues\n              date\nLounge        25 August     Good            Good             Double sofa; grey carpets; off-white\narea          2026                                           coloured walls; all clean and in good order.\n                                                             Two spotlights not working. Cieling tile\n                                                             water damage. Maintenance.\nBedroom       25 August     Fair            Fair             3/4 bed with mattress protector; double\narea          2026                                           wardrobe; TV on wall bracket; remote;\n                                                             table and chair. All in good clean order.\nBathroom      25 August     Fair            Poor             Walk-in shower and screen; towel rail\n              2026                                           radiator; toilet; toilet brush; sink on vanity\n                                                             unit; small wall mirror. Room is not clean\n                                                             and some items left. Items left. Cleaning\n                                                             required.\n\nGeneral detector details                    Tested?          General detector comments\n                                            No\n\nCategory           Area              Condition        Cleanliness         Defect\nGeneral            Lounge area       Good             Good                Two spotlights not working\nCleaning           Bathroom          Fair             Poor                Items left\nCleaning           Bathroom          Fair             Poor                Cleaning required\nMaintenance        Lounge area       Good             Good                Cieling tile water damage\n\n\nObservations\n       The inspection appointment and room inspections are dated 25 August 2026.\n       Lounge condition and cleanliness were each rated Good. Two defects were recorded: two\n       spotlights not working and water damage to a ceiling tile.\n       Bedroom condition and cleanliness were each rated Fair; no defects were recorded.\n       Bathroom condition was rated Fair and cleanliness Poor. Two defects were recorded: items\n       left and cleaning required.\n       The detector entry shows Tested? No. No detector details or comments were recorded.\n       The report contains 7 lounge photographs, 4 bedroom photographs and 20 bathroom\n       photographs.\n\nFindings\n       General defect: Lounge — two spotlights not working; condition Good; cleanliness Good.\n       Maintenance defect: Lounge — Cieling tile water damage; condition Good; cleanliness\n       Good.\n       Cleaning defects: Bathroom — items left and cleaning required; condition Fair; cleanliness\n       Poor.\n\fConclusions\n    The check-out report identifies two lounge maintenance issues and bathroom cleaning and\n    belongings issues.\n    No defects were recorded for the bedroom.\n\nImage evidence\n\n  Neutral image placeholder\n\n  Lounge photo 1 of 7: Shows the lounge seating area, including a double sofa, carpet and\n  walls.\n\n\n\n\n  Neutral image placeholder\n\n  Lounge photo 2 of 7: Shows the lounge doorway and part of the room, including the sofa\n  and carpet.\n\n\n\n\n  Neutral image placeholder\n\n  Lounge photo 3 of 7: Shows a table and chair beside a wall and doorway.\n\n\n\n\n  Neutral image placeholder\n\n  Lounge photo 4 of 7: Shows the lounge ceiling and spotlight fittings.\n\n\n\n\n  Neutral image placeholder\n\n  Lounge photo 5 of 7: Shows the lounge carpet, sofa and doorway.\n\n\n\n\n  Neutral image placeholder\n\n  Lounge photo 6 of 7: Shows ceiling spotlights; the report identifies two spotlights as not\n  working.\n\fNeutral image placeholder\n\nLounge photo 7 of 7: Shows a ceiling tile area; the report identifies water damage.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 1 of 4: Shows the bed and part of the bedroom, including the window.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 2 of 4: Shows the bed and window.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 3 of 4: Shows the bed, wardrobe, table and chair.\n\n\n\n\nNeutral image placeholder\n\nBedroom photo 4 of 4: Shows the table and chair area and wall-mounted television.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 1 of 20: Shows the shower enclosure and part of the bathroom.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 2 of 20: Shows the toilet and towel rail radiator.\n\fNeutral image placeholder\n\nBathroom photo 3 of 20: Shows the bathroom ceiling and fittings.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 4 of 20: Shows the toilet and vanity sink area.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 5 of 20: Shows a mat and footwear left on the bathroom floor, consistent\nwith the recorded items-left issue.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 6 of 20: Shows the vanity sink area and items on the basin, consistent\nwith the recorded items-left issue.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 7 of 20: Close view of the basin tap and sink area, included in the\ncleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 8 of 20: Shows a bathroom wall and ceiling junction, included in the\ncleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 9 of 20: Close view of a bathroom fitting, included in the cleaning-required\nphotographs.\n\fNeutral image placeholder\n\nBathroom photo 10 of 20: Shows a tiled bathroom corner and fittings, included in the\ncleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 11 of 20: Close view of bathroom pipework and fittings, included in the\ncleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 12 of 20: Shows a bathroom wall and fitting, included in the cleaning-\nrequired photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 13 of 20: Shows a shower fitting, included in the cleaning-required\nphotographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 14 of 20: Shows the shower head and surrounding area, included in the\ncleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 15 of 20: Shows a ceiling fitting and wall junction, included in the cleaning-\nrequired photographs.\n\n\n\n\nNeutral image placeholder\n\fBathroom photo 16 of 20: Shows the shower enclosure and adjoining wall, included in the\ncleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 17 of 20: Shows the shower enclosure corner and surrounding surfaces,\nincluded in the cleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 18 of 20: Close view of the shower enclosure frame and adjacent\nsurfaces, included in the cleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 19 of 20: Shows a bathroom surface beside the shower enclosure,\nincluded in the cleaning-required photographs.\n\n\n\n\nNeutral image placeholder\n\nBathroom photo 20 of 20: Shows the towel rail radiator area and nearby floor, included in\nthe cleaning-required photographs.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-02-tax-invoice.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/007/attachments/attachment-02-tax-invoice.pdf",
+      "text": "Northbridge Lettings\n\nTax invoice\nInvoice for lighting and ceiling repair works at Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\n\n\nBill to: Northbridge Lettings.\n\nSupplier: Willow Homes.\n\nAmount due: £240.00. Due date: 8 October 2025.\n\nIssue date: 8 October 2025.\n\nReference: Flat 8, 168 Alder Lane, Kingshaven, ZZ4 3ZZ.\n\nInvoice line description: Change spot light bulbs, replace ceiling tile.\n\nPayment details and online payment link are omitted.\n\n Description                                              Quantity     Price (£)    Tax       Amount (£)\n Change spot light bulbs, replace ceiling tile.           1            200.00       20%       200.00\n Subtotal                                                                                     200.00\n Total VAT 20%                                                                                40.00\n Total                                                                                        240.00\n Amount due                                                                                   240.00\n\n\nObservations\n         The invoice includes a QR code; its contents are not reproduced.\n         The source includes supplier and billing postal addresses, bank details, and an invoice\n         number; these are omitted.\n\nFindings\n         One line item is listed for changing spotlight bulbs and replacing a ceiling tile.\n         The invoice shows 20% VAT.\n\nConclusions\n         The invoice total and amount due are £240.00.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "id": "banking-025",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "025",
+  "title": "Case 025: Why a Card Attempt Was Declined",
+  "details": {
+    "source_role": "Bank customer",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-09-05 09:00:00 UTC",
+    "updated": "2025-09-05 12:55:00 UTC",
+    "completed": "2025-09-05 12:55:00 UTC"
+  },
+  "context": null,
+  "initial_request": "Mara wants to know why her £18.40 card payment at North Quay Books was declined.",
+  "overview": "After completing identification checks on a verified call, an H&V agent searched the card authorisation journal for the specific attempt Mara identified. The journal showed that the attempt was declined because the available balance was insufficient to cover it. H&V displayed that explanation in the secure portal; no new payment was made.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Search H&V’s card authorisation journal for the North Quay Books attempt for £18.40 identified by Mara, and check its recorded decline reason.",
+    "recorded_event": null
+  },
+  "outcome": "The secure portal showed that this specific attempt was declined because the available balance was insufficient to cover the £18.40 authorisation at the time. No new payment was made, and a future attempt is not guaranteed to succeed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-09-05T09:00:00Z",
+      "stage": null,
+      "channel": "External message",
+      "from": "North Quay Books payment terminal",
+      "to": "Mara Ellison",
+      "body": "Payment not accepted. Please contact your bank."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-09-05T09:47:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "H&V agent",
+      "to": "Mara Ellison",
+      "body": "I’ve completed the required identification checks. Please tell me which declined attempt you want me to investigate; I won’t ask you to share any secret codes."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-09-05T10:34:00Z",
+      "stage": null,
+      "channel": "Verified call",
+      "from": "Mara Ellison",
+      "to": "H&V agent",
+      "body": "I’m calling to find out why my £18.40 payment at North Quay Books was declined. Please check that particular attempt."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-09-05T11:21:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V agent",
+      "to": "H&V card authorisation journal",
+      "body": "I’m searching the journal for Mara Ellison’s North Quay Books authorisation attempt for £18.40, using the merchant and amount she identified. I’ll check the recorded response for that attempt."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-09-05T12:08:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V card authorisation journal",
+      "to": "H&V agent",
+      "body": "Matching authorisation found: declined because available balance was insufficient to cover the £18.40 authorisation at the time of the attempt."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-09-05T12:55:00Z",
+      "stage": null,
+      "channel": "Secure portal",
+      "from": "H&V",
+      "to": "Mara Ellison",
+      "body": "Case HV-025: The North Quay Books card attempt for £18.40 was declined because your available balance was insufficient to cover the authorisation at the time. No new payment has been made, and we can’t guarantee that a future attempt will be successful."
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,247 @@
+{
+  "id": "property-003",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "003",
+  "title": "Case 003: Checkout Cleaning Estimate and Invoice",
+  "details": {
+    "source_role": "Agency manager",
+    "status": "Completed",
+    "created": "2025-07-22 15:49:57 UTC",
+    "updated": "2025-09-05 12:34:00 UTC",
+    "completed": "2025-07-24 14:31:59 UTC",
+    "property": "Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ"
+  },
+  "context": null,
+  "initial_request": "Please provide an estimate to clean property as per check out to include the removal of dumped items left in the property and a carpet clean.",
+  "overview": "Northbridge Lettings requested an estimate for checkout cleaning at Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ, including removing dumped items and cleaning the carpet. A provider was assigned, the estimate was approved, and the work was placed on hold at points while awaiting the provider and other works. The provider later said the invoice had been sent. The agency forwarded an invoice attachment to the landlord, requested confirmation, and closed the request after completing its checks. The landlord subsequently replied, “Paid”.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The cleaning request was completed and closed after the invoice was sent to the landlord; the landlord later confirmed payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-07-22T15:49:57Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Please provide an estimate to clean property as per check out to include the removal of dumped items left in the property and a carpet clean."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-07-22T16:00:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-07-22T16:00:53Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-003-2766\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-07-22T16:00:53Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-003-2766\nAddress: Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ\n\nPlease provide an estimate to clean property as per check out to include the removal of dumped items left in the property and a carpet clean.\n\nAttachment: attachment-54-document\n\nAttachments: [attachment-01-checkout-inspection-report.pdf](attachments/attachment-01-checkout-inspection-report.pdf)"
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-07-22T16:01:06Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Theo Quinn. Reason: Waiting for Provider"
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-07-22T16:55:55Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode.\nValidation: (Priority cannot be decreased to 5. Current priority is 6.)"
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-07-22T16:55:55Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Hi Theo\n\nPlease tell me if it didn’t attach below.\n\nThanks\nBennett"
+    },
+    {
+      "n": 8,
+      "timestamp": "2025-07-22T17:38:20Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-003-2766\nHello, this is Northbridge Lettings! Please check your email regarding the property at Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ."
+    },
+    {
+      "n": 9,
+      "timestamp": "2025-07-22T17:38:20Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Job Id: NBL-003-2766\nAddress: Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ\n\nReceived :) Please proceed"
+    },
+    {
+      "n": 10,
+      "timestamp": "2025-07-22T17:39:11Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Estimate approved"
+    },
+    {
+      "n": 11,
+      "timestamp": "2025-07-22T17:40:36Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Theo Quinn. Reason: Other. Comment: Hold for works"
+    },
+    {
+      "n": 12,
+      "timestamp": "2025-07-22T17:40:37Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Theo Quinn. Reason: Other. Comment: Hold for works"
+    },
+    {
+      "n": 13,
+      "timestamp": "2025-07-22T17:44:57Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode.\nValidation: (Priority cannot be decreased to 5. Current priority is 6.)"
+    },
+    {
+      "n": 14,
+      "timestamp": "2025-07-22T17:44:58Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Lovely thankyou."
+    },
+    {
+      "n": 15,
+      "timestamp": "2025-07-22T17:53:29Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Theo Quinn. Reason: Waiting for Provider"
+    },
+    {
+      "n": 16,
+      "timestamp": "2025-07-23T18:50:55Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode.\nValidation: (Priority cannot be decreased to 5. Current priority is 6.)"
+    },
+    {
+      "n": 17,
+      "timestamp": "2025-07-23T18:50:56Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "hi invoice sent to Theo x"
+    },
+    {
+      "n": 18,
+      "timestamp": "2025-07-24T14:30:49Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been moved to Result"
+    },
+    {
+      "n": 19,
+      "timestamp": "2025-07-24T14:30:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request marked as completed, lets do the final checks"
+    },
+    {
+      "n": 20,
+      "timestamp": "2025-07-24T14:31:35Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Job Id: NBL-003-2766\nAddress: Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ\n\nHI Langley, Please see invoice from Cedar Solutions. Regards\n\nAttachment(s): attachment-92-document\n\nAttachments: [attachment-02-cleaning-invoice.pdf](attachments/attachment-02-cleaning-invoice.pdf)"
+    },
+    {
+      "n": 21,
+      "timestamp": "2025-07-24T14:31:41Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Need confirmation from landlord"
+    },
+    {
+      "n": 22,
+      "timestamp": "2025-07-24T14:31:59Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "All checks have been completed; the request is now closed"
+    },
+    {
+      "n": 23,
+      "timestamp": "2025-09-05T12:34:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "Paid"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "attachment-01-checkout-inspection-report.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/003/attachments/attachment-01-checkout-inspection-report.pdf",
+      "text": "Northbridge Lettings\n\nCheckout inspection report\nTo record the condition and cleanliness of Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ, at\ncheckout and compare it with a previous inspection.\n\n\nTitle: Checkout inspection report. Appointment date: 16 March 2026. Assessor: Northbridge\nLettings.\n\nThe report describes the inspected property room by room, records its contents where present,\nand identifies observed defects with supporting photographs. It is a visual inspection; inaccessible\nand loft areas are not inspected. The report does not necessarily identify structural defects, give\nrepair advice or costs, or confirm that fixtures and fittings work. Descriptions such as silver, chrome\nor oak refer to appearance and do not necessarily identify the material. The report belongs to the\ninstructing party and may not be used without written permission.\n\nCheckout guidance: the property and contents are expected to be in a similar condition and\ncleanliness to the report prepared before the tenancy. Damage beyond fair wear and tear may\nneed repair or replacement, with costs potentially deducted from the tenant’s deposit; receipts\nshould be retained. If cleaning is unsatisfactory, a professional cleaner may be instructed and the\ncost potentially deducted from the deposit. Cleaning should be thorough and the property left tidy.\nCarpets and curtains should be professionally cleaned where required by the inventory or tenancy\nagreement. Vinyl or tiled floors should be clean and free from cracks or tears. Decor should match\nthe earlier report; added picture hooks, nails, screws and holes may need removal or repair, and\nexcessive marks and fingerprints should be cleaned. Refrigerators and freezers should be\ndefrosted, switched off and left open. Ovens, hobs, extractors and microwaves should be cleaned,\nincluding burnt deposits, grease, doors and seals. Gardens, where applicable, should be left tidy,\nwith lawns cut and borders, planters, hedges, paths and patios maintained. Smoke and carbon\nmonoxide alarms were checked and recorded as working on the report date; the tenant is\nresponsible for keeping them working and reporting faults, other than battery replacement.\n\nRating definitions—condition: Excellent means unused or new; Good means minor wear without\nobvious appearance or function faults; Fair means wear or minor damage; Poor means extensive\nwear such as stains, marks, rips or chips; Unacceptable means not fit for purpose, such as badly\ndamaged or faulty. Cleanliness: Excellent means cleaned to a high standard; Good to a good\nstandard; Fair to a fair standard; Poor means light cleaning required; Unacceptable means\nprofessional cleaning required. Item cleanliness ratings refer to the issues and photographs.\n\nBedroom, current report: grey carpet requires cleaning and has patches of grease and other\nstains; furniture requires light cleaning; small amounts of dumped items are present; there is\nevidence of smoking; dust and dirt are behind the bed; the door handle has failed and requires\nreplacement. Condition rated Poor; cleanliness rated Unacceptable.\n\nBedroom, previous report: grey carpet, cream painted walls, white radiator, television and hinged\nmount, wardrobe and two-drawer unit, three-quarter double bed and headboard, silver sockets and\nswitches, ceiling spotlight and functioning bulbs, chair and table, television remote, UPVC window\nand vertical blinds were recorded as generally in good clean condition. The mattress was in poor\ncondition with various stains.\n\nBathroom, current report: door in good clean condition; window and blinds in good condition;\ncream painted walls in fair condition with some marks; sink, shelving, vanity unit, shower screen,\nshower equipment and bathing equipment require cleaning; dumped items are present; toilet roll\nholder is damaged. Condition and cleanliness rated Unacceptable.\n\nBathroom, previous report: wooden-effect vinyl floor, close-coupled WC and plastic seat were in\ngood/clean condition. Cream painted walls had very minor marks. White ceramic sink and mixer\ntap were in fair condition, with limescale on the tap. Under-sink cupboard, shower screen, plastic\nbath and clad plastic walls were in good clean condition. Bath mixer taps and shower equipment\nwere in good clean condition with very minor limescale marks. Towel radiator, white plastic bin,\n\fvertical blinds and ceiling were in good clean condition; the new PVC window had some cobwebs.\nLamp and extractor fan were recorded as working.\n\nMeters: electricity readings were recorded as not applicable because electricity was included in\nrent, both in the previous and current reports.\n\nKeys: the report has previous and current date rows, but no key details or comments are recorded.\n\nDetectors: the site-wide system was tested by staff and marked Yes in both the previous and\ncurrent reports. The current report was signed as reflecting the assessor’s assessment on 22 July\n2025 at 11:39:13.\n\n Report        Inspection    Condition       Cleanliness      Defects Photographs Tenant\n               area                                                               comments\n Previous,     Bedroom       Good            Good             0         33               0\n 29\n November\n 2024\n Previous,     Bathroom      Good            Good             0         24               0\n 29\n November\n 2024\n Current, 16   Bedroom       Poor            Unacceptable 3             24               None\n March                                                                                   recorded\n 2026\n Current, 16   Bathroom      Unacceptable Unacceptable 4                31               None\n March                                                                                   recorded\n 2026\n\n Date          Condition Cleanliness        Description and issues\n 29            Good         Good            Grey carpet, cream painted walls, white radiator,\n November                                   television and hinged mount, wardrobe and two-\n 2024                                       drawer unit, bed and headboard, sockets and\n                                            switches, ceiling spotlight with functioning bulbs, chair\n                                            and table, television remote, UPVC window and\n                                            vertical blinds generally recorded in good clean\n                                            condition. Mattress recorded in poor condition with\n                                            various stains.\n 16 March      Poor         Unacceptable Grey carpet requires cleaning and has patches of\n 2026                                    grease and other stains; furniture requires light\n                                         cleaning; small amounts of dumped items present;\n                                         evidence of smoking; dust and dirt behind bed; failed\n                                         door handle requires replacement.\n\n Date          Condition      Cleanliness      Description and issues\n 29            Good           Good             Wooden-effect vinyl floor and close-coupled WC\n November                                      with plastic seat in good/clean condition; cream\n 2024                                          painted walls had very minor marks; sink and mixer\n                                               tap fair with limescale; under-sink cupboard,\n                                               shower screen, bath and clad walls, bath taps and\n                                               shower equipment, towel radiator, bin, blinds and\n                                               ceiling generally in good clean condition. PVC\n                                               window had some cobwebs; lamp and extractor fan\n                                               recorded as working.\n\fDate           Condition       Cleanliness     Description and issues\n16 March       Unacceptable Unacceptable Door in good clean condition; window and blinds in\n2026                                     good condition; cream walls fair with some marks;\n                                         sink, shelving, vanity unit, shower screen, shower\n                                         equipment and bathing equipment require cleaning;\n                                         dumped items present; toilet roll holder damaged.\n\nReport date              Utility     Reading                  Location Serial           Supply\n                                                                       number           type\n29 November 2024,        Electricity Not applicable —\nprevious                             included in rent\n16 March 2026,           Electricity Not applicable —\ncurrent                              included in rent\n\nReport date                          Details                               Tested    Comments\n29 November 2024, previous           Site-wide system tested by staff      Yes\n16 March 2026, current               Site-wide system tested by staff      Yes\n\nReport date                             General key details         General key comments\n29 November 2024, previous\n16 March 2026, current\n\n\nObservations\n       The previous report is dated 29 November 2024 and the current report is dated 16 March\n       2026.\n       The report summary records the bedroom as Good condition and Good cleanliness\n       previously, changing to Poor condition and Unacceptable cleanliness currently. It records the\n       bathroom as Good for both previously, changing to Unacceptable condition and cleanliness\n       currently.\n       The current summary counts 3 bedroom defects and 4 bathroom defects. It lists 24 bedroom\n       photographs and 31 bathroom photographs. The previous summary lists 33 bedroom\n       photographs and 24 bathroom photographs.\n       The report lists no tenant comments for the previous bedroom and bathroom entries; current\n       tenant-comment fields contain no substantive comment text.\n       The checklist, external-area descriptions and notes pages contain no recorded details.\n       The report contains one previous-report detector photograph.\n\nFindings\n       Bedroom defects: carpet, furniture and failed door handle.\n       Bathroom defects: areas to clean, dumped items, paintwork defects and broken toilet roll\n       holder.\n       The bathroom inspection description states the toilet roll holder is damaged; the defect list\n       describes it as broken.\n       The report records evidence of smoking in the bedroom and dust and dirt behind the bed.\n       The report records small amounts of dumped items in the bedroom and dumped items in the\n       bathroom.\n\fConclusions\n    At the current inspection, both the bedroom and bathroom required attention. The bedroom\n    was rated Poor for condition and Unacceptable for cleanliness; the bathroom was rated\n    Unacceptable for both.\n    The report identifies cleaning requirements, dumped items and specific maintenance\n    defects, including the failed bedroom door handle and damaged bathroom toilet roll holder.\n\nImage evidence\n\n  Neutral image placeholder\n\n  Cover photograph: exterior entrance and approach to the inspected building.\n\n\n\n\n  Neutral image placeholder\n\n  Previous-report detector photograph: ceiling-mounted detector shown as visual context for\n  the detector record.\n\n\n\n\n  Neutral image placeholder\n\n  Current bedroom photo 1 of 24: bedroom overview showing the door, wall and radiator.\n\n\n\n\n  Neutral image placeholder\n\n  Current bedroom photo 2 of 24: general view of the bedroom furnishings and room layout.\n\n\n\n\n  Neutral image placeholder\n\n  Current bedroom photo 3 of 24: bedroom floor and furniture in context.\n\n\n\n\n  Neutral image placeholder\n\n  Current bedroom photo 4 of 24: general overview of bedroom fixtures and furnishings.\n\fNeutral image placeholder\n\nCurrent bedroom photo 5 of 24: general overview of the bedroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 6 of 24: general overview of the bedroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 7 of 24: general overview of the bedroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 8 of 24: general overview of the bedroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 9 of 24: general overview of the bedroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 10 of 24: carpet detail recorded under the carpet defect.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 11 of 24: carpet detail recorded under the carpet defect.\n\fNeutral image placeholder\n\nCurrent bedroom photo 12 of 24: carpet detail recorded under the carpet defect.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 13 of 24: carpet detail recorded under the carpet defect.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 14 of 24: carpet detail recorded under the carpet defect.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 15 of 24: carpet detail recorded under the carpet defect.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 16 of 24: carpet detail recorded under the carpet defect.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 17 of 24: carpet detail recorded under the carpet defect.\n\n\n\n\nNeutral image placeholder\n\fCurrent bedroom photo 18 of 24: furniture detail recorded under the furniture issue.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 19 of 24: furniture detail recorded under the furniture issue.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 20 of 24: furniture detail recorded under the furniture issue.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 21 of 24: furniture detail recorded under the furniture issue.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 22 of 24: furniture detail recorded under the furniture issue.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 23 of 24: furniture detail recorded under the furniture issue.\n\n\n\n\nNeutral image placeholder\n\nCurrent bedroom photo 24 of 24: close view of the failed bedroom door handle.\n\n\n\n\nNeutral image placeholder\n\fCurrent bathroom photo 1 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 2 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 3 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 4 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 5 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 6 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 7 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\fCurrent bathroom photo 8 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 9 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 10 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 11 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 12 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 13 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 14 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\fCurrent bathroom photo 15 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 16 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 17 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 18 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 19 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 20 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 21 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\fCurrent bathroom photo 22 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 23 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 24 of 31: bathroom area identified for cleaning.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 25 of 31: dumped items recorded in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 26 of 31: dumped items recorded in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 27 of 31: dumped items recorded in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 28 of 31: paintwork defect recorded in the bathroom.\n\fNeutral image placeholder\n\nCurrent bathroom photo 29 of 31: paintwork defect recorded in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 30 of 31: paintwork defect recorded in the bathroom.\n\n\n\n\nNeutral image placeholder\n\nCurrent bathroom photo 31 of 31: damaged toilet roll holder.",
+      "text_source": "pdftotext"
+    },
+    {
+      "name": "attachment-02-cleaning-invoice.pdf",
+      "type": "pdf",
+      "path": "raw/Property Management/003/attachments/attachment-02-cleaning-invoice.pdf",
+      "text": "Northbridge Lettings\n\nCleaning invoice\nInvoice for checkout cleaning at Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ.\n\n\nProvider branding: Keystone Maintenance.\n\nInvoice date: 23/07/2025.\n\nInvoice reference: NBL-003-2766.\n\nProperty: Flat 30, 30 Harbour View, Northbridge, ZZ9 0ZZ.\n\nJob reference: NBL-003-2766.\n\nWork: EOT cleaning (Heavy limescale); Shampoo vax carpets; Removed dumped small items.\n\nTotal: £125.\n\nPayee named on invoice: Bennett Ingram.\n\n Description                                                              Amount\n EOT cleaning (Heavy limescale)                                           Not itemised\n Shampoo vax carpets                                                      Not itemised\n Removed dumped small items                                               Not itemised\n Total                                                                    £125\n\n\nObservations\n         The invoice lists checkout cleaning, carpet shampooing and removal of dumped small items.\n         Payment account details shown on the source document have been omitted.\n         No VAT amount or tax breakdown is stated.\n\nFindings\n         The invoice records a total charge of £125 for the listed cleaning work.\n\nConclusions\n         The invoice supports the case record that checkout cleaning, carpet cleaning and removal of\n         dumped items were carried out.\n\nImage evidence\n\n    Neutral image placeholder\n\n    Invoice page listing checkout cleaning for heavy limescale, carpet shampooing and\n    removal of dumped small items, with a total of £125.",
+      "text_source": "pdftotext"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "id": "property-049",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "049",
+  "title": "Case 049: Shed Door Repair Request",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-03-05 22:10:48 UTC",
+    "updated": "2024-03-16 23:34:45 UTC",
+    "completed": "2024-03-16 23:34:45 UTC",
+    "property": "Flat 13, 103 Meadow Row, Bellmere, ZZ3 7ZZ"
+  },
+  "context": null,
+  "initial_request": "Minor issue / weathering: Shed door is sagging and needs to be lifted from the bottom to close properly\n\nWe don't mind lifting it from the bottom, but wanted to report it in case it gets worse",
+  "overview": "The tenant reported that the shed door was sagging and said they were willing to lift it to close, but wanted to report the issue in case it worsened. The landlord approved the tenants fixing it themselves if able, with a contractor as an alternative. The tenants completed the repair themselves.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The tenants fixed the shed door themselves. The task was completed without payment.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-03-05T22:10:48Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: Minor issue / weathering: Shed door is sagging and needs to be lifted from the bottom to close properly\n\nWe don't mind lifting it from the bottom, but wanted to report it in case it gets worse"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-03-05T22:10:48Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "**[AI Intake Classification]**\n\n**Tenant said:**\n  Minor issue / weathering: Shed door is sagging and needs to be lifted from the bottom to close properly\n\nWe don't mind lifting it from the bottom, but wanted to report it in case it gets worse\n\n**Issue:**\n  Structural\n  **Severity:** ROUTINE\n  **Confidence:** medium\n\n**Tenant's clarifying Q&A:**\n  **Q:** Is the ceiling showing any signs of sagging, bulging, or discolouration?\n  **A:** No\n  **Q:** Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n  **A:** No\n  **Q:** Are there any pets at the property?\n  **A:** No"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-03-05T22:12:13Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-03-06T23:32:26Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Landlord",
+      "body": "Address: Flat 13, 103 Meadow Row, Bellmere, ZZ3 7ZZ\n\nGood morning,\n\nI have had a report of the shed door sagging and needing it to be lifted.\n\nThe tenants are happy to do this but wanted to report this in case it gets worse.\n\nAre you happy for them to do this or would you like a contractor to go out deal with it.\n\nKind regards\n\nRowan"
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-03-06T23:32:28Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Waiting for landlord/tenant response before provider selection (3 days)."
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-03-06T23:37:03Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Message received from landlord/tenant. Please review and proceed manually."
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-03-06T23:37:03Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Northbridge Lettings",
+      "body": "The landlord approves the tenant to fix the door if they can, otherwise to assign it to a contractor."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-03-06T23:41:04Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 13, 103 Meadow Row, Bellmere, ZZ3 7ZZ\n\nGood morning,\n\nI have spoken to the landlord and he is happy for you to fix the door if you are able. Please let me know if not and I will then get a contractor out to you.\n\nKind regards\n\nRowan"
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-03-06T23:41:18Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-03-06T23:41:51Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Ingram. Reason: Waiting for Tenant. Comment: waiting for tenant reply"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-03-14T00:17:17Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Address: Flat 13, 103 Meadow Row, Bellmere, ZZ3 7ZZ\n\nGood afternoon,\n\nPlease can you confirm if you have fixed this issue yourself so that I can close the job off the system.\n\nKind regards\n\nRowan"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-03-14T00:17:46Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Put on hold by Harriet Ingram. Reason: Waiting for Tenant. Comment: waiting on tenant reply - if no reply will close off the job"
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-03-16T23:34:45Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Tenats have completed the job themselves"
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-03-16T23:34:45Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,403 @@
+{
+  "id": "property-030",
+  "track": "property",
+  "track_name": "Property Management",
+  "number": "030",
+  "title": "Case 030: Plumbing request: slow-filling toilet and bathroom tap",
+  "details": {
+    "source_role": "Tenant",
+    "status": "Completed",
+    "created": "2024-10-02 02:46:29 UTC",
+    "updated": "2024-11-16 00:00:34 UTC",
+    "completed": "2024-10-24 03:12:04 UTC",
+    "property": "Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ"
+  },
+  "context": null,
+  "initial_request": "The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nAdditional details provided:\n- Is this the only toilet at the property? Yes\n- Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else? Trickling to fill up\n- When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl? Drains away\n- Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed? No\n- Are there any pets at the property? Yes",
+  "overview": "The tenants reported that the toilet was trickling as it refilled and the cold bathroom basin tap was not working after their holiday. The landlord approved proceeding, and a plumbing provider was assigned. After repeated reminders, the provider arranged an appointment; the tenants confirmed someone would be home. The provider missed the confirmed visit, then reported completing the work the following day: a new Fluidmaster bottom-entry ball valve was supplied and installed in the toilet, and the tenants said the basin taps were fine. The landlord paid the contractor directly; the task was completed without payment through the case.",
+  "escalation_snapshot": null,
+  "next_action": null,
+  "outcome": "The provider replaced the toilet cistern inlet valve. The tenants reported that the basin taps were working normally.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2024-10-02T02:46:30Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Request description: The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nAdditional details provided:\n- Is this the only toilet at the property? Yes\n- Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else? Trickling to fill up\n- When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl? Drains away\n- Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed? No\n- Are there any pets at the property? Yes"
+    },
+    {
+      "n": 2,
+      "timestamp": "2024-10-02T02:46:30Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "[AI Intake Classification]\n\nTenant said:\n  The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nIssue:\n  Plumbing\n  Severity: ROUTINE\n  Confidence: medium\n\nTenant's clarifying Q&A:\n  Q: Is this the only toilet at the property?\n  A: Yes\n  Q: Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else?\n  A: Trickling to fill up\n  Q: When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl?\n  A: Drains away\n  Q: Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed?\n  A: No\n  Q: Are there any pets at the property?\n  A: Yes"
+    },
+    {
+      "n": 3,
+      "timestamp": "2024-10-02T02:47:07Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please complete landlord approval step first"
+    },
+    {
+      "n": 4,
+      "timestamp": "2024-10-02T03:22:47Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Landlord",
+      "body": "Address: Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ\n\nHello Freya\n\nThe tenants have reported that the toilet is running slow to fill up and the cold water tap on the hand basin in the bathroom isn't working at all.\n\nI have raised a job for Riverside Works to sort."
+    },
+    {
+      "n": 5,
+      "timestamp": "2024-10-02T03:22:53Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Landlord approval confirmed. Proceed to provider selection."
+    },
+    {
+      "n": 6,
+      "timestamp": "2024-10-02T03:23:08Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Maintenance provider assigned"
+    },
+    {
+      "n": 7,
+      "timestamp": "2024-10-02T03:24:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Dear Amelia Ingram & Amelia Dawson,\n\nOur maintenance provider Willow Services will be attending your property for a Plumbing request.\n\nThey will contact you soon to arrange a mutually convenient time to visit and triage the problem or prepare the quote if needed.\n\nRequest description: The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nAdditional details provided:\n- Is this the only toilet at the property? Yes\n- Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else? Trickling to fill up\n- When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl? Drains away\n- Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed? No\n- Are there any pets at the property? Yes\n\nIf you have any pets, please ensure you inform our provider."
+    },
+    {
+      "n": 8,
+      "timestamp": "2024-10-02T03:24:07Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Contractor",
+      "body": "Dear Riverside Works,\n\nThis is a new Plumbing request for the property at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ.\n\nPlease contact the tenant to arrange a suitable time to complete the job or provide a quote if required.\n\nContact Details: 07700 900781 (enter this code when calling)\nTenant Name: Amelia Ingram & Amelia Dawson\nRequest description: The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nAdditional details provided:\n- Is this the only toilet at the property? Yes\n- Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else? Trickling to fill up\n- When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl? Drains away\n- Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed? No\n- Are there any pets at the property? Yes\nList of attached files:\n- Attachment #1\n\nIf the job requires quotation, please reply to this email with a quote, photos & the estimated completion time. In this case you should only proceed after receiving our approval.\nWe request that you arrange this appointment as soon as possible to ensure a smooth experience for our customers."
+    },
+    {
+      "n": 9,
+      "timestamp": "2024-10-02T05:04:33Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to landlord. If not, please return this request to auto mode."
+    },
+    {
+      "n": 10,
+      "timestamp": "2024-10-02T05:04:33Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Landlord",
+      "to": "Agency / system",
+      "body": "Thanks Ava 👍"
+    },
+    {
+      "n": 11,
+      "timestamp": "2024-10-02T06:13:43Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Manually updated via Change Mode"
+    },
+    {
+      "n": 12,
+      "timestamp": "2024-10-03T03:24:08Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Willow Services,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address:\n\nThe plumbing request at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact details: 07700 900552 (enter the code when calling)\nTenant names: Amelia Ingram & Amelia Dawson\n\n**Request description:** The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nAdditional details provided:\n- Is this the only toilet at the property? Yes\n- Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else? Trickling to fill up\n- When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl? Drains away\n- Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed? No\n- Are there any pets at the property? Yes\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 13,
+      "timestamp": "2024-10-07T01:25:02Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Willow Services,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address:\n\nThe plumbing request at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact details: 07700 900552 (enter the code when calling)\nTenant names: Amelia Ingram & Amelia Dawson\n\n**Request description:** The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nAdditional details provided:\n- Is this the only toilet at the property? Yes\n- Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else? Trickling to fill up\n- When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl? Drains away\n- Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed? No\n- Are there any pets at the property? Yes\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 14,
+      "timestamp": "2024-10-09T01:26:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Dear Willow Services,\n\nThis is a friendly reminder that we are awaiting confirmation that the appointment has been booked with the tenant at the following address:\n\nThe plumbing request at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ\n\nPlease contact the tenant to arrange the meeting.\n\nContact details: 07700 900552 (enter the code when calling)\nTenant names: Amelia Ingram & Amelia Dawson\n\n**Request description:** The toilet is running slow to fill up and the cold water tap in the hand basin in the bathroom isn't working at all this has become a issue recently on our return from our holiday.\n\nAdditional details provided:\n- Is this the only toilet at the property? Yes\n- Is the toilet not flushing, blocked and overflowing, constantly running or trickling, or something else? Trickling to fill up\n- When you flush, does the water drain away at all, or does it rise up toward the rim of the bowl? Drains away\n- Are there any access considerations we should know about, such as entry codes or alarms and security systems that would need to be disarmed? No\n- Are there any pets at the property? Yes\n\nPlease book the appointment as soon as possible with the tenant.\n\nIf you have already scheduled an appointment but received this message by mistake, please reply to this email with the date and time of the scheduled visit."
+    },
+    {
+      "n": 15,
+      "timestamp": "2024-10-11T01:26:58Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "3+ reminders have been sent to provider. Please check what’s happening."
+    },
+    {
+      "n": 16,
+      "timestamp": "2024-10-11T05:13:33Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Contractor",
+      "body": "Address: Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ\n\nHi Theo\n\nCan you make contact with the tenants please and get this job booked in.\n\nThanks"
+    },
+    {
+      "n": 17,
+      "timestamp": "2024-10-11T05:13:44Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Resumed auto waiting for provider visit date (5 days)"
+    },
+    {
+      "n": 18,
+      "timestamp": "2024-10-14T02:50:59Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "A representative from Keystone Solutions is requesting a callback regarding a faulty toilet and provides a contact number with available times."
+    },
+    {
+      "n": 19,
+      "timestamp": "2024-10-14T03:28:49Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 20,
+      "timestamp": "2024-10-14T03:28:49Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Agency / system",
+      "body": "Hi Ava\n\nLeft tenants a voicemail.\n\nPlease let them know we are booked to go on Monday 20th PM and advise us if we need to collect keys or they will be home.\n\nThanks\nSawyer"
+    },
+    {
+      "n": 21,
+      "timestamp": "2024-10-14T04:28:00Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Isaac Ingram from Beacon Works called regarding the property and wants to confirm if someone will be home on Monday 20th in the afternoon, or if a key should be provided."
+    },
+    {
+      "n": 22,
+      "timestamp": "2024-10-14T04:31:30Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Agency / system",
+      "to": "Tenant",
+      "body": "Hello\n\nThe plumber has booked in to come and look at the toilet running slow to fill up and the cold water tap in the hand basin in the bathroom not working on Monday 20th October in the PM will someone be home or are they ok to collect keys from our office?"
+    },
+    {
+      "n": 23,
+      "timestamp": "2024-10-14T04:31:47Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Put on hold by Ava Mercer. Reason: Waiting for Tenant. Comment: Waiting for T to confirm"
+    },
+    {
+      "n": 24,
+      "timestamp": "2024-10-14T07:39:33Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Tenant",
+      "to": "Agency / system",
+      "body": "Good Afternoon Monday 20th will be fine someone will be home on that day. Kind regards Maya Harper"
+    },
+    {
+      "n": 25,
+      "timestamp": "2024-10-14T23:50:17Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Great thank you for confirming that someone will be home on the 20th October in the PM for the plumbers visit."
+    },
+    {
+      "n": 26,
+      "timestamp": "2024-10-14T23:51:05Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance provider",
+      "body": "Hello Ruben\n\nThe tenants have confirmed that they will be home on Monday 20th in the PM"
+    },
+    {
+      "n": 27,
+      "timestamp": "2024-10-14T23:52:10Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings",
+      "to": "Not specified",
+      "body": "Task has been moved to Visit date confirmed/rescheduled - 2024-10-20 13:00"
+    },
+    {
+      "n": 28,
+      "timestamp": "2024-10-14T23:53:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance provider",
+      "body": "Dear Willow Services,\n\nWe are providing the confirmed appointment details for the **Plumbing request** at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ:\n\nConfirmed Time Slot: 20/10/2024 01:00 pm\nPets: Yes\nContact Details: 07700 900511\nTenant Name: Amelia Ingram & Amelia Dawson\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you with a change of plans.\n\nWe appreciate your cooperation."
+    },
+    {
+      "n": 29,
+      "timestamp": "2024-10-14T23:53:01Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Amelia Ingram & Amelia Dawson,\n\nWe are providing the confirmed appointment details for the **Plumbing request** at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ:\nConfirmed Time Slot: 20/10/2024 01:00 pm\nMaintenance Provider Name: Willow Services\nContact Details: 07700 900511\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 30,
+      "timestamp": "2024-10-14T23:53:37Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Maintenance provider",
+      "to": "Northbridge Lettings",
+      "body": "Thanks Ava"
+    },
+    {
+      "n": 31,
+      "timestamp": "2024-10-14T23:53:58Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Maintenance provider",
+      "body": "Dear Willow Services,\n\nAppointment has been rescheduled. Here are the updated details for the renewal of the Plumbing request at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ:\n\nConfirmed Time Slot: 20/10/2024 01:00 pm\nContact Details: 07700 900511\nTenant Name: Amelia Ingram & Amelia Dawson\n\nPlease be prepared to accommodate any changes to the date or time if the tenant contacts you due to a change of plans.\n\nWe will send you a reminder email 24 hours after the anticipated completion date."
+    },
+    {
+      "n": 32,
+      "timestamp": "2024-10-14T23:53:59Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northbridge Lettings",
+      "to": "Tenant",
+      "body": "Dear Amelia Ingram & Amelia Dawson,\n\nAppointment has been rescheduled. Here are the updated details for the Plumbing request at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ:\nConfirmed Time Slot: 20/10/2024 01:00 pm\nMaintenance Provider Name: Willow Services\nContact Details: 07700 900511\nAccess: You have granted access to the Maintenance Provider with our key\n\nPlease inform the Maintenance Provider if there are any changes on your end."
+    },
+    {
+      "n": 33,
+      "timestamp": "2024-10-20T02:47:59Z",
+      "stage": null,
+      "channel": "SMS",
+      "from": "Northbridge Lettings system",
+      "to": "Tenant",
+      "body": "Hello, this is Northbridge Lettings! Your plumbing request appointment is scheduled for 20/10/2024 01:00 pm. To reschedule call 07700 900511.\nPlease do not reply."
+    },
+    {
+      "n": 34,
+      "timestamp": "2024-10-23T02:48:00Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings system",
+      "to": "Not specified",
+      "body": "No work results; we need to check what is happening"
+    },
+    {
+      "n": 35,
+      "timestamp": "2024-10-23T03:26:30Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Northbridge Lettings system",
+      "to": "Contractor",
+      "body": "The call discusses a booking issue for a job at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ, with difficulties in obtaining confirmation of the appointment. The caller offers to contact them for clarification."
+    },
+    {
+      "n": 36,
+      "timestamp": "2024-10-23T03:33:49Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Northbridge Lettings system",
+      "to": "Tenant",
+      "body": "The call begins with the agent informing the customer that the call may be recorded for training and monitoring purposes."
+    },
+    {
+      "n": 37,
+      "timestamp": "2024-10-23T03:50:41Z",
+      "stage": null,
+      "channel": "Hold",
+      "from": "Northbridge Lettings system",
+      "to": "Not specified",
+      "body": "Put on hold by Ava Mercer. Reason: Waiting for Provider. Comment: Provider missed the confirmed date so now going tomorrow."
+    },
+    {
+      "n": 38,
+      "timestamp": "2024-10-24T02:20:44Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Northbridge Lettings system",
+      "to": "Not specified",
+      "body": "Please check if we need to provide a response to provider. If not, please return this request to auto mode."
+    },
+    {
+      "n": 39,
+      "timestamp": "2024-10-24T02:20:44Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Contractor",
+      "to": "Northbridge Lettings system",
+      "body": "The plumbing job at Flat 7, 31 Willowmere Road, Alderwick, ZZ4 0ZZ is completed. A new fluid master bottom entry ball valve was supplied and installed to the toilet, and the basin taps were reported fine by the tenants."
+    },
+    {
+      "n": 40,
+      "timestamp": "2024-10-24T03:12:04Z",
+      "stage": null,
+      "channel": "Note",
+      "from": "Northbridge Lettings system",
+      "to": "Not specified",
+      "body": "LL pays contractor directly"
+    },
+    {
+      "n": 41,
+      "timestamp": "2024-10-24T03:12:04Z",
+      "stage": null,
+      "channel": "Update",
+      "from": "Agency / system",
+      "to": "Not specified",
+      "body": "Task has been completed without payment"
+    },
+    {
+      "n": 42,
+      "timestamp": "2024-11-15T23:29:55Z",
+      "stage": null,
+      "channel": "Call",
+      "from": "Contractor",
+      "to": "Tenant",
+      "body": "The call begins with the agent introducing the Northbridge Lettings maintenance line and informing the customer about the possible recording of the call."
+    }
+  ],
+  "attachments": []
+}

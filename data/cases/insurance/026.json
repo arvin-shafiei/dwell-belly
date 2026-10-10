@@ -1,0 +1,93 @@
+{
+  "id": "insurance-026",
+  "track": "insurance",
+  "track_name": "Insurance Claims Processing",
+  "number": "026",
+  "title": "Case 026: Payment Method Change — Case 026",
+  "details": {
+    "source_role": "Property owner / policyholder",
+    "status": "Completed",
+    "created": "2025-06-18 10:07:00 UTC",
+    "updated": "2025-06-18 16:49:00 UTC",
+    "completed": "2025-06-18 16:49:00 UTC",
+    "property": "126 Rowan Walk, Brackenford, ZZ3 8ZZ",
+    "broker": "Zak, Ravenside Cover",
+    "insurer": "Northmere Mutual"
+  },
+  "context": null,
+  "initial_request": "I own the property at 126 Rowan Walk, Brackenford, ZZ3 8ZZ, and would like to change the way I pay for my property insurance. Please let me know how I can arrange this.",
+  "overview": "Penny asked Zak at Ravenside Cover to change her payment method. Zak did not take payment details by email and asked Northmere Mutual’s Payments Team for its approved secure process. After Zak directed Penny to that process, she confirmed she had used it; the team then confirmed the method change, and Zak passed that confirmation on to Penny.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "At the escalation point, Zak should direct Penny to Northmere Mutual’s approved secure payment procedure and wait for the Payments Team to confirm the change before telling her it is complete.",
+    "recorded_event": null
+  },
+  "outcome": "Northmere Mutual confirmed that the payment method had been changed.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-06-18T10:07:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Penny Shaw",
+      "to": "Zak, Ravenside Cover",
+      "body": "I’d like to change the payment method for the property insurance covering 126 Rowan Walk, Brackenford, ZZ3 8ZZ. Could you tell me the insurer’s approved way to do that?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-06-18T11:14:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Zak, Ravenside Cover",
+      "to": "Northmere Mutual Payments Team",
+      "body": "Penny Shaw has asked to change her payment method. I don’t take payment details by email; please confirm the approved secure procedure I should direct her to use."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-06-18T12:21:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Payments Team",
+      "to": "Zak, Ravenside Cover",
+      "body": "Please direct Penny to the secure payment-management facility in her Northmere Mutual account and ask her to complete the change there. We will confirm to you once the updated method has been recorded."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-06-18T13:28:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Zak, Ravenside Cover",
+      "to": "Penny Shaw",
+      "body": "Northmere Mutual has advised that you should make the change through the secure payment-management facility in your insurer account. Please use that procedure rather than sending payment details by email; I’ll wait for the insurer’s confirmation before treating the change as complete."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-06-18T14:35:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Penny Shaw",
+      "to": "Zak, Ravenside Cover",
+      "body": "I’ve used the secure payment-management facility in my Northmere Mutual account to submit the change. Please let me know when the insurer confirms it has been recorded."
+    },
+    {
+      "n": 6,
+      "timestamp": "2025-06-18T15:42:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Northmere Mutual Payments Team",
+      "to": "Zak, Ravenside Cover",
+      "body": "We confirm that Penny Shaw’s payment method has been updated in our records. This confirmation relates to the payment method only."
+    },
+    {
+      "n": 7,
+      "timestamp": "2025-06-18T16:49:00Z",
+      "stage": null,
+      "channel": "Email",
+      "from": "Zak, Ravenside Cover",
+      "to": "Penny Shaw",
+      "body": "Northmere Mutual has confirmed that your payment method has been updated in its records. I did not take or handle your payment details by email."
+    }
+  ],
+  "attachments": []
+}

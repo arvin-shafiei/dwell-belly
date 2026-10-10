@@ -1,0 +1,73 @@
+{
+  "id": "delivery-025",
+  "track": "delivery",
+  "track_name": "Delivery & Logistics",
+  "number": "025",
+  "title": "Case 025: Carrier confirms a parcel is lost after investigation",
+  "details": {
+    "source_role": "Aven Korrin, recipient",
+    "status": "Completed — specific coordination task only",
+    "created": "2026-02-26 09:00:00 UTC",
+    "escalated": "2026-02-26 09:10:00 UTC",
+    "updated": "2026-02-26 09:50:00 UTC",
+    "completed": "2026-02-26 09:50:00 UTC",
+    "primary_shipment": "DL-025",
+    "coordinator": "Iona Quill, Rivet Delivery Desk",
+    "data": "Entirely synthetic; English; fictional geography; all times UTC"
+  },
+  "context": "The carrier has completed its trace and confirmed loss. The recipient has chosen a replacement; the merchant must approve and create it.",
+  "initial_request": "I still need the kettle from TG-025. I choose a like-for-like replacement rather than a refund. Please ask the merchant to approve it.",
+  "overview": "The escalation snapshot comprises history events 001–002. Event 003 records the next agent action; the subsequent events provide the disclosed calibration follow-through. Facts learned later must not be used as if already known at escalation.",
+  "escalation_snapshot": {
+    "first_event": 1,
+    "last_event": 2
+  },
+  "next_action": {
+    "summary": "Ask the merchant to approve the customer's selected replacement option.",
+    "recipient": "Replacement authorisations, Tallowmere Goods",
+    "channel": "Email",
+    "recorded_action": "[History event 003](history.md#event-003)",
+    "recorded_event": 3
+  },
+  "outcome": "The merchant confirms the replacement order; shipment and delivery are separate later stages.",
+  "boundaries": "Confirmed loss does not mean the desk can approve replacement or claim its delivery.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-02-26T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Loss investigations, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Final trace record INV-025: DL-025 could not be located after the completed depot and route search; carrier status is confirmed lost. This finding does not itself create a merchant replacement order."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-02-26T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Aven Korrin, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I still need the kettle from TG-025. I choose a like-for-like replacement rather than a refund. Please ask the merchant to approve it."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-02-26T09:25:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Replacement authorisations, Tallowmere Goods",
+      "body": "Please approve the customer-selected kettle replacement for TG-025. Carrier INV-025 confirms DL-025 lost; Aven’s choice is recorded in the verified order thread."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-02-26T09:50:00Z",
+      "stage": "Follow-through / confirmation",
+      "channel": "Email",
+      "from": "Replacement authorisations, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Replacement approved at no additional charge. Order TG-025-R has been created for the same kettle. Shipment has not yet been booked."
+    }
+  ],
+  "attachments": []
+}

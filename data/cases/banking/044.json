@@ -1,0 +1,73 @@
+{
+  "id": "banking-044",
+  "track": "banking",
+  "track_name": "Banking & Financial Services",
+  "number": "044",
+  "title": "Case 044: One Line in the Supplier Batch",
+  "details": {
+    "source_role": "Authorised business user",
+    "status": "Completed (narrow service outcome)",
+    "bank": "Harrow & Vale Bank plc (fictional)",
+    "created": "2025-10-13 09:00:00 UTC",
+    "updated": "2025-10-13 12:08:00 UTC",
+    "completed": "2025-10-13 12:08:00 UTC"
+  },
+  "context": null,
+  "initial_request": "I can see that our supplier batch is marked processed, but I need to know whether the payment on row SUP-17 was paid or rejected.",
+  "overview": "Leona Voss has authority to view payouts. H&V’s secure portal showed the previously authorised supplier batch as processed, while the status of one payment line was unclear. The agent checked that line in the payment journal and confirmed the portal’s rejection status and reason.",
+  "escalation_snapshot": null,
+  "next_action": {
+    "summary": "Check the payment journal for row SUP-17 specifically, rather than infer its status from the batch status.",
+    "recorded_event": null
+  },
+  "outcome": "Row SUP-17 is shown as rejected because the beneficiary details did not match the receiving institution’s records. The other rows were not re-evaluated; a processed batch does not establish that every line was paid.",
+  "boundaries": null,
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2025-10-13T09:00:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V secure portal",
+      "to": "Leona Voss",
+      "body": "Batch “Alderwick supplier payments” — status: Processed."
+    },
+    {
+      "n": 2,
+      "timestamp": "2025-10-13T09:47:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "Leona Voss",
+      "to": "H&V service agent",
+      "body": "I’m authorised to view our payouts. The batch shows processed, but I can’t tell whether row SUP-17, for our studio materials supplier, was paid. Please check that row’s status."
+    },
+    {
+      "n": 3,
+      "timestamp": "2025-10-13T10:34:00Z",
+      "stage": null,
+      "channel": "Internal note",
+      "from": "H&V service agent",
+      "to": "H&V payment journal",
+      "body": "My first action is to look up row SUP-17 in the previously authorised batch and verify the status of that line specifically."
+    },
+    {
+      "n": 4,
+      "timestamp": "2025-10-13T11:21:00Z",
+      "stage": null,
+      "channel": "Business portal",
+      "from": "H&V secure portal",
+      "to": "Leona Voss",
+      "body": "Row SUP-17 — status: Rejected. Reason: Beneficiary details did not match the receiving institution’s records."
+    },
+    {
+      "n": 5,
+      "timestamp": "2025-10-13T12:08:00Z",
+      "stage": null,
+      "channel": "Secure chat",
+      "from": "H&V service agent",
+      "to": "Leona Voss",
+      "body": "I’ve confirmed that row SUP-17 is shown as rejected, with the reason displayed in your portal. I haven’t re-evaluated the other rows; the batch’s processed status does not mean every payment line was paid."
+    }
+  ],
+  "attachments": []
+}

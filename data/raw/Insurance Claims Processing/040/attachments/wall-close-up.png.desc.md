@@ -1,0 +1,1 @@
+Image description: synthetic photographic simulation, case 040. Close-up of the low wall stain: dark brown centre, ragged tide-mark outline, and paint/plaster lifting or bubbling along the top edge, consistent with moisture coming up or through the wall. No crack visible.
