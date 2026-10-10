@@ -19,8 +19,8 @@ describe("buildEvidence", () => {
       ],
     );
     expect(rows).toEqual([
-      { caseId: "delivery-001", dataset: "public", title: "One", decision: "escalated", nextAction: null, gate: "ask",
-        pass: true, score: 0.9, costUsd: 0.05, durationMs: 1000, executionId: "e2",
+      { caseId: "delivery-001", dataset: "public", title: "One", decision: "acted", nextAction: "Email → A", gate: "allow",
+        pass: true, score: 0.9, costUsd: null, durationMs: 1000, executionId: "e1",
         critical: false, verdict: "Right team.", brokenRules: [], mutation: null },
       { caseId: "gen-101", dataset: "generated", title: "Two", decision: null, nextAction: null, gate: null,
         pass: null, score: null, costUsd: null, durationMs: null, executionId: null,
@@ -30,7 +30,7 @@ describe("buildEvidence", () => {
         critical: null, verdict: null, brokenRules: [], mutation: null },
     ]);
     expect(totals).toEqual({
-      cases: 3, evaluated: 1, passed: 1, costUsd: 0.07, criticalFailures: 0,
+      cases: 3, evaluated: 1, passed: 1, costUsd: 0.02, criticalFailures: 0,
       byDataset: [
         { dataset: "public", run: 1, right: 1, wrong: 0 },
         { dataset: "generated", run: 0, right: 0, wrong: 0 },
@@ -58,16 +58,19 @@ describe("buildEvidence", () => {
     expect(rows.map((r) => r.critical)).toEqual([true, false, null]);
   });
 
-  it("takes cost and time from the judged run, else the shown run, else the latest run that states them", () => {
+  it("takes outcome, run id, verdict, cost and time from one run: the latest judged one, else the latest", () => {
     const { rows } = buildEvidence([{ id: "c", dataset: "public", title: null }, { id: "d", dataset: "public", title: null }], [
-      // c: the judged run (from an eval file) states no cost; the latest console run does.
-      ex({ id: "eval", caseId: "c", startedAt: "2026-10-10T12:00:00Z", costUsd: null, durationMs: null, eval: { pass: true, score: 1 } }),
-      ex({ id: "old", caseId: "c", startedAt: "2026-10-10T10:00:00Z", costUsd: 0.03, durationMs: 5000 }),
-      // d: the judged run has its own cost and time, which win over a later run's.
-      ex({ id: "j", caseId: "d", startedAt: "2026-10-10T10:00:00Z", costUsd: 0.04, durationMs: 7000, eval: { pass: true, score: 1 } }),
-      ex({ id: "k", caseId: "d", startedAt: "2026-10-10T11:00:00Z", costUsd: 0.09, durationMs: 9000 }),
+      // c: judged run, then a later failed run. The row must describe the judged run only.
+      ex({ id: "judged", caseId: "c", startedAt: "2026-10-10T10:00:00Z", outcome: "acted", costUsd: 0.04, durationMs: 7000, eval: { pass: true, score: 0.9 } }),
+      ex({ id: "failed", caseId: "c", startedAt: "2026-10-10T12:00:00Z", status: "error", outcome: null, costUsd: 0.09, durationMs: 9000 }),
+      // d: never judged, so the latest finished run.
+      ex({ id: "d1", caseId: "d", startedAt: "2026-10-10T10:00:00Z", costUsd: 0.01 }),
+      ex({ id: "d2", caseId: "d", startedAt: "2026-10-10T11:00:00Z", outcome: "escalated", costUsd: 0.03, durationMs: 3000 }),
     ]);
-    expect(rows.map((r) => [r.costUsd, r.durationMs])).toEqual([[0.03, 5000], [0.04, 7000]]);
+    expect(rows.map((r) => [r.executionId, r.decision, r.pass, r.costUsd, r.durationMs])).toEqual([
+      ["judged", "acted", true, 0.04, 7000],
+      ["d2", "escalated", null, 0.03, 3000],
+    ]);
   });
 
   it("stays fast with 500 cases and 10 runs each", () => {

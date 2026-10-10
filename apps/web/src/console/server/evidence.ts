@@ -46,24 +46,17 @@ export function buildEvidence(cases: EvidenceCase[], executions: EvidenceExecuti
   const latest = new Map<string, EvidenceExecution>(); // latest finished run per case
   const latestAny = new Map<string, EvidenceExecution>(); // falls back to a running one
   const latestEval = new Map<string, EvidenceExecution>();
-  const latestCost = new Map<string, EvidenceExecution>(); // latest run that states a cost
-  const latestTime = new Map<string, EvidenceExecution>(); // latest finished run that states a duration
   for (const e of executions) {
     if (e.simulated) continue; // Simulated runs (city/mock) are never evidence.
     keepLatest(latestAny, e);
     if (e.status !== "running") keepLatest(latest, e);
     if (e.eval) keepLatest(latestEval, e);
-    if (e.costUsd !== null) keepLatest(latestCost, e);
-    if (e.durationMs !== null && e.status !== "running") keepLatest(latestTime, e);
   }
 
   const row = (caseId: string, dataset: string, title: string | null, mutation: string | null): EvidenceRow => {
-    const ex = latest.get(caseId) ?? latestAny.get(caseId) ?? null;
-    const evEx = latestEval.get(caseId) ?? null;
-    const ev = evEx?.eval ?? null;
-    // Real cost and time: the judged run's own, else the shown run's, else the latest run of this case that states it.
-    const costUsd = evEx?.costUsd ?? ex?.costUsd ?? latestCost.get(caseId)?.costUsd ?? null;
-    const durationMs = evEx?.durationMs ?? ex?.durationMs ?? latestTime.get(caseId)?.durationMs ?? null;
+    // Every field comes from one run: the latest judged run when there is one, else the latest run.
+    const ex = latestEval.get(caseId) ?? latest.get(caseId) ?? latestAny.get(caseId) ?? null;
+    const ev = ex?.eval ?? null;
     return {
       caseId,
       dataset,
@@ -73,8 +66,8 @@ export function buildEvidence(cases: EvidenceCase[], executions: EvidenceExecuti
       gate: ex?.gate ?? null,
       pass: ev ? ev.pass : null,
       score: ev ? ev.score : null,
-      costUsd,
-      durationMs,
+      costUsd: ex?.costUsd ?? null,
+      durationMs: ex?.durationMs ?? null,
       executionId: ex?.id ?? null,
       critical: criticalOf(ev),
       verdict: ev?.verdict ?? null,
