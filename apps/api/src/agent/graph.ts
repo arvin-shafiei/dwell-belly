@@ -75,6 +75,7 @@ const CASE_ALIASES: Record<CaseType, string[]> = {
   freight: ["pallet", "pallets"],
   billing: ["refund", "invoice", "fee"],
   safety: ["hazard", "injury", "leak"],
+  formal_request: ["legal", "solicitor", "regulator", "ombudsman", "police", "press", "data_request", "complaint"],
   other: [],
 };
 

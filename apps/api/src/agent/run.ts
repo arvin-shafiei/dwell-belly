@@ -302,7 +302,10 @@ export const triageStart = (s: CaseState) => timed(quick(s, s.opts.judge?.triage
 export function triageEnd(s: CaseState, nodeId: string, triaged: Timed<Awaited<ReturnType<typeof triage>>>): { caseType: string; urgency: string } {
   const u = understood(s);
   const fast = triaged.value;
-  const caseType = fast?.caseType ?? u.case_type;
+  // The quick check sorts by the delivery problem underneath, so a solicitor's letter about a lost
+  // parcel comes back as "lost". When the analysis itself names a formal matter, that is the kind.
+  const formal = /solicitor|legal|court|tribunal|regulator|ombudsman|police|journalist|press enquiry|subject access|data[- ]protection|gdpr/i.test(u.case_type);
+  const caseType = formal ? "formal_request" : fast?.caseType ?? u.case_type;
   const urgency = fast?.urgency ?? u.urgency;
   s.rec.done(nodeId, "triage", { calls: fast ? [{ runner: "jev", usage: fast.usage }] : [], latencyMs: triaged.ms,
     summary: `${caseType} · ${urgency}`,

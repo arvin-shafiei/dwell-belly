@@ -508,3 +508,15 @@ test("a held message and the hand-over both explain themselves", async () => {
   assert.match(detail.gate.join(" "), /first draft was stopped and rewritten once/);
   assert.match(detail.human.join(" "), /Why a person is needed: The safety check stopped the message/);
 });
+
+test("a case the analysis calls a legal matter is labelled a formal request, whatever the quick check says", async () => {
+  const jevUsage = { model: "jev", latencyMs: 1, tokensIn: 5, tokensOut: 0, costUsd: 0 };
+  const judge = { triage: async () => ({ caseType: "lost_or_misdelivered" as const, urgency: "medium" as const, urgencyScore: 1, usage: jevUsage }) };
+  const legal = { ...understanding, case_type: "Solicitor's subject access request about a delivery" };
+  const r = await runCase(bundle, { ...opts(fake({ understand: [legal], decide: [decision], critic: [{ actions: [scores(0)] }] })), judge });
+  const triaged = r.trace.events.find((e) => e.kind === "node_end" && e.nodeId === "triage");
+  assert.match(triaged?.kind === "node_end" ? triaged.summary : "", /^formal_request · medium/);
+  const ordinary = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), judge });
+  const plain = ordinary.trace.events.find((e) => e.kind === "node_end" && e.nodeId === "triage");
+  assert.match(plain?.kind === "node_end" ? plain.summary : "", /^lost_or_misdelivered · medium/);
+});
