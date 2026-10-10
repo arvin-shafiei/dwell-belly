@@ -46,7 +46,7 @@ A real phone call for approval (Twilio) is a stretch goal after a 15:00 checkpoi
 - The microphone only works on `localhost` or https. Demo from `localhost`.
 - **No mid-call pipeline updates:** a re-run takes 30 to 150 s, so calls use what was known before the call, and re-run after hang-up.
 - Imports in `apps/api/src` use `.ts` extensions. Docs and copy have no em dashes. Commit messages are one sentence with no AI trailer.
-- **Work only in the worktree** `~/Developer/personal/dwell-belly-voice`.
+- **Work only in the worktree** `~/Developer/personal/hamyway-city-voice`.
 
 ## Dependencies on teammates (send now)
 
