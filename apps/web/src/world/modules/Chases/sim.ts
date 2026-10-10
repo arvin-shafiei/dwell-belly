@@ -1,13 +1,32 @@
-// Chases simulation: police pursuits (getaway, 2-3 police cars, helicopter), night street races and
-// speed cameras. Imperative three.js objects built once and pooled; per-frame state lives here, the
-// store is only touched when a chase ends in a crash (incident + closed road).
+// Chases simulation: police pursuits (getaway, 2-3 police cars, helicopter, the odd roadblock), night
+// street races and speed cameras. Imperative three.js objects built once and pooled; per-frame state
+// lives here, the store is only touched for closed roads (crash incident, roadblock).
+// Physics: every chase vehicle looks ahead with physics.obstacleAhead() (falling back to the lane
+// queue in the registry), brakes or swerves, and never drives through what it sees. When the getaway
+// can't avoid something it hits it: momentum is exchanged (dynamics.collide), the other vehicle is
+// crashed via its crash() hook, and the getaway slides and spins as a rigid body until friction stops it.
 import * as THREE from "three";
 import { emit, on } from "../../bus";
-import { allVehicles, nextId, type VehicleEntry } from "../../registry";
+import { obstacleAhead } from "../../physics";
+import { allVehicles, getVehicle, nextId, type VehicleEntry } from "../../registry";
 import { PLACES, ROAD_NODES, edgeKey, findPath, getEdge, getNode, neighbours } from "../../roads";
 import { signalFor } from "../../signals";
 import { blockedSet, useWorld } from "../../store";
 import { blockageT, poseAt, replanPath, type Pose } from "../Traffic/driving";
+import {
+  MASS,
+  canStop,
+  collide,
+  interceptHorizon,
+  pitChance,
+  pitContact,
+  pitImpulse,
+  predictNode,
+  roadblockSite,
+  stepBody,
+  type Body,
+  type PitContact,
+} from "./dynamics";
 import {
   boxSlots,
   cameraSites,
@@ -15,8 +34,10 @@ import {
   escapeNode,
   isMotorwayEdge,
   isNight,
+  isReckless,
   newChase,
   nextChaseDelay,
+  pitAllowed,
   pursuitTarget,
   raceStrip,
   racerLaunch,
@@ -65,8 +86,16 @@ const FIRST_CHASE_S: [number, number] = [25, 40];
 const RACE_EVERY_S: [number, number] = [40, 75];
 const WRECK_SAFETY_S = 150;
 const SITE_COOL_S = 1.1;
+const BRAKE = 11; // hard braking, m/s²
+const IMPACT_MIN = 3; // closing speed (m/s) below which contact is just a nudge, not a crash
+const UNAVOIDABLE = 12; // a careful getaway only crashes when it meets something at this closing speed
+const PIT_SIDE = 2.3; // lateral offset police take up for a PIT
+const PIT_ALONG = -2.6; // police centre this far behind the getaway centre
+const ROADBLOCK_CHANCE = 0.35;
+const ROADBLOCK_S = 26;
+const PATROL = 3; // pursuit units; two more in the pool are for roadblocks
 
-type PoliceMode = "idle" | "waiting" | "pursue" | "box" | "parked" | "leave";
+type PoliceMode = "idle" | "waiting" | "pursue" | "hold" | "box" | "parked" | "block" | "leave";
 
 interface Police {
   parts: PoliceParts;
@@ -81,6 +110,8 @@ interface Police {
   boxDur: number;
   flash: number;
   checkIn: number;
+  manT: number; // overtake timer
+  pitCool: number; // seconds until the next PIT attempt
 }
 
 interface Car {
@@ -102,6 +133,21 @@ interface CamState {
   cool: number;
   lastId: string;
   flashT: number; // seconds since the flash started (Infinity = idle)
+}
+
+/** What a look-ahead probe found: bumper-to-bumper gap and the obstacle's speed. */
+interface Probe {
+  gap: number;
+  speed: number;
+  id: string;
+  kind: VehicleEntry["kind"];
+}
+
+interface Impact {
+  x: number;
+  z: number;
+  ids: string[];
+  note: string;
 }
 
 export class ChaseSim {
@@ -138,10 +184,21 @@ export class ChaseSim {
   private escapeRouted = false;
   private gaveUpAt = 0;
   private manT = 0; // getaway manoeuvre timer
-  private ramCool = 0;
   private prevH = 0;
-  private spin = { from: { x: 0, z: 0, h: 0 }, to: { x: 0, z: 0, h: 0 }, yaw: 0, u: 0, dur: 1 };
+  // getaway rigid body (spins and crashes)
+  private body: Body | null = null;
+  private rested = false;
+  private restedAt = 0;
+  private boxed = false;
+  // per-frame events for the state machine
+  private pitHit = false;
+  private collided = false;
+  private impact: Impact | null = null;
+  // roadblock
+  private roadblock: { key: string; until: number } | null = null;
+  private roadblockTried = false;
   private arrestT = -1;
+  private arrestCops: Police[] = [];
   private wreck: { incidentId: string; at: number; smokeT: number } | null = null;
   private suspectFrom = { x: 0, z: 0 };
   private officerFrom: [number, number][] = [
@@ -158,21 +215,22 @@ export class ChaseSim {
   private tmpU = new THREE.Vector3();
   private o = new THREE.Object3D();
   private up = new THREE.Vector3(0, 1, 0);
+  private scratchPose: Pose = { x: 0, z: 0, h: 0 };
 
   constructor() {
     this.root.name = "chases";
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < PATROL + 2; i++) {
       const parts = buildPolice();
       this.root.add(parts.root);
       this.materials.push(...parts.own);
       this.police.push({
         parts, mv: new Mover(parts.root, "police", 2.2), role: i, mode: "idle", spawnAt: 0, start: "",
-        slot: null, boxFrom: { x: 0, z: 0, h: 0 }, boxU: 0, boxDur: 2, flash: rand() * 10, checkIn: 0,
+        slot: null, boxFrom: { x: 0, z: 0, h: 0 }, boxU: 0, boxDur: 2, flash: rand() * 10, checkIn: 0, manT: 0, pitCool: 0,
       });
     }
     const saloon = buildGetaway("saloon");
     const van = buildGetaway("van");
-    this.getaways = { saloon: { parts: saloon, mv: new Mover(saloon.root, "car", 2.35) }, van: { parts: van, mv: new Mover(van.root, "car", 2.6) } };
+    this.getaways = { saloon: { parts: saloon, mv: new Mover(saloon.root, "car", 2.35) }, van: { parts: van, mv: new Mover(van.root, "van", 2.6) } };
     this.root.add(saloon.root, van.root);
     this.materials.push(...saloon.own, ...van.own);
 
@@ -234,6 +292,7 @@ export class ChaseSim {
     for (const c of this.cleanup) c();
     this.cleanup = [];
     if (this.wreck) this.clearWreckIncident();
+    this.liftRoadblock();
     for (const p of this.police) p.mv.despawn();
     for (const c of Object.values(this.getaways)) c.mv.despawn();
     for (const r of this.racers) r.mv.despawn();
@@ -279,6 +338,48 @@ export class ChaseSim {
     this.renderPolice();
   }
 
+  // --- look-ahead ---------------------------------------------------------------------------
+
+  /**
+   * Nearest obstacle ahead of `mv` in the lane at lateral offset `lat` (0 = own lane, OVERTAKE_LAT = oncoming,
+   * KERB_LAT = pavement), within `range` metres. Uses the physics ray, plus the registry lane queue for the
+   * lane we're actually in (so it works before physics.ts is implemented). `ignore` is skipped (e.g. the getaway
+   * for police).
+   */
+  private probe(mv: Mover, lat: number, range: number, ignore = ""): Probe | null {
+    const h = mv.pose.h;
+    const x = mv.pose.x - Math.cos(h) * lat;
+    const z = mv.pose.z + Math.sin(h) * lat;
+    let best: Probe | null = null;
+    const hit = obstacleAhead(mv.entry.id, x, z, h, range + mv.half, 1.1);
+    if (hit && hit.id !== ignore) {
+      const v = getVehicle(hit.id);
+      best = { gap: hit.dist - mv.half, speed: v ? this.speedAlong(v, h) : 0, id: hit.id, kind: hit.kind };
+    }
+    if (Math.abs(lat) < 1.5) {
+      // own lane: the registry's lane queue (works even without the physics ray)
+      const l = mv.lead();
+      if (l.v && l.v.id !== ignore && l.gap < range && (!best || l.gap < best.gap))
+        best = { gap: l.gap, speed: l.speed, id: l.v.id, kind: l.v.kind };
+    }
+    if (lat >= 2 && (!best || best.gap > range * 0.6) && mv.oncoming(range)) {
+      // something coming the other way in the oncoming lane: treat as a head-on obstacle
+      best = { gap: range * 0.6, speed: -10, id: "", kind: "car" };
+    }
+    return best;
+  }
+
+  /** Another vehicle's speed along heading h (negative when it comes towards us). */
+  private speedAlong(v: VehicleEntry, h: number) {
+    const vh = v.object.rotation.y;
+    return v.speed * (Math.sin(vh) * Math.sin(h) + Math.cos(vh) * Math.cos(h));
+  }
+
+  /** Speed at which we can still stop `gap` metres ahead behind something doing `speed`. */
+  private safeSpeed(gap: number, speed: number, margin = 1.5) {
+    return Math.max(0, speed) + Math.sqrt(2 * BRAKE * 0.8 * Math.max(0, gap - margin));
+  }
+
   // --- chase lifecycle ------------------------------------------------------------------------
 
   private startChase() {
@@ -293,8 +394,8 @@ export class ChaseSim {
       const opts = neighbours(a).filter((n) => !blocked.has(edgeKey(a, n)));
       if (!opts.length) continue;
       const b = opts[Math.floor(rand() * opts.length)];
-      poseAt([a, b], 0, 0.3, this.spin.from);
-      if (!this.isFree(this.spin.from.x, this.spin.from.z, 9)) continue;
+      poseAt([a, b], 0, 0.3, this.scratchPose);
+      if (!this.isFree(this.scratchPose.x, this.scratchPose.z, 9)) continue;
       path = [a, b];
     }
     if (!path) {
@@ -317,6 +418,12 @@ export class ChaseSim {
     this.arrestT = -1;
     this.lampFall = -1;
     this.lamppost.visible = false;
+    this.body = null;
+    this.rested = false;
+    this.boxed = false;
+    this.pitHit = this.collided = false;
+    this.impact = null;
+    this.roadblockTried = ending === "escape" || rand() > ROADBLOCK_CHANCE;
 
     // police: one from the station, the rest are patrol cars from nearby streets
     const startNode = getNode(path[0]);
@@ -335,6 +442,7 @@ export class ChaseSim {
       p.start = starts[i] ?? PLACES.policeStation;
       p.slot = null;
       p.role = i;
+      p.pitCool = 0;
     });
 
     // helicopter scrambles from over the station
@@ -351,48 +459,40 @@ export class ChaseSim {
     const g = this.g!;
 
     for (const p of this.police) if (p.mode === "waiting" && s.t >= p.spawnAt && s.phase === "fleeing") this.spawnPolice(p);
+    if (!this.roadblockTried && s.phase === "fleeing" && s.t > 8) this.tryRoadblock();
+    if (this.roadblock && (this.sim > this.roadblock.until || s.phase === "leaving")) this.liftRoadblock();
 
     // inputs for the state machine
     let gap = Infinity;
-    let behind = false;
-    const gh = g.mv.pose.h;
-    const hx = Math.sin(gh);
-    const hz = Math.cos(gh);
     for (const p of this.police) {
       if (!p.mv.active || p.mode !== "pursue") continue;
-      const dx = g.mv.object.position.x - p.mv.object.position.x;
-      const dz = g.mv.object.position.z - p.mv.object.position.z;
-      const d = Math.hypot(dx, dz);
+      const d = Math.hypot(p.mv.object.position.x - g.mv.object.position.x, p.mv.object.position.z - g.mv.object.position.z);
       if (d < gap) gap = d;
-      // right behind: in the getaway's wake, pointing the same way
-      const along = dx * hx + dz * hz;
-      const side = Math.abs(dx * hz - dz * hx);
-      const sameWay = Math.sin(p.mv.pose.h) * hx + Math.cos(p.mv.pose.h) * hz > 0.7;
-      if (along > 0 && along < 14 && side < 3.5 && sameWay) behind = true;
     }
-    const straight = g.mv.active && !g.mv.free && straightAhead(g.mv.path, g.mv.idx, g.mv.t) > 16;
     const onMotorway = g.mv.active && !g.mv.free && isMotorwayEdge(g.mv.from, g.mv.to);
     const allHome = this.police.every((p) => !p.mv.active) && !this.heliActive && (!g.mv.active || !!this.wreck);
-    const act = stepChase(s, { gap, behind, straight, onMotorway, allHome }, dt);
+    const settled = this.rested && this.sim - this.restedAt > 2.2;
+    const act = stepChase(s, { gap, pit: this.pitHit, collided: this.collided, settled, onMotorway, allHome }, dt);
+    this.pitHit = this.collided = false;
     if (act) this.onAction(act);
 
     // vehicles
     if (g.mv.active) {
       const escaping = s.ending === "escape" && (s.phase === "escaped" || s.phase === "leaving");
-      if (s.phase === "fleeing" || escaping) this.driveGetaway(dt);
-      else if (s.phase === "leaving" && s.ending === "pit") this.driveHome(g.mv, dt, 1);
-      else {
-        if (s.phase === "pit" || s.phase === "crashed") this.spinGetaway(dt);
-        g.mv.update(0);
-      }
+      if (this.body) this.stepGetawayBody(dt);
+      else if (s.phase === "fleeing" || escaping) this.driveGetaway(dt);
+      else if (s.phase === "leaving") this.driveHome(g.mv, dt, 1);
+      else g.mv.update(0);
     }
     for (const p of this.police) {
       if (!p.mv.active) continue;
       if (p.mode === "pursue") this.drivePolice(p, dt);
+      else if (p.mode === "hold") this.holdPolice(p, dt);
       else if (p.mode === "box") this.boxPolice(p, dt);
       else if (p.mode === "leave") this.driveHome(p.mv, dt, 1.05);
       else p.mv.update(0);
     }
+    if (this.rested && !this.boxed) this.startBoxIn();
     if (this.arrestT >= 0) this.stepArrest(dt);
     if (this.lampFall >= 0) {
       this.lampFall += dt;
@@ -407,13 +507,15 @@ export class ChaseSim {
     const g = this.g!;
     switch (act) {
       case "spin":
-        this.startSpin();
+        // the body was already set up by the PIT contact; the rest of the units pull up
+        for (const p of this.police) if (p.mv.active && p.mode === "pursue") p.mode = "hold";
         return;
       case "crash":
         this.startCrash();
         return;
       case "give_up":
         for (const p of this.police) if (p.mv.active) this.sendHome(p);
+        this.liftRoadblock();
         this.gaveUpAt = this.chase!.t;
         this.heliLeaveT = 0.01;
         return;
@@ -424,7 +526,10 @@ export class ChaseSim {
         this.arrestT = -1;
         for (const f of [...this.officers, this.suspect]) f.root.visible = false;
         for (const p of this.police) if (p.mv.active && p.mode !== "leave") this.sendHome(p);
-        if (this.chase!.ending === "pit" && g.mv.active) this.rejoinHome(g.mv);
+        if (this.chase!.ending === "pit" && g.mv.active && !this.wreck) {
+          this.body = null;
+          this.rejoinHome(g.mv);
+        }
         this.heliLeaveT = 0.01;
         return;
       case "finish":
@@ -437,7 +542,9 @@ export class ChaseSim {
       p.mv.despawn();
       p.mode = "idle";
     }
+    this.liftRoadblock();
     if (this.g && !this.wreck) this.g.mv.despawn();
+    this.body = null;
     this.heliActive = false;
     this.heli.root.visible = false;
     this.heli.cone.visible = false;
@@ -449,15 +556,29 @@ export class ChaseSim {
 
   // --- getaway ----------------------------------------------------------------------------
 
+  /** Keep a few junctions of random route planned ahead (police predict it; roadblocks go on it). */
   private extendGetaway() {
     const mv = this.g!.mv;
-    while (mv.idx + 3 >= mv.path.length) {
+    while (mv.idx + 6 >= mv.path.length) {
       const last = mv.path[mv.path.length - 1];
       const prev = mv.path[mv.path.length - 2];
       const next = chooseTurn(prev, last, this.blocked, rand);
       if (!next) return;
       mv.path.push(next);
     }
+  }
+
+  /** A road ahead just closed (roadblock): cut the planned route before it and pick again. */
+  private rerouteGetaway() {
+    const mv = this.g!.mv;
+    for (let k = mv.idx + 1; k + 1 < mv.path.length; k++) {
+      if (this.blocked.has(edgeKey(mv.path[k], mv.path[k + 1]))) {
+        mv.path.length = k + 1;
+        break;
+      }
+    }
+    if (this.escapeRouted) this.routeEscape();
+    else this.extendGetaway();
   }
 
   private routeEscape() {
@@ -488,35 +609,60 @@ export class ChaseSim {
     if (mv.idx + 1 >= mv.path.length) return;
 
     const fleeing = s.phase === "fleeing";
-    const limit = mv.limit;
-    let v0 = limit * (fleeing ? GETAWAY_FACTOR : 1.35);
+    const reckless = isReckless(s);
+    let v0 = mv.limit * (fleeing ? GETAWAY_FACTOR : 1.35);
     v0 = Math.min(v0, this.turnCap(mv, 9));
 
-    // weaving through traffic
-    const lead = mv.lead();
-    if (mv.latTarget === 0) {
-      if (lead.gap < 26 && lead.speed < mv.speed - 1.5) {
-        const kind = getEdge(mv.from, mv.to)?.kind;
-        if (straightAhead(mv.path, mv.idx, mv.t) > 32 && !mv.oncoming(60)) {
-          mv.latTarget = OVERTAKE_LAT;
-          this.manT = 0;
-        } else if (kind === "street" || kind === "country") {
-          mv.latTarget = KERB_LAT;
-          this.manT = 0;
-        } else if (lead.gap < 1.2) this.ram(lead.v, lead.speed);
-        else v0 = Math.min(v0, lead.speed + Math.max(0, lead.gap - 1) * 1.5);
-      }
-    } else {
+    // look ahead in the lane we're in (or heading for)
+    const range = 10 + mv.speed * 1.5;
+    const lane = mv.latTarget;
+    const hit = this.probe(mv, lane, range);
+    const blocking = hit && hit.speed < mv.speed - 1;
+    if (blocking && !reckless) {
+      const kind = getEdge(mv.from, mv.to)?.kind;
+      const straight = straightAhead(mv.path, mv.idx, mv.t) > 28;
+      if (lane === 0 && straight && !this.probe(mv, OVERTAKE_LAT, range + 30) && this.sideClear(mv, OVERTAKE_LAT)) {
+        mv.latTarget = OVERTAKE_LAT; // wrong side of the road
+        this.manT = 0;
+      } else if (lane === 0 && (kind === "street" || kind === "country") && !this.probe(mv, KERB_LAT, range) && this.sideClear(mv, KERB_LAT)) {
+        mv.latTarget = KERB_LAT; // up on the pavement
+        this.manT = 0;
+      } else if (lane !== 0 && !this.probe(mv, 0, Math.min(range, 18)) && this.sideClear(mv, 0)) {
+        mv.latTarget = 0; // duck back in
+      } else v0 = Math.min(v0, this.safeSpeed(hit.gap, hit.speed)); // nowhere to go: brake hard
+    } else if (blocking && reckless && hit.gap < 25) {
+      v0 = Math.max(v0, mv.speed); // foot down: it's going to hit it
+    }
+    // whatever lane we're physically in right now (mid lane change too): never drive into it
+    const curLane = mv.lat > 2 ? OVERTAKE_LAT : mv.lat < -1.4 ? KERB_LAT : 0;
+    if (!reckless && curLane !== lane) {
+      const cur = this.probe(mv, curLane, range);
+      if (cur && cur.speed < mv.speed - 1) v0 = Math.min(v0, this.safeSpeed(cur.gap, cur.speed));
+    }
+    if (mv.latTarget !== 0) {
       this.manT += dt;
       const nearJunction = mv.remaining < 10 && mv.idx + 2 < mv.path.length && turnKind(mv.from, mv.to, mv.path[mv.idx + 2]) !== 0;
-      if ((this.manT > 1.2 && this.laneClear(mv, 9)) || nearJunction) mv.latTarget = 0;
+      if ((this.manT > 1.2 && this.laneClear(mv, 9) && !this.probe(mv, 0, 12) && this.sideClear(mv, 0)) || nearJunction) mv.latTarget = 0;
       if (mv.latTarget === KERB_LAT || mv.lat < -1) v0 = Math.min(v0, 13);
     }
     // kerb: bounce and lean
     const onKerb = mv.lat < -1.4;
     mv.lift += ((onKerb ? 0.16 + Math.abs(Math.sin(this.sim * 23)) * 0.05 : 0) - mv.lift) * Math.min(1, dt * 12);
-    this.accelerate(mv, v0, dt, 7, 12);
-    const entered = mv.move(mv.speed * dt);
+    this.accelerate(mv, v0, dt, 7, BRAKE + 1);
+
+    // contact: never drive through what's in front; at speed it's a crash
+    let ds = mv.speed * dt;
+    const now = this.probe(mv, mv.lat > 2 ? OVERTAKE_LAT : mv.lat < -1.4 ? KERB_LAT : 0, ds + 2);
+    if (now && now.gap > -1 && now.gap - ds <= 0.3) {
+      const closing = mv.speed - now.speed;
+      if ((reckless && closing > IMPACT_MIN) || (closing > UNAVOIDABLE && !canStop(mv.speed, now.speed, now.gap))) {
+        this.collideGetaway(now, Math.max(0, now.gap - 0.2));
+        return;
+      }
+      ds = Math.max(0, now.gap - 0.3);
+      mv.speed = Math.min(mv.speed, Math.max(0, now.speed));
+    }
+    const entered = mv.move(ds);
     if (entered && !this.escapeRouted) this.extendGetaway();
 
     // body roll from turning
@@ -550,23 +696,20 @@ export class ChaseSim {
     return true;
   }
 
-  /** The getaway rams a slower car: sparks, a jolt, and it loses speed. */
-  private ram(v: VehicleEntry | null, leadSpeed: number) {
-    const mv = this.g!.mv;
-    mv.speed = Math.min(mv.speed, leadSpeed + 1.5);
-    if (this.ramCool > this.sim) return;
-    this.ramCool = this.sim + 1.2;
-    mv.yaw = (rand() < 0.5 ? -1 : 1) * 0.12;
-    const fx = Math.sin(mv.pose.h);
-    const fz = Math.cos(mv.pose.h);
-    const x = mv.pose.x + fx * 2.4;
-    const z = mv.pose.z + fz * 2.4;
-    this.burst(x, 0.6, z, 14, 0);
-    // a tiny shove (owners re-place their objects each frame, so this is a one-frame jolt at most)
-    if (v) {
-      v.object.position.x += fx * 0.25;
-      v.object.position.z += fz * 0.25;
+  /** Nothing beside us (within a car length) in the lane at offset `lat`: safe to move across. */
+  private sideClear(mv: Mover, lat: number) {
+    const h = mv.pose.h;
+    const fx = Math.sin(h);
+    const fz = Math.cos(h);
+    const x = mv.pose.x - fz * lat;
+    const z = mv.pose.z + fx * lat;
+    for (const v of allVehicles()) {
+      if (v.id === mv.entry.id) continue;
+      const dx = v.object.position.x - x;
+      const dz = v.object.position.z - z;
+      if (Math.abs(dx * fx + dz * fz) < 6.5 && Math.abs(-dx * fz + dz * fx) < 1.9) return false;
     }
+    return true;
   }
 
   private burst(x: number, y: number, z: number, sparks: number, puffs: number) {
@@ -581,7 +724,7 @@ export class ChaseSim {
     }
   }
 
-  // --- endings ----------------------------------------------------------------------------
+  // --- physics: collisions and the rigid body -------------------------------------------------
 
   /** Bake the lane offset into the pose and switch to scripted motion. */
   private freeze(mv: Mover) {
@@ -593,115 +736,155 @@ export class ChaseSim {
     mv.free = true;
   }
 
-  private startSpin() {
+  /** Hand the getaway over to the rigid-body integrator with this body. */
+  private startBody(b: Body) {
     const mv = this.g!.mv;
     this.freeze(mv);
-    const dir = rand() < 0.5 ? -1 : 1;
-    const slide = Math.min(16, mv.speed * 0.9 + 4);
-    const fx = Math.sin(mv.pose.h);
-    const fz = Math.cos(mv.pose.h);
-    this.spin.from = { x: mv.pose.x, z: mv.pose.z, h: mv.pose.h };
-    this.spin.to = { x: mv.pose.x + fx * slide - fz * dir * 1.2, z: mv.pose.z + fz * slide + fx * dir * 1.2, h: mv.pose.h };
-    this.spin.yaw = dir * between(2.3, 3.0);
-    this.spin.u = 0;
-    this.spin.dur = 1.6;
-    this.burst(mv.pose.x - fx * 2.2, 0.5, mv.pose.z - fz * 2.2, 18, 6);
-    const final = this.spin.to;
-    const slots = boxSlots(final.x, final.z, final.h + this.spin.yaw, 3);
-    let k = 0;
-    for (const p of this.police) if (p.mv.active) this.startBox(p, slots[k++]);
+    mv.yaw = 0;
+    this.body = b;
+    this.rested = false;
   }
 
-  private spinGetaway(dt: number) {
+  /** The getaway hits `hit` after moving `ds`: momentum transfer, the other car crashes, both slide. */
+  private collideGetaway(hit: Probe, ds: number) {
     const mv = this.g!.mv;
-    const sp = this.spin;
-    if (sp.u >= 1) return;
-    sp.u = Math.min(1, sp.u + dt / sp.dur);
-    const e = 1 - (1 - sp.u) ** 2;
-    mv.pose.x = sp.from.x + (sp.to.x - sp.from.x) * e;
-    mv.pose.z = sp.from.z + (sp.to.z - sp.from.z) * e;
-    mv.pose.h = sp.from.h;
-    mv.yaw = sp.yaw * e;
-    mv.roll = 0.08 * Math.sin(sp.u * Math.PI) * Math.sign(sp.yaw);
-    mv.speed = (1 - sp.u) * 8;
-    if (rand() < 0.5) {
-      const h = mv.pose.h + mv.yaw;
-      this.sparks.emit(mv.pose.x - Math.sin(h) * 2, 0.3, mv.pose.z - Math.cos(h) * 2, 0, 0.8, 0, 1.4, 0.45, 0.75, 0.75, 0.78);
+    mv.move(ds);
+    mv.update(0);
+    this.freeze(mv);
+    const h = mv.pose.h;
+    const victim = hit.id ? getVehicle(hit.id) : undefined;
+    const m1 = MASS[mv.entry.kind] ?? 1500;
+    const m2 = victim ? (MASS[victim.kind] ?? 1500) : 1500;
+    const [v1] = collide(m1, mv.speed, m2, hit.speed, 0.25);
+    const ids = [mv.entry.id];
+    if (victim?.crash && victim.crash()) ids.push(victim.id); // its owner plays the shove / spin
+    const fx = Math.sin(h);
+    const fz = Math.cos(h);
+    const closing = mv.speed - hit.speed;
+    const side = rand() < 0.5 ? -1 : 1; // offset impact: the rear swings round
+    this.startBody({
+      x: mv.pose.x, z: mv.pose.z, h,
+      vx: fx * v1 - fz * side * closing * 0.12,
+      vz: fz * v1 + fx * side * closing * 0.12,
+      w: side * Math.min(4, 0.6 + closing * 0.12),
+    });
+    const x = mv.pose.x + fx * 2.3;
+    const z = mv.pose.z + fz * 2.3;
+    this.burst(x, 0.7, z, 30, 8);
+    this.impact = { x, z, ids, note: `Police chase ends in a crash: getaway car smashed into a ${victim?.kind ?? "car"}` };
+    this.collided = true;
+  }
+
+  /** Integrate the getaway body (PIT spin, crash slide); stop against anything it slides into. */
+  private stepGetawayBody(dt: number) {
+    const b = this.body!;
+    const mv = this.g!.mv;
+    const sp = Math.hypot(b.vx, b.vz);
+    if (sp > 0.5) {
+      const dir = Math.atan2(b.vx, b.vz);
+      const hit = obstacleAhead(mv.entry.id, b.x, b.z, dir, sp * dt + 2.4, 1.0);
+      if (hit && hit.dist < sp * dt + 2.4) {
+        const v = getVehicle(hit.id);
+        const [v1] = collide(MASS[mv.entry.kind] ?? 1500, sp, v ? (MASS[v.kind] ?? 1500) : 1500, v ? this.speedAlong(v, dir) : 0, 0.3);
+        const k = Math.max(0, v1) / sp;
+        b.vx *= k;
+        b.vz *= k;
+        b.w *= 0.5;
+        this.burst(b.x + Math.sin(dir) * 2, 0.6, b.z + Math.cos(dir) * 2, 12, 2);
+        if (v?.crash && sp > 6 && v.crash()) {
+          if (!this.wreck) this.openIncident({ x: b.x, z: b.z, ids: [mv.entry.id, v.id], note: "Police chase: spinning getaway car hit another vehicle" });
+        }
+      }
     }
-    if (sp.u >= 1) {
-      mv.speed = 0;
+    // lamppost fallback: it stops dead against the post
+    if (this.lamppost.visible && this.lampFall < 0 && Math.hypot(this.lamppost.position.x - b.x, this.lamppost.position.z - b.z) < 2.6) {
+      b.vx = b.vz = 0;
+      b.w *= 0.3;
+      this.lampFall = 0;
+      this.burst(this.lamppost.position.x, 0.8, this.lamppost.position.z, 30, 8);
+    }
+    const rested = stepBody(b, dt);
+    mv.pose.x = b.x;
+    mv.pose.z = b.z;
+    mv.pose.h = b.h;
+    mv.yaw = 0;
+    mv.speed = Math.hypot(b.vx, b.vz);
+    mv.roll = clamp(b.w * 0.03, -0.1, 0.1);
+    if (!rested && sp > 2 && rand() < 0.6) {
+      // tyre smoke from the rear
+      this.sparks.emit(b.x - Math.sin(b.h) * 2, 0.3, b.z - Math.cos(b.h) * 2, 0, 0.8, 0, 1.4, 0.45, 0.75, 0.75, 0.78);
+    }
+    if (rested && !this.rested) {
+      this.rested = true;
+      this.restedAt = this.sim;
       mv.roll = 0;
+      mv.speed = 0;
     }
+    mv.update(0);
+  }
+
+  /** When the getaway comes to rest, the nearest units park around it. */
+  private startBoxIn() {
+    this.boxed = true;
+    const g = this.g!.mv;
+    const slots = boxSlots(g.pose.x, g.pose.z, g.pose.h, 3);
+    const units = this.police
+      .filter((p) => p.mv.active && (p.mode === "pursue" || p.mode === "hold"))
+      .sort((a, b) => this.distTo(a.mv, g) - this.distTo(b.mv, g));
+    units.slice(0, slots.length).forEach((p, i) => this.startBox(p, slots[i]));
+  }
+
+  private distTo(a: Mover, b: Mover) {
+    return Math.hypot(a.object.position.x - b.object.position.x, a.object.position.z - b.object.position.z);
   }
 
   private startCrash() {
-    const g = this.g!;
-    const mv = g.mv;
+    const mv = this.g!.mv;
+    for (const p of this.police) if (p.mv.active && p.mode === "pursue") p.mode = "hold";
+    if (this.impact) {
+      this.openIncident(this.impact);
+      this.impact = null;
+      return;
+    }
+    // never hit anything: it loses control into a lamppost on the kerb
     this.freeze(mv);
     const h = mv.pose.h;
     const fx = Math.sin(h);
     const fz = Math.cos(h);
-    // a registry car just ahead of us that can be crashed, else a lamppost on the kerb
-    let victim: VehicleEntry | null = null;
-    let best = 26;
-    for (const v of allVehicles()) {
-      if (v.id === mv.entry.id || !v.crash || (v.kind !== "car" && v.kind !== "taxi" && v.kind !== "van")) continue;
-      if (this.isOurs(v.id)) continue;
-      const dx = v.object.position.x - mv.pose.x;
-      const dz = v.object.position.z - mv.pose.z;
-      const d = Math.hypot(dx, dz);
-      if (d < 4 || d > best || (dx * fx + dz * fz) / d < 0.55) continue;
-      best = d;
-      victim = v;
-    }
-    let note: string;
-    let tx: number;
-    let tz: number;
-    const ids = [mv.entry.id];
-    if (victim && victim.crash!()) {
-      const vx = victim.object.position.x;
-      const vz = victim.object.position.z;
-      const d = Math.hypot(vx - mv.pose.x, vz - mv.pose.z) || 1;
-      tx = vx - ((vx - mv.pose.x) / d) * 4.3;
-      tz = vz - ((vz - mv.pose.z) / d) * 4.3;
-      ids.push(victim.id);
-      note = "Police chase ends in a crash: getaway car smashed into traffic";
-    } else {
-      const lx = Math.cos(h); // left of travel
-      const lz = -Math.sin(h);
-      const ahead = clamp(mv.speed * 0.8, 8, 14);
-      const px = mv.pose.x + fx * ahead + lx * 2.6;
-      const pz = mv.pose.z + fz * ahead + lz * 2.6;
-      this.lamppost.position.set(px, 0, pz);
-      this.lamppost.rotation.set(0, h, 0, "YXZ");
-      this.lamppost.visible = true;
-      this.lampFall = -1;
-      tx = px - fx * 2.6 - lx * 0.6;
-      tz = pz - fz * 2.6 - lz * 0.6;
-      note = "Police chase ends in a crash: getaway car hit a lamppost";
-    }
-    this.spin.from = { x: mv.pose.x, z: mv.pose.z, h };
-    this.spin.to = { x: tx, z: tz, h };
-    this.spin.yaw = (victim ? (rand() < 0.5 ? -1 : 1) * between(0.5, 0.9) : 0.45);
-    this.spin.u = 0;
-    this.spin.dur = 0.9;
-    // impact a moment later (when the slide ends): schedule via wreck state
-    const key = mv.entry.edgeKey ?? edgeKey(mv.from, mv.to);
+    const lx = Math.cos(h); // left of travel
+    const lz = -Math.sin(h);
+    const ahead = clamp(mv.speed * 0.7, 7, 14);
+    const px = mv.pose.x + fx * ahead + lx * 3.2;
+    const pz = mv.pose.z + fz * ahead + lz * 3.2;
+    this.lamppost.position.set(px, 0, pz);
+    this.lamppost.rotation.set(0, h, 0, "YXZ");
+    this.lamppost.visible = true;
+    this.lampFall = -1;
+    const dx = px - mv.pose.x;
+    const dz = pz - mv.pose.z;
+    const d = Math.hypot(dx, dz) || 1;
+    const v = Math.max(mv.speed, 9);
+    this.startBody({ x: mv.pose.x, z: mv.pose.z, h, vx: (dx / d) * v, vz: (dz / d) * v, w: 0.6 });
+    this.openIncident({ x: px, z: pz, ids: [mv.entry.id], note: "Police chase ends in a crash: getaway car hit a lamppost" });
+  }
+
+  /** car_crash incident on the getaway's road: closes it so Responders come and traffic reroutes. */
+  private openIncident(imp: Impact) {
+    const mv = this.g!.mv;
+    const key = mv.path.length >= 2 ? edgeKey(mv.from, mv.to) : (mv.entry.edgeKey ?? "");
+    if (!key || this.wreck) return;
     const incidentId = nextId("INC");
     this.wreck = { incidentId, at: this.sim, smokeT: 0 };
     const w = useWorld.getState();
     try {
-      w.addIncident({ id: incidentId, kind: "car_crash", edgeKey: key, x: tx, z: tz, status: "active", createdAt: performance.now(), note });
-      w.blockEdge(key, note);
+      w.addIncident({ id: incidentId, kind: "car_crash", edgeKey: key, x: imp.x, z: imp.z, status: "active", createdAt: performance.now(), note: imp.note });
+      w.blockEdge(key, imp.note);
       emit({ type: "incident:created", incidentId });
-      emit({ type: "road:blocked", edgeKey: key, reason: note });
-      for (const vehicleId of ids) emit({ type: "vehicle:crashed", vehicleId, incidentId });
+      emit({ type: "road:blocked", edgeKey: key, reason: imp.note });
+      for (const vehicleId of imp.ids) emit({ type: "vehicle:crashed", vehicleId, incidentId });
     } catch (err) {
       console.warn("[Chases] incident failed", err);
     }
-    const slots = boxSlots(tx, tz, h + this.spin.yaw, 3);
-    let k = 0;
-    for (const p of this.police) if (p.mv.active) this.startBox(p, slots[k++]);
   }
 
   private stepWreck(dt: number) {
@@ -709,27 +892,20 @@ export class ChaseSim {
     if (!w || !this.g) return;
     const mv = this.g.mv;
     const age = this.sim - w.at;
-    // impact when the slide finishes
-    if (age >= 0.9 && age - dt < 0.9) {
+    this.g.parts.hazard.color.set(Math.floor(this.sim * 2.6) % 2 ? "#ffb020" : "#5a3300");
+    w.smokeT -= dt;
+    if (w.smokeT <= 0) {
+      w.smokeT = 0.35;
       const h = mv.pose.h + mv.yaw;
-      this.burst(mv.pose.x + Math.sin(h) * 2.3, 0.7, mv.pose.z + Math.cos(h) * 2.3, 30, 8);
-      if (this.lamppost.visible) this.lampFall = 0;
-      mv.roll = 0.06;
+      this.sparks.emit(mv.pose.x + Math.sin(h) * 1.6, 1.0, mv.pose.z + Math.cos(h) * 1.6, between(-0.3, 0.3), 1.2, between(-0.3, 0.3), 2.4, 0.5, 0.33, 0.33, 0.35);
     }
-    if (age > 0.9) {
-      this.g.parts.hazard.color.set(Math.floor(this.sim * 2.6) % 2 ? "#ffb020" : "#5a3300");
-      w.smokeT -= dt;
-      if (w.smokeT <= 0) {
-        w.smokeT = 0.35;
-        const h = mv.pose.h + mv.yaw;
-        this.sparks.emit(mv.pose.x + Math.sin(h) * 1.6, 1.0, mv.pose.z + Math.cos(h) * 1.6, between(-0.3, 0.3), 1.2, between(-0.3, 0.3), 2.4, 0.5, 0.33, 0.33, 0.35);
+    if (!this.chase) {
+      if (this.lampFall >= 0) {
+        this.lampFall += dt;
+        this.lamppost.rotation.x = 1.42 * Math.min(1, (this.lampFall / 1.1) ** 2);
       }
+      mv.update(0);
     }
-    if (this.lampFall >= 0 && !this.chase) {
-      this.lampFall += dt;
-      this.lamppost.rotation.x = 1.42 * Math.min(1, (this.lampFall / 1.1) ** 2);
-    }
-    if (!this.chase) mv.update(0);
     // safety net: nobody cleared it
     if (age > WRECK_SAFETY_S) this.clearWreckIncident();
   }
@@ -753,14 +929,68 @@ export class ChaseSim {
     this.wreck = null;
     this.lamppost.visible = false;
     this.lampFall = -1;
-    if (this.g && (!this.chase || this.chase.phase === "leaving" || this.chase.phase === "done")) this.g.mv.despawn();
+    if (this.g && (!this.chase || this.chase.phase === "leaving" || this.chase.phase === "done")) {
+      this.g.mv.despawn();
+      this.body = null;
+    }
+  }
+
+  // --- roadblock --------------------------------------------------------------------------
+
+  /** Rarely: two cars parked across a junction on the getaway's predicted route, and that road closed. */
+  private tryRoadblock() {
+    this.roadblockTried = true;
+    const g = this.g!.mv;
+    const site = roadblockSite(g.path, g.idx, g.t, 70, 240);
+    if (!site) return;
+    const key = edgeKey(site.node, site.exit);
+    if (this.blocked.has(key)) return;
+    const units = this.police.slice(PATROL).filter((p) => !p.mv.active);
+    if (units.length < 2) return;
+    units.forEach((p, i) => {
+      const slot = site.slots[i];
+      p.mv.spawn([site.node, site.exit], 0, 0.2, 0, "police");
+      this.freeze(p.mv);
+      p.mv.pose.x = slot.x;
+      p.mv.pose.z = slot.z;
+      p.mv.pose.h = slot.h;
+      p.mv.speed = 0;
+      p.mv.update(0);
+      p.mode = "block";
+    });
+    const reason = "Police roadblock";
+    try {
+      useWorld.getState().blockEdge(key, reason);
+      emit({ type: "road:blocked", edgeKey: key, reason });
+    } catch (err) {
+      console.warn("[Chases] roadblock failed", err);
+    }
+    this.blocked.add(key);
+    this.roadblock = { key, until: this.sim + ROADBLOCK_S };
+    this.rerouteGetaway();
+  }
+
+  private liftRoadblock() {
+    const rb = this.roadblock;
+    if (!rb) return;
+    this.roadblock = null;
+    try {
+      const st = useWorld.getState();
+      if (st.blocked[rb.key] === "Police roadblock") {
+        st.unblockEdge(rb.key);
+        emit({ type: "road:reopened", edgeKey: rb.key });
+      }
+    } catch (err) {
+      console.warn("[Chases] roadblock lift failed", err);
+    }
+    for (const p of this.police.slice(PATROL)) if (p.mv.active && p.mode === "block") this.sendHome(p);
   }
 
   // --- police -----------------------------------------------------------------------------
 
   private spawnPolice(p: Police) {
     const g = this.g!.mv;
-    const tgt = pursuitTarget(p.role, { from: g.from, to: g.to, path: g.path, idx: g.idx }, "");
+    const tgt = pursuitTarget(p.role, { from: g.from, to: g.to, path: g.path, idx: g.idx }, "", this.predicted(p));
     let path = findPath(p.start, tgt, this.blocked);
     if (!path || path.length < 2) {
       const nb = neighbours(p.start).find((n) => !this.blocked.has(edgeKey(p.start, n)));
@@ -770,13 +1000,23 @@ export class ChaseSim {
     p.mv.spawn(path, 0, 0.05, 6, "police");
     p.mode = "pursue";
     p.checkIn = 0.5;
+    p.manT = 0;
+  }
+
+  /** Where the getaway will be by the time this unit could get there. */
+  private predicted(p: Police) {
+    const g = this.g!.mv;
+    const from = p.mv.active ? p.mv.object.position : getNode(p.start);
+    const d = Math.hypot(g.object.position.x - from.x, g.object.position.z - from.z);
+    const vPolice = (getEdge(g.from, g.to)?.speedLimit ?? 11) * POLICE_FACTOR;
+    return predictNode(g.path, g.idx, g.t, g.speed, interceptHorizon(d, vPolice));
   }
 
   private drivePolice(p: Police, dt: number) {
     const mv = p.mv;
     const g = this.g!.mv;
     const s = this.chase!;
-    // right behind the getaway on its lane: share its route exactly
+    // on the getaway's road behind it: share its route exactly
     if (mv.from === g.from && mv.to === g.to && !g.free) {
       if (mv.path[mv.idx + 2] !== g.path[g.idx + 2] || mv.path.length - mv.idx !== g.path.length - g.idx) {
         const prev = mv.idx > 0 ? mv.path[mv.idx - 1] : null;
@@ -786,7 +1026,7 @@ export class ChaseSim {
     } else {
       p.checkIn -= dt;
       if (p.checkIn <= 0 || mv.idx + 2 >= mv.path.length) {
-        p.checkIn = 2;
+        p.checkIn = 1.5;
         this.repath(p);
       }
     }
@@ -794,44 +1034,99 @@ export class ChaseSim {
 
     const factor = s.ending === "escape" && s.t > s.minFleeS * 0.5 ? POLICE_GIVEUP_FACTOR : POLICE_FACTOR;
     let v0 = Math.min(mv.limit * factor, this.turnCap(mv, 8.5));
-    // relative to the getaway: once close, every unit tails; a unit that ended up in front eases off so the
-    // getaway blasts past it and it can drop in behind (a PIT needs a car right behind)
+
+    // the getaway's actual position, relative to us
+    const gh = g.pose.h;
     const dx = g.object.position.x - mv.object.position.x;
     const dz = g.object.position.z - mv.object.position.z;
     const d = Math.hypot(dx, dz);
-    const gh = g.pose.h;
     const sameWay = Math.sin(mv.pose.h) * Math.sin(gh) + Math.cos(mv.pose.h) * Math.cos(gh) > 0.5;
-    if (d < 25) p.role = 0;
-    if (sameWay && d < 40 && dx * Math.sin(gh) + dz * Math.cos(gh) < -2) v0 = Math.min(v0, g.speed * 0.7);
-    const lead = mv.lead();
-    if (mv.latTarget === 0) {
-      if (lead.v && lead.v.id === g.entry.id) {
-        const want = s.ending === "pit" ? 3 : 8;
-        v0 = Math.min(v0, lead.speed + (lead.gap - want) * 0.9);
-      } else if (lead.v && this.isOurs(lead.v.id)) {
-        v0 = Math.min(v0, lead.speed + Math.max(0, lead.gap - 4) * 0.8);
-      } else if (lead.gap < 24 && lead.speed < mv.speed - 1) {
-        if (straightAhead(mv.path, mv.idx, mv.t) > 28 && !mv.oncoming(50)) {
-          mv.latTarget = OVERTAKE_LAT;
-          p.boxU = 0; // reuse as manoeuvre timer
-        } else v0 = Math.min(v0, lead.speed + Math.max(0, lead.gap - 3) * 0.8); // obey
+    const along = -(dx * Math.sin(gh) + dz * Math.cos(gh)); // our position along its heading (negative = behind)
+    const closeBehind = sameWay && d < 50 && along < 0;
+    if (d < 25) p.role = 0; // in contact: everyone tails
+    // coming at it head-on (an interceptor): slow right down and pull in to the kerb to let it by,
+    // then the next re-path turns us round
+    const headOn = !sameWay && d < 35 && along > 0 && Math.sin(mv.pose.h) * dx + Math.cos(mv.pose.h) * dz > 0;
+    if (headOn && !pitAllowed(s)) {
+      v0 = Math.min(v0, 3);
+      if (mv.latTarget === 0 && getEdge(mv.from, mv.to)?.kind === "street" && this.sideClear(mv, KERB_LAT)) mv.latTarget = KERB_LAT;
+    } else if (mv.latTarget === KERB_LAT && !headOn) mv.latTarget = 0;
+    // a unit that ended up in front eases off so the getaway blasts past and it can drop in behind
+    if (sameWay && d < 40 && along > 2) v0 = Math.min(v0, g.speed * 0.7);
+
+    // PIT: pull alongside its rear quarter, then make contact
+    p.pitCool -= dt;
+    const pitting = pitAllowed(s) && closeBehind && d < 22 && !g.free && straightAhead(mv.path, mv.idx, mv.t) > 10;
+    if (pitting) {
+      if (mv.latTarget === 0 || Math.abs(mv.latTarget) !== PIT_SIDE) {
+        const side = mv.oncoming(35) ? -PIT_SIDE : PIT_SIDE;
+        if (this.sideClear(mv, side)) mv.latTarget = side;
       }
+      v0 = Math.min(mv.limit * factor * 1.1, g.speed + clamp((PIT_ALONG - along) * 2.2, -5, 7));
+      const c = pitContact(this.carState(g), this.carState(mv));
+      if (c.alongside && p.pitCool <= 0) this.attemptPit(p, c);
     } else {
-      p.boxU += dt;
-      const nearJunction = mv.remaining < 10 && mv.idx + 2 < mv.path.length && turnKind(mv.from, mv.to, mv.path[mv.idx + 2]) !== 0;
-      if ((p.boxU > 1.2 && this.laneClear(mv, 9)) || nearJunction) mv.latTarget = 0;
+      if (closeBehind) v0 = Math.min(v0, g.speed + (d - 8) * 0.9); // close the gap on its real position, then hold 8 m
+      // obstacles (anything but the getaway): overtake if the other side is clear, else brake
+      const range = 8 + mv.speed * 1.4;
+      const hit = this.probe(mv, mv.latTarget, range, g.entry.id);
+      if (mv.latTarget === 0) {
+        if (hit && hit.speed < mv.speed - 1) {
+          if (straightAhead(mv.path, mv.idx, mv.t) > 28 && !this.probe(mv, OVERTAKE_LAT, range + 25, g.entry.id) && this.sideClear(mv, OVERTAKE_LAT)) {
+            mv.latTarget = OVERTAKE_LAT;
+            p.manT = 0;
+          } else v0 = Math.min(v0, this.safeSpeed(hit.gap, hit.speed, 2.5));
+        }
+      } else {
+        p.manT += dt;
+        const nearJunction = mv.remaining < 10 && mv.idx + 2 < mv.path.length && turnKind(mv.from, mv.to, mv.path[mv.idx + 2]) !== 0;
+        if ((p.manT > 1.2 && this.laneClear(mv, 9) && !this.probe(mv, 0, 12, g.entry.id) && this.sideClear(mv, 0)) || nearJunction) mv.latTarget = 0;
+        if (hit) v0 = Math.min(v0, this.safeSpeed(hit.gap, hit.speed, 2.5));
+      }
     }
-    this.accelerate(mv, Math.max(0, v0), dt, 7.5, 12);
-    const entered = mv.move(mv.speed * dt);
+    this.accelerate(mv, Math.max(0, v0), dt, 7.5, BRAKE + 1);
+    const entered = mv.move(this.limitStep(mv, mv.speed * dt, pitting ? g.entry.id : ""));
     if (entered) this.repath(p);
     mv.update(dt);
+  }
+
+  /** Don't move into what's in front (the PIT car may touch the getaway: `allow`). */
+  private limitStep(mv: Mover, ds: number, allow = "") {
+    const lat = mv.lat > 2 ? OVERTAKE_LAT : mv.lat < -1.4 ? KERB_LAT : mv.lat > 1 ? PIT_SIDE : 0;
+    const hit = this.probe(mv, lat, ds + 2, allow);
+    if (hit && hit.gap - ds <= 0.4) {
+      mv.speed = Math.min(mv.speed, Math.max(0, hit.speed));
+      return Math.max(0, hit.gap - 0.4);
+    }
+    return ds;
+  }
+
+  private carState(mv: Mover) {
+    return { x: mv.object.position.x, z: mv.object.position.z, h: mv.object.rotation.y, speed: mv.speed };
+  }
+
+  /** Bump the getaway's rear quarter; on success it spins out (rigid body), else both just jolt. */
+  private attemptPit(p: Police, c: PitContact) {
+    p.pitCool = 1.2;
+    const g = this.g!.mv;
+    const gx = g.object.position.x;
+    const gz = g.object.position.z;
+    this.burst((gx + p.mv.object.position.x) / 2, 0.6, (gz + p.mv.object.position.z) / 2, 10, 0);
+    if (rand() >= pitChance(c)) {
+      p.mv.speed *= 0.85; // glanced off
+      g.yaw = (c.side > 0 ? -1 : 1) * 0.08;
+      return;
+    }
+    this.startBody(pitImpulse(this.carState(g), c));
+    p.mv.latTarget = 0;
+    this.pitHit = true;
   }
 
   /** Re-path to the pursuit target (each junction, and every couple of seconds). */
   private repath(p: Police) {
     const mv = p.mv;
     const g = this.g!.mv;
-    const tgt = pursuitTarget(p.role, { from: g.from, to: g.to, path: g.path, idx: g.idx }, mv.to);
+    const tgt = pursuitTarget(p.role, { from: g.from, to: g.to, path: g.path, idx: g.idx }, mv.to, this.predicted(p));
     const r = replanPath(mv.path, mv.idx, tgt, this.blocked);
     if (r) {
       mv.path = r.path;
@@ -840,6 +1135,16 @@ export class ChaseSim {
       const next = chooseTurn(mv.from, mv.to, this.blocked, rand);
       if (next) mv.path.push(next);
     }
+  }
+
+  /** After the getaway spins or crashes: pull up (brake to a stop, never into anything). */
+  private holdPolice(p: Police, dt: number) {
+    const mv = p.mv;
+    if (mv.idx + 1 >= mv.path.length || mv.free) return mv.update(0);
+    mv.latTarget = 0;
+    this.accelerate(mv, 0, dt, 0, 8);
+    mv.move(this.limitStep(mv, mv.speed * dt));
+    mv.update(dt);
   }
 
   private startBox(p: Police, slot: Slot | undefined) {
@@ -867,15 +1172,18 @@ export class ChaseSim {
             mv.idx = r.idx;
           }
         }
-        this.accelerate(mv, Math.min(mv.limit * 1.6, this.turnCap(mv, 8)), dt, 7, 12);
-        mv.move(mv.speed * dt);
+        let v0 = Math.min(mv.limit * 1.6, this.turnCap(mv, 8));
+        const hit = this.probe(mv, 0, 8 + mv.speed * 1.4);
+        if (hit) v0 = Math.min(v0, this.safeSpeed(hit.gap, hit.speed, 2.5));
+        this.accelerate(mv, v0, dt, 7, BRAKE);
+        mv.move(this.limitStep(mv, mv.speed * dt));
         mv.update(dt);
         return;
       }
       this.freeze(mv);
       p.boxFrom = { x: mv.pose.x, z: mv.pose.z, h: mv.pose.h + mv.yaw };
       mv.yaw = 0;
-      p.boxDur = clamp(d / 9, 1.2, 3);
+      p.boxDur = clamp(d / 7, 1.4, 3.5);
     }
     p.boxU = Math.min(1, p.boxU + dt / p.boxDur);
     const e = smooth(p.boxU);
@@ -899,7 +1207,7 @@ export class ChaseSim {
 
   /** From wherever the vehicle is (maybe off-lane after a box-in), rejoin the road and head to the station. */
   private rejoinHome(mv: Mover) {
-    const ref = this.g?.mv ?? mv;
+    const ref = mv.free && this.g ? this.g.mv : mv;
     let a = ref.path[ref.idx] ?? mv.from;
     let b = ref.path[ref.idx + 1] ?? mv.to;
     if (mv.free) {
@@ -908,9 +1216,6 @@ export class ChaseSim {
       const nb = getNode(b);
       const h = mv.pose.h + mv.yaw;
       if (Math.sin(h) * (nb.x - na.x) + Math.cos(h) * (nb.z - na.z) < 0) [a, b] = [b, a];
-    } else {
-      a = mv.from;
-      b = mv.to;
     }
     const t = mv.free ? clamp(blockageT(a, b, mv.pose.x, mv.pose.z), 0.02, 0.95) : mv.t;
     const others = new Set(this.blocked);
@@ -926,11 +1231,15 @@ export class ChaseSim {
       return;
     }
     let v0 = Math.min(mv.limit * factor, this.turnCap(mv, 7));
-    const lead = mv.lead();
+    const range = 6 + mv.speed * 1.4;
+    const hit = this.probe(mv, mv.latTarget, range);
     if (mv.latTarget === 0) {
-      if (lead.gap < 14 && lead.speed < 0.5 && !mv.oncoming(35)) mv.latTarget = OVERTAKE_LAT; // round a wreck or a queue
-      else if (Number.isFinite(lead.gap)) v0 = Math.min(v0, lead.speed + Math.max(0, lead.gap - 3) * 0.8);
-    } else if (this.laneClear(mv, 9) || mv.remaining < 8) mv.latTarget = 0;
+      if (hit && hit.gap < 14 && hit.speed < 0.5 && !this.probe(mv, OVERTAKE_LAT, 35) && this.sideClear(mv, OVERTAKE_LAT)) mv.latTarget = OVERTAKE_LAT; // round a wreck or a queue
+      else if (hit) v0 = Math.min(v0, this.safeSpeed(hit.gap, hit.speed, 3));
+    } else {
+      if (hit) v0 = Math.min(v0, this.safeSpeed(hit.gap, hit.speed, 3));
+      if ((this.laneClear(mv, 9) && !this.probe(mv, 0, 10) && this.sideClear(mv, 0)) || mv.remaining < 8) mv.latTarget = 0;
+    }
     // safety net: still stuck after a while, just pull away out of shot
     mv.stuck = mv.speed < 0.3 ? mv.stuck + dt : 0;
     if (mv.stuck > 8) {
@@ -938,15 +1247,8 @@ export class ChaseSim {
       return;
     }
     this.accelerate(mv, Math.max(0, v0), dt, 3.5, 9);
-    mv.move(mv.speed * dt);
+    mv.move(this.limitStep(mv, mv.speed * dt));
     mv.update(dt);
-  }
-
-  private isOurs(id: string) {
-    if (this.g?.mv.entry.id === id) return true;
-    for (const p of this.police) if (p.mv.entry.id === id) return true;
-    for (const r of this.racers) if (r.mv.entry.id === id) return true;
-    return false;
   }
 
   private isFree(x: number, z: number, r: number) {
@@ -961,7 +1263,11 @@ export class ChaseSim {
     const h = g.pose.h + g.yaw;
     // UK cars: the driver gets out on the right
     this.suspectFrom = { x: g.pose.x - Math.cos(h) * 1.5, z: g.pose.z + Math.sin(h) * 1.5 };
-    const cops = this.police.filter((p) => p.mv.active).slice(0, 2);
+    const cops = this.police
+      .filter((p) => p.mv.active && p.mode !== "block")
+      .sort((a, b) => (a.mode === "parked" ? 0 : 1) - (b.mode === "parked" ? 0 : 1) || this.distTo(a.mv, g) - this.distTo(b.mv, g))
+      .slice(0, 2);
+    this.arrestCops = cops;
     cops.forEach((p, i) => {
       const ph = p.mv.pose.h;
       this.officerFrom[i] = [p.mv.pose.x - Math.cos(ph) * 1.4, p.mv.pose.z + Math.sin(ph) * 1.4];
@@ -987,7 +1293,7 @@ export class ChaseSim {
     const fx = Math.sin(h);
     const fz = Math.cos(h);
     const door = this.suspectFrom;
-    const cops = this.police.filter((p) => p.mv.active).slice(0, 2);
+    const cops = this.arrestCops;
     const car0 = cops[0]?.mv;
     // the suspect is put in the back of the first police car, on its left
     const cellX = car0 ? car0.pose.x + Math.cos(car0.pose.h) * 1.5 - Math.sin(car0.pose.h) * 0.6 : door.x;
@@ -1229,13 +1535,12 @@ export class ChaseSim {
           if (r.manT > 1.5 && !mv.oncoming(110) && straightAhead(mv.path, mv.idx, mv.t) > 60) mv.latTarget = OVERTAKE_LAT;
         }
       }
-      if (Math.abs(mv.lat) < 1.5) {
-        const lead = mv.lead();
-        if (Number.isFinite(lead.gap)) v0 = Math.min(v0, lead.speed + Math.max(0, lead.gap - 4) * 1.0); // obey traffic ahead
-      }
-      this.accelerate(mv, Math.max(0, v0), dt, r.accel, 10);
+      // obey what's ahead in whichever lane it's in (the ray sees cross traffic too)
+      const hit = this.probe(mv, mv.latTarget, 10 + mv.speed * 1.5);
+      if (hit) v0 = Math.min(v0, this.safeSpeed(hit.gap, hit.speed, 3));
+      this.accelerate(mv, Math.max(0, v0), dt, r.accel, BRAKE);
       mv.pitch = mv.speed < r.top * 0.6 && !finished ? -0.035 : 0; // nose up on launch
-      mv.move(mv.speed * dt);
+      mv.move(this.limitStep(mv, mv.speed * dt));
       mv.update(dt);
       if (r.smokeT > 0) {
         r.smokeT -= dt;

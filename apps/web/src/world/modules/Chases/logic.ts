@@ -20,19 +20,20 @@ export interface ChaseState {
 
 export interface ChaseInput {
   gap: number; // metres from the nearest police car to the getaway (Infinity when none)
-  behind: boolean; // that police car is right behind the getaway on its lane
-  straight: boolean; // the getaway has a straight run ahead (room to spin out)
+  pit: boolean; // a police car just made a successful PIT contact this frame
+  collided: boolean; // the getaway just physically hit something
+  settled: boolean; // the getaway's body has come to rest (after a spin or crash)
   onMotorway: boolean; // the getaway is on a highway-kind road
   allHome: boolean; // every chase vehicle has left the scene (despawned)
 }
 
 export const CHASE = {
-  pitGap: 10, // police must be this close behind for a PIT
   maxFleeS: 75, // after this the chase ends one way or another
+  crashGraceS: 14, // a "crash" chase drives recklessly this long before it hits a lamppost anyway
   escapeGap: 80, // police give up when the getaway is this far ahead on the motorway
   escapeMotorwayS: 7, // ...or has been on the motorway this long
-  spinS: 2.6,
-  crashSettleS: 2.2,
+  spinMinS: 2.8, // time for the spin and the box-in before the arrest
+  spinMaxS: 8,
   arrestS: 13,
   giveUpS: 2,
   leaveTimeoutS: 70,
@@ -44,8 +45,18 @@ export function rollEnding(r: number): Ending {
 }
 
 export function newChase(ending: Ending, rand: () => number): ChaseState {
-  const minFleeS = ending === "crash" ? 18 + rand() * 14 : ending === "pit" ? 14 + rand() * 8 : 12 + rand() * 6;
+  const minFleeS = ending === "crash" ? 16 + rand() * 12 : ending === "pit" ? 12 + rand() * 8 : 12 + rand() * 6;
   return { phase: "fleeing", ending, t: 0, phaseT: 0, minFleeS, motorwayT: 0 };
+}
+
+/** Police may try a PIT now. */
+export function pitAllowed(s: ChaseState) {
+  return s.phase === "fleeing" && s.ending === "pit" && s.t >= s.minFleeS;
+}
+
+/** The getaway stops avoiding traffic (it's going to hit something). */
+export function isReckless(s: ChaseState) {
+  return s.phase === "fleeing" && s.ending === "crash" && s.t >= s.minFleeS;
 }
 
 function go(s: ChaseState, phase: Phase) {
@@ -60,21 +71,26 @@ export function stepChase(s: ChaseState, input: ChaseInput, dt: number): ChaseAc
   switch (s.phase) {
     case "fleeing": {
       s.motorwayT = input.onMotorway ? s.motorwayT + dt : 0;
-      const ready = s.t >= s.minFleeS;
-      if (s.ending === "pit" && ready && input.behind && input.gap <= CHASE.pitGap && input.straight) {
-        go(s, "pit");
-        return "spin";
-      }
-      if (s.ending === "crash" && ready) {
+      if (input.collided) {
+        // any chase can end in a real collision
+        s.ending = "crash";
         go(s, "crashed");
         return "crash";
       }
-      if (s.ending === "escape" && ready && input.onMotorway && (input.gap >= CHASE.escapeGap || s.motorwayT >= CHASE.escapeMotorwayS)) {
+      if (input.pit && pitAllowed(s)) {
+        go(s, "pit");
+        return "spin";
+      }
+      if (s.ending === "crash" && s.t >= s.minFleeS + CHASE.crashGraceS) {
+        go(s, "crashed"); // never hit anything: loses it into a lamppost
+        return "crash";
+      }
+      if (s.ending === "escape" && s.t >= s.minFleeS && input.onMotorway && (input.gap >= CHASE.escapeGap || s.motorwayT >= CHASE.escapeMotorwayS)) {
         go(s, "escaped");
         return "give_up";
       }
       if (s.t >= CHASE.maxFleeS) {
-        // PIT never lined up: it ends in a crash instead. An escape that never reached the motorway: lost them.
+        // PIT never landed: it ends in a crash instead. An escape that never reached the motorway: lost them.
         if (s.ending === "escape") {
           go(s, "escaped");
           return "give_up";
@@ -86,13 +102,8 @@ export function stepChase(s: ChaseState, input: ChaseInput, dt: number): ChaseAc
       return null;
     }
     case "pit":
-      if (s.phaseT >= CHASE.spinS) {
-        go(s, "arrest");
-        return "start_arrest";
-      }
-      return null;
     case "crashed":
-      if (s.phaseT >= CHASE.crashSettleS) {
+      if ((input.settled && s.phaseT >= CHASE.spinMinS) || s.phaseT >= CHASE.spinMaxS) {
         go(s, "arrest");
         return "start_arrest";
       }
@@ -215,15 +226,20 @@ export interface GetawayView {
 }
 
 /**
- * Which node police unit `role` drives to: unit 0 and 2 tail the getaway (its current target node),
- * unit 1 tries to cut it off at a node further along its planned route. Never returns the node the
- * police car is already heading to (that would be an empty path), falling back along the getaway's route.
+ * Which node police unit `role` drives to: unit 0 tails the getaway (its current target node); the others
+ * cut it off at `predicted` (where it will be by the time they get there, see dynamics.predictNode).
+ * Never returns the node the police car is already heading to (that would be an empty path), falling
+ * back along the getaway's route.
  */
-export function pursuitTarget(role: number, g: GetawayView, policeTo: string): string {
+export function pursuitTarget(role: number, g: GetawayView, policeTo: string, predicted?: string): string {
   const ahead: string[] = [];
   for (let k = g.idx + 1; k < g.path.length; k++) ahead.push(g.path[k]);
   if (!ahead.length) ahead.push(g.to);
-  const order = role === 1 ? [...ahead.slice(1, 3).reverse(), ...ahead] : ahead;
+  let order = ahead;
+  if (role !== 0) {
+    const p = predicted && ahead.includes(predicted) ? ahead.indexOf(predicted) : Math.min(2, ahead.length - 1);
+    order = [...ahead.slice(1, p + 1).reverse(), ...ahead];
+  }
   for (const id of order) if (id !== policeTo) return id;
   return g.from !== policeTo ? g.from : g.to;
 }
