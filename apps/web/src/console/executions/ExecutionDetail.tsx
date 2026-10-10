@@ -1,5 +1,6 @@
 "use client";
-// One case run in plain words: what happened (headline), the message, a person's decision if
+// One case run in plain words: what happened (headline + a "Why" line), "Watch it think" (a step-by-step
+// replay of the real trace), a live checklist while it is working, the message, a person's decision if
 // one is needed, voice (speak as the driver, take the call the agent wants to make, decide by voice),
 // and the steps as a checklist. Timings, costs, step log and the written
 // reports are behind "Details".
@@ -8,11 +9,13 @@ import { cents, plainOutcome, scrubLeaks } from "../../ui/plain";
 import type { ExecutionRecord } from "../types";
 import { fmtDuration, fmtStarted, fmtTokens, traceTotals } from "./logic";
 import Markdown from "./MarkdownView";
-import { caseName, checklist, decisionCardOf, headline, messageOf, statusTone, statusWord } from "./plainView";
+import { caseName, checklist, decisionCardOf, headline, messageOf, statusTone, statusWord, whyLine } from "./plainView";
+import Replay, { LiveSteps } from "./Replay";
 import DecideRerun from "./DecideRerun";
 import Timeline, { MessageCard } from "./Timeline";
 import { Badge, Button, cx } from "./ui";
 import VoiceSlot from "./VoiceSlot";
+import { DownloadRunButton } from "../export/Buttons";
 
 type DetailView = "steps" | "answer" | "reasoning";
 
@@ -106,6 +109,13 @@ export default function ExecutionDetail({
   onOpen: (executionId: string) => void;
 }) {
   const [showDetails, setShowDetails] = useState(false);
+  const [replayFor, setReplayFor] = useState<string | null>(null);
+  // When the open run finishes while you watch, play it back straight away.
+  const [seen, setSeen] = useState<{ id: string; status: string } | null>(null);
+  if (execution && (seen?.id !== execution.id || seen.status !== execution.status)) {
+    if (seen?.id === execution.id && seen.status === "running" && execution.status !== "running" && execution.trace) setReplayFor(execution.id);
+    setSeen({ id: execution.id, status: execution.status });
+  }
 
   if (!execution) {
     return (
@@ -122,6 +132,11 @@ export default function ExecutionDetail({
   const steps = checklist(e.trace);
   const tone = statusTone(e);
   const toneColor = { ok: "#3ecf8e", warn: "#f5b83d", info: "#6aa7ff", err: "#ff5c5c", muted: "#8b8b96", accent: "#ff6a1a" }[tone];
+  const verdict = headline(e);
+  const why = whyLine(e);
+  const running = e.status === "running";
+  const replaying = replayFor === e.id && !running;
+  const canReplay = !running && !!e.trace?.events.length;
 
   return (
     <div className="h-full overflow-y-auto">
@@ -131,20 +146,47 @@ export default function ExecutionDetail({
             <span className="min-w-0 truncate">{name}</span>
             <Provenance simulated={e.simulated} />
           </div>
-          <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">{headline(e)}</h2>
+          {replaying ? (
+            <h2 className="mt-2 text-3xl font-semibold leading-tight text-white/60">Watching the agent work…</h2>
+          ) : (
+            <>
+              <h2 className="mt-2 text-3xl font-semibold leading-tight text-white">{verdict}</h2>
+              {why && (
+                <p className="mt-2 text-[16px] leading-snug text-white/70">
+                  <span className="font-medium text-white/45">Why: </span>
+                  {why}
+                </p>
+              )}
+            </>
+          )}
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <span className="font-medium" style={{ color: toneColor }}>{statusWord(e)}</span>
             <span className="text-white/45" title={e.startedAt}>{fmtStarted(e.startedAt)}</span>
             {e.eval && <RightOrWrong ev={e.eval} />}
             <span className="ml-auto flex items-center gap-3">
               {error && <span className="text-xs text-[#ff5c5c]">Couldn&apos;t start it. Try again.</span>}
-              <Button variant="primary" className="!px-4 !py-2 !text-sm" onClick={() => onRerun(e)} disabled={rerunning || e.status === "running"}>
+              {!running && <DownloadRunButton id={e.id} />}
+              {canReplay && (
+                <Button
+                  className="!px-4 !py-2 !text-sm"
+                  onClick={() => setReplayFor(replaying ? null : e.id)}
+                  title="Play this run back step by step, from what the agent actually did"
+                >
+                  {replaying ? "Stop watching" : "▶ Watch it think"}
+                </Button>
+              )}
+              <Button variant="primary" className="!px-4 !py-2 !text-sm" onClick={() => onRerun(e)} disabled={rerunning || running}>
                 {rerunning ? "Starting…" : "Run again"}
               </Button>
             </span>
           </div>
         </header>
 
+        {running && <LiveSteps execution={e} />}
+        {replaying && <Replay key={e.id} execution={e} verdict={verdict} why={why} onClose={() => setReplayFor(null)} />}
+
+        {!replaying && (
+        <>
         {msg && <MessageCard title={msg.title} to={msg.to} how={msg.how} message={msg.message} />}
         {card && <DecideRerun key={e.id} execution={e} card={card} onOpen={onOpen} />}
 
@@ -158,7 +200,7 @@ export default function ExecutionDetail({
           </section>
         )}
 
-        {steps.length > 0 && (
+        {steps.length > 0 && !running && (
           <section>
             <h3 className="mb-2 text-sm font-semibold text-white/60">Steps</h3>
             <ul className="space-y-1.5 text-[14px]">
@@ -180,6 +222,8 @@ export default function ExecutionDetail({
         )}
         {!steps.length && !msg && !card && e.status !== "running" && (
           <p className="text-sm text-white/45">Result: {plainOutcome(e.outcome)}. No steps were recorded.</p>
+        )}
+        </>
         )}
 
         <section className="border-t border-white/10 pt-3">

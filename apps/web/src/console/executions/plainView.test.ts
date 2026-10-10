@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { plainStep, scrubLeaks } from "../../ui/plain";
 import type { Trace } from "../types";
-import { caseName, checklist, headline, messageOf, plainChannel, statusWord } from "./plainView";
+import { caseName, checklist, clashSentence, headline, messageOf, plainChannel, statusWord, whyLine } from "./plainView";
 
 const trace = (outcome: string, extra: Trace["events"] = []): Trace => ({
   version: 1, runId: "r", caseId: "delivery-024", flowId: "f", mode: "practice",
@@ -61,7 +61,8 @@ describe("case run in plain words", () => {
 
   it("gives the list a status word and a case name", () => {
     expect(statusWord({ status: "success", outcome: "escalated" })).toBe("Needs a person");
-    expect(statusWord({ status: "error", outcome: null })).toBe("Stopped");
+    expect(statusWord({ status: "error", outcome: null })).toBe("Didn't finish");
+    expect(statusWord({ status: "success", outcome: "blocked" })).toBe("Stopped");
     expect(statusWord({ status: "running", outcome: null })).toBe("Working…");
     expect(caseName("delivery-024", "Case 024: Parcel missing")).toBe("Parcel missing");
     expect(caseName("gen-007")).toBe("Practice case 7");
@@ -75,5 +76,41 @@ describe("shared glossary as used here", () => {
     expect(plainStep("perspectives", "perspectives: skipped: no Jev key")).toBeNull();
     expect(plainStep("safety_gate", "gate: 1 of 2 messages cleared")).toBe("Safety check: 1 held for a person");
     expect(scrubLeaks("Claude flagged missed_or_failed_delivery")).not.toMatch(/Claude|_/);
+  });
+});
+
+describe("why line", () => {
+  const clashEv: Trace["events"] = [
+    { t: 13, kind: "node_start", nodeId: "clash", nodeType: "clash_check" },
+    { t: 14, kind: "node_end", nodeId: "clash", status: "ok", summary: "1 conflict: Gate called the side gate in one note", latencyMs: 1, costUsd: 0,
+      output: { type: "clash_check", clash: true, p: 1, claims: [] } },
+  ];
+  it("gives the clash when the stories don't match", () => {
+    expect(whyLine({ status: "success", outcome: "acted", trace: trace("acted", clashEv) })).toBe("The stories don't match: Gate called the side gate in one note.");
+  });
+  it("says the safety check passed when nothing clashed", () => {
+    expect(whyLine({ status: "success", outcome: "acted", trace: trace("acted") })).toBe("The safety check passed (risk: low).");
+  });
+  it("uses the card's reason when a person must decide", () => {
+    const t = trace("escalated", [
+      { t: 13, kind: "node_end", nodeId: "human", status: "ok", summary: "card", latencyMs: 1, costUsd: 0,
+        output: { type: "human_decision", card: { routeTo: "Desk supervisor", summary: "s", whyStopped: { reason: "rule_requires_person", line: "Legal action needs a named person." }, tried: [], options: [], wouldChangeMyMind: "", deadlineMins: 0, fallback: "" } } },
+    ]);
+    expect(whyLine({ status: "success", outcome: "escalated", trace: t })).toBe("Legal action needs a named person.");
+  });
+  it("explains a failed run without the raw error, and says nothing while working", () => {
+    expect(whyLine({ status: "error", outcome: null, trace: null, error: "429 overloaded req_abc123" })).toBe("The AI service is busy. Try again in a minute.");
+    expect(whyLine({ status: "running", outcome: null, trace: null })).toBeNull();
+  });
+});
+
+describe("clash sentence", () => {
+  const out = { type: "clash_check", clash: true, p: 1, claims: [] };
+  it("keeps the whole reason, and ends a cut-off one on a whole word", () => {
+    const cut = "1 conflict: Gate described as the 'pedestrian gate' in one and the 'side gate' i"; // 80 chars, cut by the agent
+    expect(cut.length).toBe(80);
+    expect(clashSentence({ nodeType: "clash_check", summary: cut, output: out })).toBe("The stories don't match: Gate described as the 'pedestrian gate' in one and the 'side gate'…");
+    expect(clashSentence({ nodeType: "clash_check", summary: "1 conflict: Who may choose redelivery for DL-907", output: out })).toBe("The stories don't match: Who may choose redelivery for DL-907");
+    expect(clashSentence({ nodeType: "clash_check", summary: "no conflict", output: { ...out, clash: false } })).toBeNull();
   });
 });

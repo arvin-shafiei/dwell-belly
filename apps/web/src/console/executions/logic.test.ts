@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Trace } from "../types";
 import {
   anyRunning, buildTimeline, datasetsOf, filterExecutions, fmtCost, fmtDuration, fmtStarted, gateBar,
-  sortExecutions, traceTotals, type ExecutionSummary,
+  sortExecutions, traceTotals, type ExecutionSummary, RESULT_CHIPS, chipCounts, chipOf, matchesChip,
 } from "./logic";
 
 const ex = (o: Partial<ExecutionSummary>): ExecutionSummary => ({
@@ -104,5 +104,28 @@ describe("buildTimeline", () => {
 describe("gateBar", () => {
   it("clamps into percentages", () => {
     expect(gateBar({ risk: 1.4, allowBelow: 0.3, blockAbove: 0.8, decision: "block" })).toEqual({ risk: 100, allow: 30, block: 80 });
+  });
+});
+
+describe("result chips", () => {
+  const rows = [
+    { status: "success" as const, outcome: "acted" },
+    { status: "success" as const, outcome: "acted" },
+    { status: "success" as const, outcome: "escalated" },
+    { status: "success" as const, outcome: "asked_for_info" },
+    { status: "success" as const, outcome: "blocked" },
+    { status: "error" as const, outcome: null },
+    { status: "success" as const, outcome: "error" },
+    { status: "running" as const, outcome: null },
+    { status: "success" as const, outcome: "no_action" },
+  ];
+  it("counts each chip, with All covering everything", () => {
+    expect(chipCounts(rows)).toEqual({ all: 9, sent: 2, person: 1, asked: 1, stopped: 1, failed: 2 });
+  });
+  it("matches rows to chips", () => {
+    expect(rows.filter((r) => matchesChip(r, "failed"))).toHaveLength(2);
+    expect(rows.filter((r) => matchesChip(r, "all"))).toHaveLength(9);
+    expect(chipOf({ status: "running", outcome: null })).toBeNull();
+    expect(RESULT_CHIPS.map((c) => c.label)).toEqual(["All", "Sent", "Needs a person", "Asked", "Stopped", "Didn't finish"]);
   });
 });
