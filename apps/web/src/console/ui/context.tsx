@@ -3,7 +3,7 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-export const TAB_IDS = ["overview", "intake", "executions", "workflows", "evidence", "reality", "city", "settings"] as const;
+export const TAB_IDS = ["overview", "intake", "executions", "workflows", "evidence", "reality", "how", "city", "settings"] as const;
 export type TabId = (typeof TAB_IDS)[number];
 
 /** What a person reads. Ids stay internal (URLs, code). */
@@ -11,6 +11,7 @@ export const TAB_TITLES: Record<TabId, string> = {
   overview: "Home",
   intake: "New case",
   reality: "Reality Test",
+  how: "How it works",
   settings: "Settings",
   workflows: "Playbooks",
   executions: "Case runs",

@@ -16,6 +16,7 @@ import {
   IconCity,
   IconEvidence,
   IconExternal,
+  IconInfo,
   IconSearch,
   IconWorkflow,
   RivetMark,
@@ -40,6 +41,7 @@ import EvidenceTab from "./tabs/Evidence";
 import CityTab from "./tabs/City";
 import IntakeTab from "./tabs/Intake";
 import RealityTab from "./tabs/Reality";
+import HowItWorksTab from "./tabs/HowItWorks";
 import SettingsTab from "./tabs/Settings";
 import { useReviewQueue } from "../review/useReviewQueue";
 import ReviewDrawer from "../review/ReviewDrawer";
@@ -52,6 +54,7 @@ const TAB_COMPONENT: Record<TabId, ComponentType> = {
   city: CityTab,
   intake: IntakeTab,
   reality: RealityTab,
+  how: HowItWorksTab,
   settings: SettingsTab,
 };
 
@@ -65,6 +68,7 @@ const NAV: NavItem[] = [
   { id: "workflows", title: TAB_TITLES.workflows, Icon: IconWorkflow },
   { id: "evidence", title: TAB_TITLES.evidence, Icon: IconEvidence },
   { id: "reality", title: TAB_TITLES.reality, Icon: IconReality },
+  { id: "how", title: TAB_TITLES.how, Icon: IconInfo },
   { id: "city", title: TAB_TITLES.city, Icon: IconCity },
 ];
 
@@ -265,7 +269,7 @@ function DefaultPrimary({ tab }: { tab: TabId }): ReactNode {
         </a>
       );
     default:
-      return null; // New case, Playbooks, Reality Test, Settings bring their own
+      return null; // New case, Playbooks, Reality Test, How it works, Settings bring their own
   }
 }
 

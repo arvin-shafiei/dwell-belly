@@ -54,6 +54,7 @@ const TAB_KEYWORDS: Record<TabId, string[]> = {
   workflows: ["playbooks", "flow", "workflow", "editor"],
   evidence: ["results", "scores", "evidence", "grid"],
   reality: ["reality test", "real world", "compare"],
+  how: ["how it works", "explain", "framework", "about"],
   city: ["city", "simulation", "map"],
   settings: ["settings", "preferences", "config"],
 };
