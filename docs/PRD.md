@@ -1,6 +1,6 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 1.2, 10 Oct 2026, 11:40 BST. **Owner of this doc:** Oriol.
+**Version:** 1.3, 10 Oct 2026, 11:55 BST. **Owner of this doc:** Oriol.
 
 **Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
 
@@ -977,8 +977,8 @@ This table is the reallocation.
 
 | Who | Owns until 16:30 | Paths |
 |---|---|---|
-| Oriol (+ Claude) | **P0, the agent runtime.** `contract.ts`, plus the `missing_info` and `perspectives` nodes in `default-incident.json`; the loader; the three calls, reusing Anson's Claude client and `baseline()` from PR #3; the gate, renderer and batch runner; `INDEX`/`RUNLOG`; `POST /api/cases`; `runs/traces`. Also converting the fixtures, the organiser questions (by 12:30), keys, then voice steps 1 to 4. Owns this PRD. | `apps/api/src/agent/**`, `apps/api/src/lib/contract.ts`, `apps/api/src/voice/**`, `apps/api/src/app/api/voice/**`, `apps/api/src/app/api/cases/**`, `scripts/run-cases.*`, `docs/PRD.md` |
-| Anson | **P1, the eval.** Reading v2 traces (the blocker, first), scoring several actions, both views, `eval/results.md` by 14:00, the answer-key fixes, the panel behind its flag. Then generated cases with renamed parties, attachments and voice channels. | `scripts/eval/**`, `data/generated/**`, `data/scraped/**`, `apps/api/src/lib/panel.ts` |
+| Anson | **P0, the agent runtime, and P1, the eval.** He built and merged the runtime (PR #3: loader, Understand, Decide, the per-message gate with a critic, sandbox outbox, clock, supplied-tools discovery, the batch runner, report, 221 tests). Next: the first real-key run, timing, the eval run, `eval/results.md`. | `apps/api/src/agent/**`, `scripts/eval/**`, `data/generated/**`, `data/scraped/**`, `apps/api/src/lib/panel.ts` |
+| Oriol (+ Claude) | **Integration and voice.** Bringing the runtime and this PRD into line (Part E is aspirational; the runtime uses the v1 trace from `apps/api/src/lib/trace.ts`); the submission tracker and placeholders; extra test cases; the organiser questions; keys; then voice steps 1 to 4 on top of the runtime. Owns this PRD. | `apps/api/src/voice/**`, `apps/api/src/app/api/voice/**`, `docs/PRD.md`, `docs/submission-tracker.md` |
 | Arvin | **Layer 2 paused.** The J4 must-fixes, the `traceToCity` adapter, real-trace replay, the 2D/WebGL fallback. Owns the video (script and recording by 15:30), and the README and SUBMISSION.md drafts by 15:00. | `apps/web/src/world/**`, `apps/web/src/app/city/**`, `README.md`, `SUBMISSION.md` |
 | A 4th or 5th teammate, if any | The posts, the presentation script, replacing third-party docs with links (H2). Otherwise Arvin. | `docs/hackathon/**` |
 | Shared | The contract (Part E) | `apps/api/src/lib/contract.ts`, changed only via a PR to this doc first |
@@ -1055,6 +1055,7 @@ This table is the reallocation.
 
 ## Changelog
 
+- **1.3 (11:55):** the runtime is Anson's, merged in PR #3 and passing 221 offline tests; ownership (K1) updated to match. It writes the v1 trace (`apps/api/src/lib/trace.ts`), not the Part E contract, so Part E is now the target for additive changes, not what the code does today. The Watch flow, route replanning, the Architect and the self-test exist as demo-only modules that the runner does not import, so the README must say so. The tracker gains the first real-key run, the timed run and the extra test-case sets.
 - **1.2 (11:40):** added the submission tracker (`docs/submission-tracker.md`) and `[MISSING]` placeholders for `ANSWERS/`, `SUBMISSION.md`, `demo/`, `eval/results.md`, `examples/practice-run/`, the launch posts and the presentation; a freeze-time check for leftover placeholders; the video path `demo/demo.mp4`; and the `.env.example` files, which the apps' `.gitignore` had been silently ignoring. Note: the version times in 1.0 and 1.1 were estimates and ran about an hour ahead of the real clock.
 - **1.1 (12:40):** folded in four reviews of v1.0: a judge simulation, a team map, a contract audit and a coverage audit.
   - **Contract (E):** compiles; adds `no_action`, `after` ordering, card `heldActionIds`, `options[].actionIds` and `fallbackOptionId`, the `understanding` and `decision` fields the templates need, pinned models and a prompt hash, the `perspectives` node, and "Call transcript" channel names. E2 defines storage, `resumeCase` input and `POST /api/cases`.
