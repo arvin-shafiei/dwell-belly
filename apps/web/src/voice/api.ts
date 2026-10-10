@@ -8,6 +8,16 @@ export const AGENT_API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:40
 /** Must match DENIAL in apps/api/src/voice/tools.ts (a test checks this). */
 export const DENIAL = "I can't promise that. The team that owns this decides, and I'll pass your request on.";
 
+/** Must match fallbackReply in apps/api/src/voice/wording.ts (a test checks this). */
+const FAILED: Record<string, string> = {
+  submit_decision: "I couldn't record that decision. Please choose on screen instead.",
+  record_fact: "I couldn't note that down. Could you say it again?",
+  request_human: "I couldn't reach a person just now. The team will follow up.",
+};
+export function fallbackReply(tool: string): string {
+  return FAILED[tool] ?? DENIAL;
+}
+
 export type VoiceSource = "live_human" | "simulated_persona" | "audio_attachment";
 export type { CaseView, DecisionCard, Trace, ViewEvent };
 
@@ -73,14 +83,15 @@ export function openSession(req: SessionRequest) {
   return postJson<{ callId: string; token: string; dynamicVariables: Record<string, string> }>("/api/voice/session", req);
 }
 
-/** A client tool call during the call. Never throws: on any failure the agent gets the denial wording. */
+/** A client tool call during the call. Never throws: on any failure the agent gets that tool's fallback
+ * wording (a promise check stays a refusal). */
 export async function callTool(tool: string, state: CallStateInput & { callId: string }, args: Record<string, unknown>, extra: Record<string, unknown> = {}) {
   try {
     return await postJson<{ result: string; allowed?: boolean; rule?: string; event?: ViewEvent; decision?: HumanDecision; duplicate?: boolean; events?: ViewEvent[] }>(
       `/api/voice/tools/${tool}`, { state, args, ...extra }, 3_000,
     );
   } catch {
-    return { result: DENIAL };
+    return { result: fallbackReply(tool) };
   }
 }
 
