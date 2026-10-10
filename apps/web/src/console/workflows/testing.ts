@@ -1,6 +1,6 @@
 // Pure logic for the test & improve loop: flow diffs for proposals, the test-run polling state
 // machine, the auto-improve loop controller, and learning-curve points.
-import type { Flow, FlowEdge, FlowNode, ImproveProposal, TestRun, WorkflowVersion } from "../types";
+import type { Flow, FlowEdge, FlowNode, ImproveProposal, ScenarioSetId, TestRun, WorkflowVersion } from "../types";
 import { edgeKey } from "./doc";
 
 // ---------------------------------------------------------------- flow diff

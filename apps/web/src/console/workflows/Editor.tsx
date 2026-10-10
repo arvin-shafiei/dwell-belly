@@ -17,7 +17,7 @@ import { cents, plainFailure, plainOutcome } from "../../ui/plain";
 import { nameFrom, problemsByNode, revealFrame, revealOrder, safetyLine, safetySummary, slugify, type ArchitectUsage } from "./architect";
 import { WorkflowMenu } from "./WorkflowMenu";
 import { TestPanel } from "./TestPanel";
-import { diffCount, diffFlows, edgeMark, latestVersion, nodeMark, type FlowDiff } from "./testing";
+import { diffCount, diffFlows, edgeMark, latestVersion, nodeMark, practiceLink, type FlowDiff } from "./testing";
 import { Badge, Btn } from "./bits";
 import { ConsoleContext, HeaderActions } from "../ui";
 import {
@@ -115,8 +115,10 @@ function EditorInner() {
   const [dialog, setDialog] = useState(false);
 
   // Architect (AI builder) + validation
-  const [drawer, setDrawer] = useState<"ai" | "test" | null>(null);
-  const [mounted, setMounted] = useState<{ ai: boolean; test: boolean }>({ ai: false, test: false });
+  // Deep link from Results ("Run more cases"): open Practice with that case list.
+  const [practiceAsk] = useState(() => practiceLink(ctx?.params));
+  const [drawer, setDrawer] = useState<"ai" | "test" | null>(practiceAsk ? "test" : null);
+  const [mounted, setMounted] = useState<{ ai: boolean; test: boolean }>({ ai: false, test: !!practiceAsk });
   const openDrawer = useCallback((k: "ai" | "test" | null) => {
     setDrawer(k);
     setSel(null);
@@ -913,6 +915,8 @@ function EditorInner() {
                 onLoadVersion={loadVersion}
                 onMakeCurrent={makeCurrent}
                 versionsTick={versionsTick}
+                initialSet={practiceAsk?.set ?? null}
+                initialFilter={practiceAsk?.filter ?? null}
                 onClose={() => openDrawer(null)}
               />
             </div>

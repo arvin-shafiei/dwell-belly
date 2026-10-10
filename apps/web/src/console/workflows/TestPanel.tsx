@@ -19,7 +19,7 @@ import { LearningCurve } from "./LearningCurve";
 import { cents, scrubLeaks } from "../../ui/plain";
 
 const SET_WORDS: Record<string, string> = {
-  quick: "Quick 5", fixtures: "Tricky cases", adversarial: "Hard cases", generated: "Made-up cases", custom: "Pick my own",
+  quick: "Quick 5", city: "City cases", fixtures: "Tricky cases", adversarial: "Hard cases", generated: "Made-up cases", custom: "Pick my own",
 };
 
 const FALLBACK_SETS: ScenarioSetInfo[] = [
@@ -97,7 +97,7 @@ function ConfirmAuto({ cases, perCase, onGo, onCancel }: { cases: number; perCas
   );
 }
 
-export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExecution, onProposal, onLoadVersion, onMakeCurrent, versionsTick, onClose }: {
+export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExecution, onProposal, onLoadVersion, onMakeCurrent, versionsTick, initialSet, initialFilter, onClose }: {
   workflowId: string | null;
   /** Why testing is unavailable right now (draft, unsaved changes), or null. */
   blocked: string | null;
@@ -112,12 +112,17 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   onMakeCurrent: (v: WorkflowVersion) => Promise<boolean>;
   /** Bumped when the editor saved a new version. */
   versionsTick?: number;
+  /** Case list (and filter) to start with, e.g. from a "Run more cases" link. */
+  initialSet?: ScenarioSetId | null;
+  initialFilter?: string | null;
   onClose: () => void;
 }) {
   const [sets, setSets] = useState<ScenarioSetInfo[]>(FALLBACK_SETS);
   const [setsNote, setSetsNote] = useState<string | null>(null);
-  const [setId, setSetId] = useState<ScenarioSetId>("quick");
-  const [filter, setFilter] = useState("");
+  const [setId, setSetId] = useState<ScenarioSetId>(initialSet ?? "quick");
+  const [filter, setFilter] = useState(initialFilter ?? "");
+  // A filter that came with a link is sent even if the case list does not offer it as a choice.
+  const [linkFilter, setLinkFilter] = useState(initialFilter ?? "");
   const [limit, setLimit] = useState(5);
   const [custom, setCustom] = useState<string[]>([]);
   const [caseQ, setCaseQ] = useState("");
@@ -241,7 +246,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
     if (!workflowId) return null;
     const b: TestRunBody = { workflowId, set: setId, limit };
     if (version !== null) b.version = version;
-    if (filter && set?.filters?.includes(filter)) b.filter = filter;
+    if (filter && (set?.filters?.includes(filter) || filter === linkFilter)) b.filter = filter;
     if (setId === "custom") { b.caseIds = custom; b.limit = Math.min(20, Math.max(1, custom.length)); }
     return b;
   };
@@ -347,6 +352,13 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-4">
         {blocked && <div className="rounded-md bg-[#f59e0b]/10 px-3 py-2 text-[13px] text-[#fcd34d]">{blocked}</div>}
         {!blocked && hint && <div className="rounded-md bg-white/[0.04] px-3 py-2 text-[12.5px] text-white/60">{hint}</div>}
+
+        {(setId !== "quick" || filter) && !running && (
+          <div className="flex items-center gap-2 text-[12.5px] text-white/60">
+            <span>Cases: <span className="text-white/85">{SET_WORDS[setId] ?? set?.label ?? setId}</span>{filter ? <> · <span className="text-white/85">{filter.replace(/_/g, " ")}</span></> : null}</span>
+            <button type="button" className="ml-auto text-white/40 underline-offset-2 hover:text-white hover:underline" disabled={autoRunning} onClick={() => { setSetId("quick"); setFilter(""); setLinkFilter(""); }}>Back to Quick 5</button>
+          </div>
+        )}
 
         {/* Main action */}
         {running ? (
@@ -499,7 +511,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
               <div className="flex flex-wrap gap-1.5">
                 {sets.map((x) => (
                   <button
-                    key={x.id} type="button" onClick={() => { setSetId(x.id); setFilter(""); }} disabled={running || autoRunning}
+                    key={x.id} type="button" onClick={() => { setSetId(x.id); setFilter(""); setLinkFilter(""); }} disabled={running || autoRunning}
                     className={`rounded-md border px-2.5 py-1 text-[12px] ${setId === x.id ? "border-[#ff6a1a]/70 text-white" : "border-white/12 text-white/65 hover:bg-white/[0.04]"}`}
                   >
                     {SET_WORDS[x.id] ?? x.label.split(":")[0]}
@@ -507,9 +519,10 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
                 ))}
               </div>
               {setsNote && <div className="mt-1.5 text-[12px] text-[#fbbf24]">Couldn&apos;t load the case lists.</div>}
-              {(set?.filters?.length ?? 0) > 0 && (
+              {((set?.filters?.length ?? 0) > 0 || !!linkFilter) && (
                 <select value={filter} onChange={(e) => setFilter(e.target.value)} className="mt-2 h-8 w-full rounded-md border border-white/10 bg-[#222227] px-2 text-[12px] text-white outline-none">
                   <option value="">Any kind</option>
+                  {linkFilter && !(set?.filters ?? []).includes(linkFilter) && <option value={linkFilter}>{linkFilter.replace(/_/g, " ")}</option>}
                   {(set?.filters ?? []).map((f) => <option key={f} value={f}>{f.replace(/_/g, " ")}</option>)}
                 </select>
               )}

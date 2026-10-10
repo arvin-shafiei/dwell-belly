@@ -3,7 +3,7 @@ import type { Flow, TestRun } from "../types";
 import flowJson from "../../../../api/flows/default-incident.json";
 import {
   autoNext, autoStart, configChanges, costPerCase, diffCount, diffFlows, edgeMark, fmtValue, initialPoll,
-  learningCurve, nodeMark, pollReducer, retestBody, type AutoState,
+  learningCurve, nodeMark, pollReducer, practiceLink, retestBody, type AutoState,
 } from "./testing";
 
 const base = flowJson as Flow;
@@ -155,5 +155,18 @@ describe("learning curve and helpers", () => {
   it("builds a re-test body on the same cases", () => {
     const r = run({ cases: [{ caseId: "a" }, { caseId: "b" }] as TestRun["cases"] });
     expect(retestBody(r, 2)).toEqual({ workflowId: "w", version: 2, set: "custom", caseIds: ["a", "b"], limit: 2 });
+  });
+});
+
+describe("practiceLink", () => {
+  const p = (s: string) => new URLSearchParams(s);
+  it("reads the Results deep link", () => {
+    expect(practiceLink(p("tab=workflows&panel=practice&set=generated&filter=wrong_address"))).toEqual({ set: "generated", filter: "wrong_address" });
+    expect(practiceLink(p("panel=practice&set=city"))).toEqual({ set: "city", filter: null });
+  });
+  it("ignores unknown sets and other panels", () => {
+    expect(practiceLink(p("panel=practice&set=bogus&filter=%20"))).toEqual({ set: null, filter: null });
+    expect(practiceLink(p("tab=workflows&set=quick"))).toBeNull();
+    expect(practiceLink(null)).toBeNull();
   });
 });
