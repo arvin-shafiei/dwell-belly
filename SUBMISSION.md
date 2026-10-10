@@ -12,7 +12,7 @@
 | Reality Test results commit | [MISSING] |
 | Proof that only the results changed after the freeze | [MISSING] paste the output of `git diff --stat freeze-1630..HEAD` |
 | Reality Test results | `ANSWERS/` (one folder per case, plus `RUNLOG.md` and `INDEX.md`) |
-| Demo video | [MISSING] path inside the repo, for example `demo/demo.mp4` |
+| Demo video | `demo/demo.mp4` |
 | LinkedIn post | https://lnkd.in/p/eR34V7hg |
 | X post | https://x.com/fluffyfluffycow/status/2108933209635590497 |
 
