@@ -1,7 +1,10 @@
 "use client";
 // Right column of the City tab: "What's happening" in plain sentences, and the cases with their status.
+// Cases come from the city's SQLite runs (the same rows /city restores from), so both screens agree; live
+// telemetry fills in incidents and deliveries while the city is open, the saved city otherwise.
 import type { CityCommand, CityTelemetry } from "../../world/controlChannel";
-import { caseRows, incidentSentence, type CaseRow } from "./logic";
+import { caseRows, incidentSentence, openDecisions, runRows, type CaseRow } from "./logic";
+import type { SavedCity } from "./useCitySaved";
 import { Section } from "./ui";
 
 const DOT: Record<string, string> = { active: "bg-red-500", responding: "bg-amber-400", clearing: "bg-sky-400" };
@@ -12,13 +15,16 @@ const TONE: Record<CaseRow["tone"], string> = {
   stopped: "text-red-300",
 };
 
-export function Happening({ t, send }: { t: CityTelemetry | null; send: (c: CityCommand) => void }) {
-  if (!t) return <p className="px-5 py-6 text-[13px] text-white/45">Waiting for the city…</p>;
-  const cases = caseRows(t.workflow);
-  const d = t.deliveries;
+export function Happening({ t, send, saved = null }: { t: CityTelemetry | null; send: (c: CityCommand) => void; saved?: SavedCity | null }) {
+  if (!t && !saved) return <p className="px-5 py-6 text-[13px] text-white/45">Waiting for the city…</p>;
+  const cases = saved?.runs.length ? runRows(saved.runs, saved.decidedRuns) : t ? caseRows(t.workflow) : [];
+  const open = saved ? openDecisions(saved.runs, saved.decidedRuns) : null;
+  const incidents = t ? t.incidents : saved!.incidents.filter((i) => i.status !== "cleared");
+  const closedRoads = t ? t.closedRoads : saved!.closedRoads;
+  const d = t?.deliveries;
   return (
     <>
-      <div className="grid grid-cols-3 gap-2 px-5 pt-5">
+      {d && <div className="grid grid-cols-3 gap-2 px-5 pt-5">
         {[
           [d.en_route + d.loading, "On the way"],
           [d.delayed, "Late"],
@@ -29,14 +35,14 @@ export function Happening({ t, send }: { t: CityTelemetry | null; send: (c: City
             <div className="mt-1 text-[12px] text-white/50">{label}</div>
           </div>
         ))}
-      </div>
+      </div>}
 
       <Section title="What's happening">
-        {t.incidents.length === 0 ? (
+        {incidents.length === 0 ? (
           <p className="text-[14px] text-white/45">All quiet.</p>
         ) : (
           <ul className="space-y-1">
-            {t.incidents.slice(-6).reverse().map((i) => (
+            {incidents.slice(-6).reverse().map((i) => (
               <li key={i.id}>
                 <button
                   onClick={() => send({ type: "focus", x: i.x, z: i.z })}
@@ -50,14 +56,19 @@ export function Happening({ t, send }: { t: CityTelemetry | null; send: (c: City
             ))}
           </ul>
         )}
-        {t.closedRoads > 0 && (
+        {closedRoads > 0 && (
           <p className="mt-2 px-2 text-[12px] text-white/45">
-            {t.closedRoads} {t.closedRoads === 1 ? "road" : "roads"} closed
+            {closedRoads} {closedRoads === 1 ? "road" : "roads"} closed
           </p>
         )}
       </Section>
 
       <Section title="Cases">
+        {open !== null && open > 0 && (
+          <p className="mb-2 text-[13px] text-amber-300">
+            {open} {open === 1 ? "decision needs" : "decisions need"} a person
+          </p>
+        )}
         {cases.length === 0 ? (
           <p className="text-[14px] text-white/45">No cases from the city yet.</p>
         ) : (

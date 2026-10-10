@@ -172,3 +172,42 @@ export function filterScenarios<T extends { id: string; title: string }>(list: r
 export function isTelemetry(m: unknown): m is CityTelemetry {
   return !!m && typeof m === "object" && (m as { type?: unknown }).type === "telemetry" && typeof (m as { at?: unknown }).at === "number";
 }
+
+// ------------------------------------------------------------------ cases from SQLite (shared with /city)
+
+/** A city run as GET /api/console/city/state lists it (the same rows the /city HUD restores from). */
+export interface SavedCityRun {
+  id: string;
+  caseId: string;
+  title: string | null;
+  status: "running" | "success" | "error";
+  outcome: string | null;
+  card: unknown;
+  runId: string | null;
+}
+
+/**
+ * Case rows from the city's SQLite runs, newest first: the same source the /city HUD restores from, so both
+ * screens agree. "Needs a person" only while the review queue still has the decision open (`decidedRuns`).
+ */
+export function runRows(runs: readonly SavedCityRun[], decidedRuns: ReadonlySet<string> = new Set(), max = 6): CaseRow[] {
+  return runs.slice(0, max).map((r) => {
+    let status: string;
+    let tone: CaseRow["tone"];
+    if (r.status === "running") [status, tone] = ["Working on it…", "working"];
+    else if (r.status === "error") [status, tone] = ["Something went wrong", "stopped"];
+    else if (r.card && !(r.runId && decidedRuns.has(r.runId))) [status, tone] = ["Needs a person", "person"];
+    else if (r.outcome === "blocked") [status, tone] = ["Stopped", "stopped"];
+    else if (r.outcome === "acted") [status, tone] = ["Sent", "done"];
+    else [status, tone] = ["Done", "done"];
+    const label = r.title ?? r.caseId;
+    const n = /^[A-Z]+-(\d+)/.exec(label);
+    // City cases are built from city events (simulated inputs): always "Practice", never "Live".
+    return { caseId: r.id, title: n ? `Case ${Number(n[1])}` : label, status, tone, live: false };
+  });
+}
+
+/** How many city decisions are still open, from the same rows. */
+export function openDecisions(runs: readonly SavedCityRun[], decidedRuns: ReadonlySet<string> = new Set()): number {
+  return runs.filter((r) => r.status === "success" && r.card && !(r.runId && decidedRuns.has(r.runId))).length;
+}

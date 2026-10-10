@@ -1,6 +1,8 @@
 // Links the 3D city to the real backend. Three feeds, all replayed through agentBridge.traceToTimedEvents:
 //   1. City incidents -> a synthetic case view (every event `source: "simulated_persona"`, mode "demo",
-//      so apps/api labels the trace synthetic) -> POST /api/cases on the agent API -> trace replay.
+//      so apps/api labels the trace synthetic) -> same-origin POST /api/console/city/cases, which records it in
+//      the console's SQLite (origin "city", dataset "city-live") and runs it on the agent -> the city follows
+//      /api/console/executions/:id -> trace replay. World state itself persists via cityState.ts.
 //   2. Console runs (Execute and test runs) -> polled from the same-origin /api/console/executions every 4 s;
 //      each NEW finished execution with a trace is replayed once.
 //   3. Decision cards -> recorded through the human review queue's API (/api/review/tasks...), the same
@@ -252,6 +254,8 @@ export class ExecutionPoller {
     for (const r of [...rows].reverse()) {
       if (this.seen.has(r.id) || r.status === "running") continue;
       this.seen.add(r.id);
+      // City cases (origin "city") are followed and replayed by the city link itself (agentBridge.runCityCase).
+      if (r.origin === "city") continue;
       if (r.parentExecutionId && rerunParents.has(r.parentExecutionId)) continue;
       const d = (await this.fetchJson(`/api/console/executions/${encodeURIComponent(r.id)}`)) as { execution?: ExecutionDetail } | null;
       const ex = d?.execution;
@@ -362,27 +366,3 @@ export const browserFetchJson: FetchJson = async (url, init) => {
   if (!r.ok) throw new Error(body?.error ?? `${url} ${r.status}`);
   return body;
 };
-
-// ---------------------------------------------------------------- shared budget across tabs
-
-const BUDGET_KEY = "rivet-city-agent-budget";
-
-export function loadSharedBudget(): { starts: number[]; spentUsd: number } | null {
-  try {
-    const raw = localStorage.getItem(BUDGET_KEY);
-    if (!raw) return null;
-    const v = JSON.parse(raw) as { starts?: unknown; spentUsd?: unknown };
-    const starts = Array.isArray(v.starts) ? v.starts.filter((t): t is number => typeof t === "number") : [];
-    return { starts, spentUsd: typeof v.spentUsd === "number" ? v.spentUsd : 0 };
-  } catch {
-    return null;
-  }
-}
-
-export function saveSharedBudget(starts: number[], spentUsd: number) {
-  try {
-    localStorage.setItem(BUDGET_KEY, JSON.stringify({ starts, spentUsd }));
-  } catch {
-    /* private mode: the per-tab budget still applies */
-  }
-}

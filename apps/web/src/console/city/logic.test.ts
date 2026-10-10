@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  caseRows, filterScenarios, incidentSentence, isTelemetry, linkState, placeFrom, speedBucket, timeBucket, weatherBucket,
+  caseRows, filterScenarios, incidentSentence, isTelemetry, linkState, openDecisions, placeFrom, runRows, speedBucket, timeBucket, weatherBucket,
   HAPPENINGS, STALE_MS, TWISTS,
 } from "./logic";
 import { MODIFIERS } from "../../world/scenarios";
@@ -83,5 +83,23 @@ describe("misc", () => {
   it("narrows telemetry", () => {
     expect(isTelemetry(tel(1))).toBe(true);
     expect(isTelemetry({ type: "ping" })).toBe(false);
+  });
+});
+
+describe("runRows / openDecisions (city cases from SQLite)", () => {
+  const runs = [
+    { id: "a", caseId: "city-1", title: "INC-003 · car crash", status: "running" as const, outcome: null, card: null, runId: null },
+    { id: "b", caseId: "city-2", title: "INC-002 · roadworks", status: "success" as const, outcome: "escalated", card: { summary: "x" }, runId: "r2" },
+    { id: "c", caseId: "city-3", title: "INC-001 · breakdown", status: "success" as const, outcome: "escalated", card: { summary: "y" }, runId: "r1" },
+  ];
+  it("one row per run, a person needed only while the review queue has it open", () => {
+    const rows = runRows(runs, new Set(["r1"]));
+    expect(rows.map((r) => [r.title, r.status, r.live])).toEqual([
+      ["Case 3", "Working on it…", false],
+      ["Case 2", "Needs a person", false],
+      ["Case 1", "Done", false],
+    ]);
+    expect(openDecisions(runs, new Set(["r1"]))).toBe(1);
+    expect(openDecisions(runs)).toBe(2);
   });
 });
