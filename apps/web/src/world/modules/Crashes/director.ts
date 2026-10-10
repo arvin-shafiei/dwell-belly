@@ -1,10 +1,11 @@
 // Pure crash-director logic: picking victims, picking scripted spots, naming roads, writing notes.
 import { BLOCK } from "../../config";
-import { getNode, ROAD_EDGES } from "../../roads";
+import { edgeKey, getNode, neighbours, ROAD_EDGES } from "../../roads";
+import { signalFor } from "../../signals";
 import type { VehicleKind } from "../../registry";
 
-export type CrashKind = "car_crash" | "truck_crash";
-export type Scenario = "rear_end" | "solo" | "tbone" | "jackknife";
+export type CrashKind = "car_crash" | "truck_crash" | "pileup";
+export type Scenario = "rear_end" | "solo" | "junction" | "shunt" | "sideswipe" | "rollover" | "jackknife" | "pileup";
 
 export interface Candidate {
   id: string;
@@ -117,10 +118,11 @@ const NOTES: Record<Scenario, string[]> = {
     "{A} spun out on {road} {dir} and hit the barrier, lane blocked",
     "{A} lost control on {road} {dir}, wreck across the lane",
   ],
-  tbone: [
-    "Two cars T-boned on {road}, debris across both lanes",
-    "Side-impact smash on {road} {dir}, both cars wrecked, road closed",
-  ],
+  junction: ["Car ran a red on {road} and T-boned {a}, junction blocked", "Red-light runner smashed into {a} on {road}, glass everywhere"],
+  shunt: ["{A} shunted {b} metres up {road} {dir}, airbags out, lane blocked", "Rear-end shunt on {road} {dir}, radiator steaming, lane blocked"],
+  sideswipe: ["Side-swipe at speed on {road} {dir}, two cars spun out across both lanes", "Overtake gone wrong on {road} {dir}: two cars spun, road closed"],
+  rollover: ["Car flipped onto its roof on {road} {dir}, road closed", "Rollover on {road} {dir}: car on its roof, debris everywhere"],
+  pileup: ["{n}-vehicle pileup on {road} {dir}, both carriageways closed", "Chain-reaction pileup, {n} vehicles on {road} {dir}, HGV jackknifed, both carriageways closed"],
   jackknife: [
     "HGV jackknifed on {road} {dir}, 2 lanes blocked, cargo spilled",
     "Lorry jackknifed and on fire on {road} {dir}, road closed",
@@ -137,6 +139,7 @@ export function crashNote(
   rand: () => number = Math.random,
   a: VehicleKind = kind === "truck_crash" ? "truck" : "car",
   b: VehicleKind = "car",
+  count = 0,
 ): string {
   const key = from < to ? `${from}|${to}` : `${to}|${from}`;
   const list = NOTES[scenario];
@@ -152,5 +155,85 @@ export function crashNote(
     .replace("{A}", an[0].toUpperCase() + an.slice(1))
     .replace("{a}", an)
     .replace("{b}", art(b))
+    .replace("{n}", String(count))
     .replace(/^the /, "The ");
+}
+
+// --- Spots for the bigger set pieces ------------------------------------------
+
+export interface Run {
+  a: string;
+  b: string;
+  c: string;
+  l1: number;
+  l2: number;
+  highway: boolean;
+}
+
+/** Two collinear consecutive edges a->b->c (a straight run of road) on the A-Ring or a downtown avenue. */
+export function pickPileupRun(rand: () => number, blocked: ReadonlySet<string>, preferHighway = 0.65): Run | null {
+  const runs: Run[] = [];
+  const seen = new Set<string>();
+  for (const e of ROAD_EDGES.values()) {
+    for (const [a, b] of [
+      [e.a, e.b],
+      [e.b, e.a],
+    ]) {
+      if (seen.has(`${a}>${b}`)) continue;
+      seen.add(`${a}>${b}`);
+      const hw = e.kind === "highway";
+      if (!hw && !(e.kind === "street" && getNode(a).zone === "downtown" && getNode(b).zone === "downtown")) continue;
+      if (blocked.has(e.key)) continue;
+      const na = getNode(a);
+      const nb = getNode(b);
+      for (const c of neighbours(b)) {
+        if (c === a) continue;
+        const e2 = ROAD_EDGES.get(edgeKey(b, c))!;
+        if (e2.kind !== e.kind || blocked.has(e2.key)) continue;
+        const nc = getNode(c);
+        if (!hw && nc.zone !== "downtown") continue;
+        const cross = (nb.x - na.x) * (nc.z - nb.z) - (nb.z - na.z) * (nc.x - nb.x);
+        const dot = (nb.x - na.x) * (nc.x - nb.x) + (nb.z - na.z) * (nc.z - nb.z);
+        if (Math.abs(cross) > 1e-6 || dot <= 0) continue;
+        runs.push({ a, b, c, l1: e.length, l2: e2.length, highway: hw });
+      }
+    }
+  }
+  if (!runs.length) return null;
+  const want = rand() < preferHighway;
+  const pool = runs.filter((r) => r.highway === want);
+  const from = pool.length ? pool : runs;
+  return from[Math.floor(rand() * from.length)];
+}
+
+export interface Junction {
+  node: string;
+  aFrom: string; // victim crosses on green: aFrom -> node -> aTo
+  aTo: string;
+  bFrom: string; // runner comes in on red: bFrom -> node
+}
+
+/** A downtown junction where one approach has green right now and a perpendicular one has red. */
+export function pickJunction(rand: () => number, blocked: ReadonlySet<string>, nowMs: number): Junction | null {
+  const out: Junction[] = [];
+  for (let i = -3; i <= 3; i++)
+    for (let j = -3; j <= 3; j++) {
+      const node = `g_${i}_${j}`;
+      const n = getNode(node);
+      for (const aFrom of neighbours(node)) {
+        if (signalFor(node, aFrom, nowMs) !== "green") continue;
+        const f = getNode(aFrom);
+        const aTo = neighbours(node).find((x) => {
+          const t = getNode(x);
+          return Math.abs(t.x - n.x - (n.x - f.x)) < 1e-6 && Math.abs(t.z - n.z - (n.z - f.z)) < 1e-6;
+        });
+        if (!aTo || blocked.has(edgeKey(node, aTo)) || blocked.has(edgeKey(aFrom, node))) continue;
+        for (const bFrom of neighbours(node)) {
+          if (bFrom === aFrom || bFrom === aTo || signalFor(node, bFrom, nowMs) !== "red") continue;
+          if (blocked.has(edgeKey(bFrom, node))) continue;
+          out.push({ node, aFrom, aTo, bFrom });
+        }
+      }
+    }
+  return out.length ? out[Math.floor(rand() * out.length)] : null;
 }
