@@ -96,7 +96,11 @@ const Kicker = ({ children }: { children: React.ReactNode }) => (
   <div className="text-[12px] font-medium uppercase tracking-wide text-white/40">{children}</div>
 );
 
-function Beat({ b, typed, isLast, verdict, why }: { b: ReplayBeat; typed: number; isLast: boolean; verdict: string; why: string | null }) {
+function Beat({ b, typed, isLast, verdict, why, call }: {
+  b: ReplayBeat; typed: number; isLast: boolean; verdict: string; why: string | null;
+  /** With Live calls on: the incoming call, shown under the message it belongs to once that message is written. */
+  call?: { to: string; node: React.ReactNode };
+}) {
   switch (b.kind) {
     case "messages":
       return (
@@ -182,6 +186,7 @@ function Beat({ b, typed, isLast, verdict, why }: { b: ReplayBeat; typed: number
               {typing && <span className="dwell-caret ml-px inline-block h-[1.05em] w-[2px] translate-y-[2px] bg-[#ff6a1a]" />}
             </p>
           </div>
+          {call && !typing && call.to === b.to && <div className="mt-3">{call.node}</div>}
         </Row>
       );
     }
@@ -207,11 +212,13 @@ function Beat({ b, typed, isLast, verdict, why }: { b: ReplayBeat; typed: number
 }
 
 /** The replay panel. `verdict` and `why` are the run's headline and why line, shown on the last beat. */
-export default function Replay({ execution, verdict, why, onClose }: {
+export default function Replay({ execution, verdict, why, onClose, call }: {
   execution: ExecutionRecord;
   verdict: string;
   why: string | null;
   onClose: () => void;
+  /** With Live calls on: the call to ring under the message to `to` (VoiceSlot.Ring). */
+  call?: { to: string; node: React.ReactNode };
 }) {
   const beats = useMemo(() => buildReplay(execution.trace), [execution.trace]);
   const p = usePlayback(beats);
@@ -253,6 +260,7 @@ export default function Replay({ execution, verdict, why, onClose }: {
               isLast={i === visible.length - 1 && p.done}
               verdict={verdict}
               why={why}
+              call={call}
             />
           ))}
           {p.next && (

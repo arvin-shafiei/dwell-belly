@@ -15,6 +15,7 @@ import DecideRerun from "./DecideRerun";
 import Timeline, { MessageCard } from "./Timeline";
 import { Badge, Button, cx } from "./ui";
 import VoiceSlot from "./VoiceSlot";
+import { callableRows } from "./voiceSlots";
 import { DownloadRunButton } from "../export/Buttons";
 import { ShowOnPlaybook } from "../ShowOnPlaybook";
 
@@ -190,9 +191,21 @@ export default function ExecutionDetail({
           </div>
         </header>
 
-        {ringFor === e.id && !running && <VoiceSlot.Ring execution={e} onDismiss={() => setRingFor(null)} />}
+        {/* With Live calls on, the call rings inside "Watch it think" under the message it belongs to, or here once the replay is closed. */}
+        {ringFor === e.id && !running && !replaying && <VoiceSlot.Ring execution={e} onDismiss={() => setRingFor(null)} />}
         {running && <LiveSteps execution={e} />}
-        {replaying && <Replay key={e.id} execution={e} verdict={verdict} why={why} onClose={() => setReplayFor(null)} />}
+        {replaying && (
+          <Replay
+            key={e.id}
+            execution={e}
+            verdict={verdict}
+            why={why}
+            onClose={() => setReplayFor(null)}
+            call={ringFor === e.id && callableRows(e.outbox)[0]
+              ? { to: callableRows(e.outbox)[0].action.recipient, node: <VoiceSlot.Ring execution={e} onDismiss={() => setRingFor(null)} /> }
+              : undefined}
+          />
+        )}
 
         {!replaying && (
         <>
