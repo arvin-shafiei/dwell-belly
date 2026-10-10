@@ -1,10 +1,12 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { validateFlow } from "@/agent/architect";
+import { runFlowGraph, usesGraph } from "@/agent/graph";
+import { historyStore } from "@/agent/history";
 import * as judge from "@/agent/judge";
 import { fromView, type CaseView } from "@/agent/load";
 import { claude } from "@/agent/models";
-import { runCase } from "@/agent/run";
+import { parseHumanDecision, runCase } from "@/agent/run";
 import { json } from "@/lib/cors";
 import type { Flow } from "@/lib/flow";
 import { runPanel } from "@/lib/panel";
@@ -13,12 +15,20 @@ import { saveReviewRecord } from "@/lib/review-record";
 // POST /api/cases  body: a case view { id, title?, context?, events[], attachments?, mode?, flow?, flowId? }
 // `flowId` picks a flow file by id (default "default-incident").
 // `flow` runs the case on an edited flow (the console editor); it is validated first and refused if unsound.
-// Runs it through the incident flow and returns the trace the 2D and 3D views replay.
+// The default flow runs through runCase, the scored path. An explicit `flow` (console-edited or
+// Architect-built) or any other stored flow is walked node by node by runFlowGraph, so its branches
+// and per-node settings decide what runs. Returns the trace the 2D and 3D views replay.
 // Events voiced by a simulated persona are only admitted when mode is "demo".
+// `humanDecision` { optionId, label, by: "tap" | "voice", who, confirmation? } is a desk person's answer
+// to the card of an earlier run. It is trusted only here, from the body; nothing in the case text counts.
 export async function POST(req: Request) {
-  const view = (await req.json()) as CaseView & { mode?: string; flow?: Flow; flowId?: string };
+  const view = (await req.json()) as CaseView & { mode?: string; flow?: Flow; flowId?: string; humanDecision?: unknown };
   if (!view?.id || !Array.isArray(view.events)) {
     return json({ error: "body must be a case view with an id and an events array" }, { status: 400 });
+  }
+  const humanDecision = parseHumanDecision(view.humanDecision);
+  if (humanDecision === null) {
+    return json({ error: 'humanDecision needs optionId, label, who and by ("tap" or "voice")' }, { status: 400 });
   }
   const demo = view.mode === "demo";
   const jev = Boolean(process.env.TYPESAFE_API_KEY);
@@ -29,14 +39,20 @@ export async function POST(req: Request) {
   const flow: Flow = view.flow ?? JSON.parse(stored as string);
   const problems = validateFlow(flow);
   if (problems.length) return json({ error: "the flow is not valid", problems }, { status: 422 });
-  const result = await runCase(fromView(view, { allowSimulated: demo }), {
+  const options = {
     flow,
     models: claude(),
     panel: jev ? runPanel : undefined,
     judge: jev ? judge : undefined,
-    mode: demo ? "demo" : "practice",
+    mode: demo ? ("demo" as const) : ("practice" as const),
     runId: `api-${new Date().toISOString()}`,
-  });
+    ...(humanDecision ? { humanDecision } : {}),
+  };
+  const bundle = fromView(view, { allowSimulated: demo });
+  const result = usesGraph({ flow: view.flow, flowId })
+    // A group_check node reads the shared case history; without one it treats the case as single.
+    ? await runFlowGraph(bundle, { ...options, history: historyStore(path.resolve(process.cwd(), "..", "..", ".case-history", "runs.jsonl")) })
+    : await runCase(bundle, options);
   // A run that heard a simulated persona is labelled, so no view can present it as a real case.
   if (demo && view.events.some((e) => e.source === "simulated_persona")) result.trace.synthetic = true;
   let reviewWarning: string | undefined;
