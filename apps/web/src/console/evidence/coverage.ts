@@ -2,7 +2,7 @@
 // grid per difficulty pattern. The evidence API is growing new fields (critical failures, the
 // judge's reason, broken rules, the difficulty pattern); every one is feature-detected here, so
 // a missing field shows as "not recorded", never as an invented zero.
-import { scrubLeaks } from "../../ui/plain";
+import { plainDataset, scrubLeaks } from "../../ui/plain";
 import type { EvidenceRow, ScenarioSetId } from "../types";
 import { wasRun } from "./logic";
 
@@ -111,12 +111,13 @@ export const SET_LABEL: Record<string, string> = {
   grounded: "Real-world cases",
   adversarial: "Trick cases",
   city: "City cases",
+  bulk: "Bulk (rule-made)",
   fixtures: "Hard cases",
   reality: "Test day cases",
   adhoc: "One-off cases",
 };
 
-export const setLabel = (d: string) => SET_LABEL[d] ?? words(d);
+export const setLabel = (d: string) => SET_LABEL[d] ?? (plainDataset(d) || words(d));
 
 /** Which Practice set runs more cases of a dataset (null = Practice can't pick it). */
 export const PRACTICE_SET: Record<string, ScenarioSetId> = {
@@ -125,6 +126,7 @@ export const PRACTICE_SET: Record<string, ScenarioSetId> = {
   grounded: "generated",
   adversarial: "adversarial",
   city: "city",
+  bulk: "bulk",
   fixtures: "fixtures",
 };
 

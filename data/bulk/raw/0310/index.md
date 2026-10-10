@@ -1,0 +1,26 @@
+# Case 0310: Merchant forwards a social media post about a delivery van at a crossing
+
+## Case details
+
+- **Source role:** Social media team, Glimmerton Goods
+- **Status:** Escalated — awaiting the desk's decision
+- **Created:** 2027-10-07 07:40:00 UTC
+- **Escalated:** 2027-10-07 10:22:00 UTC
+- **Coordinator:** Iona Quill, Rivet Delivery Desk
+- **Data:** Entirely synthetic; fictional geography; all times UTC
+
+## Context
+
+A post claiming a Rivet van went through a red light at a pedestrian crossing in Harrowgate has been shared widely since yesterday evening. The carrier's safety lead and communications team are handling it.
+
+## Initial request
+
+FYI only, no action needed from you. The Cobham Road post (the one that says 'Rivet van blasted through a red at the crossing, nearly took out a kid, driver needs sacking', with the reg plate and a blurred photo) is now tagging us too, about 2k shares. We've had a note from Nettlebank Arc Comms and we're pointing people to their reply. Just keeping you in the loop.
+
+## History
+
+[Read the complete dated history](history.md).
+
+## Attachments
+
+None.

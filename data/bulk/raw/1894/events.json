@@ -1,0 +1,67 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-01-19T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Ashgrove Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace TR-1373 for DL-3534 (5 cartons). Cartons 1, 2 and 5 delivered 12 January. Cartons 3 and 4: no scan after the collection scan on 11 January. Not located. Recorded as lost in transit."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-01-26T15:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Cask & Tiller Freight, freight broker",
+      "to": "Iona Quill, Rivet Delivery Desk; Xanthe Pendlebury, shipper",
+      "body": "The insurance on DL-3534 was placed through us. The insurer assesses on the carrier's written finding for each carton: either lost, or damaged with an inspection report. We have seen a trace note saying lost but no formal finding. Please get one from Ashgrove Arc."
+    },
+    {
+      "n": 3,
+      "timestamp": "2027-01-26T16:05:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Delivery investigations, Ashgrove Arc Logistics",
+      "body": "DL-3534, cartons 3 and 4 of 5. The shipper's insurance was placed through her broker, Cask & Tiller Freight, and the insurer needs Ashgrove Arc's written finding for each carton. Trace TR-1373 records them as lost in transit. Please issue the formal finding."
+    },
+    {
+      "n": 4,
+      "timestamp": "2027-02-03T09:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Ashgrove Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The insurance on DL-3534 is the broker's policy, not ours. The claim sits with Cask & Tiller. Please refer the shipper to them."
+    },
+    {
+      "n": 5,
+      "timestamp": "2027-02-17T11:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Cask & Tiller Freight, freight broker",
+      "to": "Iona Quill, Rivet Delivery Desk; Xanthe Pendlebury, shipper",
+      "body": "Still no finding from Ashgrove Arc on DL-3534 cartons 3 and 4. We cannot file with the insurer until the carrier states in writing whether each carton is lost or damaged. The insurer closes unactioned notifications at 60 days, which is 27 March."
+    },
+    {
+      "n": 6,
+      "timestamp": "2027-02-22T08:05:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Ashgrove Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Housekeeping query. The damages cage holds 2 cartons labelled DL-3534 3/5 and 4/5, logged in on 12 January as 'crushed, contents rattling'. No claim or disposal instruction is attached to them. The cage is cleared on 27 February and anything without an instruction is disposed of."
+    },
+    {
+      "n": 7,
+      "timestamp": "2027-02-22T09:40:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Xanthe Pendlebury, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "SIX WEEK. I send 5 carton, 3 arrive, 2 is gone, and I pay insurance for all 5!! Broker tell me ask Ashgrove. Ashgrove tell me ask broker. Now broker say again wait for Ashgrove. Who is lying to me?? This is 2 carton of my glazed bowls, 3 month of my work from the kiln, I am one person studio not big company. My customer is waiting and I must pay them back from my own pocket. Do NOT write me again 'your claim is in progress'. In progress WHERE. Tell me is it LOST or is it BROKEN and WHEN I get the answer.\n\nMy sister's a solicitor and she just laughed when I told her about this saga."
+    }
+  ]
+}

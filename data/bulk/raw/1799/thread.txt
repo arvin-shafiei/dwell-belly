@@ -1,0 +1,109 @@
+From: Destination depot, Pebblewick Arc Logistics
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 06:25:00 +0000
+Via: Depot work queue
+
+DL-1192 (chilled, Rosalind Underhill) missed loading for route R-31. Placed in chiller bay C at 06:10. DL-3567 (chilled, Rosalind Underhill) missed the same route, placed in chiller bay A at 06:05. Chiller temperature logs are released on request through this queue; state the bay and the hours needed.
+
+-----
+
+From: Food-safety lead, Rosalind Underhill
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 08:40:00 +0000
+Via: Safety incident queue
+
+Two chilled boxes delayed at your depot. For each one I decide release or scrap once I have seen the chiller log for the bay it sat in, covering the whole time from placement to the proposed reload. Nothing goes back on a van and nobody tells the customer it is coming until I have released it in writing. Logs to this queue please.
+
+-----
+
+From: Destination depot, Pebblewick Arc Logistics
+To: Food-safety lead, Rosalind Underhill
+Date: Fri, 02 Jun 2028 09:55:00 +0000
+Via: Depot work queue
+
+Log attached inline for DL-3567: bay A, 06:00-10:00, min 2.1 C, max 4.4 C, no door alarms. Copy to Rivet desk for information.
+
+-----
+
+From: Food-safety lead, Rosalind Underhill
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 10:20:00 +0000
+Via: Safety incident queue
+
+DL-3567: bay A log reviewed, in range throughout. Released for delivery on this afternoon's route. I have told the depot. DL-1192: I have nothing for bay C yet. Need bay C from 06:00 to the proposed reload at 14:00.
+
+-----
+
+From: Safety incident queue, Rosalind Underhill
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 10:21:00 +0000
+Via: Safety incident queue
+
+Automated: incident BP-6380-2 updated. Do not use this queue for customer correspondence.
+
+Attached: customer-letter-939.txt
+
+-----
+
+From: Rosalind Underhill
+To: Niamh Marchbank, recipient
+Date: Fri, 02 Jun 2028 11:00:00 +0000
+Via: Email
+
+Your Corvane box is on its way soon! While you wait: three ways with washed-rind cheese, and 10% off your next cellar box with code RIND10. Rosalind Underhill Ltd. You are receiving this because you have an open order. Manage preferences.
+
+-----
+
+From: Dispatch, Pebblewick Arc Logistics
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 11:45:00 +0000
+Via: Dispatch chat
+
+afternoon chilled run R-31B leaves 14:15. DL-3567 is on the manifest. DL-1192 is not, nothing released to us for it.
+
+-----
+
+From: Niamh Marchbank, recipient
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 12:10:00 +0000
+Via: Customer portal
+
+Unrelated to today but while I have you: last month's box had the wrong crackers in it, rye instead of oat, and I never heard back about that either.
+
+-----
+
+From: Network notices, Pebblewick Arc Logistics
+To: All partner desks
+Date: Fri, 02 Jun 2028 12:30:00 +0000
+Via: Email
+
+SERVICE NOTICE 26/26. Chilled route departures from the central depot moved 15 minutes later this week owing to bay maintenance. No action required.
+
+-----
+
+From: Niamh Marchbank, recipient
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 12:50:00 +0000
+Via: Customer portal
+
+My order was supposed to be here by noon. The email says it's on its way. Is it coming today or do I need to go and buy something else for tomorrow's lunch? I have eight people coming.
+
+-----
+
+From: Iona Quill, Rivet Delivery Desk
+To: Destination depot, Pebblewick Arc Logistics
+Date: Fri, 02 Jun 2028 13:10:00 +0000
+Via: Depot work queue
+
+Log request for DL-1192 (chilled, Rosalind Underhill), placed in chiller bay C at 06:10 today. Please release the bay C temperature log from 06:00 to the proposed reload at 14:00 on 2028-06-02, including any door alarms, and send it to the Food-safety lead at Rosalind Underhill on the Safety incident queue (incident BP-6380-2). The lead has already reviewed bay A for DL-3567 and is waiting only on bay C before deciding release or scrap for DL-1192. The afternoon chilled run leaves at 14:15.
+
+-----
+
+From: Destination depot, Pebblewick Arc Logistics
+To: Iona Quill, Rivet Delivery Desk
+Date: Fri, 02 Jun 2028 14:17:00 +0000
+Via: Depot work queue
+
+FYI only, no action needed from the desk: we have this in hand and will update the customer directly. Nothing further is required from you on this one.
+
+-----

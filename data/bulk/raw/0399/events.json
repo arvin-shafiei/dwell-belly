@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-10T11:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Wrenfield Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return approved for TG-3311 (cordless vacuum). Return label DL-1452 issued 10 Apr. Refund is released by the Refunds team on first carrier scan of the label. Return window closes 27 Apr."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-10T14:45:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Gideon Ashdown, sender not on record",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, it's about my parcel, I don't have the tracking number to hand. Please send it to my work address instead: Unit 30, Kiln Street. I'll be there all day tomorrow."
+    }
+  ]
+}

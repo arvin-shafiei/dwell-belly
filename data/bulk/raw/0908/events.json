@@ -1,0 +1,49 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-04T13:45:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Vanecroft Arc Logistics",
+      "to": "Florian Sallowfield, shipper",
+      "body": "Booking DL-2833 (one crate, collection 5 May) was cancelled at your request at 10:12 today. Refund issued in full at 13:40. No collection will take place."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-20T09:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recovery team, Vanecroft Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "One crate was delivered back to Florian Sallowfield on 19 May marked return to sender. It carried another carrier's consignment label and no Vanecroft Arc label. It was first scanned into our network on 5 May against booking DL-2833, which shows cancelled and refunded on 4 May. It sat at Calder hub as unidentified freight until we traced the sender from the crate. We do not know how it came to be collected."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-20T11:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Vanecroft Arc Logistics",
+      "to": "Florian Sallowfield, shipper (copy to Iona Quill, Rivet Delivery Desk)",
+      "body": "A return-to-sender charge has been raised against DL-2833. Payment is due within 14 days."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-20T14:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Vanecroft Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "On the DL-2833 return charge: we can't remove it on our own say-so. If Collections control, Vanecroft Arc Logistics confirms from its job records that the 5 May collection was sent out against a cancelled booking, the charge falls away. That record is theirs, not ours. They take queries by email."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-20T15:25:00Z",
+      "stage": "Escalation",
+      "channel": "Freight portal",
+      "from": "Florian Sallowfield, shipper",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I honestly had to read the invoice twice. I cancelled you on the 4th. You refunded me the same day. I booked someone else. On the 5th a driver turns up, I assume he's from the other firm because why on earth would it be yours, and he takes a crate with ANOTHER COMPANY'S LABEL on it and says nothing. The carrier I actually booked logged a failed pickup because the crate had gone. My customer waited two weeks for it and then cancelled the order. And now the crate is back on my floor marked return to sender and you are charging ME for bringing it back? You took something you had no booking for. That is effectively stealing it. Cancel the charge and tell me who is paying for the order I lost.\n\nI've attached the photo as photo-evidence-303.txt."
+    }
+  ]
+}

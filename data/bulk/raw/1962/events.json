@@ -1,0 +1,85 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-05-05T09:48:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-7488 (TG-1415, one armchair, 41 kg). Attempt 5 May 09:31, coded 'not home, card left'. Returned to depot."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-05-05T10:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Zinnia Underhill, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Good morning. Your message says nobody was at home at 9:31. This is not true. My wife and me, we were both in the house since 7 o'clock waiting for the chair. We went outside to search the card of missed delivery. There is no card. I made a photograph of the door and of the letterbox at 9:44, empty. Please deliver again on Thursday, we will wait again."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-05-05T10:35:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Pebblewick, Rookhaven Arc Logistics",
+      "body": "The recipient of DL-7488 disputes the 09:31 not-home code: he reports both occupants were in, no card was left, and he has a timestamped photo of the door. He asks for redelivery on Thursday 7 May. Can you offer a slot?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-05-05T11:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Pebblewick, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thursday 7 May 08:00-12:00 is free on the standard route for that postcode. Tell us to book and it's booked."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-05-05T12:40:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Correction on DL-7488. The item is flagged two-person handling, over 30 kg. On 5 May it was loaded on a single-crew van in error. Driver's own note, which doesn't show on tracking: 'too heavy solo, not offloaded'. The not-home code should not have been used. Don't put it back on the standard route, it will go out on a single-crew van again. Two-person slots are booked by Routing control only, by email, and they'll want floor level, any steps and the recipient's days."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-05-05T13:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Zinnia Underhill, recipient",
+      "body": "Thank you for the photo and the times. The carrier's dispatch team has told me the 09:31 entry was not a correct record: the chair needs a two-person crew and was on a van with one driver, so it was not brought to your door. I'm sorry you both waited in for that. A two-person slot is booked by a different team and they need to know three things: is the chair going to the ground floor, are there any steps, and which days can you be in?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-05-05T15:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Zinnia Underhill, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "So the 'not home' was not truth. Good that someone says it. Please forget Thursday. Thursday we are now at the hospital appointment of my wife, I asked Thursday before I knew it. We can be home Friday 8 May after 13:00, or Monday 11 May all the day. The chair goes to ground floor, sitting room. There are three steps up at the front door."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-05-05T15:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Pebblewick, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Reminder: the Thursday 7 May 08:00-12:00 standard slot for DL-7488 is held until 17:00 today and released if not confirmed. Reply BOOK to confirm."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-05-05T16:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Zinnia Underhill, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I see in the tracking now 'awaiting rebooking by customer'. This is again like we did something wrong! We waited at home, we photographed, we answered your questions. I ask you kindly but firmly: arrange it properly this time, with two men, and not that somebody writes again we were not home.\n\nMy sister's a solicitor and she just laughed when I told her about this saga."
+    }
+  ]
+}

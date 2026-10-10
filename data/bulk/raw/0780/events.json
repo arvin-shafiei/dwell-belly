@@ -1,0 +1,94 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-03-23T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-7791 was attempted 2027-03-22 at 15:42, no answer, card left. Redelivery inventory: 2027-03-24 or 2027-03-26, both 12:00–18:00 UTC. No charge for one redelivery."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-03-23T08:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Aurelio Haverly, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Missed the driver yesterday by about ten minutes. Friday please."
+    },
+    {
+      "n": 3,
+      "timestamp": "2027-03-23T08:36:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Larkspire Arc Logistics",
+      "body": "Aurelio has chosen redelivery on 2027-03-26, 12:00–18:00 for DL-7791. Please book and confirm."
+    },
+    {
+      "n": 4,
+      "timestamp": "2027-03-23T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-7791 is booked for redelivery 2027-03-26, 12:00–18:00 and allocated to Friday run R-27C. Booking confirmation, not a delivery."
+    },
+    {
+      "n": 5,
+      "timestamp": "2027-03-23T09:10:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Aurelio Haverly, recipient",
+      "body": "Dispatch confirms DL-7791 is booked for redelivery on Friday 2027-03-26 between 12:00 and 18:00."
+    },
+    {
+      "n": 6,
+      "timestamp": "2027-03-23T10:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Aurelio Haverly, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Change of plan, work want me in on Friday now. I drive past your depot on the way home, can I just pick it up from there instead? Thursday after 5 would suit. Cancel the Friday one."
+    },
+    {
+      "n": 7,
+      "timestamp": "2027-03-23T10:58:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Larkspire Arc Logistics",
+      "body": "Recipient of DL-7791 asks to collect from your counter instead of Friday redelivery, ideally Thursday 2027-03-25 after 17:00. Can you hold it for collection, and what does he need to bring?"
+    },
+    {
+      "n": 8,
+      "timestamp": "2027-03-23T11:40:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Counter is open to 19:00 weekdays and we hold for 5 working days. But DL-7791 is allocated to run R-27C and sits in the Friday cage. We cannot move it to the collection shelf until Dispatch releases it from the run. Once it is released and shelved we issue a collection reference; nobody collects without that reference. Photo ID matching the order name at the counter."
+    },
+    {
+      "n": 9,
+      "timestamp": "2027-03-23T11:46:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Aurelio Haverly, recipient",
+      "body": "Collection from the depot counter is possible but not arranged yet. The parcel is still allocated to Friday's delivery run and Dispatch has to release it first; the depot then issues a collection reference, and nobody can collect without one. Please don't travel until I send you that reference. Shall I go ahead, knowing the Friday redelivery will be removed?"
+    },
+    {
+      "n": 10,
+      "timestamp": "2027-03-23T12:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Aurelio Haverly, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Yes go ahead. Definitely not Friday, nobody will be in. Thursday after 5 if they can."
+    }
+  ]
+}

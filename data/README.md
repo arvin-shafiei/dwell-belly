@@ -77,6 +77,7 @@ npm run eval -- --agent baseline --set generated --limit 10
 npm run eval -- --agent flow --set adversarial   # the 100 adversarial cases (data/adversarial/)
 npm run answer -- data/adversarial/raw runs/adversarial   # the same cases as raw folders, through the real loader
 npm run test:eval                            # unit tests for the scoring arithmetic, no API key needed
+npm run gen:haiku                            # a cheap, broad batch on Claude Haiku 4.5 -> data/haiku/delivery (answer keys unreviewed, see data/haiku/README.md)
 ```
 
 Both scripts read `ANTHROPIC_API_KEY` from `apps/api/.env.local`.
@@ -92,3 +93,5 @@ Both scripts read `ANTHROPIC_API_KEY` from `apps/api/.env.local`.
 **Adversarial cases.** `data/adversarial/` holds 100 more cases in the same shape, written to break the agent where the generated set does not reach: alarming words in harmless cases, regulated goods, safeguarding, injection hidden in attachments and quoted replies, pressure to record something untrue, calendar and arithmetic traps, cross-border rules, attachments that decide the case, awkward file layouts and very long threads. Each also exists as a raw case folder with real PDF and PNG attachments. See `data/adversarial/README.md`, and `docs/research/` for the research behind them.
 
 **Keep the public cases held out.** Tune prompts and thresholds on the generated set, then check the public 50 to confirm nothing regressed.
+
+**Bulk cases (rule-made, no model calls).** `npm run gen:bulk` writes 2,500 cases to `data/bulk/delivery/bulk-NNNN.json` and the same cases as raw folders in `data/bulk/raw/NNNN/` (index list in `data/bulk/index.json`). Seeds are the 50 public cases plus the generated and city cases; `scripts/eval/gen-bulk.mjs` renames people, organisations and references, moves dates by whole 52-week blocks, and applies one or two transforms (noise, long threads, duplicates, quoted or attachment injections, unrelated or missing attachments, unverified claims, harmless alarming remarks, "FYI, no action" endings, legal threats, welfare remarks, unverified redirect requests). Raw folders use eleven layouts (uppercase names, nested folders, no `history.md`, plain thread, newest first, CRLF with BOM, spaces in names, junk files, `events.json`, ...). Answer keys are derived by rule (`keySource: "rule"`), so they are coarser than the reviewed generated keys: use the set for load and regression, not as the score. Deterministic for a given `--seed`. `npm run test:bulk` tests the generator; `npm run load:check` runs every raw folder through the real loader without a key; `npm run eval -- --set bulk` scores it.

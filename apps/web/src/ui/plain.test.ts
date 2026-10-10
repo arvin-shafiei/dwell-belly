@@ -47,7 +47,7 @@ describe("plain glossary", () => {
   it("names case types, datasets and statuses", () => {
     expect(plainCaseType("lost_or_misdelivered")).toBe("Lost or wrong address");
     expect(plainCaseType("cold_chain")).toBe("Chilled or frozen goods");
-    expect(plainDataset("city")).toBe("Practice case (made from the city)");
+    expect(plainDataset("city")).toBe("City cases");
     expect(plainStatus("running")).toBe("Working on it");
   });
 });

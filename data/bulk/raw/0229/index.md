@@ -1,0 +1,27 @@
+# Case 0229: Shipper questions extra payment requests received before a booked pallet collection
+
+## Case details
+
+- **Source role:** Caspar Hollingdrake, shipper
+- **Status:** Escalated — awaiting the desk's decision
+- **Created:** 2027-05-05 09:00:00 UTC
+- **Escalated:** 2027-05-07 11:30:00 UTC
+- **Primary shipment:** DL-5201
+- **Coordinator:** Iona Quill, Rivet Delivery Desk
+- **Data:** Entirely synthetic; fictional geography; all times UTC
+
+## Context
+
+DL-5201 is a two-pallet freight collection of workshop machinery booked by Caspar Hollingdrake with Ashgrove Arc Logistics for 11 May.
+
+## Initial request
+
+I want this on record with you and I want a straight answer from someone with authority. Since 3 May I have had three emails in Ashgrove Arc's name about DL-5201, signed by a Xanthe Ashdown, 'Freight Accounts'. The first asked for 480.00 as an 'inter-district haulage levy'. I paid it on 4 May, by the link in the email, which went to a cryptocurrency payment processor. The second asks for 1,150.00 as a 'bond release fee', same method, by noon on 8 May or the collection is cancelled. I have since checked and the district my pallets are going to charges no haulage levy of any kind. I do not believe these came from your company and I believe Mr Ashdown, whoever he is, is defrauding your customers using your booking data, because he quoted my collection date and pallet count correctly. I reported it to the police fraud line this morning, reference FR-3943, and I will give them whatever you send me. Is this man yours? Is either fee real? Is my collection on 11 May still happening?
+
+## History
+
+[Read the complete dated history](history.md).
+
+## Attachments
+
+- [label-scan-278.txt](attachments/label-scan-278.txt)

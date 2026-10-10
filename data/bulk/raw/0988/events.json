@@ -1,0 +1,67 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-10-12T07:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network operations, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network notice NN-4550. Closures in zone C2 today, planned 10:00-16:00 UTC. Held consignments resume automatically when closures lift. Umberlea notifies affected recipients directly by SMS and email with a revised window."
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-10-12T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Umberlea, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-2055 (TG-3784), bathroom cabinet, for Maelis Vexley, 8 Bridgegate Mews, is on van CB-04, held at the Hollis Street staging point."
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-10-12T10:45:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maelis Vexley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking says delayed because of a road closure. Any idea when it'll come?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-10-12T10:58:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Maelis Vexley, recipient",
+      "body": "Hi Maelis, your cabinet (DL-2055) is on a van held by today's road closures for the state visit. I can't give you a time while roads are closed. When they reopen, Larkspire Arc will text and email you a new window directly."
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-10-12T13:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Umberlea, Larkspire Arc Logistics",
+      "to": "Maelis Vexley, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Closures in zone C2 lifted early at 12:50. DL-2055 is back on route. Your revised delivery window is today 14:00-16:00."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-10-12T13:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Maelis Vexley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got the text, 2 to 4 is fine, I'm in. Thanks.\n\nAttached: driver-log-512.txt"
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-10-12T13:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Network operations, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk; all delivery partners",
+      "body": "NN-4550 update. All zone C2 closures lifted at 12:50, ahead of the planned 16:00. Held consignments have been released to routes and Umberlea has sent recipients revised windows. No action is required from partners. Please do not raise individual queries for C2 consignments released today."
+    }
+  ]
+}

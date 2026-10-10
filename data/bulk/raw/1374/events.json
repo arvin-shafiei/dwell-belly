@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-02-01T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Address desk, Nettlebank Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-4867: 18 Copperfin Court, Merrow Quay. The building has multiple apartments; the order has no apartment number. Hold reason: incomplete address. The recipient’s order-linked portal session was verified by our account team."
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-02-01T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Maelis Corrigan, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The tracking page says address clarification required. The building is correct; what do you need from me?\n\nLabel scan attached for reference: label-scan-150.txt"
+    }
+  ]
+}

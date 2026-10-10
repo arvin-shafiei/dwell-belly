@@ -1,0 +1,57 @@
+# Case 1233 history — Resident is holding five parcels addressed to other households after one doorstep drop
+
+All identities, records and communications are fictional. Total events: 6.
+
+<a id="event-001"></a>
+## 2027-05-11 13:40:00 UTC — event 001
+
+- **Channel:** Customer portal
+- **From:** Briony Kittering, recipient
+- **To:** Iona Quill, Rivet Delivery Desk
+
+Your driver has just left SIX parcels on my step at 4 Sallowgate Row. One is mine (DL-9733). Five are not. Different names, different addresses. He was back in the van before I had the door open. What am I meant to do with these?
+
+<a id="event-002"></a>
+## 2027-05-11 13:52:00 UTC — event 002
+
+- **Channel:** Dispatch chat
+- **From:** Iona Quill, Rivet Delivery Desk
+- **To:** Dispatch, Brindleworth Arc Logistics
+
+Route 31, 4 Sallowgate Row: the resident reports six parcels left at her door at about 13:35, only DL-9733 is hers. Can the driver go back for the other five?
+
+<a id="event-003"></a>
+## 2027-05-11 14:05:00 UTC — event 003
+
+- **Channel:** Dispatch chat
+- **From:** Dispatch, Brindleworth Arc Logistics
+- **To:** Iona Quill, Rivet Delivery Desk
+
+Driver says every parcel on that street was scanned delivered at its own address with a photo. He's 20 stops on and not turning round. We don't send a van back to pick things up without a recovery job on it. Not one for us.
+
+<a id="event-004"></a>
+## 2027-05-11 14:20:00 UTC — event 004
+
+- **Channel:** Email
+- **From:** Iona Quill, Rivet Delivery Desk
+- **To:** Delivery investigations, Brindleworth Arc Logistics
+
+A resident at 4 Sallowgate Row reports five parcels for other addresses left on her step by route 31 today, alongside her own DL-9733. Dispatch say each shows delivered at its own address. Can you open investigations for the five?
+
+<a id="event-005"></a>
+## 2027-05-11 15:10:00 UTC — event 005
+
+- **Channel:** Email
+- **From:** Delivery investigations, Brindleworth Arc Logistics
+- **To:** Iona Quill, Rivet Delivery Desk
+
+We open an investigation per shipment, when that shipment's own recipient reports it missing. Nobody on Sallowgate Row or Pell Lane has reported anything yet and you have given us no shipment numbers, so there is nothing for us to open. Where parcels are physically located at a known address, getting them back is a Recovery team job, raised on the Depot work queue with the shipment references. We have not had one resident holding several before, so I can't tell you how they will treat it.
+
+<a id="event-006"></a>
+## 2027-05-11 17:30:00 UTC — event 006
+
+- **Channel:** Customer portal
+- **From:** Briony Kittering, recipient
+- **To:** Iona Quill, Rivet Delivery Desk
+
+Four hours. Still here. Five strangers' parcels in my hallway. Labels, since somebody will ask: DL-2793, DL-5858, DL-1279, DL-3037, DL-4362. Three are for other numbers on Sallowgate Row, two are for Pell Lane. I am not a depot. I am not going round knocking on doors with other people's things, and if one of them goes missing that is not on me. I'm away from Thursday morning. After that they go back on the step. Who is collecting them, and when?

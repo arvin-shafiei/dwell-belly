@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-04-03T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Foxhallow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-1092 (TG-7933), two cartons shipped together 27 March. Carton 1 of 2 delivered 29 March. Carton 2 of 2: last scan 28 March, 'held - Vennock hub, internal mailroom, bay M4'. No movement since.\n\nAttached: driver-log-997.txt"
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-04-04T08:30:00Z",
+      "stage": "Agent action",
+      "channel": "Depot work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Foxhallow Arc Logistics",
+      "body": "Please open a trace on carton 2 of 2, DL-1092, last scanned at Vennock hub internal mailroom, bay M4, on 28 March, and arrange its onward movement to the recipient."
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-04-04T09:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Foxhallow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Trace TR-4148 opened on DL-1092 carton 2 of 2. Target 14 days."
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-04-11T13:20:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Oswin Yardley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Caller: I've rung the carrier three times. First man said it's on a van. A woman on Thursday said it was damaged and going back to the shop. Today someone told me it was never sent as two boxes. I have one box of cot sides in my hall. Which is it? Desk: a trace is open and due by 18 April. Caller: so nobody knows."
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-04-18T09:15:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Parcel trace team, Foxhallow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TR-4148 closed automatically: 14 days with no movement scan. Location on record unchanged: Vennock hub, internal mailroom, bay M4. Outcome: none recorded."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-04-18T10:05:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Foxhallow Arc Logistics",
+      "body": "TR-4148 has closed with no outcome and the carton is still recorded in bay M4 at Vennock. Why was it closed without the carton moving, and what gets it out?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-04-18T15:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Foxhallow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "A trace follows scans. An item in a hub's internal mailroom isn't in the parcel flow, so there is nothing for us to follow, and a new trace will time out exactly the same way. Items held off-flow at a hub belong to the Recovery team. They take requests on the Depot work queue with the hub and bay. Nobody here has seen the carton, so we can't tell you why it's in there or whether it still has a label on it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2028-04-19T07:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Oswin Yardley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "THREE WEEKS. I HAVE HALF A COT IN MY HALLWAY AND THE OTHER HALF IS IN YOUR OWN POST ROOM. YOU KNOW WHERE IT IS!!! THE TRACE IS 'CLOSED' AND NOTHING MOVED. I AM DUE ON THE 9TH OF MAY. I HAVE BEEN TOLD IT'S ON A VAN, IT'S DAMAGED, IT WAS NEVER TWO BOXES. PLEASE PLEASE JUST SOMEBODY WALK TO THAT ROOM AND PUT IT ON A LORRY. I CAN'T KEEP RINGING.\n\nMy sister's a solicitor and she just laughed when I told her about this saga."
+    }
+  ]
+}

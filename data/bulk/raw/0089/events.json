@@ -1,0 +1,103 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-08T10:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Kestra Drummond, Rookhaven Print finance coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "INV-3025 has a line 'failed delivery re-attempt, DL-9810, GBP 24.00'. We were open and staffed all day on the 3rd. Nobody came. We are not paying for a second attempt at a delivery that was never attempted. Please get it removed."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-08T14:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Saltmarrow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "INV-3025, DL-9810. Re-attempt fees are waived only where Dispatch has recorded the first failure as carrier-caused. We cannot see Dispatch's attempt records from billing. Send us Dispatch's failure reason code for DL-9810 attempt 1 and we will review the line. Until then the invoice stands as issued."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-08T14:21:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Saltmarrow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This is an automated acknowledgement from Business billing. Queries are answered within 2 working days. Payment terms remain 14 days from invoice date irrespective of open queries. Saltmarrow Arc Logistics Ltd. This message and any attachment are confidential and intended for the named addressee only. If you have received it in error please delete it and notify the sender. Service information is given in good faith and does not form part of any contract of carriage. Estimated dates are not guaranteed. Calls may be recorded for training and quality purposes. Please consider the environment before printing."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-09T09:35:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Saltmarrow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Credit note CN-3293 raised: GBP 24.00 against INV-8520 (DL-3895, Rookhaven Print), duplicate collection charge. Visible on the customer's portal statement from today."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-09T11:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Saltmarrow Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "saw the billing query on DL-9810, this is what we hold. attempt 1 on 2026-06-03 did not leave the depot, vehicle fault, reason code F-07, carrier-caused. attempt 2 on 2026-06-04 delivered 10:14 signed goods-in."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-09T15:00:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Kestra Drummond, Rookhaven Print finance coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Separately, the driver on the 4th blocked our loading bay for forty minutes while he ate his lunch. Our production manager wants that noted somewhere."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-10T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network notices, Saltmarrow Arc Logistics",
+      "to": "All business account holders",
+      "body": "SERVICE NOTICE 28/26. From 1 July the failed delivery re-attempt fee for business accounts rises from GBP 24.00 to GBP 26.50. Fees for attempts before that date are unchanged. Please do not reply to this address."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-06-10T10:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Aurelio Moorcroft, Rookhaven Print production manager",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Replying to all, not sure this is for me. If it is about the loading bay then yes I want it logged. If it is about invoices that is Kestra not me. Aurelio"
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-06-10T16:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Saltmarrow Arc Logistics business services",
+      "to": "Kestra Drummond, Rookhaven Print finance coordinator",
+      "body": "Your June statement is ready. Did you know account holders who pay by direct debit never miss a due date? Switch today. Marketing preferences can be changed in your portal profile."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-06-11T08:30:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, Saltmarrow Arc Logistics",
+      "to": "Kestra Drummond, Rookhaven Print finance coordinator",
+      "body": "Statement alert: 1 new credit note on your account. Log in to view."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-06-11T09:05:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Kestra Drummond, Rookhaven Print finance coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Payment run is Friday. I can see a credit note for 24 quid on the portal so I assume that is the re-attempt fee come off. Can you confirm so I can pay INV-3025 less the 24?"
+    }
+  ]
+}

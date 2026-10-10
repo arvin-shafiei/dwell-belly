@@ -1,0 +1,67 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-10-04T08:41:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Zinnia Dunmore, policy officer, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, where is DL-4801? Tracking hasn't changed since yesterday and I need the toner for the printer in room 4.12 this morning."
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-10-04T08:50:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Ashgrove Arc Logistics",
+      "body": "DL-4801 (TG-5205, toner cartridges, Office of the Port Commissioner): the recipient says tracking has not updated since yesterday. Could you confirm its current status?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-10-04T09:25:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Ashgrove Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-4801 delivered 7 Oct 07:58 to the Office of the Port Commissioner mailroom, signed 'T. Underhill, mailroom'. Tracking display was delayed by a scanner sync issue; now updated."
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-10-04T09:31:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Zinnia Dunmore, policy officer, Office of the Port Commissioner",
+      "body": "Dispatch confirms DL-4801 was delivered to your mailroom at 07:58 today and signed for by T. Underhill. The tracking page was slow to update and now shows it. The mailroom should be able to tell you where it has been put."
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-10-04T10:02:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Yorick Underhill, mailroom, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Confirming DL-4801 was received at 07:58 and logged as MR-1736. Mr Dunmore came down and collected it at 09:58."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-10-04T10:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Zinnia Dunmore, policy officer, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got it from the mailroom, thanks very much. Printer's back up."
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-10-04T10:52:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Zinnia Dunmore, policy officer, Office of the Port Commissioner",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[Business portal mobile app: this message was queued while the device was offline and has now been sent. Composed 07 Oct 08:39.]\n\nHi, where's my toner? DL-4801. Tracking hasn't moved and I need it for room 4.12 this morning."
+    }
+  ]
+}

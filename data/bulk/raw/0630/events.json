@@ -1,0 +1,112 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-13T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Emberlee Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return authorised for TG-7708. We have booked a collection with Rookhaven Arc on our account, DL-9964: 12 pieces (8 large boxes, 4 crates), about 310 kg, from P. Quarrie, Marlpit Court. First collection date 14 April. The booking is ours, so the customer cannot amend it with the carrier herself; changes go to Collections control, Rookhaven Arc Logistics, from us or from your desk.\n\n--\nEmberlee Goods. Spring Home Event now on: up to 30% off storage."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-14T17:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9964 collection 14 April not completed. Driver note: address incomplete, no flat number on label, could not locate. Auto re-attempt next working day."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-14T18:02:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ansel Quarrie, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Nobody came. I was in all day. It's Flat 4C if that helps anyone."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-15T08:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns authorisations, Emberlee Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply: thank you for your message. We aim to respond within 2 working days. Did you know you can track a return in your account?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-15T17:25:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9964 collection 15 April not completed. Driver note: address incomplete, no flat number. Auto re-attempt next working day."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-15T17:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-4120 (different customer, Aldous Venn): redelivery booked 17 April, no action needed from desk. Sent to your queue for information only."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-16T13:10:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9964 today: job went out as a standard small-parcel collection and was given to a document courier on a bike. He found the flat by asking a neighbour but can only carry envelopes and small packets. Nothing taken. Job reverted to auto re-attempt. Label still shows no flat number."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-16T15:44:00Z",
+      "stage": "Context",
+      "channel": "Call transcript",
+      "from": "Customer support line, Rookhaven Arc Logistics",
+      "to": "Ansel Quarrie, sender",
+      "body": "Caller: A man on a bicycle. For twelve boxes. Agent: I'm so sorry. I've marked it as a priority pickup for tomorrow. Caller: You said that yesterday. Agent: It's definitely flagged priority now."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-04-16T16:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ansel Quarrie, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Separate thing while I have you. The shelving I'm keeping from the OTHER order (the oak one, months ago) was two cam screws short and I never got round to saying. Not urgent. Just noting it."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-04-17T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9964 collection 17 April 10:40, van attended, not completed. Driver note: 4th floor, customer refused to bring items down, driver not able to wait. Auto re-attempt next working day."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-04-17T11:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Collections control, Rookhaven Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Bulletin to coordination desks. Auto re-attempts repeat the original job unchanged. To change a multi-piece collection, send us by Email: the full collection address including unit number, piece count and weight, the floor and whether there is a working lift, and the vehicle or crew needed. We then re-plan and confirm a date. Complaints about a driver's conduct also come through us for the depot manager; give the date and time of the visit."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-04-17T12:15:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ansel Quarrie, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "FOUR DAYS. I'm going to lay this out under headings because apparently that is what it takes.\n\nTHE ADDRESS. Flat 4C, Marlpit Court. Fourth floor. I told you on Monday. The label STILL has no flat number on it. Emberlee made the label, not me, and I'm told I can't change it.\n\nTHE VEHICLE. Wednesday you sent a man on a bicycle. For eight large boxes and four crates. 310 kilos.\n\nTHE DRIVER. Today a van finally came. The driver had a sack trolley IN the van, I could see it. She would not bring it up. There is a lift. It works. She told me, and I quote, 'I'm not a removals firm, love, you'll have to bring it all down yourself.' Then she left. 10:40 this morning.\n\nTHE PROMISES. 'Priority pickup tomorrow.' I have been told that every single day.\n\nI live alone. I cannot carry 310 kilos down four floors and I'm not going to. The return window on this order shuts on the 24th. Fix it."
+    }
+  ]
+}

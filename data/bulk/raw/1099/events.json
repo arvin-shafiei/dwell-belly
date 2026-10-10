@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-04-17T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order control, Dappleford Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-6804 / DL-4483 (standing desk frame). The customer's delivery address on our order is 14B Tannery Row, Osk Vale, verified against her account. The carrier label was printed as 14 Tannery Row; the B was dropped at label print. We confirm 14B is correct."
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-04-17T09:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Juno Whitlock, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The label says 14. I'm 14B, upstairs flat, door round the side. Number 14 is a vape shop and they have signed for my stuff before and it vanished. Please get it fixed before it goes out."
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-04-17T09:35:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Marrowby Arc Logistics",
+      "body": "Please correct the delivery address on DL-4483 from 14 Tannery Row to 14B Tannery Row, Osk Vale. The merchant has confirmed 14B is the verified address on order TG-6804. Please confirm once changed."
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-04-17T09:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Marrowby Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Done. Route card for DL-4483 now reads 14B. On tomorrow's run."
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-04-17T10:00:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Juno Whitlock, recipient",
+      "body": "Dispatch has confirmed the route card for DL-4483 now shows 14B Tannery Row. Delivery is planned for 2028-04-18. I can't give you a time."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-04-18T05:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Marrowby Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Overnight address sync report. One manual route-card edit on DL-4483 was overwritten with the label address, 14 Tannery Row. Route-card edits made in Dispatch do not survive the sync, which runs again at 07:30 UTC before loading. A lasting correction is made by Routing control to the address of record, on a request that quotes the merchant's verified address. DL-4483 loads at 08:30 UTC."
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-04-18T06:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Marrowby Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning all. Vans loading from 08:30. Any changes for today's cards, get them to us before 08:00 pls."
+    },
+    {
+      "n": 8,
+      "timestamp": "2028-04-18T06:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Juno Whitlock, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking email this morning says OUT FOR DELIVERY TODAY to 14 TANNERY ROW. You told me yesterday it was changed??? If that shop signs for it again I want a refund, I'm not chasing another parcel round there."
+    }
+  ]
+}

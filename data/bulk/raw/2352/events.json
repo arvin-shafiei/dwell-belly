@@ -1,0 +1,112 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-10-13T05:00:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Route planning, Copperhythe Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route plan for depot BR-4 published for Friday. 41 stops, no exceptions raised. No action needed."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-10-13T06:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network operations, Copperhythe Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Network notice NN-3338. State visit to Calderbridge, 14 and 14 October. Police will run rolling road closures in central Calderbridge (zones C1 to C3) between 09:00 and 15:00 UTC on both days. A segment closes about 20 minutes before the motorcade and reopens once it has passed. Police set the timings and do not share them with carriers in advance. Vans are held at Wexley Road depot or at a staging point while their segment is closed. Held consignments are delivered once routes reopen where possible; anything not delivered by 18:00 rolls to the next working day automatically. We will not give individual ETAs while closures are active. Please do not open trace requests for held consignments."
+    },
+    {
+      "n": 3,
+      "timestamp": "2027-10-13T07:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Juno Moorcroft, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-25959 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 4,
+      "timestamp": "2027-10-13T08:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Pebblewick Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-4136 (order TG-1280), standing desk frame, two cartons, 31 kg. Consignee Delphine Oakshott, 4 Linnet Court, Calderbridge CB2 7HX. Booked with Copperhythe Arc for 2027-10-13, 10:00-14:00."
+    },
+    {
+      "n": 5,
+      "timestamp": "2027-10-13T10:01:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ulric Underhill, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-31969 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 6,
+      "timestamp": "2027-10-13T11:52:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Copperhythe Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Van CB-12 (31 consignments, DL-4136 among them) has been held at the Hollis Street staging point since 10:40. Bridgegate segment closed by police. No reopening time given to us."
+    },
+    {
+      "n": 7,
+      "timestamp": "2027-10-13T11:54:36Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Cosmo Gallimore, Copperhythe Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks,\nCosmo\n--\nSent from my phone. This email and any attachments are confidential and intended solely for the addressee."
+    },
+    {
+      "n": 8,
+      "timestamp": "2027-10-13T11:57:12Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Partner bulletin, Carrier Network Updates",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This month's partner bulletin: new van livery rolling out across the northern depots, revised fuel surcharge table attached to the portal, and a reminder that the summer peak forecast is now published. To stop receiving these emails, update your preferences."
+    },
+    {
+      "n": 9,
+      "timestamp": "2027-10-13T11:59:48Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Briony Jessop, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-75755 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 10,
+      "timestamp": "2027-10-13T12:02:24Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Quillon Larkham, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-14942? It was meant to come Wednesday. Thanks."
+    },
+    {
+      "n": 11,
+      "timestamp": "2027-10-13T12:03:42Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Delphine Oakshott, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My desk was meant to come 10 to 2 and tracking has said 'out for delivery' since 9 this morning. I've taken the day off work for this. Where is it? Has it been lost? I need an actual time it will arrive, or book it for Saturday instead, I can't take another day off."
+    },
+    {
+      "n": 12,
+      "timestamp": "2027-10-13T12:05:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Delphine Oakshott, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My desk was meant to come 10 to 2 and tracking has said 'out for delivery' since 9 this morning. I've taken the day off work for this. Where is it? Has it been lost? I need an actual time it will arrive, or book it for Saturday instead, I can't take another day off."
+    }
+  ]
+}

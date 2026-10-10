@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-06-15T12:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "IT service desk, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance: the work queue will be read-only on Sunday between 02:00 and 04:00 UTC. Messages sent in that window are queued and delivered afterwards."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-06-15T14:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Saltmarrow, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-5032, Brineleaf Pantry chilled box (cheese and cured fish selection), is booked for chilled delivery on 2027-06-16, 09:00–12:00 UTC to Oswin Blackwood. Booking confirmation and tracking link sent to the recipient at 14:05. Required range in transit 0–5°C."
+    },
+    {
+      "n": 3,
+      "timestamp": "2027-06-15T14:34:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "IT service desk, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance: the work queue will be read-only on Sunday between 02:00 and 04:00 UTC. Messages sent in that window are queued and delivered afterwards."
+    },
+    {
+      "n": 4,
+      "timestamp": "2027-06-15T14:48:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "IT service desk, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance: the work queue will be read-only on Sunday between 02:00 and 04:00 UTC. Messages sent in that window are queued and delivered afterwards."
+    },
+    {
+      "n": 5,
+      "timestamp": "2027-06-15T15:02:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Oswin Blackwood, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got the booking for tomorrow morning and the tracking link, I'll be in. Thanks."
+    },
+    {
+      "n": 6,
+      "timestamp": "2027-06-15T20:37:20Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-80982 rebooked for Monday AM at the customer's request, confirmation sent to them directly. FYI only."
+    },
+    {
+      "n": 7,
+      "timestamp": "2027-06-16T02:12:40Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Route planning, Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route plan for depot WX-6 published for Monday. 36 stops, no exceptions raised. No action needed."
+    },
+    {
+      "n": 8,
+      "timestamp": "2027-06-16T07:48:00Z",
+      "stage": "Escalation",
+      "channel": "Depot work queue",
+      "from": "Tracking notifications (automated), Larkspire Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Status update DL-5032: loaded to chilled vehicle CV-12 at Destination depot 07:31, out for delivery. Compartment logger at load 2.8°C (required range 0–5°C). Route running to plan for booked window 09:00–12:00. Recipient tracking page updated 07:32. Informational: no exception raised, no response required.\n\nMy sister's a solicitor and she just laughed when I told her about this saga."
+    }
+  ]
+}

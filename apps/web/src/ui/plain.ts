@@ -105,12 +105,15 @@ export function plainCaseType(t: string | null | undefined): string {
 
 const DATASET: Record<string, string> = {
   public: "Sample cases",
-  generated: "Practice cases",
+  generated: "Generated cases",
   grounded: "Real-world cases",
+  adversarial: "Trick cases",
   fixtures: "Hard cases",
   reality: "Test day cases",
   adhoc: "One-off cases",
-  city: "Practice case (made from the city)",
+  city: "City cases",
+  haiku: "Extra written cases",
+  bulk: "Bulk (rule-made)",
 };
 
 /** Where a case came from, in words. */

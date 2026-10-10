@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-02-14T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Pebblewick Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-1893 is at North Sedgeglass depot; its destination is Merrow Quay, served by East Copperfin depot. Routing error confirmed. No delivery attempt is scheduled."
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-02-14T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Dervla Larkham, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The tracker shows a depot in the wrong area. Can you get my parcel to the local depot before arranging delivery?\n\nLabel scan attached for reference: label-scan-411.txt"
+    }
+  ]
+}
