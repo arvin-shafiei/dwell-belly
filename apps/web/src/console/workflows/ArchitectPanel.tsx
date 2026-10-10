@@ -6,12 +6,14 @@ import type { Flow } from "../types";
 import { Icon } from "./icons";
 import { Btn } from "./bits";
 import { architectBuild } from "./api";
-import { EXAMPLE_PROMPTS, buildRequest, explainFlow, usageTotals, type ArchitectUsage, type Step } from "./architect";
+import {
+  EXAMPLE_PROMPTS, buildRequest, explainFlow, safetyLine, safetySummary, usageTotals, type ArchitectUsage, type SafetySummary, type Step,
+} from "./architect";
 import { cents } from "../../ui/plain";
 
 type Msg =
   | { id: number; role: "user"; text: string; refine: boolean }
-  | { id: number; role: "result"; flow: Flow | null; steps: Step[]; problems: string[]; costUsd: number | null }
+  | { id: number; role: "result"; flow: Flow | null; steps: Step[]; safety: SafetySummary | null; problems: string[]; costUsd: number | null }
   | { id: number; role: "error"; text: string };
 
 /** Wall clock, read only from event handlers and timers. */
@@ -20,6 +22,8 @@ const now = () => Date.now();
 export interface DraftState {
   description: string;
   revealing: boolean;
+  /** Steps placed on the canvas so far, while it builds. */
+  placed?: { count: number; total: number } | null;
 }
 
 /** Plain error text: no endpoints, keys or stack traces. */
@@ -76,11 +80,11 @@ export function ArchitectPanel({ draft, onDraft, onAccept, onDiscard, accepting,
     const costUsd = usageTotals(d.usage)?.costUsd ?? null;
     if (d.flow) {
       const id = nextId.current++;
-      setMsgs((m) => [...m, { id, role: "result", flow: d.flow!, steps: explainFlow(d.flow!), problems, costUsd }]);
+      setMsgs((m) => [...m, { id, role: "result", flow: d.flow!, steps: explainFlow(d.flow!), safety: safetySummary(d.flow!), problems, costUsd }]);
       setOpenSteps(id);
       onDraft({ flow: d.flow, description: req.description, problems, usage: d.usage });
     } else {
-      setMsgs((m) => [...m, { id: nextId.current++, role: "result", flow: null, steps: [], problems, costUsd }]);
+      setMsgs((m) => [...m, { id: nextId.current++, role: "result", flow: null, steps: [], safety: null, problems, costUsd }]);
     }
   };
 
@@ -127,7 +131,15 @@ export function ArchitectPanel({ draft, onDraft, onAccept, onDiscard, accepting,
             <div key={m.id} className="space-y-2 rounded-lg border border-white/10 px-3 py-3">
               {m.flow ? (
                 <>
-                  <div className="text-[14px] font-semibold text-white">{m.steps.length} steps, ready to check</div>
+                  {m.safety && (
+                    <div
+                      role="status"
+                      className={`flex items-start gap-2 rounded-md px-3 py-2.5 text-[15px] font-semibold leading-snug ${m.safety.everyPath ? "bg-[#22c55e]/[0.1] text-[#4ade80]" : "bg-[#f59e0b]/[0.1] text-[#fcd34d]"}`}
+                    >
+                      <span className="mt-[3px] shrink-0"><Icon name={m.safety.everyPath ? "check" : "shield"} size={14} strokeWidth={m.safety.everyPath ? 3 : 2} /></span>
+                      {safetyLine(m.safety)}
+                    </div>
+                  )}
                   <button type="button" className="text-[12px] text-white/50 underline-offset-2 hover:underline" onClick={() => setOpenSteps(openSteps === m.id ? null : m.id)}>
                     {openSteps === m.id ? "Hide the steps" : "Show the steps"}
                   </button>
@@ -154,7 +166,7 @@ export function ArchitectPanel({ draft, onDraft, onAccept, onDiscard, accepting,
                   <ul className="mt-1 space-y-0.5 text-white/55">{m.problems.map((p, i) => <li key={i}>{p}</li>)}</ul>
                 </details>
               )}
-              {m.flow && m.problems.length === 0 && <div className="flex items-center gap-1.5 text-[12px] text-[#4ade80]"><Icon name="check" size={12} strokeWidth={3} /> Passed the safety check</div>}
+              {m.flow && m.problems.length === 0 && <div className="flex items-center gap-1.5 text-[12px] text-[#4ade80]"><Icon name="check" size={12} strokeWidth={3} /> No problems found</div>}
               {m.costUsd !== null && m.costUsd > 0 && <div className="text-[10.5px] text-white/30">{cents(m.costUsd)}</div>}
             </div>
           );
@@ -170,7 +182,7 @@ export function ArchitectPanel({ draft, onDraft, onAccept, onDiscard, accepting,
 
       {hasDraft && (
         <div className="flex items-center gap-2 border-t border-white/10 px-4 py-3">
-          <span className="min-w-0 flex-1 truncate text-[12px] text-white/50">{draft!.revealing ? "Placing the steps…" : "Not saved yet"}</span>
+          <span className="min-w-0 flex-1 truncate text-[12px] text-white/50">{draft!.revealing ? (draft!.placed ? `Placing step ${Math.min(draft!.placed.count + 1, draft!.placed.total)} of ${draft!.placed.total}…` : "Placing the steps…") : "Not saved yet"}</span>
           <Btn onClick={onDiscard} disabled={accepting}>Throw away</Btn>
           <Btn variant="primary" onClick={onAccept} disabled={accepting || draft!.revealing}>
             {accepting ? "Saving…" : "Use this playbook"}

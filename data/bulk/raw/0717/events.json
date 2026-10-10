@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-03-03T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns support, Quillmoor Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Return RT-5639 for TG-8390 / DL-3741 is approved. The label field is empty. Our authorised label team needs to issue the label against RT-5639 before the customer can prepare the return."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-03-03T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Eamon Dunmore, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "The return is approved but there is nothing to print in my order. Please obtain my return label."
+    }
+  ]
+}

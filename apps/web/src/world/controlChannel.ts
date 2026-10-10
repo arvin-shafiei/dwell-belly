@@ -7,7 +7,7 @@ export type CityCommand =
   | { type: "time"; hour: number }
   | { type: "timeScale"; scale: number }
   | { type: "pause"; paused: boolean }
-  | { type: "inject"; event: "car_crash" | "truck_crash" | "pileup" | "roadworks" | "breakdown" | "emergency_landing" | "plane_crash" | "chase" }
+  | { type: "inject"; event: "car_crash" | "truck_crash" | "pileup" | "roadworks" | "breakdown" | "emergency_landing" | "plane_crash" | "chase" | "motorcade" }
   | { type: "scenario"; scenarioId: string; modifiers: string[] }
   | { type: "agentMode"; mode: "mock" | "real" }
   | { type: "focus"; x: number; z: number }

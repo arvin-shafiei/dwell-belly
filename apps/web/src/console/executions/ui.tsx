@@ -120,7 +120,7 @@ export function Select<T extends string>({
   );
 }
 
-export function SearchInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+export function SearchInput({ value, onChange, placeholder, className }: { value: string; onChange: (v: string) => void; placeholder: string; className?: string }) {
   return (
     <input
       type="search"
@@ -128,7 +128,7 @@ export function SearchInput({ value, onChange, placeholder }: { value: string; o
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       aria-label={placeholder}
-      className="min-w-0 rounded-md bg-white/5 px-2.5 py-1 text-xs text-white/90 outline-none ring-1 ring-inset ring-white/10 placeholder:text-white/30 focus:ring-[#ff6a1a]/60"
+      className={cx("min-w-0 rounded-md bg-white/5 px-2.5 py-1 text-xs text-white/90 outline-none ring-1 ring-inset ring-white/10 placeholder:text-white/30 focus:ring-[#ff6a1a]/60", className)}
     />
   );
 }

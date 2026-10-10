@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-09-05T15:10:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, automated notice",
+      "to": "Aurelio Ingleby, shipper, Ingleby Frames",
+      "body": "Collection booked. DL-4715, 1 parcel. Monday 6 September, 13:00 to 17:00. Ticket COL-3088. -- Ship smarter this autumn: 10% off pallet collections booked before 29 September. Terms apply. Manage notification preferences in your Business portal profile."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-09-05T16:26:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Zinnia Jessop, sender not on record",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, it's about my parcel, I don't have the tracking number to hand. Please send it to my work address instead: Unit 25, Ropewalk Yard. I'll be there all day tomorrow."
+    }
+  ]
+}

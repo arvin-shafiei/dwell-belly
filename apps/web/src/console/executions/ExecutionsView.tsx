@@ -1,19 +1,19 @@
 "use client";
 // "Case runs": plain list on the left (case name, status word, time), the selected run on the right.
-// Polls every 3 s while anything is running.
+// Result chips (with counts) and a search box filter the list. Polls every 1.5 s while anything is running.
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ConsoleApi, ExecutionRecord } from "../types";
 import ExecutionDetail from "./ExecutionDetail";
 import { plainDataset } from "../../ui/plain";
 import {
-  anyRunning, datasetsOf, filterExecutions, fmtStarted, sortExecutions,
-  type ExecFilter, type ExecutionSummary,
+  RESULT_CHIPS, anyRunning, chipCounts, datasetsOf, filterExecutions, fmtStarted, matchesChip, sortExecutions,
+  type ExecFilter, type ExecutionSummary, type ResultChip,
 } from "./logic";
 import { caseName, statusTone, statusWord } from "./plainView";
 import { useConsoleNav } from "./nav";
 import { Badge, Button, SearchInput, Select, cx, getJson } from "./ui";
 
-const POLL_MS = 3000;
+const POLL_MS = 1500;
 
 type ListResp = ConsoleApi["GET /api/console/executions?limit&dataset"];
 type DetailResp = ConsoleApi["GET /api/console/executions/:id"];
@@ -63,7 +63,7 @@ export default function ExecutionsView() {
   const [detail, setDetail] = useState<{ id: string; data: ExecutionRecord | null; error: string | null } | null>(null);
   const [rerunning, setRerunning] = useState(false);
   const [rerunError, setRerunError] = useState<string | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
+  const [chip, setChip] = useState<ResultChip>("all");
   const [titles, setTitles] = useState<Map<string, string>>(new Map());
 
   // Case titles, so the list can show names instead of ids. Optional: ids are the fallback.
@@ -98,12 +98,14 @@ export default function ExecutionsView() {
     }
   }, []);
 
-  const rows = useMemo(() => {
+  // Search and the case set narrow the list first; the chip counts are taken from that, then the chip applies.
+  const searched = useMemo(() => {
     const q = (filter.q ?? "").trim().toLowerCase();
     const base = filterExecutions(list ?? [], { ...filter, q: "" });
-    const hit = q ? base.filter((e) => `${nameOf(e)} ${e.caseId} ${statusWord(e)}`.toLowerCase().includes(q)) : base;
-    return sortExecutions(hit);
+    return q ? base.filter((e) => `${nameOf(e)} ${e.caseId} ${statusWord(e)}`.toLowerCase().includes(q)) : base;
   }, [list, filter, nameOf]);
+  const counts = useMemo(() => chipCounts(searched), [searched]);
+  const rows = useMemo(() => sortExecutions(searched.filter((e) => matchesChip(e, chip))), [searched, chip]);
   const datasets = useMemo(() => datasetsOf(list ?? []), [list]);
   const activeId = selectedId ?? rows[0]?.id ?? null;
 
@@ -128,75 +130,85 @@ export default function ExecutionsView() {
   const listRunning = anyRunning(list ?? []);
   const detailRunning = current?.data?.status === "running";
 
+  // "Run again" waits for the whole run, so follow the new row as soon as it shows up as working:
+  // the detail then shows the live checklist and plays the run back when it finishes.
+  const [follow, setFollow] = useState<{ caseId: string; since: string } | null>(null);
+  const followed = follow ? sortExecutions(list ?? []).find((x) => x.caseId === follow.caseId && x.startedAt >= follow.since) : undefined;
   useEffect(() => {
-    if (!listRunning && !detailRunning) return;
+    if (followed && followed.id !== selectedId) go("executions", { id: followed.id }, true);
+  }, [followed, selectedId, go]);
+
+  useEffect(() => {
+    if (!listRunning && !detailRunning && !rerunning) return;
     const t = setInterval(() => {
       void loadList();
       if (activeId) void loadDetail(activeId);
     }, POLL_MS);
     return () => clearInterval(t);
-  }, [listRunning, detailRunning, activeId, loadList, loadDetail]);
+  }, [listRunning, detailRunning, rerunning, activeId, loadList, loadDetail]);
 
   const rerun = async (e: ExecutionRecord) => {
     setRerunning(true);
     setRerunError(null);
+    setFollow({ caseId: e.caseId, since: new Date(Date.now() - 5000).toISOString() });
     try {
       const ex = await executeCase({ caseId: e.caseId, dataset: e.dataset, workflowId: e.workflowId });
       setDetail({ id: ex.id, data: ex, error: null });
-      go("executions", { id: ex.id });
+      go("executions", { id: ex.id }, true);
       void loadList();
     } catch (err) {
       setRerunError((err as Error).message);
     } finally {
       setRerunning(false);
+      setFollow(null);
     }
   };
 
   const current_ = current?.data ?? null;
-  const filtered = filter.status !== "all" || filter.dataset !== "all" || !!filter.q;
   return (
     <div className="flex h-full min-h-0 w-full bg-[#1f1f23] text-white">
       <aside className="flex w-[320px] shrink-0 flex-col border-r border-white/10 xl:w-[360px]">
         <div className="shrink-0 space-y-2 border-b border-white/10 px-4 py-3">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-semibold">Case runs</h2>
-            {list && <span className="text-sm tabular-nums text-white/40">{rows.length}</span>}
             {listRunning && <span className="text-xs text-[#ff6a1a]">Working…</span>}
-            <button
-              type="button"
-              onClick={() => setShowFilters((v) => !v)}
-              className={cx("ml-auto text-xs hover:text-white/85", filtered ? "text-[#ff6a1a]" : "text-white/50")}
-            >
-              {showFilters ? "Hide filters" : "Filters"}
-            </button>
+            <Button className="ml-auto !px-2 !py-1" onClick={() => void loadList()} title="Refresh">
+              Refresh
+            </Button>
           </div>
-          {showFilters && (
-            <div className="space-y-2">
-              <SearchInput value={filter.q ?? ""} onChange={(q) => setFilter((f) => ({ ...f, q }))} placeholder="Find a case" />
-              <div className="flex gap-2">
-                <Select
-                  label="Status"
-                  value={filter.status}
-                  onChange={(status) => setFilter((f) => ({ ...f, status }))}
-                  options={[
-                    { value: "all", label: "Any status" },
-                    { value: "running", label: "Working" },
-                    { value: "success", label: "Finished" },
-                    { value: "error", label: "Didn't finish" },
-                  ]}
-                />
-                <Select
-                  label="Cases"
-                  value={filter.dataset}
-                  onChange={(dataset) => setFilter((f) => ({ ...f, dataset }))}
-                  options={[{ value: "all", label: "All cases" }, ...datasets.map((d) => ({ value: d, label: plainDataset(d) }))]}
-                />
-                <Button className="ml-auto !px-2 !py-1" onClick={() => void loadList()} title="Refresh">
-                  Refresh
-                </Button>
-              </div>
-            </div>
-          )}
+          <div className="flex gap-2">
+            <SearchInput value={filter.q ?? ""} onChange={(q) => setFilter((f) => ({ ...f, q }))} placeholder="Find a case" className="flex-1 !py-1.5 !text-[13px]" />
+            {datasets.length > 1 && (
+              <Select
+                label="Cases"
+                value={filter.dataset}
+                onChange={(dataset) => setFilter((f) => ({ ...f, dataset }))}
+                options={[{ value: "all", label: "All cases" }, ...datasets.map((d) => ({ value: d, label: plainDataset(d) }))]}
+              />
+            )}
+          </div>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Show">
+            {RESULT_CHIPS.map((c) => {
+              const on = chip === c.id;
+              const n = counts[c.id];
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setChip(c.id)}
+                  disabled={!on && n === 0 && c.id !== "all"}
+                  className={cx(
+                    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs transition-colors disabled:cursor-default disabled:opacity-35",
+                    on ? "bg-[#ff6a1a] text-white" : "bg-white/[0.06] text-white/70 hover:bg-white/10 hover:text-white",
+                  )}
+                >
+                  {c.label}
+                  <span className={cx("tabular-nums", on ? "text-white/80" : "text-white/40")}>{n}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto">
           {listError && <p className="m-3 rounded bg-[#ff5c5c]/10 p-2 text-xs text-[#ff5c5c]">Couldn&apos;t load case runs.</p>}
@@ -205,6 +217,18 @@ export default function ExecutionsView() {
           ) : rows.length === 0 ? (
             <div className="p-4 text-sm leading-relaxed text-white/45">
               {list.length === 0 ? "No case runs yet. Open Results and press Run on a case." : "No case runs match."}
+              {list.length > 0 && (chip !== "all" || filter.q) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChip("all");
+                    setFilter((f) => ({ ...f, q: "" }));
+                  }}
+                  className="ml-1 text-[#ff6a1a] hover:underline"
+                >
+                  Show all
+                </button>
+              )}
             </div>
           ) : (
             <ul className="divide-y divide-white/5">

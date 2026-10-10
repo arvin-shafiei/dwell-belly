@@ -1,16 +1,16 @@
 import { connection } from "next/server";
-import { listCases } from "@/console/server/catalogue";
-import { buildEvidence } from "@/console/server/evidence";
+import { cachedEvidence } from "@/console/server/evidenceCache";
 import { jsonError } from "@/console/server/http";
-import { ensureImported } from "@/console/server/importer";
-import { allExecutions } from "@/console/server/store";
+import { ensureImported, refreshAnswersIfChanged } from "@/console/server/importer";
 
 // GET /api/console/evidence -> { rows, totals }: every case in every dataset with its latest run and verdict.
+// Cached until the database or the catalogue changes; a new Reality run in ANSWERS/ is picked up on the next call.
 export async function GET() {
   await connection();
   try {
     await ensureImported();
-    return Response.json(buildEvidence(await listCases(), allExecutions()));
+    await refreshAnswersIfChanged();
+    return Response.json(await cachedEvidence());
   } catch (err) {
     return jsonError(err);
   }

@@ -1,0 +1,40 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-10-08T12:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Wrenfield Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9776 (TG-6656, coffee grinder). Public tracking status: DELIVERED, 7 October 10:42 UTC, 'left in safe place'. No photo is attached to the event. Note: conflicts between Wrenfield Arc systems, or between our records and a merchant's, are investigated by Tumblewell, Wrenfield Arc Logistics, by Email."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-10-08T12:20:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Wrenfield Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver app record for DL-9776 on 7 October: attempt 11:41 UTC, outcome FAILED, no safe place, card left. Parcel shown back in van stock at 18:30."
+    },
+    {
+      "n": 3,
+      "timestamp": "2027-10-08T14:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Returns, Copperhythe Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our returns system shows TG-6656 as RETURNED: received at the Copperhythe warehouse 8 October 8:15 UTC, reason 'undeliverable'. A refund to the customer will be issued automatically 48 hours after receipt unless we are told otherwise."
+    },
+    {
+      "n": 4,
+      "timestamp": "2027-10-09T09:30:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Florian Jessop, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking says my grinder was delivered on Thursday and left in a safe place. There's nothing here. I've checked the porch, the bins and both neighbours. Where is it? I don't want a refund, I want the grinder. It was a birthday present to myself.\n\nThe battery in my doorbell is dead, which is probably why nobody heard the driver."
+    }
+  ]
+}

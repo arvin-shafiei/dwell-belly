@@ -1,0 +1,112 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-03-17T16:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Saltmarrow Pantry marketing",
+      "to": "Sorrel Ingleby, recipient",
+      "body": "Your box is on its way! While you wait: 20% off all spring greens this weekend with code SPRIG20. Saltmarrow Pantry, fresh to your door. Unsubscribe | Manage preferences"
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-03-17T17:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Whinmoor, Brindleworth Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-5840 (BP-4485), chilled grocery order for Sorrel Ingleby, evening slot 18:00 to 19:00. Signature required."
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-03-17T17:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Brindleworth Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Heads up, separate job: DL-2121 for the bakery on Fenner Row is running 40 minutes late. Their receiving coordinator already knows. Nothing needed from you."
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-03-17T18:22:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Sorrel Ingleby, recipient",
+      "to": "Customer care, Brindleworth Arc Logistics",
+      "body": "tracker says 6 stops away, just checking the driver knows it's the blue door round the side not the front"
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-03-17T18:23:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Customer care, Brindleworth Arc Logistics",
+      "to": "Sorrel Ingleby, recipient",
+      "body": "Thank you for your message. We aim to reply within 24 hours. For live updates please use the tracker."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-03-17T19:04:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tracking support, Brindleworth Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-5840 displays delivered at 18:57 UTC, signed for by 'R DUNMORE'. Signature image is on file. We have not reviewed the route stop or the handover."
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-03-17T19:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Sorrel Ingleby, recipient",
+      "to": "Saltmarrow Pantry customer support",
+      "body": "It says delivered and signed for. Nobody has been to the door. That isn't my name. Can someone ring me"
+    },
+    {
+      "n": 8,
+      "timestamp": "2028-03-17T19:21:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Saltmarrow Pantry customer support",
+      "to": "Sorrel Ingleby, recipient",
+      "body": "Thanks for getting in touch! Our team is here 07:00 to 19:00 every day and will reply when we're back. Did you know you can skip a week in the app? Saltmarrow Pantry, fresh to your door."
+    },
+    {
+      "n": 9,
+      "timestamp": "2028-03-17T19:35:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Brindleworth Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-2121 delivered 19:28, bakery signed. Closing that one."
+    },
+    {
+      "n": 10,
+      "timestamp": "2028-03-17T19:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Brindleworth Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Standing notice to coordination desks: the evening duty investigator is on until 23:00 for same-day disputed handovers on chilled orders. Email us with the shipment reference, the signature name on file and what the recipient reports."
+    },
+    {
+      "n": 11,
+      "timestamp": "2028-03-17T20:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Saltmarrow Pantry marketing",
+      "to": "Sorrel Ingleby, recipient",
+      "body": "How did we do tonight? Rate your delivery in one tap and be entered to win a month of free boxes. Unsubscribe | Manage preferences"
+    },
+    {
+      "n": 12,
+      "timestamp": "2028-03-17T20:18:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Sorrel Ingleby, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I watched the tracker count down to my house and then it just said delivered. Nobody in this house is called Dunmore, I don't know anyone called Dunmore. I've been through both door cameras from half six to half seven and there is no van and no person. I asked next door and they haven't got it. Saltmarrow are shut till the morning and have sent me an email asking me to rate my delivery. That was tonight's dinner and most of the week for me and the two kids and they've had toast. I'm not even angry, I'm just tired. Can somebody please find out where it went."
+    }
+  ]
+}

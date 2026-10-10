@@ -1,0 +1,94 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-05-01T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Whinmoor Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-1949: import duty and tax of £248.40 outstanding on entry IE-4755. Held at Destination depot under payment hold. Storage of £6.50 per day accrues from 3 May. The hold lifts automatically when the entry balance is nil."
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-05-02T10:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Isolde Ingleby, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My broker dealt with the duty on this. Why does tracking say awaiting payment"
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-05-02T10:30:00Z",
+      "stage": "Agent action",
+      "channel": "Broker portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Kestra Pilkington, Quillmoor Customs Brokers",
+      "body": "Import billing shows £248.40 outstanding on entry IE-4755 for DL-1949. Can you confirm whether payment has been made, and with what reference?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-05-02T14:02:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Kestra Pilkington, Quillmoor Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Paid 27 April. £212.40 by deferment account, our ref QCB-4559. That is the assessed amount on our entry copy."
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-05-02T14:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Import billing, Whinmoor Arc Logistics",
+      "body": "The broker for DL-1949 reports a payment of £212.40 on 30 Apr by deferment account, reference QCB-4559. Please check it against entry IE-4755."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-05-03T08:45:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Whinmoor Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Checked the entry ledger: nothing posted to IE-4755, balance still £248.40. QCB-4559 doesn't appear on this entry. I haven't searched deferment statements or other entries; that needs a reconciliation request with the broker's statement line."
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-05-03T09:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Whinmoor Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-1949 still on payment hold, bay H-4. Storage started today. We can't release against a hold, only Import billing lifts it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2028-05-03T11:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Isolde Ingleby, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Depot told me on the phone I can just pay the 248 by card and collect today. Should I do that? I need the inks this week."
+    },
+    {
+      "n": 9,
+      "timestamp": "2028-05-03T11:25:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Kestra Pilkington, Quillmoor Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Duty on DL-1949 was paid a week ago. I have already sent you the reference. Your carrier is now charging my client storage on goods that are cleared and paid. Release it today and cancel the storage. Statement line: 30/04 DEF QCB-4559 £212.40 PLOVER ARC IMPORT."
+    },
+    {
+      "n": 10,
+      "timestamp": "2028-05-03T11:40:00Z",
+      "stage": "Escalation",
+      "channel": "Broker portal",
+      "from": "Kestra Pilkington, Quillmoor Customs Brokers",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Duty on DL-1949 was paid a week ago. I have already sent you the reference. Your carrier is now charging my client storage on goods that are cleared and paid. Release it today and cancel the storage. Statement line: 30/04 DEF QCB-4559 £212.40 PLOVER ARC IMPORT."
+    }
+  ]
+}

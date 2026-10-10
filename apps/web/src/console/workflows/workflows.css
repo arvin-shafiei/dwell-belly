@@ -7,8 +7,8 @@
   --xy-connectionline-stroke-default: #ff6a1a;
   --xy-connectionline-stroke-width-default: 2;
   --xy-attribution-background-color-default: transparent;
-  --xy-minimap-background-color-default: #19191d;
-  --xy-minimap-mask-background-color-default: rgba(10, 10, 12, 0.6);
+  --xy-minimap-background-color-default: #222227;
+  --xy-minimap-mask-background-color-default: rgba(15, 15, 18, 0.72);
   --xy-minimap-node-background-color-default: #3a3a42;
   --xy-controls-button-background-color-default: #2a2a30;
   --xy-controls-button-background-color-hover-default: #34343b;
@@ -28,10 +28,14 @@
   border-radius: 12px;
 }
 .wf-canvas .react-flow__minimap {
-  border: 1px solid #34343b;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  opacity: 0.88;
+  transition: opacity 0.15s ease;
 }
+.wf-canvas .react-flow__minimap:hover { opacity: 1; }
 .wf-canvas .react-flow__controls {
   border-radius: 8px;
   overflow: hidden;
@@ -104,4 +108,77 @@
   stroke-width: 2;
   stroke-dasharray: 6 5;
   opacity: 0.8;
+}
+
+/* Selected step: the path from the start to it */
+.wf-canvas .react-flow__edge.wf-path .react-flow__edge-path {
+  stroke: #ff6a1a;
+  stroke-width: 3;
+}
+
+/* "Make a playbook": the newest step glows, and its edge draws in */
+@keyframes wf-fresh {
+  0% { box-shadow: 0 0 0 0 rgba(255, 106, 26, 0.55); }
+  100% { box-shadow: 0 0 0 10px rgba(255, 106, 26, 0); }
+}
+.wf-fresh { animation: wf-appear 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, wf-fresh 0.9s ease-out 0.1s; }
+@keyframes wf-draw { from { stroke-dashoffset: 600; } to { stroke-dashoffset: 0; } }
+.wf-canvas .react-flow__edge.wf-edge-new .react-flow__edge-path {
+  stroke: #ff6a1a;
+  stroke-dasharray: 600;
+  animation: wf-draw 0.4s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-fresh, .wf-canvas .react-flow__edge.wf-edge-new .react-flow__edge-path { animation: none; stroke-dasharray: none; }
+}
+
+/* Practice: a running case row breathes along its bottom edge */
+@keyframes wf-row-pulse {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.wf-row-pulse {
+  background: linear-gradient(90deg, transparent, rgba(255, 106, 26, 0.85), transparent);
+  animation: wf-row-pulse 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-row-pulse { animation: none; background: rgba(255, 106, 26, 0.5); }
+}
+
+/* ---------- n8n-feel polish ---------- */
+
+/* Cards lift a little on hover; handles show on hover. */
+.wf-canvas .react-flow__node-card { transition: transform 0.12s ease; }
+.wf-canvas .react-flow__node-card:hover .wf-card:not(.opacity-35) {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+.wf-canvas .react-flow__node-card .wf-handle.react-flow__handle { opacity: 0.75; }
+.wf-canvas .react-flow__node-card:hover .wf-handle.react-flow__handle { opacity: 1; background: #8b8b96; }
+.wf-canvas .react-flow__node-card.dragging .wf-card { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5); }
+
+/* Edges: hover highlight, and a smooth flowing dash on the path a run took. */
+.wf-canvas .react-flow__edge:hover .react-flow__edge-path { stroke: #8b8b96; }
+.wf-canvas .react-flow__edge.wf-taken:hover .react-flow__edge-path { stroke: #3ecf8e; }
+@keyframes wf-flow { to { stroke-dashoffset: -28; } }
+.wf-canvas .react-flow__edge.animated.wf-taken .react-flow__edge-path {
+  stroke: #3ecf8e;
+  stroke-width: 2.75;
+  stroke-dasharray: 9 5;
+  animation: wf-flow 0.8s linear infinite;
+}
+.wf-canvas .react-flow__edge.wf-taken .react-flow__edge-path { stroke: #3ecf8e; }
+
+/* Case counts: hops recent cases took are solid; unused ones fade. */
+.wf-canvas .react-flow__edge.wf-busy .react-flow__edge-path {
+  stroke: #3ecf8e99;
+  stroke-width: 2.5;
+}
+
+/* Run badge pops in as the replay reaches a step. */
+@keyframes wf-mark-in { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.wf-mark { animation: wf-mark-in 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; box-shadow: 0 0 0 2px #1f1f23; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wf-mark, .wf-canvas .react-flow__edge.animated.wf-taken .react-flow__edge-path { animation: none; }
+  .wf-canvas .react-flow__edge.animated.wf-taken .react-flow__edge-path { stroke-dasharray: none; }
 }

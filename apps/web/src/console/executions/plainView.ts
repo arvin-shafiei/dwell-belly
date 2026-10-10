@@ -1,6 +1,6 @@
 // Plain-words view of a case run (docs/plans/ui-simplify-brief.md): the headline sentence,
 // the message, the step checklist and the status word. Pure, so it is unit tested.
-import { plainNode, plainOutcome, plainStep, riskWord, scrubLeaks } from "../../ui/plain";
+import { plainFailure, plainNode, plainOutcome, plainStep, riskWord, scrubLeaks } from "../../ui/plain";
 export { plainDataset } from "../../ui/plain";
 import type { ExecutionRecord } from "../types";
 import type { NextAction } from "../../../../api/src/lib/trace";
@@ -27,7 +27,7 @@ export function caseName(caseId: string, title?: string | null): string {
 /** One status word for the list: Sent / Needs a person / Asked a question / Stopped / Nothing to do. */
 export function statusWord(e: { status: ExecutionRecord["status"]; outcome: string | null }): string {
   if (e.status === "running") return "Working…";
-  if (e.outcome === "error" || (!e.outcome && e.status === "error")) return "Stopped";
+  if (e.outcome === "error" || (!e.outcome && e.status === "error")) return "Didn't finish";
   return plainOutcome(e.outcome);
 }
 
@@ -108,7 +108,8 @@ export function messageOf(e: Pick<ExecutionRecord, "outcome" | "trace">): { titl
   const next = sentAction(items) ?? end?.nextAction ?? null;
   if (!next) return null;
   const outcome = end?.outcome ?? e.outcome;
-  const sent = outcome === "acted" || outcome === "asked_for_info";
+  const done = items.some((i) => i.kind === "node" && i.action?.ok);
+  const sent = done || outcome === "acted" || outcome === "asked_for_info";
   return { title: sent ? "What we sent" : "Message waiting to go", to: scrubLeaks(next.recipient), how: plainChannel(next.channel), message: next.message };
 }
 
@@ -146,5 +147,57 @@ export function checklist(trace: ExecutionRecord["trace"]): Step[] {
 /** The first decision card in the run, if a person was asked. */
 export function decisionCardOf(trace: ExecutionRecord["trace"]) {
   for (const it of buildTimeline(trace)) if (it.kind === "node" && it.card) return it.card;
+  return null;
+}
+
+/**
+ * The clash sentence at full length (the step checklist cuts it at 60 characters): "The stories don't
+ * match: <what differs>". The agent cuts step summaries at 80 characters; a cut one ends on a whole word and "…".
+ * null when the step found no clash.
+ */
+export function clashSentence(n: Pick<NodeItem, "nodeType" | "summary" | "output">): string | null {
+  const short = plainStep(n.nodeType, n.summary, n.output);
+  if (!short || !/don't match|may not match/.test(short)) return null;
+  const m = /^(?:[a-z_]+:\s*)?\d+\s+conflicts?:\s*(.+)$/i.exec((n.summary ?? "").trim());
+  if (!m) return short;
+  let why = scrubLeaks(m[1]);
+  // The agent keeps step summaries to 80 characters, so a full-length one was cut off.
+  if ((n.summary ?? "").trim().length >= 80 && why.includes(" ")) why = `${why.slice(0, why.lastIndexOf(" ")).replace(/[\s,;:.-]+$/, "")}…`;
+  return why ? `The stories don't match: ${why}` : short;
+}
+
+/**
+ * The "Why" line under the headline, so the reason is readable in seconds: why it stopped for a person,
+ * that the stories clashed, or what the safety check said. Built only from the trace; null when there is
+ * nothing to say.
+ */
+export function whyLine(e: Pick<ExecutionRecord, "status" | "outcome" | "trace" | "error">): string | null {
+  if (e.status === "running") return null;
+  const items = buildTimeline(e.trace);
+  const end = endOf(items);
+  const outcome = end?.outcome ?? e.outcome;
+  if (e.status === "error" || outcome === "error") return plainFailure(end?.error ?? e.error ?? "error") || null;
+  const nodes = items.filter((i): i is NodeItem => i.kind === "node" && i.status === "ok");
+  const card = nodes.find((n) => n.card)?.card ?? null;
+  const gate = nodes.find((n) => n.gate)?.gate ?? null;
+  const clashNode = nodes.find((n) => n.nodeType === "clash_check");
+  const clashFull = clashNode ? clashSentence(clashNode) : null;
+  const clash = clashNode ? plainStep(clashNode.nodeType, clashNode.summary, clashNode.output) : null;
+  const clashed = !!clashFull;
+  const risk = gate ? riskWord(gate.risk) : "";
+
+  if (card && outcome !== "acted" && outcome !== "asked_for_info") {
+    const line = scrubLeaks(card.whyStopped?.line || card.summary);
+    if (line) return line;
+  }
+  if (gate && gate.decision === "block") return `The safety check stopped the message${risk ? ` (risk: ${risk})` : ""}.`;
+  if (gate && gate.decision === "ask" && outcome !== "acted") return `The safety check held the message for a person${risk ? ` (risk: ${risk})` : ""}.`;
+  if (clashed) return /[.!?…]$/.test(clashFull) ? clashFull : `${clashFull}.`;
+  if (outcome === "asked_for_info") {
+    const missing = nodes.find((n) => n.nodeType === "missing_info");
+    if (missing && plainStep(missing.nodeType, missing.summary, missing.output) === "Something is missing") return "Something it needed was missing, so it asked.";
+  }
+  if (clash && gate?.decision === "allow") return `The stories match and the safety check passed${risk ? ` (risk: ${risk})` : ""}.`;
+  if (gate?.decision === "allow") return `The safety check passed${risk ? ` (risk: ${risk})` : ""}.`;
   return null;
 }

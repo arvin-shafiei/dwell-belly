@@ -24,7 +24,7 @@ export function Panel({
   return (
     <section
       className={cx(
-        "flex min-w-0 flex-col overflow-hidden rounded-lg border border-white/[0.07] bg-rv-card",
+        "flex min-w-0 flex-col overflow-hidden rounded-lg border border-rv-line bg-rv-card",
         className,
       )}
     >
@@ -44,10 +44,10 @@ export function PanelHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="flex min-h-11 items-center gap-3 border-b border-white/[0.06] px-4 py-2">
+    <header className="flex min-h-12 items-center gap-3 border-b border-rv-line px-4 py-2.5">
       <div className="min-w-0 flex-1">
-        {title && <h2 className="truncate text-[13px] font-semibold text-white/90">{title}</h2>}
-        {subtitle && <p className="truncate text-[11px] text-white/45">{subtitle}</p>}
+        {title && <h2 className="truncate text-rv-heading font-semibold text-white/90">{title}</h2>}
+        {subtitle && <p className="truncate text-rv-caption text-white/50">{subtitle}</p>}
       </div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
     </header>
@@ -77,20 +77,20 @@ export function KpiCard({
   return (
     <div
       title={title}
-      className="flex min-w-0 flex-col gap-2 rounded-lg border border-white/[0.07] bg-rv-card px-4 py-3.5"
+      className="flex min-w-0 flex-col gap-2 rounded-xl border border-rv-line bg-rv-card p-5"
     >
-      <div className="flex items-center gap-2 text-[11px] font-medium tracking-[0.06em] text-white/50 uppercase">
+      <div className="flex items-center gap-2 text-rv-small text-white/60">
         {icon && <span className="text-white/35">{icon}</span>}
         <span className="truncate">{label}</span>
       </div>
       {loading ? (
-        <Skeleton className="h-7 w-20" />
+        <Skeleton className="h-8 w-20" />
       ) : (
-        <div className={cx("tabular truncate text-[26px] leading-7 font-semibold tracking-tight", valueTone)}>
+        <div className={cx("tabular truncate text-rv-big font-semibold", valueTone)}>
           {value ?? <span className="text-white/25">—</span>}
         </div>
       )}
-      <div className="min-h-4 truncate text-xs text-white/45">{loading ? <Skeleton className="h-3 w-28" /> : sub}</div>
+      <div className="min-h-4 truncate text-rv-caption text-white/45">{loading ? <Skeleton className="h-3 w-28" /> : sub}</div>
     </div>
   );
 }

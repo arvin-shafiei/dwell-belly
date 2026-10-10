@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-02-09T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Dappleford Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6436 is in depot stock. This service allows a hold up to three calendar days before routing. A confirmed release date is required."
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-02-09T12:11:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Orla Pilkington, sender not on record",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, it's about my parcel, I don't have the tracking number to hand. Please send it to my work address instead: Unit 28, Kiln Street. I'll be there all day tomorrow."
+    }
+  ]
+}

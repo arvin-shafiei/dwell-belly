@@ -4,7 +4,7 @@ import { cx } from "./cx";
 import { Spinner } from "./Feedback";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-export type ButtonSize = "sm" | "md";
+export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -26,6 +26,8 @@ const VARIANT: Record<ButtonVariant, string> = {
 const SIZE: Record<ButtonSize, string> = {
   sm: "h-8 px-3 text-[13px] gap-1.5 rounded-md",
   md: "h-9 px-4 text-sm gap-2 rounded-md",
+  /** The page's one big action (e.g. on an empty page). */
+  lg: "h-11 px-5 text-[15px] gap-2 rounded-lg",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -46,7 +48,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       )}
       {...rest}
     >
-      {loading ? <Spinner size={size === "sm" ? 12 : 14} /> : icon}
+      {loading ? <Spinner size={size === "sm" ? 12 : size === "lg" ? 16 : 14} /> : icon}
       {children}
     </button>
   );

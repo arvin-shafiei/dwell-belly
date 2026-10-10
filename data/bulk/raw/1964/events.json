@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-05-10T16:10:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Brackenford Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-9514: one compact tractor, self-propelled. Collected running 10 May 14:40 at Harl Bridge by our subcontract haulier. Deliver to Stonewick Farm, Aldery, same owner. ETA 21:00."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-05-10T17:46:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Tamsin Thackery, sender not on record",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, it's about my parcel, I don't have the tracking number to hand. Please send it to my work address instead: Unit 12, Tanner's Court. I'll be there all day tomorrow."
+    }
+  ]
+}

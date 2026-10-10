@@ -4,13 +4,32 @@
 //   const { data, error, loading, reload, updatedAt } = useEvidence({ pollMs: 5000 });
 //   const res = await consoleApi.execute({ caseId: "delivery-024" });
 //
+// Reliability (./reliability):
+// - Every call has a timeout (15 s; 6 min for execute) and fails with plain words.
+// - Components reading the same path share ONE poller: one request in flight, one timer, one
+//   cached answer (interval = the fastest subscriber's pollMs). The last unmount aborts it.
+// - Polling slows down 4x while the tab is hidden and backs off exponentially on errors (to 60 s);
+//   fetch-once hooks retry by themselves after connection errors, so blips heal without a click.
 // - `loading` is true only until the first response for the current path; polling refreshes
 //   in the background (stale-while-revalidate), so tables don't flash.
-// - Polling slows down 4x while the tab is hidden.
-// - Errors keep the last good `data` so a blip doesn't blank the screen.
-import { useCallback, useEffect, useState } from "react";
-import { scrubLeaks } from "@/ui/plain";
+// - Errors keep the last good `data` so a blip doesn't blank the screen. While the agent-offline
+//   banner is showing, connection errors are not repeated in every panel.
+import { useCallback, useState, useSyncExternalStore } from "react";
 import type { ConsoleApi, EvidenceRow, ExecutionRecord, WorkflowRecord } from "./types";
+import {
+  ApiError,
+  DEFAULT_TIMEOUT_MS,
+  EXECUTE_TIMEOUT_MS,
+  isConnectionError,
+  request,
+  type RequestOptions,
+} from "./reliability/http";
+import { EMPTY_SNAPSHOT, type PollSnapshot } from "./reliability/poller";
+import { sharedPoller } from "./reliability/shared";
+import { AGENT_OFFLINE_MESSAGE, isAgentKnownOffline, useOfflineBannerShowing } from "./reliability/agentStatus";
+
+export { ApiError, DEFAULT_TIMEOUT_MS, EXECUTE_TIMEOUT_MS };
+export type { RequestOptions };
 
 export type ApiResponse<K extends keyof ConsoleApi> = ConsoleApi[K];
 export type ExecutionSummary = ApiResponse<"GET /api/console/executions?limit&dataset">["executions"][number];
@@ -18,59 +37,12 @@ export type EvidenceResponse = ApiResponse<"GET /api/console/evidence">;
 export type StatusResponse = ApiResponse<"GET /api/console/status">;
 export type CaseOption = ApiResponse<"GET /api/console/cases?dataset&q">["cases"][number];
 
-/**
- * `message` is plain words safe to show anyone (ui-simplify-brief: no paths, codes or server
- * jargon on main screens). `detail` keeps the technical reason for Advanced views and logs.
- */
-export class ApiError extends Error {
-  constructor(
-    message: string,
-    readonly status: number,
-    readonly detail: string = message,
-  ) {
-    super(message);
-  }
-}
-
-function describe(status: number, body: unknown, path: string): ApiError {
-  const server =
-    body && typeof body === "object" && "error" in body && typeof (body as { error: unknown }).error === "string"
-      ? (body as { error: string }).error
-      : null;
-  const detail = `${path}: HTTP ${status}${server ? `: ${server}` : ""}`;
-  if (status === 404) return new ApiError("This isn't ready yet.", status, detail);
-  if (status >= 500) return new ApiError("Something went wrong. Try again in a moment.", status, detail);
-  return new ApiError(server ? scrubLeaks(server) || "That didn't work." : "That didn't work.", status, detail);
-}
-
-async function request<T>(method: string, path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
-  let res: Response;
-  try {
-    res = await fetch(path, {
-      method,
-      signal,
-      cache: "no-store",
-      headers: body === undefined ? undefined : { "content-type": "application/json" },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
-  } catch (e) {
-    if ((e as Error)?.name === "AbortError") throw e;
-    throw new ApiError("Can't reach Rivet right now.", 0, `${path}: network error`);
-  }
-  const text = await res.text();
-  let json: unknown = null;
-  try {
-    json = text ? JSON.parse(text) : null;
-  } catch {
-    if (res.ok) throw new ApiError("Something went wrong. Try again in a moment.", res.status, `${path}: non-JSON response`);
-  }
-  if (!res.ok) throw describe(res.status, json, path.split("?")[0]);
-  return json as T;
-}
-
-export const getJson = <T>(path: string, signal?: AbortSignal) => request<T>("GET", path, undefined, signal);
-export const postJson = <T>(path: string, body?: unknown) => request<T>("POST", path, body ?? {});
-export const putJson = <T>(path: string, body: unknown) => request<T>("PUT", path, body);
+/** `signal` may also be passed as a RequestOptions object ({ signal, timeoutMs }). */
+export const getJson = <T>(path: string, signal?: AbortSignal | RequestOptions) =>
+  request<T>("GET", path, undefined, signal instanceof AbortSignal || signal === undefined ? { signal } : signal);
+export const postJson = <T>(path: string, body?: unknown, opts?: RequestOptions) =>
+  request<T>("POST", path, body ?? {}, opts);
+export const putJson = <T>(path: string, body: unknown, opts?: RequestOptions) => request<T>("PUT", path, body, opts);
 
 /** Build "/path?a=1&b=2", skipping null/undefined/"" values. */
 export function withQuery(path: string, q: Record<string, string | number | null | undefined>): string {
@@ -87,7 +59,7 @@ export interface ApiState<T> {
   loading: boolean;
   /** ms epoch of the last successful response. */
   updatedAt: number | undefined;
-  /** Refetch now (keeps current data while loading). */
+  /** Refetch now (keeps current data while loading; joins a request already in flight). */
   reload: () => void;
 }
 
@@ -96,56 +68,28 @@ export interface UseApiOptions {
   pollMs?: number;
 }
 
-interface Stored<T> {
-  key: string | null;
-  data?: T;
-  error?: string;
-  updatedAt?: number;
-}
+const noopUnsubscribe = () => {};
+const emptySnapshot = () => EMPTY_SNAPSHOT;
 
 /** GET `path` (null = skip). Generic hook; prefer the typed wrappers below. */
 export function useApi<T>(path: string | null, { pollMs }: UseApiOptions = {}): ApiState<T> {
-  const [state, setState] = useState<Stored<T>>({ key: null });
-  const [nonce, setNonce] = useState(0);
+  const subscribe = useCallback(
+    (onChange: () => void) => (path ? sharedPoller.subscribe(path, pollMs ?? 0, onChange) : noopUnsubscribe),
+    [path, pollMs],
+  );
+  const getSnapshot = useCallback(() => (path ? sharedPoller.getSnapshot(path) : EMPTY_SNAPSHOT), [path]);
+  const snap = useSyncExternalStore(subscribe, getSnapshot, emptySnapshot) as PollSnapshot<T>;
+  const bannerShowing = useOfflineBannerShowing();
+  const reload = useCallback(() => {
+    if (path) void sharedPoller.refresh(path);
+  }, [path]);
 
-  useEffect(() => {
-    if (!path) return;
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const ctrl = new AbortController();
-
-    const tick = async () => {
-      try {
-        const data = await getJson<T>(path, ctrl.signal);
-        if (!cancelled) setState({ key: path, data, updatedAt: Date.now() });
-      } catch (e) {
-        if (cancelled || ctrl.signal.aborted) return;
-        const error = e instanceof Error ? e.message : String(e);
-        setState((prev) =>
-          prev.key === path ? { ...prev, error } : { key: path, error },
-        );
-      }
-      if (!cancelled && pollMs && pollMs > 0) {
-        const hidden = typeof document !== "undefined" && document.visibilityState === "hidden";
-        timer = setTimeout(tick, hidden ? pollMs * 4 : pollMs);
-      }
-    };
-    void tick();
-
-    return () => {
-      cancelled = true;
-      ctrl.abort();
-      if (timer) clearTimeout(timer);
-    };
-  }, [path, pollMs, nonce]);
-
-  const reload = useCallback(() => setNonce((n) => n + 1), []);
-  const current = path !== null && state.key === path;
+  const hideError = bannerShowing && isConnectionError(snap.error);
   return {
-    data: current ? state.data : undefined,
-    error: current ? state.error : undefined,
-    loading: path !== null && !current,
-    updatedAt: current ? state.updatedAt : undefined,
+    data: path ? snap.data : undefined,
+    error: path && snap.error && !hideError ? snap.error.message : undefined,
+    loading: path !== null && !snap.settled,
+    updatedAt: path ? snap.updatedAt : undefined,
     reload,
   };
 }
@@ -182,9 +126,20 @@ export const useCases = (q: { dataset?: string | null; q?: string | null } = {},
 
 // ---- Mutations ----
 
+/** When the agent is known to be offline, say so instead of a generic server/connection error. */
+function explainOffline(e: unknown): never {
+  if ((isConnectionError(e) || (e instanceof ApiError && e.status >= 500)) && isAgentKnownOffline()) {
+    const err = e as ApiError;
+    throw new ApiError(AGENT_OFFLINE_MESSAGE, err.status, err.detail, err.kind);
+  }
+  throw e;
+}
+
 export const consoleApi = {
   execute: (body: { caseId: string; dataset?: string; workflowId?: string }) =>
-    postJson<ApiResponse<"POST /api/console/execute">>("/api/console/execute", body),
+    postJson<ApiResponse<"POST /api/console/execute">>("/api/console/execute", body, {
+      timeoutMs: EXECUTE_TIMEOUT_MS,
+    }).catch(explainOffline),
   importRuns: () => postJson<ApiResponse<"POST /api/console/import">>("/api/console/import"),
   saveWorkflow: (wf: WorkflowRecord) =>
     putJson<ApiResponse<"PUT /api/console/workflows/:id">>(

@@ -120,3 +120,48 @@ export function nameFrom(description: string): string {
   const short = first.length > 48 ? `${first.slice(0, 47).replace(/[\s,;.]+\S*$/, "")}…` : first;
   return short ? short[0].toUpperCase() + short.slice(1) : "AI-built flow";
 }
+
+export interface SafetySummary {
+  /** Steps in the playbook. */
+  steps: number;
+  /** Safety-check steps. */
+  gates: number;
+  /** Every way from the start to a step that sends (or, with no sending step, to an end) passes a safety check. */
+  everyPath: boolean;
+}
+
+/** Does every path through the flow pass a safety check before it acts? Walks from the start
+ *  without entering safety checks; reaching a sending step (or an end, if nothing sends) means
+ *  some path skips the check. Retry loops are ignored. */
+export function safetySummary(flow: Pick<Flow, "nodes" | "edges">): SafetySummary {
+  const byId = new Map(flow.nodes.map((n) => [n.id, n]));
+  const edges = flow.edges.filter((e) => byId.has(e.from) && byId.has(e.to) && e.from !== e.to && e.when?.toLowerCase() !== "retry");
+  const out = new Map<string, string[]>();
+  const incoming = new Set<string>();
+  for (const e of edges) { out.set(e.from, [...(out.get(e.from) ?? []), e.to]); incoming.add(e.to); }
+  const gates = flow.nodes.filter((n) => n.type === "safety_gate").length;
+  const isGate = (id: string) => byId.get(id)?.type === "safety_gate";
+  const senders = flow.nodes.filter((n) => n.type === "action").map((n) => n.id);
+  const targets = new Set(senders.length ? senders : flow.nodes.filter((n) => !out.get(n.id)?.length).map((n) => n.id));
+  const ingest = flow.nodes.filter((n) => n.type === "ingest").map((n) => n.id);
+  const starts = ingest.length ? ingest : flow.nodes.filter((n) => !incoming.has(n.id)).map((n) => n.id);
+  const seen = new Set<string>();
+  const queue = starts.filter((id) => !isGate(id));
+  let skips = false;
+  while (queue.length && !skips) {
+    const id = queue.shift()!;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    if (targets.has(id)) skips = true;
+    for (const to of out.get(id) ?? []) if (!isGate(to) && !seen.has(to)) queue.push(to);
+  }
+  return { steps: flow.nodes.length, gates, everyPath: flow.nodes.length > 0 && gates > 0 && !skips };
+}
+
+/** The result banner line: "11 steps · checks safety on every path". */
+export function safetyLine(s: SafetySummary): string {
+  const steps = `${s.steps} step${s.steps === 1 ? "" : "s"}`;
+  if (s.everyPath) return `${steps} · checks safety on every path`;
+  if (!s.gates) return `${steps} · no safety check`;
+  return `${steps} · some paths skip the safety check`;
+}

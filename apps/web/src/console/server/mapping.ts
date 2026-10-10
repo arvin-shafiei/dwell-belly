@@ -76,7 +76,7 @@ export function summariseTrace(trace: Trace): TraceSummary {
   };
 }
 
-export interface Verdict { pass: boolean; score: number; notes?: string }
+export interface Verdict { pass: boolean; score: number; notes?: string; critical?: boolean | null; verdict?: string | null; brokenRules?: string[] }
 
 /** One row of runs/eval-*.json (scripts/eval/run-eval.mjs evalOne). Only the fields we read. */
 export interface EvalRow {
@@ -87,7 +87,14 @@ export interface EvalRow {
   pass?: boolean;
   critical?: boolean;
   completed?: boolean;
-  result?: { outcome?: string; nextAction?: { recipient?: string; channel?: string } | null; handoff?: string | null } | null;
+  result?: {
+    outcome?: string; nextAction?: { recipient?: string; channel?: string } | null; handoff?: string | null;
+    costUsd?: number; durationMs?: number; latencyMs?: number;
+  } | null;
+  /** Not written by run-eval.mjs today; read when a later eval states them. */
+  costUsd?: number;
+  durationMs?: number;
+  latencyMs?: number;
   judgement?: { note?: string; violations?: { rule?: string }[]; must_missed?: string[] } | null;
   judgeError?: string | null;
 }
@@ -113,10 +120,23 @@ export function evalRowVerdict(row: EvalRow): Verdict | null {
   }
   if (row.judgement?.note) notes.push(row.judgement.note);
   if (row.judgement?.must_missed?.length) notes.push(`missed: ${row.judgement.must_missed.join("; ")}`);
-  return notes.length ? { pass: row.pass, score: row.score, notes: notes.join(" | ") } : { pass: row.pass, score: row.score };
+  const brokenRules = (row.judgement?.violations ?? []).map((v) => v?.rule).filter((r): r is string => typeof r === "string" && r.length > 0);
+  // score.mjs sets critical when the judge lists any violation (the score is then forced to 0).
+  const critical = row.critical === true || (row.judgement?.violations?.length ?? 0) > 0;
+  const parts = {
+    critical: row.completed === false && !critical ? null : critical,
+    verdict: row.judgement?.note ?? null,
+    brokenRules,
+  };
+  return notes.length ? { pass: row.pass, score: row.score, notes: notes.join(" | "), ...parts } : { pass: row.pass, score: row.score, ...parts };
 }
 
-/** The execution-level fields an eval row states. Cost, duration and gate are not in eval output. */
+const finite = (...vs: unknown[]): number | null => {
+  for (const v of vs) if (typeof v === "number" && Number.isFinite(v) && v >= 0) return v;
+  return null;
+};
+
+/** The execution-level fields an eval row states. Gate is never in eval output; cost and time only when the row states them. */
 export function evalRowSummary(row: EvalRow) {
   const outcome = row.result?.outcome ?? null;
   return {
@@ -127,6 +147,8 @@ export function evalRowSummary(row: EvalRow) {
     error: outcome === "error" ? (row.result?.handoff ?? "agent error") : outcome === null ? "eval row has no result" : null,
     nextAction: nextActionLabel(row.result?.nextAction ?? null),
     eval: evalRowVerdict(row),
+    costUsd: finite(row.costUsd, row.result?.costUsd),
+    durationMs: finite(row.durationMs, row.latencyMs, row.result?.durationMs, row.result?.latencyMs),
   };
 }
 
@@ -142,7 +164,14 @@ export function resultJsonVerdict(v: unknown): Verdict | null {
     const c = cand as Record<string, unknown>;
     if (typeof c.pass === "boolean" && typeof c.score === "number") {
       const notes = typeof c.notes === "string" ? c.notes : typeof c.note === "string" ? c.note : undefined;
-      return notes ? { pass: c.pass, score: c.score, notes } : { pass: c.pass, score: c.score };
+      const rules = Array.isArray(c.brokenRules) ? c.brokenRules : Array.isArray(c.mustNotBroken) ? c.mustNotBroken : [];
+      const brokenRules = rules.filter((r): r is string => typeof r === "string");
+      const parts = {
+        critical: typeof c.critical === "boolean" ? c.critical || brokenRules.length > 0 : brokenRules.length > 0 ? true : null,
+        verdict: typeof c.verdict === "string" ? c.verdict : typeof c.note === "string" ? c.note : null,
+        brokenRules,
+      };
+      return notes ? { pass: c.pass, score: c.score, notes, ...parts } : { pass: c.pass, score: c.score, ...parts };
     }
   }
   return null;

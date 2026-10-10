@@ -4,13 +4,14 @@ import { caseTextOf } from "@/voice/references";
 import { transcribe } from "@/voice/elevenlabs";
 import { handleNote } from "@/voice/notes";
 import type { VoiceMode, VoiceSource } from "@/voice/policy";
+import { englishTranslator } from "@/voice/translate";
 
 const MODES: VoiceMode[] = ["practice", "reality", "demo"];
 const SOURCES: VoiceSource[] = ["live_human", "simulated_persona", "audio_attachment"];
 
 // POST /api/voice/note: multipart (an "audio" file plus fields), or a JSON body sent as text/plain so
 // the browser needs no CORS preflight. Fields: mode, source, from, n, at, transcript for a typed note,
-// caseId or caseText (the case's references guide transcription), and languageCode (default "en").
+// caseId or caseText (the case's references guide transcription), and languageCode (default "en"; "auto" lets the transcriber detect the language).
 // Returns { event } to append to the case, or { error } with 400, 403, 422 or 502.
 export async function POST(req: Request) {
   let fields: Record<string, unknown>;
@@ -52,7 +53,10 @@ export async function POST(req: Request) {
       caseText,
       languageCode: typeof fields.languageCode === "string" && fields.languageCode ? fields.languageCode : "en",
     },
-    { transcribe },
+    // A note in another language gets an English machine translation when Claude is configured.
+    { transcribe, translate: process.env.ANTHROPIC_API_KEY ? englishTranslator() : undefined },
   );
-  return res.ok ? json({ event: res.event }) : json({ error: res.error }, { status: res.status });
+  return res.ok
+    ? json({ event: res.event, ...(res.language ? { language: res.language } : {}), ...(res.translation ? { translation: res.translation } : {}) })
+    : json({ error: res.error }, { status: res.status });
 }

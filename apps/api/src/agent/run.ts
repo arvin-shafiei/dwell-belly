@@ -168,6 +168,12 @@ export class Recorder {
   edge(from: string, to: string, when?: string) {
     this.events.push({ t: this.t(), kind: "edge", from, to, when });
   }
+  /** Attaches "how it decided" lines to the step that just finished, for the views and REASONING.md. */
+  explain(lines: (string | false | null | undefined)[]) {
+    const last = this.events.findLast((e) => e.kind === "node_end");
+    const detail = lines.filter((l): l is string => typeof l === "string" && l.trim().length > 0).map((l) => l.replace(/\s+/g, " ").trim().slice(0, 240)).slice(0, 6);
+    if (last?.kind === "node_end" && detail.length) last.detail = detail;
+  }
 }
 
 export function nodeConfig<T>(flow: Flow, type: string): T | undefined {
@@ -271,11 +277,25 @@ export async function ingestStep(s: CaseState, nodeId: string): Promise<void> {
   s.u = s.result.understanding = res.output;
   rec.end(`${bundle.documents.length} files, ${bundle.media.length} attachments read`,
     { type: "ingest", decisionGroups: res.output.decision_groups ?? [] });
+  const u = res.output;
+  const onRecord = u.claims.filter((c) => c.basis !== "unverified_claim").length;
+  rec.explain([
+    u.summary,
+    `${u.claims.length} statements found: ${onRecord} from a record or an owning team, ${u.claims.length - onRecord} unverified.`,
+    `Who decides: ${u.decision_owner}.`,
+    u.instruction_like_text.length ? "Part of the case reads like instructions to an automated system. Treated as content, not followed." : null,
+    bundle.unreadable.length ? `Could not read: ${bundle.unreadable.join("; ")}` : null,
+  ]);
 }
 
 export function historyStep(s: CaseState, nodeId: string): void {
   const u = understood(s);
   s.rec.view(nodeId, "history_lookup", `${u.commitments.length} open commitments, ${u.deadlines.length} deadlines`);
+  s.rec.explain([
+    ...u.commitments.slice(0, 3).map((c) => `Already asked: ${c.what} (${c.status.replaceAll("_", " ")}, owed by ${c.owed_by}).`),
+    ...u.deadlines.slice(0, 2).map((d) => `Deadline: ${d}`),
+    u.commitments.length + u.deadlines.length === 0 ? "Nothing has been asked of anyone yet, and no deadline is stated." : null,
+  ]);
 }
 
 export const triageStart = (s: CaseState) => timed(quick(s, s.opts.judge?.triage?.(bundleText(s.bundle))));
@@ -284,11 +304,19 @@ export const triageStart = (s: CaseState) => timed(quick(s, s.opts.judge?.triage
 export function triageEnd(s: CaseState, nodeId: string, triaged: Timed<Awaited<ReturnType<typeof triage>>>): { caseType: string; urgency: string } {
   const u = understood(s);
   const fast = triaged.value;
-  const caseType = fast?.caseType ?? u.case_type;
+  // The quick check sorts by the delivery problem underneath, so a solicitor's letter about a lost
+  // parcel comes back as "lost". When the analysis itself names a formal matter, that is the kind.
+  const formal = /solicitor|legal|court|tribunal|regulator|ombudsman|police|journalist|press enquiry|subject access|data[- ]protection|gdpr/i.test(u.case_type);
+  const caseType = formal ? "formal_request" : fast?.caseType ?? u.case_type;
   const urgency = fast?.urgency ?? u.urgency;
   s.rec.done(nodeId, "triage", { calls: fast ? [{ runner: "jev", usage: fast.usage }] : [], latencyMs: triaged.ms,
     summary: `${caseType} · ${urgency}`,
     output: { type: "triage", caseType, urgency, p: 1 } });
+  s.rec.explain([
+    `Kind of problem: ${String(caseType).replaceAll("_", " ")}. Urgency: ${urgency}.`,
+    u.hazards.length ? `Possible hazard: ${u.hazards[0]}` : null,
+    u.vulnerable_or_distressed.toLowerCase() !== "none" ? `About the person: ${u.vulnerable_or_distressed}` : null,
+  ]);
   return { caseType, urgency };
 }
 
@@ -309,6 +337,11 @@ export function panelEnd(s: CaseState, nodeId: string, panelled: Timed<PanelResu
     rec.done(nodeId, "perspectives", { latencyMs: panelled.ms,
       calls: [{ runner: "jev", usage: { model: panel.model, latencyMs: panel.latencyMs, tokensIn: panel.tokensIn, tokensOut: 0, costUsd: panel.costUsd } }],
       summary: `${panel.notes.length} flags raised${panel.forceHuman ? " · needs a human" : ""}`, output: { type: "perspectives", seats: panel.seats } });
+    rec.explain([
+      ...panel.seats.filter((seat) => seat.raised.length).slice(0, 4).map((seat) => `${seat.name} spoke up (${seat.raised.map((q) => q.replaceAll("_", " ")).join(", ")}).`),
+      panel.seats.every((seat) => seat.raised.length === 0) ? "Five reviewers looked at the case. None raised a concern." : null,
+      panel.forceHuman ? "One concern means a person must decide before anything is sent." : null,
+    ]);
   } else {
     rec.done(nodeId, "perspectives", { calls: [], latencyMs: panelled.ms, summary: panel ? `skipped: ${panel.error}` : "skipped: no Jev key", status: "skipped" });
   }
@@ -328,6 +361,11 @@ export function clashEnd(s: CaseState, nodeId: string, clashScored: Timed<Awaite
   s.rec.done(nodeId, "clash_check", { calls: scored ? [{ runner: "jev", usage: scored.usage }] : [], latencyMs: clashScored.ms,
     summary: u.conflicts.length ? `${u.conflicts.length} conflict: ${u.conflicts[0].about}` : clashed ? "sources may conflict" : "no conflict",
     output: { type: "clash_check", clash: clashed, p: scored?.p ?? 1, claims: u.claims.slice(0, 6).map((c) => ({ who: c.who, says: c.says })) } });
+  s.rec.explain([
+    ...u.conflicts.slice(0, 2).map((c) => `Disagreement between ${c.between}: ${c.about.replace(/[.\s]+$/, "")}. What would settle it: ${c.what_would_settle_it}`),
+    u.conflicts.length ? "Neither side is treated as proven." : clashed ? "A quick check suggests two sources may contradict each other." : "The sources agree with each other.",
+    ...u.missing_info.slice(0, 2).map((m) => `Missing: ${m.what} (held by ${m.who_has_it}).`),
+  ]);
   return clashed;
 }
 
@@ -420,6 +458,12 @@ export async function planStep(s: CaseState, nodeId: string, stances: Stance[]):
   rec.end(`${d.decision_type}: ${d.why}`, first
     ? { type: "planner", nextAction: toNext(first), wontDo: d.wont_do.map((w) => w.item), waitingFor: d.waiting_for, candidates: summariseCandidates(result) }
     : { type: "planner", wontDo: d.wont_do.map((w) => w.item), waitingFor: d.waiting_for, candidates: summariseCandidates(result) });
+  rec.explain([
+    d.headline,
+    `Why: ${d.why}`,
+    ...d.wont_do.slice(0, 3).map((w) => `Will not: ${w.item} (${w.reason})`),
+    result.candidates?.length ? `${result.candidates.length} drafts were weighed before this one was chosen.` : null,
+  ]);
 }
 
 /** Overall verdict of a gate run: the worst verdict any message got. */
@@ -503,6 +547,13 @@ export async function gateStep(s: CaseState, nodeId: string, node: GateNodeConfi
   const chose = hd ? ` · desk chose: ${hd.label}` : "";
   rec.end(gated.length ? `${gated.filter((g) => g.verdict === "allow").length} of ${gated.length} messages cleared${chose}` : `nothing to send${chose}`,
     { type: "safety_gate", risk: top?.risk ?? 0, decision: overall, allowBelow: gateConfig.allow_below, blockAbove: gateConfig.block_above });
+  rec.explain([
+    ...gated.slice(0, 4).map((g) => g.verdict === "allow"
+      ? `Message to ${g.action.recipient}: clear to send (risk ${g.risk.toFixed(2)}, below ${gateConfig.allow_below}).`
+      : `Message to ${g.action.recipient}: ${g.verdict === "block" ? "stopped" : "held for a person"} (${g.reasons.join("; ") || "could not be checked"}).`),
+    gated.length === 0 ? "No message was drafted, so there was nothing to check." : null,
+    result.revised ? "The first draft was stopped and rewritten once." : null,
+  ]);
 
   s.refused = refused;
   s.cleared = gated.filter((g) => g.verdict === "allow" && !refused.includes(g));
@@ -529,6 +580,11 @@ export async function actionStep(s: CaseState, nodeId: string, toSend: GatedActi
   const now = s.delivered.slice(before);
   rec.end(`${now.length} of ${toSend.length} message(s) accepted by the outbox`,
     now[0] ? { type: "action", done: toNext(now[0].g.action), ok: true } : undefined, now.length ? "ok" : "error");
+  rec.explain([
+    ...now.slice(0, 4).map(({ g }) => `Recorded for ${g.action.recipient} by ${g.action.channel}: ${g.action.purpose}`),
+    ...s.undelivered.slice(0, 2).map(({ g }) => `Could not be delivered to ${g.action.recipient} on any channel.`),
+    "No live system is connected, so nothing has reached a recipient yet.",
+  ]);
 }
 
 /** States what the outbox accepted. Returns false when any message could not be delivered. */
@@ -539,6 +595,10 @@ export function verifyStep(s: CaseState, nodeId: string): boolean {
   const awaiting = (s.d?.waiting_for ?? []).map((w) => `${w.what} from ${w.from} by ${w.by}`).join("; ");
   s.rec.view(nodeId, "verify", undelivered.length ? `${undelivered.length} message(s) not delivered` : "accepted by the outbox; receipt and reply unverified",
     { type: "verify", ok: undelivered.length === 0, p: 1, note: `${checks.map((c) => c.note).join(" ")}${awaiting ? ` Waiting for: ${awaiting}` : ""}`.slice(0, 600) });
+  s.rec.explain([
+    undelivered.length ? `${undelivered.length} message(s) were not accepted by any channel.` : "Every message was recorded. Receipt and replies are not yet confirmed.",
+    ...(s.d?.waiting_for ?? []).slice(0, 3).map((w) => `Now waiting for: ${w.what}, from ${w.from}${w.by.trim() ? `, by ${w.by}` : ""}.`),
+  ]);
   return undelivered.length === 0;
 }
 
@@ -603,6 +663,12 @@ export function humanCard(s: CaseState): DecisionCard {
 export function humanStep(s: CaseState, nodeId: string): DecisionCard {
   const card = s.result.card = humanCard(s);
   s.rec.view(nodeId, "human_decision", `Card for ${card.routeTo}; no human available, fallback logged`, { type: "human_decision", card });
+  s.rec.explain([
+    card.whyStopped ? `Why a person is needed: ${card.whyStopped.line}` : null,
+    `This goes to ${card.routeTo.replace(/[.\s]+$/, "")}.`,
+    ...card.options.slice(0, 3).map((o) => `Option: ${o.label}${o.undoable ? "" : " (cannot be undone)"}`),
+    `Nobody was available during this run. Meanwhile: ${card.fallback}`,
+  ]);
   return card;
 }
 

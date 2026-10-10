@@ -4,11 +4,15 @@
 //   grounded  data/generated/delivery with a grounding seed (data/scraped)
 //   adversarial data/adversarial/delivery (Oriol's adversarial cases, PR #12)
 //   city      data/city/delivery (hand-written city scenarios; no index.json, read from the folder)
+//   haiku     data/haiku/delivery (Haiku-made cases, scripts/eval/gen-haiku.mjs; read from the folder)
+//   bulk      data/bulk/delivery (2,500 rule-made cases, scripts/eval/gen-bulk.mjs; listed by data/bulk/index.json)
 //   fixtures  docs/stress-test/fixtures/NNN (index.md + history.md), id "fixture-NNN"
+//   adhoc     runs/adhoc/<id>.json, one-off cases from the "New case" page (console/intake/adhoc.ts)
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fixtureAttachmentPaths, fixtureView, fixtureTitle, generatedView, publicView, type CaseView } from "./caseViews";
 import { repoRoot } from "./db";
+import { ADHOC_DATASET, listAdhoc, readAdhoc } from "../intake/adhoc";
 
 export interface CaseEntry {
   id: string;
@@ -24,7 +28,7 @@ interface Located extends CaseEntry {
 /** A case with its difficulty pattern, for scenario sets. */
 export interface CaseWithMutation extends CaseEntry { mutation: string | null }
 
-export const DATASETS = ["public", "generated", "grounded", "adversarial", "city", "fixtures"] as const;
+export const DATASETS = ["public", "generated", "grounded", "adversarial", "city", "haiku", "bulk", "fixtures"] as const;
 
 async function readJson<T>(file: string): Promise<T | null> {
   try {
@@ -45,7 +49,7 @@ async function scan(): Promise<Located[]> {
   }
 
   type Indexed = { id: string; title?: string; grounding?: string | null; mutation?: string; file: string };
-  for (const set of ["generated", "adversarial", "city"] as const) {
+  for (const set of ["generated", "adversarial", "city", "haiku", "bulk"] as const) {
     const dataset = (c: { grounding?: string | null }) => (set !== "generated" ? set : c.grounding ? "grounded" : "generated");
     const listed = (await readJson<Indexed[]>(path.join(data, set, "index.json"))) ?? [];
     const indexed = new Set(listed.map((c) => c.id));
@@ -69,6 +73,7 @@ async function scan(): Promise<Located[]> {
     if (indexMd === null) continue;
     out.push({ id: `fixture-${name}`, dataset: "fixtures", title: fixtureTitle(indexMd), file: path.join(fixDir, name), mutation: null });
   }
+  for (const c of await listAdhoc()) out.push({ id: c.id, dataset: ADHOC_DATASET, title: c.title, file: "", mutation: null });
   return out;
 }
 
@@ -78,6 +83,11 @@ let cache: { at: number; cases: Promise<Located[]> } | null = null;
 async function located(): Promise<Located[]> {
   if (!cache || Date.now() - cache.at > CACHE_MS) cache = { at: Date.now(), cases: scan() };
   return cache.cases;
+}
+
+/** Changes each time the catalogue is rescanned (at most every CACHE_MS). For caching derived views. */
+export function catalogueStamp(): number {
+  return cache?.at ?? 0;
 }
 
 export async function listCases(dataset?: string | null, q?: string | null): Promise<CaseEntry[]> {
@@ -99,8 +109,41 @@ export async function findCase(caseId: string, dataset?: string | null): Promise
   return hit ? { id: hit.id, dataset: hit.dataset, title: hit.title } : null;
 }
 
-/** The view the eval would send for this case. Null if the case is unknown. */
-export async function buildView(caseId: string, dataset?: string | null): Promise<{ entry: CaseEntry; view: CaseView } | null> {
+type Built = { entry: CaseEntry; view: CaseView };
+
+const VIEW_MEMO_MAX = 1000;
+const gv = globalThis as unknown as { __consoleViewMemo?: Map<string, Promise<Built | null>> };
+const viewMemo = (gv.__consoleViewMemo ??= new Map<string, Promise<Built | null>>());
+
+/**
+ * The view the eval would send for this case. Null if the case is unknown. Memoised in-process per
+ * dataset + case id (case files do not change while the console runs); unknown cases are not
+ * remembered, and every caller gets its own copy.
+ */
+export async function buildView(caseId: string, dataset?: string | null): Promise<Built | null> {
+  const key = `${dataset ?? ""}\u0000${caseId}`;
+  let p = viewMemo.get(key);
+  if (!p) {
+    p = buildViewUncached(caseId, dataset);
+    viewMemo.set(key, p);
+    if (viewMemo.size > VIEW_MEMO_MAX) viewMemo.delete(viewMemo.keys().next().value!);
+    p.then((b) => { if (!b) viewMemo.delete(key); }, () => viewMemo.delete(key));
+  }
+  const built = await p;
+  return built ? structuredClone(built) : null;
+}
+
+/** Forget memoised views (tests, or after case files change). */
+export function clearViewMemo() {
+  viewMemo.clear();
+}
+
+async function buildViewUncached(caseId: string, dataset?: string | null): Promise<Built | null> {
+  // One-off cases are read straight from disk: one saved a moment ago is not in the scan cache yet.
+  if (dataset === ADHOC_DATASET || (!dataset && caseId.startsWith("adhoc-"))) {
+    const c = await readAdhoc(caseId);
+    return c ? { entry: { id: c.id, dataset: ADHOC_DATASET, title: c.title }, view: generatedView(c) } : null;
+  }
   const hit = (await located()).find((c) => c.id === caseId && (!dataset || c.dataset === dataset));
   if (!hit) return null;
   const entry = { id: hit.id, dataset: hit.dataset, title: hit.title };

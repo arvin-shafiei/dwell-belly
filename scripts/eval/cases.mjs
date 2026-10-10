@@ -7,6 +7,8 @@ export const DATA = path.resolve(import.meta.dirname, "..", "..", "data");
 export const GENERATED_DIR = path.join(DATA, "generated", "delivery");
 export const ADVERSARIAL_DIR = path.join(DATA, "adversarial", "delivery");
 export const CITY_DIR = path.join(DATA, "city", "delivery");
+export const BULK_DIR = path.join(DATA, "bulk", "delivery"); // rule-made by gen-bulk.mjs, no model calls
+export const HAIKU_DIR = path.join(DATA, "haiku", "delivery");
 const PUBLIC_DIR = path.join(DATA, "cases", "delivery");
 
 async function readJsonDir(dir) {
@@ -79,12 +81,16 @@ function generatedCase(c, set = "generated") {
   };
 }
 
-// set: all | public | generated | adversarial | city
+// set: all | public | generated | adversarial | city | haiku ("all" leaves haiku out) | bulk ("all" leaves bulk out too)
 export async function loadCases(set, { withContext = false } = {}) {
   const want = (name) => set === "all" || set === name;
   const pub = want("public") ? (await loadPublicRaw()).map((c) => publicCase(c, withContext)) : [];
   const gen = want("generated") ? (await readJsonDir(GENERATED_DIR)).map((c) => generatedCase(c)) : [];
   const adv = want("adversarial") ? (await readJsonDir(ADVERSARIAL_DIR)).map((c) => generatedCase(c, "adversarial")) : [];
   const city = want("city") ? (await readJsonDir(CITY_DIR)).map((c) => generatedCase(c, "city")) : [];
-  return [...pub, ...gen, ...adv, ...city];
+  // Not part of "all": hundreds of unreviewed Haiku-written cases would swamp (and bill) an "all" run.
+  const haiku = set === "haiku" ? (await readJsonDir(HAIKU_DIR)).map((c) => generatedCase(c, "haiku")) : [];
+  // Not part of "all" either: 2,500 rule-made cases (gen-bulk.mjs) are a load test, not a score.
+  const bulk = set === "bulk" ? (await readJsonDir(BULK_DIR)).map((c) => generatedCase(c, "bulk")) : [];
+  return [...pub, ...gen, ...adv, ...city, ...haiku, ...bulk];
 }

@@ -1,0 +1,31 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-02-28T07:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Sorrel Elsworth, sender not on record",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hello, I'm not on the order but I live nearby. Just so you know, the driver told me DL-5812 was handed to someone at the door, so it's been delivered."
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-02-28T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order support, Fallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Inline item-check record TG-6266: ordered blue desk organiser SKU BO-4; reported and verified received item is a red kitchen caddy SKU RC-2. Address and DL-5812 match the order. Exchange authority is with our returns team."
+    },
+    {
+      "n": 3,
+      "timestamp": "2027-02-28T09:10:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Briony Brackley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I want the blue desk organiser I ordered. Please arrange an exchange for the wrong item; I can be home on 2027-03-01 morning.\n\nHonestly this delay is killing me, ha."
+    }
+  ]
+}

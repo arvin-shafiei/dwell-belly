@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-09-10T09:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Wystan Larkham, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My shipment DL-7313 was two pieces. The brown cardboard box of old books turned up yesterday. The other piece, a huge orange and teal patterned kit bag with all my kitesurfing gear in it, did not. Where is it?"
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-09-10T09:30:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Destination depot, Marrowby Arc Logistics",
+      "body": "DL-7313, two pieces. The recipient reports the carton delivered on 09-12 and the second piece, a large orange and teal patterned kit bag, not delivered. What do you hold on piece 2?"
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-09-11T10:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Marrowby Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-7313: piece 1 (carton) delivered 09-12 on route 6, signed. Piece 2 (holdall) has no scan after the origin export scan on 09-03. Nothing matching the description on our floor or in the overs cage. We have no record of it arriving here. A trace would be for the Parcel trace team."
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-09-11T10:50:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Marrowby Arc Logistics",
+      "body": "Please open a trace on piece 2 of DL-7313: a large orange and teal patterned kit bag, last scanned at origin export on 09-03. Piece 1 was delivered 09-12. The Destination depot have no record of piece 2 arriving."
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-09-11T11:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Wystan Larkham, recipient",
+      "body": "The depot have no scan for the kit bag after it left the origin country on 09-03 and have not found it on site. I have asked the Parcel trace team to open a trace. I don't yet know where it is and won't guess."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-09-12T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Marrowby Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TRC-9267 opened for piece 2 of DL-7313. Origin partner queried; replies usually take 3 to 5 working days. Nothing found yet and nothing ruled out. Any claim would be for the Recovery team after the trace closes, not before."
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-09-13T07:57:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Wystan Larkham, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "So let me get this right. A boring brown box of books gets here without a scratch, and the one bag that screams 'expensive' from across a warehouse vanishes. That is not lost. That is stolen, and by somebody who handled it. The delivery note for the box has the driver's name on it: K. Dunmore. I want it in writing from you today that the bag was stolen while in Marrowby Arc's hands. I want to know whether Dunmore or anyone at that depot touched it, and I want the names of everyone who did. I reported it to the police last night, crime reference CR-5672, and the officer told me to get a written statement from the carrier. And if anyone offers me so-much-a-kilo for kit worth more than my car, I will see you in the small claims court as well."
+    },
+    {
+      "n": 8,
+      "timestamp": "2028-09-13T08:10:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Wystan Larkham, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "So let me get this right. A boring brown box of books gets here without a scratch, and the one bag that screams 'expensive' from across a warehouse vanishes. That is not lost. That is stolen, and by somebody who handled it. The delivery note for the box has the driver's name on it: K. Dunmore. I want it in writing from you today that the bag was stolen while in Marrowby Arc's hands. I want to know whether Dunmore or anyone at that depot touched it, and I want the names of everyone who did. I reported it to the police last night, crime reference CR-5672, and the officer told me to get a written statement from the carrier. And if anyone offers me so-much-a-kilo for kit worth more than my car, I will see you in the small claims court as well."
+    }
+  ]
+}

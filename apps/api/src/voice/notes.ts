@@ -1,11 +1,29 @@
 // A transcribed voice note as a case event. Voice is always the speaker's claim; a low-confidence
-// transcript is marked so the agent does not treat a mis-hearing as evidence.
+// transcript is marked so the agent does not treat a mis-hearing as evidence. A driver can speak any
+// language (languageCode "auto"): the note keeps their words, says which language they spoke and, when a
+// translator is given, carries a marked English machine translation that kept every reference and time.
 import type { ViewEvent } from "../agent/load.ts";
 import type { TranscribeResult } from "./elevenlabs.ts";
 import { voiceAllowed, type VoiceMode, type VoiceSource } from "./policy.ts";
 import { caseKeyterms, withReferenceCheck } from "./references.ts";
+import { keepsDetails, type TranslateFn } from "./translate.ts";
 
 export const UNCLEAR_BELOW = 0.6;
+
+// Place and person names: "7 Sedgeglass Mews", "Elva Kesh". Voice notes only; the batch runner keeps
+// caseKeyterms as it is.
+const NAME = /\b(?:\d+\s)?[A-Z][a-z]+(?:\s[A-Z][a-z]+){1,2}\b/g;
+const MAX_TERMS = 100;
+
+/** The case's references, times and senders (caseKeyterms) plus its place and person names. */
+export function noteKeyterms(caseText: string): string[] {
+  const terms = caseKeyterms(caseText);
+  for (const name of caseText.match(NAME) ?? []) {
+    if (terms.length >= MAX_TERMS) break;
+    if (!terms.includes(name)) terms.push(name);
+  }
+  return terms;
+}
 
 export function noteToEvent(note: {
   n: number;
@@ -19,7 +37,16 @@ export function noteToEvent(note: {
   return { n: note.n, timestamp: note.at, stage: null, channel: "Voice note", from: note.from, to: "Desk", body, source: note.source };
 }
 
-export type NoteResult = { ok: true; event: ViewEvent } | { ok: false; status: 400 | 403 | 422 | 502; error: string };
+export type NoteResult = { ok: true; event: ViewEvent; language?: string; translation?: string } | { ok: false; status: 400 | 403 | 422 | 502; error: string };
+
+/** "pol" or "pl" -> "Polish". An unknown code comes back as it is. */
+export function languageName(code: string): string {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "language" }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
 
 /** A voice note from the UI: a recording to transcribe, or a typed fallback when the microphone is blocked. */
 export async function handleNote(
@@ -30,7 +57,10 @@ export async function handleNote(
     caseText?: string;
     languageCode?: string;
   },
-  deps: { transcribe: (audio: Uint8Array, opts: { filename: string; keyterms?: string[]; languageCode?: string }) => Promise<TranscribeResult> },
+  deps: {
+    transcribe: (audio: Uint8Array, opts: { filename: string; keyterms?: string[]; languageCode?: string }) => Promise<TranscribeResult>;
+    translate?: TranslateFn;
+  },
 ): Promise<NoteResult> {
   const allowed = voiceAllowed(input.mode, "transcribe_note", input.source);
   if (!allowed.ok) return { ok: false, status: 403, error: allowed.reason };
@@ -40,10 +70,23 @@ export async function handleNote(
   const caseText = input.caseText ?? "";
   const heard = await deps.transcribe(input.audio, {
     filename: input.filename || "voice-note.webm",
-    keyterms: caseKeyterms(caseText),
-    languageCode: input.languageCode,
+    keyterms: noteKeyterms(caseText),
+    languageCode: input.languageCode === "auto" ? undefined : input.languageCode,
   });
   if (!heard.ok) return { ok: false, status: /nothing heard/i.test(heard.error) ? 422 : 502, error: heard.error };
-  return { ok: true, event: noteToEvent({ ...input, transcript: withReferenceCheck(heard.text, caseText), confidence: heard.confidence }) };
+  const language = heard.language ? languageName(heard.language) : undefined;
+  const checked = withReferenceCheck(heard.text, caseText);
+  const foreign = Boolean(language && language !== "English");
+  const english = foreign && deps.translate ? await deps.translate(heard.text, language!).catch(() => null) : null;
+  const translation = english && keepsDetails(heard.text, english) ? english : undefined;
+  const transcript = foreign
+    ? `[spoken in ${language}] ${checked}${translation ? ` [English, machine translation: ${translation}]` : ""}`
+    : checked;
+  return {
+    ok: true,
+    event: noteToEvent({ ...input, transcript, confidence: heard.confidence }),
+    ...(language ? { language } : {}),
+    ...(translation ? { translation } : {}),
+  };
 }
 

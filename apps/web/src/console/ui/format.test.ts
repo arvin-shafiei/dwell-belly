@@ -43,7 +43,8 @@ describe("format", () => {
 
 const row = (p: Partial<EvidenceRow>): EvidenceRow => ({
   caseId: "c", dataset: "public", title: null, decision: null, nextAction: null, gate: null,
-  pass: null, score: null, costUsd: null, durationMs: null, executionId: null, ...p,
+  pass: null, score: null, costUsd: null, durationMs: null, executionId: null,
+  critical: null, verdict: null, brokenRules: [], mutation: null, ...p,
 });
 
 describe("computeKpis", () => {

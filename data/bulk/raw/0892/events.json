@@ -1,0 +1,535 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-12T06:36:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "IT service desk, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance: the work queue will be read-only on Sunday between 02:00 and 04:00 UTC. Messages sent in that window are queued and delivered afterwards."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-12T07:12:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dervla Ravensworth, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks,\nDervla\n--\nSent from my phone. This email and any attachments are confidential and intended solely for the addressee."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-12T07:48:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Kestra Moorcroft, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-61445? It was meant to come Thursday. Thanks."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-12T08:24:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Partner bulletin, Carrier Network Updates",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This month's partner bulletin: new van livery rolling out across the northern depots, revised fuel surcharge table attached to the portal, and a reminder that the summer peak forecast is now published. To stop receiving these emails, update your preferences."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-12T09:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order notifications, Rookhaven Pantry",
+      "to": "Eamon Ormsby, sender",
+      "body": "Good news! Order BP-9196 has left our bakery with Oxenhale Arc's two-day service, shipment DL-3404, and is due with Petra Ormsby on 03-14. Planning ahead? Take 10% off any seasonal box this month with the code in your account. You are receiving this because you placed an order with Rookhaven Pantry."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-16T10:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Eamon Ormsby, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My daughter's birthday cake was due on Saturday the 14th. I paid for the two-day delivery. It is now Monday and tracking says it is at somewhere called Northgate hub. Can somebody find it please."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-16T10:12:20Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Cosmo Dunmore, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply: I am out of the office until Tuesday with limited access to email. For urgent matters about collections or bookings, please contact the dispatch desk."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-16T10:12:40Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Dervla Corrigan, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-17247? It was meant to come Tuesday. Thanks."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-03-16T10:13:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Automated acknowledgement, Rivet Delivery Desk",
+      "to": "Eamon Ormsby, sender",
+      "body": "Thank you for your message. A coordinator will review it during desk hours. Please do not reply to this notice."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-03-16T10:19:45Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Perpetua Thackery, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply: I am out of the office until Wednesday with limited access to email. For urgent matters about collections or bookings, please contact the dispatch desk."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-03-16T10:26:30Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Juno Grimshaw, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-48139 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 12,
+      "timestamp": "2026-03-16T10:33:15Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ianthe Grimshaw, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-39973 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 13,
+      "timestamp": "2026-03-16T10:40:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Oxenhale Arc Logistics",
+      "body": "DL-3404 (Rookhaven order BP-9196), paid two-day service, was due 03-14 and has not arrived. Tracking shows Northgate hub. Please trace and confirm where it physically is."
+    },
+    {
+      "n": 14,
+      "timestamp": "2026-03-17T01:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-90076 rebooked for Friday AM at the customer's request, confirmation sent to them directly. FYI only."
+    },
+    {
+      "n": 15,
+      "timestamp": "2026-03-17T15:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-3404: last physical scan Northgate hub 03-13. System location today reads Ferrow depot, not yet confirmed by a scan. Trace TRC-3604 is open. Separately, your query about the pallet on DL-7612 was answered on its own thread this morning, please don't merge the two."
+    },
+    {
+      "n": 16,
+      "timestamp": "2026-03-17T17:50:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-18452 rebooked for Thursday AM at the customer's request, confirmation sent to them directly. FYI only."
+    },
+    {
+      "n": 17,
+      "timestamp": "2026-03-17T20:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Greer Thackery, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-74879 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 18,
+      "timestamp": "2026-03-17T22:50:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Niamh Drummond, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks,\nNiamh\n--\nSent from my phone. This email and any attachments are confidential and intended solely for the addressee."
+    },
+    {
+      "n": 19,
+      "timestamp": "2026-03-18T01:20:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Nerys Normanton, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-19452 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 20,
+      "timestamp": "2026-03-18T03:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Lorcan Haverly, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-10010 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 21,
+      "timestamp": "2026-03-18T06:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Partner bulletin, Carrier Network Updates",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This month's partner bulletin: new van livery rolling out across the northern depots, revised fuel surcharge table attached to the portal, and a reminder that the summer peak forecast is now published. To stop receiving these emails, update your preferences."
+    },
+    {
+      "n": 22,
+      "timestamp": "2026-03-18T08:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Eamon Ormsby, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Now it says Northgate again. Yesterday it said Ferrow. The birthday was Saturday. I know you're only passing things on but which is it?"
+    },
+    {
+      "n": 23,
+      "timestamp": "2026-03-18T12:36:40Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Partner bulletin, Carrier Network Updates",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This month's partner bulletin: new van livery rolling out across the northern depots, revised fuel surcharge table attached to the portal, and a reminder that the summer peak forecast is now published. To stop receiving these emails, update your preferences."
+    },
+    {
+      "n": 24,
+      "timestamp": "2026-03-18T16:23:20Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "IT service desk, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance: the work queue will be read-only on Sunday between 02:00 and 04:00 UTC. Messages sent in that window are queued and delivered afterwards."
+    },
+    {
+      "n": 25,
+      "timestamp": "2026-03-18T20:10:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Route planning, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route plan for depot HL-3 published for Thursday. 43 stops, no exceptions raised. No action needed."
+    },
+    {
+      "n": 26,
+      "timestamp": "2026-03-18T23:56:40Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Fenella Larkham, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-29183 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 27,
+      "timestamp": "2026-03-19T03:43:20Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Perpetua Ingleby, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-58639? It was meant to come Monday. Thanks."
+    },
+    {
+      "n": 28,
+      "timestamp": "2026-03-19T07:30:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "All desks: weekend cut-off for same-week collections moves to 14:00 from Monday. Update your templates. No reply needed."
+    },
+    {
+      "n": 29,
+      "timestamp": "2026-03-19T13:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "IT service desk, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance: the work queue will be read-only on Sunday between 02:00 and 04:00 UTC. Messages sent in that window are queued and delivered afterwards."
+    },
+    {
+      "n": 30,
+      "timestamp": "2026-03-19T18:30:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Route planning, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route plan for depot CT-6 published for Monday. 30 stops, no exceptions raised. No action needed."
+    },
+    {
+      "n": 31,
+      "timestamp": "2026-03-20T00:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Partner bulletin, Carrier Network Updates",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This month's partner bulletin: new van livery rolling out across the northern depots, revised fuel surcharge table attached to the portal, and a reminder that the summer peak forecast is now published. To stop receiving these emails, update your preferences."
+    },
+    {
+      "n": 32,
+      "timestamp": "2026-03-20T05:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Aurelio Ravensworth, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-43259 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 33,
+      "timestamp": "2026-03-20T11:00:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-67330 rebooked for Monday AM at the customer's request, confirmation sent to them directly. FYI only."
+    },
+    {
+      "n": 34,
+      "timestamp": "2026-03-20T16:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Delivery investigations, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-3404: handover record shows signed for on 03-19, signature name 'Harrow'. On that basis the consignment is treated as delivered and trace TRC-3604 has been closed."
+    },
+    {
+      "n": 35,
+      "timestamp": "2026-03-20T18:35:37Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tamsin Normanton, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-21740 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 36,
+      "timestamp": "2026-03-20T20:41:14Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Hesper Oakshott, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-93397? It was meant to come Thursday. Thanks."
+    },
+    {
+      "n": 37,
+      "timestamp": "2026-03-20T22:46:51Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Ianthe Fairweather, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks,\nIanthe\n--\nSent from my phone. This email and any attachments are confidential and intended solely for the addressee."
+    },
+    {
+      "n": 38,
+      "timestamp": "2026-03-21T00:52:28Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Partner bulletin, Carrier Network Updates",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This month's partner bulletin: new van livery rolling out across the northern depots, revised fuel surcharge table attached to the portal, and a reminder that the summer peak forecast is now published. To stop receiving these emails, update your preferences."
+    },
+    {
+      "n": 39,
+      "timestamp": "2026-03-21T02:58:05Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Lysander Cresswell, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-87573? It was meant to come Friday. Thanks."
+    },
+    {
+      "n": 40,
+      "timestamp": "2026-03-21T05:03:42Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Fenella Fortescue, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks,\nFenella\n--\nSent from my phone. This email and any attachments are confidential and intended solely for the addressee."
+    },
+    {
+      "n": 41,
+      "timestamp": "2026-03-21T07:09:19Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Ebony Fairweather, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply: I am out of the office until Monday with limited access to email. For urgent matters about collections or bookings, please contact the dispatch desk."
+    },
+    {
+      "n": 42,
+      "timestamp": "2026-03-21T09:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Eamon Ormsby, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Petra has not signed for anything and has nothing. She lives on her own. There is no Harrow at her address. Who is this person?"
+    },
+    {
+      "n": 43,
+      "timestamp": "2026-03-21T10:21:15Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Lorcan Marchbank, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-93946? It was meant to come Thursday. Thanks."
+    },
+    {
+      "n": 44,
+      "timestamp": "2026-03-21T11:27:30Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Partner bulletin, Carrier Network Updates",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "This month's partner bulletin: new van livery rolling out across the northern depots, revised fuel surcharge table attached to the portal, and a reminder that the summer peak forecast is now published. To stop receiving these emails, update your preferences."
+    },
+    {
+      "n": 45,
+      "timestamp": "2026-03-21T12:33:45Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Tamsin Gallimore, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-15460? It was meant to come Monday. Thanks."
+    },
+    {
+      "n": 46,
+      "timestamp": "2026-03-21T13:40:00Z",
+      "stage": "Context",
+      "channel": "Pickup-point portal",
+      "from": "Pickup-point staff, Corvane Lane Stores",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We've got DL-3404 here. It came in on the 19th in a batch and one of our lot signed the driver's handheld for the whole batch, that's the Harrow on your record. It isn't addressed to us so nobody got a collection notice. Box is crushed down one side and there's icing come through the cardboard. It's on the back shelf. Also still waiting on the label printer roll we were promised a fortnight ago if you can chase that."
+    },
+    {
+      "n": 47,
+      "timestamp": "2026-03-21T13:56:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Caspar Whitlock, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-67969? It was meant to come Wednesday. Thanks."
+    },
+    {
+      "n": 48,
+      "timestamp": "2026-03-21T14:12:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Oswin Brackley, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-27982? It was meant to come Tuesday. Thanks."
+    },
+    {
+      "n": 49,
+      "timestamp": "2026-03-21T14:28:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-72253 rebooked for Monday AM at the customer's request, confirmation sent to them directly. FYI only."
+    },
+    {
+      "n": 50,
+      "timestamp": "2026-03-21T14:44:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Route planning, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route plan for depot WX-8 published for Friday. 39 stops, no exceptions raised. No action needed."
+    },
+    {
+      "n": 51,
+      "timestamp": "2026-03-21T15:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Damage intake, Rookhaven Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk; Eamon Ormsby, sender",
+      "body": "Damage claim DMG-9249 is open for the contents of BP-9196, from the pickup point's report and photographs. We will decide on the contents by 03-24 and write to Mrs Ormsby directly. We do not handle delivery charges. A refund of the paid two-day delivery charge is decided by our Refunds team, on a written request that sets out the carrier's timeline for the shipment. Nobody has sent them one for this order."
+    },
+    {
+      "n": 52,
+      "timestamp": "2026-03-21T18:25:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Lorcan Ingleby, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi, any update on DL-79565? It was meant to come Wednesday. Thanks."
+    },
+    {
+      "n": 53,
+      "timestamp": "2026-03-21T21:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Marisol Oakshott, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My parcel DL-75849 arrived with the box crushed on one corner. Contents look fine though, just letting you know for your records."
+    },
+    {
+      "n": 54,
+      "timestamp": "2026-03-22T01:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Maelis Moorcroft, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automatic reply: I am out of the office until Tuesday with limited access to email. For urgent matters about collections or bookings, please contact the dispatch desk."
+    },
+    {
+      "n": 55,
+      "timestamp": "2026-03-22T04:40:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-42337 rebooked for Friday AM at the customer's request, confirmation sent to them directly. FYI only."
+    },
+    {
+      "n": 56,
+      "timestamp": "2026-03-22T08:05:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Route planning, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Route plan for depot HL-8 published for Thursday. 28 stops, no exceptions raised. No action needed."
+    },
+    {
+      "n": 57,
+      "timestamp": "2026-03-22T11:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "IT service desk, Rivet Delivery Desk",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Planned maintenance: the work queue will be read-only on Sunday between 02:00 and 04:00 UTC. Messages sent in that window are queued and delivered afterwards."
+    },
+    {
+      "n": 58,
+      "timestamp": "2026-03-22T14:55:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Niamh Ravensworth, Oxenhale Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks,\nNiamh\n--\nSent from my phone. This email and any attachments are confidential and intended solely for the addressee."
+    },
+    {
+      "n": 59,
+      "timestamp": "2026-03-22T18:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Eamon Ormsby, sender",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "I'm sorry this is long, I've written it out so many times now I've lost track of who knows what. I ordered Petra's cake on the 11th and paid extra for the two-day service so it would be there for her birthday on the 14th. On the 16th it was at Northgate. On the 17th it was at Ferrow. On the 18th it was at Northgate again, or still, nobody could say. On the 20th I was told a Mrs Harrow had signed for it, and my daughter lives alone and knows no Mrs Harrow. Yesterday it turns up in a shop neither of us has heard of, squashed flat. I'm not even asking about the cake any more, the damage people have that. I paid for two days. It took seven, it went somewhere nobody told us about, a stranger signed for it and it's ruined. I would like the delivery charge back. That's all. The man on the phone yesterday told me that because it's been 'located and signed for' there is nothing to refund. Please don't say that to me again."
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2028-03-21T09:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Sorrel Moorcroft, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My side table came yesterday and one leg is split right up the grain and there's a gouge across the top. Order TG-1148. The box was crushed in on one corner. I've taken photos. What happens now?\n\nLabel scan attached for reference: label-scan-366.txt"
+    },
+    {
+      "n": 2,
+      "timestamp": "2028-03-21T09:20:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Sorrel Moorcroft, customer",
+      "body": "I'm sorry it arrived like that. Damage claims are decided by Thistlecombe Goods' Damage intake team, not by this desk. Please upload your photos of the table, the box and the shipping label to this thread and I will pass them on. I can't tell you yet what they will decide."
+    },
+    {
+      "n": 3,
+      "timestamp": "2028-03-21T09:48:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Sorrel Moorcroft, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "4 photos uploaded - the leg, the top, the crushed corner of the box and the label."
+    },
+    {
+      "n": 4,
+      "timestamp": "2028-03-21T09:55:00Z",
+      "stage": "Agent action",
+      "channel": "Warehouse work queue",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Damage intake, Thistlecombe Goods",
+      "body": "Damage report for order TG-1148, shipment DL-7169, oak side table delivered 2028-03-20. Customer Sorrel Moorcroft reports a split leg and a gouged top, outer box crushed at one corner. Four photos attached (leg, top, box, label). Please confirm your decision and when she will hear from you."
+    },
+    {
+      "n": 5,
+      "timestamp": "2028-03-21T10:20:00Z",
+      "stage": "Context",
+      "channel": "Warehouse work queue",
+      "from": "Damage intake, Thistlecombe Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DM-9770 opened. Photos received and sufficient, nothing more needed from the customer. An assessor reviews it today. We will post the decision on this item by 16:00 UTC today and message the customer ourselves at the same time. She should keep the table and all packaging until then."
+    },
+    {
+      "n": 6,
+      "timestamp": "2028-03-21T10:30:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Sorrel Moorcroft, customer",
+      "body": "Damage intake have opened DM-9770 and say your photos are enough. They will decide by 16:00 UTC today and will message you directly with the decision. Please keep the table and all the packaging until then. I can't tell you the outcome before they do."
+    },
+    {
+      "n": 7,
+      "timestamp": "2028-03-21T10:41:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Sorrel Moorcroft, customer",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Ok thanks, I'll wait to hear at 4."
+    },
+    {
+      "n": 8,
+      "timestamp": "2028-03-21T13:00:00Z",
+      "stage": "Escalation",
+      "channel": "Warehouse work queue",
+      "from": "Queue reminder (automated), Thistlecombe Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automated reminder: item DM-9770, which you are watching, has had no new activity for 2 hours 40 minutes. Status: With assessor. Due: 2028-03-21 16:00 UTC. This reminder is sent to all watchers of open items every working afternoon. No response is required."
+    }
+  ]
+}

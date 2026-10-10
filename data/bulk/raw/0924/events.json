@@ -1,0 +1,112 @@
+{
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2027-09-03T16:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Order confirmations, Umberlea Goods (automated)",
+      "to": "Ebony Elsworth, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Thanks for your order TG-8083! Item: Alderby 5-shelf bookcase (2 boxes). Delivery option: Pick Your Day - Thursday 9 September. Carrier: Copperhythe Arc Logistics, DL-6950. WEEKEND OFFER: 15% off all garden furniture with code PATIO15 until Sunday midnight. Love your order? Tag us for a chance to win a GBP 50 voucher. You are receiving this email because you placed an order with Umberlea Goods.\n\nLabel scan attached for reference: label-scan-772.txt"
+    },
+    {
+      "n": 2,
+      "timestamp": "2027-09-06T11:42:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ebony Elsworth, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi! Bit confused. My neighbour Colm has just rung me to say a Copperhythe Arc van turned up with my bookcase this morning. It's Monday! I picked Thursday on purpose because I'm working away till Wednesday night, that's the whole point of the pick your day thing, I paid extra for it. Colm told the driver Thursday and the driver said fine. Then I got a text with a link to rearrange so I picked Thursday on that too. So hopefully sorted, just flagging. Also the lamp from my other order (TG-4926) came Saturday and it's gorgeous, tell whoever packs them they did a lovely job."
+    },
+    {
+      "n": 3,
+      "timestamp": "2027-09-06T11:43:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Rivet Delivery Desk portal (automated)",
+      "to": "Ebony Elsworth, recipient",
+      "body": "Thanks for your message. We aim to reply within 4 working hours. Did you know you can track every parcel in one place in the portal? This is an automated reply; please do not respond to it."
+    },
+    {
+      "n": 4,
+      "timestamp": "2027-09-06T12:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Copperhythe Arc Logistics",
+      "body": "DL-6950 (Umberlea TG-8083) was attempted this morning. The recipient, Ebony Elsworth, says the order was placed for delivery on Thursday 9 September and that she has rearranged to Thursday through the text link. Can you confirm what date DL-6950 is booked for?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2027-09-06T13:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Copperhythe Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6950 is on next-available service. There is no booked date on it. Attempt 1 logged failed today. A rearrangement from the text link only moves the next attempt; the route planner offers the parcel again the following morning if there is van space. We don't set booked dates, that is Larkspire. If Larkspire put a booked date on it, the planner drops it from earlier routes by itself and it waits at the depot. Separately, DL-9642 for the same customer was delivered Saturday, signed for."
+    },
+    {
+      "n": 6,
+      "timestamp": "2027-09-07T10:15:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Ebony Elsworth, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "He's been AGAIN. Tuesday. Colm says it was the same lad, Colm told him Thursday again and the lad said 'it just comes up on my list, mate'. Which, fair enough, not his fault. Got another text, picked Thursday again. That's twice now. Different question while I'm here, is there any way to get the cardboard taken away afterwards? The lamp box was enormous and I've nowhere to put it. Not urgent!!"
+    },
+    {
+      "n": 7,
+      "timestamp": "2027-09-07T10:16:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Rivet Delivery Desk portal (automated)",
+      "to": "Ebony Elsworth, recipient",
+      "body": "Thanks for your message. We aim to reply within 4 working hours. Did you know you can track every parcel in one place in the portal? This is an automated reply; please do not respond to it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2027-09-07T10:40:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Warehouse dispatch, Umberlea Goods",
+      "body": "TG-8083 / DL-6950: the customer chose Pick Your Day, Thursday 9 September, but the carrier shows next-available service with no booked date and has attempted delivery on Monday and Tuesday. What delivery date was the order sent to the carrier with?"
+    },
+    {
+      "n": 9,
+      "timestamp": "2027-09-07T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Umberlea Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-8083: customer chose Pick Your Day, Thursday 10 Sept, at checkout. On our manifest the date went into the delivery notes text ('Deliver Thurs 10/9 only') and not into the booked-date field. It is a known fault with pick-your-day orders this month. We can't amend a manifest once the carrier has the parcel. Larkspire at Copperhythe Arc can set a booked date on their side if asked. On the cardboard, we don't offer packaging take-back, sorry."
+    },
+    {
+      "n": 10,
+      "timestamp": "2027-09-07T17:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Destination depot, Copperhythe Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-6950: 2 failed attempts. Goes out again tomorrow under next-available. Standard rule applies, a third failed attempt returns the parcel to the merchant on the next trunk. Also for your records, the customer satisfaction survey for DL-9642 has been sent to the recipient, nothing needed from you."
+    },
+    {
+      "n": 11,
+      "timestamp": "2027-09-08T07:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brindleworth, Copperhythe Arc Logistics (automated)",
+      "to": "Ebony Elsworth, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "Good news! Your parcel DL-6950 is out for delivery today between 09:00 and 13:00. Not going to be in? Use the link in your text message to rearrange. How did we do last time? Rate your delivery of DL-9642 in 30 seconds and help us improve."
+    },
+    {
+      "n": 12,
+      "timestamp": "2027-09-08T07:35:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Ebony Elsworth, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Guess what is 'out for delivery today'. It's WEDNESDAY. I am in a hotel 140 miles away until tonight, which, again, is the entire reason I paid for pick your day and picked Thursday. Colm's at his daughter's today so there isn't even anybody to wave at the poor driver. I've picked Thursday on three texts now, three! And I've just read the small print at the bottom of this one which says after three goes it gets sent back?? So it'll be on its way back to the warehouse on the one day this week I'm actually standing in my own hall. Please can someone make Thursday mean Thursday. Sorry for the essay. The lamp really is nice though.\n\nI've attached the photo as photo-evidence-883.txt."
+    }
+  ]
+}

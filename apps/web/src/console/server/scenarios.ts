@@ -12,12 +12,14 @@ export const DEFAULT_LIMIT = 5;
 export const MAX_LIMIT = 20;
 
 export const SET_LABELS: Record<SetId, string> = {
-  quick: "Quick: 5 public cases, one per scene",
-  fixtures: "Fixtures: 12 hand-written edge cases",
-  adversarial: "Adversarial: cases written to break the agent",
+  quick: "Quick: 5 sample cases, one of each kind",
+  fixtures: "Hard cases: 12 tricky ones written by hand",
+  adversarial: "Trick cases: written to catch it out",
   generated: "Generated hard cases",
   city: "City cases: closures, road incidents, events, secure deliveries",
-  custom: "Custom case ids",
+  haiku: "Extra written cases: right answers not checked by a person",
+  bulk: "Bulk (rule-made)",
+  custom: "Pick cases by name",
 };
 
 export function clampLimit(limit: unknown): number {
@@ -37,6 +39,10 @@ export function setMembers(set: SetId, all: CaseWithMutation[], caseIds: string[
       return all.filter((c) => c.dataset === "adversarial");
     case "city":
       return all.filter((c) => c.dataset === "city");
+    case "haiku":
+      return all.filter((c) => c.dataset === "haiku");
+    case "bulk":
+      return all.filter((c) => c.dataset === "bulk");
     case "generated":
       return all.filter((c) => c.dataset === "generated" || c.dataset === "grounded");
     case "custom": {
@@ -105,9 +111,9 @@ export function resolveSet(
 }
 
 export function listSets(all: CaseWithMutation[]) {
-  return (["quick", "fixtures", "adversarial", "generated", "city", "custom"] as const).map((id) => {
+  return (["quick", "fixtures", "adversarial", "generated", "city", "haiku", "bulk", "custom"] as const).map((id) => {
     const members = id === "custom" ? all : setMembers(id, all);
-    const filters = id === "generated" || id === "adversarial" || id === "city" ? mutationsOf(members) : undefined;
+    const filters = id === "generated" || id === "adversarial" || id === "city" || id === "haiku" || id === "bulk" ? mutationsOf(members) : undefined;
     return { id, label: SET_LABELS[id], count: members.length, ...(filters ? { filters } : {}) };
   });
 }

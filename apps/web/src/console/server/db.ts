@@ -93,6 +93,21 @@ const MIGRATIONS = [
      summary TEXT NOT NULL
    )`,
   `CREATE INDEX IF NOT EXISTS test_runs_workflow ON test_runs (workflow_id, started_at)`,
+  // Evidence and Reality reads (dashboard v2): per-dataset listing and the ANSWERS/ mirror.
+  `CREATE INDEX IF NOT EXISTS executions_dataset ON executions (dataset, started_at)`,
+  `CREATE INDEX IF NOT EXISTS executions_origin ON executions (origin, case_id)`,
+  // Practice result cache (practiceCache.ts): key = dataset/caseId#hash of the exact flow JSON under test.
+  `CREATE TABLE IF NOT EXISTS practice_cache (
+     key TEXT PRIMARY KEY,
+     case_id TEXT NOT NULL,
+     dataset TEXT NOT NULL,
+     flow_hash TEXT NOT NULL,
+     execution_id TEXT NOT NULL,
+     workflow_id TEXT,
+     version INTEGER,
+     test_case TEXT NOT NULL,
+     created_at TEXT NOT NULL
+   )`,
 ];
 
 /** Columns added after the first release (voice, PRD I5). ALTER TABLE ADD COLUMN is not idempotent, so check first. */
@@ -101,6 +116,10 @@ const ADDED_COLUMNS: { table: string; column: string; type: string }[] = [
   { table: "executions", column: "outbox", type: "TEXT" },
   { table: "executions", column: "card", type: "TEXT" },
   { table: "executions", column: "voice", type: "TEXT" },
+  // Evidence v2: the judge's verdict in parts. eval_critical 1 = a must_not rule was broken (score forced to 0).
+  { table: "executions", column: "eval_critical", type: "INTEGER" },
+  { table: "executions", column: "eval_verdict", type: "TEXT" },
+  { table: "executions", column: "eval_broken", type: "TEXT" }, // JSON string[]
 ];
 
 function migrate(db: Database) {
@@ -109,6 +128,17 @@ function migrate(db: Database) {
     const have = db.prepare(`PRAGMA table_info(${c.table})`).all().some((r) => r.name === c.column);
     if (!have) db.exec(`ALTER TABLE ${c.table} ADD COLUMN ${c.column} ${c.type}`);
   }
+}
+
+/**
+ * Changes whenever the database does: total_changes() counts writes on this (cached, process-wide)
+ * connection, data_version counts commits by other connections. Used to cache derived reads.
+ */
+export function dbVersion(): string {
+  const db = getDb();
+  const changes = db.prepare("SELECT total_changes() AS n").get()?.n ?? 0;
+  const external = db.prepare("PRAGMA data_version").get()?.data_version ?? 0;
+  return `${String(changes)}:${String(external)}`;
 }
 
 const g = globalThis as unknown as { __consoleDb?: { path: string; db: Database } };

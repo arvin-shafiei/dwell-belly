@@ -1,15 +1,15 @@
 // Checks generated, adversarial and city case files against the schema and the structural rules.
-// Usage: node scripts/eval/validate-cases.mjs [file ...]   (no args: every file in data/generated/delivery, data/adversarial/delivery and data/city/delivery)
+// Usage: node scripts/eval/validate-cases.mjs [file ...]   (no args: every file in data/generated/delivery, data/adversarial/delivery, data/city/delivery, data/haiku/delivery and data/bulk/delivery)
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
-import { ADVERSARIAL_DIR, CITY_DIR, GENERATED_DIR } from "./cases.mjs";
+import { ADVERSARIAL_DIR, BULK_DIR, CITY_DIR, GENERATED_DIR, HAIKU_DIR } from "./cases.mjs";
 import { problems } from "./checks.mjs";
 import { MUTATIONS } from "./mutations.mjs";
 import { Event, FORMATS, GeneratedCaseDraft } from "./schema.mjs";
 
 const CaseFile = GeneratedCaseDraft.extend({
-  id: z.string().regex(/^(gen|adv|city)-\d{3,4}$/),
+  id: z.string().regex(/^(gen|adv|city|haiku|bulk)-\d{3,4}$/),
   track: z.literal("delivery"),
   generated: z.literal(true),
   mutation: z.enum(Object.keys(MUTATIONS)),
@@ -26,11 +26,16 @@ const CaseFile = GeneratedCaseDraft.extend({
     corrupt: z.boolean().optional(),
   })).optional(),
   post_decision_events: z.array(Event).optional(),
+  // Bulk cases only (gen-bulk.mjs): the key is derived by rule, and the raw folder layout to write.
+  keySource: z.literal("rule").optional(),
+  transforms: z.array(z.string()).optional(),
+  layout: z.string().optional(),
+  dateShiftDays: z.number().optional(),
 });
 
 const args = process.argv.slice(2);
 const jsonIn = async (dir) => (await readdir(dir).catch(() => [])).filter((n) => n.endsWith(".json")).map((n) => path.join(dir, n));
-const files = args.length ? args : [...await jsonIn(GENERATED_DIR), ...await jsonIn(ADVERSARIAL_DIR), ...await jsonIn(CITY_DIR)];
+const files = args.length ? args : [...await jsonIn(GENERATED_DIR), ...await jsonIn(ADVERSARIAL_DIR), ...await jsonIn(CITY_DIR), ...await jsonIn(HAIKU_DIR), ...await jsonIn(BULK_DIR)];
 
 let bad = 0;
 for (const file of files) {

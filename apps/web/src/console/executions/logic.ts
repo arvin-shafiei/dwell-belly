@@ -23,6 +23,45 @@ export function filterExecutions<T extends ExecutionSummary>(rows: T[], f: ExecF
   );
 }
 
+// ---- List chips -----------------------------------------------------------------------
+
+export type ResultChip = "all" | "sent" | "person" | "asked" | "stopped" | "failed";
+
+export const RESULT_CHIPS: { id: ResultChip; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "sent", label: "Sent" },
+  { id: "person", label: "Needs a person" },
+  { id: "asked", label: "Asked" },
+  { id: "stopped", label: "Stopped" },
+  { id: "failed", label: "Didn't finish" },
+];
+
+/** Which result chip a run falls under (besides "All"); null for running and "nothing to do" runs. */
+export function chipOf(e: { status: ExecStatus; outcome: string | null }): Exclude<ResultChip, "all"> | null {
+  if (e.status === "running") return null;
+  if (e.status === "error" || e.outcome === "error") return "failed";
+  switch (e.outcome) {
+    case "acted": return "sent";
+    case "escalated": return "person";
+    case "asked_for_info": return "asked";
+    case "blocked": return "stopped";
+    default: return null;
+  }
+}
+
+export function chipCounts(rows: { status: ExecStatus; outcome: string | null }[]): Record<ResultChip, number> {
+  const c: Record<ResultChip, number> = { all: rows.length, sent: 0, person: 0, asked: 0, stopped: 0, failed: 0 };
+  for (const r of rows) {
+    const k = chipOf(r);
+    if (k) c[k]++;
+  }
+  return c;
+}
+
+export function matchesChip(e: { status: ExecStatus; outcome: string | null }, chip: ResultChip): boolean {
+  return chip === "all" || chipOf(e) === chip;
+}
+
 /** Newest first; running ones float to the top. */
 export function sortExecutions<T extends ExecutionSummary>(rows: T[]): T[] {
   return [...rows].sort((a, b) => {

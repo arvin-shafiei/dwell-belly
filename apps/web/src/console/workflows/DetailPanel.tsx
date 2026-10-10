@@ -7,7 +7,8 @@ import type { FlowEdge, FlowNode, Runner } from "../types";
 import { Icon } from "./icons";
 import { ALL_RUNNERS, metaFor, nodeTitle, plainWhen } from "./nodeTypes";
 import { carefulToThresholds, carefulWord, thresholdsToCareful } from "./careful";
-import { plainStep, riskWord } from "../../ui/plain";
+import { riskWord } from "../../ui/plain";
+import { lastRunView, passedLabel, runnerWords, settingRows, type NodeTally } from "./runStats";
 import { fmtMs, fmtUsd, inputsOf, type NodeRun, type RunOverlay } from "./status";
 import { Badge, Btn, JsonView, RunnerChip, SectionLabel } from "./bits";
 
@@ -37,12 +38,12 @@ function GateSliders({ config, risk, onChange }: {
         )}
       </div>
       <div className="flex justify-between text-[10px] uppercase tracking-wide">
-        <span className="text-[#4ade80]">allow</span><span className="text-[#fbbf24]">ask a human</span><span className="text-[#f87171]">block</span>
+        <span className="text-[#4ade80]">send</span><span className="text-[#fbbf24]">ask a person</span><span className="text-[#f87171]">stop</span>
       </div>
-      {([["allow_below", "Allow below", allow, "#22c55e"], ["block_above", "Block at or above", block, "#ef4444"]] as const).map(([k, label, v, c]) => (
+      {([["allow_below", "Send on its own below", allow, "#22c55e"], ["block_above", "Stop at or above", block, "#ef4444"]] as const).map(([k, label, v, c]) => (
         <label key={k} className="block">
           <div className="flex items-center justify-between text-[12px] text-white/75">
-            <span>{label} <code className="ml-1 text-[10px] text-white/35">{k}</code></span>
+            <span>{label}</span>
             <span className="tabular-nums font-semibold" style={{ color: c }}>{v.toFixed(2)}</span>
           </div>
           <input
@@ -52,7 +53,7 @@ function GateSliders({ config, risk, onChange }: {
           />
         </label>
       ))}
-      {risk !== null && <div className="text-[11px] text-white/50">White marker: risk {risk.toFixed(2)} in the selected execution.</div>}
+      {risk !== null && <div className="text-[11px] text-white/50">White marker: how risky the shown case was ({risk.toFixed(2)}).</div>}
     </div>
   );
 }
@@ -266,49 +267,194 @@ function CarefulSlider({ config, risk, onChange }: {
   );
 }
 
-export function NodePanel({ node, overlay, onChange, onDelete, onClose }: {
+type InspectorTab = "about" | "settings" | "run";
+
+const MARK_STYLE = {
+  ok: { text: "Done", cls: "text-rv-green", dot: "bg-rv-green" },
+  warn: { text: "Held for a person", cls: "text-rv-amber", dot: "bg-rv-amber" },
+  error: { text: "Went wrong", cls: "text-rv-red", dot: "bg-rv-red" },
+} as const;
+
+function TallyBar({ tally, runs }: { tally: NodeTally | undefined; runs: number }) {
+  if (!runs) return <p className="text-rv-caption text-white/45">No case runs of this playbook yet.</p>;
+  const t = tally ?? { passed: 0, ok: 0, warn: 0, error: 0 };
+  const pct = (n: number) => `${(n / runs) * 100}%`;
+  return (
+    <div>
+      <div className="text-rv-small text-white/80">{passedLabel(tally, runs)}</div>
+      <div className="mt-2 flex h-2 overflow-hidden rounded-full bg-white/[0.06]" role="img" aria-label={passedLabel(tally, runs)}>
+        <div className="bg-rv-green" style={{ width: pct(t.ok) }} />
+        <div className="bg-rv-amber" style={{ width: pct(t.warn) }} />
+        <div className="bg-rv-red" style={{ width: pct(t.error) }} />
+      </div>
+      {t.passed > 0 && (
+        <div className="mt-1.5 flex gap-3 text-rv-caption text-white/50 tabular">
+          {t.ok > 0 && <span><span className="text-rv-green">{t.ok}</span> fine</span>}
+          {t.warn > 0 && <span><span className="text-rv-amber">{t.warn}</span> held for a person</span>}
+          {t.error > 0 && <span><span className="text-rv-red">{t.error}</span> went wrong</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReadOnlySlider({ label, value }: { label: string; value: number }) {
+  return (
+    <label className="block">
+      <div className="flex items-center justify-between text-rv-small text-white/75">
+        <span>{label}</span><span className="tabular font-semibold text-white/90">{value.toFixed(2)}</span>
+      </div>
+      <input type="range" min={0} max={1} step={0.01} value={value} readOnly disabled aria-label={label} className="mt-1 w-full opacity-70" style={{ accentColor: "#8b8b96" }} />
+    </label>
+  );
+}
+
+export function NodePanel({ node, overlay, flow, tally, runs, runName, onChange, onDelete, onClose }: {
   node: FlowNode;
   overlay: RunOverlay | null;
+  flow?: { nodes: Pick<FlowNode, "id" | "type">[] } | null;
+  /** How many of the last `runs` case runs passed through this step. */
+  tally?: NodeTally;
+  runs?: number;
+  /** The case shown on the canvas ("delivery-013"), for the Last run tab. */
+  runName?: string | null;
   onChange: (patch: Partial<Omit<FlowNode, "id">>) => void;
   onDelete: () => void;
   onClose: () => void;
 }) {
+  const run = overlay?.nodes[node.id] ?? null;
+  const [tab, setTab] = useState<InspectorTab>(run ? "run" : "about");
   const [advanced, setAdvanced] = useState(false);
   const meta = metaFor(node.type);
-  const run = overlay?.nodes[node.id] ?? null;
   const gateOut = run?.output && run.output.type === "safety_gate" ? (run.output as { risk?: number }) : null;
   const risk = typeof gateOut?.risk === "number" ? gateOut.risk : null;
-  const status = run ? (run.status === "ok" ? "Done" : run.status === "error" ? "Went wrong" : run.status === "skipped" ? "Skipped" : "Working…") : null;
+  const view = lastRunView(overlay, node.id, flow);
+  const rows = settingRows(node);
+  const mark = view?.mark ? MARK_STYLE[view.mark] : null;
 
   return (
-    <aside className="flex h-full w-[340px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]">
+    <aside className="flex h-full w-[340px] shrink-0 flex-col border-l border-rv-line bg-rv-sidebar" aria-label="Step details">
       <div className="flex items-start gap-3 px-4 pb-3 pt-4">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white/[0.06]" style={{ color: meta.color }}>
+        <span className="relative grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white/[0.06]" style={{ color: meta.color }}>
           <Icon name={meta.icon} size={20} />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[16px] font-semibold leading-snug text-white">{nodeTitle(node)}</div>
-          <div className="mt-0.5 text-[13px] text-white/55">{meta.description}</div>
+          <div className="text-rv-heading font-semibold text-white">{nodeTitle(node)}</div>
+          <div className="mt-0.5 text-rv-caption text-white/50">{meta.group} step</div>
         </div>
-        <button type="button" onClick={onDelete} title="Remove this step" className="rounded p-1.5 text-white/45 hover:bg-[#ef4444]/15 hover:text-[#f87171]"><Icon name="trash" size={15} /></button>
-        <button type="button" onClick={onClose} title="Close" className="rounded p-1.5 text-white/45 hover:bg-white/10 hover:text-white"><Icon name="close" size={15} /></button>
+        <button type="button" onClick={onDelete} title="Remove this step" aria-label="Remove this step" className="rounded p-1.5 text-white/45 hover:bg-[#ef4444]/15 hover:text-[#f87171]"><Icon name="trash" size={15} /></button>
+        <button type="button" onClick={onClose} title="Close (Esc)" aria-label="Close" className="rounded p-1.5 text-white/45 hover:bg-white/10 hover:text-white"><Icon name="close" size={15} /></button>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <div className="space-y-5 px-4 pb-4">
-          {run && (
-            <div className="rounded-lg bg-white/[0.04] px-3 py-2.5">
-              <div className={`text-[13px] font-semibold ${run.status === "ok" ? "text-[#4ade80]" : run.status === "error" ? "text-[#f87171]" : "text-white/70"}`}>{status}</div>
-              {(() => { const line = plainStep(node.type, run.summary, run.output); return line ? <div className="mt-0.5 text-[13px] leading-snug text-white/75">{line}</div> : null; })()}
-            </div>
-          )}
-          {node.type === "safety_gate" && (
-            <CarefulSlider config={node.config ?? {}} risk={risk} onChange={(c) => onChange({ config: c })} />
-          )}
-          <button type="button" onClick={() => setAdvanced((a) => !a)} className="inline-flex items-center gap-1 text-[12px] text-white/45 hover:text-white/80">
-            <Icon name="chevron" size={11} className={advanced ? "rotate-90" : ""} /> Advanced
+      <div className="flex shrink-0 gap-1 border-b border-rv-line px-3" role="tablist">
+        {([["about", "What it does"], ["settings", "Settings"], ["run", "Last run"]] as const).map(([k, l]) => (
+          <button
+            key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
+            className={`-mb-px inline-flex items-center gap-1.5 border-b-2 px-2.5 pb-2 pt-1 text-rv-small font-medium ${tab === k ? "border-rv-orange text-white" : "border-transparent text-white/50 hover:text-white/80"}`}
+          >
+            {l}
+            {k === "run" && mark && <span className={`h-1.5 w-1.5 rounded-full ${mark.dot}`} />}
           </button>
-        </div>
-        {advanced && <NodeAdvanced node={node} overlay={overlay} onChange={onChange} />}
+        ))}
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {tab === "about" && (
+          <div className="space-y-5 px-4 py-4">
+            <p className="text-rv-body leading-relaxed text-white/85">{meta.description}</p>
+            <div>
+              <SectionLabel>How it works</SectionLabel>
+              <p className="text-rv-small text-white/70">{runnerWords(node.runs_on) || "Fixed rules"}</p>
+            </div>
+            {meta.outputs && meta.outputs.length > 1 && (
+              <div>
+                <SectionLabel>Where it can lead</SectionLabel>
+                <div className="flex flex-wrap gap-1.5">
+                  {meta.outputs.map((o) => <Badge key={o} tone={o === "allow" ? "green" : o === "ask" ? "amber" : o === "block" ? "red" : "grey"}>{plainWhen(o)}</Badge>)}
+                </div>
+              </div>
+            )}
+            <div>
+              <SectionLabel>Recent cases</SectionLabel>
+              <TallyBar tally={tally} runs={runs ?? 0} />
+            </div>
+          </div>
+        )}
+
+        {tab === "settings" && (
+          <div className="space-y-5 px-4 py-4">
+            {node.type === "safety_gate" ? (
+              <>
+                <CarefulSlider config={node.config ?? {}} risk={risk} onChange={(c) => onChange({ config: c })} />
+                <div>
+                  <SectionLabel>Exact limits (risk 0 to 1)</SectionLabel>
+                  <GateSliders config={node.config ?? {}} risk={risk} onChange={(c) => onChange({ config: c })} />
+                </div>
+              </>
+            ) : rows.length === 0 ? (
+              <p className="text-rv-small text-white/50">This step has nothing to set. It works the same way every time.</p>
+            ) : (
+              <div className="space-y-4">
+                {rows.map((r) => r.threshold !== undefined
+                  ? <ReadOnlySlider key={r.key} label={r.label} value={r.threshold} />
+                  : (
+                    <div key={r.key} className="flex items-baseline justify-between gap-3 text-rv-small">
+                      <span className="text-white/60">{r.label}</span>
+                      <span className="truncate text-right text-white/90">{r.text}</span>
+                    </div>
+                  ))}
+                <p className="text-rv-caption text-white/40">Change these in Advanced below.</p>
+              </div>
+            )}
+            <button type="button" onClick={() => setAdvanced((a) => !a)} className="inline-flex items-center gap-1 text-rv-caption text-white/45 hover:text-white/80">
+              <Icon name="chevron" size={11} className={advanced ? "rotate-90" : ""} /> Advanced
+            </button>
+          </div>
+        )}
+        {tab === "settings" && advanced && <NodeAdvanced node={node} overlay={overlay} onChange={onChange} />}
+
+        {tab === "run" && (
+          <div className="space-y-4 px-4 py-4">
+            {!overlay ? (
+              <div className="rounded-md border border-dashed border-white/10 p-4 text-center text-rv-small text-white/50">
+                Pick a case in <span className="text-white/80">Show a run</span> at the top to see what happened here.
+              </div>
+            ) : !view ? (
+              <div className="rounded-md border border-dashed border-white/10 p-4 text-center text-rv-small text-white/50">
+                This step didn&apos;t run in {runName ? <code className="text-white/70">{runName}</code> : "this case"}.
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  {mark && <span className={`text-rv-small font-semibold ${mark.cls}`}>{mark.text}</span>}
+                  {runName && <code className="truncate text-rv-caption text-white/40">{runName}</code>}
+                  {view.cost && <span className="ml-auto shrink-0 text-rv-caption tabular text-white/40">{view.cost}</span>}
+                </div>
+                <div>
+                  <SectionLabel>What came in</SectionLabel>
+                  <div className="space-y-2">
+                    {view.input.length === 0 && <p className="text-rv-small text-white/45">Nothing recorded.</p>}
+                    {view.input.map((i, k) => (
+                      <div key={k} className="rounded-md border border-rv-line bg-rv-panel px-3 py-2">
+                        <div className="text-rv-caption text-white/45">From {i.from}</div>
+                        {i.lines.map((l, j) => <div key={j} className="mt-0.5 text-rv-small leading-snug text-white/80">{l}</div>)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-center text-white/25" aria-hidden><Icon name="chevron" size={14} className="rotate-90" /></div>
+                <div>
+                  <SectionLabel>What it did</SectionLabel>
+                  <div className="rounded-md border border-rv-line bg-rv-card px-3 py-2">
+                    {view.output.length === 0 && <p className="text-rv-small text-white/45">Nothing recorded.</p>}
+                    <ul className="space-y-1">
+                      {view.output.map((l, j) => <li key={j} className={`text-rv-small leading-snug ${j === 0 ? "font-medium text-white" : "text-white/75"}`}>{l}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );

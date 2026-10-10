@@ -1,7 +1,8 @@
 // Creates the "Desk Caller" ElevenLabs agent and its four client tools, then reads the agent back to
 // check every dynamic variable has a default (a missing one stops a call from starting).
 // Usage: node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs
-//        node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs --update <agent_id>   (new prompt, same tools)
+//        node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs --update <agent_id>   (new prompt, same tools,
+//        typing sound on each tool, end_call switched on)
 // Prints ELEVENLABS_AGENT_ID=<id> to put in apps/api/.env.local.
 
 const API = "https://api.elevenlabs.io";
@@ -107,14 +108,23 @@ async function call(method, path, body) {
   return JSON.parse(text);
 }
 
+// A typing sound while a tool runs (the gate check takes up to 2.5 s), and the agent may hang up itself
+// once the call is done, which ends the session and hands the transcript to the console.
+const TOOL_SOUND = { tool_call_sound: "typing", tool_call_sound_behavior: "auto" };
+const END_CALL = { type: "system", name: "end_call", description: "", params: { system_tool_type: "end_call" } };
+
 async function update(id) {
   const current = await call("GET", `/v1/convai/agents/${id}`);
   const prompt = current?.conversation_config?.agent?.prompt ?? {};
+  for (const toolId of prompt.tool_ids ?? []) {
+    const tool = await call("GET", `/v1/convai/tools/${toolId}`);
+    await call("PATCH", `/v1/convai/tools/${toolId}`, { tool_config: { ...tool.tool_config, ...TOOL_SOUND } });
+  }
   await call("PATCH", `/v1/convai/agents/${id}`, {
     conversation_config: {
       agent: {
         first_message: FIRST_MESSAGE,
-        prompt: { prompt: SYSTEM_PROMPT, llm: prompt.llm ?? LLM, tool_ids: prompt.tool_ids ?? [] },
+        prompt: { prompt: SYSTEM_PROMPT, llm: prompt.llm ?? LLM, tool_ids: prompt.tool_ids ?? [], built_in_tools: { end_call: END_CALL } },
         dynamic_variables: { dynamic_variable_placeholders: PLACEHOLDERS },
       },
     },
@@ -127,7 +137,7 @@ async function verify(id) {
   const agentCfg = stored?.conversation_config?.agent ?? {};
   const kept = agentCfg.dynamic_variables?.dynamic_variable_placeholders ?? {};
   const missing = Object.keys(PLACEHOLDERS).filter((k) => !(k in kept));
-  console.log(`agent model: ${agentCfg.prompt?.llm}, tools: ${(agentCfg.prompt?.tool_ids ?? []).length}`);
+  console.log(`agent model: ${agentCfg.prompt?.llm}, tools: ${(agentCfg.prompt?.tool_ids ?? []).length}, can hang up: ${Boolean(agentCfg.prompt?.built_in_tools?.end_call)}`);
   console.log(`prompt has read-back rule: ${String(agentCfg.prompt?.prompt ?? "").includes("Read any that matter back")}`);
   if (missing.length) console.log(`WARNING: placeholders not stored for: ${missing.join(", ")}`);
   else console.log("all 10 variable defaults stored");
@@ -147,7 +157,7 @@ async function main() {
   const toolIds = [];
   for (const tool of TOOLS) {
     const created = await call("POST", "/v1/convai/tools", {
-      tool_config: { type: "client", ...tool, expects_response: true, response_timeout_secs: 10 },
+      tool_config: { type: "client", ...tool, expects_response: true, response_timeout_secs: 10, ...TOOL_SOUND },
     });
     toolIds.push(created.id);
     console.log(`tool ${tool.name}: ${created.id}`);
@@ -158,7 +168,7 @@ async function main() {
       agent: {
         first_message: FIRST_MESSAGE,
         language: "en",
-        prompt: { prompt: SYSTEM_PROMPT, llm: LLM, tool_ids: toolIds },
+        prompt: { prompt: SYSTEM_PROMPT, llm: LLM, tool_ids: toolIds, built_in_tools: { end_call: END_CALL } },
         dynamic_variables: { dynamic_variable_placeholders: PLACEHOLDERS },
       },
     },

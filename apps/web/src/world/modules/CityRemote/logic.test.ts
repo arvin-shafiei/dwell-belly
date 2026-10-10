@@ -52,7 +52,7 @@ describe("applyCommand", () => {
   it("maps injections to bus requests and the chase hook", () => {
     const s = state();
     const { d, events } = deps(s);
-    for (const event of ["car_crash", "truck_crash", "pileup", "roadworks", "breakdown", "emergency_landing", "plane_crash", "chase"] as const)
+    for (const event of ["car_crash", "truck_crash", "pileup", "roadworks", "breakdown", "emergency_landing", "plane_crash", "chase", "motorcade"] as const)
       applyCommand({ type: "inject", event }, d);
     expect(events).toEqual([
       { type: "request:crash", kind: "car_crash" },
@@ -62,6 +62,7 @@ describe("applyCommand", () => {
       { type: "request:breakdown" },
       { type: "request:plane", kind: "emergency_landing" },
       { type: "request:plane", kind: "plane_crash" },
+      { type: "request:event", kind: "motorcade" },
     ]);
     expect(d.chase).toHaveBeenCalledTimes(1);
   });

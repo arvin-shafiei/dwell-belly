@@ -3,7 +3,7 @@
 // queue (modules/WorkflowDriver/link.ts) until a slot frees up. There is no mock fallback. Spend is the sum of each finished trace's run_end.totalCostUsd.
 
 export const BUDGET_WINDOW_MS = 10 * 60_000;
-export const DEFAULT_MAX_PER_WINDOW = 20;
+export const DEFAULT_MAX_PER_WINDOW = 3; // ~$25 left on the key today: keep the city cheap
 
 export interface AgentBudget {
   maxPerWindow: number;

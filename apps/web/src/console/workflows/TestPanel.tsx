@@ -13,13 +13,14 @@ import {
 } from "./api";
 import {
   AUTO_MAX_ITERATIONS, MAX_MISSES, POLL_MS, autoNext, autoStart, costPerCase, initialPoll, latestVersion,
-  learningCurve, pollReducer, retestBody, type AutoState,
+  learningCurve, pollReducer, retestBody, reuseLine, type AutoState,
 } from "./testing";
 import { LearningCurve } from "./LearningCurve";
+import { caseElapsedMs, caseTitle, fmtElapsed, isFinished, overallProgress, runningLine } from "./practiceProgress";
 import { cents, scrubLeaks } from "../../ui/plain";
 
 const SET_WORDS: Record<string, string> = {
-  quick: "Quick 5", fixtures: "Tricky cases", adversarial: "Hard cases", generated: "Made-up cases", custom: "Pick my own",
+  quick: "Quick 5", city: "City cases", fixtures: "Tricky cases", adversarial: "Hard cases", generated: "Made-up cases", custom: "Pick my own",
 };
 
 const FALLBACK_SETS: ScenarioSetInfo[] = [
@@ -48,29 +49,57 @@ export function caseSentence(c: TestRunCase): string {
   if (c.status === "queued") return "Waiting…";
   if (c.status === "running") return "Working on it…";
   if (c.status === "error") return "Couldn't finish this case.";
+  if (c.reused) return `Reused · same playbook, same case. ${scrubLeaks(c.verdict) || (c.status === "passed" ? "Handled it right." : "Didn't handle it right.")}`;
   const v = scrubLeaks(c.verdict);
   if (v) return v;
   if (c.mustNotBroken.length) return "Broke a rule it must keep.";
   return c.status === "passed" ? "Handled it right." : "Didn't handle it right.";
 }
 
-function CaseRow({ c, selected, onClick }: { c: TestRunCase; selected: boolean; onClick: () => void }) {
+/** Current time, ticking every `ms` while `on`; frozen otherwise. */
+function useNow(on: boolean, ms = 500): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!on) return;
+    const tick = () => setNow(Date.now());
+    const t = setInterval(tick, ms);
+    const first = setTimeout(tick, 0);
+    return () => { clearInterval(t); clearTimeout(first); };
+  }, [on, ms]);
+  return now;
+}
+
+function CaseRow({ c, selected, onClick, now, live }: { c: TestRunCase; selected: boolean; onClick: () => void; now: number; live: boolean }) {
+  const done = isFinished(c);
+  const elapsed = caseElapsedMs(c, now);
+  const sub = !live && (c.status === "running" || c.status === "queued")
+    ? (c.status === "running" ? "Still finishing in the background." : "Not started.")
+    : c.status === "queued" ? "Waiting to start…" : caseSentence(c);
   const icon =
     c.status === "queued" ? <span className="block h-4 w-4 rounded-full border-2 border-white/20" />
       : c.status === "running" ? <span className="wf-spin block h-4 w-4 rounded-full border-2 border-[#ff6a1a] border-t-transparent" />
-      : c.status === "passed" ? <span className="text-[16px] font-bold leading-none text-[#4ade80]">✓</span>
-      : <span className="text-[16px] font-bold leading-none text-[#f87171]">✗</span>;
+      : c.status === "passed" ? <span className="text-[18px] font-bold leading-none text-[#4ade80]" aria-label="Right">✓</span>
+      : <span className="text-[18px] font-bold leading-none text-[#f87171]" aria-label="Wrong">✗</span>;
   return (
     <button
       type="button" onClick={onClick} disabled={!c.executionId}
       title={c.executionId ? "Show this case on the playbook" : undefined}
-      className={`flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left ${selected ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"} disabled:cursor-default`}
+      className={`relative flex w-full items-start gap-2.5 overflow-hidden rounded-md px-2.5 py-2 text-left ${selected ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"} disabled:cursor-default`}
     >
-      <span className="mt-0.5 grid w-4 shrink-0 place-items-center">{icon}</span>
+      <span key={done ? "done" : "live"} className={`mt-0.5 grid w-5 shrink-0 place-items-center ${done ? "wf-appear" : ""}`}>{icon}</span>
       <span className="min-w-0 flex-1">
-        <span className="line-clamp-2 block text-[13px] leading-snug text-white/85">{caseSentence(c)}</span>
-        <span className="block text-[11px] text-white/30">{c.caseId}</span>
+        <span className="block truncate text-[14px] font-medium leading-snug text-white/90" title={c.caseId}>{caseTitle(c)}</span>
+        <span className={`line-clamp-2 block text-[12.5px] leading-snug ${done ? "text-white/60" : "text-white/40"}`}>{sub}</span>
       </span>
+      <span className="shrink-0 text-right tabular-nums">
+        {elapsed !== null && (
+          <span className={`block text-[12.5px] ${c.status === "running" && live ? "text-[#ff9a5c]" : "text-white/50"}`} title={c.reused ? "Time the original run took" : done ? "Time taken" : "Time so far"}>{fmtElapsed(elapsed)}</span>
+        )}
+        {c.reused ? (
+          <span className="block text-[11px] text-white/30" title={cents(c.reused.originalCostUsd) ? `The original run cost ${cents(c.reused.originalCostUsd)}` : undefined}>0¢ new</span>
+        ) : done && cents(c.costUsd) && <span className="block text-[11px] text-white/30">{cents(c.costUsd)}</span>}
+      </span>
+      {c.status === "running" && live && <span aria-hidden className="wf-row-pulse pointer-events-none absolute inset-x-2.5 bottom-0 h-[2px]" />}
     </button>
   );
 }
@@ -97,7 +126,7 @@ function ConfirmAuto({ cases, perCase, onGo, onCancel }: { cases: number; perCas
   );
 }
 
-export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExecution, onProposal, onLoadVersion, onMakeCurrent, versionsTick, onClose }: {
+export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExecution, onProposal, onLoadVersion, onMakeCurrent, versionsTick, initialSet, initialFilter, onClose }: {
   workflowId: string | null;
   /** Why testing is unavailable right now (draft, unsaved changes), or null. */
   blocked: string | null;
@@ -112,12 +141,17 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   onMakeCurrent: (v: WorkflowVersion) => Promise<boolean>;
   /** Bumped when the editor saved a new version. */
   versionsTick?: number;
+  /** Case list (and filter) to start with, e.g. from a "Run more cases" link. */
+  initialSet?: ScenarioSetId | null;
+  initialFilter?: string | null;
   onClose: () => void;
 }) {
   const [sets, setSets] = useState<ScenarioSetInfo[]>(FALLBACK_SETS);
   const [setsNote, setSetsNote] = useState<string | null>(null);
-  const [setId, setSetId] = useState<ScenarioSetId>("quick");
-  const [filter, setFilter] = useState("");
+  const [setId, setSetId] = useState<ScenarioSetId>(initialSet ?? "quick");
+  const [filter, setFilter] = useState(initialFilter ?? "");
+  // A filter that came with a link is sent even if the case list does not offer it as a choice.
+  const [linkFilter, setLinkFilter] = useState(initialFilter ?? "");
   const [limit, setLimit] = useState(5);
   const [custom, setCustom] = useState<string[]>([]);
   const [caseQ, setCaseQ] = useState("");
@@ -135,6 +169,8 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   const [auto, setAuto] = useState<AutoState | null>(null);
   const [confirmAuto, setConfirmAuto] = useState(false);
   const [advanced, setAdvanced] = useState(false);
+  // Default: reuse results this exact playbook already has for a case (instant, free). On: run every case again.
+  const [fresh, setFresh] = useState(false);
   const cancelRef = useRef(false);
   const stopAutoRef = useRef(false);
   const alive = useRef(true);
@@ -241,8 +277,9 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
     if (!workflowId) return null;
     const b: TestRunBody = { workflowId, set: setId, limit };
     if (version !== null) b.version = version;
-    if (filter && set?.filters?.includes(filter)) b.filter = filter;
+    if (filter && (set?.filters?.includes(filter) || filter === linkFilter)) b.filter = filter;
     if (setId === "custom") { b.caseIds = custom; b.limit = Math.min(20, Math.max(1, custom.length)); }
+    if (fresh) b.fresh = true;
     return b;
   };
 
@@ -334,7 +371,8 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   const disabled = !!blocked || !workflowId || running || autoRunning || improving || !!proposal;
 
   const finishedRun = finished ? run : null;
-  const progress = run ? run.cases.filter((c) => c.status !== "queued" && c.status !== "running").length : 0;
+  const progress = run ? run.cases.filter(isFinished).length : 0;
+  const now = useNow(running && !!run);
 
   return (
     <aside className="flex h-full w-full min-w-0 flex-col bg-[#19191d]">
@@ -348,17 +386,30 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
         {blocked && <div className="rounded-md bg-[#f59e0b]/10 px-3 py-2 text-[13px] text-[#fcd34d]">{blocked}</div>}
         {!blocked && hint && <div className="rounded-md bg-white/[0.04] px-3 py-2 text-[12.5px] text-white/60">{hint}</div>}
 
+        {(setId !== "quick" || filter) && !running && (
+          <div className="flex items-center gap-2 text-[12.5px] text-white/60">
+            <span>Cases: <span className="text-white/85">{SET_WORDS[setId] ?? set?.label ?? setId}</span>{filter ? <> · <span className="text-white/85">{filter.replace(/_/g, " ")}</span></> : null}</span>
+            <button type="button" className="ml-auto text-white/40 underline-offset-2 hover:text-white hover:underline" disabled={autoRunning} onClick={() => { setSetId("quick"); setFilter(""); setLinkFilter(""); }}>Back to Quick 5</button>
+          </div>
+        )}
+
         {/* Main action */}
         {running ? (
-          <Btn variant="outline" className="h-10 w-full justify-center text-[14px]" onClick={() => void cancel()}>Stop</Btn>
+          <Btn variant="outline" className="h-12 w-full justify-center text-[15px]" title="No new cases start; cases already running finish" onClick={() => void cancel()}>Cancel</Btn>
         ) : (
           <Btn
-            variant="primary" className="h-10 w-full justify-center text-[14px]"
+            variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold"
             disabled={disabled || (setId === "custom" && !custom.length)}
             onClick={() => { const b = body(); if (b) void runTest(b); }}
           >
             Practice on {caseCount} case{caseCount === 1 ? "" : "s"}
           </Btn>
+        )}
+        {!running && (
+          <label className="-mt-3 flex cursor-pointer items-center gap-2 text-[12px] text-white/55" title="Off: a case this exact playbook already ran is reused (instant, free). On: every case calls the agent again.">
+            <input type="checkbox" checked={fresh} onChange={(e) => setFresh(e.target.checked)} disabled={autoRunning} className="accent-[#ff6a1a]" />
+            Run fresh <span className="text-white/35">{fresh ? "· every case runs again" : "· reuses results this playbook already has"}</span>
+          </label>
         )}
 
         {error && <div className="rounded-md bg-[#ef4444]/10 px-3 py-2 text-[13px] text-[#fca5a5]">{scrubLeaks(error) || "Something went wrong."}</div>}
@@ -366,18 +417,37 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
         {busyMsg && <div className="text-[13px] text-white/60">{busyMsg}</div>}
 
         {/* Result */}
-        {poll.phase === "starting" && <div className="text-[13px] text-white/60">Starting…</div>}
+        {poll.phase === "starting" && <div className="text-[13px] text-white/60"><span className="wf-pulse-soft">●</span> Checking the playbook and starting {caseCount} case{caseCount === 1 ? "" : "s"}…</div>}
         {run && (
           <div>
-            <div className="text-[28px] font-semibold leading-tight tabular-nums text-white">
-              {running ? <>{progress} of {run.cases.length} done</> : <>{run.summary.passed} of {run.summary.total} right</>}
+            <div
+              aria-live="polite"
+              className={`text-[40px] font-semibold leading-none tracking-tight tabular-nums ${running ? "text-white" : run.summary.total > 0 && run.summary.passed === run.summary.total ? "text-[#4ade80]" : "text-white"}`}
+            >
+              {running ? <>{progress} of {run.cases.length} <span className="text-[22px] font-medium text-white/50">done</span></> : <>{run.summary.passed} of {run.summary.total} <span className="text-[22px] font-medium text-white/60">right</span></>}
             </div>
+            {reuseLine(run.cases) && (
+              <div className="mt-1.5 text-[12.5px] text-white/55" title="Reused cases come from an earlier run of this exact playbook: no new agent call, no new cost">{reuseLine(run.cases)}</div>
+            )}
+            {running && (
+              <>
+                <div className="mt-1.5 text-[12.5px] text-white/55">{runningLine(run.cases)}</div>
+                <div
+                  role="progressbar" aria-label="Practice progress, estimated from time" aria-valuemin={0} aria-valuemax={100}
+                  aria-valuenow={Math.round(overallProgress(run.cases, now) * 100)}
+                  className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"
+                >
+                  <div className="h-full rounded-full bg-[#ff6a1a] transition-[width] duration-500 ease-out" style={{ width: `${overallProgress(run.cases, now) * 100}%` }} />
+                </div>
+                <div className="mt-1 text-[11px] text-white/30">Bar fills with time and jumps as each case finishes.</div>
+              </>
+            )}
             {poll.phase === "cancelled" && <div className="text-[12px] text-white/45">Stopped early</div>}
             {!running && run.summary.costUsd > 0 && <div className="text-[11px] text-white/30">{cents(run.summary.costUsd)}</div>}
             <div className="mt-2 space-y-0.5">
               {run.cases.map((c) => (
                 <CaseRow
-                  key={`${c.dataset}/${c.caseId}`} c={c} selected={!!c.executionId && c.executionId === selectedExecId}
+                  key={`${c.dataset}/${c.caseId}`} c={c} selected={!!c.executionId && c.executionId === selectedExecId} now={now} live={poll.phase !== "cancelled"}
                   onClick={() => c.executionId && onShowExecution(c.executionId === selectedExecId ? null : c.executionId)}
                 />
               ))}
@@ -387,7 +457,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
 
         {/* Improve */}
         {finishedRun && failures > 0 && !proposal && !autoRunning && (
-          <Btn variant="primary" className="h-10 w-full justify-center text-[14px]" disabled={improving || !!blocked} onClick={() => void improve(finishedRun)}>
+          <Btn variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold" disabled={improving || !!blocked} onClick={() => void improve(finishedRun)}>
             {improving ? "Looking at what went wrong…" : "Improve it"}
           </Btn>
         )}
@@ -423,9 +493,9 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
         )}
 
         {accepted && !running && !autoRunning && (
-          <div className="space-y-2 rounded-lg bg-[#22c55e]/[0.07] px-3 py-3">
-            <div className="text-[13px] text-white/85">Saved. Try the same cases again?</div>
-            <Btn variant="primary" onClick={() => void retest()}>Practice again</Btn>
+          <div className="space-y-2.5 rounded-lg bg-[#22c55e]/[0.07] px-3 py-3">
+            <div className="text-[13.5px] text-white/85">Version {accepted.version} saved. Try the same cases again?</div>
+            <Btn variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold" onClick={() => void retest()}>Practice again</Btn>
           </div>
         )}
 
@@ -441,7 +511,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
 
         {/* Getting better? */}
         <div>
-          <div className="mb-1.5 text-[13px] font-semibold text-white/80">Getting better?</div>
+          <div className="mb-1.5 text-[14px] font-semibold text-white/85">Getting better?</div>
           <LearningCurve points={curve} current={version} />
         </div>
 
@@ -495,7 +565,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
               <div className="flex flex-wrap gap-1.5">
                 {sets.map((x) => (
                   <button
-                    key={x.id} type="button" onClick={() => { setSetId(x.id); setFilter(""); }} disabled={running || autoRunning}
+                    key={x.id} type="button" onClick={() => { setSetId(x.id); setFilter(""); setLinkFilter(""); }} disabled={running || autoRunning}
                     className={`rounded-md border px-2.5 py-1 text-[12px] ${setId === x.id ? "border-[#ff6a1a]/70 text-white" : "border-white/12 text-white/65 hover:bg-white/[0.04]"}`}
                   >
                     {SET_WORDS[x.id] ?? x.label.split(":")[0]}
@@ -503,9 +573,10 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
                 ))}
               </div>
               {setsNote && <div className="mt-1.5 text-[12px] text-[#fbbf24]">Couldn&apos;t load the case lists.</div>}
-              {(set?.filters?.length ?? 0) > 0 && (
+              {((set?.filters?.length ?? 0) > 0 || !!linkFilter) && (
                 <select value={filter} onChange={(e) => setFilter(e.target.value)} className="mt-2 h-8 w-full rounded-md border border-white/10 bg-[#222227] px-2 text-[12px] text-white outline-none">
                   <option value="">Any kind</option>
+                  {linkFilter && !(set?.filters ?? []).includes(linkFilter) && <option value={linkFilter}>{linkFilter.replace(/_/g, " ")}</option>}
                   {(set?.filters ?? []).map((f) => <option key={f} value={f}>{f.replace(/_/g, " ")}</option>)}
                 </select>
               )}

@@ -29,60 +29,66 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ---- Rivet desk console ("/") — additive; the /city page does not use these. ---- */
+/* ---- Rivet desk console ("/") — additive; the /city page does not use these. ----
+   Look: calm, flat, one dark theme, one accent (Rivet orange, used sparingly). No gradients, glows
+   or glass. Surfaces step up in lightness: sidebar < canvas < panel < card < raised.
+   Spacing scale (Tailwind steps): 1=4px 2=8px 3=12px 4=16px 6=24px 8=32px 12=48px. Use gap-2/3
+   inside a control, gap-4 between controls, gap-6 between cards, gap-8+ between page sections.
+   Type scale: text-rv-hero 40 · text-rv-big 30 · text-rv-title 18 · text-rv-heading 15 ·
+   text-rv-body 14 · text-rv-small 13 · text-rv-caption 12. Big numbers use tabular numerals. */
 @theme inline {
-  /* Surfaces are translucent so the backdrop shows through them, blurred (see "glass" below). */
-  --color-rv-canvas: rgba(23, 23, 27, 0.42);
-  --color-rv-sidebar: rgba(20, 20, 24, 0.62);
-  --color-rv-panel: rgba(40, 40, 47, 0.52);
-  --color-rv-card: rgba(44, 44, 52, 0.46);
-  --color-rv-raised: rgba(62, 62, 72, 0.6);
-  --color-rv-line: rgba(255, 255, 255, 0.09);
+  --color-rv-canvas: #1f1f23;
+  --color-rv-sidebar: #19191d;
+  --color-rv-panel: #222227;
+  --color-rv-card: #26262b;
+  --color-rv-raised: #303037;
+  --color-rv-line: rgba(255, 255, 255, 0.08);
   --color-rv-orange: #ff6a1a;
   --color-rv-orange-hi: #ff8443;
+  /* Status colours. Sent = green, Asked = blue, Needs a person = amber, Stopped = red,
+     Didn't finish = grey. Violet is only for "made up" data labels. */
   --color-rv-green: #3ecf8e;
-  --color-rv-red: #f2555a;
-  --color-rv-amber: #f5a524;
   --color-rv-blue: #5aa9ff;
+  --color-rv-amber: #f5a524;
+  --color-rv-red: #f2555a;
+  --color-rv-grey: #8b8b96;
   --color-rv-violet: #a78bfa;
   --font-console: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+
+  --text-rv-hero: 2.5rem;
+  --text-rv-hero--line-height: 1.05;
+  --text-rv-hero--letter-spacing: -0.03em;
+  --text-rv-big: 1.875rem;
+  --text-rv-big--line-height: 1.1;
+  --text-rv-big--letter-spacing: -0.025em;
+  --text-rv-title: 1.125rem;
+  --text-rv-title--line-height: 1.4;
+  --text-rv-heading: 0.9375rem;
+  --text-rv-heading--line-height: 1.4;
+  --text-rv-body: 0.875rem;
+  --text-rv-body--line-height: 1.55;
+  --text-rv-small: 0.8125rem;
+  --text-rv-small--line-height: 1.5;
+  --text-rv-caption: 0.75rem;
+  --text-rv-caption--line-height: 1.45;
 }
 
 .console-root {
   font-family: var(--font-ui), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   letter-spacing: -0.005em;
-  /* A still, low-contrast backdrop: two soft pools of light for the glass to pick up. No motion. */
-  background:
-    radial-gradient(900px 620px at 10% -10%, rgba(255, 106, 26, 0.22), transparent 60%),
-    radial-gradient(1000px 720px at 98% 0%, rgba(90, 169, 255, 0.16), transparent 58%),
-    radial-gradient(1200px 800px at 60% 112%, rgba(62, 207, 142, 0.10), transparent 60%),
-    #17171b;
-  background-attachment: fixed;
+  background: #1f1f23;
   color: #e9e9ee;
   color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glass: every console surface blurs what is behind it and carries a hairline of light along its
-   top edge. The workflow canvas is left out: blurring dozens of moving nodes makes panning stutter.
-   The header is left out too: a backdrop filter makes it its own layer, the main area paints over
-   that layer, and the "Run a case" picker that drops out of the header ends up hidden under the page. */
-.console-root :is(.bg-rv-card, .bg-rv-panel, .bg-rv-sidebar, .bg-rv-raised, .bg-rv-canvas):not(.react-flow *, header) {
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
-  backdrop-filter: blur(22px) saturate(160%);
-}
+/* Cards and panels: a flat fill and a hairline border, nothing else. */
 .console-root :is(.bg-rv-card, .bg-rv-panel):not(.react-flow *) {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 18px 40px -24px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
-/* Inside the canvas the same surfaces stay solid, so nodes read clearly over the dot grid. */
 .console-root .react-flow :is(.bg-rv-card, .bg-rv-panel, .bg-rv-raised) {
   background-color: #2a2a31;
-}
-@media (prefers-reduced-transparency: reduce) {
-  .console-root :is(.bg-rv-card, .bg-rv-panel, .bg-rv-sidebar, .bg-rv-raised) {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background-color: #26262b;
-  }
 }
 
 .console-root :is(code, kbd, pre, .font-mono) {
@@ -93,6 +99,11 @@ body {
 .console-root .tabular,
 .console-root table {
   font-variant-numeric: tabular-nums;
+}
+
+.console-root ::selection {
+  background: rgba(255, 106, 26, 0.35);
+  color: #fff;
 }
 
 /* n8n-like dotted canvas background (for workflow canvases and empty areas). */
@@ -119,9 +130,21 @@ body {
   background: transparent;
 }
 
-.console-root :focus-visible {
+/* Keyboard focus: one clear orange ring on everything focusable, only for keyboard users.
+   Text fields get the ring inside so it never gets clipped by a scrolling parent. */
+.console-root :focus-visible,
+.rv-toaster :focus-visible {
   outline: 2px solid #ff6a1a;
-  outline-offset: 1px;
+  outline-offset: 2px;
+}
+.console-root :is(input, textarea, select):focus-visible {
+  outline-offset: -1px;
+}
+.console-root tr:focus-visible {
+  outline-offset: -2px;
+}
+.console-root :focus:not(:focus-visible) {
+  outline: none;
 }
 
 @keyframes rv-pulse {
@@ -137,8 +160,39 @@ body {
   100% { background-position: 200px 0; }
 }
 .rv-skeleton {
-  background: linear-gradient(90deg, #2a2a30 0, #34343b 60px, #2a2a30 120px);
+  background: linear-gradient(90deg, #2c2c32 0, #35353c 60px, #2c2c32 120px);
   background-size: 400px 100%;
-  animation: rv-shimmer 1.2s linear infinite;
-  border-radius: 4px;
+  animation: rv-shimmer 1.4s linear infinite;
+  border-radius: 6px;
+}
+
+/* Toasts (console/ui/Toast.tsx). */
+@keyframes rv-toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.rv-toast {
+  animation: rv-toast-in 160ms ease-out;
+}
+
+/* Indeterminate progress bar (console/ui/ProgressBar). */
+@keyframes rv-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+.rv-indeterminate {
+  animation: rv-indeterminate 1.3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rv-pulse,
+  .rv-skeleton,
+  .rv-toast,
+  .rv-indeterminate {
+    animation: none;
+  }
+  .console-root *,
+  .rv-toaster * {
+    transition-duration: 0ms !important;
+  }
 }
