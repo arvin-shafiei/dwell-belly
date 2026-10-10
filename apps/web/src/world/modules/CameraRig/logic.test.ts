@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  approach, dollyDistance, easeInOutCubic, framePosition, pickTourShot, poseIsSane, wheelDollyLog, wheelPixels, zoneFrame,
+  approach, dollyDistance, wheelAction, PINCH_GAIN, FOLLOW_DIST, easeInOutCubic, framePosition, pickTourShot, poseIsSane, wheelDollyLog, wheelPixels, zoneFrame,
   CONTROL_TUNING, HOME_POS, HOME_TARGET, HOTKEYS, INTRO_POS, MAX_DIST, MAX_POLAR, MIN_DIST, WORLD_HALF, type TourIncident,
 } from "./logic";
 
@@ -94,9 +94,18 @@ describe("wheel zoom", () => {
     expect(wheelDollyLog(5000, 0, false, 300)).toBeLessThanOrEqual(0.22);
     expect(wheelDollyLog(-50, 1, false, 300)).toBeGreaterThanOrEqual(-0.22);
   });
-  it("gives pinch more gain and is softer far out", () => {
+  it("gives pinch more gain; plain scroll is softer far out", () => {
     expect(wheelDollyLog(3, 0, true, 300)).toBeGreaterThan(wheelDollyLog(3, 0, false, 300));
     expect(wheelDollyLog(20, 0, false, MAX_DIST)).toBeLessThan(wheelDollyLog(20, 0, false, 100));
+  });
+  it("a typical 0.5 s pinch (30 events x 4 px) zooms about 2x at any distance", () => {
+    for (const d of [60, 300, 1200]) {
+      let log = 0;
+      for (let i = 0; i < 30; i++) log += wheelDollyLog(4, 0, true, d);
+      expect(Math.exp(log)).toBeGreaterThan(1.8);
+      expect(Math.exp(log)).toBeLessThan(2.3);
+    }
+    expect(PINCH_GAIN).toBeGreaterThan(0);
   });
   it("ignores garbage input", () => {
     expect(wheelDollyLog(NaN, 0, false, 300)).toBe(0);
@@ -136,5 +145,27 @@ describe("home / reset pose", () => {
     expect(poseIsSane({ x: NaN, y: 1, z: 1 }, { x: 0, y: 0, z: 0 })).toBe(false);
     expect(poseIsSane({ x: 1, y: 1, z: 1 }, { x: Infinity, y: 0, z: 0 })).toBe(false);
     expect(poseIsSane({ x: 1, y: 1, z: 1 }, { x: 1, y: 1, z: 1 })).toBe(false);
+  });
+});
+
+describe("wheelAction", () => {
+  it("pinch always blocks page zoom and zooms the camera, even over HUD panels", () => {
+    expect(wheelAction({ ctrl: true, overCanvas: true, overScrollableHud: false })).toEqual({ prevent: true, zoom: true });
+    expect(wheelAction({ ctrl: true, overCanvas: false, overScrollableHud: false })).toEqual({ prevent: true, zoom: true });
+  });
+  it("pinch over a scrollable HUD list blocks page zoom but leaves the camera alone", () => {
+    expect(wheelAction({ ctrl: true, overCanvas: false, overScrollableHud: true })).toEqual({ prevent: true, zoom: false });
+  });
+  it("plain scroll zooms over the canvas and scrolls HUD lists normally", () => {
+    expect(wheelAction({ ctrl: false, overCanvas: true, overScrollableHud: false })).toEqual({ prevent: true, zoom: true });
+    expect(wheelAction({ ctrl: false, overCanvas: false, overScrollableHud: true })).toEqual({ prevent: false, zoom: false });
+    expect(wheelAction({ ctrl: false, overCanvas: false, overScrollableHud: false })).toEqual({ prevent: false, zoom: false });
+  });
+});
+
+describe("follow distance", () => {
+  it("starts inside its limits and dolly can move it both ways", () => {
+    expect(FOLLOW_DIST.initial).toBeGreaterThan(FOLLOW_DIST.min);
+    expect(FOLLOW_DIST.initial).toBeLessThan(FOLLOW_DIST.max);
   });
 });

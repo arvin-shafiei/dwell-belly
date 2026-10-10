@@ -5,8 +5,8 @@ import { on } from "../../bus";
 import { allVehicles, getVehicle, type VehicleEntry } from "../../registry";
 import { useWorld } from "../../store";
 import {
-  approach, clamp, dollyDistance, easeInOutCubic, framePosition, pickTourShot, poseIsSane, wheelDollyLog, zoneFrame,
-  HOME_POS, HOME_TARGET, INTRO_POS, KEY_SPEED, MIN_DIST, WORLD_HALF, ZONE_KEYS, type TourShot,
+  approach, clamp, dollyDistance, wheelAction, FOLLOW_DIST, easeInOutCubic, framePosition, pickTourShot, poseIsSane, wheelDollyLog, zoneFrame,
+  HOME_POS, HOME_TARGET, INTRO_POS, KEY_SPEED, WORLD_HALF, ZONE_KEYS, type TourShot,
 } from "./logic";
 
 const UP = new Vector3(0, 1, 0);
@@ -45,6 +45,26 @@ function randomVan(exclude?: string | null): VehicleEntry | undefined {
   return vans[Math.floor(Math.random() * vans.length)];
 }
 
+/** True if the wheel target sits in a HUD list that can actually scroll (so the wheel should scroll it). */
+function overScrollableHud(target: EventTarget | null, stopAt: Element): boolean {
+  for (let el = target instanceof Element ? target : null; el && el !== stopAt && el !== document.body; el = el.parentElement) {
+    if (el.scrollHeight <= el.clientHeight + 1) continue;
+    if (el.hasAttribute("data-hud-scroll") || el.classList.contains("hud-scroll")) return true;
+    const oy = getComputedStyle(el).overflowY;
+    if (oy === "auto" || oy === "scroll") return true;
+  }
+  return false;
+}
+
+export type CameraMode = "intro" | "fly" | "follow" | "tour" | "free";
+/** Debug counters, exposed as window.__cityCamera. */
+export const cameraDebug = { pinches: 0, wheels: 0, lastDolly: 0, mode: "free" as CameraMode };
+declare global {
+  interface Window {
+    __cityCamera?: typeof cameraDebug;
+  }
+}
+
 /** Readable from anywhere (e.g. the HUD) without touching the shared store. */
 export const cameraRigStatus = { tour: false };
 
@@ -70,6 +90,7 @@ export class CameraDirector {
   /** pending: not started; running: swooping; done: finished or skipped by the user. */
   private introState: "pending" | "running" | "done" = "pending";
   private bound = false;
+  private followDistance: number = FOLLOW_DIST.initial; // chase-cam distance; wheel/pinch adjust it
   private pendingZoom = 0; // natural-log dolly still to apply (wheel/pinch), eased in per frame
   private kv = { fwd: 0, right: 0, rot: 0, zoom: 0 }; // smoothed held-key axes
   // scratch
@@ -165,6 +186,7 @@ export class CameraDirector {
   follow(id: string | null) {
     this.followId = id;
     this.hasLast = false;
+    this.followDistance = FOLLOW_DIST.initial;
     if (!id) return;
     const v = getVehicle(id);
     if (!v) return;
@@ -317,13 +339,22 @@ export class CameraDirector {
     // fly). Pinch arrives as wheel + ctrlKey: block the browser's page zoom anywhere on the page while the
     // city is mounted, and turn it into a camera dolly when it's over the canvas. ⌘+/⌘- still work.
     const container = dom.parentElement ?? dom;
+    window.__cityCamera = cameraDebug;
     const wheel = (e: WheelEvent) => {
-      const overCanvas = e.target instanceof Node && container.contains(e.target);
-      if (e.ctrlKey || overCanvas) e.preventDefault();
-      if (!overCanvas || !this.camera || !this.controls) return;
-      const dist = this.camera.position.distanceTo(this.controls.target);
-      this.pendingZoom = clamp(this.pendingZoom + wheelDollyLog(e.deltaY, e.deltaMode, e.ctrlKey, dist), -1.2, 1.2);
-      this.userInput();
+      const act = wheelAction({
+        ctrl: e.ctrlKey,
+        overCanvas: e.target instanceof Node && container.contains(e.target),
+        overScrollableHud: overScrollableHud(e.target, container),
+      });
+      if (act.prevent) e.preventDefault();
+      if (e.ctrlKey) cameraDebug.pinches++;
+      else cameraDebug.wheels++;
+      if (!act.zoom || !this.camera || !this.controls) return;
+      const dist = this.followId ? this.followDistance : this.camera.position.distanceTo(this.controls.target);
+      const d = wheelDollyLog(e.deltaY, e.deltaMode, e.ctrlKey, dist);
+      cameraDebug.lastDolly = d;
+      this.pendingZoom = clamp(this.pendingZoom + d, -1.5, 1.5);
+      this.userInput(); // cancels any fly (intro, fly-to) so the dolly applies this frame
     };
     // Safari pinch fires non-standard gesture events; stop them zooming the page.
     const gesture = (e: Event) => e.preventDefault();
@@ -441,7 +472,16 @@ export class CameraDirector {
       this.pendingZoom = Math.abs(this.pendingZoom - step) < 1e-4 ? 0 : this.pendingZoom - step;
       zoomLog += step;
     }
-    if (zoomLog !== 0 && !this.fly) {
+    if (zoomLog !== 0) {
+      if (this.fly) {
+        // A zoom always wins over a running fly (intro or fly-to).
+        if (this.fly.intro) this.endIntro();
+        this.fly = null;
+      }
+      if (this.followId) {
+        // The chase recomputes the offset each frame, so zoom its distance instead of the camera.
+        this.followDistance = clamp(this.followDistance * Math.exp(zoomLog), FOLLOW_DIST.min, FOLLOW_DIST.max);
+      }
       off.subVectors(cam.position, c.target);
       off.setLength(dollyDistance(off.length(), zoomLog));
       cam.position.copy(c.target).add(off);
@@ -494,6 +534,7 @@ export class CameraDirector {
     }
     if (cam.position.y < 2) cam.position.y = 2;
     cam.lookAt(c.target);
+    cameraDebug.mode = this.fly ? (this.fly.intro ? "intro" : "fly") : this.followId ? "follow" : this.tour ? "tour" : "free";
   }
 
   private chase(dt: number, now: number) {
@@ -521,12 +562,15 @@ export class CameraDirector {
     a.subVectors(b, c.target).multiplyScalar(1 - Math.exp(-8 * dt));
     c.target.add(a);
     // Ease the offset toward "behind and above" unless the user touched the controls recently.
+    const dist = this.followDistance;
     if (now - this.lastUserInput > USER_HOLD_MS) {
-      const dist = clamp(off.length(), MIN_DIST, 140);
       b.copy(this.heading).multiplyScalar(-Math.cos(0.42) * dist);
       b.y = Math.sin(0.42) * dist;
       off.lerp(b, 1 - Math.exp(-1.6 * dt));
     }
+    // Distance follows followDistance (wheel/pinch) quickly, whatever the direction is doing.
+    if (off.lengthSq() < 1e-6) off.set(0, dist, dist);
+    off.setLength(approach(off.length(), dist, 12, dt));
     cam.position.copy(c.target).add(off);
   }
 }

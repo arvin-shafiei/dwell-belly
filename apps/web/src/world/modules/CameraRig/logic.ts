@@ -59,8 +59,33 @@ export function wheelPixels(deltaY: number, deltaMode: number) {
 export function wheelDollyLog(deltaY: number, deltaMode: number, pinch: boolean, distance: number) {
   if (!Number.isFinite(deltaY) || !Number.isFinite(distance)) return 0;
   const px = wheelPixels(deltaY, deltaMode);
-  const gain = (pinch ? 0.008 : 0.0011) * (1 - 0.35 * clamp(distance / MAX_DIST, 0, 1));
+  // Pinch: flat gain (a typical 0.5 s pinch, ~30 events x 4 px, is ~2x). Scroll: gentle, softer far out.
+  const gain = pinch ? PINCH_GAIN : SCROLL_GAIN * (1 - 0.35 * clamp(distance / MAX_DIST, 0, 1));
   return clamp(px * gain, -0.22, 0.22);
+}
+
+/** Log-dolly per wheel pixel for a trackpad pinch (ctrl+wheel). ln(2) / 120 px ≈ 0.0058. */
+export const PINCH_GAIN = 0.006;
+/** Log-dolly per wheel pixel for plain wheel / two-finger scroll. */
+export const SCROLL_GAIN = 0.0011;
+
+/** Follow-cam distance limits (the chase camera keeps this distance; wheel/pinch adjust it). */
+export const FOLLOW_DIST = { initial: 45, min: MIN_DIST, max: 400 } as const;
+
+export interface WheelContext {
+  ctrl: boolean; // pinch on a trackpad, or ctrl+wheel
+  overCanvas: boolean; // pointer is over the 3D canvas (or a transparent overlay above it)
+  overScrollableHud: boolean; // pointer is over a HUD list that can actually scroll
+}
+
+/**
+ * What to do with a wheel event on /city. Pinch always blocks browser page zoom and zooms the camera unless it's
+ * over a scrollable HUD list. Plain scroll zooms only over the canvas and otherwise scrolls the HUD normally.
+ */
+export function wheelAction(c: WheelContext): { prevent: boolean; zoom: boolean } {
+  if (c.ctrl) return { prevent: true, zoom: !c.overScrollableHud };
+  if (c.overScrollableHud) return { prevent: false, zoom: false };
+  return { prevent: c.overCanvas, zoom: c.overCanvas };
 }
 
 /** New camera distance after a log dolly, clamped to the allowed range. */
