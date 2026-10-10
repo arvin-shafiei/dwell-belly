@@ -29,7 +29,7 @@ git grep -n "\[MISSING\]" -- ':!docs/submission-tracker.md' ':!docs/PRD.md'
 | Example run on public cases | PRD C4, rules 16 | `examples/practice-run/` | Oriol | Placeholder |
 | Replay without keys | PRD F4, rules 16 | a script next to the runner | Oriol | Not built |
 | Judging presentation | 8, 10 | `docs/presentation.md` | Unassigned | Placeholder |
-| Mock HUD labelled SIMULATED | 13, PRD J4 | `apps/web/src/world/` | Arvin | Open. It blocks any video take that shows `/city`. |
+| Mock HUD labelled SIMULATED | 13, PRD J4 | `apps/web/src/world/modules/WorkflowHud*` | Arvin | Done: "Simulated · mock agent" in the top bar, a tag and explanation on the workflow panel, and a tag on the decision card. Remove only when the HUD replays real traces. |
 | Questions for the organisers | PRD L2 | | Oriol | Not asked yet: supplied tools, the case format, explicit questions, how many cases, which commit hash |
 
 Update this table in the same PR as the change it tracks.

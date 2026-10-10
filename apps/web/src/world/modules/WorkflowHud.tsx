@@ -3,7 +3,7 @@
 // The root is pointer-events-none so the canvas stays draggable; only panels take the mouse.
 import { memo, useState } from "react";
 import { MiniFlow } from "./WorkflowHud/MiniFlow";
-import { CaseFeed, DecisionToast, Deliveries, GLASS, HotkeysFooter, IncidentList, TopBar, useThrottledWorkflow } from "./WorkflowHud/parts";
+import { CaseFeed, DecisionToast, Deliveries, GLASS, HotkeysFooter, IncidentList, SimulatedTag, TopBar, useThrottledWorkflow } from "./WorkflowHud/parts";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
 
 // The Minimap sits at bottom-4 left-4 (240px); bottom overlays start right of it.
@@ -28,6 +28,7 @@ const OpsPanel = memo(function OpsPanel({ onCollapse }: { onCollapse: () => void
           <span className="h-3.5 w-[3px] rounded-full bg-[#ff6a1a]" />
           <h2 className="text-[12px] font-semibold tracking-tight text-white">Incident workflow</h2>
           <span className="font-mono text-[10px] text-white/40">default-incident</span>
+          <SimulatedTag />
         </div>
         <button
           type="button"
@@ -40,6 +41,10 @@ const OpsPanel = memo(function OpsPanel({ onCollapse }: { onCollapse: () => void
           </svg>
         </button>
       </header>
+      <p className="border-b border-white/[0.07] bg-fuchsia-500/[0.07] px-4 py-1.5 text-[10px] leading-snug text-fuchsia-100/80">
+        Cases below come from a mock agent that drives this visual demo. The real agent&apos;s decisions are in{" "}
+        <span className="font-mono">ANSWERS/</span> and its traces.
+      </p>
       <div className="hud-scroll min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-4 pt-3">
         <MiniFlow events={events} />
         <IncidentList />
@@ -76,7 +81,12 @@ export default function WorkflowHud() {
 
       <div className="absolute left-3 right-3 top-3">
         <TopBar
-          badge={<TourBadge />}
+          badge={
+            <>
+              <SimulatedTag long />
+              <TourBadge />
+            </>
+          }
           extra={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
         />
       </div>

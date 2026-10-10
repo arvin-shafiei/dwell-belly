@@ -177,6 +177,23 @@ function TimeControls() {
   );
 }
 
+/**
+ * Honesty label (rules: no fabricated results). Everything the HUD shows about cases comes from the
+ * mock engine in modules/WorkflowDriver, not the real agent in apps/api. Keep this visible in every
+ * video take until the HUD replays real traces.
+ */
+export function SimulatedTag({ long = false }: { long?: boolean }) {
+  return (
+    <span
+      title="Mock agent for the visual demo. Real decisions come from the agent runtime in apps/api (ANSWERS/<n>/trace.json)."
+      className="inline-flex items-center gap-1 rounded border border-fuchsia-400/50 bg-fuchsia-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-fuchsia-200"
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-300" />
+      {long ? "Simulated · mock agent" : "Simulated"}
+    </span>
+  );
+}
+
 export const TopBar = memo(function TopBar({ badge, extra }: { badge?: ReactNode; extra?: ReactNode }) {
   const paused = useWorld((s) => s.paused);
   return (
@@ -521,6 +538,7 @@ export function DecisionToast() {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
           </span>
           <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-300">Decision needed</span>
+          <SimulatedTag />
           <span className="font-mono text-[11px] text-white/80">{cur.e.caseId}</span>
           {queue.length > 1 && <span className="ml-auto font-mono text-[10px] text-white/45">+{queue.length - 1} queued</span>}
         </div>
