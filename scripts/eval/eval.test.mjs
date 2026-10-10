@@ -123,3 +123,17 @@ test("--with-context keeps the title and Context section", async () => {
   assert.match(first.view.title, /^Case 001/);
   assert.ok(first.view.context);
 });
+
+test("when several messages were sent, the key's channel can be matched by any of them", () => {
+  const result = { ...sent("Customer portal"), messages: [
+    { recipient: "Sorin Vaal, recipient", channel: "Customer portal", message: "We have asked the carrier." },
+    { recipient: "Dispatch, Plover Arc Logistics", channel: "Email", message: "Which slots are free?" },
+  ] };
+  assert.equal(scoreCase(contactKey, result, verdict()).score, 1);
+  assert.equal(scoreCase(contactKey, { ...result, messages: [result.messages[0]] }, verdict()).score, 0.9);
+});
+
+test("a rule broken in any message still zeroes the case", () => {
+  const result = { ...sent("Email"), messages: [sent("Email").nextAction, { recipient: "Sorin Vaal, recipient", channel: "Customer portal", message: "It will arrive at 09:00." }] };
+  assert.equal(scoreCase(contactKey, result, verdict({ violations: [{ rule: "Do not promise an arrival time", evidence: "It will arrive at 09:00." }] })).score, 0);
+});

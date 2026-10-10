@@ -71,5 +71,11 @@ export async function flow() {
   ]);
   const flowJson = JSON.parse(await read(path.join(api, "flows/default-incident.json"), "utf8"));
   const options = { flow: flowJson, models: claude(), panel: process.env.TYPESAFE_API_KEY ? runPanel : undefined, mode: "practice", runId: `eval-${new Date().toISOString()}` };
-  return async (view) => traceToResult((await runCase(fromView(view), options)).trace);
+  return async (view) => {
+    const run = await runCase(fromView(view), options);
+    // A trace only names the first message. The run itself has every one that was recorded, and
+    // a second message can break a rule just as well as the first, so all of them are scored.
+    const messages = run.outbox.filter((o) => o.status === "recorded").map((o) => ({ recipient: o.action.recipient, channel: o.action.channel, message: o.action.message }));
+    return { ...traceToResult(run.trace), messages };
+  };
 }
