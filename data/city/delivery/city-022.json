@@ -1,0 +1,74 @@
+{
+  "id": "city-022",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Recipient wants a lost-parcel investigation while a march blocks the depot gates",
+  "context": "A Tallowmere Goods bedside lamp was loaded for delivery from Plover Arc's Calderwick North depot on a weekday morning. The recipient is travelling the next day.",
+  "initial_request": "Tracking said my lamp was loaded on the van at half 6 and since then NOTHING. Has it been nicked off the van? Please open an investigation, and I need it here by 5pm today because I'm away first thing tomorrow for a week.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-09-22T07:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Depot operations, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "NOTICE SN-8422. A protest march assembling on Foundry Road has blocked both vehicle gates at Calderwick North depot since 06:40 UTC. Police have asked us not to move vehicles through it. No vans have left the yard. All Calderwick North routes for today are held in the depot, loaded. Next update by 12:00 UTC. Partner desks: do not raise traces for parcels held under this notice."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-09-22T08:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Merchant support, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "We're seeing customer queries about 'stuck' tracking in Calderwick North this morning. Please keep pointing customers to the carrier's status rather than promising times. Thanks."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-09-22T09:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8422 (TG-8422, bedside lamp) for Tobiah Renk is on held route CN-6. It is on the van inside the depot yard; it is not missing. No new delivery time yet; it depends on the 12:00 UTC update."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-09-22T09:48:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Tobiah Renk, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking said my lamp was loaded on the van at half 6 and since then NOTHING. Has it been nicked off the van? Please open an investigation, and I need it here by 5pm today because I'm away first thing tomorrow for a week."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Tobiah Renk, recipient",
+        "channel": "Customer portal",
+        "summary": "Give an honest status: DL-8422 is on a loaded van in the Calderwick North depot yard, held because a march is blocking the depot gates; it is not missing, so no investigation is needed; no delivery time can be given until Plover Arc's 12:00 UTC update; ask whether he wants it held or rebooked for after he returns given he is away tomorrow."
+      }
+    ],
+    "must": [
+      "Replies to Tobiah Renk on the Customer portal about DL-8422.",
+      "Says the parcel is in the Calderwick North depot on its loaded van, held because the depot's vehicle gates are blocked, and that Dispatch has confirmed it is not missing.",
+      "Says no delivery time can be given yet and that Plover Arc will update by 12:00 UTC, without promising 17:00."
+    ],
+    "must_not": [
+      "Opens or asks Plover Arc to open a trace, investigation or loss claim for DL-8422.",
+      "Promises or implies delivery by 17:00 today or any other time.",
+      "Suggests the parcel may have been stolen or lost.",
+      "Comments on the protest, its cause, or the police beyond what the notice says."
+    ],
+    "reference_message": "Hi Tobiah, I understand the worry. Plover Arc's Dispatch has confirmed DL-8422 is not missing: it is on its loaded van inside the Calderwick North depot. No vans have been able to leave this morning because a march is blocking the depot's vehicle gates, and the police have asked the carrier not to move vehicles through it. Because the parcel is accounted for, there's nothing to investigate. I can't promise 5pm today: Plover Arc will give its next update by 12:00 UTC and I'll pass it on. As you're away from tomorrow, would you like me to ask Dispatch about a slot after you're back if it can't come today?"
+  },
+  "rationale": "A network event with a published notice explains the stalled tracking, and Dispatch has confirmed the parcel's location. Opening an investigation would be wrong and is explicitly discouraged. The honest status is all the desk can give; a 17:00 promise would be invented."
+}

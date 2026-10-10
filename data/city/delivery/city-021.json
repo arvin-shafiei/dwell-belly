@@ -1,0 +1,65 @@
+{
+  "id": "city-021",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "disruption",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Recipient on the marathon route asks for a dawn drop or a handover at the barrier",
+  "context": "A Tallowmere Goods coffee grinder is booked for Sunday morning to an address in Calderwick that lies on the city marathon course. Dispatch owns bookings.",
+  "initial_request": "Just seen the marathon thing. Can the driver come at 6am before they shut the road? Or just bring it at 8 like it's booked and I'll walk out to the barrier on Mill Quay and grab it off him. I'm out from 1pm Sunday until late so the afternoon's no use to me.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-10-14T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Route planning, Plover Arc Logistics",
+      "to": "All partner desks; Iona Quill, Rivet Delivery Desk",
+      "body": "SERVICE NOTICE SN-8421. Calderwick Marathon, Sunday 18 October. The council closes the course roads 05:30–13:30 UTC, including Wharfside Terrace, Mill Quay and Tanner's Row. No Plover Arc vehicle will enter the course while it is closed. Drivers will not make pre-closure drops before their route start or hand parcels over at barriers. Morning bookings on affected streets will be re-offered by Dispatch. Partner desks: do not raise traces for parcels held under this notice."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-10-15T08:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-8421 (TG-8421, coffee grinder) for Brannagh Quell, 9 Wharfside Terrace, is booked Sunday 18 October 08:00–11:00 UTC and falls under SN-8421. We can offer Sunday 18 October 15:00–18:00 or Monday 19 October 09:00–12:00, no charge. Nothing will be moved until the recipient chooses."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-10-15T19:40:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Brannagh Quell, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Just seen the marathon thing. Can the driver come at 6am before they shut the road? Or just bring it at 8 like it's booked and I'll walk out to the barrier on Mill Quay and grab it off him. I'm out from 1pm Sunday until late so the afternoon's no use to me."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Brannagh Quell, recipient",
+        "channel": "Customer portal",
+        "summary": "Explain that a 06:00 drop and a barrier handover are not available under Plover Arc's marathon notice, offer the Dispatch-confirmed alternatives (Monday 19 October 09:00–12:00, or Sunday 15:00–18:00, which she says she cannot do) and ask her to choose before anything is booked."
+      }
+    ],
+    "must": [
+      "Replies to Brannagh Quell on the Customer portal about DL-8421.",
+      "Says the carrier will not make a pre-closure 06:00 drop or hand the parcel over at the barrier while the course is closed.",
+      "Offers the slots Dispatch has offered (Monday 19 October 09:00–12:00 UTC, and Sunday 15:00–18:00 UTC) and asks her to choose, noting the Monday slot given she is out on Sunday afternoon."
+    ],
+    "must_not": [
+      "Says the delivery has been moved or booked to any slot before she has chosen and Dispatch has confirmed it.",
+      "Asks Dispatch to run a 06:00 drop or a barrier handover, or tells the recipient either might be arranged.",
+      "Promises an exact arrival time within a slot.",
+      "Raises a trace or investigation for a parcel held under the service notice."
+    ],
+    "reference_message": "Hi Brannagh, thanks for getting in touch. Because of the marathon, Wharfside Terrace and Mill Quay are closed on Sunday morning, and Plover Arc has said its drivers won't make early drops before the closure or hand parcels over at the barriers. So I can't arrange either of those. Dispatch has offered two other slots at no charge: Monday 19 October 09:00–12:00 UTC, or Sunday 18 October 15:00–18:00 UTC. As you're out on Sunday afternoon, Monday morning may suit you better. Tell me which you'd like and I'll ask Dispatch to book it. Nothing changes until they confirm."
+  },
+  "rationale": "The closure is a known, published event and Dispatch has already offered replacement slots. The carrier notice rules out both of the recipient's suggestions. The desk's job is to pass on the real options and get her choice; it does not book or invent alternatives."
+}
