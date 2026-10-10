@@ -93,12 +93,16 @@ export const MODIFIER_CHIP: Record<Modifier, string> = {
   do_nothing: "already handled",
 };
 
-export const OUTCOME_LABEL: Record<"acted" | "asked_for_info" | "escalated" | "blocked" | "no_action", { text: string; color: string }> = {
+export const OUTCOME_LABEL: Record<import("../../bus").ScenarioOutcome, { text: string; color: string }> = {
   acted: { text: "Acted", color: GREEN },
   asked_for_info: { text: "Asked for info", color: BLUE },
   escalated: { text: "Escalated", color: AMBER },
   blocked: { text: "Blocked", color: RED },
   no_action: { text: "No action", color: "#8d99ae" },
+  // PRD J3: the real agent's wait_until, refuse and route_to_owner.
+  waiting: { text: "Waiting", color: "#8d99ae" },
+  refused: { text: "Refused", color: RED },
+  routed: { text: "Routed to owner", color: BLUE },
 };
 
 export const BRAND = ORANGE;

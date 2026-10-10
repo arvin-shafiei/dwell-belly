@@ -1,5 +1,7 @@
 // Shared world state (low-frequency things only). Per-frame positions live in registry.ts, not here.
+// Per-frame speaker loudness lives in voice.ts, never here (PRD J3).
 import { create } from "zustand";
+import { on, type Party, type VoiceSource, type WorldEvent } from "./bus";
 
 export type IncidentKind =
   | "car_crash" | "truck_crash" | "pileup" | "roadworks" | "breakdown" | "plane_crash" | "emergency_landing";
@@ -39,8 +41,137 @@ export interface WorkflowEvent {
   nodeId: string; // flow node id from apps/api/flows/default-incident.json, e.g. "triage"
   status: "start" | "ok" | "ask" | "block" | "error";
   summary: string;
-  /** Who produced it: the mock engine (default) or the real agent in apps/api replayed from its trace. */
-  source?: "mock" | "agent";
+  /**
+   * Who produced it: the mock engine (default) or the real agent in apps/api replayed from its trace.
+   * PRD J3 adds the voice sources; "simulated_persona" must always be labelled SIMULATED.
+   */
+  source?: "mock" | "agent" | "live_human" | "simulated_persona" | "audio_attachment" | "case_file";
+  // ---- PRD J3 additive fields (all optional; existing producers keep working) ----
+  /** True when the run admitted any simulated input (trace.synthetic). */
+  synthetic?: boolean;
+  costUsd?: number;
+  /** The decision card when status is "ask" on the human node. Mirrors DecisionCard (apps/api/src/lib/trace.ts). */
+  card?: {
+    cardId: string; summary: string; options: { id: string; label: string; safe?: boolean }[];
+    routeTo: string; deadlineMs: number; fallbackOptionId: string;
+  };
+  decision?: "act" | "ask_for_info" | "route_to_owner" | "hold_for_human" | "wait_until" | "refuse";
+  /** ISO time for wait_until. */
+  due?: string;
+  /** Per-action gate and action events. */
+  actionId?: string;
+}
+
+// ---------- voice (PRD J3: calls, transcripts, voice notes, soundEnabled; low frequency only) ----------
+
+export interface CallRecord {
+  callId: string;
+  caseId: string;
+  caller: Party;
+  callee: Party;
+  source: VoiceSource;
+  purpose: string;
+  status: "ringing" | "connected" | "ended";
+  ringingAt: number; // performance.now() ms
+  connectedAt?: number;
+  endedAt?: number;
+  reason?: "completed" | "no_answer" | "failed" | "human_took_over";
+  summary?: string;
+}
+
+export interface TranscriptLine {
+  callId: string;
+  caseId: string;
+  seq: number;
+  speaker: Party;
+  text: string;
+  source: VoiceSource;
+  audioUrl?: string;
+  durationMs?: number;
+  arrivedAt: number; // performance.now() ms
+  /**
+   * When the line started being heard; drives the reveal (voice.ts revealedText):
+   * replay with audio and simulated personas wait for the audio manager's onStart (null until then);
+   * live turns start on arrival.
+   */
+  startedAt: number | null;
+}
+
+export interface VoiceNote {
+  noteId: string;
+  caseId: string;
+  from: Party;
+  source: VoiceSource;
+  transcript: string;
+  audioUrl?: string;
+  durationMs?: number;
+  at: number; // performance.now() ms
+}
+
+export interface VoiceSlice {
+  calls: Record<string, CallRecord>;
+  /** callId -> lines in seq order. */
+  transcripts: Record<string, TranscriptLine[]>;
+  voiceNotes: VoiceNote[]; // newest last, capped at 50
+  /** Set once the "Enable sound / Start demo" button unlocked the AudioContext. */
+  soundEnabled: boolean;
+}
+
+const MAX_CALLS = 20;
+const MAX_LINES = 200;
+
+/** Lines whose text waits for their audio to start (replay audio, simulated personas). */
+export function waitsForAudio(u: { audioUrl?: string; source: VoiceSource }): boolean {
+  return Boolean(u.audioUrl) || u.source === "simulated_persona";
+}
+
+/** Pure: the voice slice after a bus event, or null when the event does not touch it. */
+export function voiceReduce(s: VoiceSlice, e: WorldEvent, now: number): Partial<VoiceSlice> | null {
+  switch (e.type) {
+    case "call:ringing": {
+      const rec: CallRecord = { callId: e.callId, caseId: e.caseId, caller: e.caller, callee: e.callee, source: e.source, purpose: e.purpose, status: "ringing", ringingAt: now };
+      const kept = Object.values(s.calls).filter((c) => c.callId !== e.callId).sort((a, b) => a.ringingAt - b.ringingAt).slice(-(MAX_CALLS - 1));
+      const calls: Record<string, CallRecord> = {};
+      for (const c of kept) calls[c.callId] = c;
+      calls[e.callId] = rec;
+      const transcripts: Record<string, TranscriptLine[]> = {};
+      for (const id of Object.keys(calls)) if (s.transcripts[id]) transcripts[id] = s.transcripts[id];
+      return { calls, transcripts };
+    }
+    case "call:connected": {
+      const c = s.calls[e.callId];
+      if (!c) return null;
+      return { calls: { ...s.calls, [e.callId]: { ...c, status: "connected", connectedAt: now } } };
+    }
+    case "call:ended": {
+      const c = s.calls[e.callId];
+      if (!c) return null;
+      return { calls: { ...s.calls, [e.callId]: { ...c, status: "ended", endedAt: now, reason: e.reason, ...(e.summary ? { summary: e.summary } : {}) } } };
+    }
+    case "voice:utterance": {
+      const line: TranscriptLine = {
+        callId: e.callId, caseId: e.caseId, seq: e.seq, speaker: e.speaker, text: e.text, source: e.source,
+        ...(e.audioUrl ? { audioUrl: e.audioUrl } : {}),
+        ...(e.durationMs !== undefined ? { durationMs: e.durationMs } : {}),
+        arrivedAt: now,
+        startedAt: waitsForAudio(e) ? null : now,
+      };
+      const prev = (s.transcripts[e.callId] ?? []).filter((l) => l.seq !== e.seq);
+      const lines = [...prev, line].sort((a, b) => a.seq - b.seq).slice(-MAX_LINES);
+      return { transcripts: { ...s.transcripts, [e.callId]: lines } };
+    }
+    case "voice:note_in": {
+      const note: VoiceNote = {
+        noteId: e.noteId, caseId: e.caseId, from: e.from, source: e.source, transcript: e.transcript,
+        ...(e.audioUrl ? { audioUrl: e.audioUrl } : {}),
+        ...(e.durationMs !== undefined ? { durationMs: e.durationMs } : {}),
+        at: now,
+      };
+      return { voiceNotes: [...s.voiceNotes.filter((n) => n.noteId !== e.noteId).slice(-49), note] };
+    }
+    default:
+      return null;
+  }
 }
 
 /** Weather the HUD/console forces on the Sky module; "auto" runs Sky's own looping cycle. */
@@ -54,7 +185,7 @@ export interface Delivery {
   etaS: number; // seconds of sim time remaining (rough)
 }
 
-interface WorldState {
+interface WorldState extends VoiceSlice {
   /** Roads closed right now: edgeKey -> reason. Read with blockedSet(). */
   blocked: Record<string, string>;
   incidents: Incident[];
@@ -90,6 +221,11 @@ interface WorldState {
   setAgentOnline: (v: boolean) => void;
   setPaused: (p: boolean) => void;
   setWeatherOverride: (w: WeatherOverride) => void;
+  /** Voice (PRD J3). applyVoiceEvent is fed by the bus automatically (see the bottom of this file). */
+  applyVoiceEvent: (e: WorldEvent) => void;
+  /** The audio manager's onStart for a line: its text may now be revealed. */
+  markUtteranceStarted: (callId: string, seq: number, at: number) => void;
+  setSoundEnabled: (v: boolean) => void;
 }
 
 export const useWorld = create<WorldState>((set) => ({
@@ -106,6 +242,10 @@ export const useWorld = create<WorldState>((set) => ({
   agentOnline: null,
   paused: false,
   weatherOverride: "auto",
+  calls: {},
+  transcripts: {},
+  voiceNotes: [],
+  soundEnabled: false,
 
   blockEdge: (key, reason) => set((s) => ({ blocked: { ...s.blocked, [key]: reason } })),
   unblockEdge: (key) =>
@@ -130,7 +270,24 @@ export const useWorld = create<WorldState>((set) => ({
   setAgentOnline: (agentOnline) => set({ agentOnline }),
   setPaused: (paused) => set({ paused }),
   setWeatherOverride: (weatherOverride) => set({ weatherOverride }),
+  applyVoiceEvent: (e) =>
+    set((s) => voiceReduce(s, e, typeof performance !== "undefined" ? performance.now() : Date.now()) ?? s),
+  markUtteranceStarted: (callId, seq, at) =>
+    set((s) => {
+      const lines = s.transcripts[callId];
+      if (!lines?.some((l) => l.seq === seq && l.startedAt === null)) return s;
+      return { transcripts: { ...s.transcripts, [callId]: lines.map((l) => (l.seq === seq ? { ...l, startedAt: at } : l)) } };
+    }),
+  setSoundEnabled: (soundEnabled) => set({ soundEnabled }),
 }));
+
+// The voice slice follows the bus, so calls and transcripts are recorded whichever page or module is mounted.
+// Re-subscribed on hot reload so a stale store never keeps listening.
+{
+  const g = globalThis as unknown as { __worldVoiceOff?: () => void };
+  g.__worldVoiceOff?.();
+  g.__worldVoiceOff = on((e) => useWorld.getState().applyVoiceEvent(e));
+}
 
 /** Current blocked edges as a Set, for findPath(). Call inside useFrame via useWorld.getState(). */
 export function blockedSet(): Set<string> {

@@ -1,0 +1,32 @@
+import { describe, expect, it } from "vitest";
+import type { ExecutionRecord, OutboxEntry } from "../types";
+import { approvalRerun, callableRows, callRequest, callRerun, cardOpen, noteRerun } from "./voiceSlots";
+
+const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
+const ex = { id: "e1", caseId: "delivery-003", dataset: "public", workflowId: "default-incident", title: "Case 003" } as ExecutionRecord & { title: string };
+const card = { routeTo: "Desk manager", summary: "", tried: [], options: [{ id: "option-1", label: "A", undoable: true }], wouldChangeMyMind: "", deadlineMins: 10, fallback: "" };
+
+describe("voice slots", () => {
+  it("offers a call only on call or phone channels", () => {
+    expect(callableRows([row("Email"), row("Phone call"), row("Call"), row("SMS")]).map((r) => r.action.channel)).toEqual(["Phone call", "Call"]);
+    expect(callableRows(null)).toEqual([]);
+  });
+  it("only an undecided card with options is open", () => {
+    expect(cardOpen(card)).toBe(true);
+    expect(cardOpen({ ...card, chosen: "option-1" })).toBe(false);
+    expect(cardOpen(null)).toBe(false);
+  });
+  it("builds execute bodies that link back to the parent", () => {
+    const note = { n: 0, timestamp: "", stage: null, channel: "Voice note", from: "Driver", to: "Desk", body: "b", source: "live_human" as const };
+    expect(noteRerun(ex, note)).toMatchObject({ parentExecutionId: "e1", extraEvents: [note], voice: { trigger: "note" } });
+    const d = { optionId: "option-1", label: "A", by: "voice" as const, who: "Desk manager" };
+    expect(approvalRerun(ex, d)).toMatchObject({ parentExecutionId: "e1", humanDecision: d, voice: { trigger: "approval" } });
+    expect(callRerun(ex, { events: [note], callId: "c1" })).toMatchObject({ voice: { trigger: "call", callId: "c1" } });
+    expect(callRerun(ex, { events: [], decision: d }).voice?.trigger).toBe("approval");
+  });
+  it("keeps the call brief within 600 characters", () => {
+    const r = callRequest(ex, { ...row("Call"), action: { ...row("Call").action, message: "x".repeat(900) } });
+    expect(r.brief.length).toBe(600);
+    expect(r).toMatchObject({ purpose: "call", calleeName: "Ms Patel", goal: "Agree a slot", mode: "demo" });
+  });
+});

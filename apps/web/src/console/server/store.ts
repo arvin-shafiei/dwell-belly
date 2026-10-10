@@ -1,7 +1,7 @@
 // Reads and writes console records in SQLite.
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import type { ExecutionRecord, Flow, Trace, WorkflowRecord } from "../types";
+import type { DecisionCard, ExecutionRecord, ExecutionVoice, Flow, OutboxEntry, Trace, WorkflowRecord } from "../types";
 import { getDb, repoRoot, type SqlValue } from "./db";
 import { layeredLayout } from "./mapping";
 
@@ -42,15 +42,24 @@ function toListItem(r: Row): ExecutionListItem {
     title: str(r.title),
     nextAction: str(r.next_action),
     gate: str(r.gate),
+    parentExecutionId: str(r.parent_execution_id),
+    voice: parseJson<ExecutionVoice>(r.voice),
   };
 }
 
 function toRecord(r: Row): StoredExecution {
-  return { ...toListItem(r), trace: parseJson<Trace>(r.trace), answerMd: str(r.answer_md), reasoningMd: str(r.reasoning_md) };
+  return {
+    ...toListItem(r),
+    trace: parseJson<Trace>(r.trace),
+    answerMd: str(r.answer_md),
+    reasoningMd: str(r.reasoning_md),
+    outbox: parseJson<OutboxEntry[]>(r.outbox),
+    card: parseJson<DecisionCard>(r.card),
+  };
 }
 
 const LIST_COLUMNS = `id, case_id, dataset, workflow_id, status, outcome, started_at, duration_ms, cost_usd, origin, simulated,
-  title, next_action, gate, error, eval_pass, eval_score, eval_notes`;
+  title, next_action, gate, error, eval_pass, eval_score, eval_notes, parent_execution_id, voice`;
 
 export function listExecutions(opts: { limit?: number; dataset?: string | null } = {}): ExecutionListItem[] {
   const limit = Math.max(1, Math.min(5000, opts.limit ?? 200));
@@ -92,6 +101,11 @@ export interface ExecutionWrite {
   answerMd: string | null;
   reasoningMd: string | null;
   eval: { pass: boolean; score: number; notes?: string } | null;
+  /** Voice additions (PRD I5). Optional so importers that predate them keep compiling. */
+  parentExecutionId?: string | null;
+  outbox?: OutboxEntry[] | null;
+  card?: DecisionCard | null;
+  voice?: ExecutionVoice | null;
 }
 
 /** Insert, or replace the row with the same id or the same source_key (idempotent import). */
@@ -102,9 +116,12 @@ export function upsertExecution(e: ExecutionWrite) {
     e.origin, e.simulated ? 1 : 0, e.title, e.nextAction, e.gate, e.error,
     e.trace ? JSON.stringify(e.trace) : null, e.answerMd, e.reasoningMd,
     e.eval ? (e.eval.pass ? 1 : 0) : null, e.eval ? e.eval.score : null, e.eval?.notes ?? null,
+    e.parentExecutionId ?? null, e.outbox ? JSON.stringify(e.outbox) : null, e.card ? JSON.stringify(e.card) : null,
+    e.voice ? JSON.stringify(e.voice) : null,
   ];
   const cols = `id, source_key, case_id, dataset, workflow_id, status, outcome, started_at, duration_ms, cost_usd,
-    origin, simulated, title, next_action, gate, error, trace, answer_md, reasoning_md, eval_pass, eval_score, eval_notes`;
+    origin, simulated, title, next_action, gate, error, trace, answer_md, reasoning_md, eval_pass, eval_score, eval_notes,
+    parent_execution_id, outbox, card, voice`;
   const conflictCol = e.sourceKey ? "source_key" : "id";
   db.prepare(`INSERT INTO executions (${cols}) VALUES (${params.map(() => "?").join(", ")})
     ON CONFLICT(${conflictCol}) DO UPDATE SET
@@ -114,7 +131,8 @@ export function upsertExecution(e: ExecutionWrite) {
       simulated = excluded.simulated, title = excluded.title, next_action = excluded.next_action,
       gate = excluded.gate, error = excluded.error, trace = excluded.trace, answer_md = excluded.answer_md,
       reasoning_md = excluded.reasoning_md, eval_pass = excluded.eval_pass, eval_score = excluded.eval_score,
-      eval_notes = excluded.eval_notes`).run(...params);
+      eval_notes = excluded.eval_notes, parent_execution_id = excluded.parent_execution_id,
+      outbox = excluded.outbox, card = excluded.card, voice = excluded.voice`).run(...params);
 }
 
 export function counts(): Record<string, number> {
