@@ -1,0 +1,91 @@
+{
+  "id": "gen-205",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Customs broker chasing the commercial invoice for a held shipment of woven throws",
+  "context": "A carton of woven throws is held at import until the customs broker lodges an entry. The shipper has given the desk the commercial invoice to pass to the broker. Today's clearance run closes at 14:00 UTC.",
+  "initial_request": "Got your email. There is no invoice on it. Entry file for DL-956 is still empty. 70 minutes to cut-off. Are you sending it or not?",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-08T07:40:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tamsin Okoro-Hale, shipper, Fernwick Looms",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Morning. Commercial invoice CI-2291 for DL-956 attached for the broker, PDF, 3 pages. HS codes are on page 2, declared value on page 3. Shout if he needs anything else, I'm in the weaving shed most of the day so email is slow."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-08T08:05:00Z",
+      "stage": "Context",
+      "channel": "Broker portal",
+      "from": "Jorun Pell, customs broker, Marrowgate Customs",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-956 is held at import. I need the commercial invoice with HS codes to lodge the entry. Upload it against DL-956 in this portal: documents uploaded here go straight onto the entry file. Cut-off for today's clearance run is 14:00 UTC. Miss it and it rolls to tomorrow's run."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-08T08:20:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Jorun Pell, customs broker, Marrowgate Customs",
+      "body": "Attached is commercial invoice CI-2291 for DL-956 from the shipper, Fernwick Looms (PDF, 3 pages; HS codes on page 2). Please confirm it is enough to lodge the entry today."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-08T08:21:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Mail gateway, Marrowgate Customs",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Notice to sender: your message \"DL-956 commercial invoice\" was delivered with 1 attachment removed. Policy: attachments from external senders are removed and deleted, not quarantined. The message text was delivered to the recipient."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-08T10:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Import billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "For information: storage on DL-956 starts to accrue from 2026-04-09 if the shipment is not cleared. Any charge is assessed by us after clearance. There is no figure yet."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-08T12:50:00Z",
+      "stage": "Escalation",
+      "channel": "Broker portal",
+      "from": "Jorun Pell, customs broker, Marrowgate Customs",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got your email. There is no invoice on it. Entry file for DL-956 is still empty. 70 minutes to cut-off. Are you sending it or not?"
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Jorun Pell, customs broker, Marrowgate Customs",
+        "channel": "Broker portal",
+        "summary": "Provide commercial invoice CI-2291 against DL-956 through the Broker portal, the route the broker asked for, and ask him to confirm it is on the entry file before the 14:00 UTC cut-off."
+      }
+    ],
+    "must": [
+      "Send the invoice to the broker through the Broker portal against DL-956",
+      "Identify the document as commercial invoice CI-2291 from Fernwick Looms",
+      "Ask the broker to confirm the document has reached the entry file"
+    ],
+    "must_not": [
+      "Tell the broker the invoice has already been sent or ask him to look at the earlier email again",
+      "Send the invoice as an email attachment to the broker again",
+      "State that DL-956 will clear today or make the 14:00 UTC run",
+      "Quote, estimate or offer to waive storage or import charges",
+      "Push the task back to the shipper to resend when the desk already holds the invoice"
+    ],
+    "reference_message": "Commercial invoice CI-2291 for DL-956, from the shipper Fernwick Looms, is uploaded here against the shipment: PDF, 3 pages, HS codes on page 2, declared value on page 3. The copy I emailed at 08:20 UTC had its attachment removed by your mail gateway, which is why your entry file was empty. Please confirm you can see the document on the entry file and whether it is enough to lodge before the 14:00 UTC cut-off."
+  },
+  "rationale": "The broker's mail gateway stripped the attachment, so he received an email with no invoice and the entry file is empty. He told the desk in event 2 that documents uploaded in the Broker portal go straight onto the entry file, and the desk already holds the invoice from the shipper. Emailing it again will lose the attachment again, and whether it clears today is the broker's and customs' call."
+}

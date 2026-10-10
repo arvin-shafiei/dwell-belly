@@ -11,7 +11,9 @@
     "data": "node scripts/build-data.mjs",
     "gen:cases": "node --env-file-if-exists=apps/api/.env.local scripts/eval/gen-cases.mjs",
     "eval": "node --env-file-if-exists=apps/api/.env.local scripts/eval/run-eval.mjs",
-    "test:eval": "node --test scripts/eval/eval.test.mjs"
+    "test:eval": "node --test scripts/eval/eval.test.mjs",
+    "index:cases": "node scripts/eval/index-cases.mjs",
+    "validate:cases": "node scripts/eval/validate-cases.mjs"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

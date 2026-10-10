@@ -1,0 +1,138 @@
+{
+  "id": "gen-402",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Parcel held at depot over a flat number on the label",
+  "context": "A floor lamp (order TG-952, shipment DL-952) is held at the depot because the driver could not match the label address. Routing control at the carrier owns label address corrections.",
+  "initial_request": "Any news?? Its been two days. I told you its flat 14. I'm in all day tomorrow.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-20T08:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-952 held, address query. Label reads Flat 4, Corbel House, Wren Lane. Driver reports Flat 4 is occupied by a different name and refused the parcel. We do not change a label on the recipient's word or on a desk's summary of it. Send us the merchant's amendment reference and the address exactly as it now stands on the merchant order record and we will check it against Tallowmere's feed and correct the label. Held items return to sender after 5 working days."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-20T10:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Teodor Halvorsen, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "its flat 14 not flat 4. i mistyped at checkout. ive changed it in my account just now. can you get it sent to the right door please"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-20T11:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-966: label corrected to Flat 41, Corbel Court, Wren Road per merchant amendment AM-966. Released from hold, loaded to route for tomorrow. No further action."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-20T11:06:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Routing control, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Auto-acknowledgement: this mailbox is monitored 07:00-17:00 UTC Monday to Saturday. For hazardous goods queries call the depot duty line. Plover Arc Logistics Ltd. This message and any attachment are confidential and intended for the named addressee only. If you have received it in error please delete it and notify the sender. Service information is given in good faith and does not form part of any contract of carriage. Estimated dates are not guaranteed. Calls may be recorded for training and quality purposes. Please consider the environment before printing."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-20T14:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-952 order record was amended by the customer through his account today at 10:36. Delivery address on the record is now: Flat 14, Corbel House, Wren Lane. Amendment reference AM-952. Note our carrier feed only pushes an address at label creation, so Plover will not have seen this. We have not contacted the carrier."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-20T16:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Tallowmere Goods",
+      "to": "Teodor Halvorsen, recipient",
+      "body": "Teodor, your basket misses you. The Arden reading chair is back in stock in moss green. Free delivery on orders over GBP 60 this week. You are receiving this because you opted in at checkout. Unsubscribe | Privacy | Tallowmere Goods Ltd, registered office Unit 9, Saltmarsh Park."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-21T08:50:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Teodor Halvorsen, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "also the WELCOME10 code didnt come off this order, i was charged full price. who do i talk to about that"
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-21T09:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network notices, Plover Arc Logistics",
+      "to": "All partner desks",
+      "body": "SERVICE NOTICE 17/26. Wren Road will be closed to vehicles between the junction with Mill Row and Corbel Court on 22 and 23 April for resurfacing. Deliveries to Corbel Court will be made on foot from Mill Row. Wren Lane is not affected. Please do not reply to this address."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-04-21T10:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Anneke Voss, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Hi all, replying to everyone as I don't know who sent the original. DL-966 arrived this morning, thank you, signed for at the door. You can close it. Anneke"
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-04-21T12:00:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Daily held-items digest. Awaiting address action: DL-952 (day 2 of 5), DL-971 (day 1 of 5), DL-913 (day 4 of 5). Awaiting recipient collection: DL-984. Released since last digest: DL-966."
+    },
+    {
+      "n": 11,
+      "timestamp": "2026-04-21T15:20:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Teodor Halvorsen, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Any news?? Its been two days. I told you its flat 14. I'm in all day tomorrow."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Routing control, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Send Routing control merchant amendment AM-952 and the amended order address (Flat 14, Corbel House, Wren Lane) and ask them to verify, correct the DL-952 label and confirm release."
+      }
+    ],
+    "must": [
+      "Sends the request to Routing control at Plover Arc Logistics for DL-952",
+      "Quotes merchant amendment reference AM-952 for order TG-952",
+      "Gives the address as it stands on the merchant record: Flat 14, Corbel House, Wren Lane",
+      "Asks Routing control to confirm the correction and release rather than assuming it"
+    ],
+    "must_not": [
+      "Say DL-952 has been corrected, released or loaded for delivery (the release in the thread is DL-966)",
+      "Give Routing control the DL-966 address (Flat 41, Corbel Court, Wren Road) or reference AM-966",
+      "Present the correction as resting only on the recipient's say-so, without the merchant amendment reference",
+      "Promise the recipient delivery tomorrow or at any set time"
+    ],
+    "reference_message": "DL-952 address correction, as you requested on 2026-04-20. Merchant amendment reference AM-952 on Tallowmere order TG-952. The delivery address on the merchant order record now reads: Flat 14, Corbel House, Wren Lane (label currently shows Flat 4). Tallowmere's Warehouse dispatch confirms the amendment was made on the record on 2026-04-20 and was not pushed through the carrier feed. Please verify against the feed, correct the label and confirm when DL-952 is released from hold. It is on day 2 of 5."
+  },
+  "rationale": "Routing control named exactly what it needs to correct the label: the merchant amendment reference and the address on the merchant record. Warehouse dispatch supplied both and said it had not told the carrier. The correction and release messages in the thread are about DL-966, a different parcel with a similar address."
+}

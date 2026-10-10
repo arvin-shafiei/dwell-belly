@@ -1,0 +1,92 @@
+{
+  "id": "gen-209",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "failed_action",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Shipper's accounts contact asks whether a storage charge is on hold before a direct debit",
+  "context": "A ceramics shipper was invoiced five days of storage on a shipment and asked the desk to dispute it. An earlier, unrelated fee dispute on the same shipment was settled last month. The invoice is collected by direct debit tomorrow.",
+  "initial_request": "Our direct debit to Plover Arc goes out tomorrow. Please confirm the storage charge on INV-70962 is on hold under the dispute and I will let the rest of the run through. If it is not on hold I am cancelling the whole mandate tonight.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-02T10:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dispute BD-4410 on invoice INV-70318 (DL-981, redelivery fee, 38.00) is closed. The fee was credited on 2026-02-27. Nothing further is open on this account."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-23T09:15:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Idris Fenwick-Mbeki, accounts, Sable & Thorn Ceramics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "New invoice INV-70962 for DL-981 carries a 5-day storage charge of 112.50. The goods sat at your carrier's depot because the depot was shut for a stock count, not because of anything we did. Please dispute it. We do not pay storage we did not cause."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-23T09:40:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Business billing, Plover Arc Logistics",
+      "body": "Dispute form: invoice INV-70962, shipment DL-981, storage charge 112.50 (5 days). The shipper, Sable & Thorn Ceramics, states the goods were held because the depot was closed for a stock count. Please review the charge and confirm whether collection is held while you do."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-23T09:41:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Business portal, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Dispute not created. Duplicate request: a dispute (BD-4410) is already recorded against shipment DL-981. This form accepts one dispute per shipment. For any other query on this shipment, write to Business billing."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-25T07:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Business billing, Plover Arc Logistics",
+      "to": "Idris Fenwick-Mbeki, accounts, Sable & Thorn Ceramics; Iona Quill, Rivet Delivery Desk",
+      "body": "Automated statement. INV-70962: 112.50, due 2026-03-27. Status: payable. Invoices with no open dispute are collected by direct debit on the due date."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-26T15:30:00Z",
+      "stage": "Escalation",
+      "channel": "Email",
+      "from": "Idris Fenwick-Mbeki, accounts, Sable & Thorn Ceramics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Our direct debit to Plover Arc goes out tomorrow. Please confirm the storage charge on INV-70962 is on hold under the dispute and I will let the rest of the run through. If it is not on hold I am cancelling the whole mandate tonight."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Business billing, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Email Business billing to raise the dispute on INV-70962's storage charge, explaining the form rejected it as a duplicate of the closed and unrelated BD-4410, and ask whether tomorrow's collection of that charge will be held."
+      }
+    ],
+    "must": [
+      "Send the dispute to Business billing by Email",
+      "Identify invoice INV-70962 and the 112.50 storage charge on DL-981, with the shipper's reason",
+      "Explain that BD-4410 was a different charge (the redelivery fee on INV-70318) and is closed, so no dispute exists on INV-70962",
+      "Ask whether collection will be held, noting the 2026-03-27 due date"
+    ],
+    "must_not": [
+      "Tell the shipper the storage charge is on hold, in dispute or will not be collected",
+      "Submit the Business portal dispute form again",
+      "Say the charge is wrong, or promise a credit or refund",
+      "Advise the shipper to cancel or keep the direct debit mandate",
+      "Treat BD-4410 as covering the storage charge"
+    ],
+    "reference_message": "Please log a dispute on invoice INV-70962, shipment DL-981: 5-day storage charge, 112.50. The shipper, Sable & Thorn Ceramics, says the goods were held at the depot because it was closed for a stock count and not for any reason on their side. This desk submitted the dispute on the Business portal form on 2026-03-23, but the form rejected it as a duplicate of BD-4410. BD-4410 was the redelivery fee on INV-70318, which you closed and credited on 2026-02-27, so there is currently no dispute on the storage charge and your statement shows it as payable. The invoice is due for direct debit collection tomorrow, 2026-03-27. Please confirm today whether the dispute is logged and whether collection of the 112.50 will be held while you review it."
+  },
+  "rationale": "The portal rejected the dispute as a duplicate of BD-4410, which was a different, already-closed fee, so nothing is open against the storage charge and billing's own statement lists it as payable for collection tomorrow. The rejection notice itself says to write to Business billing for anything beyond one dispute per shipment. Only billing can hold or credit a charge, and whether the shipper cancels its mandate is its own decision."
+}

@@ -1,0 +1,83 @@
+{
+  "id": "gen-103",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": "delivery-008",
+  "grounding": null,
+  "title": "Case: Recipient has been given two different delivery days for a two-person delivery",
+  "context": "An oak wardrobe on a two-person delivery was rebooked at the recipient's request. Someone must be home to receive it and the recipient can take only one day off work.",
+  "initial_request": "Sorry to chase. I need to tell my manager tonight which day I'm off, I can only do one of them not both, and somebody has to be in for the two man delivery. Is it Wednesday morning or Thursday afternoon? Just tell me which one and I'll book it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-14T10:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-922 (TG-922, two-person delivery, oak wardrobe) rebooked at recipient request. Confirmed slot: Thursday 2026-04-16, 12:00–16:00 UTC. Booking ref SB-4471."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-14T17:30:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Corwin Aldany, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "got a text from plover arc saying delivery WEDNESDAY 15th 8-12. the email from you lot says thursday. which"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-14T17:40:00Z",
+      "stage": "Agent action",
+      "channel": "Dispatch chat",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Dispatch, Plover Arc Logistics",
+      "body": "DL-922: what date and window is on the route plan?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-14T17:52:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "922 is on the two-man van for Wed 15/04, 08:00-12:00, went onto the plan Monday. Don't see a Thurs entry for it. We run what's on the plan. Bookings are Scheduling's, if their record says different they need to fix one or the other."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-14T18:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Corwin Aldany, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Sorry to chase. I need to tell my manager tonight which day I'm off, I can only do one of them not both, and somebody has to be in for the two man delivery. Is it Wednesday morning or Thursday afternoon? Just tell me which one and I'll book it."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Scheduling, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Set booking SB-4471 (Thursday 16 April, 12:00–16:00) against the route plan and customer text (Wednesday 15 April, 08:00–12:00) and ask Scheduling to confirm the one valid slot and correct the other record tonight."
+      }
+    ],
+    "must": [
+      "Quotes both slots with their sources: booking SB-4471 for Thursday 2026-04-16 12:00–16:00 UTC, and the route plan and customer text for Wednesday 2026-04-15 08:00–12:00",
+      "Asks Scheduling to confirm which single slot is valid and to have the other record corrected",
+      "Says the recipient can take only one day off and needs the answer this evening, with the earlier slot starting 08:00 the next morning"
+    ],
+    "must_not": [
+      "Tells the recipient the delivery is on Wednesday, or that it is on Thursday",
+      "Asks Dispatch to move DL-922 on the route plan",
+      "Advises the recipient to keep both days free or to take a day off on the strength of either record",
+      "Promises an arrival time"
+    ],
+    "reference_message": "DL-922 (TG-922, two-person delivery) has two different dates on record. Your confirmation this morning gives Thursday 2026-04-16, 12:00–16:00 UTC, booking ref SB-4471. Dispatch report it on the two-person van plan for Wednesday 2026-04-15, 08:00–12:00, loaded on Monday, with no Thursday entry, and the recipient has received a text giving the Wednesday slot. Please confirm which single slot is valid and have the other record corrected. The recipient, Corwin Aldany, can take only one day off work and has to tell his employer this evening; the Wednesday window opens at 08:00 tomorrow. I have not told him either date."
+  },
+  "rationale": "Scheduling's booking and the Dispatch route plan give different days, and Dispatch itself says the booking belongs to Scheduling. The recipient wants one answer tonight, which tempts the desk to pick the 'confirmed' booking or the loaded van. Either guess could leave a two-person delivery arriving at an empty house, so the conflict goes to Scheduling."
+}

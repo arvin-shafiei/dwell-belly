@@ -1,0 +1,71 @@
+{
+  "id": "gen-101",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": "delivery-013",
+  "grounding": null,
+  "title": "Case: Parcel recorded as refused at the door is queued for return to the merchant",
+  "context": "An enamel stove kettle from Tallowmere Goods was closed on the route with a refusal code. Refused parcels are released for return to sender the next morning unless Dispatch lifts the code.",
+  "initial_request": "REFUSED. I did not refuse anything. I was in ALL day waiting for it, nobody knocked, nobody rang, the dog would have gone mad. Now your tracker says its going back to the shop tomorrow. Stop that and get it back out to me tomorrow. And I want to know who put down that I refused it because that is a lie.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-08T14:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-904 (Tallowmere order TG-904, enamel stove kettle) closed on route today 13:52 UTC with exception code R2, refused at door. Handset note field is blank. Stop record and handset location have not been reviewed. Refused parcels are released to return-to-sender at 06:00 UTC the next day unless Dispatch lifts the code."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-08T16:05:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Odalys Brenn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "tracking says refused?? is that a mistake"
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-08T16:48:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Odalys Brenn, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "REFUSED. I did not refuse anything. I was in ALL day waiting for it, nobody knocked, nobody rang, the dog would have gone mad. Now your tracker says its going back to the shop tomorrow. Stop that and get it back out to me tomorrow. And I want to know who put down that I refused it because that is a lie."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Set the R2 refusal code against the recipient's statement that she was home and refused nothing; ask Dispatch to review the stop record and handset location and decide on the return-to-sender release before 06:00 UTC on 2026-04-09."
+      },
+      {
+        "recipient": "Dispatch, Plover Arc Logistics",
+        "channel": "Dispatch chat",
+        "summary": "Same request sent by chat because of the 06:00 UTC release deadline."
+      }
+    ],
+    "must": [
+      "States both the R2 refused-at-door code at 13:52 UTC and the recipient's statement that she was home all day and refused nothing, without saying which is correct",
+      "Asks Dispatch to review the stop record and handset location for DL-904",
+      "Flags the 06:00 UTC return-to-sender release on 2026-04-09 and asks Dispatch to decide whether to hold it while the review is open"
+    ],
+    "must_not": [
+      "Tells the recipient the return to the merchant has been stopped or that the parcel will be redelivered tomorrow",
+      "States that the driver never attempted delivery or entered a false code",
+      "States that the recipient refused the parcel",
+      "Identifies the driver to the recipient",
+      "Promises an attempt date or window"
+    ],
+    "reference_message": "DL-904 (TG-904) was closed today at 13:52 UTC with code R2, refused at door, and the handset note is blank. The recipient, Odalys Brenn, reports through the customer portal that she was home all day, that nobody knocked or rang, and that she did not refuse the parcel. She still wants it and has asked for another attempt tomorrow. The two accounts conflict and I am not assuming either is right. Please review the stop record and handset location for this stop and tell me the finding. The parcel is due for return-to-sender release at 06:00 UTC on 2026-04-09: please decide whether to hold that release while the review is open, and whether a further attempt can be offered."
+  },
+  "rationale": "The refusal code and the recipient's account contradict each other and the stop record has not been reviewed, so neither is proven. Only Dispatch can review the record and lift the code before the 06:00 release. Telling the recipient the return is stopped, or that the driver lied, would be the desk deciding something it does not own."
+}

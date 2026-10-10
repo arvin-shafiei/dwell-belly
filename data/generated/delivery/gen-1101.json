@@ -1,0 +1,105 @@
+{
+  "id": "gen-1101",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "no_action_needed",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Recipient writes in after a casserole set scanned as delivered went to another house on her road",
+  "context": "A cast-iron casserole set was scanned as delivered but the recipient did not have it. The Parcel trace team traces delivery scans and the Recovery team owns retrieval and redelivery; the desk only coordinates.",
+  "initial_request": "Got it!! Driver just brought it round, box still sealed and everything's fine inside. Thank you for chasing this, really appreciate it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-09T08:40:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Odile Farrant, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Tracking says delivered yesterday 16:12 but there is nothing here. No card, nothing in the porch, and I was in all afternoon. It's the casserole set, order TG-919. Can someone find out where it actually went."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-09T08:55:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Parcel trace team, Plover Arc Logistics",
+      "body": "Please trace DL-919 (order TG-919). The scan shows delivered 2026-03-08 16:12; the recipient, Odile Farrant, reports nothing received and no card. Please confirm the handover location from the scan data and photo, and tell me who owns the next step."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-09T09:05:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Odile Farrant, recipient",
+      "body": "I have asked Plover Arc's Parcel trace team to check the delivery scan for DL-919. They own the trace, so I can't tell you where the parcel is until they come back. I will pass on what they confirm."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-03-09T11:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Parcel trace team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-919: GPS on the 16:12 scan is about 90 m from the label address, and the doorstep photo shows a different door from the one on file for no. 14. Handed over at another property on Sallow Row. Passed to Recovery team under RC-919. Recovery owns retrieval and redelivery from here, not us."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-03-09T11:35:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Odile Farrant, recipient",
+      "body": "The Parcel trace team's scan data shows DL-919 was handed over at a different address on your road, not yours. The Recovery team now has it under reference RC-919 and owns getting it back and bringing it to you. They will contact you directly. I can't give you a time until they do."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-03-09T14:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Recovery team, Plover Arc Logistics",
+      "to": "Odile Farrant, recipient; Iona Quill, Rivet Delivery Desk",
+      "body": "RC-919. A driver will call at the property where DL-919 was left this afternoon and, if it is recovered, bring it to no. 14 on the same visit, between 16:00 and 18:00 UTC. If it is not recovered we will tell you by 18:30 what happens next."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-03-09T17:05:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Recovery team, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "RC-919 closed. Parcel recovered sealed at 16:38, handed to O. Farrant at no. 14 at 16:44, signature and doorstep photo on file. Recipient has our closure email. Nothing further from Recovery."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-03-09T17:20:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Odile Farrant, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Got it!! Driver just brought it round, box still sealed and everything's fine inside. Thank you for chasing this, really appreciate it."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "no_action"
+    ],
+    "acceptable_actions": [],
+    "must": [
+      "Takes no action and sends no message to anyone.",
+      "Records why nothing is owed: the Recovery team confirmed handover of DL-919 to the recipient at 16:44 with signature and photo, closed RC-919, and the recipient herself confirms she has the sealed parcel.",
+      "Notes that the final message is a thank-you with no question or request in it, and that the desk only needs to look again if the recipient or a carrier team writes with something new."
+    ],
+    "must_not": [
+      "Sends Odile a closing or 'you're welcome' message that restates the delivery or the case status.",
+      "Asks the Recovery team or the Parcel trace team to re-confirm a handover they have already confirmed and closed.",
+      "Offers or mentions compensation, a goodwill gesture or a complaint route that nobody has asked for and the desk does not control.",
+      "Tells the recipient which house the parcel was left at or anything about the people there.",
+      "Asks the recipient to check the contents for damage or send photos when she has already said everything is fine."
+    ],
+    "reference_message": null
+  },
+  "rationale": "The Recovery team, which owns retrieval, has confirmed the handover with signature and closed its reference, and the recipient has independently confirmed she has the sealed parcel. Her last message is thanks and asks for nothing. Any further message would only repeat what both sides already know."
+}

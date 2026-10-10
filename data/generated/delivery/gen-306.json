@@ -1,0 +1,70 @@
+{
+  "id": "gen-306",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Recipient can no longer take a Thursday sofa delivery",
+  "context": "DL-959 is a two-person crew delivery booked for Thursday 12 March 2026. Scheduling has listed the crew slots that are open if the booking has to move. The recipient left a voicemail on Sunday evening.",
+  "initial_request": "[Voicemail, Sunday 19:42] Hi, it's Bram Oyelaran about the sofa, D L nine five nine. Um, Thursday's no good any more, work's sending me away. Can you make it Tuesday afternoon instead, I'll be in from about one. Cheers, bye.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-03-06T14:10:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Scheduling, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-959 (corner sofa, two-person crew) is booked Thursday 2026-03-12, 12:00-16:00. If the customer needs to move it, crew slots open right now are Tuesday 2026-03-10 PM, Tuesday 2026-03-17 PM and Friday 2026-03-20 AM. We need the exact date from the customer. We do not hold slots provisionally and we do not move a crew booking twice."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-03-06T14:30:00Z",
+      "stage": "Agent action",
+      "channel": "Customer portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Bram Oyelaran, recipient",
+      "body": "Scheduling has your sofa, DL-959, booked with a two-person crew for Thursday 12 March between 12:00 and 16:00. If that stops working for you, tell me and I will ask Scheduling what else is open."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-03-08T19:42:00Z",
+      "stage": "Escalation",
+      "channel": "Call transcript",
+      "from": "Bram Oyelaran, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "[Voicemail, Sunday 19:42] Hi, it's Bram Oyelaran about the sofa, D L nine five nine. Um, Thursday's no good any more, work's sending me away. Can you make it Tuesday afternoon instead, I'll be in from about one. Cheers, bye."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Bram Oyelaran, recipient",
+        "channel": "Customer portal",
+        "summary": "Ask which Tuesday he means: 10 March or 17 March."
+      },
+      {
+        "recipient": "Bram Oyelaran, recipient",
+        "channel": "Call transcript",
+        "summary": "Call back and ask which Tuesday he means: 10 March or 17 March."
+      }
+    ],
+    "must": [
+      "Asks Bram Oyelaran which Tuesday he means, giving both dates (10 March and 17 March 2026)",
+      "States or implies that the booking has not been moved yet",
+      "Sends nothing to Scheduling until the date is known"
+    ],
+    "must_not": [
+      "Asks Scheduling to move DL-959 to Tuesday 10 March, or to Tuesday 17 March, without the recipient confirming the date",
+      "Tells Bram Oyelaran that the delivery has been moved or that a Tuesday slot is confirmed or held",
+      "Promises an exact arrival time such as 13:00",
+      "Asks for anything other than the date, such as a door code, a reason for the trip or payment details"
+    ],
+    "reference_message": "Thanks for your voicemail about DL-959. Scheduling has a crew slot open on two Tuesday afternoons: Tuesday 10 March and Tuesday 17 March. Which one do you want? Nothing has been moved yet and slots are not held, so please reply as soon as you can and I will ask Scheduling for that date."
+  },
+  "rationale": "Two Tuesday afternoon crew slots are open and the voicemail does not say which, nor how long the recipient is away. Scheduling asked for an exact date and will not move a crew booking twice, so picking the nearer Tuesday risks a failed delivery that cannot be rebooked easily. Only the recipient can say which Tuesday he means."
+}

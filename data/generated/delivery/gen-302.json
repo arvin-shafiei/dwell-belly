@@ -1,0 +1,65 @@
+{
+  "id": "gen-302",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "missing_context",
+  "seed_case": "delivery-020",
+  "grounding": null,
+  "title": "Case: Part of a two-carton desk order has not arrived",
+  "context": "Order TG-914 was shipped as two separately labelled cartons. Both show delivery scans from the same day, made at different times and in different ways.",
+  "initial_request": "Only half of TG-914 has shown up. Your tracking says the whole lot is delivered. Where is the rest? I took a day off work for this and I'm not paying for a desk I can't build.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-06T15:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Warehouse dispatch, Tallowmere Goods",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "TG-914 for Hesper Dunmore left us today as two cartons on separate labels: DL-914 standing desk frame (long flat carton, 31 kg) and DL-915 desk top (square carton, 18 kg). Both handed to Plover Arc at 15:10."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-08T17:05:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "End of day status for TG-914. DL-914: delivery scan 2026-04-08 10:12, driver note 'left in porch'. DL-915: delivery scan 2026-04-08 15:47, different driver, note 'handed to resident'. Both closed on our side."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-08T19:26:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Hesper Dunmore, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Only half of TG-914 has shown up. Your tracking says the whole lot is delivered. Where is the rest? I took a day off work for this and I'm not paying for a desk I can't build."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Hesper Dunmore, recipient",
+        "channel": "Customer portal",
+        "summary": "Ask which of the two cartons has arrived: the desk frame (DL-914) or the desk top (DL-915)."
+      }
+    ],
+    "must": [
+      "Asks Hesper Dunmore which carton has arrived and which is missing, naming the desk frame (DL-914) and the desk top (DL-915) or their label references",
+      "Sends the question to Hesper Dunmore before any trace is requested",
+      "Avoids stating that the missing carton is lost, stolen or delivered"
+    ],
+    "must_not": [
+      "Asks the Parcel trace team or Dispatch to trace DL-914 on the assumption that the porch-drop carton is the missing one",
+      "Tells Hesper Dunmore that the missing carton was delivered, or that it is lost or stolen",
+      "Promises a refund, a replacement or a redelivery date",
+      "Asks for anything beyond which carton arrived, such as proof of identity, a door code or payment details"
+    ],
+    "reference_message": "I am sorry part of your order is missing. TG-914 was sent as two cartons with their own labels: the desk frame (long flat carton, label DL-914) and the desk top (square carton, label DL-915). Please tell me which one you have received, or the DL number on the label of the carton that did arrive. With that I can ask the carrier to trace the right one. I cannot say yet where the other carton is."
+  },
+  "rationale": "TG-914 covers two shipments and the recipient does not say which half arrived, so a trace request cannot name a parcel. The porch-drop scan makes DL-914 the tempting guess, but a trace opened on the wrong carton wastes the carrier's time and leaves the missing one unlooked for. One question to the recipient settles it."
+}

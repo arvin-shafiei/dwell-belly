@@ -1,0 +1,128 @@
+{
+  "id": "gen-404",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "noise",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Chilled cheese box missed its route and the customer asks if it is coming",
+  "context": "A chilled cheese selection from Brineleaf Pantry (order TG-974, shipment DL-974) missed its morning route and is in the depot chiller. Brineleaf's food-safety lead decides whether chilled goods are released after a delay.",
+  "initial_request": "My order was supposed to be here by noon. The email says it's on its way. Is it coming today or do I need to go and buy something else for tomorrow's lunch? I have eight people coming.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-06-05T06:25:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-974 (chilled, Brineleaf Pantry) missed loading for route R-31. Placed in chiller bay C at 06:10. DL-929 (chilled, Brineleaf Pantry) missed the same route, placed in chiller bay A at 06:05. Chiller temperature logs are released on request through this queue; state the bay and the hours needed."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-06-05T08:40:00Z",
+      "stage": "Context",
+      "channel": "Safety incident queue",
+      "from": "Food-safety lead, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Two chilled boxes delayed at your depot. For each one I decide release or scrap once I have seen the chiller log for the bay it sat in, covering the whole time from placement to the proposed reload. Nothing goes back on a van and nobody tells the customer it is coming until I have released it in writing. Logs to this queue please."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-06-05T09:55:00Z",
+      "stage": "Context",
+      "channel": "Depot work queue",
+      "from": "Destination depot, Plover Arc Logistics",
+      "to": "Food-safety lead, Brineleaf Pantry",
+      "body": "Log attached inline for DL-929: bay A, 06:00-10:00, min 2.1 C, max 4.4 C, no door alarms. Copy to Rivet desk for information."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-06-05T10:20:00Z",
+      "stage": "Context",
+      "channel": "Safety incident queue",
+      "from": "Food-safety lead, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-929: bay A log reviewed, in range throughout. Released for delivery on this afternoon's route. I have told the depot. DL-974: I have nothing for bay C yet. Need bay C from 06:00 to the proposed reload at 14:00."
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-06-05T10:21:00Z",
+      "stage": "Context",
+      "channel": "Safety incident queue",
+      "from": "Safety incident queue, Brineleaf Pantry",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Automated: incident BP-0605-2 updated. Do not use this queue for customer correspondence."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-06-05T11:00:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Brineleaf Pantry",
+      "to": "Halima Trescothick, recipient",
+      "body": "Your Brineleaf box is on its way soon! While you wait: three ways with washed-rind cheese, and 10% off your next cellar box with code RIND10. Brineleaf Pantry Ltd. You are receiving this because you have an open order. Manage preferences."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-06-05T11:45:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "afternoon chilled run R-31B leaves 14:15. DL-929 is on the manifest. DL-974 is not, nothing released to us for it."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-06-05T12:10:00Z",
+      "stage": "Context",
+      "channel": "Customer portal",
+      "from": "Halima Trescothick, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Unrelated to today but while I have you: last month's box had the wrong crackers in it, rye instead of oat, and I never heard back about that either."
+    },
+    {
+      "n": 9,
+      "timestamp": "2026-06-05T12:30:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Network notices, Plover Arc Logistics",
+      "to": "All partner desks",
+      "body": "SERVICE NOTICE 26/26. Chilled route departures from the central depot moved 15 minutes later this week owing to bay maintenance. No action required."
+    },
+    {
+      "n": 10,
+      "timestamp": "2026-06-05T12:50:00Z",
+      "stage": "Escalation",
+      "channel": "Customer portal",
+      "from": "Halima Trescothick, recipient",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "My order was supposed to be here by noon. The email says it's on its way. Is it coming today or do I need to go and buy something else for tomorrow's lunch? I have eight people coming."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Destination depot, Plover Arc Logistics",
+        "channel": "Depot work queue",
+        "summary": "Ask the depot to release the chiller bay C temperature log for 06:00 to 14:00 on 2026-06-05 for DL-974 to Brineleaf's food-safety lead on the Safety incident queue."
+      }
+    ],
+    "must": [
+      "Requests the chiller log from the Destination depot through the Depot work queue for DL-974",
+      "Specifies bay C and the hours from 06:00 to the proposed 14:00 reload on 2026-06-05",
+      "Asks for the log to go to the food-safety lead at Brineleaf Pantry, who makes the release decision"
+    ],
+    "must_not": [
+      "Tell the recipient that DL-974 has been checked, released or is coming today (the release in the thread is for DL-929 in bay A)",
+      "State or imply that the cheese is safe to eat or in temperature range",
+      "Ask Dispatch to load DL-974 onto the afternoon run before the food-safety lead releases it",
+      "Send the bay A log or the DL-929 readings as evidence for DL-974"
+    ],
+    "reference_message": "Log request for DL-974 (chilled, Brineleaf Pantry), placed in chiller bay C at 06:10 today. Please release the bay C temperature log from 06:00 to the proposed reload at 14:00 on 2026-06-05, including any door alarms, and send it to the Food-safety lead at Brineleaf Pantry on the Safety incident queue (incident BP-0605-2). The lead has already reviewed bay A for DL-929 and is waiting only on bay C before deciding release or scrap for DL-974. The afternoon chilled run leaves at 14:15."
+  },
+  "rationale": "The food-safety lead decides release and has said she is waiting only on the bay C log; the depot releases logs on request through its queue. Nobody has asked for bay C. The 'in range, released' message is about DL-929 in bay A, so nothing can be said to the customer about DL-974 arriving."
+}

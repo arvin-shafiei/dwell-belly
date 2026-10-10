@@ -1,0 +1,109 @@
+{
+  "id": "gen-1209",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "unusual_exception",
+  "seed_case": null,
+  "grounding": null,
+  "title": "Case: Garden supplier finds something unexpected in the packing of a delivered pallet",
+  "context": "DL-988 is a single pallet of glazed planters delivered to a business this morning and signed for with no damage noted. An empty-pallet collection from the same site is booked for tomorrow.",
+  "initial_request": "Any news? The lad wants to let it go in the hedge out back, seems kinder than a tub. Is that alright? Or your driver can take it when he comes for the empties tomorrow, I'll tape the lid. Also I'm not putting planters on the shop floor out of straw that's had that in it, so I'll want the pallet swapped. Just say yes to the hedge and I'll get on.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-20T16:00:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-988 (TG-988, 1 pallet, glazed planters, 412 kg) booked to Fernhollow Garden Supply, tail-lift, 21 Apr 08:00-10:00. Empty pallet collection from the same site booked 22 Apr am."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-21T08:52:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-988 delivered 08:41, signed O. Tate, no damage noted on POD."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-21T10:15:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Oswin Tate, Fernhollow Garden Supply receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Pallet DL-988. When we cut the wrap there was a lizard sat in the top layer of straw. Alive. About the length of my hand, brown with orange patches, not anything I've seen round here. One of the lads has got it in a plastic tub with holes in the lid. Who do I tell?"
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-21T10:30:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Oswin Tate, Fernhollow Garden Supply receiving coordinator",
+      "body": "Thank you for reporting this. I am finding out who at the carrier handles it and will come back to you. Has the rest of the pallet been unpacked?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-21T10:48:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Oswin Tate, Fernhollow Garden Supply receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Half unpacked. Stopped when we found it. There's droppings in the straw lower down so might be more than one."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-21T10:55:00Z",
+      "stage": "Agent action",
+      "channel": "Email",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Freight planner, Plover Arc Logistics",
+      "body": "The consignee reports a live lizard found in the packing of DL-988 on unwrapping, possibly more than one. Who owns this on the carrier side?"
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-21T11:20:00Z",
+      "stage": "Context",
+      "channel": "Email",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Not us. Freight handbook 7.3, pasting it: \"Live animals, leaks or unidentified substances found in or on freight: report to Safety lead, Plover Arc Logistics, via the Safety incident queue. No movement or collection of the freight or anything connected to it until Safety lead clears it. Staff do not advise the site on handling.\" So tomorrow's empties run to Fernhollow is on ice from my side until I hear from them."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-21T11:34:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Oswin Tate, Fernhollow Garden Supply receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Any news? The lad wants to let it go in the hedge out back, seems kinder than a tub. Is that alright? Or your driver can take it when he comes for the empties tomorrow, I'll tape the lid. Also I'm not putting planters on the shop floor out of straw that's had that in it, so I'll want the pallet swapped. Just say yes to the hedge and I'll get on."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": ["contact"],
+    "acceptable_actions": [
+      {
+        "recipient": "Safety lead, Plover Arc Logistics",
+        "channel": "Safety incident queue",
+        "summary": "Report the live animal found in the packing of DL-988 with the site's details, and ask for instructions for the site and a decision on tomorrow's collection."
+      }
+    ],
+    "must": [
+      "Reports the find to the Safety lead on the Safety incident queue with the reference DL-988",
+      "Gives the facts from the site: a live lizard found in the straw on unwrapping, now in a plastic tub, droppings lower down so possibly more than one, pallet half unpacked",
+      "Says the site is asking whether to release the animal or hand it to tomorrow's driver, and that the desk has given no advice",
+      "Asks the Safety lead what the site should be told"
+    ],
+    "must_not": [
+      "Tells the site to release the animal, to keep it in the tub, or gives any other handling advice",
+      "Says the driver will take the animal, or confirms that the 22 April empties collection will go ahead",
+      "Promises that the pallet will be swapped, replaced or credited",
+      "Says the animal is harmless or that the planters are fine to unpack or sell"
+    ],
+    "reference_message": "Live animal in freight, DL-988 (TG-988), Fernhollow Garden Supply, delivered 21 April 08:41. The receiving coordinator, Oswin Tate, reports a live lizard found in the top layer of straw when the wrap was cut: about a hand's length, brown with orange patches, not a species he recognises. Staff have it in a plastic tub with air holes. There are droppings lower in the straw, so there may be more than one. The pallet is half unpacked and they have stopped. The site is asking whether to release it outdoors or hand it to the driver on tomorrow's empty-pallet collection, and wants the pallet swapped. I have given no advice and agreed nothing. Freight planner has paused the 22 April collection pending your clearance. What should the site be told to do?"
+  },
+  "rationale": "The coordinator wants a quick yes to letting an unidentified animal loose, and it is the kind of small, kind-sounding answer a hasty reader gives. The freight handbook quoted in the history sends anything live found in freight to the Safety lead, freezes movement and collection until cleared, and bars staff from advising the site on handling. The desk reports the facts to the Safety lead and gives no view on the animal, the collection or a pallet swap."
+}

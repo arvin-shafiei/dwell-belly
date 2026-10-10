@@ -1,0 +1,117 @@
+{
+  "id": "gen-104",
+  "track": "delivery",
+  "generated": true,
+  "mutation": "conflicting_information",
+  "seed_case": "delivery-044",
+  "grounding": null,
+  "title": "Case: Four pallets of tile weigh less on the receiving dock than on the manifest",
+  "context": "Tallowmere Goods shipped four pallets of ceramic floor tile to Marrow & Finch Interiors. The pallets are on the dock, the driver is waiting for a signature and has another collection to make.",
+  "initial_request": "Driver's pushing me to sign clean and I'm not doing that. Either you confirm in writing that this is a short shipment, 228 kg, so I can sign it as received short and get the balance sent, or tell him to take all four back. I've got a fitting crew booked on these tiles for Thursday. Which is it.",
+  "events": [
+    {
+      "n": 1,
+      "timestamp": "2026-04-20T08:10:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-931: 4 pallets ceramic floor tile, Tallowmere Goods to Marrow & Finch Interiors, dock 3, 21 Apr 09:00–11:00 UTC. Manifest gross 1,840 kg. Origin weighbridge ticket WB-5530 on departure: 1,838 kg. Tail-lift vehicle allocated."
+    },
+    {
+      "n": 2,
+      "timestamp": "2026-04-21T09:48:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Tobiah Strand, Marrow & Finch receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "DL-931 on the dock. Count 4 of 4, wrap looks intact on all four. Driver waiting for a signature."
+    },
+    {
+      "n": 3,
+      "timestamp": "2026-04-21T10:02:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Tobiah Strand, Marrow & Finch receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Problem. Our dock scale puts the four at 1,612 kg total. Manifest says 1,840. Thats 228 kg light, near enough a full layer of boxes off each pallet. P3 on its own is 361, the other three are all 415 to 420."
+    },
+    {
+      "n": 4,
+      "timestamp": "2026-04-21T10:06:00Z",
+      "stage": "Agent action",
+      "channel": "Business portal",
+      "from": "Iona Quill, Rivet Delivery Desk",
+      "to": "Tobiah Strand, Marrow & Finch receiving coordinator",
+      "body": "Thank you. Is the dock scale reading gross, with the wooden pallet bases on, and do you know when the scale was last certified?"
+    },
+    {
+      "n": 5,
+      "timestamp": "2026-04-21T10:11:00Z",
+      "stage": "Context",
+      "channel": "Business portal",
+      "from": "Tobiah Strand, Marrow & Finch receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Gross, bases on. Cert sticker says November. I'm not the scale man but it weighed yesterdays inbound fine."
+    },
+    {
+      "n": 6,
+      "timestamp": "2026-04-21T10:15:00Z",
+      "stage": "Context",
+      "channel": "Dispatch chat",
+      "from": "Dispatch, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver on DL-931 has been on the dock 25 min, receiver won't sign. He's got an 11:30 collection across town. Driver says pallets are as loaded, straps and wrap not touched. Needs a clean POD or an instruction."
+    },
+    {
+      "n": 7,
+      "timestamp": "2026-04-21T10:21:00Z",
+      "stage": "Context",
+      "channel": "Freight portal",
+      "from": "Freight planner, Plover Arc Logistics",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Seen the chat on DL-931. Weight queries on freight come to Freight planner for a reweigh check before anybody signs anything off or writes a shortage up. I don't have anything from the consignee yet."
+    },
+    {
+      "n": 8,
+      "timestamp": "2026-04-21T10:27:00Z",
+      "stage": "Escalation",
+      "channel": "Business portal",
+      "from": "Tobiah Strand, Marrow & Finch receiving coordinator",
+      "to": "Iona Quill, Rivet Delivery Desk",
+      "body": "Driver's pushing me to sign clean and I'm not doing that. Either you confirm in writing that this is a short shipment, 228 kg, so I can sign it as received short and get the balance sent, or tell him to take all four back. I've got a fitting crew booked on these tiles for Thursday. Which is it."
+    }
+  ],
+  "expected": {
+    "acceptable_dispositions": [
+      "contact"
+    ],
+    "acceptable_actions": [
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Freight portal",
+        "summary": "Send both weight records (manifest 1,840 kg and weighbridge 1,838 kg against dock scale 1,612 kg, with the per-pallet readings) and ask for the reweigh check and an instruction on signing while the driver is still on the dock."
+      },
+      {
+        "recipient": "Freight planner, Plover Arc Logistics",
+        "channel": "Email",
+        "summary": "Same request by email."
+      }
+    ],
+    "must": [
+      "Gives the manifest gross 1,840 kg and weighbridge ticket WB-5530 at 1,838 kg alongside the consignee's dock-scale total of 1,612 kg gross, including the 361 kg reading for P3",
+      "Asks the Freight planner for the reweigh check and for an instruction on how the consignee should sign and whether the driver should wait",
+      "Says the driver is still on the dock with an 11:30 collection and the consignee will not sign clean",
+      "Does not say which weight is correct"
+    ],
+    "must_not": [
+      "Confirms to the consignee that this is a short shipment or that 228 kg is missing",
+      "Tells the consignee to sign clean, or tells the driver or Dispatch to take the pallets back",
+      "Promises that a balance of tiles or a replacement will be sent",
+      "States that the dock scale is faulty or that the origin weighbridge is wrong",
+      "Suggests the load was tampered with or stolen from"
+    ],
+    "reference_message": "Weight query on DL-931, driver still on dock 3 at Marrow & Finch. Your records: manifest gross 1,840 kg, origin weighbridge ticket WB-5530 at 1,838 kg. The receiving coordinator, Tobiah Strand, reports a dock-scale total of 1,612 kg gross with pallet bases on, 228 kg lower: P3 reads 361 kg and the other three 415 to 420 kg each. Count is 4 of 4 and the wrap looks intact; the driver says straps and wrap are untouched. The scale's certificate sticker is dated November. I am not treating either figure as correct. The consignee will not sign clean and has asked either to sign as received short or to have all four taken back; the driver has an 11:30 collection. Please run the reweigh check and tell me how the consignee should sign and whether the driver waits."
+  },
+  "rationale": "The origin weighbridge and the receiving dock scale disagree by 228 kg and nothing in the history shows which instrument is right. The Freight planner states that weight queries go to them for a reweigh check before anything is signed or written up as a shortage. Confirming a short shipment, or telling either side to sign or reload, would be the desk settling a dispute it does not own under time pressure from both the driver and the consignee."
+}
