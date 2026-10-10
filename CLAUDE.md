@@ -4,7 +4,9 @@ Hackathon project (Real-World Agents Hackathon, 10 Oct 2026, Delivery & Logistic
 
 ## Read first
 
-- `SPEC.md`: the full idea spec (source of truth for scope, node list, build order)
+- `docs/PRD.md`: **the source of truth.** Scope, agent behaviour rules, the shared contract (types every part imports), voice, UI integration, outputs, timeline. Where anything else in the repo disagrees, the PRD wins. Change it by PR, with a changelog line.
+- `SPEC.md`: the original idea spec (node list, vision). Superseded by `docs/PRD.md` where they differ.
+- `docs/stress-test/`: the morning stress test of the design: edge-case catalogue, 12 fixtures with rubrics, simulation, architecture and voice reviews
 - `docs/IDEA.md`: short explainer
 - `docs/hackathon/`: official hacker guide, rules, ElevenLabs guide, kickoff talk transcript. Its README has the key facts.
 - `docs/delivery-cases.md`: what the 50 delivery cases actually ask for, the boundaries that recur, and where the spec has no data behind it
@@ -30,7 +32,7 @@ A three.js (react-three-fiber + drei) city where the delivery workflow plays out
 - **Ownership:** incidents are created by `Crashes`/`Roadworks`; `Responders` moves them to responding → clearing → cleared and reopens the road (Roadworks reopens its own). Vehicles must re-path with `findPath(…, blockedSet())` when their next road gets blocked.
 - Per-frame data goes in `registry.ts`, never in zustand (re-render storm). Tests: `npm test -w web` (vitest).
 
-## Architecture rules (from the spec)
+## Architecture rules (from the spec, superseded by `docs/PRD.md` section 6 where they differ)
 
 - **Build order:** core incident flow first (Ingest, History Lookup, Triage, Clash Check, Planner, Safety Gate, Human Decision, Action, Verify, Case Log). Don't start extras until the core runs end to end.
 - **Model split:** Jev (TypeSafe) for quick typed judgements only (pick one / score / yes-no with probability; one focused question per call). Claude for anything that writes or plans. Code for maths, thresholds, routing, logging, actions.
