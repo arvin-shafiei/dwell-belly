@@ -2,6 +2,7 @@
 // Per-frame speaker loudness lives in voice.ts, never here (PRD J3).
 import { create } from "zustand";
 import { on, type Party, type VoiceSource, type WorldEvent } from "./bus";
+import { addSpend, clampMax, claimRun, mergeStarts, newBudget, type AgentBudget } from "./modules/WorkflowDriver/budget";
 
 export type IncidentKind =
   | "car_crash" | "truck_crash" | "pileup" | "roadworks" | "breakdown" | "plane_crash" | "emergency_landing";
@@ -52,14 +53,25 @@ export interface WorkflowEvent {
   costUsd?: number;
   /** The decision card when status is "ask" on the human node. Mirrors DecisionCard (apps/api/src/lib/trace.ts). */
   card?: {
-    cardId: string; summary: string; options: { id: string; label: string; safe?: boolean }[];
+    cardId: string; summary: string; options: { id: string; label: string; safe?: boolean; effect?: string }[];
     routeTo: string; deadlineMs: number; fallbackOptionId: string;
+    // Richer DecisionCard fields from the real agent (optional; the mock never sets them).
+    whyStopped?: { reason: string; line: string };
+    evidence?: { who: string; says: string; basis: string }[];
+    alreadyDone?: string[];
+    clash?: string;
+    wouldChangeMyMind?: string;
+    fallback?: string;
   };
   decision?: "act" | "ask_for_info" | "route_to_owner" | "hold_for_human" | "wait_until" | "refuse";
   /** ISO time for wait_until. */
   due?: string;
   /** Per-action gate and action events. */
   actionId?: string;
+  /** Where a real trace came from: a city incident or scenario sent to apps/api, or a console run. */
+  origin?: "city_incident" | "city_scenario" | "console" | "voice" | "runs" | "answers" | "examples";
+  /** The trace's runId, to find its card in the human review queue. */
+  runId?: string;
 }
 
 // ---------- voice (PRD J3: calls, transcripts, voice notes, soundEnabled; low frequency only) ----------
@@ -200,6 +212,8 @@ interface WorldState extends VoiceSlice {
   agentMode: "mock" | "real";
   /** Whether the agent API answered its health check (null = not checked yet). */
   agentOnline: boolean | null;
+  /** Budget guard for real cases started by the city (modules/WorkflowDriver/budget.ts). */
+  agentBudget: AgentBudget;
   paused: boolean;
   /** Forced weather (Sky eases to it over ~2 s and holds it); "auto" resumes the cycle. */
   weatherOverride: WeatherOverride;
@@ -219,6 +233,12 @@ interface WorldState extends VoiceSlice {
   setTimeScale: (x: number) => void;
   setAgentMode: (m: "mock" | "real") => void;
   setAgentOnline: (v: boolean) => void;
+  /** Claim a real-agent slot now; false when over budget (the caller falls back to the mock). */
+  claimAgentRun: (now?: number) => boolean;
+  addAgentSpend: (usd: number) => void;
+  setAgentBudgetMax: (n: number) => void;
+  /** Merge another tab's start times (shared budget across open city tabs). */
+  syncAgentBudget: (starts: number[], spentUsd?: number) => void;
   setPaused: (p: boolean) => void;
   setWeatherOverride: (w: WeatherOverride) => void;
   /** Voice (PRD J3). applyVoiceEvent is fed by the bus automatically (see the bottom of this file). */
@@ -240,6 +260,7 @@ export const useWorld = create<WorldState>((set) => ({
   timeScale: 1,
   agentMode: "mock",
   agentOnline: null,
+  agentBudget: newBudget(),
   paused: false,
   weatherOverride: "auto",
   calls: {},
@@ -268,6 +289,22 @@ export const useWorld = create<WorldState>((set) => ({
   setTimeScale: (timeScale) => set({ timeScale }),
   setAgentMode: (agentMode) => set({ agentMode }),
   setAgentOnline: (agentOnline) => set({ agentOnline }),
+  claimAgentRun: (now = Date.now()) => {
+    const next = claimRun(useWorld.getState().agentBudget, now);
+    if (next) set({ agentBudget: next });
+    else set((s) => ({ agentBudget: { ...s.agentBudget, overBudget: s.agentBudget.overBudget + 1 } }));
+    return next !== null;
+  },
+  addAgentSpend: (usd) => set((s) => ({ agentBudget: addSpend(s.agentBudget, usd) })),
+  setAgentBudgetMax: (n) => set((s) => ({ agentBudget: { ...s.agentBudget, maxPerWindow: clampMax(n) } })),
+  syncAgentBudget: (starts, spentUsd) =>
+    set((s) => ({
+      agentBudget: {
+        ...s.agentBudget,
+        starts: mergeStarts(s.agentBudget.starts, starts, Date.now(), s.agentBudget.windowMs),
+        ...(spentUsd !== undefined && spentUsd > s.agentBudget.spentUsd ? { spentUsd } : {}),
+      },
+    })),
   setPaused: (paused) => set({ paused }),
   setWeatherOverride: (weatherOverride) => set({ weatherOverride }),
   applyVoiceEvent: (e) =>

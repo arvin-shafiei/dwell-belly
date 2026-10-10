@@ -74,10 +74,20 @@ export function gateBranch(st: Record<string, NodeStatus>): FlowEdge["when"] | n
   return null;
 }
 
-// Mock cost per model call (USD). Code is free.
+// Mock cost per model call (USD), an ESTIMATE for simulated cases only. Code is free.
 const COST: Record<Runner, number> = { jev: 0.0004, claude: 0.011, code: 0 };
 
+/** True for events replayed from a real agent trace (anything not produced by the mock engine). */
+export function isReal(e: Pick<WorkflowEvent, "source">): boolean {
+  return !!e.source && e.source !== "mock" && e.source !== "simulated_persona";
+}
+
+/**
+ * Real events: the trace's own cost (run_end.totalCostUsd rides on the final log line), never an estimate.
+ * Mock events: the per-call estimate above, which the HUD labels "est".
+ */
 export function eventCost(e: WorkflowEvent): number {
+  if (isReal(e)) return e.costUsd ?? 0;
   // Only count completed calls, not "start" pings.
   if (e.status === "start") return 0;
   return COST[RUNNER_OF[e.nodeId] ?? "code"];
@@ -92,6 +102,8 @@ export interface CaseSummary {
   cost: number;
   steps: number;
   firstT: number;
+  /** The first real-trace event of the case (provenance: synthetic, origin), or null for a mock case. */
+  prov: WorkflowEvent | null;
 }
 
 function stateOf(last: WorkflowEvent, closed: boolean, errored: boolean): CaseState {
@@ -104,14 +116,15 @@ function stateOf(last: WorkflowEvent, closed: boolean, errored: boolean): CaseSt
 
 /** Group events by case, newest case activity first. */
 export function summariseCases(events: readonly WorkflowEvent[], limit = 12): CaseSummary[] {
-  const map = new Map<string, { last: WorkflowEvent; cost: number; steps: number; firstT: number; closed: boolean; errored: boolean }>();
+  const map = new Map<string, { last: WorkflowEvent; cost: number; steps: number; firstT: number; closed: boolean; errored: boolean; prov: WorkflowEvent | null }>();
   for (const e of events) {
     let c = map.get(e.caseId);
     if (!c) {
-      c = { last: e, cost: 0, steps: 0, firstT: e.t, closed: false, errored: false };
+      c = { last: e, cost: 0, steps: 0, firstT: e.t, closed: false, errored: false, prov: null };
       map.set(e.caseId, c);
     }
     c.last = e;
+    if (!c.prov && isReal(e)) c.prov = e;
     c.cost += eventCost(e);
     if (e.status !== "start") c.steps++;
     if (e.nodeId === "log" && e.status === "ok") c.closed = true;
@@ -125,9 +138,21 @@ export function summariseCases(events: readonly WorkflowEvent[], limit = 12): Ca
       cost: c.cost,
       steps: c.steps,
       firstT: c.firstT,
+      prov: c.prov,
     }))
     .sort((a, b) => b.last.t - a.last.t)
     .slice(0, limit);
+}
+
+/** Spend split by provenance: real trace costs vs the mock's estimate. Never summed together. */
+export function spendSplit(events: readonly WorkflowEvent[]): { real: number; estimated: number } {
+  let real = 0;
+  let estimated = 0;
+  for (const e of events) {
+    if (isReal(e)) real += e.costUsd ?? 0;
+    else estimated += eventCost(e);
+  }
+  return { real, estimated };
 }
 
 /** New "ask" events since lastId (events are newest-last). Returns them oldest-first. */

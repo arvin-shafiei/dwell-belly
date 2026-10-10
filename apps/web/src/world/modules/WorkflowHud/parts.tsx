@@ -4,7 +4,9 @@ import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "reac
 import { useShallow } from "zustand/react/shallow";
 import { useWorld, type Delivery, type Incident, type IncidentKind, type WorkflowEvent } from "../../store";
 import { getScenario } from "../../scenarios";
-import { formatAge, formatCost, newAsks, RUNNER_OF, summariseCases } from "./flow";
+import { formatAge, formatCost, newAsks, RUNNER_OF, spendSplit, summariseCases } from "./flow";
+import { provenanceLabel } from "../../backendLink";
+import { budgetLeft, nextSlotAt } from "../WorkflowDriver/budget";
 import { chosenAction, formatExpected, hasRealTrace, matchExpected, scenarioIdOf } from "./scenarioMatch";
 import {
   INCIDENT_COLOR,
@@ -25,6 +27,16 @@ export function useNow(intervalMs: number) {
   const [now, setNow] = useState(() => performance.now());
   useEffect(() => {
     const id = setInterval(() => setNow(performance.now()), intervalMs);
+    return () => clearInterval(id);
+  }, [intervalMs]);
+  return now;
+}
+
+/** Ticking wall clock in ms (Date.now), for budget windows. */
+export function useEpochNow(intervalMs: number) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), intervalMs);
     return () => clearInterval(id);
   }, [intervalMs]);
   return now;
@@ -85,14 +97,69 @@ export function SimulatedTag({ long = false }: { long?: boolean }) {
   );
 }
 
-export function RealAgentTag() {
+/** `label` is the full provenance, e.g. "Real agent · Synthetic case" (backendLink.provenanceLabel). */
+export function RealAgentTag({ label = "Real agent" }: { label?: string }) {
+  const synthetic = /synthetic/i.test(label);
   return (
     <span
-      title="Decided by the real agent in apps/api; this is a replay of its trace."
-      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-emerald-400/50 bg-emerald-500/15 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-emerald-200"
+      title={
+        synthetic
+          ? "Decided by the real agent in apps/api on a SYNTHETIC case built from the city simulation (simulated driver and customer messages). Replay of its trace."
+          : "Decided by the real agent in apps/api; this is a replay of its trace."
+      }
+      className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] ${
+        synthetic ? "border-sky-400/50 bg-sky-500/15 text-sky-200" : "border-emerald-400/50 bg-emerald-500/15 text-emerald-200"
+      }`}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
-      Real agent
+      <span className={`h-1.5 w-1.5 rounded-full ${synthetic ? "bg-sky-300" : "bg-emerald-300"}`} />
+      {label}
+    </span>
+  );
+}
+
+/** Real spend so far (sum of run_end.totalCostUsd of city-started cases) and the budget guard's state. */
+function BudgetChip({ editable }: { editable: boolean }) {
+  const b = useWorld((s) => s.agentBudget);
+  const setMax = useWorld((s) => s.setAgentBudgetMax);
+  const [open, setOpen] = useState(false);
+  const now = useEpochNow(5000);
+  const left = budgetLeft(b, now);
+  const next = nextSlotAt(b, now);
+  const over = left === 0;
+  const title = `Real spend by this city: $${b.spentUsd.toFixed(4)} (from each trace's run_end.totalCostUsd). Budget: ${b.maxPerWindow} real cases per 10 min, ${left} left${
+    next ? `; next slot in ${Math.ceil((next - now) / 60_000)} min` : ""
+  }. Over budget, cases run on the mock and are tagged SIMULATED.${editable ? " Click to change." : ""}`;
+  return (
+    <span className="relative inline-flex">
+      <button
+        type="button"
+        title={title}
+        onClick={() => editable && setOpen((o) => !o)}
+        className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border px-1.5 py-[1px] font-mono text-[9px] tabular-nums ${
+          over ? "border-amber-400/50 bg-amber-500/15 text-amber-200" : "border-white/15 bg-white/[0.05] text-white/70"
+        }`}
+      >
+        ${b.spentUsd.toFixed(3)}
+        <span className="text-white/35">·</span>
+        {over ? "budget used · mock" : `${left}/${b.maxPerWindow}`}
+      </button>
+      {open && editable && (
+        <div className="absolute right-0 top-full z-40 mt-1.5 w-56 rounded-lg border border-white/10 bg-[#0b0d12]/95 p-3 text-[11px] text-white/80 shadow-xl backdrop-blur-xl">
+          <div className="font-semibold text-white">Real-agent budget</div>
+          <p className="mt-1 text-[10px] leading-snug text-white/55">
+            Max real cases the city may start per 10 minutes (incidents and staged scenarios). Over it, the mock runs, tagged Simulated.
+          </p>
+          <div className="mt-2 flex items-center gap-2">
+            <button type="button" className="h-6 w-6 rounded border border-white/15 hover:bg-white/10" onClick={() => setMax(b.maxPerWindow - 1)}>−</button>
+            <span className="w-8 text-center font-mono text-[13px] tabular-nums text-white">{b.maxPerWindow}</span>
+            <button type="button" className="h-6 w-6 rounded border border-white/15 hover:bg-white/10" onClick={() => setMax(b.maxPerWindow + 1)}>+</button>
+            <span className="text-[10px] text-white/45">per 10 min</span>
+          </div>
+          <div className="mt-2 font-mono text-[10px] tabular-nums text-white/55">
+            spent ${b.spentUsd.toFixed(4)} · {b.runs} started · {b.overBudget} fell back
+          </div>
+        </div>
+      )}
     </span>
   );
 }
@@ -107,6 +174,7 @@ export function AgentToggle({ short = false }: { short?: boolean }) {
   const setMode = useWorld((s) => s.setAgentMode);
   const real = mode === "real" && online;
   return (
+    <span className="inline-flex shrink-0 items-center gap-1">
     <button
       type="button"
       disabled={!online && mode === "mock"}
@@ -114,14 +182,16 @@ export function AgentToggle({ short = false }: { short?: boolean }) {
       title={
         online
           ? real
-            ? "Scenarios go to the real agent (apps/api). Click to switch back to the mock."
-            : "Click to send scenarios to the real agent (apps/api). Uses model calls."
+            ? "Incidents and scenarios go to the real agent (apps/api), within the budget. Click to switch back to the mock."
+            : "Click to send incidents and scenarios to the real agent (apps/api). Uses model calls."
           : "Agent API not reachable at NEXT_PUBLIC_API_URL, so the mock agent runs."
       }
       className="shrink-0 disabled:cursor-not-allowed"
     >
       {real ? <RealAgentTag /> : <SimulatedTag long={!short} />}
     </button>
+    {real && <BudgetChip editable={!short} />}
+    </span>
   );
 }
 
@@ -172,10 +242,20 @@ export function IncidentIcon({ kind, size = 16 }: { kind: IncidentKind; size?: n
 export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly WorkflowEvent[] }) {
   const cases = useMemo(() => summariseCases(events, 8), [events]);
   const now = useNow(1000);
-  const total = useMemo(() => summariseCases(events, 1000).reduce((s, c) => s + c.cost, 0), [events]);
+  const spend = useMemo(() => spendSplit(events), [events]);
   return (
     <section>
-      <SectionTitle right={<span className="font-mono text-[10px] tabular-nums text-white/45">spend {formatCost(total)}</span>}>
+      <SectionTitle
+        right={
+          <span
+            className="font-mono text-[10px] tabular-nums text-white/45"
+            title="Real: sum of the replayed traces' run_end.totalCostUsd. Sim est: the mock engine's made-up per-call estimate, never real spend."
+          >
+            real {formatCost(spend.real)}
+            {spend.estimated > 0 && <span className="text-fuchsia-200/50"> · sim est {formatCost(spend.estimated)}</span>}
+          </span>
+        }
+      >
         Case feed
       </SectionTitle>
       {cases.length === 0 ? (
@@ -193,9 +273,14 @@ export const CaseFeed = memo(function CaseFeed({ events }: { events: readonly Wo
                 <span className={`absolute inset-y-0 left-0 w-[3px] ${style.bar}`} />
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[11px] font-medium text-white">{c.caseId}</span>
-                  {c.caseId.startsWith("AGT-") || hasRealTrace(events, c.caseId) ? <RealAgentTag /> : <SimulatedTag />}
+                  {c.prov ? <RealAgentTag label={provenanceLabel(c.prov)} /> : <SimulatedTag />}
                   <span className={`rounded px-1.5 py-px font-mono text-[9px] uppercase tracking-wider ${style.chip}`}>{style.label}</span>
-                  <span className="ml-auto font-mono text-[10px] tabular-nums text-white/55">{formatCost(c.cost)}</span>
+                  <span
+                    className={`ml-auto font-mono text-[10px] tabular-nums ${c.prov ? "text-white/55" : "text-fuchsia-200/45"}`}
+                    title={c.prov ? "Real cost from the trace (run_end.totalCostUsd)" : "Mock estimate, not real spend"}
+                  >
+                    {c.prov ? (c.state === "closed" || c.cost > 0 ? formatCost(c.cost) : "…") : `est ${formatCost(c.cost)}`}
+                  </span>
                 </div>
                 <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-white/70">{c.last.summary}</p>
                 <ExpectedLine caseId={c.caseId} events={events} />

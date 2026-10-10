@@ -12,6 +12,7 @@ import { hudLayout, TOPBAR_FALLBACK_H, type Insets } from "./WorkflowHud/layout"
 import { MiniFlow } from "./WorkflowHud/MiniFlow";
 import { AgentToggle, CaseFeed, Deliveries, GLASS, HotkeysFooter, IncidentList, RealAgentTag, SimulatedTag, useThrottledWorkflow } from "./WorkflowHud/parts";
 import { useReviewQueue } from "../../review/useReviewQueue";
+import { RealDecisionToast } from "./WorkflowHud/decision";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
 import { Clock, TopBar } from "./WorkflowHud/topbar";
 
@@ -31,7 +32,7 @@ function AgentNote() {
   const real = useWorld((st) => st.agentMode === "real" && !!st.agentOnline);
   return real ? (
     <p className="border-b border-white/[0.07] bg-emerald-500/[0.07] px-4 py-1.5 text-[10px] leading-snug text-emerald-100/80">
-      Staged scenarios go to the real agent (apps/api) and its trace is replayed here. Other cases still use the mock and are tagged Simulated.
+      City incidents (as synthetic cases), staged scenarios and new console runs go to the real agent (apps/api) and their traces are replayed here, within the budget. Anything else uses the mock and is tagged Simulated.
     </p>
   ) : (
     <p className="border-b border-white/[0.07] bg-fuchsia-500/[0.07] px-4 py-1.5 text-[10px] leading-snug text-fuchsia-100/80">
@@ -122,7 +123,7 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
   const [scenOpen, setScenOpen] = useState(false);
   const cov = useScenarioCoverage();
   const [barRef, barH] = useMeasuredHeight<HTMLDivElement>(TOPBAR_FALLBACK_H);
-  const { tasks } = useReviewQueue();
+  const { tasks, loading } = useReviewQueue();
   const mode = useWorld((state) => state.agentMode);
   const reviewTasks = tasks.filter((task) => task.status === "pending" && (mode === "real" ? !task.simulated : task.simulated));
 
@@ -142,6 +143,7 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
 
       {/* bottom band: decision card above the hotkeys, between the minimap and the ops panel */}
       <div className="absolute z-10 flex flex-col items-center justify-end gap-2" style={px(L.bottomBand)}>
+        <RealDecisionToast tasks={tasks} loading={loading} onOpenQueue={onReviewOpen} />
         {reviewTasks.length > 0 && <button type="button" onClick={onReviewOpen} className={`${GLASS} flex max-w-sm items-center gap-3 border-amber-400/30 px-4 py-3 text-left text-xs transition hover:bg-[#15171d]/90`}>
           <span className="h-2 w-2 shrink-0 rounded-full bg-amber-300" />
           <span><strong className="block font-medium text-amber-100">{reviewTasks.length} case{reviewTasks.length === 1 ? " needs" : "s need"} a person</strong><span className="mt-1 block text-[10px] text-white/55">Open the decision queue →</span></span>

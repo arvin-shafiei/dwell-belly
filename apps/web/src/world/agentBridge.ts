@@ -1,7 +1,8 @@
-// Bridge from the city to the real agent (apps/api POST /api/cases). A staged scenario becomes a case
-// view, the agent runs it and returns its Trace, and the trace is turned into timed WorkflowEvents
-// for the HUD. Only used when the HUD's agent toggle is on; otherwise the mock engine runs.
-import type { Trace, TraceEvent } from "../../../api/src/lib/trace";
+// Bridge from the city to the real agent (apps/api POST /api/cases). A staged scenario (or, via
+// backendLink.ts, a city incident) becomes a case view, the agent runs it and returns its Trace, and the
+// trace is turned into timed WorkflowEvents for the HUD, decision cards included. Used when agentMode is
+// "real" (the default once the agent API answers) and the budget guard allows; otherwise the mock runs.
+import type { DecisionCard, Trace, TraceEvent } from "../../../api/src/lib/trace";
 import type { CaseScenario, Modifier } from "./scenarios";
 import { MODIFIERS } from "./scenarios";
 import type { WorkflowEvent } from "./store";
@@ -17,6 +18,8 @@ export interface ViewEvent {
   from: string | null;
   to: string | null;
   body: string;
+  /** Voiced or simulated inputs. City-built events are always "simulated_persona" (run in mode "demo"). */
+  source?: "live_human" | "simulated_persona" | "audio_attachment";
 }
 
 /**
@@ -45,6 +48,13 @@ export interface TimedEvent {
   event: Omit<WorkflowEvent, "id" | "t">;
 }
 
+/** Provenance stamped on every replayed event (PRD J0: never mix real and simulated). */
+export interface ReplayMeta {
+  origin?: WorkflowEvent["origin"];
+  /** Overrides trace.synthetic when the caller knows better (e.g. a console row flagged simulated). */
+  synthetic?: boolean;
+}
+
 const MIN_NODE_MS = 600;
 const MAX_NODE_MS = 2500;
 
@@ -57,31 +67,78 @@ function gateStatus(e: Extract<TraceEvent, { kind: "node_end" }>): WorkflowEvent
   return "ok";
 }
 
+/** The real agent's DecisionCard in the HUD's shape, keeping the rich fields (whyStopped, evidence, effects). */
+export function cardFromTrace(card: DecisionCard, cardId: string): NonNullable<WorkflowEvent["card"]> {
+  const options = (card.options ?? []).map((o) => ({ id: o.id, label: o.label, safe: o.undoable, ...(o.effect ? { effect: o.effect } : {}) }));
+  const fallback = options.find((o) => o.label === card.fallback) ?? options.find((o) => o.safe) ?? options[0];
+  return {
+    cardId,
+    summary: card.summary,
+    options,
+    routeTo: card.routeTo,
+    deadlineMs: Math.max(1, card.deadlineMins || 60) * 60_000,
+    fallbackOptionId: fallback?.id ?? "",
+    ...(card.whyStopped ? { whyStopped: card.whyStopped } : {}),
+    ...(card.evidence?.length ? { evidence: card.evidence } : {}),
+    ...(card.alreadyDone?.length ? { alreadyDone: card.alreadyDone } : {}),
+    ...(card.clash ? { clash: card.clash } : {}),
+    ...(card.wouldChangeMyMind ? { wouldChangeMyMind: card.wouldChangeMyMind } : {}),
+    ...(card.fallback ? { fallback: card.fallback } : {}),
+  };
+}
+
+/** The last decision card in a trace (human_decision node output), if the agent stopped for a person. */
+export function lastCard(trace: Trace): DecisionCard | null {
+  let card: DecisionCard | null = null;
+  for (const e of trace.events) {
+    if (e.kind !== "node_end") continue;
+    const out = e.output as { type?: string; card?: DecisionCard } | undefined;
+    if (out?.type === "human_decision" && out.card) card = out.card;
+  }
+  return card;
+}
+
 /**
  * Turns a trace into HUD events with readable timing: each node shows for 0.6-2.5 s whatever its
  * real latency was. The final action line names channel and recipient so the HUD can check it
- * against the scenario's expected next action.
+ * against the scenario's expected next action. Every event carries source "agent", the trace's
+ * synthetic flag, origin and runId; the real cost (run_end.totalCostUsd) rides on the final log line only.
  */
-export function traceToTimedEvents(trace: Trace, caseId: string): TimedEvent[] {
+export function traceToTimedEvents(trace: Trace, caseId: string, meta: ReplayMeta = {}): TimedEvent[] {
   const out: TimedEvent[] = [];
+  const synthetic = meta.synthetic ?? trace.synthetic === true;
+  const tag = { source: "agent" as const, runId: trace.runId, ...(synthetic ? { synthetic: true } : {}), ...(meta.origin ? { origin: meta.origin } : {}) };
   let at = 0;
   for (const e of trace.events) {
     if (e.kind === "node_start") {
-      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: "start", summary: `${e.nodeId}…`, source: "agent" } });
+      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: "start", summary: `${e.nodeId}…`, ...tag } });
     } else if (e.kind === "node_end") {
       at += Math.min(MAX_NODE_MS, Math.max(MIN_NODE_MS, e.latencyMs));
-      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: gateStatus(e), summary: e.summary || e.nodeId, source: "agent" } });
+      const out0 = e.output as { type?: string; card?: DecisionCard } | undefined;
+      if (out0?.type === "human_decision" && out0.card) {
+        const card = cardFromTrace(out0.card, `${trace.runId}:${e.nodeId}:${e.t}`);
+        const line = out0.card.whyStopped?.line ?? out0.card.summary;
+        out.push({ atMs: at, event: { caseId, nodeId: "human", status: "ask", summary: `Needs ${out0.card.routeTo}: ${line}`.slice(0, 200), card, decision: "hold_for_human", ...tag } });
+        continue;
+      }
+      out.push({ atMs: at, event: { caseId, nodeId: e.nodeId, status: gateStatus(e), summary: e.summary || e.nodeId, ...tag } });
     } else if (e.kind === "run_end") {
       at += 400;
       const a = e.nextAction;
       const summary = a
         ? `${a.channel} → ${a.recipient}: ${a.message}`.slice(0, 140)
         : `Outcome: ${e.outcome}${e.error ? ` (${e.error})` : ""}`;
-      out.push({ atMs: at, event: { caseId, nodeId: a ? "action" : "log", status: e.outcome === "error" ? "error" : "ok", summary, source: "agent" } });
-      out.push({ atMs: at + 300, event: { caseId, nodeId: "log", status: "ok", summary: `Real agent · ${e.outcome} · $${e.totalCostUsd.toFixed(4)} · ${(e.totalLatencyMs / 1000).toFixed(1)} s`, source: "agent" } });
+      out.push({ atMs: at, event: { caseId, nodeId: a ? "action" : "log", status: e.outcome === "error" ? "error" : "ok", summary, ...tag } });
+      out.push({ atMs: at + 300, event: { caseId, nodeId: "log", status: e.outcome === "error" ? "error" : "ok", summary: `Real agent · ${e.outcome} · $${e.totalCostUsd.toFixed(4)} · ${(e.totalLatencyMs / 1000).toFixed(1)} s`, costUsd: e.totalCostUsd, ...tag } });
     }
   }
   return out;
+}
+
+/** run_end.totalCostUsd, or null when the trace never finished. */
+export function traceCost(trace: Trace): number | null {
+  const end = trace.events.find((e): e is Extract<TraceEvent, { kind: "run_end" }> => e.kind === "run_end");
+  return end && Number.isFinite(end.totalCostUsd) ? end.totalCostUsd : null;
 }
 
 export function outcomeOf(trace: Trace): "acted" | "asked_for_info" | "escalated" | "blocked" | "no_action" {
@@ -99,7 +156,19 @@ export async function checkAgent(signal?: AbortSignal): Promise<boolean> {
   }
 }
 
-export async function runAgent(view: ReturnType<typeof toCaseView>): Promise<Trace> {
+/** What POST /api/cases returns besides the trace. */
+export interface AgentRunResult {
+  trace: Trace;
+  card: DecisionCard | null;
+  outbox: unknown[] | null;
+  reviewWarning?: string;
+}
+
+export async function runAgent(view: { id: string; events: ViewEvent[]; mode?: "demo" | "practice"; context?: string | null }): Promise<Trace> {
+  return (await runAgentFull(view)).trace;
+}
+
+export async function runAgentFull(view: { id: string; events: ViewEvent[]; mode?: "demo" | "practice"; context?: string | null }): Promise<AgentRunResult> {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), RUN_TIMEOUT_MS);
   try {
@@ -110,10 +179,16 @@ export async function runAgent(view: ReturnType<typeof toCaseView>): Promise<Tra
       signal: ctl.signal,
     });
     if (!r.ok) throw new Error(`agent API ${r.status}`);
-    const body = (await r.json()) as { trace?: Trace } | Trace;
+    const body = (await r.json()) as { trace?: Trace; card?: DecisionCard | null; outbox?: unknown[]; reviewWarning?: string } | Trace;
     const trace = "trace" in body && body.trace ? body.trace : (body as Trace);
     if (!trace?.events) throw new Error("agent API returned no trace");
-    return trace;
+    const extra = "trace" in body ? body : {};
+    return {
+      trace,
+      card: ("card" in extra && extra.card) || lastCard(trace),
+      outbox: "outbox" in extra && Array.isArray(extra.outbox) ? extra.outbox : null,
+      ...("reviewWarning" in extra && typeof extra.reviewWarning === "string" ? { reviewWarning: extra.reviewWarning } : {}),
+    };
   } finally {
     clearTimeout(timer);
   }
