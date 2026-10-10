@@ -1,8 +1,10 @@
 "use client";
 // Record a voice note (for example a driver who cannot type) and turn it into a case event. If the
-// microphone is blocked or missing, the same note can be typed instead.
+// microphone is blocked or missing, the same note can be typed instead. The speaker can use any language:
+// "Any language" lets the transcriber detect it, and the note says which one was heard.
 import { useRef, useState } from "react";
 import { sendRecordedNote, sendTypedNote, type ViewEvent, type VoiceSource } from "./api";
+import { spokenLanguage } from "./language";
 import { micErrorMessage } from "./transcript";
 
 const extensionFor = (mime: string) => (mime.includes("ogg") ? "ogg" : mime.includes("mp4") ? "m4a" : "webm");
@@ -23,11 +25,14 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
   const [state, setState] = useState<"idle" | "recording" | "sending">("idle");
   const [error, setError] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
+  const [lang, setLang] = useState(languageCode);
+  const [heardIn, setHeardIn] = useState<string | null>(null);
   const recorder = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
 
   async function start() {
     setError(null);
+    setHeardIn(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const rec = new MediaRecorder(stream);
@@ -38,7 +43,9 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
         const mime = rec.mimeType || "audio/webm";
         setState("sending");
         try {
-          onEvent(await sendRecordedNote({ audio: new Blob(chunks.current, { type: mime }), filename: `voice-note.${extensionFor(mime)}`, from, n, at, source, caseId, caseText, languageCode }));
+          const event = await sendRecordedNote({ audio: new Blob(chunks.current, { type: mime }), filename: `voice-note.${extensionFor(mime)}`, from, n, at, source, caseId, caseText, languageCode: lang });
+          setHeardIn(spokenLanguage(event.body));
+          onEvent(event);
         } catch (err) {
           setError(err instanceof Error ? err.message : "The voice note could not be sent");
         } finally {
@@ -57,7 +64,7 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
     if (!typed.trim()) return;
     setState("sending");
     try {
-      onEvent(await sendTypedNote({ transcript: typed, from, n, at, source, caseId, caseText, languageCode }));
+      onEvent(await sendTypedNote({ transcript: typed, from, n, at, source, caseId, caseText, languageCode: lang }));
       setTyped("");
       setError(null);
     } catch (err) {
@@ -72,6 +79,14 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
       <div className="flex items-center gap-2">
         <span className="text-white/60">Voice note from {from}</span>
         {source === "simulated_persona" && <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-amber-300">Simulated</span>}
+        <label className="ml-auto flex items-center gap-1 text-[12px] text-white/50">
+          Speaks
+          <select value={lang} onChange={(e) => setLang(e.target.value)} disabled={state !== "idle"}
+            className="rounded bg-black/30 px-1 py-0.5 text-white">
+            <option value="en">English</option>
+            <option value="auto">Any language</option>
+          </select>
+        </label>
       </div>
       {state === "recording" ? (
         <button onClick={() => recorder.current?.stop()} className="rounded bg-red-600 px-3 py-1.5 font-medium">● Stop and send</button>
@@ -80,6 +95,7 @@ export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n
           {state === "sending" ? "Transcribing…" : "🎙 Record voice note"}
         </button>
       )}
+      {heardIn && <p className="text-[12px] text-white/60">Heard in {heardIn}. The desk works in English and keeps the driver&apos;s words.</p>}
       {error && (
         <div className="flex flex-col gap-2">
           <p className="text-amber-300">{error}</p>
