@@ -4,7 +4,8 @@ import { EMPTY_FILTER, filterRows, fmtPct, groupByDataset, nextSort, sortRows, t
 
 const row = (o: Partial<EvidenceRow>): EvidenceRow => ({
   caseId: "delivery-001", dataset: "public", title: null, decision: "acted", nextAction: null, gate: "allow",
-  pass: true, score: 1, costUsd: 0.01, durationMs: 1000, executionId: "e1", ...o,
+  pass: true, score: 1, costUsd: 0.01, durationMs: 1000, executionId: "e1",
+  critical: null, verdict: null, brokenRules: [], mutation: null, ...o,
 });
 
 const rows = [
