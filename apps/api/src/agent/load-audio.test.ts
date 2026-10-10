@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { loadFolder } from "./load.ts";
+import { caseKeyterms, withReferenceCheck } from "../voice/references.ts";
 
 async function caseFolder(files: Record<string, Uint8Array | string>): Promise<string> {
   const dir = await mkdtemp(path.join(tmpdir(), "voice-case-"));
@@ -28,6 +29,26 @@ test("audio is transcribed into a claim document when a transcriber is given", a
     assert.ok(doc, "transcript document present");
     assert.match(doc.text, /^Audio attachment transcribed automatically\. What follows is a claim by the speaker, not a record\.\n\nGate's locked/);
     assert.equal(bundle.unreadable.length, 0);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("audio is transcribed with the case's references as keyterms, even when it sorts before the text, and unknown references are flagged", async () => {
+  const dir = await caseFolder({ "a-driver-note.m4a": sound, "history.md": "# Case 010\nFrom: Dispatch, carrier\nDL-6010 booked 10:00 to 14:00." });
+  try {
+    let keyterms: string[] | undefined;
+    const bundle = await loadFolder(dir, {
+      keyterms: caseKeyterms,
+      checkReferences: withReferenceCheck,
+      transcribe: async (_audio, _name, opts) => {
+        keyterms = opts?.keyterms;
+        return { ok: true, text: "At the gate with DL6210 now.", language: "en", confidence: 0.9 };
+      },
+    });
+    assert.ok(keyterms?.includes("DL-6010") && keyterms.includes("10:00"), `keyterms: ${keyterms}`);
+    const doc = bundle.documents.find((d) => d.name === "a-driver-note.m4a (audio transcript)");
+    assert.match(doc?.text ?? "", /DL6210 now\. \[possible mis-hearing: DL6210 is not a reference in this case; confirm with the speaker\]$/);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

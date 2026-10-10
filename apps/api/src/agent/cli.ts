@@ -15,6 +15,7 @@ import { renderAnswer, renderReasoning } from "./report.ts";
 import { runCase, savedResult } from "./run.ts";
 import { findTools } from "./tools.ts";
 import { transcribe } from "../voice/elevenlabs.ts";
+import { caseKeyterms, withReferenceCheck } from "../voice/references.ts";
 
 const FLOW_FILE = path.resolve(import.meta.dirname, "..", "..", "flows", "default-incident.json");
 const RETRY_PAUSE_MS = 20_000;
@@ -52,7 +53,7 @@ async function main() {
   const jev = Boolean(process.env.TYPESAFE_API_KEY);
   // Audio files in a case are transcribed only when a speech-to-text key is set; otherwise they are listed as not transcribed.
   const transcribeAudio = process.env.ELEVENLABS_API_KEY
-    ? (audio: Uint8Array, filename: string) => transcribe(audio, { filename })
+    ? (audio: Uint8Array, filename: string, opts?: { keyterms?: string[] }) => transcribe(audio, { filename, keyterms: opts?.keyterms })
     : undefined;
   const panel = jev ? runPanel : undefined;
   const quick = jev ? judge : undefined;
@@ -86,7 +87,7 @@ async function main() {
         if (ended && ended.outcome !== "error") { lines.set(name, `| ${name} | kept from an earlier run | ${ended.outcome} | | |`); return; }
       }
       if (refused) throw new Error(`not attempted: the model account refused an earlier case (${refused})`);
-      const bundle = await loadFolder(path.join(casesDir, name), { transcribe: transcribeAudio });
+      const bundle = await loadFolder(path.join(casesDir, name), { transcribe: transcribeAudio, keyterms: caseKeyterms, checkReferences: withReferenceCheck });
       // Tools shipped with a case are recorded, not called: a manifest is case content, and an
       // unknown endpoint is not somewhere to send a customer's details unprompted.
       const found = await findTools(path.join(casesDir, name)).catch(() => ({ tools: [], unparsed: [] }));

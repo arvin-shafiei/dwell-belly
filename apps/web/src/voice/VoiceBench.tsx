@@ -74,7 +74,7 @@ export function VoiceBench() {
           {decision && <p className="text-sm text-emerald-300">Manager decided by voice: {decision.label}</p>}
         </div>
         <div className="flex flex-col gap-3">
-          <VoiceNoteButton from="Fen Orlo, route driver" n={lastN + 1} at={lastAt} onEvent={(e) => setPending((p) => [...p, e])} />
+          <VoiceNoteButton from="Fen Orlo, route driver" caseId={view.id} caseText={caseText} n={lastN + 1} at={lastAt} onEvent={(e) => setPending((p) => [...p, e])} />
           <CallDrawer
             request={{ mode: "demo", purpose: "call", caseId: view.id, calleeRole: "recipient", calleeName: "Elva Kesh", brief: caseText.slice(-600), goal: "Get the driver through the gate without asking for any code.", questions: ["Can you buzz the driver in or come down to the gate now?"] }}
             state={{ caseId: view.id, mode: "demo", source: "live_human", caseText, calleeName: "Elva Kesh", startN: lastN + 1, at: lastAt }}

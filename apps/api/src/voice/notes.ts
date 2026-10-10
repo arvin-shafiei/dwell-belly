@@ -3,6 +3,7 @@
 import type { ViewEvent } from "../agent/load.ts";
 import type { TranscribeResult } from "./elevenlabs.ts";
 import { voiceAllowed, type VoiceMode, type VoiceSource } from "./policy.ts";
+import { caseKeyterms, withReferenceCheck } from "./references.ts";
 
 export const UNCLEAR_BELOW = 0.6;
 
@@ -22,15 +23,27 @@ export type NoteResult = { ok: true; event: ViewEvent } | { ok: false; status: 4
 
 /** A voice note from the UI: a recording to transcribe, or a typed fallback when the microphone is blocked. */
 export async function handleNote(
-  input: { mode: VoiceMode; source: VoiceSource; from: string; n: number; at: string; audio?: Uint8Array; filename?: string; transcript?: string },
-  deps: { transcribe: (audio: Uint8Array, opts: { filename: string }) => Promise<TranscribeResult> },
+  input: {
+    mode: VoiceMode; source: VoiceSource; from: string; n: number; at: string;
+    audio?: Uint8Array; filename?: string; transcript?: string;
+    /** The case so far: its references, times and people guide transcription and catch mis-heard references. */
+    caseText?: string;
+    languageCode?: string;
+  },
+  deps: { transcribe: (audio: Uint8Array, opts: { filename: string; keyterms?: string[]; languageCode?: string }) => Promise<TranscribeResult> },
 ): Promise<NoteResult> {
   const allowed = voiceAllowed(input.mode, "transcribe_note", input.source);
   if (!allowed.ok) return { ok: false, status: 403, error: allowed.reason };
   const typed = input.transcript?.trim();
   if (typed) return { ok: true, event: noteToEvent({ ...input, transcript: typed, confidence: 1 }) };
   if (!input.audio || input.audio.length === 0) return { ok: false, status: 400, error: "send a recording or a typed note" };
-  const heard = await deps.transcribe(input.audio, { filename: input.filename || "voice-note.webm" });
+  const caseText = input.caseText ?? "";
+  const heard = await deps.transcribe(input.audio, {
+    filename: input.filename || "voice-note.webm",
+    keyterms: caseKeyterms(caseText),
+    languageCode: input.languageCode,
+  });
   if (!heard.ok) return { ok: false, status: /nothing heard/i.test(heard.error) ? 422 : 502, error: heard.error };
-  return { ok: true, event: noteToEvent({ ...input, transcript: heard.text, confidence: heard.confidence }) };
+  return { ok: true, event: noteToEvent({ ...input, transcript: withReferenceCheck(heard.text, caseText), confidence: heard.confidence }) };
 }
+
