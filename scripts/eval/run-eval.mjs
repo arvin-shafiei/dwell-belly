@@ -1,6 +1,7 @@
 // Scores an agent on the public delivery cases and the generated hard cases.
 // Usage: npm run eval -- (--agent baseline | --api http://localhost:4000/api/cases | --traces traces)
 //        [--set all|public|generated] [--ids delivery-024,gen-003] [--limit 10] [--concurrency 6]
+//        [--with-context]  public cases keep their title and Context section (these leak the answer)
 // Output: a table on stdout and runs/eval-<time>.json with every decision and verdict.
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -19,6 +20,7 @@ const { values: args } = parseArgs({
     ids: { type: "string" },
     limit: { type: "string" },
     concurrency: { type: "string", default: "6" },
+    "with-context": { type: "boolean", default: false },
   },
 });
 
@@ -69,7 +71,7 @@ async function evalOne(agent, c) {
 
 async function main() {
   const agent = pickAgent();
-  let cases = await loadCases(args.set);
+  let cases = await loadCases(args.set, { withContext: args["with-context"] });
   if (args.ids) cases = cases.filter((c) => args.ids.split(",").includes(c.id));
   if (args.limit) cases = cases.slice(0, Number(args.limit));
   if (cases.length === 0) throw new Error("No cases matched. Generated cases come from `npm run gen:cases`.");

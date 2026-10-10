@@ -16,10 +16,14 @@ export async function loadPublicRaw() {
   return readJsonDir(PUBLIC_DIR);
 }
 
-// Same cut as escalationView() in apps/api/src/lib/data.ts.
-function publicCase(c) {
+// Stricter than escalationView() in apps/api/src/lib/data.ts, which leaks the answer: the title
+// and Context section often state it, and attachments are sent after the escalation.
+// `withContext` keeps title and context so the two scores can be compared.
+function publicCase(c, withContext) {
   const last = c.escalation_snapshot?.last_event;
   const recorded = c.events.find((e) => e.n === c.next_action?.recorded_event);
+  const events = last ? c.events.filter((e) => e.n <= last) : c.events;
+  const seen = events.map((e) => e.body).join("\n");
   return {
     id: c.id,
     set: "public",
@@ -27,11 +31,11 @@ function publicCase(c) {
     view: {
       id: c.id,
       track: c.track,
-      title: c.title,
-      context: c.context,
+      title: withContext ? c.title : null,
+      context: withContext ? c.context : null,
       initial_request: c.initial_request,
-      events: last ? c.events.filter((e) => e.n <= last) : c.events,
-      attachments: c.attachments,
+      events,
+      attachments: c.attachments.filter((a) => seen.includes(a.name)),
     },
     expected: {
       acceptable_dispositions: ["contact"],
@@ -65,8 +69,8 @@ function generatedCase(c) {
   };
 }
 
-export async function loadCases(set) {
-  const pub = set === "generated" ? [] : (await loadPublicRaw()).map(publicCase);
+export async function loadCases(set, { withContext = false } = {}) {
+  const pub = set === "generated" ? [] : (await loadPublicRaw()).map((c) => publicCase(c, withContext));
   const gen = set === "public" ? [] : (await readJsonDir(GENERATED_DIR)).map(generatedCase);
   return [...pub, ...gen];
 }

@@ -81,7 +81,7 @@ Both scripts read `ANTHROPIC_API_KEY` from `apps/api/.env.local`.
 
 **Generated cases.** Each file has the history the desk sees (`events`, ending at the escalation), the difficulty pattern (`mutation`, listed in `scripts/eval/mutations.mjs`) and an answer key (`expected`): acceptable dispositions (`contact`, `escalate`, `no_action`), acceptable recipient and channel pairs, `must`, `must_not` and a reference message. Drafts that fail the structural checks in `gen-cases.mjs` are rejected and not written. The answer keys are written by Claude and have not been reviewed by a person, so read a failing case before trusting its verdict.
 
-**What the agent sees.** Only `view`: id, title, context, initial request, events and attachments. Generated ids are opaque (`gen-007`) so the pattern does not leak. For public cases the cut is the same as `?view=escalation`.
+**What the agent sees.** Only `view`: id, title, context, initial request, events and attachments. Generated ids are opaque (`gen-007`) so the pattern does not leak. For public cases the cut is stricter than `?view=escalation`: title and Context are removed (they often state the answer) and so are attachments that only arrive after the escalation. `--with-context` puts title and Context back so the two scores can be compared.
 
 **How an agent plugs in.** `--api` POSTs the view as JSON and expects a `Trace` back (or `{ trace }`), as defined in `docs/plans/2026-10-10-3d-workflow-viz-design.md` §4. The eval reads the `run_end` event (`outcome`, `nextAction`), the `human_decision` card and the planner's `wontDo`. `--traces <dir>` reads `<dir>/<caseId>.json` in the same shape.
 

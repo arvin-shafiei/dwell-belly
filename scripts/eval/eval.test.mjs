@@ -107,3 +107,19 @@ test("public cases hide the answer from the agent's view", async () => {
   assert.equal(JSON.stringify(first.view).includes(first.expected.reference_message), false);
   assert.deepEqual(Object.keys(first.view).sort(), ["attachments", "context", "events", "id", "initial_request", "title", "track"]);
 });
+
+test("public views drop the title, the Context section and attachments sent after the escalation", async () => {
+  const cases = await loadCases("public");
+  for (const c of cases) {
+    assert.equal(c.view.title, null);
+    assert.equal(c.view.context, null);
+  }
+  const damaged = cases.find((c) => c.id === "delivery-021");
+  assert.deepEqual(damaged.view.attachments, []);
+});
+
+test("--with-context keeps the title and Context section", async () => {
+  const [first] = await loadCases("public", { withContext: true });
+  assert.match(first.view.title, /^Case 001/);
+  assert.ok(first.view.context);
+});

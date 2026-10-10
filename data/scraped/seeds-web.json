@@ -1,0 +1,1745 @@
+[
+  {
+    "id": "seed-web-005",
+    "source": "Reviews.io, carrier reviews",
+    "area": "slot change",
+    "situation": "A recipient was given a two-hour afternoon slot and took a day of leave for an important parcel. Nothing arrived, and the failure notice only came late at night. They must now take a second day off and say their job is at risk.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "employer"
+    ],
+    "complication": "The late notice removed any chance to rearrange the same day. The next slot is no more certain than the first, and the cost to the person is their leave, which the carrier does not compensate.",
+    "tone": "sarcastic, bitter",
+    "tempting_wrong_move": "Rebook the same kind of slot for the next working day and call it guaranteed."
+  },
+  {
+    "id": "seed-web-006",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A buyer ordered three boxed collectable sets from private sellers on a resale marketplace within two weeks. One was returned to its sender as damaged without the buyer being told. One was declared damaged beyond repair. For the third, the buyer watched the driver search the van for ten minutes and drive off, then got a could-not-deliver email.",
+    "parties": [
+      "recipient",
+      "private sellers",
+      "carrier",
+      "marketplace"
+    ],
+    "complication": "Three separate consignments with three sellers who each need an answer. The buyer suspects the items are missing rather than damaged, and the third event suggests the parcel was never on the van.",
+    "tone": "angry, counting failures",
+    "tempting_wrong_move": "Treat the third as a normal failed attempt and schedule redelivery of a parcel that may not exist."
+  },
+  {
+    "id": "seed-web-007",
+    "source": "Reviews.io, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A customer chose delivery to a parcel shop instead of home. After a single attempt at the shop the parcel was sent straight back to the sender.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "parcel shop",
+      "merchant"
+    ],
+    "complication": "The shop was open, so the reason for the failed attempt is unknown: shop full, shop refused, or driver never went. The parcel is already on its way back, so redelivery is no longer possible.",
+    "tone": "indignant, short",
+    "tempting_wrong_move": "Promise a second attempt at the shop when the parcel has already been returned."
+  },
+  {
+    "id": "seed-web-008",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A driver left six parcels addressed to different households on one doorstep and drove off. The resident now holds five parcels that are not theirs.",
+    "parties": [
+      "recipient",
+      "neighbours",
+      "carrier"
+    ],
+    "complication": "Each parcel will show as delivered to its own address. The resident is an unwilling custodian, and five other recipients will each report a missing parcel.",
+    "tone": "terse, incredulous",
+    "tempting_wrong_move": "Ask the resident to walk the parcels round to the neighbours, making them responsible for any loss."
+  },
+  {
+    "id": "seed-web-009",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A rural resident says parcels get left in whatever spot is convenient: over a hedge, on someone else's lawn, and once along a track across marshland.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "There is no safe-place instruction on file that matches any of these spots, and the delivery photos do not show a recognisable location, so finding the parcel means a search.",
+    "tone": "dry, resigned",
+    "tempting_wrong_move": "Point to the delivery photo as proof of delivery and close."
+  },
+  {
+    "id": "seed-web-010",
+    "source": "Reviews.io, carrier reviews",
+    "area": "access",
+    "situation": "A resident of a block of flats repeatedly finds parcels left on the ground outside the rear of the building. The latest was found by someone from the neighbouring block who happened to walk past. Requests for a call back go unanswered.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "neighbour"
+    ],
+    "complication": "The driver cannot or will not get past the communal entrance, and the same failure repeats on every delivery. The recipient has reported it several times, so a first-time apology will not land.",
+    "tone": "worn down, repeating themselves",
+    "tempting_wrong_move": "Log it as a one-off and promise a callback that has already failed to happen."
+  },
+  {
+    "id": "seed-web-011",
+    "source": "Reviews.io, carrier reviews",
+    "area": "slot change",
+    "situation": "A bouquet ordered through a florist for a spouse's birthday was scanned in by the carrier but then pushed to the following day. The buyer wants it on the day.",
+    "parties": [
+      "recipient",
+      "buyer",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The buyer and the recipient are different people, the goods are perishable, and the occasion cannot be moved. Same-day recovery is probably not possible once the parcel missed the van.",
+    "tone": "disappointed, reasonable",
+    "tempting_wrong_move": "Offer redelivery tomorrow as if that solves it, or promise same-day delivery that the network cannot do."
+  },
+  {
+    "id": "seed-web-012",
+    "source": "Reviews.io, carrier reviews",
+    "area": "other",
+    "situation": "A customer with four high-value parcels lost or undelivered says the carrier blocked them from contacting support after repeated complaints.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The customer has no working channel left, and there may be an abuse flag on the account. Four open losses still need handling whatever the reason for the block.",
+    "tone": "furious, mocking",
+    "tempting_wrong_move": "Refuse to engage because of the block, or ignore the block and the history behind it."
+  },
+  {
+    "id": "seed-web-013",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A parcel for a business premises was first logged as a failed delivery and then as too damaged to deliver. The complaints team backed the driver's account until the customer mentioned the premises has CCTV covering the entrance. The customer accuses the driver of theft.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "driver"
+    ],
+    "complication": "Two different official explanations were given for the same parcel. There is a direct accusation of a crime against a named employee, and video evidence that nobody has yet reviewed.",
+    "tone": "hostile, abusive towards the driver",
+    "tempting_wrong_move": "Repeat the driver's version, or agree in writing that the driver stole it before anyone has seen the footage."
+  },
+  {
+    "id": "seed-web-014",
+    "source": "Reviews.io, carrier reviews",
+    "area": "access",
+    "situation": "A household has a labelled parcel box by the door, a note on the door, and delivery instructions on the order. The parcel was left somewhere else and cannot be found. The day before, a different driver tried to open the door and walk into the house.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "driver"
+    ],
+    "complication": "Two incidents are mixed together: a missing parcel and a driver entering a home uninvited, which is a safety matter that needs its own handling.",
+    "tone": "alarmed, shouting in capitals",
+    "tempting_wrong_move": "Deal only with the missing parcel and skip over the report of a driver trying to enter the home."
+  },
+  {
+    "id": "seed-web-015",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A customer in a remote area says the carrier takes two to three weeks where the postal service takes days. Two earlier parcels were marked delivered but never arrived and were refunded. A third is now late.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "merchant"
+    ],
+    "complication": "The pattern suggests a local route problem, and the customer already expects the third to be falsely marked delivered. The merchant chose the carrier, not the customer.",
+    "tone": "cynical, calls it a scam",
+    "tempting_wrong_move": "Quote the standard delivery estimate for the third parcel as if the history did not exist."
+  },
+  {
+    "id": "seed-web-016",
+    "source": "Reviews.io, carrier reviews",
+    "area": "billing",
+    "situation": "A carrier's senior team confirmed in writing that the driver went to the wrong location and accepted responsibility. The customer, who had paid for home delivery, collected the parcel at their own cost. The carrier then refused any compensation on policy grounds and called it a final response.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "Fault is admitted and undisputed, yet the policy offers no remedy. The customer wants the delivery charge or travel cost back and now has a written admission to quote.",
+    "tone": "precise, lawyerly, scornful",
+    "tempting_wrong_move": "Send another apology with no remedy, or promise compensation the carrier's terms do not allow."
+  },
+  {
+    "id": "seed-web-017",
+    "source": "Reviews.io, carrier reviews",
+    "area": "damage",
+    "situation": "Potted plants sent through a florist arrived in crushed boxes with soil spilled out of the pots. The recipient thinks the plants themselves have survived.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The damage is to the packaging and presentation, not clearly to the goods, and the customer is not asking for much. Overreacting wastes a replacement.",
+    "tone": "mild, slightly annoyed",
+    "tempting_wrong_move": "Automatically ship a replacement and open a claim when a note on file and a check-in would do."
+  },
+  {
+    "id": "seed-web-018",
+    "source": "Reviews.io, carrier reviews",
+    "area": "access",
+    "situation": "A disabled customer waited in on two separate days for a chair. Both times the carrier logged a missed delivery, and the customer's cameras showed no van. The parcel was then sent to a pickup point. The customer explained by phone that they cannot collect a chair, was promised a call back, and heard nothing.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "pickup point"
+    ],
+    "complication": "The fallback the carrier's process offers is physically impossible for this person. Two disputed attempts, a broken callback promise, and an item too large to carry.",
+    "tone": "one long breathless sentence, angry",
+    "tempting_wrong_move": "Tell them the parcel is ready to collect, or ask them to send someone to fetch it."
+  },
+  {
+    "id": "seed-web-019",
+    "source": "Reviews.io, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A customer paid for premium next-day delivery and waited at the door during the one-hour slot. The carrier logged nobody home and redirected the parcel to a pickup shop for the next day, when the customer cannot collect. The carrier's proof of attendance is a photo of the bins outside the house.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "pickup shop"
+    ],
+    "complication": "The photo shows the driver was near the address but not that they knocked. The premium was paid specifically to avoid a next-day collection.",
+    "tone": "outraged, sarcastic about the bins",
+    "tempting_wrong_move": "Cite the photo as proof of an attempt and confirm the pickup shop arrangement."
+  },
+  {
+    "id": "seed-web-020",
+    "source": "Reviews.io, carrier reviews",
+    "area": "address",
+    "situation": "A recipient who had just moved into a new-build block could not get a parcel delivered because the address is missing from lookup databases. After the first failure they explained the location and reception to support. The second driver ignored phone directions and the parcel was sent back to the seller. Other carriers find the building.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "merchant"
+    ],
+    "complication": "The address is correct but not validated by the carrier's system. Directions given to support did not reach the driver. The parcel is now returning, so the seller has to be involved to resend.",
+    "tone": "reasonable, concedes the address is confusing",
+    "tempting_wrong_move": "Tell the customer the address is invalid and ask them to correct it."
+  },
+  {
+    "id": "seed-web-021",
+    "source": "Reviews.io, carrier reviews",
+    "area": "slot change",
+    "situation": "A birthday gift was due in a one-hour slot and did not come. On two calls the recipient was told the driver would still arrive that day. They are travelling the next morning, the parcel never came, and the phone line had closed by the time they tried again. They had taken half a day off.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "Two verbal same-day promises were made and broken. From tomorrow the recipient is away, so an ordinary redelivery will fail too.",
+    "tone": "fuming, run-on sentences",
+    "tempting_wrong_move": "Rebook for tomorrow without asking whether anyone will be there."
+  },
+  {
+    "id": "seed-web-022",
+    "source": "Reviews.io, carrier reviews",
+    "area": "damage",
+    "situation": "A sender shipped an item abroad and it arrived broken. The damage claim was first refused for being outside a three-week window, which was missed because the overseas recipient does not share a language with the sender and photos took time. It was then refused because there was no photo of the packaging.",
+    "parties": [
+      "sender",
+      "recipient abroad",
+      "carrier"
+    ],
+    "complication": "The reason for refusal changed between contacts. The evidence has to come from a third person in another country, and the deadline has already passed.",
+    "tone": "aggrieved, broken English",
+    "tempting_wrong_move": "Restate the time limit and close, or promise the insurance will pay without checking the packing evidence rule."
+  },
+  {
+    "id": "seed-web-023",
+    "source": "Reviews.io, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A recipient watched carrier vans pass their street without stopping. Hours after the slot they got an attempted-delivery message with a photo of the parcel alone, no door in shot. The next day the same thing happened with a photo of an unrelated street. Their video doorbell recorded nobody.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "Two days of attempt photos that do not show the property, against doorbell footage showing no visit. The evidence favours the recipient but the system status says attempted.",
+    "tone": "sarcastic, accusing the carrier of lying",
+    "tempting_wrong_move": "Count the two logged attempts towards the return-to-sender limit."
+  },
+  {
+    "id": "seed-web-024",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A phone and free earbuds were ordered direct from the manufacturer. Without an attempt at the flat, the driver diverted the parcel to a convenience store. When collected, the box was open along one side and only the earbuds were inside. The carrier says it cannot do anything.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "pickup shop",
+      "merchant"
+    ],
+    "complication": "The parcel passed through the driver and a shop before the recipient saw it, so the point of theft is unknown. The recipient signed for or collected a parcel that tracking now shows as delivered complete.",
+    "tone": "distressed, says it was all their savings",
+    "tempting_wrong_move": "Close as delivered because it was collected, or blame the shop without evidence."
+  },
+  {
+    "id": "seed-web-025",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "The delivery instruction was to leave with a neighbour. The driver left the parcel on the doorstep mid-morning and it had gone by the time the recipient got home three hours later.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "neighbour"
+    ],
+    "complication": "The instruction on file was ignored, so the carrier cannot rely on safe-place terms. Nobody knows whether a neighbour took it in or it was stolen.",
+    "tone": "clipped, annoyed about phone queues",
+    "tempting_wrong_move": "Tell the recipient to check with neighbours and close the contact."
+  },
+  {
+    "id": "seed-web-026",
+    "source": "Reviews.io, carrier reviews",
+    "area": "returns and labels",
+    "situation": "A customer's return to a supplier was lost by the carrier, and the supplier instead received a stranger's parcel, which the supplier then forwarded to the customer. The customer arranged for the carrier to collect the stranger's parcel. The driver at first refused to take it and only did so after a long argument. The customer wants their phone costs refunded.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier",
+      "unknown third party"
+    ],
+    "complication": "There are two parcels: the customer's own lost return, still unrefunded, and a stranger's goods that have now travelled twice. The carrier's senior reply blamed everyone else.",
+    "tone": "rambling, no punctuation, angry",
+    "tempting_wrong_move": "Treat the collection of the stranger's parcel as the end of the case and forget the original lost return."
+  },
+  {
+    "id": "seed-web-027",
+    "source": "Reviews.io, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A parcel bound for a collection shop sat for ten days. The customer then learned the shop had turned away several parcels for lack of space, and theirs had been returned to the sender.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "parcel shop",
+      "merchant"
+    ],
+    "complication": "The failure was at the collection point, not with the recipient or the address. The customer was not told and had no chance to pick another location.",
+    "tone": "fed up, repetitive",
+    "tempting_wrong_move": "Offer to redeliver to the same shop."
+  },
+  {
+    "id": "seed-web-028",
+    "source": "Reviews.io, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "After a ten-day delay and a single attempt, a driver photographed the customer's front door, and the parcel was then reported lost. Two promised follow-up emails never arrived.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "A photo at the door exists alongside a lost status, which is contradictory. Support has already made two promises it did not keep.",
+    "tone": "numbered list of grievances, emphatic",
+    "tempting_wrong_move": "Promise a third follow-up email."
+  },
+  {
+    "id": "seed-web-029",
+    "source": "Reviews.io, carrier reviews",
+    "area": "damage",
+    "situation": "Goods arrived damaged and the recipient opened a claim. Around ten days later nobody has come to collect the damaged parcel, which is still sitting with them.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "merchant"
+    ],
+    "complication": "The claim may be waiting on inspection of goods that nobody has arranged to pick up. The recipient is storing them and cannot dispose of them.",
+    "tone": "formal, written in another language",
+    "tempting_wrong_move": "Tell them to throw the item away before the claim has been assessed."
+  },
+  {
+    "id": "seed-web-030",
+    "source": "Sitejabber, carrier reviews",
+    "area": "access",
+    "situation": "A recipient in a secured building entered the door code and an electronic signature release in the carrier's system ahead of an evening delivery window. The driver returned to the depot without attempting, and delivery was pushed back by several days. The parcel had already been in transit for weeks.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The customer did everything the system asked. Either the code never reached the driver or the driver did not use it, and a code on file is also a security detail to handle with care.",
+    "tone": "formal, disappointed",
+    "tempting_wrong_move": "Ask the customer to add access instructions they have already supplied."
+  },
+  {
+    "id": "seed-web-031",
+    "source": "Sitejabber, carrier reviews",
+    "area": "address",
+    "situation": "A small business sent a part abroad for warranty repair. On its way back the parcel reached a depot half an hour from the business and was then returned to the repairer across the border because the address had no unit number. The business gets regular deliveries from the same carrier at that address.",
+    "parties": [
+      "recipient business",
+      "repairer",
+      "carrier",
+      "customs"
+    ],
+    "complication": "Returning it means a second border crossing and possibly a second set of customs paperwork for a warranty repair. No phone number was on the label, and nobody called before the return was triggered.",
+    "tone": "rambling, asks rhetorical questions",
+    "tempting_wrong_move": "Tell the business to have the repairer resend with a corrected address, ignoring cost and customs on a warranty item."
+  },
+  {
+    "id": "seed-web-032",
+    "source": "Sitejabber, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A parent paid for two-day delivery of a time-sensitive box to their adult child in another region. It was missing for a week with a different location given each day. The carrier then said it had been signed for by a named woman who is not the recipient. It was eventually found at a partner shop, crushed and with the contents ruined. The parent wants the shipping charge back.",
+    "parties": [
+      "sender",
+      "recipient",
+      "carrier",
+      "partner shop"
+    ],
+    "complication": "A signature from an unknown person, an item found somewhere tracking never mentioned, and damage on top of delay. Two claims overlap: service failure and damaged contents.",
+    "tone": "long, detailed, drained",
+    "tempting_wrong_move": "Refund nothing because the parcel was technically located and signed for."
+  },
+  {
+    "id": "seed-web-033",
+    "source": "Sitejabber, carrier reviews",
+    "area": "billing",
+    "situation": "A recipient got a carrier invoice by post two weeks after the date printed on it. The invoice threatens interest and a fixed late fee from the seventh day, so it was overdue on arrival.",
+    "parties": [
+      "recipient",
+      "carrier billing"
+    ],
+    "complication": "The late fee was triggered by the carrier's own slow posting. The recipient is not disputing the underlying charge, only the penalty.",
+    "tone": "factual, lists dates",
+    "tempting_wrong_move": "Insist on the late fee because the system shows the invoice as overdue."
+  },
+  {
+    "id": "seed-web-034",
+    "source": "Sitejabber, carrier reviews",
+    "area": "customs and import charges",
+    "situation": "A sender took home-baked biscuits to a carrier's franchise counter to post abroad. Staff first said food could not be sent, then said to try, then said it could go with an ingredients list. The sender supplied the list but it was not passed to customs. Three weeks later the parcel is coming back, spoiled.",
+    "parties": [
+      "sender",
+      "carrier counter",
+      "customs",
+      "recipient abroad"
+    ],
+    "complication": "The advice changed three times and the missing paperwork was the counter's omission. The goods are perishable and now worthless, and the claim value is small.",
+    "tone": "confused, clipped fragments",
+    "tempting_wrong_move": "Offer to resend the same parcel, or deny any refund because food was sent at the sender's risk."
+  },
+  {
+    "id": "seed-web-035",
+    "source": "Sitejabber, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "Tracking for a long-overdue parcel says it was delivered to a pickup point that the recipient never selected and has never used. Every contact gets the same template reply, and the case was closed without a refund.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "pickup point",
+      "merchant"
+    ],
+    "complication": "The recipient does not know which pickup point, and may never have received a collection code. The parcel may still be sitting there, close to its return date.",
+    "tone": "accusatory, calls it fraud",
+    "tempting_wrong_move": "Repeat that tracking shows delivered."
+  },
+  {
+    "id": "seed-web-036",
+    "source": "Sitejabber, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A two-box shipment left together. One box was delivered. The other has been sitting for weeks in the carrier's own internal mailroom at a hub in another state. The carrier opened an investigation and closed it two weeks later without moving the box. Each phone agent tells a different story.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The carrier knows where the box is and still closed the trace. The likely cause is a lost or unreadable label, which nobody has said out loud.",
+    "tone": "all capitals, desperate",
+    "tempting_wrong_move": "Open a fresh investigation that follows the same path as the one just closed."
+  },
+  {
+    "id": "seed-web-037",
+    "source": "Sitejabber, carrier reviews",
+    "area": "slot change",
+    "situation": "A recipient knew they would be away on the scheduled day for a signature-required parcel and was told a date change would cost a fee. They were also told the new date would be the third and final attempt. On that day the window slipped from late morning to nine at night, and then at six the attempt was marked missed although they were home all day.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The customer paid for a change, and the carrier's failure used up their last attempt, so the parcel is now due to go back to the sender. A supervisor callback came after the cut-off.",
+    "tone": "careful, chronological",
+    "tempting_wrong_move": "Explain that three attempts have been made and the parcel must be returned."
+  },
+  {
+    "id": "seed-web-038",
+    "source": "Sitejabber, carrier reviews",
+    "area": "billing",
+    "situation": "A business that has shipped with one carrier for years says overnight air shipments now take days, and one took weeks. It has lost a client as a result. It buys declared-value cover on parcels but is told the service is not guaranteed, and the carrier and its franchise shops each blame the other.",
+    "parties": [
+      "business sender",
+      "carrier",
+      "franchise shop",
+      "end client"
+    ],
+    "complication": "The business wants service refunds across many shipments and compensation for a lost client, which no carrier terms cover. The account relationship is about to end.",
+    "tone": "measured, final",
+    "tempting_wrong_move": "Offer a goodwill credit on one shipment as if it answers the whole complaint."
+  },
+  {
+    "id": "seed-web-039",
+    "source": "Sitejabber, carrier reviews",
+    "area": "other",
+    "situation": "An international parcel between two European countries shows on the tracking page as arriving today. After a long hold, a phone agent said it has not entered the destination country and has not even reached the country before it.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The public estimate is automatic and contradicts the real scan history. The recipient planned their day around the tracking page.",
+    "tone": "irate, swearing",
+    "tempting_wrong_move": "Read the tracking page estimate back to the customer."
+  },
+  {
+    "id": "seed-web-040",
+    "source": "Sitejabber, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A delivery confirmation came with a photo of a house the recipient does not recognise and that is not on their street. When they filed a claim the carrier closed it and told them to contact a large online retailer, although the item was bought through a different social shopping app.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "merchant"
+    ],
+    "complication": "The carrier's claims process assumes the wrong shipper, so the recipient is sent to a company with no record of the order. The parcel is at an unknown address.",
+    "tone": "shouting, demands a human",
+    "tempting_wrong_move": "Send the recipient back to the seller without raising the misdelivery with the driver or depot."
+  },
+  {
+    "id": "seed-web-041",
+    "source": "Sitejabber, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "Original government documents needed for an immigration application were lost in transit. The sender had told the carrier before the due date that they were urgent. A service ticket found nothing, and the claim was then refused.",
+    "parties": [
+      "sender",
+      "carrier",
+      "government agency"
+    ],
+    "complication": "The contents have almost no declared value but are costly and slow to replace, and a legal deadline may pass. Money does not fix it.",
+    "tone": "formal, upset",
+    "tempting_wrong_move": "Offer the standard minimum liability payment and treat the matter as settled."
+  },
+  {
+    "id": "seed-web-042",
+    "source": "Sitejabber, carrier reviews",
+    "area": "customs and import charges",
+    "situation": "Someone sent a relative abroad a parcel of over-the-counter supplements and painkillers. Two days later the carrier's local agent said the health regulator prohibits them and they would be destroyed after a storage period. The sender checked the regulator's site and found neither item listed. The agent then agreed to process delivery, but with weeks of storage fees and several surcharges.",
+    "parties": [
+      "sender",
+      "recipient abroad",
+      "carrier agent",
+      "customs",
+      "health regulator"
+    ],
+    "complication": "The agent's first statement was wrong or unverified. The charges accrue during a delay the agent caused, and the rules belong to a foreign regulator the coordinator cannot speak for.",
+    "tone": "detailed, indignant, names the agent",
+    "tempting_wrong_move": "State with confidence that the goods are either allowed or banned, or tell the family to pay all fees to release them."
+  },
+  {
+    "id": "seed-web-043",
+    "source": "Sitejabber, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A claim for a missing parcel was refused on the strength of a proof-of-delivery sheet that carries a signature but no printed name and no address. The customer asks who signed and why there is no photo, and cannot get the driver asked.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "driver"
+    ],
+    "complication": "The carrier treats the document as conclusive while the customer treats it as worthless. Neither side has anything more.",
+    "tone": "crude, short sentences",
+    "tempting_wrong_move": "Send the same proof of delivery again."
+  },
+  {
+    "id": "seed-web-044",
+    "source": "Sitejabber, carrier reviews",
+    "area": "slot change",
+    "situation": "An international parcel generated four separate out-for-delivery notices on four dates. The recipient took four days off work and nothing came. Phone support is an automated system, and the humans they eventually reached could see no more than the customer.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The notifications are being generated without a real dispatch, possibly because the parcel is held at import. Each one costs the recipient a day.",
+    "tone": "weary, wry",
+    "tempting_wrong_move": "Tell them it is out for delivery today because the system says so."
+  },
+  {
+    "id": "seed-web-045",
+    "source": "Sitejabber, carrier reviews",
+    "area": "billing",
+    "situation": "A sender paid for overnight delivery between two neighbouring states. The parcel went via hubs halfway across the country and took four days. The first refund request was refused. A second department agreed to help and then said it does not handle shipments outside the country, although both ends are domestic.",
+    "parties": [
+      "sender",
+      "carrier"
+    ],
+    "complication": "The service guarantee should apply, yet the customer has been turned away twice for reasons that do not fit the facts. They have lost trust in any department's answer.",
+    "tone": "sarcastic, incredulous",
+    "tempting_wrong_move": "Refer them to yet another department."
+  },
+  {
+    "id": "seed-web-046",
+    "source": "Sitejabber, carrier reviews",
+    "area": "access",
+    "situation": "A tenant with a back condition ordered furniture and asked the carrier to bring the boxes to the apartment door with help from the building's leasing office. For over a week the tracking has promised delivery today and then moved to tomorrow.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "leasing office",
+      "merchant"
+    ],
+    "complication": "The special handling request may not be something a standard ground service does. The rolling date makes it impossible to line up the leasing office staff.",
+    "tone": "polite, long-winded",
+    "tempting_wrong_move": "Confirm to-the-door delivery that the service level does not include."
+  },
+  {
+    "id": "seed-web-047",
+    "source": "Sitejabber, carrier reviews",
+    "area": "customs and import charges",
+    "situation": "A regular business shipper says the carrier keeps billing it for import duty and tax that the commercial invoice assigns to the recipient. The duty billing team does not answer questions, and the main helpline can only transfer back to that team.",
+    "parties": [
+      "business sender",
+      "carrier billing",
+      "recipient abroad",
+      "customs"
+    ],
+    "complication": "Who pays duty depends on the shipping terms on each waybill, which may not match the invoice. If the recipient refused to pay, the charge can legitimately fall back on the shipper.",
+    "tone": "contemptuous, cites years of spend",
+    "tempting_wrong_move": "Agree that all the duty invoices are wrong and promise credits without checking the terms on each waybill."
+  },
+  {
+    "id": "seed-web-048",
+    "source": "Sitejabber, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A couple waited in for an armchair. At mid-morning the carrier's message said nobody was home. They went out to look for a missed-delivery card, found none, and photographed the empty door.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "merchant"
+    ],
+    "complication": "A bulky item may need two people or a different vehicle, and the not-home code may be covering for that. The customer has photo evidence of no card.",
+    "tone": "indignant, translated-sounding",
+    "tempting_wrong_move": "Rebook a standard attempt without checking whether the item was ever on a suitable vehicle."
+  },
+  {
+    "id": "seed-web-049",
+    "source": "Sitejabber, carrier reviews",
+    "area": "access",
+    "situation": "Roadworks were under way on a residential street. One carrier logged an overnight letter as customer not available. The postal service and another carrier delivered to the same house that day.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The real reason for the failure was access, but the code recorded blames the recipient. The roadworks may still be there tomorrow.",
+    "tone": "matter-of-fact, irritated",
+    "tempting_wrong_move": "Advise the recipient to make sure someone is home next time."
+  },
+  {
+    "id": "seed-web-050",
+    "source": "Sitejabber, carrier reviews",
+    "area": "access",
+    "situation": "A resident in their eighties who uses a walking frame and does not drive had a box left beside the garage door. That spot cannot be seen from inside, and they do not open the garage for days at a time. They can barely get a box in through the front door. This has happened before.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "A vulnerable person cannot retrieve the parcel from where it was left and may not know it is there. A standing delivery preference is needed, not a one-off fix.",
+    "tone": "blunt, cross, signs off with a first name",
+    "tempting_wrong_move": "Confirm the parcel was delivered to the property and close."
+  },
+  {
+    "id": "seed-web-051",
+    "source": "Sitejabber, carrier reviews",
+    "area": "billing",
+    "situation": "An account holder found the carrier had begun charging for collections. They had no notice and never agreed to it. They only noticed from their card statement. Support said it would be sorted, and a month later nothing has changed.",
+    "parties": [
+      "business sender",
+      "carrier billing"
+    ],
+    "complication": "The charge may be a real tariff change that was poorly communicated, so a refund is not automatic. A promise is already on record.",
+    "tone": "brief, flat",
+    "tempting_wrong_move": "Promise the charges will be reversed without finding out whether the new fee is valid."
+  },
+  {
+    "id": "seed-web-052",
+    "source": "Sitejabber, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A customer booked a luggage-shipping service to collect eight large boxes and four suitcases from an apartment. The collection failed day after day, with the stated reason being a missing apartment number on the label. On one day a driver arrived whose vehicle only takes envelopes. When the right driver came she was rude, would not use her trolley, and wanted the customer to carry everything down.",
+    "parties": [
+      "sender",
+      "luggage service",
+      "carrier",
+      "driver"
+    ],
+    "complication": "The booking was through an intermediary, so the carrier's contract is with the service, not the customer. The volume needs a suitable vehicle. There is a conduct complaint alongside the missed collections.",
+    "tone": "furious, structured with headings",
+    "tempting_wrong_move": "Promise a priority pickup tomorrow, which has already been promised daily."
+  },
+  {
+    "id": "seed-web-053",
+    "source": "Sitejabber, carrier reviews",
+    "area": "billing",
+    "situation": "A sender paid for two-day delivery with a stated Saturday arrival for something needed by Monday morning. It arrived Monday night. An agent told the recipient that the sender could claim a refund. The sender is now told the plain two-day service is not eligible, only the morning version. The online claim form will not load.",
+    "parties": [
+      "sender",
+      "recipient",
+      "carrier"
+    ],
+    "complication": "An agent gave refund advice to the wrong party and it was wrong. The service names are similar enough to confuse anyone.",
+    "tone": "exasperated, lists each failed attempt",
+    "tempting_wrong_move": "Confirm a refund is due on the basis of the earlier agent's remark."
+  },
+  {
+    "id": "seed-web-054",
+    "source": "Sitejabber, carrier reviews",
+    "area": "lost or misdelivered",
+    "situation": "A customer's parcels keep being taken to the same wrong address. They have a condition that makes phone calls very hard, and the carrier offers only a virtual assistant and a phone line, with no chat or email to a person.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The fix is simple, but the customer cannot use the only channel that reaches a human. It is an accessibility problem as well as a routing one.",
+    "tone": "calm, explanatory, fair-minded",
+    "tempting_wrong_move": "Tell them to call the helpline."
+  },
+  {
+    "id": "seed-web-055",
+    "source": "Sitejabber, carrier reviews",
+    "area": "billing",
+    "situation": "A property agent sent contract papers by express overnight. They arrived two days late with no explanation from the branch. A filing deadline passed and the sale fell through. The agent wants the carrier to answer for the lost deal.",
+    "parties": [
+      "business sender",
+      "carrier",
+      "client"
+    ],
+    "complication": "The loss claimed is consequential and far exceeds the shipping charge, and carrier terms exclude it. The only sure remedy is the service refund.",
+    "tone": "composed, cold",
+    "tempting_wrong_move": "Imply the carrier will compensate for the lost deal, or brush it off with a remark that delays happen."
+  },
+  {
+    "id": "seed-web-056",
+    "source": "Sitejabber, carrier reviews",
+    "area": "customs and import charges",
+    "situation": "A parcel arrived eighteen days late. The carrier then asked for a sizeable extra fee. The recipient had cleared the goods through customs personally and paid the government only a small sum, so they see no basis for the carrier's charge.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "customs"
+    ],
+    "complication": "The fee may be a brokerage or storage charge raised before the recipient opted to self-clear. The carrier is holding the goods or the debt against the recipient.",
+    "tone": "scathing, calls it extortion",
+    "tempting_wrong_move": "Tell the recipient the fee is government duty."
+  },
+  {
+    "id": "seed-web-057",
+    "source": "Sitejabber, carrier reviews",
+    "area": "billing",
+    "situation": "A staff member at a business was on leave when a carrier invoice arrived. On return they submitted it for the weekly payment run, apologised, and told the carrier the date. The carrier's credit team had already moved to suspend the account and offered a one-time extension to that same date.",
+    "parties": [
+      "business sender",
+      "carrier credit team"
+    ],
+    "complication": "The account suspension would stop live shipments for the customer's own clients. The payment is in hand but the tone of the credit team has soured the relationship.",
+    "tone": "aggrieved, quoting emails",
+    "tempting_wrong_move": "Tell them the suspension will be lifted without confirming it with the credit team."
+  },
+  {
+    "id": "seed-web-058",
+    "source": "Sitejabber, carrier reviews",
+    "area": "customs and import charges",
+    "situation": "An inbound international shipment was sent back to origin without any notice. The first explanation was that there was no email address on file. On a second call the reason became a customs stop at the arrival gateway. A promised email and a promised two-hour callback did not happen. The recipient will ask the shipper to claim.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "customs",
+      "shipper"
+    ],
+    "complication": "Two different reasons, neither confirmed. Because the shipper is the carrier's customer, the recipient has no standing to claim directly.",
+    "tone": "controlled, disappointed",
+    "tempting_wrong_move": "Pick one of the two explanations and state it as fact."
+  },
+  {
+    "id": "seed-web-059",
+    "source": "Sitejabber, carrier reviews",
+    "area": "slot change",
+    "situation": "A customer used the merchant's option to schedule delivery for a specific Thursday. The carrier tried to deliver on the Monday, Tuesday and Wednesday instead. The driver was told the date in person, and each day the customer had to reschedule again from a fresh text.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "merchant",
+      "driver"
+    ],
+    "complication": "The scheduled date sits with the merchant or in a note the routing system ignores. Each early attempt may count against the attempt limit before the chosen day arrives.",
+    "tone": "chatty, exasperated",
+    "tempting_wrong_move": "Tell them to be available earlier since the parcel is already local."
+  },
+  {
+    "id": "seed-web-060",
+    "source": "Sitejabber, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A recipient had a five-hour evening window. Partway through, the tracking page said the driver had called and found nobody home. Within five minutes the recipient reported through the chatbot that they were in and nobody had rung. On the phone the next day the agent was hard to understand.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The recipient deliberately created a timestamped record to prove presence. The driver's GPS trace is the only thing that could settle it and support has not looked.",
+    "tone": "earnest, sets out proof",
+    "tempting_wrong_move": "Say that drivers use GPS so the attempt must have been genuine."
+  },
+  {
+    "id": "seed-web-061",
+    "source": "Sitejabber, carrier reviews",
+    "area": "customs and import charges",
+    "situation": "A recipient bought from a large online marketplace where everything was paid at checkout. The carrier asked for proof of payment, the recipient sent it, and the carrier says it has not got it and that customs is holding the parcel. The recipient thinks the carrier is demanding a ransom and refuses to pay anything more.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "customs",
+      "merchant"
+    ],
+    "complication": "The request might be a value check for customs, or it might be duty that was in fact prepaid by the marketplace. The recipient reads any charge as theft and has stopped cooperating.",
+    "tone": "paranoid, fragmented, accusing",
+    "tempting_wrong_move": "Tell them to pay the charge to release the parcel without checking whether duties were prepaid."
+  },
+  {
+    "id": "seed-web-062",
+    "source": "Sitejabber, carrier reviews",
+    "area": "address",
+    "situation": "An international order was addressed to a shopping complex that houses several stores. The recipient rang to add the specific store name. The agent would not update anything until import fees were paid. A manager was not sure the change could be made at all, and the follow-up email was unreadable.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "customs"
+    ],
+    "complication": "Two separate things have been tied together: an address clarification and an unpaid duty. The recipient never refused to pay. Without the store name the parcel will fail on delivery.",
+    "tone": "baffled, recounts each agent in turn",
+    "tempting_wrong_move": "Refuse the address note until the fees are paid."
+  },
+  {
+    "id": "seed-web-063",
+    "source": "Sitejabber, carrier reviews",
+    "area": "slot change",
+    "situation": "A delivery was rescheduled three times. The first miss was genuine. On the second, the recipient sat next to the door in the chosen slot and nobody knocked, yet it was logged as recipient absent. For the third they chose leave-on-doorstep with an afternoon slot.",
+    "parties": [
+      "recipient",
+      "carrier"
+    ],
+    "complication": "The recipient accepts the first miss, which makes their account of the second more credible. They have now waived a signature out of frustration, which shifts risk onto them.",
+    "tone": "fair, increasingly annoyed",
+    "tempting_wrong_move": "Treat all three as the customer's absence."
+  },
+  {
+    "id": "seed-web-064",
+    "source": "Sitejabber, carrier reviews",
+    "area": "missed or failed delivery",
+    "situation": "A sender paid a premium rate for collection on a set day with delivery two days later. Five days on, the parcel had not been collected. One agent said the pickup had been rebooked, the next could see no rebooking, and the sender was told to file a claim for a parcel still in their own hands.",
+    "parties": [
+      "sender",
+      "carrier"
+    ],
+    "complication": "Agents contradict each other on record. A claim makes no sense for goods never collected, and what the sender wants is a refund of the premium and a real pickup.",
+    "tone": "enraged, abusive language, apologises for it",
+    "tempting_wrong_move": "Tell them to file a claim."
+  },
+  {
+    "id": "seed-web-065",
+    "source": "Sitejabber, meal kit reviews",
+    "area": "address",
+    "situation": "A long-standing meal kit subscriber found that a family member using the same account had changed the delivery address. By the time they noticed, the weekly box was already allocated and the company could not redirect it. The subscriber accepts it was their own household's mistake but wants the box sent to the right place.",
+    "parties": [
+      "recipient",
+      "family member",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The change was made by someone with legitimate account access, so it is not fraud. The box is perishable and past the edit cut-off, and it is heading to a real address where someone may take it in.",
+    "tone": "reasonable, quietly leaving",
+    "tempting_wrong_move": "Promise a redirect after cut-off, or refund in full when the customer has accepted responsibility and only asked for a redirect."
+  },
+  {
+    "id": "seed-web-066",
+    "source": "Sitejabber, meal kit reviews",
+    "area": "billing",
+    "situation": "A customer could not be home for a meal kit, so an agent cancelled that delivery. The box arrived anyway and was given to a neighbour. A credit was agreed for use on the next box, but the next box was charged in full and the customer was told the credit would only apply after several more boxes. They stopped deliveries and now receive debt-collection warnings.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier",
+      "debt collector"
+    ],
+    "complication": "There is an earlier verbal agreement that the system does not reflect. A debt process is running against a customer who believes the company owes them.",
+    "tone": "angry, misspelt, hard to follow",
+    "tempting_wrong_move": "Tell them to pay the outstanding balance first and sort the credit afterwards."
+  },
+  {
+    "id": "seed-web-067",
+    "source": "Sitejabber, meal kit reviews",
+    "area": "cold chain",
+    "situation": "Someone logged into a meal kit account they had not used for years, only to look. A box was then charged and sent to the address on file, which was their previous home. The new occupants rang to say a delivery had arrived. It sat two days before it was collected and the food had spoiled.",
+    "parties": [
+      "account holder",
+      "new occupants",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The order may have been triggered by reactivation rather than an explicit purchase. Third parties at the old address received perishable food that was not theirs.",
+    "tone": "indignant, swearing",
+    "tempting_wrong_move": "Treat it as a valid order delivered to the address on file and refuse a refund."
+  },
+  {
+    "id": "seed-web-068",
+    "source": "Sitejabber, meal kit reviews",
+    "area": "billing",
+    "situation": "A customer who had moved house and been skipping weeks for months forgot to skip once. Support said no refund was possible because the box was already being prepared, but offered to change the recipes and the delivery address. The customer concluded that nothing had actually been packed.",
+    "parties": [
+      "recipient",
+      "merchant"
+    ],
+    "complication": "The agent's offer undercuts the reason given for refusing. The box is otherwise heading to an address where the customer no longer lives.",
+    "tone": "frustrated, feels tricked",
+    "tempting_wrong_move": "Repeat the cut-off rule without dealing with the fact that the box would go to an old address."
+  },
+  {
+    "id": "seed-web-069",
+    "source": "Sitejabber, meal kit reviews",
+    "area": "other",
+    "situation": "Months after cancelling a meal kit subscription and deleting the app, a customer was notified of an outgoing order. They rang at once but were told they were hours past the cut-off. They disputed the pending payment with their bank, cancelled the card, and then contacted the delivery carrier directly to say they would not accept the box.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier",
+      "bank"
+    ],
+    "complication": "The recipient is instructing the carrier, who takes instructions from the merchant. A payment dispute is open in parallel, and a refused perishable box will be destroyed, not returned.",
+    "tone": "aggrieved, detailed",
+    "tempting_wrong_move": "Accept the recipient's refusal instruction on the carrier side without telling the merchant, or deliver regardless."
+  },
+  {
+    "id": "seed-web-070",
+    "source": "Sitejabber, freight marketplace reviews",
+    "area": "billing",
+    "situation": "Someone moving goods through a freight-matching marketplace was asked for several large extra payments, including a transport tax for a province that levies no such tax. The payments were to go to a cryptocurrency processor. They suspect the requests are not from the real company.",
+    "parties": [
+      "shipper",
+      "freight marketplace",
+      "unknown party posing as carrier"
+    ],
+    "complication": "The requests carry the marketplace's name but have the marks of an impersonation scam. Money may already have been sent, and the real shipment status is unknown.",
+    "tone": "suspicious, measured, mentions the authorities",
+    "tempting_wrong_move": "Confirm the fee is payable, or discuss the booking details with whoever sent the requests."
+  },
+  {
+    "id": "seed-web-071",
+    "source": "Sitejabber, freight marketplace reviews",
+    "area": "damage",
+    "situation": "A vehicle was collected by a transporter found through a marketplace. The driver arrived more than four hours late with no warning, shared no language with the owner and had no translation app, and the vehicle was damaged while being loaded. The marketplace says it is only the broker and the owner must pursue the driver, who does not reply.",
+    "parties": [
+      "shipper",
+      "freight marketplace",
+      "carrier",
+      "driver"
+    ],
+    "complication": "No condition report was agreed at pickup because the two could not communicate. The broker disclaims liability and the carrier is silent.",
+    "tone": "terse, warning others",
+    "tempting_wrong_move": "Tell the owner to take it up with the driver and close the case."
+  },
+  {
+    "id": "seed-web-072",
+    "source": "Sitejabber, freight marketplace reviews",
+    "area": "pallet and freight",
+    "situation": "A subcontracted transporter dropped a vehicle about ninety miles from the delivery address, and the owner had to arrange recovery in the middle of the night. It had been running when collected and would not run on arrival. The driver could not say what had happened.",
+    "parties": [
+      "shipper",
+      "freight marketplace",
+      "subcontractor",
+      "garage"
+    ],
+    "complication": "Delivery was technically completed, at the wrong place. Fault for the mechanical failure is unproven, and the vehicle is now sitting at a garage accruing cost.",
+    "tone": "bitter, short",
+    "tempting_wrong_move": "Mark the job delivered because the vehicle is in the owner's hands."
+  },
+  {
+    "id": "seed-web-073",
+    "source": "Sitejabber, freight marketplace reviews",
+    "area": "pallet and freight",
+    "situation": "A shipper booked a single non-stackable pallet at a quoted price and paid. Weeks later an invoice arrived for an extra charge because the pallet measured a few inches taller than declared. The delivery had also been a week late. The shipper argues that nothing could have been loaded above a non-stackable pallet anyway.",
+    "parties": [
+      "shipper",
+      "freight marketplace",
+      "carrier"
+    ],
+    "complication": "The carrier's re-measure is the only evidence and the shipper cannot check it after the fact. The marketplace position is that carriers may reprice when details differ.",
+    "tone": "wry, joking through irritation",
+    "tempting_wrong_move": "Uphold the surcharge without asking the carrier for its measurement record."
+  },
+  {
+    "id": "seed-web-074",
+    "source": "Sitejabber, freight marketplace reviews",
+    "area": "pallet and freight",
+    "situation": "Two pallets worth tens of thousands were booked through a marketplace. The shipper received a delivery confirmation, but the consignee never got them. The carrier then admitted the confirmation was a mistake and that the pallets are lost. The shipper has opened a protection-plan claim and is threatening to sue every party and complain to regulators.",
+    "parties": [
+      "shipper",
+      "consignee",
+      "freight marketplace",
+      "carrier"
+    ],
+    "complication": "A false proof of delivery was issued. The value probably exceeds the protection limit, and an active legal threat means every statement matters.",
+    "tone": "furious, lists who they will report to",
+    "tempting_wrong_move": "Reassure them that the claim will pay the full value."
+  },
+  {
+    "id": "seed-web-075",
+    "source": "Sitejabber, freight marketplace reviews",
+    "area": "billing",
+    "situation": "A broker subcontracted a delivery to a second haulier. Tracking never worked. At delivery the driver left without collecting the cash balance or the release code. Once the haulier realised, the customer received frequent calls and messages they describe as threatening. The haulier was eventually paid in full.",
+    "parties": [
+      "recipient",
+      "broker",
+      "subcontractor",
+      "driver"
+    ],
+    "complication": "The money was genuinely owed, but the way it was chased is a conduct complaint. The customer never chose the subcontractor.",
+    "tone": "flat, factual",
+    "tempting_wrong_move": "Treat it as resolved because payment was made and ignore the harassment complaint."
+  },
+  {
+    "id": "seed-web-076",
+    "source": "Sitejabber, freight marketplace reviews",
+    "area": "pallet and freight",
+    "situation": "After a customer accepted a transporter's bid on a marketplace, the transporter became slow to respond and then withdrew. The marketplace advised relisting the job, contacted the first transporter, and the load went with a second one on time.",
+    "parties": [
+      "shipper",
+      "freight marketplace",
+      "carrier"
+    ],
+    "complication": "The pickup window agreed with the origin site was tied to the first transporter. Relisting resets price and dates.",
+    "tone": "calm, satisfied in the end",
+    "tempting_wrong_move": "Keep chasing the unresponsive transporter instead of rebooking."
+  },
+  {
+    "id": "seed-web-077",
+    "source": "Haulier knowledge page on tail-lift unloading (constraints, not a complaint)",
+    "area": "pallet and freight",
+    "situation": "A single pallet weighing more than the tail lift's rated capacity arrives at a small business that has no forklift. The driver will not lower it. The consignee assumed any lorry could unload it.",
+    "parties": [
+      "consignee",
+      "carrier",
+      "driver",
+      "shipper"
+    ],
+    "complication": "The weight was known at booking but nobody asked how the site unloads. The options are a crane vehicle, splitting the load, or diverting to a depot, and each costs someone money.",
+    "tone": "consignee impatient, driver firm",
+    "tempting_wrong_move": "Tell the driver to try anyway, or promise redelivery tomorrow on the same type of vehicle."
+  },
+  {
+    "id": "seed-web-078",
+    "source": "Haulier knowledge page on tail-lift unloading (constraints, not a complaint)",
+    "area": "pallet and freight",
+    "situation": "A pallet is booked to a house with a long gravel drive. The driver will only set it down on the hard road at the entrance, because a hand pallet truck sinks in gravel. The householder expected it in the garage and cannot move the goods alone.",
+    "parties": [
+      "recipient",
+      "carrier",
+      "driver",
+      "merchant"
+    ],
+    "complication": "The order says kerbside but the buyer was never told what that means. Leaving a pallet at the roadside may obstruct the road or invite theft.",
+    "tone": "householder upset, feels misled",
+    "tempting_wrong_move": "Instruct the driver to drag it up the drive, or tell the customer the driver is simply being unhelpful."
+  },
+  {
+    "id": "seed-web-079",
+    "source": "Haulier knowledge page on tail-lift unloading (constraints, not a complaint)",
+    "area": "pallet and freight",
+    "situation": "At a site on a slope with a raised kerb, the driver finds the pallet's base broken and the load leaning. He refuses to unload, takes photos, and writes a reservation on the consignment note. The consignee needs the goods that day and wants them unloaded at their own risk.",
+    "parties": [
+      "consignee",
+      "carrier",
+      "driver",
+      "shipper"
+    ],
+    "complication": "The refusal is a documented safety decision. Pallet condition is the shipper's responsibility, so the shipper has to be brought in, and a waiver from the consignee does not remove the risk to the driver.",
+    "tone": "consignee insistent, under time pressure",
+    "tempting_wrong_move": "Accept the consignee's at-my-own-risk offer and tell the driver to proceed."
+  },
+  {
+    "id": "seed-web-080",
+    "source": "Haulier knowledge page on tail-lift unloading (constraints, not a complaint)",
+    "area": "pallet and freight",
+    "situation": "A shop takes delivery of several pallets. The owner asks the driver to wheel them through to the stockroom at the back. The order specifies set-down at the kerb, and the driver has more drops to make.",
+    "parties": [
+      "consignee",
+      "carrier",
+      "driver",
+      "shipper"
+    ],
+    "complication": "Each side assumes a different unloading method and nothing was written beyond the kerbside default. A request made at the gate is not part of the order.",
+    "tone": "friendly at first, then irritated",
+    "tempting_wrong_move": "Agree to the stockroom request on the driver's behalf."
+  },
+  {
+    "id": "seed-web-081",
+    "source": "UK Business Forums, import and courier threads",
+    "area": "customs and import charges",
+    "situation": "A small exporter ships with the recipient due to pay import VAT on arrival. Months after delivery the carrier is invoicing the exporter for that VAT, because the recipients never paid it. The carrier says it paid customs up front, delivered, and can now only bill the shipper. On one order the rebilled VAT wiped out the margin. The account manager has not pointed to the relevant terms.",
+    "parties": [
+      "business sender",
+      "carrier billing",
+      "recipient abroad",
+      "customs"
+    ],
+    "complication": "The carrier delivered before collecting, which created the debt. Its terms probably do make the shipper liable in the end. The exporter cannot easily recover the money from a foreign consumer months later.",
+    "tone": "dry, businesslike, grimly amused",
+    "tempting_wrong_move": "Tell the exporter the charge is an error because the shipment terms put duty on the recipient."
+  },
+  {
+    "id": "seed-web-082",
+    "source": "UK Business Forums, import and courier threads",
+    "area": "customs and import charges",
+    "situation": "A data recovery lab received a client's broken, decade-old hard drive from overseas. The carrier then invoiced import VAT calculated on a value several times what the drive cost new, and addressed the invoice to the wrong company. The lab is content to pay the clearance fee but not the VAT. It says it normally pays only the fee and puts up with months of collection calls.",
+    "parties": [
+      "recipient business",
+      "client abroad",
+      "carrier billing",
+      "customs"
+    ],
+    "complication": "The declared value probably came from the sender's own paperwork. The goods are a temporary import for repair, which has its own procedure that was not used. The wrong company name affects who can reclaim anything.",
+    "tone": "weary, cynical about the carrier",
+    "tempting_wrong_move": "Cancel the VAT on the lab's word about value, or insist on payment without checking what value the sender declared."
+  },
+  {
+    "id": "seed-web-083",
+    "source": "UK Business Forums, import and courier threads",
+    "area": "returns and labels",
+    "situation": "A buyer returned an unopened item to a supplier in the EU, using the supplier's return label and a customs form marked as returned goods. Weeks later tracking showed it coming back. Import VAT and duty had been raised on entry, and the supplier refused the parcel to avoid paying. The supplier says the sender is liable for any fees.",
+    "parties": [
+      "recipient",
+      "merchant abroad",
+      "postal carrier",
+      "customs"
+    ],
+    "complication": "The buyer followed the supplier's own instructions. Only the importer can dispute charges that were wrongly applied, and the importer refused the goods instead. The return window may have closed while the parcel was travelling.",
+    "tone": "careful, courteous, out of their depth",
+    "tempting_wrong_move": "Tell the buyer to resend and pay whatever is charged."
+  },
+  {
+    "id": "seed-web-085",
+    "source": "UK Business Forums, import and courier threads",
+    "area": "returns and labels",
+    "situation": "A UK seller sold an item to a buyer in the EU through a marketplace. Eighteen days after receiving it, the buyer sent it back as a change of mind and paid the return postage. The marketplace wants the seller to refund the original outbound postage as well as the item price. The seller also wonders whether import charges will follow on the returned goods and whether to keep the buyer's customs slip.",
+    "parties": [
+      "merchant",
+      "buyer abroad",
+      "marketplace",
+      "customs"
+    ],
+    "complication": "Rules differ by the buyer's country, the marketplace's policy and the seller's own terms, and the return came after the usual cooling-off period. The customs slip may be the only evidence that the goods are a return.",
+    "tone": "precise, slightly exasperated with search results",
+    "tempting_wrong_move": "State a firm legal answer about the postage refund."
+  },
+  {
+    "id": "seed-web-086",
+    "source": "Sitejabber, food gift retailer reviews",
+    "area": "cold chain",
+    "situation": "A frozen holiday dinner order was due the Saturday before Christmas and did not come. The retailer could not say where it was. It arrived on Monday with the main roast missing, and the seafood and ham had been packed without dry ice and were warm.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "There are three faults at once: late, incomplete, and temperature abuse. The occasion cannot be repeated, and warm seafood is a food safety matter, not a quality one.",
+    "tone": "irate, counts hours on the phone",
+    "tempting_wrong_move": "Suggest refreezing the items, or offer only a refund for the missing roast."
+  },
+  {
+    "id": "seed-web-087",
+    "source": "Sitejabber, food gift retailer reviews",
+    "area": "slot change",
+    "situation": "A customer paid extra for expedited delivery of a holiday main course and desserts for the day before the holiday. When they rang to confirm, they learned the delivery date had been moved to the following week. Nobody had told them.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The customer found out only because they checked. There may still be time to recover if someone acts now, but not if the usual queue is followed.",
+    "tone": "livid, disbelieving",
+    "tempting_wrong_move": "Apologise and confirm the new date after the holiday."
+  },
+  {
+    "id": "seed-web-088",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "cold chain",
+    "situation": "A first-time online grocery customer had the order brought by a gig driver in a private car, close to an hour after it was packed. Frozen items had melted and chilled items were warm. The customer was told this does not automatically qualify for a refund.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "gig delivery platform",
+      "driver"
+    ],
+    "complication": "There was no temperature-controlled vehicle and there is no temperature record. The customer raises food-handling rules. Refund policy treats it as a quality complaint needing evidence per item.",
+    "tone": "appalled, capital letters",
+    "tempting_wrong_move": "Ask for photos of each item before doing anything, or advise that the food is fine to refreeze."
+  },
+  {
+    "id": "seed-web-089",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "cold chain",
+    "situation": "A grocery order was marked delivered and both the call centre and the driver insisted it had been. After five calls it turned up two hours later, with warm milk and defrosted freezer goods.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "driver"
+    ],
+    "complication": "The delivered status was false at the time it was set, so the system's cold-chain time is wrong too. The customer now has the goods, and the real problem has changed from missing to unsafe.",
+    "tone": "sharp, sarcastic about the call centre",
+    "tempting_wrong_move": "Close the ticket because the order arrived."
+  },
+  {
+    "id": "seed-web-090",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "lost or misdelivered",
+    "situation": "Groceries went to the wrong house, and the confirmation photo plainly shows a different property. It took forty minutes on live chat to get this accepted, and the customer had to keep the chat window open throughout or lose the agent.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "driver",
+      "neighbour"
+    ],
+    "complication": "The evidence was available from the start. Perishables are sitting at a stranger's house. The reporting channel itself drops customers.",
+    "tone": "exasperated, describes each dead end",
+    "tempting_wrong_move": "Ask the customer to go and fetch the order from the other house."
+  },
+  {
+    "id": "seed-web-091",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "missed or failed delivery",
+    "situation": "A customer on a disability pension waited all evening for groceries. Just before eleven at night they found the driver had cancelled their order along with five others, without telling anyone. The refund will take three days, and they cannot afford to order food elsewhere until it lands.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "driver"
+    ],
+    "complication": "A vulnerable customer has no food and no funds for three days. The standard refund timeline is the harm here. Five other households are in the same position.",
+    "tone": "distressed, angry",
+    "tempting_wrong_move": "Confirm the refund timeline and stop there."
+  },
+  {
+    "id": "seed-web-092",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "damage",
+    "situation": "In a grocery delivery, heavy juice bottles were packed on top of crisps, and loose powdered detergent was in the same bag as ice cream and cheese. The customer was also charged for the bags.",
+    "parties": [
+      "recipient",
+      "merchant"
+    ],
+    "complication": "Crushed goods are a small refund. Detergent in contact with food is a contamination risk and needs a different response, including what to tell the customer about eating it.",
+    "tone": "formal, safety-minded",
+    "tempting_wrong_move": "Refund the crisps and overlook the contamination."
+  },
+  {
+    "id": "seed-web-093",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "damage",
+    "situation": "A large family's grocery order came with items missing and others damaged. They have CCTV of the drop-off. The retailer refused any credit and blamed the outsourced delivery service.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "third-party delivery service"
+    ],
+    "complication": "The customer's contract is with the retailer, who is pointing at its own subcontractor. Footage exists that nobody has asked to see.",
+    "tone": "disappointed, long-standing customer",
+    "tempting_wrong_move": "Refer the customer to the delivery company."
+  },
+  {
+    "id": "seed-web-094",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "lost or misdelivered",
+    "situation": "A customer watched the live tracker count down, saw nobody arrive, and then saw the order marked delivered with a signature that is not theirs. Their cameras show no visit and a neighbour does not have it. The support team had gone home for the night, so the household had no dinner.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "gig driver",
+      "neighbour"
+    ],
+    "complication": "A signature not made by the customer points to misdelivery or a false completion. Nothing can be done until morning, and by then the food is lost wherever it went.",
+    "tone": "hurt, tired",
+    "tempting_wrong_move": "Rely on the signature as proof of delivery."
+  },
+  {
+    "id": "seed-web-095",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "other",
+    "situation": "A household down with flu used click and collect two days running to avoid going into the store. Both times something was missing, first one item and then a whole bag. Each time the store admitted the error and told them to drive back for it.",
+    "parties": [
+      "recipient",
+      "merchant store"
+    ],
+    "complication": "The remedy offered puts the cost and the infection risk back on a sick customer. It is a collection order, so no carrier is involved, but the store could deliver the missing bag.",
+    "tone": "formal complaint style, detailed",
+    "tempting_wrong_move": "Tell them the missing bag is ready to collect."
+  },
+  {
+    "id": "seed-web-096",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "lost or misdelivered",
+    "situation": "A grocery order worth several hundred was delivered to the wrong address. The customer rang, was promised an update that never came, and on ringing again was told they would simply have to keep calling to find out what was happening.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "driver"
+    ],
+    "complication": "Nobody owns the case. The goods are perishable and the wrong-address household has had them for hours.",
+    "tone": "incredulous, repeats the question",
+    "tempting_wrong_move": "Promise another callback without assigning anyone."
+  },
+  {
+    "id": "seed-web-097",
+    "source": "ProductReview.com.au, grocery delivery reviews",
+    "area": "other",
+    "situation": "A permanently disabled customer who relies entirely on online grocery orders finds that the substitution setting is all or nothing. Branded items are swapped for store brand, and in one case a pet product for the wrong animal was substituted. They cannot work out how to stop it for specific items.",
+    "parties": [
+      "recipient",
+      "merchant"
+    ],
+    "complication": "The customer cannot go to a shop to fix a bad substitution. Turning substitutions off entirely means missing items, which is worse for them.",
+    "tone": "rambling, drifts into wider grievances",
+    "tempting_wrong_move": "Tell them to switch substitutions off."
+  },
+  {
+    "id": "seed-web-098",
+    "source": "ProductReview.com.au, meal kit reviews",
+    "area": "cold chain",
+    "situation": "A meal kit arrived ten hours later than its usual time, within an hour of the end of the delivery day. The outer packaging was damaged and so were the vegetables in the first bag opened. The customer's schedule is not flexible and they had not yet checked the rest.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The report came before the customer had checked the chilled items, so the extent is unknown. Ten extra hours in transit may have exhausted the ice packs.",
+    "tone": "polite, short",
+    "tempting_wrong_move": "Credit the vegetables straight away and close before the rest of the box has been checked."
+  },
+  {
+    "id": "seed-web-099",
+    "source": "ProductReview.com.au, meal kit reviews",
+    "area": "cold chain",
+    "situation": "A customer unpacked a meal kit within half an hour of delivery and found a sealed pack of fresh pasta covered in mould. They say they are used to regularly receiving tired produce but this is worse.",
+    "parties": [
+      "recipient",
+      "merchant"
+    ],
+    "complication": "It was unpacked promptly, so the fault is before delivery, at packing or storage. One mouldy item raises doubt about the rest of that batch.",
+    "tone": "disgusted, sardonic",
+    "tempting_wrong_move": "Blame the delivery time or ask whether it was refrigerated promptly."
+  },
+  {
+    "id": "seed-web-100",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "missed or failed delivery",
+    "situation": "A regular user of a freight booking site says the carrier it assigns has failed to collect parcels for days. Each complaint leads to a rebooking for the next day and nobody comes. The sender is in a city centre that the carrier serves daily.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "carrier"
+    ],
+    "complication": "The broker can only rebook with the same carrier. Each rebooking closes the earlier ticket, so the history is lost.",
+    "tone": "capitalised heading, resigned",
+    "tempting_wrong_move": "Rebook for tomorrow with the same carrier."
+  },
+  {
+    "id": "seed-web-101",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "pallet and freight",
+    "situation": "A customer booked a pallet to a home address on a broker's site. The tail-lift option was an unticked box beneath a block of small print, and the form did not flag it although it had the weight and saw a residential address. After delivery the stored card was charged a tail-lift fee without notice. The broker admitted it keeps no record of what the customer was shown, and still refused a refund.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "carrier",
+      "recipient"
+    ],
+    "complication": "The service was needed and was used, so the cost is real. The dispute is about disclosure and consent to a charge after the fact, with no evidence on either side of what the screen said.",
+    "tone": "articulate, argues the design is a trap",
+    "tempting_wrong_move": "Say the customer should have ticked the box."
+  },
+  {
+    "id": "seed-web-102",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "lost or misdelivered",
+    "situation": "A customer sent five insured cartons across one city through a broker. Two were lost or damaged in transit. Six weeks later there is still no claim decision, and the broker and the carrier each refer to the other.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "carrier",
+      "recipient"
+    ],
+    "complication": "Lost or damaged is still not established for the two cartons. Insurance was bought through the broker but is assessed on the carrier's findings.",
+    "tone": "agitated, uneven English, capitals",
+    "tempting_wrong_move": "Tell them the claim is in progress with no date."
+  },
+  {
+    "id": "seed-web-103",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "missed or failed delivery",
+    "situation": "A collection was confirmed for a set date and nobody came. Three days later an email said a collection had been attempted but the freight was not ready. The sender had been at home with the labelled parcel sitting outside the front door. A week on, it is still there.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "carrier"
+    ],
+    "complication": "The carrier's failure code blames the sender. The sender kept a dated timeline. The parcel is sitting outdoors.",
+    "tone": "methodical, dated bullet points",
+    "tempting_wrong_move": "Ask the sender to make sure the freight is ready next time."
+  },
+  {
+    "id": "seed-web-104",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "slot change",
+    "situation": "A broker sent several emails confirming delivery on a specific date. The local haulier it contracted turned up on a different day with no warning and rang asking where the customer was. The customer rushed home. They say they feel worse for the small haulier, who is wasting fuel and time because the two booking systems do not agree.",
+    "parties": [
+      "recipient",
+      "freight broker",
+      "subcontracted haulier"
+    ],
+    "complication": "The broker and the haulier hold different dates and both believe theirs. The customer is unusually sympathetic to the driver, so blaming the haulier will not land.",
+    "tone": "thoughtful, critical of the broker",
+    "tempting_wrong_move": "Blame the haulier for arriving on the wrong day."
+  },
+  {
+    "id": "seed-web-105",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "billing",
+    "situation": "A sender entered the exact size and weight of five identical shop-bought boxes, paid the quote, and the boxes were delivered without incident. A week later the broker took nearly a hundred from their account in two transactions, saying the boxes were bigger than declared. Two requests for the measurements went unanswered.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "carrier"
+    ],
+    "complication": "The boxes are a standard retail size, so the declared dimensions can be checked independently. The broker has debited first and offered no evidence.",
+    "tone": "indignant, reasonable",
+    "tempting_wrong_move": "Defend the adjustment as carrier policy without producing the measurements."
+  },
+  {
+    "id": "seed-web-106",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "other",
+    "situation": "A customer made a freight booking, cancelled it and was refunded within hours. They then booked a different carrier. The next day the first carrier's driver arrived and took the box, which carried the second carrier's label. Two weeks later the box came back marked return to sender.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "first carrier",
+      "second carrier",
+      "recipient"
+    ],
+    "complication": "A cancelled job was still dispatched to a driver. The box travelled in a network that had no valid consignment for it, and the second carrier meanwhile recorded a failed pickup.",
+    "tone": "astonished, says it was effectively stolen",
+    "tempting_wrong_move": "Charge for the return, or treat it as the customer's mistake for handing the box over."
+  },
+  {
+    "id": "seed-web-107",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "billing",
+    "situation": "Over a month after delivery, a sender was charged a large extra amount. The carrier said the cartons were bulging and protruding and sent a photo, raising the chargeable weight by half. The sender had measured the cartons, added a margin, and was only asked to prove the original measurements after the money had been taken.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "carrier"
+    ],
+    "complication": "The carrier has a photo and the sender has no contemporaneous evidence. The bulge may have happened in transit. Asking for proof a month later is not something the sender can meet.",
+    "tone": "structured, aggrieved",
+    "tempting_wrong_move": "Ask the sender for photos of cartons they no longer have."
+  },
+  {
+    "id": "seed-web-108",
+    "source": "ProductReview.com.au, freight broker reviews",
+    "area": "address",
+    "situation": "A freight broker's carrier reported that it could not find a destination address. The sender says the address is unique and comes up at once in any maps app.",
+    "parties": [
+      "sender",
+      "freight broker",
+      "carrier",
+      "recipient"
+    ],
+    "complication": "The carrier's routing data may differ from consumer maps, or the driver may not have tried. The consignment is at risk of being returned at the sender's cost.",
+    "tone": "scathing",
+    "tempting_wrong_move": "Ask the sender to confirm the address again and wait."
+  },
+  {
+    "id": "seed-web-109",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "access",
+    "situation": "A customer paid for door-to-door shipping of household boxes from overseas. At the destination the local delivery contractor would not bring them, and the customer had to collect from a depot, where staff dropped two boxes in front of them. Months of messages have gone unanswered.",
+    "parties": [
+      "recipient",
+      "international shipper",
+      "local delivery contractor"
+    ],
+    "complication": "Home delivery was sold but the last-mile contractor works to different terms. Damage happened in front of the customer and went unrecorded.",
+    "tone": "bitter, brief",
+    "tempting_wrong_move": "Say that collection from the depot counts as delivery."
+  },
+  {
+    "id": "seed-web-110",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "damage",
+    "situation": "Personal effects shipped overseas arrived months late after sitting at the dock for months before departure, despite reassuring updates along the way. The tracker did not work and several items were damaged. The company showed no interest when told.",
+    "parties": [
+      "recipient",
+      "international shipper"
+    ],
+    "complication": "Reassurances were given that did not match the real position. A damage claim on used personal effects needs valuations the customer may not have.",
+    "tone": "worn out, wholly negative",
+    "tempting_wrong_move": "Pass on another reassuring update without checking the actual shipment record."
+  },
+  {
+    "id": "seed-web-111",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "slot change",
+    "situation": "A shipper of personal boxes charged about a third more than its quote without explanation. For delivery it gave no time window and required the customer to be home all day. The driver then arrived two hours after even that.",
+    "parties": [
+      "recipient",
+      "international shipper",
+      "driver"
+    ],
+    "complication": "Two separate issues: an unexplained price rise and an all-day wait. The customer numbers them and expects each to be answered.",
+    "tone": "numbered list, curt",
+    "tempting_wrong_move": "Answer only the delivery complaint and skip the price rise."
+  },
+  {
+    "id": "seed-web-112",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "lost or misdelivered",
+    "situation": "One box in a multi-box international move was lost before the consignment had left the origin continent, which also held up the rest. The customer says the missing box held things money cannot replace and doubts how hard anyone looked.",
+    "parties": [
+      "recipient",
+      "international shipper",
+      "origin carrier"
+    ],
+    "complication": "The loss happened early in the chain with a different contractor. Compensation by weight or declared value does not address sentimental loss.",
+    "tone": "sad, measured, a previously loyal customer",
+    "tempting_wrong_move": "Offer the standard compensation and call it resolved."
+  },
+  {
+    "id": "seed-web-113",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "access",
+    "situation": "The day before collection, a customer sending boxes overseas was told to carry them downstairs and leave them in a public area for a twelve-hour pickup window.",
+    "parties": [
+      "sender",
+      "international shipper",
+      "collection carrier"
+    ],
+    "complication": "The boxes hold personal belongings and would be unattended in public all day. The customer cannot stand guard for twelve hours. Who bears the risk if a box vanishes before collection is unclear.",
+    "tone": "dismayed",
+    "tempting_wrong_move": "Confirm the instruction and say nothing about who bears the risk."
+  },
+  {
+    "id": "seed-web-114",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "access",
+    "situation": "When booking delivery of eleven boxes, a customer was told the crew would not carry them up a short flight of stairs because it would delay the round. A follow-up email suggested the customer was putting staff at risk by asking. On the day the boxes were left at the bottom.",
+    "parties": [
+      "recipient",
+      "international shipper",
+      "delivery crew"
+    ],
+    "complication": "Two reasons were given, schedule and then safety. The tone of the email turned a service limit into an accusation. The customer may be unable to carry the boxes.",
+    "tone": "articulate, offended",
+    "tempting_wrong_move": "Repeat the staff-safety line."
+  },
+  {
+    "id": "seed-web-115",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "damage",
+    "situation": "A box of clothes arrived from overseas with a long gash down one side, and everything inside smelled strongly of cigarette smoke.",
+    "parties": [
+      "recipient",
+      "international shipper"
+    ],
+    "complication": "The contents are not broken but are contaminated. There is no obvious valuation, and it suggests the box was opened or stored somewhere it should not have been.",
+    "tone": "matter-of-fact, baffled",
+    "tempting_wrong_move": "Reject the claim because nothing is physically damaged."
+  },
+  {
+    "id": "seed-web-117",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "customs and import charges",
+    "situation": "A customer moving personal effects was charged a customs handling fee by the shipper that was larger than the delivery cost. They had completed nearly all the paperwork themselves and customs levied nothing. The fee was mentioned only in small print in the emailed quote.",
+    "parties": [
+      "recipient",
+      "international shipper",
+      "customs"
+    ],
+    "complication": "The fee is the shipper's own, not a government charge, and it was technically disclosed. The customer feels it was hidden.",
+    "tone": "warning tone, annoyed",
+    "tempting_wrong_move": "Describe the fee as a customs charge."
+  },
+  {
+    "id": "seed-web-118",
+    "source": "ProductReview.com.au, international shipping reviews",
+    "area": "lost or misdelivered",
+    "situation": "A customer shipped a plain cardboard box and a large, brightly patterned sports bag full of expensive equipment between two countries. The plain box arrived. The bag did not. The shipper offered no trace and no explanation, and the customer thinks it was stolen and wants the police involved.",
+    "parties": [
+      "recipient",
+      "international shipper",
+      "police"
+    ],
+    "complication": "The more valuable and more conspicuous piece is the one missing, which suggests theft, but there is no evidence of where. The shipper's liability limits will be far below the value.",
+    "tone": "angry, suspicious",
+    "tempting_wrong_move": "Offer per-kilo compensation with no trace attempt, or agree that it was stolen."
+  },
+  {
+    "id": "seed-web-119",
+    "source": "ProductReview.com.au, bulky freight reviews",
+    "area": "pallet and freight",
+    "situation": "A consignment reached the freight company's local depot midweek. The consignee wants to collect it and has rung daily. The company will not give the depot's address until its system sends a collection email, and two days later that email has not been sent.",
+    "parties": [
+      "consignee",
+      "freight broker",
+      "depot",
+      "shipper"
+    ],
+    "complication": "The depot belongs to a subcontractor that may not accept walk-in collections. The customer knows the freight is a short drive away.",
+    "tone": "incredulous, urgent",
+    "tempting_wrong_move": "Give out the depot address without confirming the depot will release the goods."
+  },
+  {
+    "id": "seed-web-120",
+    "source": "ProductReview.com.au, bulky freight reviews",
+    "area": "missed or failed delivery",
+    "situation": "A shop booked its first collection with a new freight provider and chose a time half an hour before opening, so the first attempt failed. The shop accepts that. The provider then missed the next three days, and the shop cancelled and went back to its previous carrier.",
+    "parties": [
+      "business sender",
+      "freight broker",
+      "carrier"
+    ],
+    "complication": "The first failure was the customer's and the rest were not. A blanket apology or a blanket defence would both be wrong.",
+    "tone": "fair-minded, done with it",
+    "tempting_wrong_move": "Attribute all four failed collections to the shop's opening hours."
+  },
+  {
+    "id": "seed-web-121",
+    "source": "ProductReview.com.au, bulky freight reviews",
+    "area": "lost or misdelivered",
+    "situation": "A driver sent to collect freight from a supplier recorded that another company had already taken it. The supplier says it only ever uses this one freight company. More than a month later nobody knows where several thousand worth of goods are. The freight company can only reach its subcontractors by email.",
+    "parties": [
+      "consignee",
+      "supplier",
+      "freight broker",
+      "subcontractor"
+    ],
+    "complication": "The freight left the supplier with someone. Whether that was the right carrier with a missing scan or the wrong carrier altogether is unknown. Each question takes days by email.",
+    "tone": "angry, alleges fraud",
+    "tempting_wrong_move": "Tell the customer the freight was never collected so there is nothing to trace."
+  },
+  {
+    "id": "seed-web-122",
+    "source": "ProductReview.com.au, bulky freight reviews",
+    "area": "missed or failed delivery",
+    "situation": "Freight collected with two weeks allowed for delivery reached the destination depot four days before the deadline. Tracking shows it assigned to a driver and returned to the depot on consecutive days. The deadline has passed. The broker says it is monitoring, and the carrier says it will try to get it out today.",
+    "parties": [
+      "consignee",
+      "freight broker",
+      "carrier depot"
+    ],
+    "complication": "The item keeps being loaded and bumped, perhaps because of its size or a missing booking-in. The broker has no power over the depot.",
+    "tone": "sarcastic, quotes the script",
+    "tempting_wrong_move": "Repeat that the broker is monitoring."
+  },
+  {
+    "id": "seed-web-123",
+    "source": "ProductReview.com.au, bulky freight reviews",
+    "area": "pallet and freight",
+    "situation": "A replacement vehicle engine worth a large sum was due on a set date and had not even been collected by then. A mechanic has the car up on a lift waiting, which blocks the bay. Neither the booking company nor the carrier can say where the engine is.",
+    "parties": [
+      "consignee",
+      "mechanic",
+      "freight broker",
+      "carrier",
+      "supplier"
+    ],
+    "complication": "A third party's workshop is losing work by the day. The freight has not moved, so nothing can be traced. Rebooking with another carrier is the practical answer but needs the supplier.",
+    "tone": "crude, urgent",
+    "tempting_wrong_move": "Open a trace on a consignment that was never picked up."
+  },
+  {
+    "id": "seed-web-124",
+    "source": "ProductReview.com.au, bulky freight reviews",
+    "area": "damage",
+    "situation": "A retailer shipped a games table interstate by booked freight. The buyer reported that forklift tines had punched through the packaging and that two parts were missing. The retailer sent before and after photos. The freight company kept asking for packing photos it already had, and then said no compensation was payable. The retailer is heading to a tribunal with its customer.",
+    "parties": [
+      "merchant",
+      "recipient",
+      "freight broker",
+      "carrier"
+    ],
+    "complication": "The buyer is claiming against the retailer, who is claiming against the freight company, and there was no transit cover. Evidence was supplied and asked for again.",
+    "tone": "stilted, determined",
+    "tempting_wrong_move": "Ask for the packing photos again."
+  },
+  {
+    "id": "seed-web-125",
+    "source": "Sitejabber, furniture retailer reviews",
+    "area": "returns and labels",
+    "situation": "A pensioner on a fixed income bought a heavy office chair online that turned out to be unusable for them because of a built-in feature they had not understood. They cannot afford the return shipping on something that size, so they are stuck with it.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The return is allowed in principle, but the cost of sending a bulky item back makes it impossible for this customer. The product is not faulty.",
+    "tone": "bitter, feels older people are exploited",
+    "tempting_wrong_move": "Send a return label and say nothing about the cost being deducted from the refund."
+  },
+  {
+    "id": "seed-web-126",
+    "source": "Sitejabber, furniture retailer reviews",
+    "area": "returns and labels",
+    "situation": "A customer ordered floor tiles described as white, satin and by implication smooth. What came was off-white, matte and rough. The retailer accepted the return but made the customer pay return shipping on a heavy order. The customer says the item was misdescribed and the seller should bear that cost.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "carrier"
+    ],
+    "complication": "The return was classed as change of mind when the customer says it was not as described. The classification decides who pays, and tiles are costly to ship.",
+    "tone": "reasoned, firm",
+    "tempting_wrong_move": "Keep the return reason as change of mind because a refund was already issued."
+  },
+  {
+    "id": "seed-web-127",
+    "source": "Sitejabber, furniture retailer reviews",
+    "area": "returns and labels",
+    "situation": "A customer received entirely the wrong items. After more than a week of calls, nobody has issued a return label or arranged a collection, and each call ends with a promise that a resolution team will reply within a few days. The customer has now opened a card dispute.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "card issuer"
+    ],
+    "complication": "A chargeback is running alongside the return. If the goods are collected and the dispute also succeeds, or neither happens, someone ends up out of pocket.",
+    "tone": "fed up, flat",
+    "tempting_wrong_move": "Arrange a collection and refund without noting the open card dispute."
+  },
+  {
+    "id": "seed-web-128",
+    "source": "Sitejabber, furniture retailer reviews",
+    "area": "missed or failed delivery",
+    "situation": "A recliner was ordered on a holiday eve. A label was created overnight and tracking has not moved since. One agent hung up, one said they could see the carrier had collected it, one said a ten-day investigation was needed, and a supervisor is now asking the warehouse whether it shipped at all.",
+    "parties": [
+      "recipient",
+      "merchant",
+      "warehouse",
+      "carrier"
+    ],
+    "complication": "Label created with no scan usually means the goods never left, but one agent has said otherwise. Four contacts gave four answers.",
+    "tone": "angry, reports each agent",
+    "tempting_wrong_move": "Open a carrier trace for a parcel the carrier may never have received."
+  },
+  {
+    "id": "seed-web-129",
+    "source": "Sitejabber, furniture retailer reviews",
+    "area": "other",
+    "situation": "A customer bought three large flat-pack tables from a third-party seller on a retail marketplace. They arrived as more than two dozen boxes with no instructions and no fixings. The seller can only be reached by email and has not replied in two weeks. The marketplace says replacement parts will take over a month in total.",
+    "parties": [
+      "recipient",
+      "marketplace",
+      "third-party seller"
+    ],
+    "complication": "The delivery is complete by count but unusable. Returning two dozen opened boxes is impractical. The marketplace and the seller each defer to the other.",
+    "tone": "emphatic, exhausted",
+    "tempting_wrong_move": "Offer a full return as the only option."
+  }
+]
