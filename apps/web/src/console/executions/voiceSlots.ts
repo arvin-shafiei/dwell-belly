@@ -48,10 +48,7 @@ export function partyRole(name: string, e: ExecutionRecord): string {
   const events = e.trace?.events ?? [];
   const start = events.find((x) => x.kind === "run_start");
   if (!start || start.kind !== "run_start" || !name.trim()) return "";
-  const claims = events.flatMap((x) => {
-    const out = x.kind === "node_end" ? (x.output as { type?: string; claims?: { who: string; says: string }[] } | undefined) : undefined;
-    return out?.type === "clash_check" && Array.isArray(out.claims) ? out.claims : [];
-  });
+  const claims = clashClaims(events);
   const senders = [...start.inputs.map((i) => i.from), ...claims.map((c) => c.who)];
   const asSender = senders.find((f) => f.toLowerCase().startsWith(`${name.toLowerCase()}, `));
   if (asSender) return asSender.slice(name.length + 2).trim();
@@ -76,13 +73,34 @@ export function cardOpen(card: DecisionCard | null | undefined): card is Decisio
   return Boolean(card && !card.chosen && card.options?.length);
 }
 
-/** The run's own messages as "From: sender" blocks, so a voice note on a pasted case (which the server
- * cannot look up by id) still has the case's references and names to guide transcription. */
-export function noteCaseText(e: ExecutionRecord): string {
-  const start = (e.trace?.events ?? []).find((x) => x.kind === "run_start");
-  if (!start || start.kind !== "run_start") return "";
-  return start.inputs.map((i) => `From: ${i.from}\n${i.excerpt}`).join("\n\n").slice(0, 8000);
+type Claim = { who: string; says: string };
+
+/** The "do the stories match" step's claims: what each person says, as the agent read it. */
+function clashClaims(events: NonNullable<ExecutionRecord["trace"]>["events"]): Claim[] {
+  return events.flatMap((x) => {
+    const out = x.kind === "node_end" ? (x.output as { type?: string; claims?: Claim[] } | undefined) : undefined;
+    return out?.type === "clash_check" && Array.isArray(out.claims) ? out.claims : [];
+  });
 }
+
+/** What the run knows of the case as plain text: its title, its messages ("From: sender" blocks), the
+ * agent's claims and the desk's own messages. A pasted case keeps only a size placeholder for its
+ * messages, so the title, claims and messages carry the names. Voice notes use it to guide
+ * transcription; calls use it so the safety check knows who is on the line. */
+export function runCaseText(e: ExecutionRecord): string {
+  const events = e.trace?.events ?? [];
+  const start = events.find((x) => x.kind === "run_start");
+  if (!start || start.kind !== "run_start") return "";
+  const parts: string[] = [];
+  if (start.title) parts.push(start.title);
+  for (const i of start.inputs) if (!/^\d+ characters$/.test(i.excerpt.trim())) parts.push(`From: ${i.from}\n${i.excerpt}`);
+  for (const c of clashClaims(events)) parts.push(`${c.who}: ${c.says}`);
+  for (const o of e.outbox ?? []) parts.push(`To ${o.action.recipient} (${o.action.channel}): ${o.action.message}`);
+  return parts.join("\n\n").slice(0, 8000);
+}
+
+/** The case text a voice note's transcription is guided by. */
+export const noteCaseText = runCaseText;
 
 export function noteRerun(e: ExecutionRecord, event: CaseViewEvent): ExecuteRequest {
   return { caseId: e.caseId, dataset: e.dataset, workflowId: e.workflowId, parentExecutionId: e.id, extraEvents: [event], voice: { trigger: "note" } };
@@ -120,9 +138,7 @@ export function callRequest(e: ExecutionRecord & { title?: string | null }, row:
 export function callStateSeed(e: ExecutionRecord, calleeName: string, simulated: boolean): CallStateSeed {
   const events = e.trace?.events ?? [];
   const start = events.find((x) => x.kind === "run_start");
-  const caseText = start && start.kind === "run_start"
-    ? start.inputs.map((i) => `${i.n} ${i.channel} ${i.from}: ${i.excerpt}`).join("\n").slice(0, 4000)
-    : "";
+  const caseText = runCaseText(e);
   const lastN = start && start.kind === "run_start" ? start.inputs.reduce((m, i) => Math.max(m, i.n), 0) : 0;
   return {
     caseId: e.caseId,
