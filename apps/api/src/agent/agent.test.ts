@@ -346,3 +346,62 @@ test("the loader reads every practice folder in all four tracks without failing"
   }
   assert.equal(folders, 200);
 });
+
+test("triage, the panel and the clash check start together, not one after another", async () => {
+  const started: string[] = [];
+  let release: () => void = () => {};
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  const jevUsage = { model: "jev", latencyMs: 1, tokensIn: 5, tokensOut: 0, costUsd: 0 };
+  const hold = async <T>(name: string, value: T) => { started.push(name); if (started.length === 3) release(); await gate; return value; };
+  const judge = {
+    triage: () => hold("triage", { caseType: "damage" as const, urgency: "low" as const, urgencyScore: 0.1, usage: jevUsage }),
+    clash: () => hold("clash", { p: 0.1, usage: jevUsage }),
+  };
+  const panel = () => hold("panel", { ok: true, seats: [], forceHuman: false, notes: [], model: "jev", latencyMs: 1, tokensIn: 1, costUsd: 0 });
+  // If the three ran in sequence, the first would wait forever for the other two to start.
+  const r = await runCase(bundle, { ...opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })), judge, panel, timeoutMs: 2000 });
+  assert.equal(r.outcome, "acted");
+  assert.deepEqual(started.sort(), ["clash", "panel", "triage"]);
+  const edges = r.trace.events.filter((e) => e.kind === "edge").map((e) => (e.kind === "edge" ? `${e.from}>${e.to}` : ""));
+  for (const edge of ["history>triage", "history>perspectives", "history>clash", "triage>planner", "perspectives>planner", "clash>planner"]) assert.ok(edges.includes(edge), edge);
+});
+
+const panelFlow: Flow = JSON.parse(await readFile(path.join(ROOT, "apps/api/flows/panel-incident.json"), "utf8"));
+
+test("the panel flow is valid and its planner seats draft in parallel before one final decision", async () => {
+  assert.deepEqual(validateFlow(panelFlow), []);
+  const seen: { tier: string | undefined; proposals: boolean }[] = [];
+  const escalate = { ...decision, decision_type: "escalate_to_human" as const, why: "devil's advocate view", actions: [], handover: null };
+  const drafts = [decision, { ...decision, why: "customer view" }, escalate];
+  const models: Models = {
+    async structured(call) {
+      const s = call.schema as unknown;
+      if (s === Understanding) return { output: understanding as never, usage };
+      if (s !== Decision) return { output: { actions: [scores(0)] } as never, usage };
+      seen.push({ tier: call.tier, proposals: call.user.includes("<proposals>") });
+      return { output: (call.tier === "strong" ? decision : drafts.shift()) as never, usage };
+    },
+  };
+  const r = await runCase(bundle, { ...opts(models), flow: panelFlow });
+  assert.equal(r.outcome, "acted");
+  assert.deepEqual(seen.map((x) => x.tier), ["fast", "fast", "fast", "strong"]);
+  assert.deepEqual(seen.map((x) => x.proposals), [false, false, false, true]);
+  assert.deepEqual(r.candidates?.map((c) => c.stance), ["Owner first", "Customer first", "Devil's advocate"]);
+  assert.match(renderReasoning(r), /Drafts weighed before deciding:/);
+});
+
+test("a planner seat that fails is dropped and the decision is still made", async () => {
+  let n = 0;
+  const models: Models = {
+    async structured(call) {
+      const s = call.schema as unknown;
+      if (s === Understanding) return { output: understanding as never, usage };
+      if (s !== Decision) return { output: { actions: [scores(0)] } as never, usage };
+      if (call.tier === "fast" && n++ === 0) throw new Error("overloaded");
+      return { output: decision as never, usage };
+    },
+  };
+  const r = await runCase(bundle, { ...opts(models), flow: panelFlow });
+  assert.equal(r.outcome, "acted");
+  assert.equal(r.candidates?.length, 2);
+});

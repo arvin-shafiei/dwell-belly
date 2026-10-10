@@ -128,6 +128,10 @@ export function renderReasoning(r: RunResult): string {
   if (d) {
     lines.push("", "## 7. Decision", `${d.decision_type.replaceAll("_", " ")}: ${d.why}`,
       r.revised ? "\nThe first draft was stopped by the safety check and rewritten once." : "");
+    if (r.candidates?.length) {
+      lines.push("", "Drafts weighed before deciding:", "| Seat | Proposed | To | Why |", "|---|---|---|---|",
+        ...r.candidates.map((c) => `| ${cell(c.stance)} | ${c.decision.decision_type.replaceAll("_", " ")} | ${cell(c.decision.actions.map((a) => a.recipient).join("; ")) || "nobody"} | ${cell(c.decision.why)} |`));
+    }
     lines.push("", "## 8. Safety check, per message", r.gated.length
       ? ["| To | Risk | Verdict | Reason |", "|---|---|---|---|", ...r.gated.map((g) => `| ${cell(g.action.recipient)} | ${g.risk.toFixed(2)} | ${g.verdict} | ${cell(g.reasons.join("; ")) || "within the desk's role"} |`)].join("\n")
       : "No outgoing message to check.");
