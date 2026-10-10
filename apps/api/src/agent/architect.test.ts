@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
 import type { Flow, FlowEdge, FlowNode } from "../lib/flow.ts";
-import { buildFlow, NODE_TYPES, validateFlow } from "./architect.ts";
+import { BRANCHING_EXAMPLE, buildFlow, NODE_TYPES, validateFlow } from "./architect.ts";
 import type { Models } from "./models.ts";
 
 const FLOW_FILE = path.resolve(import.meta.dirname, "..", "..", "flows", "default-incident.json");
@@ -262,4 +262,130 @@ test("buildFlow does not throw on a reply that cannot be written back into the r
     assert.equal(res.ok, true);
     assert.match(models.prompts[1], /reply did not match the flow format at /);
   }
+});
+
+// ---- Branching decision trees -------------------------------------------------------------------
+
+const strict = (flow: Flow) => validateFlow(flow, { strictBranches: true });
+/** A fresh copy of the branching example with one change applied. */
+function branchy(change: (flow: Flow) => void = () => {}): Flow {
+  const flow: Flow = structuredClone(BRANCHING_EXAMPLE);
+  change(flow);
+  return flow;
+}
+const outOf = (flow: Flow, id: string) => flow.edges.filter((e) => e.from === id);
+const decisionPoints = (flow: Flow) => flow.nodes.filter((n) => outOf(flow, n.id).length >= 2).map((n) => n.id);
+
+test("the default flow is still valid with default options and with strict branches", () => {
+  assert.deepEqual(validateFlow(base), []);
+  assert.deepEqual(validateFlow(base, {}), []);
+  assert.deepEqual(strict(base), []);
+});
+
+test("the branching example is a real decision tree and passes the strict check", () => {
+  const flow = branchy();
+  assert.deepEqual(strict(flow), []);
+  assert.deepEqual(validateFlow(flow), []);
+  assert.ok(flow.nodes.length >= 15 && flow.nodes.length <= 30, `${flow.nodes.length} nodes`);
+  const beyondGates = decisionPoints(flow).filter((id) => flow.nodes.find((n) => n.id === id)!.type !== "safety_gate");
+  assert.ok(beyondGates.length >= 3, JSON.stringify(beyondGates));
+  for (const id of decisionPoints(flow)) for (const e of outOf(flow, id)) assert.ok(e.when, `${e.from} -> ${e.to} has no when`);
+  const triageLabels = outOf(flow, "triage").map((e) => e.when);
+  for (const label of ["damage", "missing_parcel", "cold_chain"]) assert.ok(triageLabels.includes(label), label);
+  assert.ok(flow.edges.some((e) => e.when === "retry"));
+  assert.ok(flow.nodes.filter((n) => n.type === "case_log").length >= 2);
+});
+
+test("a branch with no when label is rejected in strict mode only", () => {
+  const flow = branchy((f) => { delete f.edges.find((e) => e.from === "triage" && e.when === "damage")!.when; });
+  has(strict(flow), /node "triage" branches \d+ ways, so every edge out of it needs a "when" label: triage -> info_damage has none/);
+  assert.deepEqual(validateFlow(flow), []);
+});
+
+test("two branches with the same when label are rejected", () => {
+  const flow = branchy((f) => { f.edges.find((e) => e.from === "triage" && e.when === "cold_chain")!.when = " Damage "; });
+  has(strict(flow), /node "triage" has more than one edge labelled "damage"/);
+});
+
+test("a safety_gate exit must be labelled allow, ask or block in strict mode", () => {
+  const flow = branchy((f) => { f.edges.find((e) => e.from === "gate" && e.when === "allow")!.when = "maybe"; });
+  has(strict(flow), /safety_gate "gate" exit gate -> action is labelled "maybe"; use allow, ask or block/);
+});
+
+test("an action left ungated on one branch only is caught", () => {
+  const problems = strict(branchy((f) => { f.edges.push({ from: "triage", to: "action_group", when: "billing" }); }));
+  has(problems, /action node "action_group" can be reached without passing a safety_gate/);
+  assert.ok(!problems.some((p) => /node "action"\b/.test(p)), JSON.stringify(problems));
+});
+
+test("a branch that never reaches a case_log is rejected in strict mode only", () => {
+  const flow = branchy((f) => {
+    f.nodes.push(node("planner_billing", "planner"));
+    f.edges.push({ from: "triage", to: "planner_billing", when: "billing" });
+  });
+  has(strict(flow), /branch ends at "planner_billing" \(planner\) without reaching a case_log/);
+  assert.deepEqual(validateFlow(flow), []);
+});
+
+test("the single verify -> action retry loop is allowed in both modes", () => {
+  assert.deepEqual(validateFlow(branchy()), []);
+  assert.deepEqual(strict(branchy()), []);
+});
+
+test("a retry edge that does not go back to the action it checks is a cycle", () => {
+  has(strict(branchy((f) => { f.edges.find((e) => e.when === "retry")!.to = "planner"; })), /cycle: .*planner/);
+  has(validateFlow(branchy((f) => { f.edges.find((e) => e.when === "retry")!.to = "planner"; })), /cycle: .*planner/);
+});
+
+test("a retry loop is allowed only once: the retried action must lead straight back to its verify", () => {
+  const problems = strict(branchy((f) => { f.edges.push({ from: "action", to: "human_failed", when: "partial" }); }));
+  has(problems, /cycle: /);
+  has(problems, /edge verify -> action is labelled "retry"/);
+});
+
+test("a verify node with two retry edges is rejected", () => {
+  const problems = strict(branchy((f) => {
+    f.nodes.push(node("verify_ask", "verify"));
+    f.edges = f.edges.filter((e) => !(e.from === "action_ask"));
+    f.edges.push({ from: "action_ask", to: "verify_ask" }, { from: "verify_ask", to: "log_waiting", when: "ok" },
+      { from: "verify_ask", to: "action_ask", when: "retry" }, { from: "verify_ask", to: "action", when: "Retry" });
+  }));
+  has(problems, /cycle: |labelled "retry"/);
+});
+
+test("a disallowed cycle on a branch is reported", () => {
+  has(strict(branchy((f) => { f.edges.push({ from: "human_failed", to: "planner", when: "replan" }); })), /cycle: /);
+});
+
+test("buildFlow returns a branching flow from the model and checks it strictly", async () => {
+  const models = fake([draftOf(BRANCHING_EXAMPLE)]);
+  const res = await buildFlow("Frozen food, cold-chain vans.", models);
+  assert.equal(res.ok, true, JSON.stringify(res.problems));
+  assert.deepEqual(res.flow, BRANCHING_EXAMPLE);
+  assert.ok(decisionPoints(res.flow!).length >= 4);
+  // The prompt asks for a tree and shows the branching example.
+  assert.ok(models.systems[0].includes(`"${BRANCHING_EXAMPLE.id}"`));
+  assert.match(models.systems[0], /decision tree/i);
+  assert.match(models.systems[0], /"retry"/);
+});
+
+test("buildFlow rejects a draft whose branch has no when label and retries with that problem", async () => {
+  const unlabelled = draftOf(branchy((f) => { delete f.edges.find((e) => e.from === "triage" && e.when === "damage")!.when; }));
+  const models = fake([unlabelled, draftOf(BRANCHING_EXAMPLE)]);
+  const res = await buildFlow("A parcel carrier.", models);
+  assert.equal(res.ok, true);
+  assert.equal(models.prompts.length, 2);
+  assert.match(models.prompts[1], /- node "triage" branches \d+ ways, so every edge out of it needs a "when" label/);
+  assert.match(models.prompts[1], /<previous_attempt>/);
+});
+
+test("buildFlow rejects a draft with an unterminated branch after the retry", async () => {
+  const open = draftOf(branchy((f) => {
+    f.nodes.push(node("planner_billing", "planner"));
+    f.edges.push({ from: "triage", to: "planner_billing", when: "billing" });
+  }));
+  const res = await buildFlow("A parcel carrier.", fake([open, structuredClone(open)]));
+  assert.equal(res.ok, false);
+  assert.equal(res.flow, undefined);
+  has(res.problems, /branch ends at "planner_billing"/);
 });
