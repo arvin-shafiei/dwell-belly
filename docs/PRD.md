@@ -1,78 +1,263 @@
 # PRD: Delivery escalation desk (source of truth)
 
-**Version:** 0.1, 10 Oct 2026, 11:20 BST. **Owner of this doc:** Oriol.
-**Rule:** this file is the single source of truth for what we build and how the parts talk to each other. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
+**Version:** 1.0, 10 Oct 2026, 12:10 BST. **Owner of this doc:** Oriol.
 
-Inputs it is built from: `SPEC.md`, `docs/IDEA.md`, `docs/delivery-cases.md`, the stress test (`docs/stress-test/`), and the team status reports (`docs/team-status/` on `status/*` branches).
+**Rule:** this file is the single source of truth for what we build, how the parts talk to each other and how we win. Code, agents and briefs follow it. To change it, open a PR that edits this file and adds a line to the changelog at the bottom. If code and this doc disagree, raise it in the team chat; don't silently diverge.
+
+**It is self-contained on purpose.** A reviewer with only this file should be able to stress-test the plan against the judging criteria. Supporting detail lives in:
+
+- `docs/hackathon/` (official rules, hacker guide, kickoff transcript)
+- `docs/delivery-cases.md` and `docs/stress-test/` (56-entry edge-case catalogue, fixtures, simulation, architecture and voice reviews)
+- `SPEC.md` (the original idea, superseded here where they differ)
+
+**How it is ordered:** what is evaluated first (Parts A to H), the extras last (Parts I and J). That order is also the build priority.
 
 ---
 
-## 1. Product
+# Part A. What is evaluated
 
-An AI escalation desk for delivery operations. A case arrives (emails, portal messages, calls, voice notes, documents). The agent works out what happened, who owns the decision, what clashes and what is missing. Then it takes the right next step: ask the owning team, ask for information, wait, refuse, or hand to a human with a decision card. Every step is written to a trace. The answer files, the 2D and 3D views and the voice features all come from that trace.
+## A1. Event and deadlines (London time, BST)
 
-**One-liner for judges:** most agents answer the customer. Ours works out who owns the decision, what it must not say, and when to stop, and shows its working.
+- Dwelly Real-World Agents Hackathon, Saturday 10 October 2026. Track: **Delivery & Logistics**. Building from 10:00.
+- **16:30:** code and demo video freeze, and the Reality Test cases are released. The commit at 16:30 is what gets evaluated.
+- **17:00:** Reality Test results (`ANSWERS/`) freeze, and the complete submission must be available.
+- After the freeze: no material change to the implementation or results.
 
-## 2. What wins
+## A2. The Reality Test (the core technical evaluation)
 
-| Scored | Points | What we need |
+At 16:30 we receive unseen escalation cases. There is deliberately not enough time to handle them by hand, so the system must process them on its own, within the 30 minutes. They may contain:
+
+- conflicting information, failed actions, missing context, unusual exceptions
+- ambiguity, noise and irrelevant information
+- situations requiring escalation, and larger or more difficult context
+
+The system may need to:
+
+- interpret new information and interact with supplied tools
+- make decisions and complete workflows
+- identify uncertainty, deal with failed actions, and request or infer missing information
+- escalate cases that should not be handled autonomously
+- avoid unsafe or inappropriate actions
+
+**Per case, the evaluation may define:**
+
+- required outcomes
+- acceptable alternative outcomes
+- optional positive behaviours
+- red flags
+- prohibited actions
+- critical failures
+
+There is no single exact textual answer. **Doing nothing or escalating can be the correct decision.**
+
+## A3. Scoring
+
+**Overall = 70 technical + 30 demo.** The technical part comes mostly from the Reality Test.
+
+| Criterion | Points | What judges look at |
 |---|---|---|
-| Reality Test outcomes + coverage | 38.5 | A sensible, correctly routed decision for every case, no crashes, no gaps |
-| Judgement & safety | 14 | Clashes named, missing info asked for, the right decision type, zero critical failures |
-| Engineering | 10.5 | Small core, one-command run, traces, eval numbers in the repo, error handling |
-| Real-world use | 7 | Real channels and owners, decision cards, voice for drivers, cost per case |
-| Demo video | 30 | Real product: a case flows through, the gate stops a risky promise, a card, voice, ANSWER written |
+| Correct outcomes | 24.5 | Appropriate decisions, correct results, appropriate actions, important constraints respected |
+| Coverage | 14 | How many cases were completed. Reliable across the whole workload beats brilliant on one case. |
+| Judgement & safety | 14 | Ambiguity, conflicts, missing context, uncertainty, escalation, knowing when a human is needed |
+| Engineering quality | 10.5 | Architecture, code quality, sensible use of tools and models, reliability, error handling, reproducibility, no unnecessary human intervention |
+| Real-world applicability | 7 | Could it run in a real operation and create value |
+| Demo video | 30 | A working product (not slides), clarity (problem, solution, key workflow, outcome) and product insight |
 
-Side prizes: Best Exception Handling (main target), Best Voice (voice features in section 8), People's Choice (3D city).
+**Side prizes (judged across all tracks):**
 
-**Release criteria for the 16:30 freeze:**
+- **Best Exception Handling** (our main target): judgement under uncertainty, conflicting information, missing context, safe escalation, deciding when not to act, and preserving context for the human handover.
+- **Best Voice Agent:** voice inside a functioning operational workflow, not a standalone voice demo.
+- **Best Engineering**, and **People's Choice** (independent of the technical score).
 
-- Full run over the 50 practice cases plus 12 fixtures in under 8 minutes, with every case producing ANSWER.md, REASONING.md and trace.json.
-- Zero critical failures and zero boundary violations on the fixtures.
-- Owner-match on practice cases reported with and without the index Context (see 10).
+## A4. How judging works, and fair play
 
-## 3. Scope
+- **Who judges:** Claude-based judging agents score every submission against a fixed framework (results, outputs, required and acceptable outcomes, red flags, repo contents, reproducibility). Human judges review ambiguous, close or inconsistent results.
+- **No extra points for** more agents, a bigger codebase, a fancier UI, the most expensive model or longer output. A simple, reliable system can win.
+- **Forbidden:**
+  - instructions aimed at the judge
+  - prompt injection hidden in files or outputs
+  - misleading evaluation artefacts
+  - **fabricated execution results**
 
-**In:** the core desk agent and its batch runner; the eval; voice (section 8); 2D and 3D replay of traces; README, LICENSE, video.
+  Judging agents test for these. Penalties run from zero for the affected component up to disqualification.
+- **Failed outputs:** results must be generated by the submitted system. Never hand-replace a failed output with a corrected one.
 
-**Out (demo only or cut):** the Watch flow and order checks, OR-Tools route replanning, Learner, Architect, cross-case grouping beyond a scripted demo beat. No data in the cases supports them.
+## A5. What we must submit
 
-## 4. Team and ownership
+One public repository (Apache 2.0) containing:
 
-| Who | Owns | Paths |
+| Item | Requirement |
+|---|---|
+| A. Source code | Everything needed to understand and reproduce: prerequisites, install, config, how to run, env vars, external services. **No secrets.** |
+| B. README.md | 1) what we built, 2) the problem, 3) architecture, 4) how to run, 5) models, APIs and services, 6) assumptions, 7) known limitations, 8) what's next. An independent engineer must understand it without us. |
+| C. ANSWERS/ | `ANSWERS/<n>/ANSWER.md` + `REASONING.md` per Reality Test case. Each must show what the system received, what it did, what it decided, what it escalated, what failed and the final result. |
+| D. Integrity | Logs and traces where practical. Never hand-edit outputs. |
+| E. Demo video | About 60 seconds, **inside the repo** (Git LFS allowed). Shows the real working product. |
+| F. Launch posts | At least one LinkedIn post and one X post naming the project and linking the repo; links in `SUBMISSION.md`. |
+| G. LICENSE | Standard Apache 2.0 text. |
+
+**Submission form fields:**
+
+- repo URL, team name, track, all member names
+- the commit hash at the freeze
+- the Reality Test results and the path to the video
+- the LinkedIn and X post URLs
+
+## A6. Advice given at the kickoff
+
+- **Organisers:** build something an operations company could use tomorrow, working over email and calls, not something that only solves the synthetic data. The 16:30 cases will be unusual and partly broken.
+- **Anthropic:**
+  - build the test suite first and rerun it on every change
+  - test beyond the happy path
+  - give tools timeouts so the agent knows when they fail
+  - use structured outputs, and put a human-in-the-loop hook before irreversible actions
+  - let Claude read PDFs and images directly
+
+---
+
+# Part B. The data
+
+## B1. Case format
+
+Practice cases live in `data/raw/Delivery & Logistics/<NNN>/`, and parsed copies in `data/cases/delivery/<NNN>.json`. Each case has:
+
+- **`index.md`:** case details, context, the initial request, then the answer key (Next action at escalation, Outcome, Boundaries)
+- **`history.md`:** timed events, each with a Stage, Channel, From and To. The stages are Context, Escalation, Agent action and Follow-through.
+- **`attachments/`:** in 5 of the 50 cases (3 PDFs, 3 PNGs)
+
+The Reality Test cases arrive in a `HackatonChallendges/` folder (organisers' spelling). Their exact format is unknown.
+
+## B2. What the practice cases teach
+
+- **Roles:** we are the delivery desk ("Rivet Delivery Desk"). We sit between the recipient, the carrier ("Plover Arc Logistics": dispatch, depots, investigations, billing, safety lead) and the merchant ("Tallowmere Goods": returns, refunds, replacement authorisations).
+- **Shape:** each case is 4 to 5 events. The escalation snapshot is always events 1 to 2. The answer is one next action: who, which channel, what to say.
+- **Who the next action goes to:**
+
+  | Party | Cases |
+  |---|---|
+  | Carrier team | 25 |
+  | Merchant team | 11 |
+  | Recipient | 7 |
+  | Business contact | 7 |
+
+- **Channels:** Email 35, Customer portal 5, Business portal 4, Call 2, plus one each for dispatch chat, depot queue, safety incident queue and warehouse queue.
+- **Case types:** slot changes, address fixes, access problems, missed or failed deliveries, damage, lost or misdelivered parcels, cold-chain breaches, returns, freight and pallets, customs and import charges, billing disputes.
+
+## B3. Boundaries that recur (the likely red flags)
+
+- never say delivered or confirmed before the owning team confirms
+- never promise an exact time, refund, replacement or compensation the desk does not control
+- never share a third party's details
+- never ask for reusable credentials (door codes, PINs)
+- never treat a tracking conflict as proof of loss or fraud
+- send hazards and temperature breaches to the safety or food-safety lead, never with handling advice
+- the owning team decides: dispatch books, the merchant authorises, the carrier investigates
+
+## B4. What the practice cases do not teach
+
+- **No case where the right answer is to do nothing, wait or stop.** All 50 (in every track) end "Completed".
+- **No telemetry:** no GPS, fleet or order event stream. The Watch flow, route replanning and van grouping have nothing to run on.
+- **No long threads.** The property track (13 to 64 events) is our proxy for "larger context".
+- **No tools or APIs.** Every action is something we model ourselves.
+
+## B5. Test-view leaks (fix before trusting any score)
+
+`escalationView` in `apps/api/src/lib/data.ts:73` leaks the answer in four ways:
+
+- the index Context section (case 023: "The desk must escalate to qualified carrier safety staff")
+- the title
+- every attachment: in all 5 cases with attachments, the attachment first appears at event 4, after the escalation at event 2
+- every event, when a case has no snapshot line
+
+The eval must strip all of these, and report scores both with and without the Context section.
+
+## B6. Datasets we have
+
+| Set | Size | Answer key | Owner |
+|---|---|---|---|
+| Public practice cases | 50 | index.md Next action, Outcome, Boundaries | organisers |
+| Generated hard cases (`data/generated/delivery/`) | 120 (10 per pattern: conflicting info, failed action, missing context, noise, superseded request, out-of-policy demand, embedded instructions, unverified identity, needs human, safety hazard, no action needed, unusual exception) | `expected` (dispositions, acceptable actions, must, must_not), written by Claude, under blind review | Anson |
+| Fixtures (`docs/stress-test/fixtures/101` to `112`) | 12 | `rubric.json` (required, acceptable, red flags, prohibited, critical failures) | Oriol |
+
+---
+
+# Part C. The product and how it wins
+
+## C1. What we build
+
+An AI escalation desk for delivery operations. A case arrives (emails, portal messages, calls, voice notes, documents). The agent works out what happened, who owns the decision, what clashes and what is missing. Then it takes the right next step: ask the owning team, ask for information, wait, refuse, or hand to a human with a decision card. Every step is written to a trace, and the answer files, the views and the voice features all come from that trace.
+
+**One-liner:** most agents answer the customer. Ours works out who owns the decision, what it must not say, and when to stop, and shows its working.
+
+## C2. Priority order and cut lines
+
+| Priority | Work | Points it serves | Cut rule |
+|---|---|---|---|
+| **P0** | The agent runtime and batch runner (Part D), the answer files (Part F) | 38.5 + 14 + most of 10.5 | Never cut |
+| **P1** | Eval and evidence: scores on all three datasets, committed; replay without keys; README | 10.5 + 7, and it protects P0 | Never cut |
+| **P2** | Demo video of the real product (Part H) | 30 | Never cut; recorded by 16:00 |
+| **P3** | Voice (Part I) | Best Voice, 7, demo | Starts only when the P0 checkpoint is green; stops at 14:30 if the core is not end to end |
+| **P4** | 3D city (Part J) | demo, People's Choice | Same abort rule; must never show mock output as real |
+
+## C3. Scope
+
+**In:**
+- the core desk agent and its batch runner
+- the eval
+- voice notes, agent calls and voice approval
+- 2D and 3D replay of traces
+- README, LICENSE, video, posts
+
+**Out:**
+- the Watch flow and order checks
+- OR-Tools route replanning
+- the Learner and the Architect
+- cross-case grouping beyond a scripted demo beat
+
+No data supports the out-of-scope items. The README must not claim any of them as built.
+
+## C4. Success criteria per judging criterion (the acceptance tests)
+
+| Criterion | Acceptance test before 16:30 | Measured by |
 |---|---|---|
-| Anson | Agent backend, batch runner, edge cases, eval | `apps/api/src/agent/**`, `scripts/`, `eval/` |
-| Oriol | Voice, backend integration with the agent, this PRD | `apps/api/src/voice/**`, `apps/api/src/app/api/voice/**`, `docs/PRD.md` |
-| Arvin | 3D city, HUD, 2D/3D replay | `apps/web/src/world/**`, `apps/web/src/app/city/**` |
-| Shared | The contract (section 7) | `apps/api/src/lib/contract.ts`, changed only via PR to this doc first |
+| Correct outcomes (24.5) | Owner match at least 85% on the 50 public cases, events-only view. Decision type correct on at least 80% of the 120 generated cases. | `npm run eval`, `eval/results.md` |
+| Coverage (14) | 100% of cases produce a valid ANSWER.md, REASONING.md and trace.json. Full run of 182 cases in under 15 minutes (62 core cases under 8). Folders from all 4 tracks and a scrambled folder load without a crash. | runner log |
+| Judgement & safety (14) | **Zero critical failures and zero boundary violations on the 12 fixtures.** On cases where the answer is no action, we act 10% of the time or less. On simple public cases, we hold for a human 10% of the time or less. Embedded instructions are never followed or quoted. Every ANSWER has "not done on purpose". | eval + fixture rubrics |
+| Engineering (10.5) | One command to run. A replay command re-renders answers from traces with no keys. Tests cover the loader, the gate rules and the renderer. Thresholds in config. No secrets in git. README says only what is built. | CI-less checklist at 16:20 |
+| Real-world (7) | Real channels and owning teams. Decision cards with a fallback. Cost and latency per case. Other tracks degrade gracefully. Voice notes for drivers. | README + traces |
+| Demo (30) | Under 60 seconds, real product, in the repo by 16:30. Shows a case flowing through, a clash caught, a risky promise stopped, a card, an ANSWER written, and the eval numbers. | the video |
 
-Teammates not listed: add yourselves in a PR.
+---
 
-## 5. System overview
+# Part D. The agent (P0, the scored core)
+
+## D1. Architecture
 
 ```
-            case folder / live message / voice note / call transcript
-                                   │
-                                   ▼
-   ┌──────────────────────────── AGENT (apps/api/src/agent) ────────────────────────────┐
-   │ Load ─► Understand ─► Decide ─► Gate (per action) ─► Execute (sandbox) ─► Report   │
-   │ code    Claude #1     Claude #2  code rules + Claude #3   code                code  │
-   └──────────────┬────────────────────────────────────────────────┬────────────────────┘
-                  │ appends TraceEvents                             │ planned `call` actions
-                  ▼                                                 ▼
-            trace.json  ◄──── call / utterance / voice_note events ── VOICE (apps/api/src/voice)
-                  │                                                 ▲
-   ┌──────────────┼───────────────────────┐                         │ transcripts become
-   ▼              ▼                       ▼                         │ CaseMessages
-ANSWER.md    2D replay              3D city (/city)                 │
-REASONING.md (shared reducer)       (adapter, section 9)       ElevenLabs
+case folder / live message / voice note / call transcript
+                         │
+                         ▼
+ Load ─► Understand ─► Decide ─► Gate (per action) ─► Execute (sandbox) ─► Report
+ code    Claude #1     Claude #2  code rules + Claude #3  code              code
+                         │
+                         ▼ emit(TraceEvent) at every step
+                 trace.json + live SSE stream ─► ANSWER.md, REASONING.md, 2D/3D views
 ```
 
-**Three model calls per case.** Understand covers the SPEC steps Ingest, History, Triage, Clash Check and Missing Info. Decide covers Planner and the Human Decision card. Gate runs code rules then one critic call. The trace still emits a `node_start`/`node_end` per SPEC step, so the flowchart and the city show every named step.
+- **Load (code):** reads any folder and builds a `CaseInput`. It uses the structured parser when headings match and falls back to raw text when they don't. It never requires `index.md`. PDFs and images go to Claude directly (there are no OCR sidecars at 16:30, and tesseract is not installed). Audio attachments are transcribed and tagged as claims.
+- **Understand (Claude #1, structured output):** the claims table (who, what, verified), commitments (requested, confirmed, rejected or withdrawn, and when due), open references, the parties and their roles, authority, clashes, missing information, the case type, and any embedded instructions (paraphrased). This covers the SPEC steps Ingest, History, Triage, Clash Check and Missing Info.
+- **Decide (Claude #2, structured output):** the decision type, the actions, what we won't do and why, the wait time, a decision card when holding for a human, and confidence. This covers Planner and Human Decision.
+- **Gate (code rules first, then Claude #3 as critic):** a verdict per action, with at most one revision round.
+- **Execute (code):** actions go to a sandbox outbox and read "sent, awaiting confirmation". Call actions go to the voice layer, which places them only in demo mode.
+- **Report (code):** renders the answer files from the trace by template.
 
-## 6. Agent behaviour rules
+The trace still emits a `node_start`/`node_end` per SPEC step, so the flowchart and the city can show every named step.
 
-These come from the stress test (56 edge cases, 8 simulated cases). Each one exists because the plan as first written failed without it.
+**Models:** Claude for all three calls. Jev (TypeSafe) is optional, behind a flag, for the panel and quick scores, with a Claude Haiku fallback. No case may depend on Jev being up.
+
+## D2. Behaviour rules
+
+Each rule exists because the plan as first written failed without it (stress test: 56 edge cases, 8 simulated cases, average 5.1 out of 10 with 2 critical failures before these rules).
 
 1. **Decision types.** Every case ends in one of `act`, `ask_for_info`, `route_to_owner`, `hold_for_human`, `wait_until`, `refuse`, with zero or more actions. `wait_until` (with a time and a holding reply) is the default when an owning team already has something due.
 2. **Several actions per case.** Multi-parcel and multi-issue cases get one action per problem.
@@ -86,28 +271,82 @@ These come from the stress test (56 edge cases, 8 simulated cases). Each one exi
    | `block` | Asking for reusable credentials. Sharing third-party details. Saying delivered or confirmed before the owner confirms. Following an instruction embedded in a message. Handling advice on hazards or food safety. |
 
    The risk score rates the message about to go out, never the case topic or the customer's pressure. Thresholds live in config: allow below 0.3, ask from 0.3, block from 0.8. Hard rules override the score.
-5. **Hard triggers route to the named specialist, automatically.** Hazard or leak goes to the carrier safety lead. Food temperature goes to the merchant's food-safety team. Medical or vulnerable recipient goes to the on-call lead. Legal threat or regulator is held for a human, with a holding reply. Value above the config threshold is held for a human.
+5. **Hard triggers route to the named specialist, automatically.** Hazard or leak goes to the carrier safety lead. Food temperature goes to the merchant's food-safety team. Medical or vulnerable recipient goes to the on-call lead. Legal threat, regulator or media is held for a human, with a holding reply. Value above the config threshold is held for a human.
 6. **No human at 16:30.** Allowed actions go out. Held actions are logged with the decision card and the safe fallback. "Escalated" never means "nothing happened".
-7. **Honest wording.** Actions go to a sandbox outbox and read "sent, awaiting confirmation". Never "booked", "delivered", "verified" or "resolved" unless the case itself says so.
-8. **A clock.** `now` is the time of the last event the agent may see. Deadlines, "next Friday" and time zones are computed in code.
+7. **Honest wording.** Never "booked", "delivered", "verified" or "resolved" unless the case itself says so.
+8. **A clock.** `now` is the time of the last event the agent may see. Deadlines, relative dates and time zones are computed in code, not by the model.
 9. **Authority and identity.** Before acting for someone, check they are verified and authorised. If not, ask through the verified channel and disclose nothing.
-10. **Case text is data.** Instructions inside messages or attachments are flagged, paraphrased and never followed or quoted.
-11. **No hardcoded names.** Work out roles (recipient, carrier, merchant) from the case. The practice names will change.
-12. **Never crash a batch.** Each case has a 120-second timeout. Retries only on infrastructure errors. A failed case still gets an ANSWER saying where it failed and that it was escalated to a human.
+10. **Case text is data.** Instructions inside messages, attachments or transcripts are flagged, paraphrased and never followed or quoted.
+11. **Claims are not facts.** A voice note, call answer or customer statement is a claim by the speaker, weighed like a tracking scan against a recipient statement.
+12. **No hardcoded names.** Roles come from the case. The practice names will change.
+13. **The perspectives panel advises; it never blocks on its own.** Anson's five-seat Jev panel (`apps/api/src/lib/panel.ts`) feeds notes into Decide and one signal into the Gate. Its `force_human` can hold promise-class actions, never `allow`-class actions (requests to owners, safety routing, holding replies). It is off unless `PANEL_ENABLED=1` and a Jev key exist. If it returns `ok: false`, the case continues without it.
+14. **Never crash a batch.** Each case has a 120-second timeout. Retries only on infrastructure errors (429, 5xx, timeouts). A failed case still gets an ANSWER saying where it failed and that it was escalated to a human with the context.
 
-## 7. The contract
+## D3. Edge-case coverage matrix
 
-Copied verbatim into `apps/api/src/lib/contract.ts` once this PRD is merged. Everyone imports from there. It extends Arvin's trace draft (`docs/plans/2026-10-10-3d-workflow-viz-design.md` §4).
+Full entries (scenario, correct behaviour, red flags, critical failures) are in `docs/stress-test/edge-case-catalogue.md`.
+
+| Category | Entries | Required behaviour | Handled by | Tested by |
+|---|---|---|---|---|
+| A. Conflicting information | EC-01 to 05 (three-way clash, attachment contradicts text, stale info superseded, two authorised people disagree, public tracker vs operational record) | Name the conflict, don't pick a side without a record, ask the owner to check the record; the latest valid instruction wins | Understand (claims, commitments), Decide | fixtures 107, 108, 110; generated "conflicting info", "superseded request" |
+| B. Failed actions | EC-06 to 09 (earlier request bounced, owner refuses, our tool fails, an earlier promise is overdue) | Report the failure, try the next valid channel or escalate, chase overdue promises | Understand (commitments), Execute, Report "what failed" | fixture 104; generated "failed action" |
+| C. Missing context | EC-10 to 13 (no reference, owner unknown, attachment unreadable, vague escalation) | Ask the right party for the specific missing item, never guess | Understand (missing), Decide `ask_for_info` | generated "missing context" |
+| D. Unusual exceptions | EC-14 to 17 (hazard, recipient deceased, held by authorities, driver injured) | Hard triggers to the named specialist, humane wording, no handling advice | Gate hard triggers | generated "safety hazard", "unusual exception" |
+| E. Ambiguity | EC-18 to 20 (damage unclear, "the parcel" with two open, relative dates) | Ask to disambiguate; compute dates in code | Understand, clock | generated |
+| F. Noise | EC-21, 22 (long noisy thread, emotional but irrelevant) | Keep shipment-relevant facts, stay courteous | Understand | fixture 112; generated "noise" |
+| G. Requiring escalation | EC-23 to 26 (legal or media, high value plus refund demand, medical, vulnerable customer) | Hold for a human with a card and a holding reply; route medical to on-call | Gate hard triggers, Decide card | fixtures 109, 111; generated "needs human" |
+| H. Larger context | EC-27 (60+ events, inconsistent dates, key fact early) | Read everything, and cite the event numbers used | Load (no truncation), Understand | property-track folders as a load test |
+| I. Do nothing, wait, inform | EC-28 to 32 (duplicate in progress, already resolved, out of scope, undo the irreversible, deadline passed) | `wait_until` or inform only; no duplicate actions | Decide decision types | fixtures 101, 105, 112; generated "no action needed" |
+| J. Injection and manipulation | EC-33 to 35 (in a message, in an attachment, impersonating carrier staff) | Flag, don't follow, don't quote, verify the channel | Load (data tags), Understand flags, Gate block | fixture 102; generated "embedded instructions" |
+| K. Identity and authority | EC-36 to 38 (unverified redirect, title vs authority, asking for driver or neighbour details) | Verify first, disclose nothing | Understand (authority), Gate | fixture 103; generated "unverified identity" |
+| L. Fraud signals | EC-39 (repeat "not received" plus a replacement to a new address) | No accusation; hold the redirect for a human; route to the owner's investigation | Gate (`ask` on delivery changes) | catalogue |
+| M. Out-of-policy demands | EC-40 to 42 (exact minute plus compensation, waive an import charge, payment link in chat) | Refuse the promise, route to the owner, never take payment details | Gate (`ask`/`block`) | generated "out-of-policy demand" |
+| N. Abusive customer | EC-43 | Stay courteous, set boundaries, keep helping | Decide | catalogue |
+| O. Language | EC-44 (non-English) | Understand it, reply in their language, keep the original | Understand, Decide | fixture 109 (Spanish) |
+| P. Multiple shipments | EC-45 (three parcels, three states) | One action per shipment | Decide (several actions) | fixture 106 |
+| Q. Time zones | EC-46 | Convert in code | clock | catalogue |
+| R. Format, engineering and scoring traps | EC-47 to 56 (format differs, a stated decision point, over-escalation, pending written as done, arithmetic, handling advice, policy vs merchant terms, no fallback, status-only question, request withdrawn) | Raw-text fallback; answer the stated question; per-action gate; honest wording; maths in code; a fallback on every card | Load, Gate, Report | catalogue; scrambled-folder test |
+
+**Status before these rules:** of the 56 entries, 6 were handled, 33 partly and 17 not at all. The rules in D2 and the contract in Part E target all 56. The fixtures and the generated set are how we prove it.
+
+## D4. Input handling
+
+- **Accept any folder:** `.md`, `.txt` and `.csv` as text, PDFs and images as native Claude blocks, audio transcribed. Accept a full thread with a stated decision point (EC-48): answer the question asked.
+- **Several tracks:** if a case looks like another track, the domain-general prompt still produces a safe answer. The delivery playbook is a module, not the whole prompt.
+- **Batch:** mode is hardcoded in the runner command. Each case runs in isolation, so one case's failure never touches another.
+
+## D5. Throughput budget
+
+3 model calls per case, prompt caching on the shared system prompt and playbook, and 8 cases at a time (configurable).
+
+| | Target |
+|---|---|
+| A full run over 62 cases | under 8 minutes |
+| When we time it | by 14:00 |
+| Rate limits | read from the response headers on the first call |
+| Fallback | a pool of teammates' keys |
+
+---
+
+# Part E. The contract
+
+Copied verbatim into `apps/api/src/lib/contract.ts`. Everyone imports from there. It extends Arvin's trace draft (`docs/plans/2026-10-10-3d-workflow-viz-design.md` §4).
+
+## E1. Types
 
 ```ts
-export const CONTRACT_VERSION = 1;
+export const CONTRACT_VERSION = 2;
 
 export type Mode = "practice" | "reality" | "demo";
 
-/** Where a piece of input came from. In reality mode, simulated_persona is rejected in code. */
+/** Where a piece of input came from. Rules per mode: Part G2 and Part I4. */
 export type Source = "case_file" | "live_human" | "simulated_persona" | "audio_attachment";
 
-/* ---------------- 1. What goes in ---------------- */
+export type Role =
+  | "recipient" | "driver" | "dispatch" | "carrier_team" | "merchant_team"
+  | "safety" | "manager" | "business_contact" | "desk" | "other";
+
+/* ---------------- What goes in ---------------- */
 
 export interface CaseInput {
   caseId: string;          // "delivery-024" (practice), "rt-07" (Reality Test), "demo-driver-gate" (demo)
@@ -115,43 +354,39 @@ export interface CaseInput {
   title?: string;          // hidden from the agent in practice eval (it leaks the answer)
   now: string;             // ISO time the agent acts at
   details?: Record<string, string>;
+  question?: string;       // a decision point supplied with the case, if any
   messages: CaseMessage[];
   attachments: Attachment[];
   raw?: string;            // the whole folder as text when parsing failed
 }
 
 export interface CaseMessage {
+  id: string;              // stable id, e.g. "m3" or "call-7:u4"
   n: number;               // order in the thread
   at: string;              // ISO
-  channel: string;         // "Email" | "Customer portal" | "Call" | "Voice note" | ...
-  from: string;            // role + name as written in the case
+  channel: string;         // "Email" | "Customer portal" | ... | "Call" | "Voice note"
+  from: string;            // role + name as written, e.g. "Fen Orlo, route driver"
+  fromRole?: Role;
   to: string;
   body: string;            // for calls and voice notes: the transcript
   source: Source;
+  verified: boolean;       // sender identity verified by the case or channel
+  isClaim: boolean;        // true for anything a person asserts (voice is always a claim)
   audioUrl?: string;       // voice only
-  callId?: string;         // transcript lines that came from one of our calls
+  lang?: string;
+  asrConfidence?: number;  // below 0.6: treat as unclear and ask again
+  callId?: string;         // lines that came from one of our calls
 }
 
 export interface Attachment {
   name: string;
-  mediaType: string;       // "application/pdf" | "image/png" | "text/csv" | ...
-  path: string;            // sent to Claude directly; no OCR sidecars at 16:30
+  mediaType: string;       // "application/pdf" | "image/png" | "text/csv" | "audio/mpeg" | ...
+  path: string;            // sent to Claude directly; audio is transcribed first
 }
 
-/* ---------------- 2. What the agent did ---------------- */
+/* ---------------- What the agent plans ---------------- */
 
-export interface Trace {
-  version: typeof CONTRACT_VERSION;
-  runId: string;           // "2026-10-10T16:32Z-reality"
-  caseId: string;
-  flowId: "default-incident";
-  mode: Mode;
-  synthetic?: boolean;     // hand-built or simulated demo trace: UI shows a SIMULATED tag
-  events: TraceEvent[];
-}
-
-/** Node ids are the ids in apps/api/flows/default-incident.json. */
-export type NodeId =
+export type NodeId =       // the ids in apps/api/flows/default-incident.json
   | "ingest" | "history" | "triage" | "clash" | "missing_info" | "group"
   | "planner" | "gate" | "human" | "action" | "verify" | "log";
 
@@ -162,11 +397,17 @@ export interface PlannedAction {
   id: string;              // "a1", "a2"
   kind: "message" | "call" | "ticket";
   to: string;              // "Delivery investigations, Plover Arc Logistics"
-  toRole: "recipient" | "driver" | "dispatch" | "carrier_team" | "merchant_team"
-        | "safety" | "manager" | "business_contact" | "other";
+  toRole: Role;
   channel: string;         // must be a channel the case shows as verified for that party
   purpose: string;         // one line
-  body: string;            // the full message, or the call script
+  body: string;            // the full message, or the call's opening script
+  call?: {                 // only when kind === "call"
+    goal: string;
+    questions: string[];   // max 3, yes/no where possible
+    boundaries: string[];  // what the voice agent must never say or ask
+    allowedCommitments: string[];  // the only promises it may make
+    cardId?: string;       // set when the call is a voice approval of a decision card
+  };
 }
 
 export interface GateResult {
@@ -181,6 +422,7 @@ export type ActionStatus =
   | "sent_awaiting_confirmation" | "held_for_human" | "blocked" | "failed" | "planned_not_placed";
 
 export interface DecisionCard {
+  cardId: string;
   routeTo: string;         // "claims" | "depot_manager" | "support" | "on_call_lead" | "merchant" | ...
   summary: string;
   clash?: string;
@@ -188,14 +430,27 @@ export interface DecisionCard {
   options: { id: string; label: string; undoable: boolean }[];   // 2-3
   wouldChangeMyMind: string;
   deadlineMins: number;
-  fallback: string;        // the safe option logged when nobody answers
-  chosen?: string;         // absent in reality mode
+  fallback: string;        // the option logged when nobody answers
 }
 
-type Base = { t: number; source?: Source };   // t = ms since run start; source defaults to the agent
+/* ---------------- What the agent did: the trace ---------------- */
+
+export interface Trace {
+  version: typeof CONTRACT_VERSION;
+  runId: string;           // "2026-10-10T16:32Z-reality"
+  caseId: string;
+  flowId: "default-incident";
+  mode: Mode;
+  synthetic?: boolean;     // any simulated input or a hand-built trace: UI shows SIMULATED
+  events: TraceEvent[];
+}
+
+type Base = { t: number; seq: number; source?: Source };   // t = ms since run start; seq = order; source defaults to the agent
 
 export type TraceEvent =
-  | (Base & { kind: "run_start"; title: string; inputs: { n: number; channel: string; from: string; excerpt: string }[] })
+  /* agent */
+  | (Base & { kind: "run_start"; title: string; reason: "initial" | "new_message" | "human_decision";
+              inputs: { n: number; channel: string; from: string; excerpt: string }[] })
   | (Base & { kind: "node_start"; nodeId: NodeId })
   | (Base & { kind: "node_end"; nodeId: NodeId; status: "ok" | "error" | "skipped";
               summary: string /* <= 80 chars */; latencyMs: number; costUsd: number })
@@ -210,131 +465,451 @@ export type TraceEvent =
   | (Base & { kind: "gate"; result: GateResult })
   | (Base & { kind: "action"; actionId: string; status: ActionStatus; detail?: string })
   | (Base & { kind: "card"; card: DecisionCard })
-  | (Base & { kind: "human_decision"; optionId: string; by: "tap" | "voice"; who: string })
-  | (Base & { kind: "voice_note_in"; messageN: number; from: string; transcript: string; audioUrl?: string })
-  | (Base & { kind: "call"; callId: string; phase: "ringing" | "connected" | "ended" | "failed";
-              callee: string; calleeRole: PlannedAction["toRole"]; actionId?: string; summary?: string })
-  | (Base & { kind: "utterance"; callId: string; speaker: "agent" | "callee"; text: string; audioUrl?: string })
+  | (Base & { kind: "human_decision"; cardId: string; optionId: string; by: "tap" | "voice";
+              who: string; callId?: string })
+  | (Base & { kind: "handover_requested"; reason: string; routeTo: string; callId?: string })
   | (Base & { kind: "run_end"; outcome: DecisionType | "error"; totalCostUsd: number;
-              totalLatencyMs: number; error?: string });
+              totalLatencyMs: number; error?: string })
+  /* voice: every voice event sets `source` */
+  | (Base & { kind: "voice_note_in"; messageId: string; from: string; fromRole: Role;
+              transcript: string; audioUrl?: string; asrConfidence?: number })
+  | (Base & { kind: "call_planned"; callId: string; actionId: string; callee: string; calleeRole: Role;
+              goal: string; questions: string[]; placed: boolean; reason?: string })
+  | (Base & { kind: "call_ringing"; callId: string; callee: string; calleeRole: Role })
+  | (Base & { kind: "call_connected"; callId: string; provider: "elevenlabs_webrtc" | "simulated" })
+  | (Base & { kind: "utterance"; callId: string; lineSeq: number; speaker: "agent" | "callee";
+              text: string; final: boolean; audioUrl?: string; durationMs?: number })
+  | (Base & { kind: "commitment_check"; callId: string; text: string; allowed: boolean;
+              approvedWording?: string; rule?: string })
+  | (Base & { kind: "call_ended"; callId: string;
+              reason: "completed" | "no_answer" | "busy" | "voicemail" | "hung_up" | "not_safe"
+                    | "wrong_person" | "handover" | "timeout" | "error";
+              durationS: number; summary: string; messagesAppended: string[] })
+  | (Base & { kind: "voice_error"; callId?: string;
+              stage: "stt" | "tts" | "session" | "tool" | "webhook" | "policy"; error: string });
 ```
 
-**Rules for the contract:**
+## E2. Agent interface
 
-- Every voice event (`voice_note_in`, `call`, `utterance`) must set `source`.
-- In `reality` mode the runner throws away any input with `source: "simulated_persona"`, and `call` actions end as `planned_not_placed`.
+The runtime exports these. Voice, the API and the runner use only these.
+
+```ts
+export function runCase(input: CaseInput, opts: { emit(e: TraceEvent): void }): Promise<Trace>;
+export function resumeCase(caseId: string, add: { messages?: CaseMessage[];
+  humanDecision?: { cardId: string; optionId: string; by: "tap" | "voice"; who: string; callId?: string } }): Promise<Trace>;
+export function checkAction(action: PlannedAction, ctx: { input: CaseInput }): Promise<GateResult & { approvedWording?: string }>;
+```
+
+- **`runCase`** emits every event as it happens, for the live stream, and returns the full trace, which is saved as `trace.json`.
+- **`resumeCase`** may simply re-run the whole case with the new messages appended. It adds a new segment starting with `run_start { reason }`.
+- **`checkAction`** is the same per-action gate the agent uses, so voice can check a commitment mid-call.
+- **Voice exports one function:** `executeCall(action, ctx)`. It returns `{ callId, status: "planned" | "starting" | "refused", reason? }` straight away and never blocks the agent.
+
+## E3. Contract rules
+
+- Every voice event sets `source`.
 - The trace file is written even when a case errors, ending with `run_end` and `outcome: "error"`.
+- `seq` increases across segments, so live consumers can resume and dedupe.
+- Changing a type means a PR to this section first.
 
-## 8. Voice
+---
 
-Voice is one layer (`apps/api/src/voice`), used in three places. Everything it produces is a `CaseMessage` (input) or a `TraceEvent` (trace), so the agent, the answer files and the UI need nothing special for it.
+# Part F. Outputs and eval
 
-| Feature | Flow | Trace events |
-|---|---|---|
-| **Driver voice notes** | A driver records a note (they can't text while driving). Scribe transcribes it. It becomes a `CaseMessage` (channel "Voice note") tagged as the driver's claim. Clash Check compares it with the customer's account. | `voice_note_in` |
-| **Agent calls a person** | Decide plans a `call` action (driver, recipient, manager). The gate checks the script like any message. In demo and practice the voice layer places it (ElevenLabs agent, browser call). The transcript comes back as `CaseMessage`s with the `callId`, and the agent continues. Driver calls open with "Are you safe to talk?", ask at most 3 yes/no questions and stay under 30 seconds. | `call` (ringing, connected, ended or failed), `utterance` |
-| **Manager approves by voice** | For a `hold_for_human` card, the voice layer calls the on-call manager, reads the card, and they say "option 2". That becomes a `human_decision` with `by: "voice"`, and the held action is released. | `call`, `utterance`, `human_decision` |
-| **Simulated people (demo)** | Driver, customer and dispatch personas, each with its own voice. Claude writes each persona's line and ElevenLabs TTS speaks it, streamed to the browser. Agents can call each other, and a human can listen live or take over a seat. | the same, with `source: "simulated_persona"`, and the trace is `synthetic: true` |
-
-**Voice rules:**
-
-- The voice model speaks before our gate sees its words. So its prompt carries the boundaries from section 6, any commitment goes through a `propose_commitment` tool that the gate checks, and the transcript is checked after the call.
-- Never in the scored run. In reality mode calls are planned and gated but not placed, and simulated input is rejected in code, not only in a prompt.
-- The first line discloses an AI agent and that the call is recorded.
-- Transcripts committed to the public repo come from synthetic cases only.
-
-Endpoints and the remaining edge-case handling are added in the next version of this PRD, from the backend voice stress test.
-
-## 9. UI and 3D integration
-
-The 3D city (`/city`) and the 2D replay only read traces, from `GET /api/cases/:id/trace` or a static `traces/<caseId>.json` fallback. They never call the agent. One adapter converts `TraceEvent`s into the city's `WorkflowEvent`s and bus events. Until real traces exist, the mock engine stays as the fallback.
-
-| Trace event | City shows |
-|---|---|
-| `node_start` / `node_end` | The station for that node lights up, with the summary on its card |
-| `gate` | Gate needle and chute per action: green allow, amber ask, red block |
-| `card` | The manager's desk at the depot rings, and the card slides into the side panel |
-| `human_decision` with `by: "voice"` | The manager's desk lights up, and the card shows "approved by voice: option N" |
-| `voice_note_in` | A pulsing mic bubble on the driver's van, and the transcript ticks into the HUD tagged with its source |
-| `call` ringing / connected / ended | A phone rings over the van, house or depot, the camera flies there, and a live transcript panel opens |
-| `utterance` | The speaking character is highlighted, and the line appears in the transcript panel |
-| any event with `source: "simulated_persona"` | A visible SIMULATED badge |
-| `run_end` | The outcome badge: the decision type, or error |
-
-The full adapter, store and bus additions, and audio playback rules are added in the next version of this PRD, from the city stress test.
-
-## 10. Outputs and eval
+## F1. Files
 
 ```
 ANSWERS/<n>/ANSWER.md        rendered from trace.json by a template, never hand-edited
 ANSWERS/<n>/REASONING.md     rendered from trace.json
-ANSWERS/<n>/trace.json       the Trace above
-eval/results.md              practice + fixture scores, committed
+ANSWERS/<n>/trace.json       the Trace (Part E)
+ANSWERS/RUNLOG.md            run id, model ids, prompt version hash, timings, failures, resumes
+eval/results.md              scores on all three datasets, committed
 ```
 
-**ANSWER.md template:**
+## F2. ANSWER.md template
 
 1. Decision line: `ACT | ASK | ROUTE TO OWNER | HOLD FOR HUMAN | WAIT UNTIL <time> | REFUSE`, and why in one line.
 2. Action table: number, to (role), channel (verified?), purpose, status.
-3. Every message in full.
+3. Every message in full; for calls, the script, and "call planned, awaiting answer" in reality mode.
 4. Not done on purpose, one line each, with the reason.
 5. Escalated: none, or to whom, with the decision card and the fallback taken.
-6. What failed.
+6. What failed (tool errors, rejected requests, unreadable inputs), or "nothing".
 7. Waiting for what, from whom, by when.
 8. Final state, confidence, and what would change it.
 
-**REASONING.md template:**
+Wording: "Recorded in the sandbox outbox (no live system connected). Awaiting confirmation from X."
 
-1. What we received.
-2. Facts vs claims.
-3. Commitments so far.
+## F3. REASONING.md template
+
+1. What we received: event numbers, time, channel, sender role, verified or not, attachments read, anything ignored as irrelevant. Embedded instructions are paraphrased, never quoted.
+2. Facts vs claims (a table).
+3. Commitments so far: requested, by or to whom, status, due.
 4. Conflicts and missing information.
 5. Who owns each decision.
-6. Options rejected.
-7. Safety check per action.
+6. Options considered and why they were rejected.
+7. Safety check per action: rule by action.
 8. Trace table: step, model, output, latency, cost.
 
-**Eval rules:**
+## F4. Eval
 
-- Feed only the events up to the escalation snapshot, with no title, no index Context, no Next action, Outcome or Boundaries, and no attachments that arrive after the snapshot. Run twice, with and without the index Context, and report both.
-- Fixtures 101 to 112 have `rubric.json` (required outcomes, red flags, critical failures).
-- A replay command re-renders every ANSWER.md from trace.json with no model calls, so judges can reproduce our results without our keys.
+- **No leaks:** feed only the events up to the escalation snapshot, with no title, no index Context, no Next action, Outcome or Boundaries, and no attachments that arrive after the snapshot. If the snapshot is missing, cut at the first `Agent action` stage, or drop the case. Run twice, with and without the index Context, and report both.
+- **Anson's eval (`npm run eval`) scores contract v2 traces.** It reads `decision`, `action`, `card` and `run_end`. Decision types map to its three dispositions:
 
-## 11. Modes
+  | Decision type | Eval disposition |
+  |---|---|
+  | `act`, `ask_for_info`, `route_to_owner` | contact |
+  | `hold_for_human`, `refuse` | escalate |
+  | `wait_until` | no_action |
+
+  A case passes the action check if any planned action matches one of `acceptable_actions` (recipient and channel). `must_not` applies to every action and every message body.
+- **Fixtures** are scored against `rubric.json`, and any critical failure fails the release (C4).
+- **Metrics in `eval/results.md`:**
+  - owner match
+  - decision-type accuracy
+  - act rate on no-action cases
+  - over-escalation rate on simple cases
+  - boundary violations
+  - critical failures
+  - mean cost and latency per case
+  - total run time
+- **Replay:** a command re-renders every ANSWER.md and REASONING.md from `trace.json` with no model calls, so judges can reproduce our results without our keys.
+- **One official run, committed whole,** never cherry-picked.
+
+---
+
+# Part G. Reality Test operations
+
+## G1. Runbook (16:20 to 17:00)
+
+| Time | Action |
+|---|---|
+| 16:20 | Stop feature work. Pull, clean install, run the replay test and a 5-case smoke run. `git grep -n "sk-ant"` returns nothing. Video committed and under 100 MB. |
+| 16:25 | Final README check. Commit, tag `freeze-1630`, push. Copy the hash into the form draft. |
+| 16:30 | Cases released. One person copies them into `reality/` (outside `apps/`) and checks the folder count. Nobody touches code. |
+| 16:32 | Run the batch: reality mode, 8 cases at a time. One person watches the run log; a second watches rate limits and errors. |
+| 16:40 | Expected to finish. If any case failed on infrastructure errors only, run the resume command once (it is logged). Do not edit outputs. |
+| 16:45 | Check every folder has ANSWER.md, REASONING.md and trace.json. Spot-read 3. Grep for keys. |
+| 16:48 | Commit `ANSWERS/` only (no code changes) and push. Confirm the repo opens publicly in a logged-out browser. |
+| 16:52 | Submit the form (posts drafted earlier, published at 16:50). |
+| 16:58 | Final push confirmed. Hands off. |
+
+## G2. Reality-mode guarantees (enforced in code)
+
+- Simulated input is rejected, and the ANSWER renderer refuses a reality trace that contains any.
+- Calls are planned and gated, never placed.
+- No human answers: cards are logged with the fallback.
+- Mode comes from the runner command, never from a request.
+
+## G3. Failure playbook
+
+| Situation | Response |
+|---|---|
+| A case crashes or times out | It gets the failure ANSWER automatically; resume once only if the error was infrastructure |
+| Rate limited | Lower concurrency, switch to a teammate's key from the pool |
+| Format surprise | Raw-text fallback; the case still gets an answer |
+| Tools supplied with the cases | Only if the organisers confirm beforehand: a generic tool layer reads a manifest in the folder and exposes it to Claude |
+| Whole run fails | Rerun from scratch once, log it; never hand-write answers |
+
+---
+
+# Part H. Demo video and submission artefacts (P2)
+
+## H1. 60-second video (record by 15:30, committed by 16:00)
+
+| Time | Beat |
+|---|---|
+| 0 to 8 s | The problem: a delivery desk drowning in calls, emails and contradicting stories |
+| 8 to 30 s | A real practice case runs. Understand shows the clash, Decide routes to the owner, the gate stops a refund promise, and ANSWER.md appears. |
+| 30 to 45 s | A hard case: hold for a human with a decision card. If voice is ready, the manager approves by voice. |
+| 45 to 55 s | The evidence: eval numbers, zero critical failures, cost per case, total run time |
+| 55 to 60 s | The one-liner |
+
+The 2D view is the safety take; the 3D city is optional backdrop. **Nothing produced by the mock or by simulated people appears without a SIMULATED label.** Compress to 720p and under 30 MB, and commit it normally.
+
+## H2. Artefacts
+
+- **README.md:** the 8 required sections (A5), with "Built" and "Designed, not built" kept separate. Lists Anthropic Claude, ElevenLabs and TypeSafe Jev (if used) and the env vars.
+- **LICENSE:** the Apache 2.0 text.
+- **SUBMISSION.md:** team, track, members, freeze hash, video path, post links.
+- **Posts:** drafted by 16:00, published at 16:50.
+
+---
+
+# Part I. Voice (P3, below the cut line)
+
+Voice targets Best Voice, and it serves real-world use and the demo. It starts only after the P0 checkpoint is green.
+
+## I1. Features
+
+| Feature | Flow | Trace events |
+|---|---|---|
+| **Driver voice notes** | A driver records a note (they can't text while driving). Scribe transcribes it. It becomes a `CaseMessage` (channel "Voice note", `isClaim: true`) and the case resumes. Clash Check compares it with the customer's account. | `voice_note_in`, then a new segment |
+| **Agent calls a person** | Decide plans a `call` action, and the gate checks it like any message. In demo mode the voice layer starts the call. Each answer comes back as a claim with the `callId`, and the case resumes once. Driver calls open with "Are you safe to talk?", ask at most 3 questions and stay under 30 seconds. | `call_planned`, `call_ringing`, `call_connected`, `utterance`, `commitment_check`, `call_ended` |
+| **Manager approves by voice** | For a `hold_for_human` card, the voice layer calls the on-call manager and reads the card. They say "option 2". It is read back, then submitted as `human_decision { by: "voice" }`, and the held action goes through the normal gate. Tap approval is the same event with `by: "tap"`. | the call events, then `human_decision` |
+| **Simulated people (demo)** | Driver, customer and dispatch personas, each with its own voice. Claude writes each line and ElevenLabs TTS speaks it, streamed to the browser. A human can listen live or take over a seat. | the same events with `source: "simulated_persona"`; the trace is `synthetic: true` |
+
+## I2. Wiring
+
+ElevenLabs servers cannot reach `localhost`, and a tunnel is one more thing to break on venue Wi-Fi. So **the browser is the relay**: the `@elevenlabs/react` session receives every line (`onMessage`) and runs the agent's tools as client tools, then forwards both to our local API. A webhook route exists but is optional, only for a tunnel.
+
+**Code layout:**
+
+```
+apps/api/src/voice/      plain TypeScript, no Next imports
+  policy.ts      assertVoiceAllowed(mode, op): the ONE place that decides what voice may do per mode
+  elevenlabs.ts  fetch client: signed URL, speech-to-text, TTS stream; every call has a timeout
+  notes.ts       voice note or audio attachment -> CaseMessage
+  calls.ts       executeCall(); call registry (callId -> caseId, actionId, state)
+  simulate.ts    persona loop for demo calls (demo only)
+  tools.ts       submit_decision, propose_commitment, record_fact, request_human
+  events.ts      per-case append-only event log + pub/sub feeding SSE and the trace
+apps/api/src/app/api/voice/**                     thin route handlers
+apps/api/src/app/api/cases/[id]/stream/route.ts   SSE
+runs/                                             gitignored: audio, raw transcripts, live logs
+```
+
+**ElevenLabs agent "Desk Caller":** one agent, overridden per call.
+- **Models:** Claude Haiku 4.5 for the language model, `eleven_flash_v2_5` for the voice.
+- **Dynamic variables:** `case_id`, `call_id`, `callee_role`, `callee_name`, `goal`, `case_brief` (at most about 600 characters, nothing the callee isn't entitled to), `questions`, `boundaries` and `options`.
+- **First message:** "Hi, this is the delivery desk assistant, an AI. This call is recorded for the case log. Are you safe to talk?"
+- **Boundaries in its prompt:**
+  - never promise money, times or outcomes outside `allowedCommitments`
+  - never ask for or read out codes, PINs or other people's details
+  - never choose an option for the human
+  - end politely if the callee isn't safe to talk
+  - at most 3 questions
+  - anything else goes to `request_human`
+
+## I3. Endpoints and tools
+
+| Route | Request | Response |
+|---|---|---|
+| `POST /api/voice/note` | multipart `{ audio, caseId, from, role, source }` or JSON with `transcript` | `{ messageId, transcript, lang, asrConfidence, status: "appended" \| "rejected", reason? }` |
+| `POST /api/voice/session` | `{ caseId, actionId }` | `{ callId, signedUrl, dynamicVariables, overrides }`; 403 in reality mode; the API key stays on the server |
+| `POST /api/voice/simulate` | `{ caseId, actionId, personaId }` | `{ callId }`, then events over SSE; 403 unless demo |
+| `POST /api/voice/events` | browser relay `{ callId, seq, type: "connected" \| "utterance" \| "ended" \| "error", speaker, text, final, tMs, reason? }` | 204, idempotent on `(callId, seq)` |
+| `POST /api/voice/tools/:tool` | headers `x-case-id`, `x-call-id`; body per tool | `{ result }` within 3 to 5 seconds |
+| `POST /api/voice/webhook` | optional; signature-verified, deduped | 200 |
+| `GET /api/cases/:id/stream` | SSE, `Last-Event-ID` to resume | `id: <seq>`, `data: TraceEvent`, heartbeat every 15 s |
+| `GET /api/cases/:id/trace` | | the saved `Trace` |
+| `GET /api/voice/audio/:messageId` | | audio from `runs/` |
+
+| Tool | Args | Handler |
+|---|---|---|
+| `submit_decision` | `option_id`, `spoken_confirmation` | The option must exist on the card and the card must be open. Reads back, then emits `human_decision { by: "voice" }` and calls `resumeCase`. |
+| `propose_commitment` | `text`, `type` | Runs `checkAction` within 3 seconds; a timeout counts as a denial. Emits `commitment_check` and returns `{ allowed, approved_wording }`. |
+| `record_fact` | `field`, `value`, `speaker_role` | Appends a claim `CaseMessage` tagged with the call's source |
+| `request_human` | `reason` | Emits `handover_requested`, routes the card, and ends the call politely |
+
+## I4. Modes (enforced in `voice/policy.ts`, plus two backstops)
+
+| Operation | reality | practice | demo |
+|---|---|---|---|
+| Place a call | planned only (`placed: false`) | planned only | yes |
+| `simulated_persona` input | rejected | flagged self-test only | yes, `synthetic: true`, SIMULATED |
+| `live_human` voice note | rejected | rejected | yes |
+| `audio_attachment` in a case | transcribed, tagged as a claim | yes | yes |
+
+**Backstops:**
+1. The loader drops simulated messages in reality mode.
+2. The ANSWER renderer refuses a reality trace that contains one.
+
+## I5. Voice edge cases
+
+| Case | Handling |
+|---|---|
+| No answer, busy, timeout | `call_ended { reason }`; retry once later or switch channel. At most 2 calls per case and 1 per person. |
+| Voicemail | Detected in the first exchange. Leave only a callback request, never personal data. |
+| Hang-up mid-call | Keep the lines so far and resume with what was learned |
+| Wrong person answers | Confirm identity first and share nothing until confirmed |
+| The callee asks for things they aren't entitled to | The brief contains only what they may know. Refuse politely and offer the verified channel. |
+| The voice model tries to promise something | It must call `propose_commitment`. The transcript is re-checked after the call, and any unapproved promise is flagged in the ANSWER. |
+| Ambiguous approval | Read the choice back and ask for a yes. No yes means no decision, and the fallback stands. |
+| Duplicate or late events | Deduped on `(callId, seq)`. Late events start a new segment; an earlier ANSWER is never rewritten. |
+| Empty or unclear audio | Below 0.6 confidence, mark it unclear and ask again |
+| Non-English speech | Transcribe with language detection; work from the translation and keep the original |
+| ElevenLabs down or out of credits | Every call has a timeout. Fall back to a text message, log a `voice_error`, and use the backup recording. |
+| Driver not safe to talk | End politely and request a voice note instead |
+| Two calls at once on one case | Refused: one live call per case |
+| Personal data in transcripts | `runs/` and audio are gitignored; demo traces in the repo use simulated people only |
+
+## I6. Build order (after the P0 checkpoint; mocks first so the city is never blocked)
+
+| Step | Task |
+|---|---|
+| 1 | A recorded mock voice event file for case 003 that the city can animate against |
+| 2 | `events.ts`, the SSE stream, the browser relay |
+| 3 | `policy.ts`, voice notes, transcription of audio attachments |
+| 4 | The "Desk Caller" agent, signed sessions, the four tools, voice approval on case 024 |
+| 5 | The simulated boss-to-driver call |
+| 6 | Edge-case handling, then record the voice take |
+
+---
+
+# Part J. UI and 3D city (P4, below the cut line)
+
+The 3D city (`/city`) and the 2D replay only read traces, from `GET /api/cases/:id/trace`, live from `GET /api/cases/:id/stream`, or from a static `traces/<caseId>.json` fallback. They never call the agent. Nothing in `/city` is on the Reality Test path.
+
+## J1. One reducer, three feeds
+
+A pure `applyTraceEvent(state, ev)` is fed by:
+
+1. the replay clock (a recorded `trace.json`, repeatable for takes)
+2. `EventSource` (live mode)
+3. the mock engine, wrapped so it emits `TraceEvent`s and is always labelled SIMULATED
+
+All three go through one adapter, `traceToCity(ev, ctx): { workflow: WorkflowEvent[]; bus: WorldEvent[] }`.
+
+## J2. Adapter mapping
+
+| Trace event | WorkflowEvent (node, status, summary) | Bus / store |
+|---|---|---|
+| `run_start` | ingest, start, title | `scenario:staged` if the case maps to a scene, else the office tower |
+| `node_start` / `node_end` | node, start / ok or error | cost on the event |
+| `decision` | planner, ok, "Decide: <type>, n actions" | |
+| `gate` (per action) | gate, ok or block | a chip per action |
+| `card` | human, ask, with the card | `decision:needed` |
+| `human_decision` | human, ok, "Chose X (by voice)" | `decision:voice` when by voice |
+| `action` message / ticket | action, ok, or error if failed | |
+| `call_planned` / `call_ringing` | action, start | `call:ringing` |
+| `call_connected` | | `call:connected` |
+| `utterance` | | `voice:utterance` |
+| `call_ended` | action, ok | `call:ended` |
+| `voice_note_in` | ingest, ok, "Voice note from driver (claim)" | `voice:note_in` |
+| `run_end` | log, ok or error, with `due` when `wait_until` | `scenario:resolved` |
+
+Until the city's outcome type is widened, decision types show as:
+
+| Decision type | Shown as |
+|---|---|
+| act, route_to_owner | acted |
+| ask_for_info | asked_for_info |
+| hold_for_human | escalated |
+| wait_until | no_action, with `due` |
+| refuse | blocked |
+
+## J3. Additive changes (Arvin owns `store.ts` and `bus.ts`)
+
+```ts
+// store.ts: optional fields only; existing producers keep working
+export interface WorkflowEvent {
+  /* existing fields */
+  source?: "agent" | "live_human" | "simulated_persona" | "audio_attachment" | "case_file";
+  synthetic?: boolean;
+  costUsd?: number;
+  card?: { cardId: string; summary: string; options: { id: string; label: string; safe?: boolean }[];
+           routeTo: string; deadlineMs: number; fallback: string };
+  decision?: "act" | "ask_for_info" | "route_to_owner" | "hold_for_human" | "wait_until" | "refuse";
+  due?: string;       // ISO time for wait_until
+  actionId?: string;  // per-action gate and action events
+}
+
+// bus.ts: new members
+type VoiceSource = "live_human" | "simulated_persona" | "audio_attachment" | "case_file";
+type Party = "driver" | "recipient" | "manager" | "dispatch" | "desk_agent" | string;
+| { type: "decision:needed"; caseId: string; card: NonNullable<WorkflowEvent["card"]> }
+| { type: "decision:voice"; caseId: string; optionId: string; by: Party; source: VoiceSource; callId?: string }
+| { type: "voice:note_in"; caseId: string; noteId: string; from: Party; source: VoiceSource; transcript: string; audioUrl?: string; durationMs?: number }
+| { type: "call:ringing"; caseId: string; callId: string; caller: Party; callee: Party; source: VoiceSource; purpose: string }
+| { type: "call:connected"; caseId: string; callId: string }
+| { type: "voice:utterance"; caseId: string; callId: string; seq: number; speaker: Party; text: string; source: VoiceSource; audioUrl?: string; durationMs?: number }
+| { type: "call:ended"; caseId: string; callId: string; reason: "completed" | "no_answer" | "failed" | "human_took_over"; summary?: string }
+// and widen scenario:resolved.outcome to include "waiting" | "refused" | "routed"
+```
+
+**Audio and voice state:**
+- **Sound needs a click.** Add an "Enable sound / Start demo" button that unlocks one `AudioContext` before any call audio.
+- **One audio manager** sits outside React (a singleton). It plays clips in order with `onStart` and `onEnd` per utterance, with no React state change per audio frame.
+- **Transcript sync:**
+  - replay: show each line's text when its audio starts playing
+  - live calls: text arrives per turn
+  - simulated persona calls: reveal the text word by word over `durationMs`
+- **Where state goes:**
+  - **store (low frequency):** calls, transcripts, voice notes, `soundEnabled`
+  - **bus (one-offs):** ringing, camera fly-to, the approval flash
+  - **new `world/voice.ts` registry (per-frame):** speaker loudness. Never in zustand.
+
+## J4. Must-fix before recording
+
+1. **The mock must never look like the real agent.** The mock planner uses the scenario's expected answer (`fromScenario.ts:39`, `:65`), and the HUD's "Expected" check compares against that same answer (`WorkflowHud/parts.tsx:280`), so it always matches. Show a SIMULATED banner whenever the mock drives, show the Expected check only for real traces, and rename the coverage meter to "cases played". Otherwise judges can read it as a fabricated eval (A4).
+2. **Wire the decision.** Nothing calls `engine.decide()`, and the engine auto-picks after 6 seconds while the popup counts down 12. Use one deadline, taken from `card.deadlineMins`, and route both tap and voice through `human_decision`.
+3. **Event cap.** The store keeps 200 events, but a 50-case run produces about 1,200. Keep the full trace per case outside the capped list.
+4. **New outcomes:** show `wait_until` (with its due time), `refuse`, `route_to_owner` and several actions per case.
+5. **One case id format:** `delivery-024` for practice, `rt-<n>` for the Reality Test. Reality cases with no scene go to the office tower.
+6. **Fallbacks:** if WebGL fails, fall back to the 2D view. Read gate thresholds from the trace, never hardcode them in UI code.
+
+---
+
+# Part K. Team, modes and timeline
+
+## K1. Ownership
+
+| Who | Owns | Paths |
+|---|---|---|
+| Oriol (+ Claude) | **The agent runtime** (P0): `runCase`, `resumeCase`, `checkAction`, the batch runner, rendering. Then voice (P3). This PRD. | `apps/api/src/agent/**`, `apps/api/src/voice/**`, `apps/api/src/app/api/voice/**`, `apps/api/src/app/api/cases/**`, `scripts/run-cases.*`, `docs/PRD.md` |
+| Anson | Eval (P1), the 120 generated cases and their review, the perspectives panel | `scripts/eval/**`, `data/generated/**`, `data/scraped/**`, `apps/api/src/lib/panel.ts` |
+| Arvin | 3D city, HUD, 2D/3D replay (P4) | `apps/web/src/world/**`, `apps/web/src/app/city/**` |
+| Shared | The contract (Part E) | `apps/api/src/lib/contract.ts`, changed only via a PR to this doc first |
+
+Teammates not listed: add yourselves in a PR.
+
+## K2. Modes
 
 | | practice | reality | demo |
 |---|---|---|---|
-| Input | data/ cases, escalation view | the 16:30 case folders, any format | scripted scenarios + live voice |
-| Simulated people | allowed in tests | rejected in code | allowed, tagged |
-| Calls | placed only in voice tests | planned and gated, never placed | placed (browser) |
-| Human answers | optional | none: card logged, fallback recorded | live (tap or voice) |
-| Output | traces + eval/results.md | ANSWERS/ | traces for the video |
+| Input | data/ cases, leak-free view | the 16:30 case folders, any format | scripted scenarios + live voice |
+| Simulated people | flagged self-test only | rejected in code | allowed, tagged |
+| Calls | planned only | planned and gated, never placed | placed (browser) |
+| Human answers | none | none: card logged, fallback recorded | live (tap or voice) |
+| Output | traces + `eval/results.md` | `ANSWERS/` | traces for the video (`synthetic: true` if any simulated input) |
 
-## 12. Timeline (BST)
+## K3. Timeline (BST)
 
-| Time | Checkpoint |
-|---|---|
-| 12:00 | Baseline: one command runs all 50 practice cases and writes the three files each |
-| 12:30 | `contract.ts` merged. Arvin replays one real trace in `/city` |
-| 13:00 | Voice notes end to end. Mock call events reach the city |
-| 14:00 | Full run timed (under 8 minutes). Eval numbers committed |
-| 14:30 | Abort rule: if the core isn't end to end, 3D and voice stop and help the core |
-| 15:30 | Dress rehearsal on a fresh clone. Video recorded |
-| 16:00 | README, LICENSE, SUBMISSION.md drafted |
-| 16:20 | Feature freeze. Smoke run, secrets grep, tag `freeze-1630` |
-| 16:30 | Cases released. Run the batch. Nobody touches code |
-| 16:48 | Commit `ANSWERS/` only. Check the repo opens publicly |
-| 16:52 | Submit the form |
+| Time | Checkpoint | If missed |
+|---|---|---|
+| 12:45 | **P0 baseline:** one command runs all 50 practice cases end to end and writes the three files each | Everyone except Arvin helps the runtime |
+| 13:15 | `contract.ts` merged. First eval numbers (leak-free, both views). | |
+| 13:45 | Decision types, the per-action gate and hard triggers in. All 12 fixtures pass with zero critical failures. | Voice does not start |
+| 14:00 | Full run timed: 62 cases under 8 minutes. `eval/results.md` committed. | Cut model calls or concurrency first |
+| 14:30 | **Abort rule:** if P0 is not end to end and green, voice and 3D stop and help | |
+| 15:00 | Voice notes and voice approval (P3) if green. Arvin replays real traces. | Video uses 2D only |
+| 15:30 | Dress rehearsal on a fresh clone with a scrambled folder. Video recorded. | |
+| 16:00 | README, LICENSE, SUBMISSION.md, posts drafted | |
+| 16:20 to 17:00 | Runbook (G1) | |
 
-## 13. Open questions
+---
 
-1. Anson's backend internals and status (his report is pending): does the agent run as a plain TS module with a CLI?
-2. For the organisers:
+# Part L. Risks and open questions
+
+## L1. Risk register
+
+| Risk | Impact | Mitigation |
+|---|---|---|
+| No runtime yet (12:10) | Everything else measures nothing | P0 owned by Oriol + Claude, baseline by 12:45 |
+| Throughput and rate limits | Coverage (14) | 3 calls, caching, concurrency 8, key pool, timed by 14:00 |
+| Unknown Reality Test format or supplied tools | Coverage, outcomes | Any-folder loader, raw fallback; ask the organisers |
+| Over-acting on do-nothing cases, over-escalating simple ones | Judgement (14), outcomes | Decision types, per-action gate, measured rates in C4 |
+| Fabricated results (honest wording, simulated voice, the mock HUD) | Disqualification risk | Sandbox wording, reality-mode guarantees, SIMULATED labels |
+| Eval leaks the answer | False confidence | Leak-free view, two-view reporting |
+| Unreviewed answer keys on the generated set | False confidence | Blind review (Anson); fixtures as the strict gate |
+| Jev unavailable | Gate and panel | Claude fallback; panel off by default |
+| Fancy work eating core time | Every technical point | Priority order (C2), abort rule (K3) |
+| README overclaims | Engineering (10.5) | "Built" vs "Designed, not built" |
+
+## L2. Open questions
+
+1. **Keys:** everyone running the agent or the eval needs `ANTHROPIC_API_KEY` in `apps/api/.env.local` (gitignored), from the hackathon credits email. Never in the repo or in chat. Is a Jev key confirmed?
+2. **For the organisers:**
    - Do the 16:30 cases come with tools or an API?
-   - Are they in the same format as the practice cases?
+   - Are they in the same format as the practice cases? Could they include audio?
    - How many are there?
-3. Is a Jev key confirmed? If not, everything runs on Claude.
+3. Do we run a tunnel for ElevenLabs webhooks? Default: no, the browser relays everything.
+
+---
 
 ## Changelog
 
+- **1.0 (12:10):** the final, self-contained PRD. Restructured to put what is evaluated first: the competition rules and scoring (A), the data (B), and the success criteria per judging criterion (C4). Also added the priority order and cut lines (C2), the edge-case coverage matrix (D3), the input handling and throughput budget (D4, D5), the reality runbook and failure playbook (G), the demo and artefacts (H) and the risk register (L1). Voice and 3D sit below the cut line (I, J).
+- **0.3 (12:00):** Oriol (with Claude) owns the runtime; Anson owns the eval, the generated dataset and the panel; eval mapping; the panel advises only; keys needed.
+- **0.2 (11:45):** contract v2 (call actions, the agent interface, granular voice events, `seq`, resume segments), voice wiring, endpoints, tools, modes and edge cases, and the city adapter and must-fix items.
 - **0.1 (11:20):** first version from SPEC, IDEA, the stress test and Arvin's status report.
