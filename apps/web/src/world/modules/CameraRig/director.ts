@@ -5,14 +5,11 @@ import { on } from "../../bus";
 import { allVehicles, getVehicle, type VehicleEntry } from "../../registry";
 import { useWorld } from "../../store";
 import {
-  clamp, easeInOutCubic, framePosition, pickTourShot, zoneFrame,
-  MAX_DIST, MIN_DIST, ZONE_KEYS, type TourShot,
+  approach, clamp, dollyDistance, easeInOutCubic, framePosition, pickTourShot, poseIsSane, wheelDollyLog, zoneFrame,
+  HOME_POS, HOME_TARGET, INTRO_POS, KEY_SPEED, MIN_DIST, WORLD_HALF, ZONE_KEYS, type TourShot,
 } from "./logic";
 
 const UP = new Vector3(0, 1, 0);
-const HERO_TARGET = new Vector3(55, 0, -10);
-const HERO_POS = new Vector3(-185, 215, 335);
-const INTRO_POS = new Vector3(-420, 520, 760);
 const TOUR_SHOT_MS = 7000;
 const DOCK_CRANES = { x: 315, z: 0 };
 const MAINT_YARD = { x: -140, z: -140 };
@@ -28,6 +25,7 @@ interface Fly {
   toTarget: Vector3;
   start: number;
   dur: number;
+  intro?: boolean;
 }
 
 export interface ControlsLike {
@@ -69,15 +67,57 @@ export class CameraDirector {
   private shakeUntil = 0;
   private shakeAmp = 0;
   private shake = new Vector3();
-  private introDone = false;
+  /** pending: not started; running: swooping; done: finished or skipped by the user. */
+  private introState: "pending" | "running" | "done" = "pending";
+  private bound = false;
+  private pendingZoom = 0; // natural-log dolly still to apply (wheel/pinch), eased in per frame
+  private kv = { fwd: 0, right: 0, rot: 0, zoom: 0 }; // smoothed held-key axes
   // scratch
   private a = new Vector3();
   private b = new Vector3();
   private off = new Vector3();
 
+  /**
+   * Called on every (re)mount. The first bind resets to the home pose and drops stale selection/focus; later
+   * binds (StrictMode double-mount, drei recreating the controls) carry the current target over.
+   */
   bind(camera: Camera, controls: ControlsLike) {
+    const prev = this.controls;
     this.camera = camera;
     this.controls = controls;
+    if (!this.bound) {
+      this.bound = true;
+      this.reset();
+      const st = useWorld.getState();
+      if (st.selectedVehicle) st.select(null);
+      if (st.focus) st.setFocus(null);
+    } else if (prev && prev !== controls && poseIsSane(camera.position, prev.target)) {
+      controls.target.copy(prev.target);
+    }
+  }
+
+  /** Snap to the known home pose and stop every animation. */
+  reset() {
+    this.stopAll();
+    const cam = this.camera, c = this.controls;
+    if (!cam || !c) return;
+    cam.position.set(...HOME_POS);
+    c.target.set(...HOME_TARGET);
+    cam.lookAt(c.target);
+  }
+
+  /** Cancel fly, tour, follow-chase easing, shake and held keys (camera stays where it is). */
+  private stopAll() {
+    if (this.fly?.intro) this.introState = "pending"; // interrupted by unmount, not the user: replay on remount
+    this.fly = null;
+    this.setTour(false);
+    this.keys.clear();
+    this.kv.fwd = this.kv.right = this.kv.rot = this.kv.zoom = 0;
+    this.pendingZoom = 0;
+    if (this.camera) this.camera.position.sub(this.shake);
+    this.shake.set(0, 0, 0);
+    this.shakeUntil = 0;
+    this.shakeAmp = 0;
   }
 
   // ---------- shots ----------
@@ -106,14 +146,20 @@ export class CameraDirector {
     this.flyTo(new Vector3(x, y, z), new Vector3(px, py, pz), dur);
   }
 
+  /** One-time swoop into the home pose. Idempotent; any user input skips it. */
   intro() {
     const cam = this.camera, c = this.controls;
-    if (!cam || !c || this.introDone) return;
-    this.introDone = true;
-    cam.position.copy(INTRO_POS);
-    c.target.copy(HERO_TARGET);
-    cam.lookAt(HERO_TARGET);
-    this.flyTo(HERO_TARGET, HERO_POS, 3.2);
+    if (!cam || !c || this.introState !== "pending") return;
+    this.introState = "running";
+    cam.position.set(...INTRO_POS);
+    c.target.set(...HOME_TARGET);
+    cam.lookAt(c.target);
+    this.flyTo(new Vector3(...HOME_TARGET), new Vector3(...HOME_POS), 3.2);
+    if (this.fly) this.fly.intro = true;
+  }
+
+  private endIntro() {
+    if (this.introState === "running") this.introState = "done";
   }
 
   follow(id: string | null) {
@@ -174,6 +220,7 @@ export class CameraDirector {
   userInput() {
     this.lastUserInput = performance.now();
     this.fly = null;
+    this.endIntro();
   }
 
   // ---------- wiring ----------
@@ -266,7 +313,37 @@ export class CameraDirector {
       dom.removeEventListener("pointerup", pu);
     });
 
-    return () => cleanups.forEach((f) => f());
+    // Wheel / trackpad zoom. MapControls' own zoom is off (it steps a fixed amount per event, so trackpads
+    // fly). Pinch arrives as wheel + ctrlKey: block the browser's page zoom anywhere on the page while the
+    // city is mounted, and turn it into a camera dolly when it's over the canvas. ⌘+/⌘- still work.
+    const container = dom.parentElement ?? dom;
+    const wheel = (e: WheelEvent) => {
+      const overCanvas = e.target instanceof Node && container.contains(e.target);
+      if (e.ctrlKey || overCanvas) e.preventDefault();
+      if (!overCanvas || !this.camera || !this.controls) return;
+      const dist = this.camera.position.distanceTo(this.controls.target);
+      this.pendingZoom = clamp(this.pendingZoom + wheelDollyLog(e.deltaY, e.deltaMode, e.ctrlKey, dist), -1.2, 1.2);
+      this.userInput();
+    };
+    // Safari pinch fires non-standard gesture events; stop them zooming the page.
+    const gesture = (e: Event) => e.preventDefault();
+    window.addEventListener("wheel", wheel, { passive: false });
+    for (const g of ["gesturestart", "gesturechange", "gestureend"]) document.addEventListener(g, gesture, { passive: false });
+    const prevTouch = container.style.touchAction;
+    const prevOverscroll = container.style.overscrollBehavior;
+    container.style.touchAction = "none";
+    container.style.overscrollBehavior = "none";
+    cleanups.push(() => {
+      window.removeEventListener("wheel", wheel);
+      for (const g of ["gesturestart", "gesturechange", "gestureend"]) document.removeEventListener(g, gesture);
+      container.style.touchAction = prevTouch;
+      container.style.overscrollBehavior = prevOverscroll;
+    });
+
+    return () => {
+      cleanups.forEach((f) => f());
+      this.stopAll();
+    };
   }
 
   private handleFocus(f: { x: number; z: number }) {
@@ -280,6 +357,10 @@ export class CameraDirector {
     if (isTyping(e) || e.metaKey || e.ctrlKey || e.altKey) return;
     const k = keyName(e);
     const st = useWorld.getState();
+    if (this.introState === "running" && (MOVE_KEYS.has(k) || k === "Escape" || "12345vc".includes(k))) {
+      this.fly = null;
+      this.endIntro();
+    }
     if (k === "Escape") {
       this.setTour(false);
       this.fly = null;
@@ -321,41 +402,49 @@ export class CameraDirector {
     cam.position.sub(this.shake);
     this.shake.set(0, 0, 0);
 
-    // Manual keys.
-    let keyed = false;
-    if (this.keys.size) {
-      const k = this.keys;
+    // Recover from a broken pose (NaN from a bad target, camera on its target) instead of rendering nothing.
+    if (!poseIsSane(cam.position, c.target)) this.reset();
+
+    // Held keys: eased velocities so movement starts and stops smoothly.
+    const k = this.keys;
+    const kv = this.kv;
+    const axis = (p: boolean, n: boolean) => (p ? 1 : 0) - (n ? 1 : 0);
+    const r = KEY_SPEED.response;
+    kv.fwd = approach(kv.fwd, axis(k.has("w") || k.has("ArrowUp"), k.has("s") || k.has("ArrowDown")), r, dt);
+    kv.right = approach(kv.right, axis(k.has("d") || k.has("ArrowRight"), k.has("a") || k.has("ArrowLeft")), r, dt);
+    kv.rot = approach(kv.rot, axis(k.has("q"), k.has("e")), r, dt);
+    kv.zoom = approach(kv.zoom, axis(k.has("f"), k.has("r")), r, dt);
+    const keyed = k.size > 0;
+    if (keyed) this.lastUserInput = now;
+    const EPS = 1e-3;
+    if (Math.abs(kv.fwd) > EPS || Math.abs(kv.right) > EPS) {
+      if (keyed && this.followId) useWorld.getState().select(null);
       const dist = cam.position.distanceTo(c.target);
       a.subVectors(c.target, cam.position).setY(0); // ground-projected forward
       if (a.lengthSq() < 1e-6) a.set(0, 0, -1);
       a.normalize();
       b.set(-a.z, 0, a.x); // right
-      const pan = dist * 0.9 * dt;
-      let fx = 0, rx = 0;
-      if (k.has("w") || k.has("ArrowUp")) fx += 1;
-      if (k.has("s") || k.has("ArrowDown")) fx -= 1;
-      if (k.has("d") || k.has("ArrowRight")) rx += 1;
-      if (k.has("a") || k.has("ArrowLeft")) rx -= 1;
-      if (fx || rx) {
-        if (this.followId) useWorld.getState().select(null);
-        off.copy(a).multiplyScalar(fx * pan).addScaledVector(b, rx * pan);
-        c.target.add(off);
-        cam.position.add(off);
-        this.fly = null;
-      }
-      const rot = (k.has("q") ? 1 : 0) - (k.has("e") ? 1 : 0);
-      if (rot) {
-        off.subVectors(cam.position, c.target).applyAxisAngle(UP, rot * 1.4 * dt);
-        cam.position.copy(c.target).add(off);
-      }
-      const zoom = (k.has("f") ? 1 : 0) - (k.has("r") ? 1 : 0);
-      if (zoom) {
-        off.subVectors(cam.position, c.target);
-        off.setLength(clamp(off.length() * Math.exp(zoom * 1.6 * dt), MIN_DIST, MAX_DIST));
-        cam.position.copy(c.target).add(off);
-      }
-      keyed = true;
-      this.lastUserInput = now;
+      const pan = dist * KEY_SPEED.pan * dt;
+      off.copy(a).multiplyScalar(kv.fwd * pan).addScaledVector(b, kv.right * pan);
+      c.target.add(off);
+      cam.position.add(off);
+      if (keyed) this.fly = null;
+    }
+    if (Math.abs(kv.rot) > EPS) {
+      off.subVectors(cam.position, c.target).applyAxisAngle(UP, kv.rot * KEY_SPEED.rotate * dt);
+      cam.position.copy(c.target).add(off);
+    }
+    // Zoom: held R/F plus eased wheel/pinch dolly.
+    let zoomLog = kv.zoom * KEY_SPEED.zoom * dt;
+    if (this.pendingZoom !== 0) {
+      const step = this.pendingZoom * (1 - Math.exp(-14 * dt));
+      this.pendingZoom = Math.abs(this.pendingZoom - step) < 1e-4 ? 0 : this.pendingZoom - step;
+      zoomLog += step;
+    }
+    if (zoomLog !== 0 && !this.fly) {
+      off.subVectors(cam.position, c.target);
+      off.setLength(dollyDistance(off.length(), zoomLog));
+      cam.position.copy(c.target).add(off);
     }
 
     if (this.fly) {
@@ -373,7 +462,10 @@ export class CameraDirector {
       const t = easeInOutCubic((now - f.start) / f.dur);
       c.target.lerpVectors(f.fromTarget, f.toTarget, t);
       cam.position.lerpVectors(f.fromPos, f.toPos, t);
-      if (t >= 1) this.fly = null;
+      if (t >= 1) {
+        if (f.intro) this.endIntro();
+        this.fly = null;
+      }
     } else if (this.followId) {
       this.chase(dt, now);
     } else if (this.tour && !keyed && now - this.lastUserInput > USER_HOLD_MS) {
@@ -391,6 +483,15 @@ export class CameraDirector {
       cam.position.add(this.shake);
     } else this.shakeAmp = 0;
 
+    // Keep the target inside the world so panning can't drift into the void.
+    const cx = clamp(c.target.x, -WORLD_HALF, WORLD_HALF) - c.target.x;
+    const cz = clamp(c.target.z, -WORLD_HALF, WORLD_HALF) - c.target.z;
+    if (cx || cz) {
+      c.target.x += cx;
+      c.target.z += cz;
+      cam.position.x += cx;
+      cam.position.z += cz;
+    }
     if (cam.position.y < 2) cam.position.y = 2;
     cam.lookAt(c.target);
   }

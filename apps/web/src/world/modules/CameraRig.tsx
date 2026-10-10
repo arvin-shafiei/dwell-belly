@@ -5,7 +5,7 @@ import { MapControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useState, type ComponentRef } from "react";
 import { CameraDirector } from "./CameraRig/director";
-import { MAX_DIST, MAX_POLAR, MIN_DIST } from "./CameraRig/logic";
+import { CONTROL_TUNING, MAX_DIST, MAX_POLAR, MIN_DIST } from "./CameraRig/logic";
 
 export { HOTKEYS } from "./CameraRig/logic";
 export { cameraRigStatus } from "./CameraRig/director";
@@ -32,12 +32,16 @@ export default function CameraRig() {
       ref={setControls}
       makeDefault
       enableDamping
-      dampingFactor={0.08}
+      dampingFactor={CONTROL_TUNING.dampingFactor}
+      panSpeed={CONTROL_TUNING.panSpeed}
+      rotateSpeed={CONTROL_TUNING.rotateSpeed}
+      zoomSpeed={CONTROL_TUNING.zoomSpeed}
+      // Wheel/pinch zoom is done by the director (delta-proportional, eased, blocks browser pinch-zoom).
+      enableZoom={false}
       minDistance={MIN_DIST}
       maxDistance={MAX_DIST}
       maxPolarAngle={MAX_POLAR}
       screenSpacePanning={false}
-      zoomSpeed={0.9}
       onStart={() => director.userInput()}
     />
   );

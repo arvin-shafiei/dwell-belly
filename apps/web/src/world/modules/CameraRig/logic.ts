@@ -17,8 +17,69 @@ export const HOTKEYS: readonly { keys: string; action: string }[] = [
 export const ZONE_KEYS: readonly ZoneName[] = ["downtown", "docks", "countryside", "depot", "suburbs"];
 
 export const MIN_DIST = 25;
-export const MAX_DIST = 900;
+export const MAX_DIST = 1400; // the layer-2 world is ±1100 m
 export const MAX_POLAR = 1.35;
+/** The camera target is kept inside this half-extent (x and z). */
+export const WORLD_HALF = 1100;
+
+/** Calm MapControls tuning (mouse/trackpad drag). Wheel zoom is handled by CameraRig itself. */
+export const CONTROL_TUNING = { panSpeed: 0.6, rotateSpeed: 0.4, zoomSpeed: 0.5, dampingFactor: 0.08 } as const;
+
+/** Keyboard speeds, matched to the calmer controls. */
+export const KEY_SPEED = {
+  pan: 0.5, // fraction of the camera distance per second
+  rotate: 0.75, // rad/s
+  zoom: 0.85, // natural-log distance change per second
+  response: 8, // 1/s, how fast held-key velocity eases in and out
+} as const;
+
+/** Home pose: a 3/4 aerial over downtown with the docks and highway in view. */
+export const HOME_TARGET: readonly [number, number, number] = [55, 0, -10];
+export const HOME_POS: readonly [number, number, number] = [-185, 215, 335];
+/** Where the one-time intro swoop starts. */
+export const INTRO_POS: readonly [number, number, number] = [-420, 520, 760];
+
+/** Frame-rate independent exponential approach of `cur` toward `goal`. */
+export function approach(cur: number, goal: number, rate: number, dt: number) {
+  return cur + (goal - cur) * (1 - Math.exp(-rate * dt));
+}
+
+const WHEEL_LINE_PX = 16;
+const WHEEL_PAGE_PX = 400;
+/** Wheel delta in pixels regardless of deltaMode (0 px, 1 lines, 2 pages). */
+export function wheelPixels(deltaY: number, deltaMode: number) {
+  return deltaMode === 1 ? deltaY * WHEEL_LINE_PX : deltaMode === 2 ? deltaY * WHEEL_PAGE_PX : deltaY;
+}
+
+/**
+ * Natural-log dolly amount for one wheel event (positive = zoom out). Proportional to the delta so trackpads
+ * glide instead of stepping; pinch (ctrlKey) deltas are small so they get a bigger gain; a bit softer when far
+ * out; capped per event so a fast mouse flick can't jump.
+ */
+export function wheelDollyLog(deltaY: number, deltaMode: number, pinch: boolean, distance: number) {
+  if (!Number.isFinite(deltaY) || !Number.isFinite(distance)) return 0;
+  const px = wheelPixels(deltaY, deltaMode);
+  const gain = (pinch ? 0.008 : 0.0011) * (1 - 0.35 * clamp(distance / MAX_DIST, 0, 1));
+  return clamp(px * gain, -0.22, 0.22);
+}
+
+/** New camera distance after a log dolly, clamped to the allowed range. */
+export function dollyDistance(distance: number, logStep: number) {
+  return clamp(distance * Math.exp(logStep), MIN_DIST, MAX_DIST);
+}
+
+export interface Vec3Like {
+  x: number;
+  y: number;
+  z: number;
+}
+
+/** True if both vectors are finite and the camera isn't sitting on its target. */
+export function poseIsSane(pos: Vec3Like, target: Vec3Like) {
+  const ok = (v: Vec3Like) => Number.isFinite(v.x) && Number.isFinite(v.y) && Number.isFinite(v.z);
+  if (!ok(pos) || !ok(target)) return false;
+  return Math.hypot(pos.x - target.x, pos.y - target.y, pos.z - target.z) > 1e-3;
+}
 
 export function clamp(v: number, lo: number, hi: number) {
   return v < lo ? lo : v > hi ? hi : v;

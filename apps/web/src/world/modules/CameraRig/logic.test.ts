@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { easeInOutCubic, framePosition, pickTourShot, zoneFrame, HOTKEYS, type TourIncident } from "./logic";
+import {
+  approach, dollyDistance, easeInOutCubic, framePosition, pickTourShot, poseIsSane, wheelDollyLog, wheelPixels, zoneFrame,
+  CONTROL_TUNING, HOME_POS, HOME_TARGET, HOTKEYS, INTRO_POS, MAX_DIST, MAX_POLAR, MIN_DIST, WORLD_HALF, type TourIncident,
+} from "./logic";
 
 describe("easeInOutCubic", () => {
   it("maps endpoints and midpoint, clamps outside 0..1", () => {
@@ -63,5 +66,75 @@ describe("HOTKEYS", () => {
   it("lists every bound key", () => {
     const keys = HOTKEYS.map((h) => h.keys).join(" ");
     for (const k of ["WASD", "Q", "E", "R", "F", "1", "V", "C", "Esc"]) expect(keys).toContain(k);
+  });
+});
+
+describe("calm tuning", () => {
+  it("uses gentle control speeds", () => {
+    expect(CONTROL_TUNING.panSpeed).toBeLessThanOrEqual(0.6);
+    expect(CONTROL_TUNING.rotateSpeed).toBeLessThanOrEqual(0.4);
+    expect(CONTROL_TUNING.zoomSpeed).toBeLessThanOrEqual(0.5);
+  });
+});
+
+describe("wheel zoom", () => {
+  it("normalises line and page deltas to pixels", () => {
+    expect(wheelPixels(3, 1)).toBe(48);
+    expect(wheelPixels(1, 2)).toBe(400);
+    expect(wheelPixels(7, 0)).toBe(7);
+  });
+  it("is proportional to the delta, so small trackpad deltas glide", () => {
+    const small = wheelDollyLog(4, 0, false, 300);
+    const big = wheelDollyLog(40, 0, false, 300);
+    expect(small).toBeGreaterThan(0);
+    expect(big).toBeCloseTo(small * 10);
+    expect(wheelDollyLog(-40, 0, false, 300)).toBeCloseTo(-big);
+  });
+  it("caps a single event so a mouse flick can't jump", () => {
+    expect(wheelDollyLog(5000, 0, false, 300)).toBeLessThanOrEqual(0.22);
+    expect(wheelDollyLog(-50, 1, false, 300)).toBeGreaterThanOrEqual(-0.22);
+  });
+  it("gives pinch more gain and is softer far out", () => {
+    expect(wheelDollyLog(3, 0, true, 300)).toBeGreaterThan(wheelDollyLog(3, 0, false, 300));
+    expect(wheelDollyLog(20, 0, false, MAX_DIST)).toBeLessThan(wheelDollyLog(20, 0, false, 100));
+  });
+  it("ignores garbage input", () => {
+    expect(wheelDollyLog(NaN, 0, false, 300)).toBe(0);
+    expect(wheelDollyLog(10, 0, false, NaN)).toBe(0);
+  });
+  it("clamps the resulting distance", () => {
+    expect(dollyDistance(30, -5)).toBe(MIN_DIST);
+    expect(dollyDistance(1300, 5)).toBe(MAX_DIST);
+    expect(dollyDistance(100, Math.log(2))).toBeCloseTo(200);
+  });
+});
+
+describe("approach", () => {
+  it("eases toward the goal frame-rate independently", () => {
+    const one = approach(0, 1, 8, 0.1);
+    let two = approach(0, 1, 8, 0.05);
+    two = approach(two, 1, 8, 0.05);
+    expect(one).toBeCloseTo(two);
+    expect(approach(0, 1, 8, 10)).toBeCloseTo(1);
+  });
+});
+
+describe("home / reset pose", () => {
+  const v = (a: readonly number[]) => ({ x: a[0], y: a[1], z: a[2] });
+  it("is sane and within control limits", () => {
+    for (const p of [HOME_POS, INTRO_POS]) {
+      expect(poseIsSane(v(p), v(HOME_TARGET))).toBe(true);
+      const d = Math.hypot(p[0] - HOME_TARGET[0], p[1] - HOME_TARGET[1], p[2] - HOME_TARGET[2]);
+      expect(d).toBeGreaterThan(MIN_DIST);
+      expect(d).toBeLessThan(MAX_DIST);
+      // polar angle from straight up must be inside maxPolarAngle
+      expect(Math.acos((p[1] - HOME_TARGET[1]) / d)).toBeLessThan(MAX_POLAR);
+    }
+    expect(Math.abs(HOME_TARGET[0])).toBeLessThan(WORLD_HALF);
+  });
+  it("rejects NaN, infinite and degenerate poses", () => {
+    expect(poseIsSane({ x: NaN, y: 1, z: 1 }, { x: 0, y: 0, z: 0 })).toBe(false);
+    expect(poseIsSane({ x: 1, y: 1, z: 1 }, { x: Infinity, y: 0, z: 0 })).toBe(false);
+    expect(poseIsSane({ x: 1, y: 1, z: 1 }, { x: 1, y: 1, z: 1 })).toBe(false);
   });
 });
