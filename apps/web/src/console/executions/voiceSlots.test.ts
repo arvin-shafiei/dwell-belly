@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ExecutionRecord, OutboxEntry } from "../types";
-import { approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noCallLine, noteCaseText, noteRerun, partyRole, voiceNeeded } from "./voiceSlots";
+import { approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noCallLine, noteCaseText, noteRerun, partyRole, voiceNeeded, childRun } from "./voiceSlots";
+
 
 const row = (channel: string): OutboxEntry => ({ action: { recipient: "Ms Patel", channel, kind: "k", purpose: "Agree a slot", message: "Hello" }, status: "held_for_human", note: "" });
 const ex = { id: "e1", caseId: "delivery-003", dataset: "public", workflowId: "default-incident", title: "Case 003" } as ExecutionRecord & { title: string };
@@ -18,6 +19,17 @@ describe("voice slots", () => {
     ] }] } } as unknown as ExecutionRecord;
     expect(noteCaseText(run)).toBe("From: Fen Orlo, route driver\nI am at 7 Sedgeglass Mews for DL-003.\n\nFrom: Dispatch\nContact Elva Kesh.");
     expect(noteCaseText(ex)).toBe("");
+  });
+  it("finds the re-run a voice moment just started, so the page can open it while it works", () => {
+    const since = Date.parse("2026-10-10T14:26:40Z");
+    const runs = [
+      { id: "old", parentExecutionId: "p1", startedAt: "2026-10-10T14:20:00Z" },
+      { id: "other", parentExecutionId: "p2", startedAt: "2026-10-10T14:26:41Z" },
+      { id: "new", parentExecutionId: "p1", startedAt: "2026-10-10T14:26:41Z" },
+    ] as unknown as ExecutionRecord[];
+    expect(childRun(runs, "p1", since)?.id).toBe("new");
+    expect(childRun(runs, "p3", since)).toBeUndefined();
+    expect(childRun(runs, undefined, since)).toBeUndefined();
   });
   it("says who a person is, from the case's own messages", () => {
     const run = { ...ex, trace: { events: [{ kind: "run_start", inputs: [

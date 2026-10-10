@@ -33,6 +33,15 @@ export interface CallStateSeed {
   at: string;
 }
 
+/** The run a voice moment just started (its parent is the run you were on), so the page can open it
+ * while it is still working and its steps show live. */
+export function childRun<T extends { parentExecutionId?: string | null; startedAt: string }>(
+  runs: T[], parentId: string | null | undefined, sinceMs: number,
+): T | undefined {
+  if (!parentId) return undefined;
+  return runs.find((r) => r.parentExecutionId === parentId && Date.parse(r.startedAt) >= sinceMs - 2_000);
+}
+
 /** Outbox rows a person could ring instead of writing: the planner chose a call, callback or phone channel. */
 export function callableRows(outbox: OutboxEntry[] | null | undefined): OutboxEntry[] {
   return (outbox ?? []).filter((o) => /\b(call|callback|phone|telephone|ring)\b/i.test(o.action.channel));

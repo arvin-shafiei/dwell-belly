@@ -25,7 +25,7 @@ import { VOICE_LOADERS, registeredVoiceComponent } from "./voiceComponents";
 import { Badge, getJson } from "./ui";
 import { liveCallsOn, setLiveCalls, subscribeLiveCalls } from "../../voice/liveCalls";
 import {
-  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noteCaseText, partyRole, type VoiceComponentName,
+  approvalRerun, callableRows, childRun, callRequest, callRerun, callStateSeed, cardOpen, noAnswerRerun, noteCaseText, partyRole, type VoiceComponentName,
 } from "./voiceSlots";
 
 // The voice components' props are owned by the voice layer; the slots pass the documented shapes.
@@ -163,16 +163,34 @@ function useVoiceRerun() {
   const rerun = async (what: string, body: ExecuteRequest) => {
     setBusy(what);
     setError(null);
+    const since = Date.now();
+    let opened = false;
+    const open = (id: string) => {
+      if (opened) return;
+      opened = true;
+      go("executions", { id }, true);
+    };
+    // Open the new run as soon as it exists: its steps show live while the agent works on what was
+    // said, then "Watch it think" plays it back. The POST below only answers once the run is done.
+    const poll = setInterval(() => {
+      getJson<ConsoleApi["GET /api/console/executions?limit&dataset"]>("/api/console/executions?limit=10")
+        .then((list) => {
+          const child = childRun(list.executions, body.parentExecutionId, since);
+          if (child) open(child.id);
+        })
+        .catch(() => {});
+    }, 1_000);
     try {
       const r = await getJson<ConsoleApi["POST /api/console/execute"]>("/api/console/execute", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(body),
       });
-      go("executions", { id: r.execution.id }, true);
+      open(r.execution.id);
     } catch (err) {
       setError((err as Error).message);
     } finally {
+      clearInterval(poll);
       setBusy(null);
     }
   };
