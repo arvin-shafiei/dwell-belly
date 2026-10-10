@@ -39,7 +39,9 @@ npm run answer -- <casesDir> ANSWERS        # every subfolder is one case
 npm run answer -- <casesDir> ANSWERS --resume   # rerun only the cases that failed
 ```
 
-Each case gets `ANSWERS/<case>/ANSWER.md`, `REASONING.md` and `trace.json`, and the batch writes `ANSWERS/RUNLOG.md`. All four are generated; none is edited by hand. The agent lives in `apps/api/src/agent/` as a plain module (no Next.js needed to run it):
+Each case gets `ANSWERS/<case>/ANSWER.md`, `REASONING.md`, `trace.json` and `result.json`, and the batch writes `ANSWERS/RUNLOG.md`. All are generated; none is edited by hand. `npm run replay -- ANSWERS` re-renders the two markdown files from `result.json` with no model call and no key, and reports any that differ from what is on disk.
+
+Before a batch starts the flow file is validated (`--flow <file>` runs a different one), and a refused key or an empty credit balance stops the batch early with the reason, leaving the rest for `--resume`. `GET /api/health` reports whether the agent has its keys (`agent.ready`), never their values. The agent lives in `apps/api/src/agent/` as a plain module (no Next.js needed to run it):
 
 | Step | File | What it does |
 |---|---|---|

@@ -50,6 +50,21 @@ export interface RunResult {
   error?: string;
 }
 
+/**
+ * The result as it is saved beside the trace: everything the report needs, and none of the case's
+ * own text or attachments. ANSWER.md and REASONING.md can be re-rendered from it with no model call.
+ */
+export function savedResult(r: RunResult): RunResult {
+  return {
+    ...r,
+    bundle: {
+      ...r.bundle,
+      documents: r.bundle.documents.map((d) => ({ name: d.name, text: "", chars: d.chars ?? d.text.length })),
+      media: r.bundle.media.map((m) => ({ name: m.name, mediaType: m.mediaType, base64: "" })),
+    },
+  };
+}
+
 class Recorder {
   readonly events: TraceEvent[] = [];
   private readonly started = Date.now();

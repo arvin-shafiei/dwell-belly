@@ -96,7 +96,7 @@ export function renderReasoning(r: RunResult): string {
   const { bundle, understanding: u, decision: d } = r;
   const lines: string[] = [`# Reasoning: ${bundle.title}`, "", "## 1. What we received",
     list([
-      ...bundle.documents.map((x) => `${x.name} (${x.text.length} characters)`),
+      ...bundle.documents.map((x) => `${x.name} (${x.chars ?? x.text.length} characters)`),
       ...bundle.media.map((m) => `${m.name} (${m.mediaType}, read by the model directly)`),
       ...bundle.unreadable.map((f) => `Not read: ${f}`),
     ], "Nothing readable.")];
