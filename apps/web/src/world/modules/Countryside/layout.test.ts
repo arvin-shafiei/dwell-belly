@@ -42,7 +42,7 @@ describe("countryside layout", () => {
   });
 
   it("scatters a few thousand trees, never on roads, zones or sea", () => {
-    expect(trees.length).toBeGreaterThan(1200);
+    expect(trees.length).toBeGreaterThan(900);
     expect(trees.length).toBeLessThanOrEqual(2600);
     for (const t of trees) {
       expect(roadDistance(t.x, t.z)).toBeGreaterThanOrEqual(9);

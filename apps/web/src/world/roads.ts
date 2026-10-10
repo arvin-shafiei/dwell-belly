@@ -1,6 +1,7 @@
 // The road network: a graph of intersections (nodes) and two-way roads (edges).
 // Every vehicle drives on this graph. Blocked edges (crashes, roadworks) are avoided by findPath.
 import { BLOCK, GRID_HALF, HIGHWAY_RING, LANE_OFFSET, type ZoneName } from "./config";
+import { DISTRICTS } from "./districts";
 
 export type RoadKind = "street" | "highway" | "ramp" | "country";
 
@@ -130,6 +131,18 @@ addEdge(ringAt(-R, -R), "airport_gate", "street");
 addEdge("airport_gate", "airport_terminal", "street");
 addEdge("airport_gate", "airport_cargo", "street");
 addEdge("airport_terminal", "airport_cargo", "street");
+
+// --- Layer 2 districts (districts/*.ts), merged in order. Bad data is reported, never crashes the city.
+for (const [name, d] of Object.entries(DISTRICTS)) {
+  for (const n of d.nodes) if (!nodes.has(n.id)) addNode(n.id, n.x, n.z, n.zone);
+  for (const e of d.edges) {
+    if (!nodes.has(e.a) || !nodes.has(e.b)) {
+      console.warn(`[roads] district ${name}: edge ${e.a} -> ${e.b} references an unknown node, skipped`);
+      continue;
+    }
+    addEdge(e.a, e.b, e.kind);
+  }
+}
 
 // --- Public API -------------------------------------------------------------
 
