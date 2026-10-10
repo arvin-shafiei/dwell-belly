@@ -9,7 +9,7 @@ import {
 } from "@xyflow/react";
 import type { ExecutionRecord, Flow, FlowNode, ImproveProposal, NodeType, Trace, WorkflowRecord, WorkflowVersion } from "../types";
 import {
-  architectValidate, createVersion, deleteWorkflow, executeCase, listVersions, getExecution, listExecutions, loadWorkflows, saveWorkflow,
+  architectValidate, createVersion, deleteWorkflow, executeCase, executeSample, executeReply, listVersions, getExecution, listExecutions, loadWorkflows, saveWorkflow,
   type ExecutionSummary,
 } from "./api";
 import { ArchitectPanel } from "./ArchitectPanel";
@@ -25,7 +25,7 @@ import {
   updateEdgeWhen, updateNode, type FlowDoc, type Pos,
 } from "./doc";
 import { EdgePanel, NodePanel } from "./DetailPanel";
-import { ExecuteDialog } from "./ExecuteDialog";
+import { ExecuteDialog, type RunChoice } from "./ExecuteDialog";
 import { ExecutionPicker } from "./ExecutionPicker";
 import { CARD_W, FlowNodeCard, type CardNode } from "./FlowNodeCard";
 import { checkpoint, initHistory, push, redo, replace, undo, type History } from "./history";
@@ -119,7 +119,7 @@ function EditorInner() {
   const [cursor, setCursor] = useState<number | null>(null); // live replay position; null = whole trace
   const [running, setRunning] = useState<{ caseId: string; dataset: string; since: number } | null>(null);
   const [runError, setRunError] = useState<string | null>(null);
-  const [dialog, setDialog] = useState(false);
+  const [dialog, setDialog] = useState<"new" | "reply" | null>(null);
 
   // Architect (AI builder) + validation
   // Deep link from Results ("Run more cases"): open Practice with that case list.
@@ -474,7 +474,7 @@ function EditorInner() {
     setAccepting(false);
     if (r.ok) {
       const saved = r.data?.workflow ?? rec;
-      void recordVersion(saved.id, rec.flow, isDraft ? "architect" : "user", isDraft ? "Built with the Architect" : "Saved in the editor");
+      await recordVersion(saved.id, rec.flow, isDraft ? "architect" : "user", isDraft ? "Built with the Architect" : "Saved in the editor");
       setRecords((rs) => {
         const list = rs ?? [];
         return list.some((x) => x.id === saved.id) ? list.map((x) => (x.id === saved.id ? saved : x)) : [...list, saved];
@@ -573,11 +573,13 @@ function EditorInner() {
   useEffect(() => { saveRef.current = () => { if (dirty) void doSave(); }; }, [dirty, doSave]);
 
   // ---------- execute ----------
-  const runCase = useCallback(async (c: { id: string; dataset: string }) => {
-    setDialog(false);
+  const runCase = useCallback(async (c: RunChoice, followup = false) => {
+    setDialog(null);
     setRunError(null);
-    setRunning({ caseId: c.id, dataset: c.dataset, since: Date.now() });
-    const r = await executeCase({ caseId: c.id, dataset: c.dataset, workflowId: currentId ?? undefined });
+    setRunning({ caseId: "scenario" in c ? "New sample" : c.id, dataset: "scenario" in c ? "adhoc" : c.dataset, since: Date.now() });
+    const r = "scenario" in c
+      ? followup && execId ? await executeReply(currentId!, execId, c.scenario) : await executeSample(currentId!, c.scenario)
+      : await executeCase({ caseId: c.id, dataset: c.dataset, workflowId: currentId ?? undefined });
     if (!r.ok || !r.data?.execution) {
       setRunning(null);
       setRunError("The case didn't run. Try again in a minute.");
@@ -596,7 +598,7 @@ function EditorInner() {
     setExecLoadError(null);
     setCursor(ex.trace ? 0 : null);
     refreshExecutions();
-  }, [currentId, refreshExecutions]);
+  }, [currentId, execId, refreshExecutions]);
 
   const selectExecution = useCallback((id: string | null) => {
     setExecId(id);
@@ -750,9 +752,10 @@ function EditorInner() {
       <Btn variant="outline" onClick={() => openDrawer(drawer === "test" ? null : "test")} title="Practise on real cases and improve">
         <Icon name="check" size={13} /> Practice
       </Btn>
-      <Btn variant="outline" onClick={() => setDialog(true)} disabled={!!running || !!draft} title={draft ? "Save the playbook first" : "Run one case through this playbook"}>
+      <Btn variant="outline" onClick={() => setDialog("new")} disabled={!!running || !!draft} title={draft ? "Save the playbook first" : "Run one case through this playbook"}>
         <Icon name="play" size={13} /> Run a case
       </Btn>
+      <Btn variant="outline" onClick={() => setDialog("reply")} disabled={!!running || !!draft || dirty || !shownExec || shownExec.status !== "success"}>Add a reply</Btn>
       <Btn variant="primary" onClick={() => void doSave()} disabled={!dirty || save.state === "saving" || !!reveal} title="Save (⌘S)">
         {save.state === "saving" ? (validating ? "Checking…" : "Saving…") : draft ? "Use this playbook" : "Save"}
       </Btn>
@@ -1069,7 +1072,7 @@ function EditorInner() {
         )}
       </div>
 
-      {dialog && <ExecuteDialog onRun={runCase} onClose={() => setDialog(false)} />}
+      {dialog && <ExecuteDialog followup={dialog === "reply"} onRun={(c) => void runCase(c, dialog === "reply")} onClose={() => setDialog(null)} />}
     </div>
   );
 }

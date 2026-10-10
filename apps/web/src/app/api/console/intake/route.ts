@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   const saved = await saveAdhoc(parsed.value);
 
   let failed: unknown = null;
-  const run = execute({ caseId: saved.id, dataset: ADHOC_DATASET, workflowId: parsed.value.workflowId ?? null })
+  const run = execute({ caseId: saved.id, dataset: ADHOC_DATASET, workflowId: parsed.value.workflowId ?? null, mode: parsed.value.practice ? "demo" : null })
     .catch((err) => { failed = err; return null; });
   after(() => run);
 

@@ -134,6 +134,15 @@ export function recordExecutionInput(id: string, view: CaseView): void {
   getDb().prepare("UPDATE executions SET input_view = ? WHERE id = ?").run(JSON.stringify(view), id);
 }
 
+export function getExecutionFlow(id: string): Flow | null {
+  const row = getDb().prepare("SELECT flow_snapshot FROM executions WHERE id = ?").get(id);
+  return row ? parseJson<Flow>(row.flow_snapshot) : null;
+}
+
+export function recordExecutionFlow(id: string, flow: Flow): void {
+  getDb().prepare("UPDATE executions SET flow_snapshot = ? WHERE id = ?").run(JSON.stringify(flow), id);
+}
+
 export interface ExecutionWrite {
   id: string;
   sourceKey: string | null;

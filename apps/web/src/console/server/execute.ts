@@ -9,7 +9,7 @@ import { buildView } from "./catalogue";
 import type { CaseView } from "./caseViews";
 import { summariseTrace, isTrace } from "./mapping";
 import { buildRerun } from "./rerun";
-import { getExecution, getExecutionInput, recordExecutionInput, getWorkflow, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
+import { getExecution, getExecutionInput, recordExecutionInput, recordExecutionFlow, seedWorkflows, getWorkflow, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
 
 export const RUN_TIMEOUT_MS = 5 * 60_000;
 
@@ -80,7 +80,7 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
     parentOutbox: parent?.outbox,
     extraEvents: input.extraEvents,
     humanDecision: input.humanDecision,
-    mode: input.mode,
+    mode: input.mode ?? (built.view.events.some((e) => "source" in e && e.source === "simulated_persona") ? "demo" : null),
     elapsedMs,
     rerun: Boolean(parent),
   });
@@ -113,8 +113,11 @@ export async function execute(input: ExecuteInput): Promise<StoredExecution> {
   };
   upsertExecution(base);
 
+  await seedWorkflows();
   const saved = input.flow ? null : getWorkflow(base.workflowId);
   const flow = input.flow ?? (saved?.source === "db" ? saved.flow : null);
+  const snapshot = input.flow ?? saved?.flow;
+  if (snapshot) recordExecutionFlow(base.id, snapshot);
 
   const voiceRun = request.voiceInput && !input.mode;
   await recordAgentRun(base, flow ? { ...request.body, flow } : { ...request.body, flowId: base.workflowId }, (trace, s) =>

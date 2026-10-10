@@ -212,6 +212,7 @@ export default function ExecutionDetail({
         <>
         {msg && <MessageCard title={msg.title} to={msg.to} how={msg.how} message={msg.message} />}
         {card && <DecideRerun key={e.id} execution={e} card={card} onOpen={onOpen} />}
+        {e.status === "success" && <ShowOnPlaybook executionId={e.id} label="Improve workflow from this run" feedback />}
 
         {e.status !== "running" && !ringRow && voiceNeeded(e, card) && (
           <section>

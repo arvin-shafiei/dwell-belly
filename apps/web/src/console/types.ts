@@ -278,7 +278,9 @@ export interface TestRun {
 export interface ImproveProposal {
   workflowId: string;
   fromVersion: number;
-  testRunId: string;
+  testRunId: string | null;
+  feedbackId?: string;
+  feedbackExecutionId?: string;
   flow: Flow; // proposed revised flow (validated)
   problems: string[]; // validation problems, if any
   changes: string[]; // human-readable change list (nodes added/removed, thresholds moved, branches added)

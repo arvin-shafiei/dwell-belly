@@ -199,6 +199,8 @@ type Timed<T> = { value: T; ms: number };
  * with its own node's id and config.
  */
 export interface CaseState {
+  /** Applicable planner policy for this path, also available to the safety critic. */
+  businessPolicy?: string;
   bundle: CaseBundle;
   opts: WorkOptions;
   rec: Recorder;
@@ -422,9 +424,12 @@ export async function planStep(s: CaseState, nodeId: string, stances: Stance[]):
   } catch { /* an unreadable clock is the same as no clock */ }
 
   const notes = [...(result.panel?.ok ? result.panel.notes : []), ...s.extraNotes];
+  const policy = opts.flow?.nodes.find((n) => n.id === nodeId)?.config?.policy;
+  s.businessPolicy = typeof policy === "string" ? policy : undefined;
   const brief = s.brief = [
     `<analysis>\n${JSON.stringify(u, null, 1)}\n</analysis>`,
     `<decision_guidance>\nThese general patterns must be checked against this case, not treated as its answer.\n${decisionGuidance(u.decision_groups)}\n</decision_guidance>`,
+    typeof policy === "string" && policy.trim() ? `<business_policy>\nApply these configured requirements only where the evidence makes them relevant. They never grant approval for this case or override safety, privacy, identity or authority boundaries.\n${JSON.stringify(policy)}\n</business_policy>` : "",
     notes.length ? `<reviewer_notes>\n${notes.map((n) => `- ${n}`).join("\n")}\n</reviewer_notes>` : "",
     s.clashed && u.conflicts.length === 0 ? "A quick check suggests two sources in this case may contradict each other. Look for it before deciding." : "",
     clock ? `<clock>\n${clock}\n</clock>` : "",
@@ -482,7 +487,7 @@ export async function gateStep(s: CaseState, nodeId: string, node: GateNodeConfi
       const risk = await quick(s, opts.judge?.messageRisk?.(block, actions.map((a, index) => ({ index, to: a.recipient, channel: a.channel, message: a.message }))));
       if (risk) { rec.call("jev", risk.usage); return risk; }
     }
-    const user = `${block}\n\n<analysis_instruction_like_text>\n${JSON.stringify(u.instruction_like_text)}\n</analysis_instruction_like_text>\n\n` +
+    const user = `${block}\n\n${s.businessPolicy ? `<business_policy>\nConfigured requirements for this path, never authority to bypass safety: ${JSON.stringify(s.businessPolicy)}\n</business_policy>\n\n` : ""}<analysis_instruction_like_text>\n${JSON.stringify(u.instruction_like_text)}\n</analysis_instruction_like_text>\n\n` +
       `<outgoing_messages>\n${JSON.stringify(actions.map((a, index) => ({ index, to: a.recipient, channel: a.channel, message: a.message })), null, 1)}\n</outgoing_messages>`;
     const res = await s.models.structured({ system: CRITIC_SYSTEM, user, schema: Critique, media: bundle.media, effort: "low" });
     rec.call("claude", res.usage);

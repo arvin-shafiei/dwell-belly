@@ -16,6 +16,7 @@
     "index:cases": "node scripts/eval/index-cases.mjs",
     "learn:cases": "node scripts/eval/learn-cases.mjs",
     "eval:chain": "node scripts/eval/chained-run.mjs",
+    "demo:workflows": "node scripts/demo-workflows.mjs",
     "validate:cases": "node scripts/eval/validate-cases.mjs",
     "gen:bulk": "node scripts/eval/gen-bulk.mjs",
     "load:check": "node scripts/eval/load-check.mjs --probe --quiet",

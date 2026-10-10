@@ -1,0 +1,27 @@
+{
+  "provenance": "Authored demo business briefs. Cases are synthetic calibration material. Rehearsals use real model calls and sandbox messages; no actual carrier booking or physical delivery.",
+  "workflows": [
+    {
+      "id": "demo-delivery-recovery",
+      "name": "Demo: delivery recovery",
+      "description": "A last-mile delivery desk coordinates dispatch and recipients after crashes, vehicle unavailability, traffic, incorrect addresses or changed availability. Create a granular executable incident workflow with missing-evidence and conflicting-evidence checks, delivery recovery and an unfamiliar-case fallback. Use at most three broad triage paths, 25 to 45 nodes, existing incident node types only. Dispatch owns feasible capacity and booking confirmation; the verified recipient owns their current date, time and address requirements; a site owns access. Planner policies must intersect these constraints, preserve later customer changes and keep future steps waiting for prerequisites. Never automatically postpone to tomorrow, assume a proposed slot is booked, or close before the relevant owner's confirmation. Safety owner decisions take precedence where actual evidence requires them. Make safe coordination possible while a specific commitment waits for human approval. Do not include learner, watch or route replanning nodes, which this incident runtime does not execute."
+    },
+    {
+      "id": "demo-cold-chain",
+      "name": "Demo: cold-chain clearance",
+      "description": "A delivery desk handles chilled meals and ordinary parcels. Create an executable granular incident decision workflow, 25 to 45 nodes, at most three broad paths with other fallback, using existing incident capabilities. Include missing evidence and conflicting evidence checks, specialist coordination, separate safe actions and human-held commitments, gate exits and verification failure paths. Concrete planner policy: when evidence shows a refrigeration or temperature breach, route logger details to the named food-safety owner and hold dispatch or release of those goods until an applicable owner clearance is received. Fleet capacity, a customer's willingness or food that feels cold do not clear a food-safety restriction. Carry customer and receiving-site availability across follow-ups; once the authorised owner clears the specific goods, request a matching Dispatch booking, and await confirmation. Do not invent a food-safety prerequisite for ordinary parcels without actual evidence. Never provide food handling or consumption advice. Do not include unimplemented learner, watch or route replanning nodes."
+    },
+    {
+      "id": "demo-human-review",
+      "name": "Demo: human authority and corrections",
+      "description": "A delivery desk handles exceptions that may need a person: an unverified relative requesting changes, conflicting authority, formal legal communication holds, or a commitment outside desk permission. Build an executable granular incident workflow, 25 to 45 nodes and at most three broad paths with other fallback. Use existing incident nodes: intake, evidence checks, planner policies, safety gates, human decisions, actions, verification and logs. The policy distinguishes safe owner requests from protected delivery changes and disclosures. Formal legal holds send no messages to anyone. Unverified relatives cannot authorise redirection, cancellation or refunds. A person resolves the actual authority question; approval still passes safety checks and never proves someone else's identity or grants specialist clearance. Independent safe actions continue where permitted. Policy changes from supervisor corrections must be applicable and reviewable, not case-name matching. Do not include learner, watch or route replanning nodes."
+    }
+  ],
+  "feedback": {
+    "workflowId": "demo-human-review",
+    "caseId": "gen-1201",
+    "dataset": "generated",
+    "author": "Synthetic rehearsal supervisor",
+    "correction": "When an unverified relative reports that a recipient has died, the human handover must identify the carrier's actual response deadline, the owner who can resolve authority, and the safe fallback if nobody responds. Do not make a redirect, refund or cancellation commitment, and do not repeatedly call the recipient's order number. This is a reusable handover requirement, not verification of the relative or approval of a delivery change."
+  }
+}

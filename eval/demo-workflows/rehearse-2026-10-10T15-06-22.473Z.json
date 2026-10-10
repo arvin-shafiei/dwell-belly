@@ -1,0 +1,3289 @@
+{
+  "startedAt": "2026-10-10T15:06:22.473Z",
+  "stage": "rehearse",
+  "provenance": "Authored demo business briefs. Cases are synthetic calibration material. Rehearsals use real model calls and sandbox messages; no actual carrier booking or physical delivery.",
+  "steps": [
+    {
+      "label": "independent recovery case",
+      "request": {
+        "caseId": "gen-3302",
+        "dataset": "generated",
+        "workflowId": "demo-delivery-recovery"
+      },
+      "execution": {
+        "id": "0702ee93-5abb-4da5-b18f-e837a438cebe",
+        "caseId": "gen-3302",
+        "dataset": "generated",
+        "workflowId": "demo-delivery-recovery",
+        "status": "success",
+        "outcome": "acted",
+        "startedAt": "2026-10-10T15:06:22.589Z",
+        "durationMs": 33802,
+        "costUsd": 0.1221225,
+        "origin": "console",
+        "simulated": true,
+        "eval": null,
+        "error": null,
+        "title": "Case: A traffic delay changes the delivery options before the recipient replies",
+        "nextAction": "email → Scheduling",
+        "gate": "allow",
+        "parentExecutionId": null,
+        "voice": null,
+        "trace": {
+          "version": 1,
+          "runId": "api-2026-10-10T15:06:22.630Z",
+          "caseId": "gen-3302",
+          "flowId": "demo-delivery-recovery",
+          "mode": "demo",
+          "events": [
+            {
+              "t": 0,
+              "kind": "run_start",
+              "title": "Case: A traffic delay changes the delivery options before the recipient replies",
+              "inputs": [
+                {
+                  "n": 1,
+                  "channel": "file",
+                  "from": "context",
+                  "excerpt": "156 characters"
+                },
+                {
+                  "n": 2,
+                  "channel": "file",
+                  "from": "history",
+                  "excerpt": "1475 characters"
+                }
+              ]
+            },
+            {
+              "t": 0,
+              "kind": "node_start",
+              "nodeId": "ingest",
+              "nodeType": "ingest"
+            },
+            {
+              "t": 14682,
+              "kind": "model_call",
+              "nodeId": "ingest",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 14682,
+              "tokensIn": 4963,
+              "tokensOut": 2217,
+              "costUsd": 0.0342115,
+              "ok": true
+            },
+            {
+              "t": 14683,
+              "kind": "node_end",
+              "nodeId": "ingest",
+              "status": "ok",
+              "summary": "2 files, 0 attachments read",
+              "output": {
+                "type": "ingest",
+                "decisionGroups": [
+                  "capacity_disruption",
+                  "dependencies",
+                  "owner_coordination",
+                  "failed_action",
+                  "valid_changes",
+                  "identity_privacy",
+                  "truthful_status",
+                  "multi_issue"
+                ],
+                "constraints": [
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Today's 13:00-16:00 UTC slot cannot be kept; no permitted detour or spare vehicle",
+                    "owner": "Dispatch, Plover Arc Logistics",
+                    "scope": "DL-9332",
+                    "kind": "feasibility",
+                    "state": "active",
+                    "evidence": "Dispatch chat, Event 1, 2026-05-07T12:00Z"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Friday 8 May 09:00-12:00 UTC offered, not booked; recipient must choose before reservation",
+                    "owner": "Dispatch, Plover Arc Logistics",
+                    "scope": "DL-9332",
+                    "kind": "feasibility",
+                    "state": "unconfirmed",
+                    "evidence": "Events 1 and 3; still available as of 12:10Z but recipient declined"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Saturday 9 May 13:00-16:00 UTC offer",
+                    "owner": "Dispatch, Plover Arc Logistics",
+                    "scope": "DL-9332",
+                    "kind": "feasibility",
+                    "state": "superseded",
+                    "evidence": "Withdrawn in Event 3 at 12:10Z after replacement driver became unavailable"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Saturday morning is not available",
+                    "owner": "Dispatch, Plover Arc Logistics",
+                    "scope": "DL-9332",
+                    "kind": "feasibility",
+                    "state": "active",
+                    "evidence": "Event 1 statement by Dispatch"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Cannot accept Friday; wants Saturday morning, or to be told what else works",
+                    "owner": "Neris Vale, recipient",
+                    "scope": "DL-9332",
+                    "kind": "customer_requirement",
+                    "state": "active",
+                    "evidence": "Portal message Event 4, 12:15Z (via order-linked portal)"
+                  },
+                  {
+                    "surface": "site_access",
+                    "requirement": "Workplace reception staffed only until 12:00",
+                    "owner": "Neris Vale (claim); workplace not confirmed",
+                    "scope": "DL-9332 if address changed",
+                    "kind": "customer_requirement",
+                    "state": "unconfirmed",
+                    "evidence": "Recipient statement Event 4; no owner confirmation"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Delivery to workplace instead of recorded home address needs Scheduling review",
+                    "owner": "Scheduling",
+                    "scope": "DL-9332",
+                    "kind": "authority_restriction",
+                    "state": "active",
+                    "evidence": "Dispatch chat Event 3"
+                  },
+                  {
+                    "surface": "commercial",
+                    "requirement": "If no offered option works, Scheduling must confirm new options",
+                    "owner": "Scheduling",
+                    "scope": "DL-9332",
+                    "kind": "authority_restriction",
+                    "state": "active",
+                    "evidence": "Dispatch chat Event 3"
+                  }
+                ]
+              },
+              "latencyMs": 14683,
+              "costUsd": 0.0342115,
+              "detail": [
+                "DL-9332's 13:00-16:00 UTC slot today was lost to a bridge closure. The recipient can't do the only remaining offer (Friday 09:00-12:00) and asks for Saturday morning at their workplace, which Dispatch has said is unavailable; the desk must ",
+                "4 statements found: 3 from a record or an owning team, 1 unverified.",
+                "Who decides: Scheduling (new options and address change); Dispatch for slot reservation."
+              ]
+            },
+            {
+              "t": 14683,
+              "kind": "edge",
+              "from": "ingest",
+              "to": "history"
+            },
+            {
+              "t": 14683,
+              "kind": "node_start",
+              "nodeId": "history",
+              "nodeType": "history_lookup"
+            },
+            {
+              "t": 14683,
+              "kind": "node_end",
+              "nodeId": "history",
+              "status": "ok",
+              "summary": "4 open commitments, 3 deadlines",
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Already asked: Reserve a slot for DL-9332 (requested, owed by Dispatch, Plover Arc Logistics).",
+                "Already asked: Ask recipient which slot to reserve (Event 2) (confirmed, owed by Iona Quill).",
+                "Already asked: Saturday 13:00-16:00 offer (withdrawn, owed by Dispatch, Plover Arc Logistics).",
+                "Deadline: Today 2026-05-07 13:00-16:00 UTC slot cannot be met",
+                "Deadline: Friday 2026-05-08 09:00-12:00 UTC offer, unbooked and declined"
+              ]
+            },
+            {
+              "t": 14683,
+              "kind": "edge",
+              "from": "history",
+              "to": "triage"
+            },
+            {
+              "t": 14683,
+              "kind": "node_start",
+              "nodeId": "triage",
+              "nodeType": "triage"
+            },
+            {
+              "t": 14683,
+              "kind": "node_end",
+              "nodeId": "triage",
+              "status": "ok",
+              "summary": "delivery slot lost to bridge closure; remaining offer rejected by recipient; add",
+              "output": {
+                "type": "triage",
+                "caseType": "delivery slot lost to bridge closure; remaining offer rejected by recipient; address change requested",
+                "urgency": "medium",
+                "p": 1
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Kind of problem: delivery slot lost to bridge closure; remaining offer rejected by recipient; address change requested. Urgency: medium."
+              ]
+            },
+            {
+              "t": 14684,
+              "kind": "edge",
+              "from": "triage",
+              "to": "plan_oth",
+              "when": "other"
+            },
+            {
+              "t": 14685,
+              "kind": "node_start",
+              "nodeId": "plan_oth",
+              "nodeType": "planner"
+            },
+            {
+              "t": 30990,
+              "kind": "model_call",
+              "nodeId": "plan_oth",
+              "runner": "claude",
+              "model": "claude-opus-5-5",
+              "latencyMs": 16305,
+              "tokensIn": 10445,
+              "tokensOut": 1625,
+              "costUsd": 0.079612,
+              "ok": true
+            },
+            {
+              "t": 30990,
+              "kind": "node_end",
+              "nodeId": "plan_oth",
+              "status": "ok",
+              "summary": "act: Dispatch says Scheduling owns new options and address changes; the recipien",
+              "output": {
+                "type": "planner",
+                "nextAction": {
+                  "recipient": "Scheduling",
+                  "channel": "email",
+                  "message": "Please confirm what delivery options you can offer for DL-9332. The recipient, Neris Vale, cannot take Friday 8 May 09:00-12:00 UTC and asks for a Saturday morning delivery to her workplace, where reception is staffed until 12:00, instead of the recorded home address. Dispatch says Saturday morning is unavailable and has withdrawn the Saturday afternoon offer. Please say whether the workplace address can be reviewed; we will forward it once she sends it.",
+                  "undoable": true
+                },
+                "wontDo": [
+                  "Book Friday 09:00-12:00 by default",
+                  "Promise Saturday morning or the workplace delivery",
+                  "Escalate to a desk supervisor"
+                ],
+                "waitingFor": [
+                  {
+                    "what": "New delivery options and the outcome of the address-change review",
+                    "from": "Scheduling",
+                    "by": ""
+                  },
+                  {
+                    "what": "Workplace address",
+                    "from": "Neris Vale",
+                    "by": ""
+                  },
+                  {
+                    "what": "Reservation of the slot the recipient chooses, once Scheduling confirms options",
+                    "from": "Dispatch, Plover Arc Logistics",
+                    "by": ""
+                  }
+                ],
+                "candidates": []
+              },
+              "latencyMs": 16305,
+              "costUsd": 0.079612,
+              "detail": [
+                "Ask Scheduling for new DL-9332 options and an address review; tell Neris Vale nothing is booked yet.",
+                "Why: Dispatch says Scheduling owns new options and address changes; the recipient declined the only remaining offer, Friday 09:00-12:00.",
+                "Will not: Book Friday 09:00-12:00 by default (The recipient declined it. Booking belongs to Dispatch and needs her choice.)",
+                "Will not: Promise Saturday morning or the workplace delivery (Dispatch says Saturday morning is unavailable, and the address change needs Scheduling's review.)",
+                "Will not: Escalate to a desk supervisor (Scheduling is the identified owner, so a routine request to them is the safe next step.)"
+              ]
+            },
+            {
+              "t": 30990,
+              "kind": "edge",
+              "from": "plan_oth",
+              "to": "gate_oth"
+            },
+            {
+              "t": 30990,
+              "kind": "node_start",
+              "nodeId": "gate_oth",
+              "nodeType": "safety_gate"
+            },
+            {
+              "t": 33800,
+              "kind": "model_call",
+              "nodeId": "gate_oth",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 2809,
+              "tokensIn": 2534,
+              "tokensOut": 266,
+              "costUsd": 0.008299,
+              "ok": true
+            },
+            {
+              "t": 33801,
+              "kind": "node_end",
+              "nodeId": "gate_oth",
+              "status": "ok",
+              "summary": "2 of 2 messages cleared",
+              "output": {
+                "type": "safety_gate",
+                "risk": 0.08,
+                "decision": "allow",
+                "allowBelow": 0.3,
+                "blockAbove": 0.8
+              },
+              "latencyMs": 2811,
+              "costUsd": 0.008299,
+              "detail": [
+                "Message to Scheduling: clear to send (risk 0.04, below 0.3).",
+                "Message to Neris Vale: clear to send (risk 0.08, below 0.3)."
+              ]
+            },
+            {
+              "t": 33801,
+              "kind": "edge",
+              "from": "gate_oth",
+              "to": "act_oth",
+              "when": "allow"
+            },
+            {
+              "t": 33801,
+              "kind": "node_start",
+              "nodeId": "act_oth",
+              "nodeType": "action"
+            },
+            {
+              "t": 33802,
+              "kind": "node_end",
+              "nodeId": "act_oth",
+              "status": "ok",
+              "summary": "2 of 2 message(s) accepted by the outbox",
+              "output": {
+                "type": "action",
+                "done": {
+                  "recipient": "Scheduling",
+                  "channel": "email",
+                  "message": "Please confirm what delivery options you can offer for DL-9332. The recipient, Neris Vale, cannot take Friday 8 May 09:00-12:00 UTC and asks for a Saturday morning delivery to her workplace, where reception is staffed until 12:00, instead of the recorded home address. Dispatch says Saturday morning is unavailable and has withdrawn the Saturday afternoon offer. Please say whether the workplace address can be reviewed; we will forward it once she sends it.",
+                  "undoable": true
+                },
+                "ok": true
+              },
+              "latencyMs": 1,
+              "costUsd": 0,
+              "detail": [
+                "Recorded for Scheduling by email: Get feasible new delivery options for DL-9332 within the recipient's stated constraints, including review of the workplace address",
+                "It says: \"Please confirm what delivery options you can offer for DL-9332. The recipient, Neris Vale, cannot take Friday 8 May 09:00-12:00 UTC and asks for a Saturday morning delivery to her workplace, where reception is staffed until 12:00,",
+                "Recorded for Neris Vale by Customer portal: Tell the recipient truthfully where things stand and request the workplace address needed for Scheduling's review",
+                "It says: \"Dispatch has withdrawn the Saturday afternoon option and says Saturday morning is not available, so nothing is booked yet. I have asked their Scheduling team what else they can offer, including delivery to your workplace, which th",
+                "No live system is connected, so nothing has reached a recipient yet."
+              ]
+            },
+            {
+              "t": 33802,
+              "kind": "edge",
+              "from": "act_oth",
+              "to": "log_oth_done"
+            },
+            {
+              "t": 33802,
+              "kind": "node_start",
+              "nodeId": "log_oth_done",
+              "nodeType": "case_log"
+            },
+            {
+              "t": 33802,
+              "kind": "node_end",
+              "nodeId": "log_oth_done",
+              "status": "ok",
+              "summary": "outcome: acted",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 33802,
+              "kind": "run_end",
+              "outcome": "acted",
+              "totalCostUsd": 0.1221225,
+              "totalLatencyMs": 33802,
+              "nextAction": {
+                "recipient": "Scheduling",
+                "channel": "email",
+                "message": "Please confirm what delivery options you can offer for DL-9332. The recipient, Neris Vale, cannot take Friday 8 May 09:00-12:00 UTC and asks for a Saturday morning delivery to her workplace, where reception is staffed until 12:00, instead of the recorded home address. Dispatch says Saturday morning is unavailable and has withdrawn the Saturday afternoon offer. Please say whether the workplace address can be reviewed; we will forward it once she sends it.",
+                "undoable": true
+              }
+            }
+          ]
+        },
+        "answerMd": null,
+        "reasoningMd": null,
+        "outbox": [
+          {
+            "action": {
+              "recipient": "Scheduling",
+              "channel": "email",
+              "kind": "request_to_owner",
+              "purpose": "Get feasible new delivery options for DL-9332 within the recipient's stated constraints, including review of the workplace address",
+              "message": "Please confirm what delivery options you can offer for DL-9332. The recipient, Neris Vale, cannot take Friday 8 May 09:00-12:00 UTC and asks for a Saturday morning delivery to her workplace, where reception is staffed until 12:00, instead of the recorded home address. Dispatch says Saturday morning is unavailable and has withdrawn the Saturday afternoon offer. Please say whether the workplace address can be reviewed; we will forward it once she sends it."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for email (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+          },
+          {
+            "action": {
+              "recipient": "Neris Vale",
+              "channel": "Customer portal",
+              "kind": "status_update",
+              "purpose": "Tell the recipient truthfully where things stand and request the workplace address needed for Scheduling's review",
+              "message": "Dispatch has withdrawn the Saturday afternoon option and says Saturday morning is not available, so nothing is booked yet. I have asked their Scheduling team what else they can offer, including delivery to your workplace, which they must review. Please send the full workplace address so I can pass it to them. I will come back to you with whatever options Scheduling confirms."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Customer portal (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+          }
+        ],
+        "card": null
+      }
+    },
+    {
+      "label": "gen-3401",
+      "request": {
+        "caseId": "gen-3401",
+        "dataset": "generated",
+        "workflowId": "demo-cold-chain"
+      },
+      "execution": {
+        "id": "9b2dd290-cd3e-4364-9507-3550bac02590",
+        "caseId": "gen-3401",
+        "dataset": "generated",
+        "workflowId": "demo-cold-chain",
+        "status": "success",
+        "outcome": "acted",
+        "startedAt": "2026-10-10T15:06:56.449Z",
+        "durationMs": 25080,
+        "costUsd": 0.062867,
+        "origin": "console",
+        "simulated": true,
+        "eval": null,
+        "error": null,
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "nextAction": "Email → Dispatch, Cedarway Logistics",
+        "gate": "allow",
+        "parentExecutionId": null,
+        "voice": null,
+        "trace": {
+          "version": 1,
+          "runId": "api-2026-10-10T15:06:56.458Z",
+          "caseId": "gen-3401",
+          "flowId": "demo-cold-chain",
+          "mode": "demo",
+          "events": [
+            {
+              "t": 0,
+              "kind": "run_start",
+              "title": "Crash fallback conflicts with the verified customer date and time",
+              "inputs": [
+                {
+                  "n": 1,
+                  "channel": "file",
+                  "from": "context",
+                  "excerpt": "138 characters"
+                },
+                {
+                  "n": 2,
+                  "channel": "file",
+                  "from": "history",
+                  "excerpt": "688 characters"
+                }
+              ]
+            },
+            {
+              "t": 0,
+              "kind": "node_start",
+              "nodeId": "ingest",
+              "nodeType": "ingest"
+            },
+            {
+              "t": 12844,
+              "kind": "model_call",
+              "nodeId": "ingest",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 12844,
+              "tokensIn": 4641,
+              "tokensOut": 2012,
+              "costUsd": 0.021786200000000002,
+              "ok": true
+            },
+            {
+              "t": 12844,
+              "kind": "node_end",
+              "nodeId": "ingest",
+              "status": "ok",
+              "summary": "2 files, 0 attachments read",
+              "output": {
+                "type": "ingest",
+                "decisionGroups": [
+                  "capacity_disruption",
+                  "dependencies",
+                  "owner_coordination",
+                  "valid_changes",
+                  "truthful_status",
+                  "deadline_math",
+                  "multi_issue"
+                ],
+                "constraints": [
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Original van unavailable after crash; replacement capacity offered only for Sun 11 Oct 10:00–12:00 UTC, not booked",
+                    "owner": "Cedarway Logistics dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "active",
+                    "evidence": "Cedarway Dispatch email, 2026-10-10T08:07Z: replacement confirmed for that window only; an offer, not a booking"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Recipient cannot receive on Sunday morning; available Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC",
+                    "owner": "Mira Rowan (verified recipient)",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "active",
+                    "evidence": "Portal message from Mira Rowan, 2026-10-10T08:14Z, verified account; latest availability"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Sun 14:00–16:00 and Mon 10:00–12:00 capacity not yet confirmed by Cedarway",
+                    "owner": "Cedarway Logistics dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "unconfirmed",
+                    "evidence": "Not mentioned in Cedarway's email; only requested by recipient"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Sunday 10:00–12:00 offer does not fit recipient availability",
+                    "owner": "Cedarway Logistics dispatch",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "unconfirmed",
+                    "evidence": "Offer conflicts with recipient's statement at 08:14Z; not accepted, not booked"
+                  }
+                ]
+              },
+              "latencyMs": 12844,
+              "costUsd": 0.021786200000000002,
+              "detail": [
+                "Cedarway's van carrying DL-8400 crashed (driver reports no injuries) and the 10 Oct 10:00–12:00 slot is lost; Cedarway offers only Sun 11 Oct 10:00–12:00, which verified recipient Mira Rowan cannot accept. The desk must ask Cedarway whether",
+                "3 statements found: 2 from a record or an owning team, 1 unverified.",
+                "Who decides: Cedarway Logistics (replacement capacity and slot booking); the recipient decides whether to accept any confirmed slot."
+              ]
+            },
+            {
+              "t": 12844,
+              "kind": "edge",
+              "from": "ingest",
+              "to": "history"
+            },
+            {
+              "t": 12844,
+              "kind": "node_start",
+              "nodeId": "history",
+              "nodeType": "history_lookup"
+            },
+            {
+              "t": 12844,
+              "kind": "node_end",
+              "nodeId": "history",
+              "status": "ok",
+              "summary": "2 open commitments, 4 deadlines",
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Already asked: Hold Sun 11 Oct 10:00–12:00 UTC replacement slot (offer only, not booked) (requested, owed by Cedarway Logistics).",
+                "Already asked: Check Sun 14:00–16:00 or Mon 10:00–12:00 UTC with Cedarway (requested, owed by Rivet Delivery Desk).",
+                "Deadline: Original slot 10 Oct 10:00–12:00 UTC missed",
+                "Deadline: Offered replacement Sun 11 Oct 10:00–12:00 UTC"
+              ]
+            },
+            {
+              "t": 12844,
+              "kind": "edge",
+              "from": "history",
+              "to": "triage"
+            },
+            {
+              "t": 12844,
+              "kind": "node_start",
+              "nodeId": "triage",
+              "nodeType": "triage"
+            },
+            {
+              "t": 12844,
+              "kind": "node_end",
+              "nodeId": "triage",
+              "status": "ok",
+              "summary": "delivery capacity disruption with slot mismatch between carrier offer and recipi",
+              "output": {
+                "type": "triage",
+                "caseType": "delivery capacity disruption with slot mismatch between carrier offer and recipient availability",
+                "urgency": "medium",
+                "p": 1
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Kind of problem: delivery capacity disruption with slot mismatch between carrier offer and recipient availability. Urgency: medium."
+              ]
+            },
+            {
+              "t": 12844,
+              "kind": "edge",
+              "from": "triage",
+              "to": "planner_other",
+              "when": "other"
+            },
+            {
+              "t": 12846,
+              "kind": "node_start",
+              "nodeId": "planner_other",
+              "nodeType": "planner"
+            },
+            {
+              "t": 22512,
+              "kind": "model_call",
+              "nodeId": "planner_other",
+              "runner": "claude",
+              "model": "claude-opus-5-5",
+              "latencyMs": 9666,
+              "tokensIn": 9567,
+              "tokensOut": 890,
+              "costUsd": 0.0358064,
+              "ok": true
+            },
+            {
+              "t": 22512,
+              "kind": "node_end",
+              "nodeId": "planner_other",
+              "status": "ok",
+              "summary": "act: Cedarway owns capacity and booking. Their only offer, Sunday morning, clash",
+              "output": {
+                "type": "planner",
+                "nextAction": {
+                  "recipient": "Dispatch, Cedarway Logistics",
+                  "channel": "Email",
+                  "message": "For DL-8400, the verified recipient cannot take delivery on Sunday morning, so the Sun 11 Oct 10:00–12:00 UTC offer does not work. Can you confirm capacity for either Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC? If neither is possible, please send the windows you can offer. Please also tell us the current location of the goods and whether they were affected by the crash.",
+                  "undoable": true
+                },
+                "wontDo": [
+                  "Accept or book the Sunday 10:00–12:00 slot",
+                  "Promise Mira either of her preferred slots",
+                  "Escalate the crash to a human"
+                ],
+                "waitingFor": [
+                  {
+                    "what": "Confirmation of capacity for Sun 14:00–16:00 or Mon 10:00–12:00 UTC, or alternative windows, plus the location and condition of the goods",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": ""
+                  },
+                  {
+                    "what": "Once a fitting slot is confirmed, Cedarway's booking of it, then a status update to Mira Rowan",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": ""
+                  }
+                ],
+                "candidates": []
+              },
+              "latencyMs": 9666,
+              "costUsd": 0.0358064,
+              "detail": [
+                "Ask Cedarway Dispatch whether Sun 11 Oct 14:00–16:00 or Mon 12 Oct 10:00–12:00 UTC is available for DL-8400.",
+                "Why: Cedarway owns capacity and booking. Their only offer, Sunday morning, clashes with verified recipient Mira Rowan's stated availability.",
+                "Will not: Accept or book the Sunday 10:00–12:00 slot (The recipient cannot receive then, and an offer is not an instruction to book.)",
+                "Will not: Promise Mira either of her preferred slots (Only Cedarway can confirm capacity, and it has not done so.)",
+                "Will not: Escalate the crash to a human (No injury is reported and no decision here is beyond desk authority. This is routine coordination.)"
+              ]
+            },
+            {
+              "t": 22512,
+              "kind": "edge",
+              "from": "planner_other",
+              "to": "gate_other"
+            },
+            {
+              "t": 22512,
+              "kind": "node_start",
+              "nodeId": "gate_other",
+              "nodeType": "safety_gate"
+            },
+            {
+              "t": 25077,
+              "kind": "model_call",
+              "nodeId": "gate_other",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 2564,
+              "tokensIn": 2155,
+              "tokensOut": 302,
+              "costUsd": 0.005274399999999999,
+              "ok": true
+            },
+            {
+              "t": 25079,
+              "kind": "node_end",
+              "nodeId": "gate_other",
+              "status": "ok",
+              "summary": "2 of 2 messages cleared",
+              "output": {
+                "type": "safety_gate",
+                "risk": 0.1,
+                "decision": "allow",
+                "allowBelow": 0.25,
+                "blockAbove": 0.8
+              },
+              "latencyMs": 2567,
+              "costUsd": 0.005274399999999999,
+              "detail": [
+                "Message to Dispatch, Cedarway Logistics: clear to send (risk 0.04, below 0.25).",
+                "Message to Mira Rowan: clear to send (risk 0.10, below 0.25)."
+              ]
+            },
+            {
+              "t": 25079,
+              "kind": "edge",
+              "from": "gate_other",
+              "to": "action_other",
+              "when": "allow"
+            },
+            {
+              "t": 25079,
+              "kind": "node_start",
+              "nodeId": "action_other",
+              "nodeType": "action"
+            },
+            {
+              "t": 25080,
+              "kind": "node_end",
+              "nodeId": "action_other",
+              "status": "ok",
+              "summary": "2 of 2 message(s) accepted by the outbox",
+              "output": {
+                "type": "action",
+                "done": {
+                  "recipient": "Dispatch, Cedarway Logistics",
+                  "channel": "Email",
+                  "message": "For DL-8400, the verified recipient cannot take delivery on Sunday morning, so the Sun 11 Oct 10:00–12:00 UTC offer does not work. Can you confirm capacity for either Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC? If neither is possible, please send the windows you can offer. Please also tell us the current location of the goods and whether they were affected by the crash.",
+                  "undoable": true
+                },
+                "ok": true
+              },
+              "latencyMs": 1,
+              "costUsd": 0,
+              "detail": [
+                "Recorded for Dispatch, Cedarway Logistics by Email: Get confirmed capacity within the recipient's stated windows so a slot can then be booked.",
+                "It says: \"For DL-8400, the verified recipient cannot take delivery on Sunday morning, so the Sun 11 Oct 10:00–12:00 UTC offer does not work. Can you confirm capacity for either Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC? If ne",
+                "Recorded for Mira Rowan by Customer portal: Tell the verified recipient her times have been passed to the carrier and that nothing is booked yet.",
+                "It says: \"We have asked Cedarway Logistics whether DL-8400 can be delivered on Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC. Cedarway decides what capacity is available, and nothing is booked yet. We will update you as soon as t",
+                "No live system is connected, so nothing has reached a recipient yet."
+              ]
+            },
+            {
+              "t": 25080,
+              "kind": "edge",
+              "from": "action_other",
+              "to": "log_other_done"
+            },
+            {
+              "t": 25080,
+              "kind": "node_start",
+              "nodeId": "log_other_done",
+              "nodeType": "case_log"
+            },
+            {
+              "t": 25080,
+              "kind": "node_end",
+              "nodeId": "log_other_done",
+              "status": "ok",
+              "summary": "outcome: acted",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 25080,
+              "kind": "run_end",
+              "outcome": "acted",
+              "totalCostUsd": 0.062867,
+              "totalLatencyMs": 25080,
+              "nextAction": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Email",
+                "message": "For DL-8400, the verified recipient cannot take delivery on Sunday morning, so the Sun 11 Oct 10:00–12:00 UTC offer does not work. Can you confirm capacity for either Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC? If neither is possible, please send the windows you can offer. Please also tell us the current location of the goods and whether they were affected by the crash.",
+                "undoable": true
+              }
+            }
+          ]
+        },
+        "answerMd": null,
+        "reasoningMd": null,
+        "outbox": [
+          {
+            "action": {
+              "recipient": "Dispatch, Cedarway Logistics",
+              "channel": "Email",
+              "kind": "request_to_owner",
+              "purpose": "Get confirmed capacity within the recipient's stated windows so a slot can then be booked.",
+              "message": "For DL-8400, the verified recipient cannot take delivery on Sunday morning, so the Sun 11 Oct 10:00–12:00 UTC offer does not work. Can you confirm capacity for either Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC? If neither is possible, please send the windows you can offer. Please also tell us the current location of the goods and whether they were affected by the crash."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Email (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+          },
+          {
+            "action": {
+              "recipient": "Mira Rowan",
+              "channel": "Customer portal",
+              "kind": "status_update",
+              "purpose": "Tell the verified recipient her times have been passed to the carrier and that nothing is booked yet.",
+              "message": "We have asked Cedarway Logistics whether DL-8400 can be delivered on Sun 11 Oct 14:00–16:00 UTC or Mon 12 Oct 10:00–12:00 UTC. Cedarway decides what capacity is available, and nothing is booked yet. We will update you as soon as they reply."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Customer portal (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+          }
+        ],
+        "card": null
+      }
+    },
+    {
+      "label": "gen-3402",
+      "request": {
+        "parentExecutionId": "9b2dd290-cd3e-4364-9507-3550bac02590",
+        "extraEvents": [
+          {
+            "n": 4,
+            "timestamp": "2026-10-10T08:28:00Z",
+            "stage": "Context",
+            "channel": "Dispatch chat",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "We can offer Sunday 11 October 14:00–16:00 UTC. Monday is not yet checked. No booking has been made.",
+            "source": "simulated_persona"
+          },
+          {
+            "n": 5,
+            "timestamp": "2026-10-10T08:35:00Z",
+            "stage": "Context",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "Change of plan: I now need Monday 12 October 10:00–12:00 UTC only, at Alder Clinic. The Sunday option is no longer acceptable. Alder Clinic receiving is copied in and controls its own access window.",
+            "source": "simulated_persona"
+          },
+          {
+            "n": 6,
+            "timestamp": "2026-10-10T08:42:00Z",
+            "stage": "Escalation",
+            "channel": "Email",
+            "from": "Receiving, Alder Clinic",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "For DL-8400, the clinic can receive on Monday 12 October 11:00–12:00 UTC only. This is our confirmed receiving window.",
+            "source": "simulated_persona"
+          }
+        ],
+        "elapsedMs": 0,
+        "workflowId": "demo-cold-chain"
+      },
+      "execution": {
+        "id": "b0955363-0e55-4e19-9937-e6eab165ac62",
+        "caseId": "gen-3401",
+        "dataset": "generated",
+        "workflowId": "demo-cold-chain",
+        "status": "success",
+        "outcome": "acted",
+        "startedAt": "2026-10-10T15:07:21.552Z",
+        "durationMs": 32471,
+        "costUsd": 0.086867,
+        "origin": "console",
+        "simulated": true,
+        "eval": null,
+        "error": null,
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "nextAction": "Dispatch chat → Dispatch, Cedarway Logistics",
+        "gate": "allow",
+        "parentExecutionId": "9b2dd290-cd3e-4364-9507-3550bac02590",
+        "voice": null,
+        "trace": {
+          "version": 1,
+          "runId": "api-2026-10-10T15:07:21.561Z",
+          "caseId": "gen-3401",
+          "flowId": "demo-cold-chain",
+          "mode": "demo",
+          "events": [
+            {
+              "t": 0,
+              "kind": "run_start",
+              "title": "Crash fallback conflicts with the verified customer date and time",
+              "inputs": [
+                {
+                  "n": 1,
+                  "channel": "file",
+                  "from": "context",
+                  "excerpt": "138 characters"
+                },
+                {
+                  "n": 2,
+                  "channel": "file",
+                  "from": "history",
+                  "excerpt": "2423 characters"
+                }
+              ]
+            },
+            {
+              "t": 0,
+              "kind": "node_start",
+              "nodeId": "ingest",
+              "nodeType": "ingest"
+            },
+            {
+              "t": 14494,
+              "kind": "model_call",
+              "nodeId": "ingest",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 14494,
+              "tokensIn": 5425,
+              "tokensOut": 2346,
+              "costUsd": 0.0266942,
+              "ok": true
+            },
+            {
+              "t": 14494,
+              "kind": "node_end",
+              "nodeId": "ingest",
+              "status": "ok",
+              "summary": "2 files, 0 attachments read",
+              "output": {
+                "type": "ingest",
+                "decisionGroups": [
+                  "capacity_disruption",
+                  "dependencies",
+                  "owner_coordination",
+                  "conflicting_evidence",
+                  "valid_changes",
+                  "multi_issue",
+                  "missing_evidence",
+                  "truthful_status",
+                  "deadline_math"
+                ],
+                "constraints": [
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Replacement capacity for DL-8400 must be confirmed and booked by Cedarway; Sunday 11 Oct 14:00–16:00 UTC offered, Monday not yet checked",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "unconfirmed",
+                    "evidence": "Dispatch chat 08:28Z: Sunday 14:00–16:00 offered, Monday unchecked, no booking made"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Original Sunday 11 Oct 10:00–12:00 UTC offer",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "superseded",
+                    "evidence": "Offered 08:07Z, recipient cannot attend; never booked"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Deliver Monday 12 Oct 10:00–12:00 UTC only; Sunday no longer acceptable",
+                    "owner": "Mira Rowan (verified recipient)",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "active",
+                    "evidence": "Portal 08:35Z, replaces earlier Sunday 14:00–16:00 or Monday options from 08:14Z"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Sunday 11 Oct 14:00–16:00 UTC acceptable",
+                    "owner": "Mira Rowan",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "superseded",
+                    "evidence": "Portal 08:14Z, withdrawn at 08:35Z"
+                  },
+                  {
+                    "surface": "site_access",
+                    "requirement": "Alder Clinic can receive only Monday 12 Oct 11:00–12:00 UTC",
+                    "owner": "Receiving, Alder Clinic",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "active",
+                    "evidence": "Clinic email 08:42Z, stated confirmed receiving window"
+                  },
+                  {
+                    "surface": "commercial",
+                    "requirement": "No booking exists; do not promise delivery",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "authority_restriction",
+                    "state": "active",
+                    "evidence": "Dispatch 08:28Z"
+                  }
+                ]
+              },
+              "latencyMs": 14494,
+              "costUsd": 0.0266942,
+              "detail": [
+                "DL-8400 missed its 10 Oct slot after a Cedarway van crash; no booking exists, and the recipient now needs Monday 12 Oct 10:00–12:00 UTC at Alder Clinic while the clinic can only receive 11:00–12:00 UTC. Desk must get Cedarway to confirm Mon",
+                "4 statements found: 3 from a record or an owning team, 1 unverified.",
+                "Who decides: Cedarway Logistics Dispatch for capacity and booking; Alder Clinic Receiving for access window; Mira Rowan for acceptance of the narrowed window."
+              ]
+            },
+            {
+              "t": 14494,
+              "kind": "edge",
+              "from": "ingest",
+              "to": "history"
+            },
+            {
+              "t": 14494,
+              "kind": "node_start",
+              "nodeId": "history",
+              "nodeType": "history_lookup"
+            },
+            {
+              "t": 14494,
+              "kind": "node_end",
+              "nodeId": "history",
+              "status": "ok",
+              "summary": "3 open commitments, 4 deadlines",
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Already asked: Confirm capacity for Sun 14:00–16:00 or Mon 10:00–12:00 UTC, send other windows, report goods location and crash effect (requested, owed by Cedarway Dispatch).",
+                "Already asked: Update Mira when Cedarway replies (requested, owed by Rivet Delivery Desk).",
+                "Already asked: Sunday 11 Oct 10:00–12:00 UTC replacement slot (withdrawn, owed by Cedarway Dispatch).",
+                "Deadline: Original slot 10 Oct 10:00–12:00 UTC missed",
+                "Deadline: Mira's requested window: Mon 12 Oct 10:00–12:00 UTC"
+              ]
+            },
+            {
+              "t": 14494,
+              "kind": "edge",
+              "from": "history",
+              "to": "triage"
+            },
+            {
+              "t": 14494,
+              "kind": "node_start",
+              "nodeId": "triage",
+              "nodeType": "triage"
+            },
+            {
+              "t": 14494,
+              "kind": "node_end",
+              "nodeId": "triage",
+              "status": "ok",
+              "summary": "delivery rescheduling after vehicle crash with conflicting recipient and site ac",
+              "output": {
+                "type": "triage",
+                "caseType": "delivery rescheduling after vehicle crash with conflicting recipient and site access windows",
+                "urgency": "medium",
+                "p": 1
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Kind of problem: delivery rescheduling after vehicle crash with conflicting recipient and site access windows. Urgency: medium."
+              ]
+            },
+            {
+              "t": 14494,
+              "kind": "edge",
+              "from": "triage",
+              "to": "planner_other",
+              "when": "other"
+            },
+            {
+              "t": 14494,
+              "kind": "node_start",
+              "nodeId": "planner_other",
+              "nodeType": "planner"
+            },
+            {
+              "t": 29590,
+              "kind": "model_call",
+              "nodeId": "planner_other",
+              "runner": "claude",
+              "model": "claude-opus-5-5",
+              "latencyMs": 15096,
+              "tokensIn": 10992,
+              "tokensOut": 1496,
+              "costUsd": 0.053626400000000005,
+              "ok": true
+            },
+            {
+              "t": 29590,
+              "kind": "node_end",
+              "nodeId": "planner_other",
+              "status": "ok",
+              "summary": "act: Cedarway owns capacity and booking. Mira's Monday 10:00–12:00 window fully ",
+              "output": {
+                "type": "planner",
+                "nextAction": {
+                  "recipient": "Dispatch, Cedarway Logistics",
+                  "channel": "Dispatch chat",
+                  "message": "For DL-8400, can you deliver on Mon 12 Oct 11:00–12:00 UTC to Alder Clinic? If so, please book it and confirm. The recipient now wants Monday only, and the clinic can receive only between 11:00 and 12:00, so the Sunday 14:00–16:00 offer is no longer needed. We are still waiting to hear where the goods are now and whether the crash affected them.",
+                  "undoable": true
+                },
+                "wontDo": [
+                  "Accept or book the Sunday 14:00–16:00 offer",
+                  "Re-ask Mira whether 11:00–12:00 is acceptable",
+                  "Tell anyone the delivery is booked"
+                ],
+                "waitingFor": [
+                  {
+                    "what": "Confirmation of Monday 12 Oct 11:00–12:00 UTC capacity and a booking, or alternative windows",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": ""
+                  },
+                  {
+                    "what": "Current location of the goods and whether the crash affected them",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": ""
+                  },
+                  {
+                    "what": "Once Cedarway confirms a booking, update Mira and Receiving, Alder Clinic",
+                    "from": "Rivet Delivery Desk",
+                    "by": ""
+                  }
+                ],
+                "candidates": []
+              },
+              "latencyMs": 15096,
+              "costUsd": 0.053626400000000005,
+              "detail": [
+                "Ask Cedarway Dispatch for Monday 12 Oct 11:00–12:00 UTC capacity; tell Mira nothing is booked yet.",
+                "Why: Cedarway owns capacity and booking. Mira's Monday 10:00–12:00 window fully contains the clinic's 11:00–12:00, so a feasible overlap exists.",
+                "Will not: Accept or book the Sunday 14:00–16:00 offer (The verified recipient withdrew Sunday. An offer is not an instruction to book.)",
+                "Will not: Re-ask Mira whether 11:00–12:00 is acceptable (It falls inside the Monday 10:00–12:00 window she already chose.)",
+                "Will not: Tell anyone the delivery is booked (Cedarway has confirmed no booking.)"
+              ]
+            },
+            {
+              "t": 29590,
+              "kind": "edge",
+              "from": "planner_other",
+              "to": "gate_other"
+            },
+            {
+              "t": 29590,
+              "kind": "node_start",
+              "nodeId": "gate_other",
+              "nodeType": "safety_gate"
+            },
+            {
+              "t": 32471,
+              "kind": "model_call",
+              "nodeId": "gate_other",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 2880,
+              "tokensIn": 2921,
+              "tokensOut": 276,
+              "costUsd": 0.0065464,
+              "ok": true
+            },
+            {
+              "t": 32471,
+              "kind": "node_end",
+              "nodeId": "gate_other",
+              "status": "ok",
+              "summary": "2 of 2 messages cleared",
+              "output": {
+                "type": "safety_gate",
+                "risk": 0.05,
+                "decision": "allow",
+                "allowBelow": 0.25,
+                "blockAbove": 0.8
+              },
+              "latencyMs": 2881,
+              "costUsd": 0.0065464,
+              "detail": [
+                "Message to Dispatch, Cedarway Logistics: clear to send (risk 0.04, below 0.25).",
+                "Message to Mira Rowan: clear to send (risk 0.05, below 0.25)."
+              ]
+            },
+            {
+              "t": 32471,
+              "kind": "edge",
+              "from": "gate_other",
+              "to": "action_other",
+              "when": "allow"
+            },
+            {
+              "t": 32471,
+              "kind": "node_start",
+              "nodeId": "action_other",
+              "nodeType": "action"
+            },
+            {
+              "t": 32471,
+              "kind": "node_end",
+              "nodeId": "action_other",
+              "status": "ok",
+              "summary": "2 of 2 message(s) accepted by the outbox",
+              "output": {
+                "type": "action",
+                "done": {
+                  "recipient": "Dispatch, Cedarway Logistics",
+                  "channel": "Dispatch chat",
+                  "message": "For DL-8400, can you deliver on Mon 12 Oct 11:00–12:00 UTC to Alder Clinic? If so, please book it and confirm. The recipient now wants Monday only, and the clinic can receive only between 11:00 and 12:00, so the Sunday 14:00–16:00 offer is no longer needed. We are still waiting to hear where the goods are now and whether the crash affected them.",
+                  "undoable": true
+                },
+                "ok": true
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Recorded for Dispatch, Cedarway Logistics by Dispatch chat: Get Monday capacity within the only window that suits both the recipient and the site, and a booking if it is available.",
+                "It says: \"For DL-8400, can you deliver on Mon 12 Oct 11:00–12:00 UTC to Alder Clinic? If so, please book it and confirm. The recipient now wants Monday only, and the clinic can receive only between 11:00 and 12:00, so the Sunday 14:00–16:00",
+                "Recorded for Mira Rowan by Customer portal: Tell the verified recipient how her Monday request has been narrowed to fit the clinic, and that nothing is booked.",
+                "It says: \"Alder Clinic has told us it can receive DL-8400 only on Mon 12 Oct 11:00–12:00 UTC. That is within your Monday window, so we have asked Cedarway Logistics for that hour. Cedarway decides capacity, and nothing is booked yet. We wil",
+                "No live system is connected, so nothing has reached a recipient yet."
+              ]
+            },
+            {
+              "t": 32471,
+              "kind": "edge",
+              "from": "action_other",
+              "to": "log_other_done"
+            },
+            {
+              "t": 32471,
+              "kind": "node_start",
+              "nodeId": "log_other_done",
+              "nodeType": "case_log"
+            },
+            {
+              "t": 32471,
+              "kind": "node_end",
+              "nodeId": "log_other_done",
+              "status": "ok",
+              "summary": "outcome: acted",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 32471,
+              "kind": "run_end",
+              "outcome": "acted",
+              "totalCostUsd": 0.086867,
+              "totalLatencyMs": 32471,
+              "nextAction": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Dispatch chat",
+                "message": "For DL-8400, can you deliver on Mon 12 Oct 11:00–12:00 UTC to Alder Clinic? If so, please book it and confirm. The recipient now wants Monday only, and the clinic can receive only between 11:00 and 12:00, so the Sunday 14:00–16:00 offer is no longer needed. We are still waiting to hear where the goods are now and whether the crash affected them.",
+                "undoable": true
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        "answerMd": null,
+        "reasoningMd": null,
+        "outbox": [
+          {
+            "action": {
+              "recipient": "Dispatch, Cedarway Logistics",
+              "channel": "Dispatch chat",
+              "kind": "request_to_owner",
+              "purpose": "Get Monday capacity within the only window that suits both the recipient and the site, and a booking if it is available.",
+              "message": "For DL-8400, can you deliver on Mon 12 Oct 11:00–12:00 UTC to Alder Clinic? If so, please book it and confirm. The recipient now wants Monday only, and the clinic can receive only between 11:00 and 12:00, so the Sunday 14:00–16:00 offer is no longer needed. We are still waiting to hear where the goods are now and whether the crash affected them."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Dispatch chat (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+          },
+          {
+            "action": {
+              "recipient": "Mira Rowan",
+              "channel": "Customer portal",
+              "kind": "status_update",
+              "purpose": "Tell the verified recipient how her Monday request has been narrowed to fit the clinic, and that nothing is booked.",
+              "message": "Alder Clinic has told us it can receive DL-8400 only on Mon 12 Oct 11:00–12:00 UTC. That is within your Monday window, so we have asked Cedarway Logistics for that hour. Cedarway decides capacity, and nothing is booked yet. We will update you when they reply."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Customer portal (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+          }
+        ],
+        "card": null
+      }
+    },
+    {
+      "label": "gen-3403",
+      "request": {
+        "parentExecutionId": "b0955363-0e55-4e19-9937-e6eab165ac62",
+        "extraEvents": [
+          {
+            "n": 8,
+            "timestamp": "2026-10-10T08:56:00Z",
+            "stage": "Context",
+            "channel": "Dispatch chat",
+            "from": "Dispatch, Cedarway Logistics",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "Monday 12 October 11:00–12:00 UTC is available for DL-8400 and remains offered until 10:30 UTC today. Please ask us to confirm the booking once the shipment is cleared for release. We have not booked it.",
+            "source": "simulated_persona"
+          },
+          {
+            "n": 9,
+            "timestamp": "2026-10-10T09:03:00Z",
+            "stage": "Context",
+            "channel": "Warehouse work queue",
+            "from": "Warehouse, Meadow Kitchen",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "DL-8400 contains chilled meals. The logger recorded 11°C for 75 minutes after the crash. No goods-safety decision is recorded. Food-safety lead, Meadow Kitchen owns the release decision through the Safety incident queue.",
+            "source": "simulated_persona"
+          },
+          {
+            "n": 10,
+            "timestamp": "2026-10-10T09:10:00Z",
+            "stage": "Escalation",
+            "channel": "Customer portal",
+            "from": "Mira Rowan, verified recipient",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "The Monday clinic window works for me, but only if your Food-safety lead has cleared these meals. I am not authorising unsafe goods to be sent.",
+            "source": "simulated_persona"
+          }
+        ],
+        "elapsedMs": 0,
+        "workflowId": "demo-cold-chain"
+      },
+      "execution": {
+        "id": "6dcf59fe-0c9a-4a92-ada5-7cd2db4d8bc3",
+        "caseId": "gen-3401",
+        "dataset": "generated",
+        "workflowId": "demo-cold-chain",
+        "status": "success",
+        "outcome": "acted",
+        "startedAt": "2026-10-10T15:07:54.042Z",
+        "durationMs": 38561,
+        "costUsd": 0.097999,
+        "origin": "console",
+        "simulated": true,
+        "eval": null,
+        "error": null,
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "nextAction": "Safety incident queue → Food-safety lead, Meadow Kitchen",
+        "gate": "allow",
+        "parentExecutionId": "b0955363-0e55-4e19-9937-e6eab165ac62",
+        "voice": null,
+        "trace": {
+          "version": 1,
+          "runId": "api-2026-10-10T15:07:54.050Z",
+          "caseId": "gen-3401",
+          "flowId": "demo-cold-chain",
+          "mode": "demo",
+          "events": [
+            {
+              "t": 0,
+              "kind": "run_start",
+              "title": "Crash fallback conflicts with the verified customer date and time",
+              "inputs": [
+                {
+                  "n": 1,
+                  "channel": "file",
+                  "from": "context",
+                  "excerpt": "138 characters"
+                },
+                {
+                  "n": 2,
+                  "channel": "file",
+                  "from": "history",
+                  "excerpt": "4316 characters"
+                }
+              ]
+            },
+            {
+              "t": 0,
+              "kind": "node_start",
+              "nodeId": "ingest",
+              "nodeType": "ingest"
+            },
+            {
+              "t": 16310,
+              "kind": "model_call",
+              "nodeId": "ingest",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 16310,
+              "tokensIn": 6239,
+              "tokensOut": 2701,
+              "costUsd": 0.0318722,
+              "ok": true
+            },
+            {
+              "t": 16310,
+              "kind": "node_end",
+              "nodeId": "ingest",
+              "status": "ok",
+              "summary": "2 files, 0 attachments read",
+              "output": {
+                "type": "ingest",
+                "decisionGroups": [
+                  "capacity_disruption",
+                  "dependencies",
+                  "owner_coordination",
+                  "missing_evidence",
+                  "valid_changes",
+                  "hazard",
+                  "deadline_math",
+                  "multi_issue",
+                  "truthful_status"
+                ],
+                "constraints": [
+                  {
+                    "surface": "goods",
+                    "requirement": "Food-safety lead must clear the chilled meals for release before they are sent; no goods-safety decision is recorded yet.",
+                    "owner": "Food-safety lead, Meadow Kitchen (via Safety incident queue)",
+                    "scope": "DL-8400",
+                    "kind": "safety_restriction",
+                    "state": "active",
+                    "evidence": "Meadow Kitchen warehouse, 09:03Z: logger 11°C for 75 minutes after crash, no decision recorded; Mira Rowan 09:10Z also conditions acceptance on clearance."
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Cedarway offers Mon 12 Oct 11:00–12:00 UTC; the offer lapses at 10:30 UTC today and it is not booked. Cedarway asks to be told to confirm once the shipment is cleared for release.",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "unconfirmed",
+                    "evidence": "Dispatch chat 08:56Z: available, offered until 10:30Z, not booked."
+                  },
+                  {
+                    "surface": "site_access",
+                    "requirement": "Alder Clinic can receive only Mon 12 Oct 11:00–12:00 UTC.",
+                    "owner": "Receiving, Alder Clinic",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "active",
+                    "evidence": "Clinic email 08:42Z: confirmed receiving window."
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Delivery Monday 12 Oct 10:00–12:00 UTC only, at Alder Clinic; Sunday not acceptable; and only if the meals are cleared as safe.",
+                    "owner": "Mira Rowan (verified recipient)",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "active",
+                    "evidence": "Portal 08:35Z (latest availability) and 09:10Z conditional on clearance."
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Sunday 11 Oct 10:00–12:00 UTC delivery.",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "superseded",
+                    "evidence": "Offered 08:07Z; recipient cannot take Sunday morning."
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Sunday 11 Oct 14:00–16:00 UTC delivery, and Monday 12 Oct 10:00–12:00 UTC as the earlier alternative.",
+                    "owner": "Mira Rowan",
+                    "scope": "DL-8400",
+                    "kind": "preference",
+                    "state": "superseded",
+                    "evidence": "Portal 08:14Z, replaced by Monday-only request at 08:35Z; Cedarway's Sunday 14:00–16:00 offer at 08:28Z is no longer needed."
+                  }
+                ]
+              },
+              "latencyMs": 16310,
+              "costUsd": 0.0318722,
+              "detail": [
+                "DL-8400 (chilled meals) missed its 10 Oct slot after a Cedarway van crash. Monday 12 Oct 11:00–12:00 UTC at Alder Clinic is offered by Cedarway until 10:30 UTC today, but Meadow Kitchen's food-safety lead has not yet decided on release afte",
+                "5 statements found: 4 from a record or an owning team, 1 unverified.",
+                "Who decides: Food-safety lead, Meadow Kitchen (release decision); Cedarway Logistics for booking capacity."
+              ]
+            },
+            {
+              "t": 16311,
+              "kind": "edge",
+              "from": "ingest",
+              "to": "history"
+            },
+            {
+              "t": 16311,
+              "kind": "node_start",
+              "nodeId": "history",
+              "nodeType": "history_lookup"
+            },
+            {
+              "t": 16311,
+              "kind": "node_end",
+              "nodeId": "history",
+              "status": "ok",
+              "summary": "5 open commitments, 2 deadlines",
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Already asked: Confirm Cedarway capacity for Sun 14:00–16:00 or Mon 10:00–12:00 UTC (withdrawn, owed by Cedarway Logistics Dispatch).",
+                "Already asked: Book Mon 12 Oct 11:00–12:00 UTC delivery to Alder Clinic, once the shipment is cleared for release (requested, owed by Cedarway Logistics Dispatch).",
+                "Already asked: Report goods location and crash effect on goods (requested, owed by Cedarway Logistics Dispatch).",
+                "Deadline: Cedarway Monday 11:00–12:00 UTC offer lapses 10:30 UTC on 10 Oct",
+                "Deadline: Delivery window Mon 12 Oct 11:00–12:00 UTC (clinic receiving)"
+              ]
+            },
+            {
+              "t": 16311,
+              "kind": "edge",
+              "from": "history",
+              "to": "triage"
+            },
+            {
+              "t": 16311,
+              "kind": "node_start",
+              "nodeId": "triage",
+              "nodeType": "triage"
+            },
+            {
+              "t": 16311,
+              "kind": "node_end",
+              "nodeId": "triage",
+              "status": "ok",
+              "summary": "Crash-disrupted chilled food delivery with rebooking pending a food-safety relea",
+              "output": {
+                "type": "triage",
+                "caseType": "Crash-disrupted chilled food delivery with rebooking pending a food-safety release decision",
+                "urgency": "high",
+                "p": 1
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Kind of problem: Crash-disrupted chilled food delivery with rebooking pending a food-safety release decision. Urgency: high.",
+                "Possible hazard: Chilled meals logged 11°C for 75 minutes after the crash; food-safety release not yet decided, so they must not be sent or treated as safe until cleared."
+              ]
+            },
+            {
+              "t": 16311,
+              "kind": "edge",
+              "from": "triage",
+              "to": "perspectives_cold",
+              "when": "cold_chain"
+            },
+            {
+              "t": 16311,
+              "kind": "node_start",
+              "nodeId": "perspectives_cold",
+              "nodeType": "perspectives"
+            },
+            {
+              "t": 16311,
+              "kind": "node_end",
+              "nodeId": "perspectives_cold",
+              "status": "skipped",
+              "summary": "skipped: no Jev key",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 16311,
+              "kind": "edge",
+              "from": "perspectives_cold",
+              "to": "missing_cold"
+            },
+            {
+              "t": 16311,
+              "kind": "node_start",
+              "nodeId": "missing_cold",
+              "nodeType": "missing_info"
+            },
+            {
+              "t": 16311,
+              "kind": "node_end",
+              "nodeId": "missing_cold",
+              "status": "ok",
+              "summary": "3 missing: Food-safety release decision on the chilled meals",
+              "output": {
+                "type": "missing_info",
+                "missing": true
+              },
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 16311,
+              "kind": "edge",
+              "from": "missing_cold",
+              "to": "planner_cold_missing",
+              "when": "missing"
+            },
+            {
+              "t": 16311,
+              "kind": "node_start",
+              "nodeId": "planner_cold_missing",
+              "nodeType": "planner"
+            },
+            {
+              "t": 35702,
+              "kind": "model_call",
+              "nodeId": "planner_cold_missing",
+              "runner": "claude",
+              "model": "claude-opus-5-5",
+              "latencyMs": 19391,
+              "tokensIn": 12206,
+              "tokensOut": 1468,
+              "costUsd": 0.0579224,
+              "ok": true
+            },
+            {
+              "t": 35702,
+              "kind": "node_end",
+              "nodeId": "planner_cold_missing",
+              "status": "ok",
+              "summary": "act: Meadow Kitchen's food-safety lead owns release; an 11°C/75-minute excursion",
+              "output": {
+                "type": "planner",
+                "nextAction": {
+                  "recipient": "Food-safety lead, Meadow Kitchen",
+                  "channel": "Safety incident queue",
+                  "message": "Urgent: we need your release decision on DL-8400 (chilled meals). Meadow Kitchen Warehouse reports the logger recorded 11°C for 75 minutes after the Cedarway van crash on 10 Oct, and no goods-safety decision is recorded. Cedarway's Mon 12 Oct 11:00–12:00 UTC delivery offer lapses at 10:30 UTC today and will only be booked once the shipment is cleared for release.",
+                  "undoable": true
+                },
+                "wontDo": [
+                  "Asking Cedarway to book Monday now",
+                  "Saying the meals are safe or advising on them",
+                  "Escalating to a desk human"
+                ],
+                "waitingFor": [
+                  {
+                    "what": "Release decision on DL-8400 chilled meals",
+                    "from": "Food-safety lead, Meadow Kitchen",
+                    "by": "2026-10-10 10:30 UTC (Cedarway offer lapses)"
+                  },
+                  {
+                    "what": "If cleared: desk asks Cedarway to confirm the Mon 12 Oct 11:00–12:00 UTC booking; if not cleared or offer lapses, ask Cedarway for options within Mira's Monday window and the clinic's 11:00–12:00 slot",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": ""
+                  },
+                  {
+                    "what": "Current location of the goods and whether the crash affected them (already requested)",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": ""
+                  }
+                ],
+                "candidates": []
+              },
+              "latencyMs": 19391,
+              "costUsd": 0.0579224,
+              "detail": [
+                "Send the logger excursion to Meadow Kitchen's food-safety lead for a release decision; tell Mira booking waits on it.",
+                "Why: Meadow Kitchen's food-safety lead owns release; an 11°C/75-minute excursion is recorded with no decision, and Cedarway will only book once cleared.",
+                "Will not: Asking Cedarway to book Monday now (Cedarway and Mira both condition booking on food-safety clearance, which has not been given.)",
+                "Will not: Saying the meals are safe or advising on them (Only the food-safety lead rules on release; the desk gives no handling or safety view.)",
+                "Will not: Escalating to a desk human (Every decision has a named owner and nobody was injured; owner requests are routine coordination.)"
+              ]
+            },
+            {
+              "t": 35702,
+              "kind": "edge",
+              "from": "planner_cold_missing",
+              "to": "gate_cold_missing"
+            },
+            {
+              "t": 35702,
+              "kind": "node_start",
+              "nodeId": "gate_cold_missing",
+              "nodeType": "safety_gate"
+            },
+            {
+              "t": 38558,
+              "kind": "model_call",
+              "nodeId": "gate_cold_missing",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 2855,
+              "tokensIn": 3780,
+              "tokensOut": 270,
+              "costUsd": 0.008204399999999999,
+              "ok": true
+            },
+            {
+              "t": 38560,
+              "kind": "node_end",
+              "nodeId": "gate_cold_missing",
+              "status": "ok",
+              "summary": "2 of 2 messages cleared",
+              "output": {
+                "type": "safety_gate",
+                "risk": 0.1,
+                "decision": "allow",
+                "allowBelow": 0.25,
+                "blockAbove": 0.75
+              },
+              "latencyMs": 2858,
+              "costUsd": 0.008204399999999999,
+              "detail": [
+                "Message to Food-safety lead, Meadow Kitchen: clear to send (risk 0.04, below 0.25).",
+                "Message to Mira Rowan: clear to send (risk 0.10, below 0.25)."
+              ]
+            },
+            {
+              "t": 38560,
+              "kind": "edge",
+              "from": "gate_cold_missing",
+              "to": "action_cold_missing",
+              "when": "allow"
+            },
+            {
+              "t": 38560,
+              "kind": "node_start",
+              "nodeId": "action_cold_missing",
+              "nodeType": "action"
+            },
+            {
+              "t": 38561,
+              "kind": "node_end",
+              "nodeId": "action_cold_missing",
+              "status": "ok",
+              "summary": "2 of 2 message(s) accepted by the outbox",
+              "output": {
+                "type": "action",
+                "done": {
+                  "recipient": "Food-safety lead, Meadow Kitchen",
+                  "channel": "Safety incident queue",
+                  "message": "Urgent: we need your release decision on DL-8400 (chilled meals). Meadow Kitchen Warehouse reports the logger recorded 11°C for 75 minutes after the Cedarway van crash on 10 Oct, and no goods-safety decision is recorded. Cedarway's Mon 12 Oct 11:00–12:00 UTC delivery offer lapses at 10:30 UTC today and will only be booked once the shipment is cleared for release.",
+                  "undoable": true
+                },
+                "ok": true
+              },
+              "latencyMs": 1,
+              "costUsd": 0,
+              "detail": [
+                "Recorded for Food-safety lead, Meadow Kitchen by Safety incident queue: Route the evidenced temperature excursion to the release owner and request their decision.",
+                "It says: \"Urgent: we need your release decision on DL-8400 (chilled meals). Meadow Kitchen Warehouse reports the logger recorded 11°C for 75 minutes after the Cedarway van crash on 10 Oct, and no goods-safety decision is recorded. Cedarway'",
+                "Recorded for Mira Rowan by Customer portal: Tell the verified recipient the Monday hour is offered but held pending the food-safety decision she required.",
+                "It says: \"Cedarway Logistics has offered Mon 12 Oct 11:00–12:00 UTC for DL-8400 at Alder Clinic, but it is not booked. As you asked, nothing will be booked until Meadow Kitchen's food-safety lead has made a release decision, and we have rai",
+                "No live system is connected, so nothing has reached a recipient yet."
+              ]
+            },
+            {
+              "t": 38561,
+              "kind": "edge",
+              "from": "action_cold_missing",
+              "to": "log_cold_missing_done"
+            },
+            {
+              "t": 38561,
+              "kind": "node_start",
+              "nodeId": "log_cold_missing_done",
+              "nodeType": "case_log"
+            },
+            {
+              "t": 38561,
+              "kind": "node_end",
+              "nodeId": "log_cold_missing_done",
+              "status": "ok",
+              "summary": "outcome: acted",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 38561,
+              "kind": "run_end",
+              "outcome": "acted",
+              "totalCostUsd": 0.097999,
+              "totalLatencyMs": 38561,
+              "nextAction": {
+                "recipient": "Food-safety lead, Meadow Kitchen",
+                "channel": "Safety incident queue",
+                "message": "Urgent: we need your release decision on DL-8400 (chilled meals). Meadow Kitchen Warehouse reports the logger recorded 11°C for 75 minutes after the Cedarway van crash on 10 Oct, and no goods-safety decision is recorded. Cedarway's Mon 12 Oct 11:00–12:00 UTC delivery offer lapses at 10:30 UTC today and will only be booked once the shipment is cleared for release.",
+                "undoable": true
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        "answerMd": null,
+        "reasoningMd": null,
+        "outbox": [
+          {
+            "action": {
+              "recipient": "Food-safety lead, Meadow Kitchen",
+              "channel": "Safety incident queue",
+              "kind": "safety_alert",
+              "purpose": "Route the evidenced temperature excursion to the release owner and request their decision.",
+              "message": "Urgent: we need your release decision on DL-8400 (chilled meals). Meadow Kitchen Warehouse reports the logger recorded 11°C for 75 minutes after the Cedarway van crash on 10 Oct, and no goods-safety decision is recorded. Cedarway's Mon 12 Oct 11:00–12:00 UTC delivery offer lapses at 10:30 UTC today and will only be booked once the shipment is cleared for release."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Safety incident queue (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+          },
+          {
+            "action": {
+              "recipient": "Mira Rowan",
+              "channel": "Customer portal",
+              "kind": "status_update",
+              "purpose": "Tell the verified recipient the Monday hour is offered but held pending the food-safety decision she required.",
+              "message": "Cedarway Logistics has offered Mon 12 Oct 11:00–12:00 UTC for DL-8400 at Alder Clinic, but it is not booked. As you asked, nothing will be booked until Meadow Kitchen's food-safety lead has made a release decision, and we have raised it with them as urgent. We will update you when they decide."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Customer portal (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+          }
+        ],
+        "card": null
+      }
+    },
+    {
+      "label": "gen-3404",
+      "request": {
+        "parentExecutionId": "6dcf59fe-0c9a-4a92-ada5-7cd2db4d8bc3",
+        "extraEvents": [
+          {
+            "n": 12,
+            "timestamp": "2026-10-10T09:24:00Z",
+            "stage": "Escalation",
+            "channel": "Safety incident queue",
+            "from": "Food-safety lead, Meadow Kitchen",
+            "to": "Iona Quill, Rivet Delivery Desk",
+            "body": "I have reviewed the recorded condition and authorise release of shipment DL-8400. This is the required goods-safety decision for this shipment only.",
+            "source": "simulated_persona"
+          }
+        ],
+        "elapsedMs": 0,
+        "workflowId": "demo-cold-chain"
+      },
+      "execution": {
+        "id": "50ddfa0b-94fe-4ebe-84a6-ba1b56966de5",
+        "caseId": "gen-3401",
+        "dataset": "generated",
+        "workflowId": "demo-cold-chain",
+        "status": "success",
+        "outcome": "acted",
+        "startedAt": "2026-10-10T15:08:32.626Z",
+        "durationMs": 33467,
+        "costUsd": 0.098993,
+        "origin": "console",
+        "simulated": true,
+        "eval": null,
+        "error": null,
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "nextAction": "Dispatch chat → Dispatch, Cedarway Logistics",
+        "gate": "allow",
+        "parentExecutionId": "6dcf59fe-0c9a-4a92-ada5-7cd2db4d8bc3",
+        "voice": null,
+        "trace": {
+          "version": 1,
+          "runId": "api-2026-10-10T15:08:32.635Z",
+          "caseId": "gen-3401",
+          "flowId": "demo-cold-chain",
+          "mode": "demo",
+          "events": [
+            {
+              "t": 0,
+              "kind": "run_start",
+              "title": "Crash fallback conflicts with the verified customer date and time",
+              "inputs": [
+                {
+                  "n": 1,
+                  "channel": "file",
+                  "from": "context",
+                  "excerpt": "138 characters"
+                },
+                {
+                  "n": 2,
+                  "channel": "file",
+                  "from": "history",
+                  "excerpt": "5546 characters"
+                }
+              ]
+            },
+            {
+              "t": 0,
+              "kind": "node_start",
+              "nodeId": "ingest",
+              "nodeType": "ingest"
+            },
+            {
+              "t": 18859,
+              "kind": "model_call",
+              "nodeId": "ingest",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 18859,
+              "tokensIn": 6765,
+              "tokensOut": 2982,
+              "costUsd": 0.035734199999999994,
+              "ok": true
+            },
+            {
+              "t": 18859,
+              "kind": "node_end",
+              "nodeId": "ingest",
+              "status": "ok",
+              "summary": "2 files, 0 attachments read",
+              "output": {
+                "type": "ingest",
+                "decisionGroups": [
+                  "capacity_disruption",
+                  "dependencies",
+                  "owner_coordination",
+                  "missing_evidence",
+                  "valid_changes",
+                  "hazard",
+                  "truthful_status",
+                  "deadline_math",
+                  "multi_issue"
+                ],
+                "constraints": [
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Replacement slot Mon 12 Oct 11:00–12:00 UTC is offered, not booked; offer remains open until 10:30 UTC on 10 Oct and booking occurs only after Cedarway is asked to confirm once release is cleared.",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "unconfirmed",
+                    "evidence": "Dispatch chat 08:56Z: available, offered until 10:30Z, not booked."
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Sun 11 Oct 10:00–12:00 UTC replacement offer",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "superseded",
+                    "evidence": "Event 1 offer; recipient cannot take Sunday morning; later Monday-only choice."
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Sun 11 Oct 14:00–16:00 UTC offer",
+                    "owner": "Cedarway Logistics Dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "superseded",
+                    "evidence": "Offered 08:28Z; recipient at 08:35Z said Sunday no longer acceptable; desk told Cedarway it is not needed."
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Delivery Mon 12 Oct 10:00–12:00 UTC only, at Alder Clinic; Sunday unacceptable.",
+                    "owner": "Mira Rowan (verified recipient)",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "active",
+                    "evidence": "Portal 08:35Z, verified account; replaces earlier Sunday 14:00–16:00 option."
+                  },
+                  {
+                    "surface": "site_access",
+                    "requirement": "Clinic receives only Mon 12 Oct 11:00–12:00 UTC.",
+                    "owner": "Receiving, Alder Clinic",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "active",
+                    "evidence": "Clinic email 08:42Z, stated as confirmed receiving window."
+                  },
+                  {
+                    "surface": "goods",
+                    "requirement": "Goods-safety release decision required before booking or dispatch; chilled meals logged at 11°C for 75 minutes after crash.",
+                    "owner": "Food-safety lead, Meadow Kitchen",
+                    "scope": "DL-8400 only",
+                    "kind": "safety_restriction",
+                    "state": "satisfied",
+                    "evidence": "Warehouse 09:03Z stated owner and no decision recorded; Food-safety lead 09:24Z authorised release of DL-8400 via Safety incident queue."
+                  },
+                  {
+                    "surface": "commercial",
+                    "requirement": "Recipient will accept the Monday delivery only if the food-safety lead has cleared the meals.",
+                    "owner": "Mira Rowan",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "satisfied",
+                    "evidence": "Portal 09:10Z; clearance given at 09:24Z."
+                  }
+                ]
+              },
+              "latencyMs": 18859,
+              "costUsd": 0.035734199999999994,
+              "detail": [
+                "Cedarway's van crashed on DL-8400 (chilled meals for Alder Clinic); the recipient and clinic now align on Mon 12 Oct 11:00–12:00 UTC, Cedarway's offer lapses at 10:30 UTC today, and Meadow Kitchen's food-safety lead has just authorised rele",
+                "7 statements found: 5 from a record or an owning team, 2 unverified.",
+                "Who decides: Cedarway Logistics Dispatch for booking the slot; Food-safety lead, Meadow Kitchen decided goods release.."
+              ]
+            },
+            {
+              "t": 18859,
+              "kind": "edge",
+              "from": "ingest",
+              "to": "history"
+            },
+            {
+              "t": 18859,
+              "kind": "node_start",
+              "nodeId": "history",
+              "nodeType": "history_lookup"
+            },
+            {
+              "t": 18859,
+              "kind": "node_end",
+              "nodeId": "history",
+              "status": "ok",
+              "summary": "4 open commitments, 2 deadlines",
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Already asked: Confirm and book Mon 12 Oct 11:00–12:00 UTC delivery to Alder Clinic once asked after release (requested, owed by Dispatch, Cedarway Logistics).",
+                "Already asked: Report goods location and crash impact (requested, owed by Dispatch, Cedarway Logistics).",
+                "Already asked: Goods-safety release decision for DL-8400 (confirmed, owed by Food-safety lead, Meadow Kitchen).",
+                "Deadline: Cedarway Monday offer lapses at 10:30 UTC on 10 Oct 2026",
+                "Deadline: Delivery slot Mon 12 Oct 2026 11:00–12:00 UTC (inside recipient's 10:00–12:00 window and the clinic's 11:00–12:00 window)"
+              ]
+            },
+            {
+              "t": 18859,
+              "kind": "edge",
+              "from": "history",
+              "to": "triage"
+            },
+            {
+              "t": 18859,
+              "kind": "node_start",
+              "nodeId": "triage",
+              "nodeType": "triage"
+            },
+            {
+              "t": 18859,
+              "kind": "node_end",
+              "nodeId": "triage",
+              "status": "ok",
+              "summary": "Crash-disrupted chilled food delivery needing rebooking within clinic window, pe",
+              "output": {
+                "type": "triage",
+                "caseType": "Crash-disrupted chilled food delivery needing rebooking within clinic window, pending goods-safety release (now given) and carrier booking",
+                "urgency": "high",
+                "p": 1
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Kind of problem: Crash-disrupted chilled food delivery needing rebooking within clinic window, pending goods-safety release (now given) and carrier booking. Urgency: high.",
+                "Possible hazard: Chilled meals logged at 11°C for 75 minutes after the crash; food-safety risk, release authorised by the owner but delay until Monday and storage conditions in the meantime are not described."
+              ]
+            },
+            {
+              "t": 18859,
+              "kind": "edge",
+              "from": "triage",
+              "to": "perspectives_cold",
+              "when": "cold_chain"
+            },
+            {
+              "t": 18859,
+              "kind": "node_start",
+              "nodeId": "perspectives_cold",
+              "nodeType": "perspectives"
+            },
+            {
+              "t": 18859,
+              "kind": "node_end",
+              "nodeId": "perspectives_cold",
+              "status": "skipped",
+              "summary": "skipped: no Jev key",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 18859,
+              "kind": "edge",
+              "from": "perspectives_cold",
+              "to": "missing_cold"
+            },
+            {
+              "t": 18859,
+              "kind": "node_start",
+              "nodeId": "missing_cold",
+              "nodeType": "missing_info"
+            },
+            {
+              "t": 18859,
+              "kind": "node_end",
+              "nodeId": "missing_cold",
+              "status": "ok",
+              "summary": "3 missing: Current location of the goods and whether the crash affected them phy",
+              "output": {
+                "type": "missing_info",
+                "missing": true
+              },
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 18859,
+              "kind": "edge",
+              "from": "missing_cold",
+              "to": "planner_cold_missing",
+              "when": "missing"
+            },
+            {
+              "t": 18859,
+              "kind": "node_start",
+              "nodeId": "planner_cold_missing",
+              "nodeType": "planner"
+            },
+            {
+              "t": 30801,
+              "kind": "model_call",
+              "nodeId": "planner_cold_missing",
+              "runner": "claude",
+              "model": "claude-opus-5-5",
+              "latencyMs": 11941,
+              "tokensIn": 13058,
+              "tokensOut": 1109,
+              "costUsd": 0.0541504,
+              "ok": true
+            },
+            {
+              "t": 30801,
+              "kind": "node_end",
+              "nodeId": "planner_cold_missing",
+              "status": "ok",
+              "summary": "act: Cedarway owns booking; its stated precondition, goods-safety release, was g",
+              "output": {
+                "type": "planner",
+                "nextAction": {
+                  "recipient": "Dispatch, Cedarway Logistics",
+                  "channel": "Dispatch chat",
+                  "message": "Please confirm the booking for DL-8400 on Mon 12 Oct 11:00–12:00 UTC at Alder Clinic. Meadow Kitchen's food-safety lead authorised release of this shipment at 09:24 UTC. Your offer lapses at 10:30 UTC today, so please reply with the booking confirmation before then.",
+                  "undoable": true
+                },
+                "wontDo": [
+                  "Telling anyone the meals are safe",
+                  "Saying the delivery is booked",
+                  "Re-asking Cedarway for goods location and crash impact"
+                ],
+                "waitingFor": [
+                  {
+                    "what": "Booking confirmation for DL-8400, Mon 12 Oct 11:00–12:00 UTC at Alder Clinic",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": "2026-10-10 10:30 UTC"
+                  },
+                  {
+                    "what": "Current location of goods and whether the crash affected them",
+                    "from": "Dispatch, Cedarway Logistics",
+                    "by": ""
+                  },
+                  {
+                    "what": "Once booked: confirm the delivery hour to Mira Rowan and Receiving, Alder Clinic",
+                    "from": "Rivet Delivery Desk (after Cedarway confirms)",
+                    "by": ""
+                  }
+                ],
+                "candidates": []
+              },
+              "latencyMs": 11942,
+              "costUsd": 0.0541504,
+              "detail": [
+                "Ask Cedarway Dispatch to confirm the Monday 11:00–12:00 booking before 10:30; tell Mira release is authorised, not booked.",
+                "Why: Cedarway owns booking; its stated precondition, goods-safety release, was given by Meadow Kitchen's food-safety lead at 09:24, before the 10:30 offer lapse.",
+                "Will not: Telling anyone the meals are safe (Only the food-safety lead's release decision can be relayed; the desk gives no safety or consumption judgement.)",
+                "Will not: Saying the delivery is booked (Cedarway has only offered the slot; booking is unconfirmed until Dispatch says so.)",
+                "Will not: Re-asking Cedarway for goods location and crash impact (Already requested twice; still awaited, duplicating adds noise.)"
+              ]
+            },
+            {
+              "t": 30802,
+              "kind": "edge",
+              "from": "planner_cold_missing",
+              "to": "gate_cold_missing"
+            },
+            {
+              "t": 30802,
+              "kind": "node_start",
+              "nodeId": "gate_cold_missing",
+              "nodeType": "safety_gate"
+            },
+            {
+              "t": 33465,
+              "kind": "model_call",
+              "nodeId": "gate_cold_missing",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 2663,
+              "tokensIn": 4262,
+              "tokensOut": 264,
+              "costUsd": 0.0091084,
+              "ok": true
+            },
+            {
+              "t": 33466,
+              "kind": "node_end",
+              "nodeId": "gate_cold_missing",
+              "status": "ok",
+              "summary": "2 of 2 messages cleared",
+              "output": {
+                "type": "safety_gate",
+                "risk": 0.05,
+                "decision": "allow",
+                "allowBelow": 0.25,
+                "blockAbove": 0.75
+              },
+              "latencyMs": 2664,
+              "costUsd": 0.0091084,
+              "detail": [
+                "Message to Dispatch, Cedarway Logistics: clear to send (risk 0.05, below 0.25).",
+                "Message to Mira Rowan: clear to send (risk 0.05, below 0.25)."
+              ]
+            },
+            {
+              "t": 33466,
+              "kind": "edge",
+              "from": "gate_cold_missing",
+              "to": "action_cold_missing",
+              "when": "allow"
+            },
+            {
+              "t": 33466,
+              "kind": "node_start",
+              "nodeId": "action_cold_missing",
+              "nodeType": "action"
+            },
+            {
+              "t": 33466,
+              "kind": "node_end",
+              "nodeId": "action_cold_missing",
+              "status": "ok",
+              "summary": "2 of 2 message(s) accepted by the outbox",
+              "output": {
+                "type": "action",
+                "done": {
+                  "recipient": "Dispatch, Cedarway Logistics",
+                  "channel": "Dispatch chat",
+                  "message": "Please confirm the booking for DL-8400 on Mon 12 Oct 11:00–12:00 UTC at Alder Clinic. Meadow Kitchen's food-safety lead authorised release of this shipment at 09:24 UTC. Your offer lapses at 10:30 UTC today, so please reply with the booking confirmation before then.",
+                  "undoable": true
+                },
+                "ok": true
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Recorded for Dispatch, Cedarway Logistics by Dispatch chat: Ask the booking owner to confirm the offered slot now that release is authorised, before the 10:30 UTC lapse.",
+                "It says: \"Please confirm the booking for DL-8400 on Mon 12 Oct 11:00–12:00 UTC at Alder Clinic. Meadow Kitchen's food-safety lead authorised release of this shipment at 09:24 UTC. Your offer lapses at 10:30 UTC today, so please reply with t",
+                "Recorded for Mira Rowan by Customer portal: Tell the verified recipient her stated condition has been met by the owner and the booking has been requested, not made.",
+                "It says: \"Meadow Kitchen's food-safety lead has authorised release of DL-8400, which was the condition you set. We have now asked Cedarway Logistics to confirm the Mon 12 Oct 11:00–12:00 UTC delivery at Alder Clinic; it is not booked until ",
+                "No live system is connected, so nothing has reached a recipient yet."
+              ]
+            },
+            {
+              "t": 33467,
+              "kind": "edge",
+              "from": "action_cold_missing",
+              "to": "log_cold_missing_done"
+            },
+            {
+              "t": 33467,
+              "kind": "node_start",
+              "nodeId": "log_cold_missing_done",
+              "nodeType": "case_log"
+            },
+            {
+              "t": 33467,
+              "kind": "node_end",
+              "nodeId": "log_cold_missing_done",
+              "status": "ok",
+              "summary": "outcome: acted",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 33467,
+              "kind": "run_end",
+              "outcome": "acted",
+              "totalCostUsd": 0.098993,
+              "totalLatencyMs": 33467,
+              "nextAction": {
+                "recipient": "Dispatch, Cedarway Logistics",
+                "channel": "Dispatch chat",
+                "message": "Please confirm the booking for DL-8400 on Mon 12 Oct 11:00–12:00 UTC at Alder Clinic. Meadow Kitchen's food-safety lead authorised release of this shipment at 09:24 UTC. Your offer lapses at 10:30 UTC today, so please reply with the booking confirmation before then.",
+                "undoable": true
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        "answerMd": null,
+        "reasoningMd": null,
+        "outbox": [
+          {
+            "action": {
+              "recipient": "Dispatch, Cedarway Logistics",
+              "channel": "Dispatch chat",
+              "kind": "request_to_owner",
+              "purpose": "Ask the booking owner to confirm the offered slot now that release is authorised, before the 10:30 UTC lapse.",
+              "message": "Please confirm the booking for DL-8400 on Mon 12 Oct 11:00–12:00 UTC at Alder Clinic. Meadow Kitchen's food-safety lead authorised release of this shipment at 09:24 UTC. Your offer lapses at 10:30 UTC today, so please reply with the booking confirmation before then."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Dispatch chat (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+          },
+          {
+            "action": {
+              "recipient": "Mira Rowan",
+              "channel": "Customer portal",
+              "kind": "status_update",
+              "purpose": "Tell the verified recipient her stated condition has been met by the owner and the booking has been requested, not made.",
+              "message": "Meadow Kitchen's food-safety lead has authorised release of DL-8400, which was the condition you set. We have now asked Cedarway Logistics to confirm the Mon 12 Oct 11:00–12:00 UTC delivery at Alder Clinic; it is not booked until they confirm. We will update you as soon as they reply."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Customer portal (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+          }
+        ],
+        "card": null
+      }
+    },
+    {
+      "label": "owner-confirmed completion (simulated events)",
+      "request": {
+        "parentExecutionId": "50ddfa0b-94fe-4ebe-84a6-ba1b56966de5",
+        "workflowId": "demo-cold-chain",
+        "elapsedMs": 0,
+        "extraEvents": [
+          {
+            "n": 0,
+            "timestamp": "2026-10-12T12:10:00Z",
+            "stage": "Follow-up",
+            "channel": "Email",
+            "from": "Dispatch",
+            "to": "Desk",
+            "body": "DL-8400: Monday 11:00–12:00 booking was confirmed. Delivery to the clinic receiving desk is complete; proof of delivery was checked against the agreed address and signed by the authorised receiver. No outstanding operational action remains.",
+            "source": "simulated_persona"
+          },
+          {
+            "n": 0,
+            "timestamp": "2026-10-12T12:15:00Z",
+            "stage": "Follow-up",
+            "channel": "Customer portal",
+            "from": "Recipient",
+            "to": "Desk",
+            "body": "DL-8400 received at the agreed clinic. Everything is resolved. No further action requested.",
+            "source": "simulated_persona"
+          }
+        ]
+      },
+      "execution": {
+        "id": "5b34c6b3-2c65-44a5-a065-e06e39622c1f",
+        "caseId": "gen-3401",
+        "dataset": "generated",
+        "workflowId": "demo-cold-chain",
+        "status": "success",
+        "outcome": "no_action",
+        "startedAt": "2026-10-10T15:09:06.121Z",
+        "durationMs": 18883,
+        "costUsd": 0.0690326,
+        "origin": "console",
+        "simulated": true,
+        "eval": null,
+        "error": null,
+        "title": "Crash fallback conflicts with the verified customer date and time",
+        "nextAction": null,
+        "gate": "allow",
+        "parentExecutionId": "50ddfa0b-94fe-4ebe-84a6-ba1b56966de5",
+        "voice": null,
+        "trace": {
+          "version": 1,
+          "runId": "api-2026-10-10T15:09:06.130Z",
+          "caseId": "gen-3401",
+          "flowId": "demo-cold-chain",
+          "mode": "demo",
+          "events": [
+            {
+              "t": 0,
+              "kind": "run_start",
+              "title": "Crash fallback conflicts with the verified customer date and time",
+              "inputs": [
+                {
+                  "n": 1,
+                  "channel": "file",
+                  "from": "context",
+                  "excerpt": "138 characters"
+                },
+                {
+                  "n": 2,
+                  "channel": "file",
+                  "from": "history",
+                  "excerpt": "6887 characters"
+                }
+              ]
+            },
+            {
+              "t": 0,
+              "kind": "node_start",
+              "nodeId": "ingest",
+              "nodeType": "ingest"
+            },
+            {
+              "t": 15023,
+              "kind": "model_call",
+              "nodeId": "ingest",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 15023,
+              "tokensIn": 7340,
+              "tokensOut": 2411,
+              "costUsd": 0.0311742,
+              "ok": true
+            },
+            {
+              "t": 15023,
+              "kind": "node_end",
+              "nodeId": "ingest",
+              "status": "ok",
+              "summary": "2 files, 0 attachments read",
+              "output": {
+                "type": "ingest",
+                "decisionGroups": [
+                  "capacity_disruption",
+                  "dependencies",
+                  "owner_coordination",
+                  "missing_evidence",
+                  "valid_changes",
+                  "hazard",
+                  "multi_issue",
+                  "deadline_math",
+                  "wait_duplicate"
+                ],
+                "constraints": [
+                  {
+                    "surface": "recipient",
+                    "requirement": "Recipient cannot take Sunday 11 Oct morning; first offered Sun 14:00-16:00 or Mon 10:00-12:00",
+                    "owner": "Mira Rowan (verified recipient)",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "superseded",
+                    "evidence": "Portal message 08:14Z, replaced by 08:35Z message"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Monday 12 Oct 10:00-12:00 UTC only, at Alder Clinic; Sunday no longer acceptable",
+                    "owner": "Mira Rowan (verified recipient)",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "satisfied",
+                    "evidence": "Portal 08:35Z; recipient confirmed receipt 12 Oct 12:15Z"
+                  },
+                  {
+                    "surface": "site_access",
+                    "requirement": "Clinic can receive only Mon 12 Oct 11:00-12:00 UTC",
+                    "owner": "Receiving, Alder Clinic",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "satisfied",
+                    "evidence": "Clinic email 08:42Z as its confirmed window; delivery completed per Cedarway 12 Oct 12:10Z"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Replacement capacity: Sun 10:00-12:00 offered first, Sun 14:00-16:00 offered later, Mon 11:00-12:00 offered until 10:30Z and booked only after release",
+                    "owner": "Cedarway Logistics dispatch",
+                    "scope": "DL-8400",
+                    "kind": "feasibility",
+                    "state": "satisfied",
+                    "evidence": "Dispatch messages 08:07Z, 08:28Z, 08:56Z; booking confirmed per 12 Oct 12:10Z email. Sunday offers superseded."
+                  },
+                  {
+                    "surface": "goods",
+                    "requirement": "Food-safety release decision required before booking; chilled meals logged at 11°C for 75 min after crash",
+                    "owner": "Food-safety lead, Meadow Kitchen",
+                    "scope": "DL-8400 only",
+                    "kind": "authority_restriction",
+                    "state": "satisfied",
+                    "evidence": "Warehouse note 09:03Z; lead authorised release 09:24Z via Safety incident queue"
+                  },
+                  {
+                    "surface": "commercial",
+                    "requirement": "Recipient will not authorise unsafe goods; Monday works only if food-safety lead has cleared the meals",
+                    "owner": "Mira Rowan",
+                    "scope": "DL-8400",
+                    "kind": "customer_requirement",
+                    "state": "satisfied",
+                    "evidence": "Portal 09:10Z; release authorised 09:24Z"
+                  }
+                ]
+              },
+              "latencyMs": 15023,
+              "costUsd": 0.0311742,
+              "detail": [
+                "DL-8400 (chilled meals) missed its 10 Oct slot after a Cedarway van crash; it was rebooked for Mon 12 Oct 11:00–12:00 UTC at Alder Clinic after Meadow Kitchen's food-safety lead authorised release. Cedarway and the recipient have both confi",
+                "5 statements found: 4 from a record or an owning team, 1 unverified.",
+                "Who decides: Food-safety lead, Meadow Kitchen (goods release); Cedarway Logistics (capacity)."
+              ]
+            },
+            {
+              "t": 15023,
+              "kind": "edge",
+              "from": "ingest",
+              "to": "history"
+            },
+            {
+              "t": 15023,
+              "kind": "node_start",
+              "nodeId": "history",
+              "nodeType": "history_lookup"
+            },
+            {
+              "t": 15023,
+              "kind": "node_end",
+              "nodeId": "history",
+              "status": "ok",
+              "summary": "4 open commitments, 2 deadlines",
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Already asked: Confirm capacity for Sun 14:00-16:00 or Mon 10:00-12:00 UTC (withdrawn, owed by Cedarway Logistics).",
+                "Already asked: Release decision on DL-8400 (confirmed, owed by Food-safety lead, Meadow Kitchen).",
+                "Already asked: Book and confirm Mon 12 Oct 11:00-12:00 UTC delivery at Alder Clinic (confirmed, owed by Cedarway Logistics).",
+                "Deadline: Cedarway Monday offer lapsed at 10:30 UTC on 10 Oct; booked before then",
+                "Deadline: Delivery window Mon 12 Oct 11:00-12:00 UTC"
+              ]
+            },
+            {
+              "t": 15023,
+              "kind": "edge",
+              "from": "history",
+              "to": "triage"
+            },
+            {
+              "t": 15023,
+              "kind": "node_start",
+              "nodeId": "triage",
+              "nodeType": "triage"
+            },
+            {
+              "t": 15023,
+              "kind": "node_end",
+              "nodeId": "triage",
+              "status": "ok",
+              "summary": "Delivery disrupted by van crash, rebooked and delivered after goods-safety relea",
+              "output": {
+                "type": "triage",
+                "caseType": "Delivery disrupted by van crash, rebooked and delivered after goods-safety release; resolved",
+                "urgency": "low",
+                "p": 1
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Kind of problem: Delivery disrupted by van crash, rebooked and delivered after goods-safety release; resolved. Urgency: low.",
+                "Possible hazard: Chilled meals were at 11°C for 75 minutes after the crash; food-safety risk, cleared by the owner's release decision at 09:24Z"
+              ]
+            },
+            {
+              "t": 15023,
+              "kind": "edge",
+              "from": "triage",
+              "to": "planner_other",
+              "when": "other"
+            },
+            {
+              "t": 15023,
+              "kind": "node_start",
+              "nodeId": "planner_other",
+              "nodeType": "planner"
+            },
+            {
+              "t": 18882,
+              "kind": "model_call",
+              "nodeId": "planner_other",
+              "runner": "claude",
+              "model": "claude-opus-5-5",
+              "latencyMs": 3859,
+              "tokensIn": 13045,
+              "tokensOut": 297,
+              "costUsd": 0.0378584,
+              "ok": true
+            },
+            {
+              "t": 18882,
+              "kind": "node_end",
+              "nodeId": "planner_other",
+              "status": "ok",
+              "summary": "wait_no_action: Cedarway Dispatch confirmed delivery with signed POD, and the ve",
+              "output": {
+                "type": "planner",
+                "wontDo": [
+                  "Send a closing confirmation to Mira Rowan",
+                  "Chase Cedarway about goods location and crash impact",
+                  "Comment on the meals' safety to anyone"
+                ],
+                "waitingFor": [],
+                "candidates": []
+              },
+              "latencyMs": 3859,
+              "costUsd": 0.0378584,
+              "detail": [
+                "Log DL-8400 as delivered and resolved; send nothing further.",
+                "Why: Cedarway Dispatch confirmed delivery with signed POD, and the verified recipient confirmed receipt and asked for no further action.",
+                "Will not: Send a closing confirmation to Mira Rowan (She has already confirmed receipt and said no further action is needed, so another message would be noise.)",
+                "Will not: Chase Cedarway about goods location and crash impact (The food-safety lead's release and the completed delivery make that earlier question moot.)",
+                "Will not: Comment on the meals' safety to anyone (The food-safety lead owns that decision and has already made it. The desk gives no food handling or safety advice.)"
+              ]
+            },
+            {
+              "t": 18883,
+              "kind": "edge",
+              "from": "planner_other",
+              "to": "gate_other"
+            },
+            {
+              "t": 18883,
+              "kind": "node_start",
+              "nodeId": "gate_other",
+              "nodeType": "safety_gate"
+            },
+            {
+              "t": 18883,
+              "kind": "node_end",
+              "nodeId": "gate_other",
+              "status": "ok",
+              "summary": "nothing to send",
+              "output": {
+                "type": "safety_gate",
+                "risk": 0,
+                "decision": "allow",
+                "allowBelow": 0.25,
+                "blockAbove": 0.8
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "No message was drafted, so there was nothing to check."
+              ]
+            },
+            {
+              "t": 18883,
+              "kind": "edge",
+              "from": "gate_other",
+              "to": "action_other",
+              "when": "allow"
+            },
+            {
+              "t": 18883,
+              "kind": "node_start",
+              "nodeId": "action_other",
+              "nodeType": "action"
+            },
+            {
+              "t": 18883,
+              "kind": "node_end",
+              "nodeId": "action_other",
+              "status": "skipped",
+              "summary": "nothing cleared to send",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 18883,
+              "kind": "edge",
+              "from": "action_other",
+              "to": "log_other_done"
+            },
+            {
+              "t": 18883,
+              "kind": "node_start",
+              "nodeId": "log_other_done",
+              "nodeType": "case_log"
+            },
+            {
+              "t": 18883,
+              "kind": "node_end",
+              "nodeId": "log_other_done",
+              "status": "ok",
+              "summary": "outcome: no_action",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 18883,
+              "kind": "run_end",
+              "outcome": "no_action",
+              "totalCostUsd": 0.0690326,
+              "totalLatencyMs": 18883
+            }
+          ],
+          "synthetic": true
+        },
+        "answerMd": null,
+        "reasoningMd": null,
+        "outbox": [],
+        "card": null
+      }
+    },
+    {
+      "label": "human authority case",
+      "request": {
+        "caseId": "gen-1201",
+        "dataset": "generated",
+        "workflowId": "demo-human-review"
+      },
+      "execution": {
+        "id": "1c3451f5-232e-4062-92cc-7dfcd5552698",
+        "caseId": "gen-1201",
+        "dataset": "generated",
+        "workflowId": "demo-human-review",
+        "status": "success",
+        "outcome": "escalated",
+        "startedAt": "2026-10-10T15:09:25.029Z",
+        "durationMs": 43950,
+        "costUsd": 0.10460899999999998,
+        "origin": "console",
+        "simulated": true,
+        "eval": null,
+        "error": null,
+        "title": "Case: A relative replies from the recipient's account as the return-to-sender timer runs down",
+        "nextAction": "Customer portal → Calla Mossop",
+        "gate": "allow",
+        "parentExecutionId": null,
+        "voice": null,
+        "trace": {
+          "version": 1,
+          "runId": "api-2026-10-10T15:09:25.039Z",
+          "caseId": "gen-1201",
+          "flowId": "demo-human-review",
+          "mode": "demo",
+          "events": [
+            {
+              "t": 0,
+              "kind": "run_start",
+              "title": "Case: A relative replies from the recipient's account as the return-to-sender timer runs down",
+              "inputs": [
+                {
+                  "n": 1,
+                  "channel": "file",
+                  "from": "context",
+                  "excerpt": "188 characters"
+                },
+                {
+                  "n": 2,
+                  "channel": "file",
+                  "from": "history",
+                  "excerpt": "1913 characters"
+                }
+              ]
+            },
+            {
+              "t": 0,
+              "kind": "node_start",
+              "nodeId": "ingest",
+              "nodeType": "ingest"
+            },
+            {
+              "t": 19164,
+              "kind": "model_call",
+              "nodeId": "ingest",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 19164,
+              "tokensIn": 5101,
+              "tokensOut": 2796,
+              "costUsd": 0.0305462,
+              "ok": true
+            },
+            {
+              "t": 19164,
+              "kind": "node_end",
+              "nodeId": "ingest",
+              "status": "ok",
+              "summary": "2 files, 0 attachments read",
+              "output": {
+                "type": "ingest",
+                "decisionGroups": [
+                  "dependencies",
+                  "owner_coordination",
+                  "missing_evidence",
+                  "conflicting_evidence",
+                  "failed_action",
+                  "identity_privacy",
+                  "human_authority",
+                  "truthful_status",
+                  "deadline_math",
+                  "multi_issue",
+                  "valid_changes"
+                ],
+                "constraints": [
+                  {
+                    "surface": "identity_authority",
+                    "requirement": "Only the verified recipient may choose redelivery or depot collection; a choice from anyone else is not actioned by the carrier.",
+                    "owner": "Plover Arc Logistics exception desk",
+                    "scope": "DL-907 / TG-907",
+                    "kind": "authority_restriction",
+                    "state": "active",
+                    "evidence": "Carrier exception desk email, 2026-03-02T16:20Z"
+                  },
+                  {
+                    "surface": "fleet_route",
+                    "requirement": "Parcel enters return-to-sender processing at 16:00 UTC on 4 Mar; the carrier will not hold it past the timer on a third party's say-so.",
+                    "owner": "Plover Arc Logistics exception desk",
+                    "scope": "DL-907 / TG-907",
+                    "kind": "feasibility",
+                    "state": "active",
+                    "evidence": "Carrier email, 2026-03-02T16:20Z"
+                  },
+                  {
+                    "surface": "identity_authority",
+                    "requirement": "Any exception outside the carrier's stated options needs sign-off from a named supervisor on Rivet's side, not a request to the carrier desk.",
+                    "owner": "Rivet Delivery Desk supervisor (not yet named)",
+                    "scope": "DL-907 / TG-907",
+                    "kind": "authority_restriction",
+                    "state": "active",
+                    "evidence": "Carrier email, 2026-03-02T16:20Z"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "Calla Mossop asks for delivery to 3 Pell Cottages, Drayford, or else cancellation with a refund to Edrin's card.",
+                    "owner": "Calla Mossop (identity and authority unverified)",
+                    "scope": "DL-907 / TG-907",
+                    "kind": "preference",
+                    "state": "unconfirmed",
+                    "evidence": "Portal message, 2026-03-03T11:42Z; her claim of being his daughter and of the death is not yet verified"
+                  },
+                  {
+                    "surface": "commercial",
+                    "requirement": "Cancellation and refund depend on the merchant/seller and payment owner; no refund or cancellation route is confirmed.",
+                    "owner": "Sender/merchant (not named in case)",
+                    "scope": "DL-907 / TG-907",
+                    "kind": "feasibility",
+                    "state": "unconfirmed",
+                    "evidence": "No merchant statement in case"
+                  },
+                  {
+                    "surface": "recipient",
+                    "requirement": "The earlier portal request for Edrin to choose redelivery or collection is unlikely to be answered by him and is overtaken by the reported death.",
+                    "owner": "Rivet Delivery Desk",
+                    "scope": "DL-907 / TG-907",
+                    "kind": "customer_requirement",
+                    "state": "superseded",
+                    "evidence": "Event 3 sent to Edrin; Event 4 reports his death (unverified)"
+                  }
+                ]
+              },
+              "latencyMs": 19164,
+              "costUsd": 0.0305462,
+              "detail": [
+                "Parcel DL-907 faces return-to-sender at 16:00 UTC on 4 Mar after two failed deliveries; the named recipient Edrin Mossop reportedly died on 21 Feb, and his daughter Calla asks to redirect or cancel and refund. The desk must work out how to ",
+                "3 statements found: 2 from a record or an owning team, 1 unverified.",
+                "Who decides: A named Rivet Delivery Desk supervisor decides whether to seek an exception; the carrier owns redelivery, collection and return, and the merchant owns cancellation and refund.."
+              ]
+            },
+            {
+              "t": 19164,
+              "kind": "edge",
+              "from": "ingest",
+              "to": "history"
+            },
+            {
+              "t": 19164,
+              "kind": "node_start",
+              "nodeId": "history",
+              "nodeType": "history_lookup"
+            },
+            {
+              "t": 19164,
+              "kind": "node_end",
+              "nodeId": "history",
+              "status": "ok",
+              "summary": "4 open commitments, 1 deadlines",
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Already asked: Recipient to choose redelivery or depot collection (requested, owed by Edrin Mossop (verified recipient)).",
+                "Already asked: Reach the recipient by phone (rejected or failed, owed by Iona Quill).",
+                "Already asked: Portal message asking Edrin for a choice (requested, owed by Edrin Mossop).",
+                "Deadline: 16:00 UTC on 4 Mar 2026: parcel goes into return-to-sender processing"
+              ]
+            },
+            {
+              "t": 19164,
+              "kind": "edge",
+              "from": "history",
+              "to": "triage"
+            },
+            {
+              "t": 19164,
+              "kind": "node_start",
+              "nodeId": "triage",
+              "nodeType": "triage"
+            },
+            {
+              "t": 19164,
+              "kind": "node_end",
+              "nodeId": "triage",
+              "status": "ok",
+              "summary": "Bereavement: deceased recipient, third-party redirect/cancel request against a c",
+              "output": {
+                "type": "triage",
+                "caseType": "Bereavement: deceased recipient, third-party redirect/cancel request against a carrier return timer",
+                "urgency": "high",
+                "p": 1
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Kind of problem: Bereavement: deceased recipient, third-party redirect/cancel request against a carrier return timer. Urgency: high.",
+                "About the person: Recently bereaved daughter (father died 21 Feb per her message), clearing his house, apologetic and unsure how any of this works; needs a gentle, clear reply."
+              ]
+            },
+            {
+              "t": 19164,
+              "kind": "edge",
+              "from": "triage",
+              "to": "planner_other",
+              "when": "other"
+            },
+            {
+              "t": 19165,
+              "kind": "node_start",
+              "nodeId": "planner_other",
+              "nodeType": "planner"
+            },
+            {
+              "t": 41808,
+              "kind": "model_call",
+              "nodeId": "planner_other",
+              "runner": "claude",
+              "model": "claude-opus-5-5",
+              "latencyMs": 22643,
+              "tokensIn": 11281,
+              "tokensOut": 2245,
+              "costUsd": 0.06976239999999999,
+              "ok": true
+            },
+            {
+              "t": 41809,
+              "kind": "node_end",
+              "nodeId": "planner_other",
+              "status": "ok",
+              "summary": "escalate_to_human: The carrier requires a named Rivet supervisor to sign off any",
+              "output": {
+                "type": "planner",
+                "nextAction": {
+                  "recipient": "Calla Mossop",
+                  "channel": "Customer portal",
+                  "message": "Thank you for letting us know, and I'm very sorry about your father. You've done nothing wrong by writing here. A supervisor on our desk will review what can be done with this parcel and we'll come back to you on this portal. Please don't send any documents yet; we'll tell you if and how they're needed.",
+                  "undoable": true
+                },
+                "wontDo": [
+                  "Redirect DL-907 to 3 Pell Cottages",
+                  "Cancel the order or promise a refund to the card",
+                  "Ask Plover Arc to hold the parcel past the timer"
+                ],
+                "waitingFor": [
+                  {
+                    "what": "Supervisor decision on whether to seek an exception and how to verify Calla's relationship and authority",
+                    "from": "Rivet Delivery Desk supervisor",
+                    "by": "Before 16:00 UTC on 4 Mar 2026"
+                  },
+                  {
+                    "what": "If an exception is approved: carrier's answer on holding or redirecting DL-907",
+                    "from": "Exception desk, Plover Arc Logistics",
+                    "by": "Before 16:00 UTC on 4 Mar 2026"
+                  }
+                ],
+                "candidates": []
+              },
+              "latencyMs": 22644,
+              "costUsd": 0.06976239999999999,
+              "detail": [
+                "Send Calla a gentle holding reply on the portal; route the bereavement exception for DL-907 to a named Rivet supervisor.",
+                "Why: The carrier requires a named Rivet supervisor to sign off any exception, and a bereavement with an unverified next of kin needs a person to decide.",
+                "Will not: Redirect DL-907 to 3 Pell Cottages (Requester is unverified and the carrier acts only on the verified recipient's choice.)",
+                "Will not: Cancel the order or promise a refund to the card (Merchant owns cancellation and refund; no refund to an unverified requester.)",
+                "Will not: Ask Plover Arc to hold the parcel past the timer (Carrier said exceptions need a named Rivet supervisor's sign-off, not a desk request.)"
+              ]
+            },
+            {
+              "t": 41809,
+              "kind": "edge",
+              "from": "planner_other",
+              "to": "gate_other"
+            },
+            {
+              "t": 41809,
+              "kind": "node_start",
+              "nodeId": "gate_other",
+              "nodeType": "safety_gate"
+            },
+            {
+              "t": 43950,
+              "kind": "model_call",
+              "nodeId": "gate_other",
+              "runner": "claude",
+              "model": "claude-sonnet-5-5",
+              "latencyMs": 2141,
+              "tokensIn": 2443,
+              "tokensOut": 147,
+              "costUsd": 0.004300399999999999,
+              "ok": true
+            },
+            {
+              "t": 43950,
+              "kind": "node_end",
+              "nodeId": "gate_other",
+              "status": "ok",
+              "summary": "1 of 1 messages cleared",
+              "output": {
+                "type": "safety_gate",
+                "risk": 0.08,
+                "decision": "allow",
+                "allowBelow": 0.3,
+                "blockAbove": 0.8
+              },
+              "latencyMs": 2141,
+              "costUsd": 0.004300399999999999,
+              "detail": [
+                "Message to Calla Mossop: clear to send (risk 0.08, below 0.3)."
+              ]
+            },
+            {
+              "t": 43950,
+              "kind": "edge",
+              "from": "gate_other",
+              "to": "action_other",
+              "when": "allow"
+            },
+            {
+              "t": 43950,
+              "kind": "edge",
+              "from": "gate_other",
+              "to": "human_other",
+              "when": "ask"
+            },
+            {
+              "t": 43950,
+              "kind": "node_start",
+              "nodeId": "action_other",
+              "nodeType": "action"
+            },
+            {
+              "t": 43950,
+              "kind": "node_end",
+              "nodeId": "action_other",
+              "status": "ok",
+              "summary": "1 of 1 message(s) accepted by the outbox",
+              "output": {
+                "type": "action",
+                "done": {
+                  "recipient": "Calla Mossop",
+                  "channel": "Customer portal",
+                  "message": "Thank you for letting us know, and I'm very sorry about your father. You've done nothing wrong by writing here. A supervisor on our desk will review what can be done with this parcel and we'll come back to you on this portal. Please don't send any documents yet; we'll tell you if and how they're needed.",
+                  "undoable": true
+                },
+                "ok": true
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Recorded for Calla Mossop by Customer portal: Acknowledge the bereaved requester and say who decides next, with no promise or new disclosure",
+                "It says: \"Thank you for letting us know, and I'm very sorry about your father. You've done nothing wrong by writing here. A supervisor on our desk will review what can be done with this parcel and we'll come back to you on this portal. Plea",
+                "No live system is connected, so nothing has reached a recipient yet."
+              ]
+            },
+            {
+              "t": 43950,
+              "kind": "edge",
+              "from": "action_other",
+              "to": "log_other_done"
+            },
+            {
+              "t": 43950,
+              "kind": "node_start",
+              "nodeId": "human_other",
+              "nodeType": "human_decision"
+            },
+            {
+              "t": 43950,
+              "kind": "node_end",
+              "nodeId": "human_other",
+              "status": "ok",
+              "summary": "Card for Rivet Delivery Desk supervisor; no human available, fallback logged",
+              "output": {
+                "type": "human_decision",
+                "card": {
+                  "routeTo": "Rivet Delivery Desk supervisor",
+                  "summary": "DL-907 returns to sender at 16:00 UTC on 4 Mar unless the verified recipient (Edrin Mossop) chooses redelivery or collection. Calla Mossop, writing from his portal account, says he died on 21 Feb, she is his daughter, holds the death certificate, and asks for redirection to her address or cancellation and refund to his card. A gentle holding reply has been sent; nothing has been changed or promised.",
+                  "whyStopped": {
+                    "reason": "agent_judged_unsafe",
+                    "line": "The named recipient is reported deceased and his unverified daughter asks to redirect or cancel; the carrier requires a named Rivet supervisor to sign off any exception."
+                  },
+                  "evidence": [
+                    {
+                      "who": "Exception desk, Plover Arc Logistics",
+                      "says": "Only the verified recipient's choice is actioned; no hold past 16:00 UTC 4 Mar on a third party's word; exceptions need a named supervisor's sign-off on Rivet's side.",
+                      "basis": "owning_team_statement"
+                    },
+                    {
+                      "who": "Calla Mossop",
+                      "says": "Edrin died 21 Feb; she is his daughter, has the death certificate, wants delivery to her or cancellation and refund.",
+                      "basis": "unverified_claim"
+                    },
+                    {
+                      "who": "Iona Quill",
+                      "says": "Two calls to the order number on 3 Mar rang out with no voicemail.",
+                      "basis": "system_record"
+                    }
+                  ],
+                  "alreadyDone": [
+                    "Message recorded for Calla Mossop via Customer portal: Acknowledge the bereaved requester and say who decides next, with no promise or new disclosure"
+                  ],
+                  "clash": "Calla wants to act for the recipient, but the carrier accepts only the verified recipient's choice and her relationship and the death are unverified.",
+                  "tried": [
+                    "Recipient to choose redelivery or depot collection (requested)",
+                    "Reach the recipient by phone (rejected_or_failed)",
+                    "Portal message asking Edrin for a choice (requested)",
+                    "Reply to Calla Mossop (requested)"
+                  ],
+                  "options": [
+                    {
+                      "id": "option-1",
+                      "label": "Sign off exception request",
+                      "effect": "Supervisor is named; desk emails the Exception desk, Plover Arc Logistics, asking whether DL-907 can be held past 16:00 UTC 4 Mar pending next-of-kin verification; Calla is told on the portal that a request has been made, nothing decided.",
+                      "undoable": false
+                    },
+                    {
+                      "id": "option-2",
+                      "label": "Verify Calla first",
+                      "effect": "Desk asks Calla via the portal to complete Rivet's verification process (death certificate and relationship); no carrier request until verified; parcel may return to sender if not done by the timer.",
+                      "undoable": false
+                    },
+                    {
+                      "id": "option-3",
+                      "label": "Let return proceed",
+                      "effect": "No exception sought; parcel returns to sender at 16:00 UTC 4 Mar; Calla is told on the portal the parcel is going back to the sender and that cancellation or refund is for the sender to decide.",
+                      "undoable": false
+                    }
+                  ],
+                  "wouldChangeMyMind": "Verified evidence of the death and of Calla's authority as next of kin or executor accepted under Rivet's process.",
+                  "deadlineMins": 15,
+                  "fallback": "No redirect, cancellation or carrier request is made; the parcel follows the carrier's standard return-to-sender, which keeps it recoverable through the sender."
+                }
+              },
+              "latencyMs": 0,
+              "costUsd": 0,
+              "detail": [
+                "Why a person is needed: The named recipient is reported deceased and his unverified daughter asks to redirect or cancel; the carrier requires a named Rivet supervisor to sign off any exception.",
+                "This goes to Rivet Delivery Desk supervisor.",
+                "Option: Sign off exception request (cannot be undone)",
+                "Option: Verify Calla first (cannot be undone)",
+                "Option: Let return proceed (cannot be undone)",
+                "Nobody was available during this run. Meanwhile: No redirect, cancellation or carrier request is made; the parcel follows the carrier's standard return-to-sender, which keeps it recoverable through the sender."
+              ]
+            },
+            {
+              "t": 43950,
+              "kind": "node_start",
+              "nodeId": "log_other_done",
+              "nodeType": "case_log"
+            },
+            {
+              "t": 43950,
+              "kind": "node_end",
+              "nodeId": "log_other_done",
+              "status": "ok",
+              "summary": "outcome: escalated",
+              "latencyMs": 0,
+              "costUsd": 0
+            },
+            {
+              "t": 43950,
+              "kind": "run_end",
+              "outcome": "escalated",
+              "totalCostUsd": 0.10460899999999998,
+              "totalLatencyMs": 43950,
+              "nextAction": {
+                "recipient": "Calla Mossop",
+                "channel": "Customer portal",
+                "message": "Thank you for letting us know, and I'm very sorry about your father. You've done nothing wrong by writing here. A supervisor on our desk will review what can be done with this parcel and we'll come back to you on this portal. Please don't send any documents yet; we'll tell you if and how they're needed.",
+                "undoable": true
+              }
+            }
+          ]
+        },
+        "answerMd": null,
+        "reasoningMd": null,
+        "outbox": [
+          {
+            "action": {
+              "recipient": "Calla Mossop",
+              "channel": "Customer portal",
+              "kind": "status_update",
+              "purpose": "Acknowledge the bereaved requester and say who decides next, with no promise or new disclosure",
+              "message": "Thank you for letting us know, and I'm very sorry about your father. You've done nothing wrong by writing here. A supervisor on our desk will review what can be done with this parcel and we'll come back to you on this portal. Please don't send any documents yet; we'll tell you if and how they're needed."
+            },
+            "status": "recorded",
+            "note": "Recorded in the sandbox outbox for Customer portal (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+          }
+        ],
+        "card": {
+          "routeTo": "Rivet Delivery Desk supervisor",
+          "summary": "DL-907 returns to sender at 16:00 UTC on 4 Mar unless the verified recipient (Edrin Mossop) chooses redelivery or collection. Calla Mossop, writing from his portal account, says he died on 21 Feb, she is his daughter, holds the death certificate, and asks for redirection to her address or cancellation and refund to his card. A gentle holding reply has been sent; nothing has been changed or promised.",
+          "whyStopped": {
+            "reason": "agent_judged_unsafe",
+            "line": "The named recipient is reported deceased and his unverified daughter asks to redirect or cancel; the carrier requires a named Rivet supervisor to sign off any exception."
+          },
+          "evidence": [
+            {
+              "who": "Exception desk, Plover Arc Logistics",
+              "says": "Only the verified recipient's choice is actioned; no hold past 16:00 UTC 4 Mar on a third party's word; exceptions need a named supervisor's sign-off on Rivet's side.",
+              "basis": "owning_team_statement"
+            },
+            {
+              "who": "Calla Mossop",
+              "says": "Edrin died 21 Feb; she is his daughter, has the death certificate, wants delivery to her or cancellation and refund.",
+              "basis": "unverified_claim"
+            },
+            {
+              "who": "Iona Quill",
+              "says": "Two calls to the order number on 3 Mar rang out with no voicemail.",
+              "basis": "system_record"
+            }
+          ],
+          "alreadyDone": [
+            "Message recorded for Calla Mossop via Customer portal: Acknowledge the bereaved requester and say who decides next, with no promise or new disclosure"
+          ],
+          "clash": "Calla wants to act for the recipient, but the carrier accepts only the verified recipient's choice and her relationship and the death are unverified.",
+          "tried": [
+            "Recipient to choose redelivery or depot collection (requested)",
+            "Reach the recipient by phone (rejected_or_failed)",
+            "Portal message asking Edrin for a choice (requested)",
+            "Reply to Calla Mossop (requested)"
+          ],
+          "options": [
+            {
+              "id": "option-1",
+              "label": "Sign off exception request",
+              "effect": "Supervisor is named; desk emails the Exception desk, Plover Arc Logistics, asking whether DL-907 can be held past 16:00 UTC 4 Mar pending next-of-kin verification; Calla is told on the portal that a request has been made, nothing decided.",
+              "undoable": false
+            },
+            {
+              "id": "option-2",
+              "label": "Verify Calla first",
+              "effect": "Desk asks Calla via the portal to complete Rivet's verification process (death certificate and relationship); no carrier request until verified; parcel may return to sender if not done by the timer.",
+              "undoable": false
+            },
+            {
+              "id": "option-3",
+              "label": "Let return proceed",
+              "effect": "No exception sought; parcel returns to sender at 16:00 UTC 4 Mar; Calla is told on the portal the parcel is going back to the sender and that cancellation or refund is for the sender to decide.",
+              "undoable": false
+            }
+          ],
+          "wouldChangeMyMind": "Verified evidence of the death and of Calla's authority as next of kin or executor accepted under Rivet's process.",
+          "deadlineMins": 15,
+          "fallback": "No redirect, cancellation or carrier request is made; the parcel follows the carrier's standard return-to-sender, which keeps it recoverable through the sender."
+        }
+      }
+    }
+  ],
+  "error": null,
+  "finishedAt": "2026-10-10T15:10:08.996Z"
+}
