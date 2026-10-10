@@ -7,7 +7,7 @@ import {
   Background, BackgroundVariant, Controls, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow,
   type Connection, type Edge, type NodeChange,
 } from "@xyflow/react";
-import type { ExecutionRecord, Flow, FlowNode, NodeType, WorkflowRecord } from "../types";
+import type { ExecutionRecord, Flow, FlowNode, ImproveProposal, NodeType, WorkflowRecord, WorkflowVersion } from "../types";
 import {
   architectValidate, deleteWorkflow, executeCase, getExecution, listExecutions, loadWorkflows, saveWorkflow,
   type ExecutionSummary,
@@ -15,6 +15,8 @@ import {
 import { ArchitectPanel, Sparkle } from "./ArchitectPanel";
 import { nameFrom, problemsByNode, revealFrame, revealOrder, slugify, type ArchitectUsage } from "./architect";
 import { WorkflowMenu } from "./WorkflowMenu";
+import { TestPanel } from "./TestPanel";
+import { diffCount, diffFlows, edgeMark, nodeMark, type FlowDiff } from "./testing";
 import { Badge, Btn } from "./bits";
 import { ConsoleContext, HeaderActions } from "../ui";
 import {
@@ -76,7 +78,14 @@ function EditorInner() {
   const [dialog, setDialog] = useState(false);
 
   // Architect (AI builder) + validation
-  const [aiOpen, setAiOpen] = useState(false);
+  const [drawer, setDrawer] = useState<"ai" | "test" | null>(null);
+  const [mounted, setMounted] = useState<{ ai: boolean; test: boolean }>({ ai: false, test: false });
+  const openDrawer = useCallback((k: "ai" | "test" | null) => {
+    setDrawer(k);
+    setSel(null);
+    if (k) setMounted((m) => (m[k] ? m : { ...m, [k]: true }));
+  }, []);
+  const [diffView, setDiffView] = useState<{ proposal: ImproveProposal; diff: FlowDiff; positions: Record<string, Pos> } | null>(null);
   const [draft, setDraft] = useState<{ record: WorkflowRecord; description: string; prevId: string | null } | null>(null);
   const [reveal, setReveal] = useState<{ order: string[]; count: number } | null>(null);
   const [accepting, setAccepting] = useState(false);
@@ -151,9 +160,9 @@ function EditorInner() {
   }, [cursor, execution, delays]);
 
   const overlay = useMemo(() => {
-    if (!execId || !execution?.trace || execution.id !== execId) return null;
+    if (diffView || !execId || !execution?.trace || execution.id !== execId) return null;
     return buildOverlay(execution.trace, doc?.flow ?? null, cursor ?? undefined);
-  }, [execId, execution, doc?.flow, cursor]);
+  }, [execId, execution, doc?.flow, cursor, diffView]);
 
   // ---------- edits ----------
   const commit = useCallback((fn: (d: FlowDoc) => FlowDoc, coalesce?: string) => {
@@ -398,9 +407,40 @@ function EditorInner() {
     setExecLoadError(null);
   }, []);
 
+  // ---------- test & improve ----------
+  const showProposal = useCallback((p: { proposal: ImproveProposal; base: Flow | null } | null) => {
+    if (!p) { setDiffView(null); return; }
+    const diff = diffFlows(p.base ?? doc?.flow ?? p.proposal.flow, p.proposal.flow);
+    setDiffView({ proposal: p.proposal, diff, positions: layoutFlow(diff.merged) });
+    setSel(null);
+    setTimeout(() => rf.fitView({ padding: 0.2, duration: 400 }), 60);
+  }, [rf, doc]);
+
+  const loadVersion = useCallback((v: WorkflowVersion) => {
+    if (!doc) return;
+    const flow: Flow = { ...v.flow, id: current?.id ?? v.flow.id, name: current?.name ?? v.flow.name };
+    // Keep known positions; place any new node with the auto-layout. The saved workflow is
+    // untouched, so "Unsaved" shows when this version differs from it.
+    const next: FlowDoc = { flow, positions: withPositions(flow, doc.positions) };
+    lastEdit.current = null;
+    setHist((h) => (h ? push(h, next) : initHistory(next)));
+    setCheck(null);
+    setTimeout(() => rf.fitView({ padding: 0.2, duration: 300 }), 60);
+  }, [doc, current, rf]);
+
   // ---------- canvas model ----------
   const rfNodes: CardNode[] = useMemo(() => {
     if (!doc) return [];
+    if (diffView) {
+      return diffView.diff.merged.nodes.map((n) => ({
+        id: n.id,
+        type: "card",
+        position: diffView.positions[n.id] ?? { x: 0, y: 0 },
+        measured: dims[n.id],
+        draggable: false,
+        data: { node: n, run: null, dimmed: false, diff: { mark: nodeMark(diffView.diff, n.id), change: diffView.diff.changedNodes.get(n.id) } },
+      }));
+    }
     const visible = reveal ? revealFrame(doc.flow, reveal.order, reveal.count).nodes : null;
     return doc.flow.nodes.filter((n) => !visible || visible.has(n.id)).map((n) => {
       const run = overlay?.nodes[n.id] ?? null;
@@ -413,10 +453,23 @@ function EditorInner() {
         data: { node: n, run, dimmed: !!overlay && !run, problems: nodeProblems?.byNode[n.id], appear: !!reveal },
       };
     });
-  }, [doc, overlay, sel, dims, reveal, nodeProblems]);
+  }, [doc, overlay, sel, dims, reveal, nodeProblems, diffView]);
 
   const rfEdges: Edge[] = useMemo(() => {
     if (!doc) return [];
+    if (diffView) {
+      const f = diffView.diff.merged;
+      return f.edges.map((e) => {
+        const mark = edgeMark(diffView.diff, e);
+        return {
+          id: `diff:${edgeKey(e)}`, source: e.from, target: e.to, targetHandle: "in", sourceHandle: sourceHandleFor(f, e),
+          label: e.when, animated: mark === "added", selectable: false, deletable: false, focusable: false,
+          className: mark === "added" ? "wf-diff-added" : mark === "removed" ? "wf-diff-removed" : "wf-faded",
+          labelStyle: { fill: mark === "added" ? "#4ade80" : mark === "removed" ? "#f87171" : "#a1a1aa", fontSize: 11, fontWeight: 600 },
+          labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, zIndex: mark ? 1 : 0,
+        };
+      });
+    }
     const ids = new Set(doc.flow.nodes.map((n) => n.id));
     const flowPairs = new Set(doc.flow.edges.map((e) => pairKey(e.from, e.to)));
     const shown = reveal ? revealFrame(doc.flow, reveal.order, reveal.count).edges : doc.flow.edges;
@@ -453,7 +506,7 @@ function EditorInner() {
       });
     }
     return res;
-  }, [doc, overlay, sel, cursor, reveal]);
+  }, [doc, overlay, sel, cursor, reveal, diffView]);
 
   const selNode: FlowNode | null = sel?.kind === "node" ? doc?.flow.nodes.find((n) => n.id === sel.id) ?? null : null;
   const selEdge = sel?.kind === "edge" ? doc?.flow.edges.find((e) => edgeKey(e) === sel.key) ?? null : null;
@@ -465,11 +518,18 @@ function EditorInner() {
   const primaryActions = (
     <>
       <button
-        type="button" onClick={() => { setAiOpen((o) => !o); setSel(null); }}
-        className={`wf-ai-btn inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-[12px] font-semibold text-white ${aiOpen ? "ring-2 ring-white/30" : ""}`}
+        type="button" onClick={() => openDrawer(drawer === "ai" ? null : "ai")}
+        className={`wf-ai-btn inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-[12px] font-semibold text-white ${drawer === "ai" ? "ring-2 ring-white/30" : ""}`}
         title="Let the Architect design a workflow from a description"
       >
         <Sparkle size={14} /> Build with AI
+      </button>
+      <button
+        type="button" onClick={() => openDrawer(drawer === "test" ? null : "test")}
+        className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-[12px] font-semibold ${drawer === "test" ? "border-[#22c55e]/70 bg-[#22c55e]/15 text-white" : "border-[#22c55e]/40 text-[#86efac] hover:bg-[#22c55e]/10"}`}
+        title="Test this workflow on scenarios and improve it from the failures"
+      >
+        <span aria-hidden>🧪</span> Test
       </button>
       <Btn variant="outline" onClick={() => setDialog(true)} disabled={!!running || !!draft} title={draft ? "Accept the draft before running it" : "Run the agent on a case"}>
         <Icon name="play" size={13} /> Execute workflow
@@ -495,7 +555,7 @@ function EditorInner() {
           <WorkflowMenu
             records={records} current={current} isDraft={!!draft} dirty={dirty}
             onOpen={switchTo} onDuplicate={() => void duplicate()} onRename={(n) => void rename(n)}
-            onDelete={() => void remove()} onNew={() => { setAiOpen(true); setSel(null); }}
+            onDelete={() => void remove()} onNew={() => openDrawer("ai")}
           />
           {draft && <Badge tone="violet" title="Generated by the Architect, not saved yet">AI draft</Badge>}
           {current?.source === "file" && !draft && <Badge title={fallback ?? "Read from apps/api/flows"}>from file</Badge>}
@@ -533,6 +593,19 @@ function EditorInner() {
       </div>
 
       {/* Run strip */}
+      {diffView && (
+        <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-b border-[#a78bfa]/30 bg-[#a78bfa]/[0.08] px-3 py-1.5 text-[12px]">
+          <span className="inline-flex items-center gap-1.5 font-semibold text-[#c4b5fd]"><Sparkle size={13} /> Proposed changes from v{diffView.proposal.fromVersion}</span>
+          {diffView.diff.addedNodes.size > 0 && <span className="text-[#4ade80]">+{diffView.diff.addedNodes.size} node{diffView.diff.addedNodes.size === 1 ? "" : "s"}</span>}
+          {diffView.diff.removedNodes.size > 0 && <span className="text-[#f87171]">−{diffView.diff.removedNodes.size} node{diffView.diff.removedNodes.size === 1 ? "" : "s"}</span>}
+          {diffView.diff.changedNodes.size > 0 && <span className="text-[#fbbf24]">~{diffView.diff.changedNodes.size} changed</span>}
+          {(diffView.diff.addedEdges.size > 0 || diffView.diff.removedEdges.size > 0) && (
+            <span className="text-white/55">connections +{diffView.diff.addedEdges.size} / −{diffView.diff.removedEdges.size}</span>
+          )}
+          {diffCount(diffView.diff) === 0 && <span className="text-white/55">no structural change</span>}
+          <span className="ml-auto text-white/45">Accept or reject in the Test panel</span>
+        </div>
+      )}
       {liveCheck && !reveal && (
         <div className={`flex shrink-0 flex-wrap items-start gap-x-3 gap-y-1 border-b border-white/10 px-3 py-1.5 text-[12px] ${liveCheck.state === "problems" ? "bg-[#ef4444]/[0.07]" : "bg-[#1b1b1f]"}`}>
           {liveCheck.state === "ok" && (
@@ -620,10 +693,11 @@ function EditorInner() {
             onConnect={onConnect}
             onDelete={onDelete}
             onNodeDragStart={() => setHist((h) => (h ? checkpoint(h) : h))}
-            onNodeClick={(_, n) => setSel({ kind: "node", id: n.id })}
-            onEdgeClick={(_, e) => { if (!e.id.startsWith("run:")) setSel({ kind: "edge", key: e.id }); }}
+            onNodeClick={(_, n) => { if (!diffView) setSel({ kind: "node", id: n.id }); }}
+            onEdgeClick={(_, e) => { if (!diffView && !e.id.startsWith("run:")) setSel({ kind: "edge", key: e.id }); }}
             onPaneClick={() => setSel(null)}
-            deleteKeyCode={["Backspace", "Delete"]}
+            nodesConnectable={!diffView}
+            deleteKeyCode={diffView ? null : ["Backspace", "Delete"]}
             defaultEdgeOptions={{ type: "default" }}
             connectionRadius={28}
             minZoom={0.2}
@@ -647,18 +721,45 @@ function EditorInner() {
             />
           </ReactFlow>
         </div>
-        {aiOpen && (
-          <div className={selNode || selEdge ? "hidden" : "flex h-full"}>
-            <ArchitectPanel
-              draft={draft ? { description: draft.description, revealing: !!reveal } : null}
-              onDraft={startDraft}
-              onAccept={() => void doSave()}
-              onDiscard={discardDraft}
-              accepting={accepting || save.state === "saving"}
-              onClose={() => setAiOpen(false)}
-            />
+        <div className={drawer && !(selNode || selEdge) ? "flex h-full w-[380px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]" : "hidden"}>
+          <div className="flex shrink-0 gap-1 border-b border-white/10 px-2 pt-1.5">
+            {([["ai", "Architect"], ["test", "Test"]] as const).map(([k, label]) => (
+              <button
+                key={k} type="button" onClick={() => openDrawer(k)}
+                className={`-mb-px inline-flex items-center gap-1.5 border-b-2 px-2.5 pb-1.5 pt-1 text-[12px] font-medium ${drawer === k ? "border-[#ff6a1a] text-white" : "border-transparent text-white/50 hover:text-white/80"}`}
+              >
+                {k === "ai" ? <Sparkle size={12} /> : <span aria-hidden>🧪</span>} {label}
+              </button>
+            ))}
           </div>
-        )}
+          {mounted.ai && (
+            <div className={drawer === "ai" ? "flex min-h-0 flex-1" : "hidden"}>
+              <ArchitectPanel
+                draft={draft ? { description: draft.description, revealing: !!reveal } : null}
+                onDraft={startDraft}
+                onAccept={() => void doSave()}
+                onDiscard={discardDraft}
+                accepting={accepting || save.state === "saving"}
+                onClose={() => openDrawer(null)}
+              />
+            </div>
+          )}
+          {mounted.test && (
+            <div className={drawer === "test" ? "flex min-h-0 flex-1" : "hidden"}>
+              <TestPanel
+                key={current?.id ?? "none"}
+                workflowId={draft ? null : current?.id ?? null}
+                blocked={draft ? "Accept & save the AI draft before testing it." : null}
+                hint={dirty ? "The canvas has unsaved edits. Tests run the selected saved version, not the canvas." : null}
+                selectedExecId={execId}
+                onShowExecution={(id) => { if (id) setDiffView(null); selectExecution(id); }}
+                onProposal={showProposal}
+                onLoadVersion={loadVersion}
+                onClose={() => openDrawer(null)}
+              />
+            </div>
+          )}
+        </div>
         {selNode && (
           <NodePanel
             key={selNode.id}

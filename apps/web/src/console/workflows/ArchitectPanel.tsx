@@ -90,7 +90,7 @@ export function ArchitectPanel({ draft, onDraft, onAccept, onDiscard, accepting,
   const latestArchitect = [...msgs].reverse().find((m) => m.role === "architect" && m.flow);
 
   return (
-    <aside className="flex h-full w-[380px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]">
+    <aside className="flex h-full w-full min-w-0 flex-col bg-[#19191d]">
       <div className="flex items-center gap-2.5 border-b border-white/10 px-4 py-3">
         <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[#ff6a1a] to-[#a78bfa] text-white"><Sparkle size={16} /></span>
         <div className="min-w-0 flex-1">
