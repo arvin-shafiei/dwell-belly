@@ -8,7 +8,11 @@ import { failingTransport } from "./outbox.ts";
 import { fromView, loadFolder } from "./load.ts";
 import type { Models } from "./models.ts";
 import { renderAnswer, renderReasoning } from "./report.ts";
-import { runCase } from "./run.ts";
+import { mkdtemp, mkdir, readdir, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { validateFlow } from "./architect.ts";
+import { replay } from "./replay.ts";
+import { runCase, savedResult } from "./run.ts";
 import { Decision, Understanding } from "./types.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
@@ -300,4 +304,45 @@ test("events voiced by a simulated persona never reach the evidence unless asked
   assert.match(scored.documents[0].text, /voice: live human/);
   assert.match(scored.unreadable.join(), /1 event\(s\) voiced by a simulated persona/);
   assert.equal(fromView(view, { allowSimulated: true }).documents[0].text.includes("porch"), true);
+});
+
+test("the flow file the batch runner uses is itself valid", () => {
+  assert.deepEqual(validateFlow(flow), []);
+});
+
+test("a saved result holds no case text and re-renders to the same answer files", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })));
+  const saved = savedResult(r);
+  assert.equal(JSON.stringify(saved.bundle).includes("No parcel here"), false);
+  const reread = JSON.parse(JSON.stringify(saved));
+  assert.equal(renderAnswer(reread), renderAnswer(r));
+  assert.equal(renderReasoning(reread), renderReasoning(r));
+});
+
+test("replay reports answer files that no longer match their recorded run", async () => {
+  const r = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })));
+  const out = await mkdtemp(path.join(tmpdir(), "replay-"));
+  for (const name of ["1", "2", "3"]) await mkdir(path.join(out, name));
+  for (const name of ["1", "2"]) {
+    await writeFile(path.join(out, name, "result.json"), JSON.stringify(savedResult(r)));
+    await writeFile(path.join(out, name, "ANSWER.md"), renderAnswer(r));
+    await writeFile(path.join(out, name, "REASONING.md"), renderReasoning(r));
+  }
+  await writeFile(path.join(out, "2", "ANSWER.md"), renderAnswer(r).replace("ACT", "edited by hand"));
+  assert.deepEqual(await replay(out, false), { same: ["1"], different: ["2"], unreadable: ["3"] });
+});
+
+test("the loader reads every practice folder in all four tracks without failing", async () => {
+  const raw = path.join(ROOT, "data/raw");
+  let folders = 0;
+  const dirs = async (dir: string) => (await readdir(dir, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name);
+  for (const track of await dirs(raw)) {
+    for (const name of await dirs(path.join(raw, track))) {
+      const b = await loadFolder(path.join(raw, track, name));
+      folders += 1;
+      assert.ok(b.documents.length >= 2, `${track}/${name} gave ${b.documents.length} documents`);
+      assert.deepEqual(b.unreadable, [], `${track}/${name}`);
+    }
+  }
+  assert.equal(folders, 200);
 });

@@ -3,7 +3,7 @@
 import { randomUUID } from "node:crypto";
 import { buildView } from "./catalogue";
 import { summariseTrace, isTrace } from "./mapping";
-import { getExecution, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
+import { getExecution, getWorkflow, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
 
 export const RUN_TIMEOUT_MS = 5 * 60_000;
 
@@ -47,11 +47,16 @@ export async function execute(input: { caseId: string; dataset?: string | null; 
   };
   upsertExecution(base);
 
+  const saved = getWorkflow(base.workflowId);
+  const edited = saved?.source === "db" ? saved : null;
+
   try {
     const res = await fetch(`${agentUrl()}/api/cases`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(built.view),
+      // A workflow edited in the console runs as edited: the agent API validates the flow and
+      // refuses an unsound one. An untouched workflow is left to the API's own flow file.
+      body: JSON.stringify(edited ? { ...built.view, flow: edited.flow } : built.view),
       signal: AbortSignal.timeout(RUN_TIMEOUT_MS),
     });
     const text = await res.text();
