@@ -58,9 +58,18 @@ export function renderAnswer(r: RunResult): string {
 
   lines.push("", "## Escalated");
   if (card) {
-    lines.push(`To: ${card.routeTo}`, "", card.summary, "");
+    lines.push(`To: ${card.routeTo}`, "");
+    if (card.whyStopped) lines.push(`**Why a person is needed:** ${card.whyStopped.line}`, "");
+    lines.push(card.summary, "");
+    if (card.evidence?.length) {
+      lines.push("What the decision turns on:", ...card.evidence.map((e) => `- ${e.who} (${e.basis.replaceAll("_", " ")}): ${e.says}`), "");
+    }
     if (card.clash) lines.push(`Conflict: ${card.clash}`, "");
-    if (card.options.length) lines.push("Options for the person deciding:", ...card.options.map((o) => `- ${o.label}`), "");
+    if (card.alreadyDone?.length) lines.push("Already done safely:", ...card.alreadyDone.map((x) => `- ${x}`), "");
+    if (card.options.length) {
+      lines.push("Options for the person deciding:",
+        ...card.options.map((o) => `- **${o.label}**${o.effect ? `: ${o.effect}` : ""}${o.undoable ? "" : " (cannot be undone)"}`), "");
+    }
     if (card.wouldChangeMyMind) lines.push(`What would settle it: ${card.wouldChangeMyMind}`, "");
     lines.push(`No person was available during this run. Safe fallback logged: ${card.fallback}`);
   } else {

@@ -25,4 +25,5 @@ for (const g of result.gated) {
   console.log(`\n[${g.verdict}] risk ${g.risk.toFixed(2)} worst ${g.worst} -> ${g.action.recipient} via ${g.action.channel}\n  reasons: ${g.reasons.join("; ") || "none"}\n  ${g.action.message.slice(0, 700)}`);
 }
 if (result.panel?.ok) console.log(`\npanel notes: ${result.panel.notes.join(" | ")}`);
+if (result.card) console.log(`\ncard:\n${JSON.stringify(result.card, null, 1)}`);
 if (result.error) console.log(`error at ${result.failedAt}: ${result.error}`);
