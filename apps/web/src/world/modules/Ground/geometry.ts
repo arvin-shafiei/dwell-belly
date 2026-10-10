@@ -1,8 +1,8 @@
 // Geometry builders for the Ground module. All geometry is built directly in world space with
 // world-space UVs (xz / tile) and per-vertex colour multipliers for large-scale variation.
 import * as THREE from "three";
-import { WATER_X, ZONES, type Box } from "../../config";
-import { fbm, mulberry32, QUAY_HALF, shoreX, smoothstep, WATER_Y } from "./noise";
+import { RIVER, WATER_X, ZONES, type Box } from "../../config";
+import { fbm, MOUTH_N, mulberry32, QUAY_N, QUAY_S, ribbonEdges, shoreX, smoothstep, WATER_Y } from "./noise";
 
 export interface Rect extends Box {
   segX: number;
@@ -83,20 +83,27 @@ export function patchColor(amount: number, seed: number): ColorFn {
   };
 }
 
-/** The land extent: everything west of the beach, generous so the far edges sit in the haze. */
-export const LAND_FAR = 3000;
+/** The land extent: everything west of the beach, well past the camera far plane so the edge is never seen. */
+export const LAND_FAR = 4000;
 export const BEACH_INNER = WATER_X - 22;
 const LAND_EAST = WATER_X - 18;
+/** Inner edge of the paved embankment along the sea wall. Coastal zone patches stop here. */
+export const EMBANK_X = WATER_X - 14;
 
 export function landRects(): Rect[] {
-  const inner = 420;
+  const inner = 1160;
+  const coarse = (minX: number, maxX: number, minZ: number, maxZ: number): Rect => ({
+    minX, maxX, minZ, maxZ,
+    segX: Math.max(1, Math.round((maxX - minX) / 120)),
+    segZ: Math.max(1, Math.round((maxZ - minZ) / 120)),
+  });
   return [
-    // Detailed core around the playable world.
-    { minX: -inner, maxX: LAND_EAST, minZ: -inner, maxZ: inner, segX: 92, segZ: 105 },
-    // Coarse surround.
-    { minX: -LAND_FAR, maxX: -inner, minZ: -LAND_FAR, maxZ: LAND_FAR, segX: 26, segZ: 60 },
-    { minX: -inner, maxX: LAND_EAST, minZ: -LAND_FAR, maxZ: -inner, segX: 10, segZ: 26 },
-    { minX: -inner, maxX: LAND_EAST, minZ: inner, maxZ: LAND_FAR, segX: 10, segZ: 26 },
+    // Detailed core over the playable world (~16 m cells for the macro colour variation).
+    { minX: -inner, maxX: LAND_EAST, minZ: -inner, maxZ: inner, segX: 92, segZ: 145 },
+    // Coarse surround out into the haze.
+    coarse(-LAND_FAR, -inner, -LAND_FAR, LAND_FAR),
+    coarse(-inner, LAND_EAST, -LAND_FAR, -inner),
+    coarse(-inner, LAND_EAST, inner, LAND_FAR),
   ];
 }
 
@@ -105,6 +112,8 @@ function rect(b: Box, pad: number, cell: number): Rect {
   return { ...r, segX: Math.max(1, Math.round((r.maxX - r.minX) / cell)), segZ: Math.max(1, Math.round((r.maxZ - r.minZ) / cell)) };
 }
 
+const coastal = (b: Box): Box => ({ ...b, maxX: Math.min(b.maxX, EMBANK_X) });
+
 export const PATCHES = {
   // Downtown paving reaches the outer edge of the perimeter roads plus a sidewalk.
   downtown: rect(ZONES.downtown, 7, 12),
@@ -112,7 +121,19 @@ export const PATCHES = {
   depot: rect(ZONES.depot, 0, 10),
   suburbs: rect(ZONES.suburbs, 0, 10),
   docks: { ...rect(ZONES.docks, 0, 10), maxX: WATER_X },
+  containerTerminal: rect(coastal(ZONES.containerTerminal), 0, 12),
+  industrial: rect(coastal(ZONES.industrial), 0, 14),
+  shoreditch: rect(coastal(ZONES.shoreditch), 0, 14),
+  southbank: rect(ZONES.southbank, 0, 14),
+  oldTown: rect(ZONES.oldTown, 0, 14),
+  hampstead: rect(ZONES.hampstead, 0, 18),
 };
+
+/** The paved embankment strip on top of the sea wall, either side of the docks apron. */
+export function embankmentRects(): Rect[] {
+  const mk = (minZ: number, maxZ: number): Rect => ({ minX: EMBANK_X, maxX: WATER_X, minZ, maxZ, segX: 1, segZ: Math.round((maxZ - minZ) / 20) });
+  return [mk(QUAY_N, ZONES.docks.minZ), mk(ZONES.docks.maxZ, QUAY_S)];
+}
 
 /** Darker kerb / hedge band peeking out around a patch. Vertex-coloured quads, one mesh. */
 export function bordersGeometry(): THREE.BufferGeometry {
@@ -121,6 +142,11 @@ export function bordersGeometry(): THREE.BufferGeometry {
     { r: PATCHES.countryside, color: "#3f6e2a", pad: 1.6 },
     { r: PATCHES.depot, color: "#7a776f", pad: 1.2 },
     { r: PATCHES.suburbs, color: "#5d8f3c", pad: 1.0 },
+    { r: PATCHES.southbank, color: "#6f6a60", pad: 1.2 },
+    { r: PATCHES.oldTown, color: "#5f584e", pad: 1.4 },
+    { r: PATCHES.shoreditch, color: "#555350", pad: 1.2 },
+    { r: PATCHES.industrial, color: "#6b665c", pad: 2.5 },
+    { r: PATCHES.hampstead, color: "#3a6a28", pad: 2.0 },
   ];
   const geos = items.map(({ r, color, pad }) => {
     const c = new THREE.Color(color);
@@ -138,12 +164,13 @@ export function bordersGeometry(): THREE.BufferGeometry {
 
 /** Quay edge details along the docks: dark coping at the lip and the yellow safety line. */
 export function quayLinesGeometry(): THREE.BufferGeometry {
-  const z0 = -QUAY_HALF;
-  const z1 = QUAY_HALF;
+  // Coping runs the full sea wall; the yellow line marks the working quays (docks + container terminal).
+  const z0 = ZONES.docks.minZ;
+  const z1 = ZONES.containerTerminal.maxZ;
   const coping = new THREE.Color("#6b7075");
   const yellow = new THREE.Color("#f5c518");
   const geos = [
-    gridGeometry([{ minX: WATER_X - 0.9, maxX: WATER_X, minZ: z0, maxZ: z1, segX: 1, segZ: 1 }], 0.011, 1, (_x, _z, o) => o.copy(coping)),
+    gridGeometry([{ minX: WATER_X - 0.9, maxX: WATER_X, minZ: QUAY_N, maxZ: QUAY_S, segX: 1, segZ: 1 }], 0.011, 1, (_x, _z, o) => o.copy(coping)),
     gridGeometry([{ minX: WATER_X - 2.6, maxX: WATER_X - 2.0, minZ: z0 + 0.6, maxZ: z1 - 0.6, segX: 1, segZ: 1 }], 0.012, 1, (_x, _z, o) => o.copy(yellow)),
   ];
   const merged = concat(geos);
@@ -249,8 +276,8 @@ function beachStrip(z0: number, z1: number, step: number, rng: () => number): TH
 
 export function beachGeometry(): THREE.BufferGeometry {
   const rng = mulberry32(99);
-  const north = beachStrip(-QUAY_HALF, -LAND_FAR, 6, rng);
-  const south = beachStrip(QUAY_HALF, LAND_FAR, 6, rng);
+  const north = beachStrip(MOUTH_N, -LAND_FAR, 6, rng);
+  const south = beachStrip(QUAY_S, LAND_FAR, 6, rng);
   const pos = new Float32Array([...(north.getAttribute("position").array as Float32Array), ...(south.getAttribute("position").array as Float32Array)]);
   const nrm = new Float32Array([...(north.getAttribute("normal").array as Float32Array), ...(south.getAttribute("normal").array as Float32Array)]);
   const col = new Float32Array([...(north.getAttribute("color").array as Float32Array), ...(south.getAttribute("color").array as Float32Array)]);
@@ -275,8 +302,12 @@ export function buildRocks(): THREE.InstancedMesh {
   const items: { x: number; y: number; z: number; s: number; sy: number }[] = [];
 
   // Scattered clusters along the beaches within the visible world.
-  for (let z = QUAY_HALF + 4; z < 560; z += 3 + rng() * 9) {
-    for (const sign of [-1, 1]) {
+  const beachRuns: [number, number, number][] = [
+    [QUAY_S + 4, 1250, 1],
+    [-MOUTH_N + 4, 1250, -1],
+  ];
+  for (const [from, to, sign] of beachRuns) {
+    for (let z = from; z < to; z += 3 + rng() * 9) {
       if (rng() < 0.45) continue;
       const zz = sign * z;
       const n = 1 + Math.floor(rng() * 3);
@@ -286,15 +317,20 @@ export function buildRocks(): THREE.InstancedMesh {
       }
     }
   }
-  // Riprap packed around both quay corners.
-  for (const sign of [-1, 1]) {
+  // Riprap packed around the sea wall ends and the beach end at the river mouth.
+  const corners: [number, number][] = [
+    [QUAY_S, 1],
+    [QUAY_N, -1],
+    [MOUTH_N, 1],
+  ];
+  for (const [cz, dir] of corners) {
     for (let k = 0; k < 26; k++) {
       const s = 0.9 + rng() * 1.4;
-      items.push({ x: WATER_X - 8 + rng() * 10, y: WATER_Y - 0.3 + rng() * 0.4, z: sign * (QUAY_HALF + 0.5 + rng() * 9), s, sy: s * 0.7 });
+      items.push({ x: WATER_X - 8 + rng() * 10, y: WATER_Y - 0.3 + rng() * 0.4, z: cz + dir * (0.5 + rng() * 9), s, sy: s * 0.7 });
     }
   }
-  // Toe of the quay wall, just breaking the surface.
-  for (let z = -QUAY_HALF + 2; z < QUAY_HALF; z += 2.5 + rng() * 3) {
+  // Toe of the sea wall, just breaking the surface.
+  for (let z = QUAY_N + 2; z < QUAY_S; z += 2.5 + rng() * 4) {
     const s = 0.6 + rng() * 0.8;
     items.push({ x: WATER_X + 0.6 + rng() * 1.2, y: WATER_Y - 0.5 * s, z, s, sy: s * 0.8 });
   }
@@ -317,4 +353,69 @@ export function buildRocks(): THREE.InstancedMesh {
   mesh.receiveShadow = true;
   mesh.computeBoundingSphere();
   return mesh;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Riverbed: a muddy ribbon under the river polyline, wider than the water, darker in the channel.
+
+const RIVER_COLS: { off: number; k: number }[] = [
+  { off: -1, k: 1.25 }, // drier bank edge (+margin)
+  { off: -0.5, k: 1.05 },
+  { off: 0, k: 0.72 }, // deep channel
+  { off: 0.5, k: 1.05 },
+  { off: 1, k: 1.25 },
+];
+
+export function riverbedGeometry(margin = 9): THREE.BufferGeometry {
+  // Extend the bed west into the haze; stop it at the land edge so it never floats over the sea.
+  const pts: [number, number][] = [[-LAND_FAR, RIVER.points[0][1]], ...RIVER.points.filter(([x]) => x < LAND_EAST)];
+  const last = RIVER.points.find(([x]) => x >= LAND_EAST);
+  if (last) {
+    const prev = pts[pts.length - 1];
+    const t = (LAND_EAST - prev[0]) / (last[0] - prev[0]);
+    pts.push([LAND_EAST, prev[1] + (last[1] - prev[1]) * t]);
+  }
+  const half = RIVER.width / 2;
+  const edges = RIVER_COLS.map((c) => {
+    const w = c.off === 0 ? 0 : Math.abs(c.off) === 1 ? half + margin : half * 0.75;
+    if (w === 0) return pts;
+    const [l, r] = ribbonEdges(pts, w);
+    return c.off < 0 ? r : l;
+  });
+  const rows = pts.length;
+  const cols = RIVER_COLS.length;
+  const pos = new Float32Array(rows * cols * 3);
+  const nrm = new Float32Array(rows * cols * 3);
+  const uv = new Float32Array(rows * cols * 2);
+  const col = new Float32Array(rows * cols * 3);
+  let v = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const [x, z] = edges[c][r];
+      pos.set([x, 0.006, z], v * 3);
+      nrm.set([0, 1, 0], v * 3);
+      uv.set([x / 16, -z / 16], v * 2);
+      const k = RIVER_COLS[c].k;
+      col.set([k, k, k], v * 3);
+      v++;
+    }
+  }
+  const idx: number[] = [];
+  for (let r = 0; r < rows - 1; r++) {
+    for (let c = 0; c < cols - 1; c++) {
+      const a = r * cols + c;
+      const b = a + 1;
+      const d = a + cols;
+      const e = d + 1;
+      idx.push(a, b, d, b, e, d);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  g.setAttribute("normal", new THREE.BufferAttribute(nrm, 3));
+  g.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+  g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  g.setIndex(idx);
+  g.computeBoundingSphere();
+  return g;
 }

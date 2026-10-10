@@ -2,7 +2,7 @@
 // sun glint, animated swash foam along the shoreline. Fragment-only, one draw call, fog-aware.
 import * as THREE from "three";
 import { WATER_X } from "../../config";
-import { QUAY_HALF, SHORE_INSET } from "./noise";
+import { MOUTH_N, MOUTH_SHORE_INSET, QUAY_N, QUAY_S, SHORE_INSET } from "./noise";
 
 const vertexShader = /* glsl */ `
 varying vec3 vWorld;
@@ -20,7 +20,10 @@ void main() {
 const fragmentShader = /* glsl */ `
 uniform float uTime;
 uniform float uWaterX;
-uniform float uQuayHalf;
+uniform float uQuayN;
+uniform float uQuayS;
+uniform float uMouthN;
+uniform float uMouthInset;
 uniform float uInset;
 uniform float uDay;
 uniform float uSunset;
@@ -44,9 +47,10 @@ float vnoise(vec2 p) {
 
 // Mirrors shoreX() in noise.ts.
 float shoreX(float z) {
-  float az = abs(z);
-  if (az <= uQuayHalf) return uWaterX;
-  float m = smoothstep(uQuayHalf, uQuayHalf + 60.0, az);
+  if (z >= uQuayN && z <= uQuayS) return uWaterX;
+  if (z >= uMouthN && z < uQuayN) return uWaterX - uMouthInset;
+  float e = z < uMouthN ? uMouthN - z : z - uQuayS;
+  float m = smoothstep(0.0, 60.0, e);
   return uWaterX - uInset + m * (2.6 * sin(z * 0.031) + 1.2 * sin(z * 0.097 + 1.3));
 }
 
@@ -123,7 +127,10 @@ export function createWaterMaterial(): THREE.ShaderMaterial {
       {
         uTime: { value: 0 },
         uWaterX: { value: WATER_X },
-        uQuayHalf: { value: QUAY_HALF },
+        uQuayN: { value: QUAY_N },
+        uQuayS: { value: QUAY_S },
+        uMouthN: { value: MOUTH_N },
+        uMouthInset: { value: MOUTH_SHORE_INSET },
         uInset: { value: SHORE_INSET },
         uDay: { value: 1 },
         uSunset: { value: 0 },

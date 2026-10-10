@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DebrisPool, ParticlePool } from "./particles";
+import { DebrisPool, DecalPool, ParticlePool } from "./particles";
 
 describe("ParticlePool", () => {
   it("spawns, moves, fades and dies", () => {
@@ -41,5 +41,18 @@ describe("DebrisPool", () => {
     d.killOwner(2);
     expect(d.state[0]).toBe(0);
     expect(d.scale[0]).toBe(0);
+  });
+});
+
+describe("DecalPool", () => {
+  it("adds strips with length/heading and clears them per owner", () => {
+    const d = new DecalPool(4);
+    d.add(0, 0, 0, 10, 0.3, 1);
+    d.add(0, 0, 3, 4, 0.3, 2);
+    expect(d.len[0]).toBeCloseTo(10);
+    expect(d.yaw[0]).toBeCloseTo(0);
+    expect(d.len[1]).toBeCloseTo(5);
+    d.killOwner(1);
+    expect(d.count()).toBe(1);
   });
 });

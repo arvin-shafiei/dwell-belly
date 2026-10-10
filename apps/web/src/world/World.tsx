@@ -15,9 +15,7 @@ import Suburbs from "./modules/Suburbs";
 import Traffic from "./modules/Traffic";
 import TrafficLights from "./modules/TrafficLights";
 import DeliveryFleet from "./modules/DeliveryFleet";
-// TEMP: Crashes is mid-rewrite (pileups) and doesn't build; re-enable when its agent finishes.
-// import Crashes from "./modules/Crashes";
-const Crashes = () => null;
+import Crashes from "./modules/Crashes";
 import Responders from "./modules/Responders";
 import Roadworks from "./modules/Roadworks";
 import Sky from "./modules/Sky";

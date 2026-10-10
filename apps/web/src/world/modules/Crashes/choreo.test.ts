@@ -93,6 +93,13 @@ describe("planPileup", () => {
     for (let i = 1; i < scripted.length; i++) expect(scripted[i]).toBeLessThan(scripted[i - 1]);
   });
 
+  it("scripted cars never start before the start of the road run", () => {
+    for (let seed = 1; seed < 30; seed++) {
+      const c = planPileup(input(seed, { room: 60, highway: false }));
+      for (const a of c.actors) expect(a.contact.z - a.speed * (a.impactAt + 0.15)).toBeGreaterThan(-60 - 15 - 1e-6 - (a.speed === 4 ? 100 : 0));
+    }
+  });
+
   it("adds a cross-over from the opposite lane mid-sequence", () => {
     const c = planPileup(input(5, { opp: [{ id: "o1", z: 6, kind: "car" }] }));
     const x = c.impacts.find((i) => i.crossover)!;

@@ -1,107 +1,178 @@
 "use client";
-// Module: Crashes. Crash director + crash VFX.
-// Every 35-60 s (and on bus request:crash) it wrecks real traffic (rear-end or solo via registry crash()),
-// or stages a scripted wreck (T-boned cars / jackknifed burning HGV). It opens an incident, blocks the road,
-// and plays impact flash, sparks, glass/cargo debris, a smoke column and (trucks) fire.
+// Module: Crashes. Crash director + crash choreography + crash VFX.
+// Every 35-60 s (and on bus request:crash) it stages one of:
+//  - a real collision between registry vehicles (rear-end / solo, via crash()),
+//  - a scripted ordinary crash: red-light T-bone at a junction, rear-end shunt, highway side-swipe,
+//    rollover onto the roof, or a jackknifed burning HGV,
+//  - a multi-vehicle pileup (6-13 vehicles concertina over ~3-4 s on the A-Ring or a downtown avenue).
+// Each impact gets its own flash, sparks, glass, airbags, skid marks, smoke/steam/fire and a vehicle:crashed
+// event (so camera shake ripples). Fast traffic arriving at the tail may cause secondary collisions.
 // Responders moves the incident on; when it is "cleared" everything here is removed.
-// Safety net: an incident nobody responds to within 60 s is cleared here.
+// Safety net: an incident nobody responds to is cleared here after 60 s (120 s for pileups).
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { emit, on } from "../bus";
-import { allVehicles, nextId, type VehicleEntry } from "../registry";
+import { allVehicles, getVehicle, nextId, type VehicleEntry, type VehicleKind } from "../registry";
 import { edgeKey as makeEdgeKey, edgeMidpoint, getNode, ROAD_EDGES } from "../roads";
 import { blockedSet, useWorld, type IncidentStatus } from "../store";
-import { crashNote, findRearEnd, findSolo, pickScriptedEdge, type CrashKind, type Scenario } from "./Crashes/director";
-import { DebrisPool, ParticlePool } from "./Crashes/particles";
+import {
+  participants,
+  planJackknife,
+  planJunction,
+  planPileup,
+  planRollover,
+  planSecondary,
+  planShunt,
+  planSideswipe,
+  type Actor,
+  type Approaching,
+  type Choreo,
+  type RealRef,
+} from "./Crashes/choreo";
+import {
+  crashNote,
+  findRearEnd,
+  findSolo,
+  pickJunction,
+  pickPileupRun,
+  pickScriptedEdge,
+  roadName,
+  type CrashKind,
+  type Scenario,
+} from "./Crashes/director";
+import { DebrisPool, DecalPool, ParticlePool } from "./Crashes/particles";
 import { makeParticleMesh, markParticlesDirty } from "./Crashes/vfx";
-import { CAR_COLORS, getShared, JACKKNIFE, JackknifeWreck, SiteMarker, TBONE, TBoneWreck } from "./Crashes/wrecks";
+import { ActorView, CAR_COLORS, ENGINE_Z, getShared, SiteMarker, type Frame, type LaneRef } from "./Crashes/wrecks";
 
 const MAX_ACTIVE = 3;
 const SAFETY_S = 60;
-const LIGHTS = 2; // pre-mounted so adding a fire never forces a shader recompile
+const SAFETY_PILEUP_S = 120;
+const LIGHTS = 2; // pre-mounted so a fire never forces a shader recompile
+const MAX_EMITTERS = 8;
+const LEAD_IN = 0.15; // let scripted actors mount (and register) before the first impact
 const WIND_X = 0.9;
 const WIND_Z = 0.35;
+const CIVIL = new Set<VehicleKind>(["car", "taxi", "van", "truck"]);
+
+const Em = { Smoke: 0, Heavy: 1, Steam: 2, Fire: 3 } as const;
+type Em = (typeof Em)[keyof typeof Em];
+
+interface Emitter {
+  type: Em;
+  x: number;
+  z: number;
+  acc: number;
+  acc2: number;
+}
 
 interface Visual {
   slot: number;
   incidentId: string;
   kind: CrashKind;
-  scenario: Scenario;
-  x: number;
-  z: number;
-  heading: number; // crash frame: +z = direction of travel
-  tri: [number, number]; // warning triangle in crash frame
-  wreck: { ids: string[]; colors: [string, string]; edgeKey: string; from: string; to: string } | null;
+  title: string;
+  frame: Frame;
+  tri: [number, number];
+  labelZ: number;
+  size: number;
+  actors: Actor[];
+  lanes: LaneRef[];
+  clock: { t: number };
   status: IncidentStatus;
 }
 
 interface Slot {
   active: boolean;
   incidentId: string;
-  edgeKey: string;
+  note: string;
+  edges: string[];
   kind: CrashKind;
   status: IncidentStatus;
-  age: number; // sim seconds since creation
-  sx: number; // smoke source
-  sy: number;
-  sz: number;
-  fx: number; // fire source
-  fz: number;
-  fire: boolean;
-  smokeAcc: number;
-  fireAcc: number;
-  light: number; // index into lights, -1 none
-  flash: number; // seconds of impact flash left
+  age: number;
+  safety: number;
+  clock: { t: number };
+  frame: Frame;
+  choreo: Choreo | null;
+  next: number;
+  emitters: Emitter[];
+  emitterCount: number;
+  light: number;
+  flash: number;
+  flashX: number;
+  flashZ: number;
 }
 
 const newSlot = (): Slot => ({
   active: false,
   incidentId: "",
-  edgeKey: "",
+  note: "",
+  edges: [],
   kind: "car_crash",
   status: "active",
   age: 0,
-  sx: 0,
-  sy: 0,
-  sz: 0,
-  fx: 0,
-  fz: 0,
-  fire: false,
-  smokeAcc: 0,
-  fireAcc: 0,
+  safety: SAFETY_S,
+  clock: { t: 0 },
+  frame: { cx: 0, cz: 0, h: 0 },
+  choreo: null,
+  next: 0,
+  emitters: Array.from({ length: MAX_EMITTERS }, () => ({ type: Em.Smoke, x: 0, z: 0, acc: 0, acc2: 0 })),
+  emitterCount: 0,
   light: -1,
   flash: 0,
+  flashX: 0,
+  flashZ: 0,
 });
 
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
-const hexRGB = (hex: string, out: THREE.Color) => out.set(hex);
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-/** Crash frame (centre cx/cz, heading h) -> world. Writes into out. */
-function toWorld(cx: number, cz: number, h: number, lx: number, lz: number, out: { x: number; z: number }) {
-  const c = Math.cos(h);
-  const s = Math.sin(h);
-  out.x = cx + lx * c + lz * s;
-  out.z = cz - lx * s + lz * c;
+/** Local (lx, lz) in frame f -> world, written into out. */
+function toWorld(f: Frame, lx: number, lz: number, out: { x: number; z: number }) {
+  const c = Math.cos(f.h);
+  const s = Math.sin(f.h);
+  out.x = f.cx + lx * c + lz * s;
+  out.z = f.cz - lx * s + lz * c;
+  return out;
+}
+/** World -> local z (along the frame's direction of travel). */
+function localZ(f: Frame, x: number, z: number) {
+  return (x - f.cx) * Math.sin(f.h) + (z - f.cz) * Math.cos(f.h);
+}
+/** Point in an actor's own frame (lat, along) at pose (px, pz, yaw) -> crash-frame local. */
+function actorLocal(px: number, pz: number, yaw: number, lat: number, along: number, out: { x: number; z: number }) {
+  const c = Math.cos(yaw);
+  const s = Math.sin(yaw);
+  out.x = px + lat * c + along * s;
+  out.z = pz - lat * s + along * c;
   return out;
 }
 
-const TITLES: Record<Scenario, string> = { rear_end: "CRASH", solo: "CRASH", tbone: "T-BONE CRASH", jackknife: "HGV FIRE" };
+const TITLES: Record<Scenario, string> = {
+  rear_end: "CRASH",
+  solo: "CRASH",
+  junction: "RED-LIGHT SMASH",
+  shunt: "REAR-END SHUNT",
+  sideswipe: "SIDE-SWIPE",
+  rollover: "ROLLOVER",
+  jackknife: "HGV FIRE",
+  pileup: "PILEUP",
+};
 
 export default function Crashes() {
   const [visuals, setVisuals] = useState<Visual[]>([]);
   const slots = useRef<Slot[]>(Array.from({ length: MAX_ACTIVE }, newSlot));
   const queue = useRef<CrashKind[]>([]);
-  const timer = useRef(rnd(35, 60));
+  const timer = useRef(35 + Math.random() * 25);
   const lights = useRef<(THREE.PointLight | null)[]>([]);
   const lightOwner = useRef<number[]>(Array.from({ length: LIGHTS }, () => -1));
 
   // Pools and their meshes (one draw call each).
   const fx = useMemo(() => {
-    const smoke = new ParticlePool(700);
-    const glow = new ParticlePool(600);
-    const glass = new DebrisPool(200, 0.3);
+    const smoke = new ParticlePool(1400);
+    const glow = new ParticlePool(1000);
+    const glass = new DebrisPool(420, 0.3);
     const cargo = new DebrisPool(48, 0.5);
+    const decals = new DecalPool(220);
     const smokeMesh = makeParticleMesh(smoke, false);
     const glowMesh = makeParticleMesh(glow, true);
     const debrisMat = new THREE.MeshStandardMaterial({ roughness: 0.3, metalness: 0.25, flatShading: true });
@@ -117,15 +188,28 @@ export default function Crashes() {
       m.frustumCulled = false;
     }
     cargoMesh.castShadow = true;
+    const decalMat = new THREE.MeshBasicMaterial({
+      color: "#0b0b0c",
+      transparent: true,
+      opacity: 0.5,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -3,
+    });
+    const decalMesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), decalMat, decals.n);
+    decalMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    decalMesh.frustumCulled = false;
+    decalMesh.renderOrder = 2;
     const dummy = new THREE.Object3D();
     writeDebris(glass, glassMesh, dummy);
     writeDebris(cargo, cargoMesh, dummy);
-    return { smoke, glow, glass, cargo, smokeMesh, glowMesh, glassMesh, cargoMesh };
+    writeDecals(decals, decalMesh, dummy);
+    return { smoke, glow, glass, cargo, decals, smokeMesh, glowMesh, glassMesh, cargoMesh, decalMesh };
   }, []);
 
   useEffect(
     () => () => {
-      for (const m of [fx.smokeMesh, fx.glowMesh, fx.glassMesh, fx.cargoMesh]) {
+      for (const m of [fx.smokeMesh, fx.glowMesh, fx.glassMesh, fx.cargoMesh, fx.decalMesh]) {
         m.geometry.dispose();
         (m.material as THREE.Material).dispose();
       }
@@ -135,7 +219,14 @@ export default function Crashes() {
 
   // Scratch objects (no per-frame allocation).
   const scratch = useMemo(
-    () => ({ dummy: new THREE.Object3D(), p: { x: 0, z: 0 }, q: { x: 0, z: 0 }, col: new THREE.Color(), debrisDirty: true }),
+    () => ({
+      dummy: new THREE.Object3D(),
+      p: { x: 0, z: 0 },
+      q: { x: 0, z: 0 },
+      r: { x: 0, z: 0 },
+      col: new THREE.Color(),
+      debrisDirty: true,
+    }),
     [],
   );
 
@@ -148,7 +239,7 @@ export default function Crashes() {
     [],
   );
 
-  // Safety: if this module unmounts, reopen the roads it closed and clear its incidents.
+  // If this module unmounts, reopen the roads it closed and clear its incidents.
   useEffect(() => {
     const s = slots.current;
     return () => {
@@ -156,55 +247,49 @@ export default function Crashes() {
     };
   }, []);
 
-  // ---------------------------------------------------------------------------
+  // --- VFX helpers -------------------------------------------------------------
 
-  function impactBurst(slot: number, x: number, y: number, z: number, truck: boolean, paint: string[]) {
+  function burst(slot: number, x: number, z: number, dx: number, dz: number, strength: number, heavy: boolean, airbag: boolean, paint: string) {
     const { glow, smoke, glass } = fx;
-    // flash
-    glow.emit(x, y + 0.8, z, 0, 0, 0, 0.35, 2, truck ? 24 : 15, 1, 1, 0.9, 0.6, 1, 0.6, 0.2, 0, 0, 0, slot);
-    glow.emit(x, y + 0.6, z, 0, 0.5, 0, 0.7, 1, truck ? 14 : 9, 0.9, 1, 0.5, 0.12, 0.8, 0.15, 0.02, 0, 0, 0, slot);
-    // sparks
-    const sparks = truck ? 80 : 50;
+    const k = heavy ? 1.4 : 1;
+    glow.emit(x, 1.2, z, 0, 0, 0, 0.35, 2, (10 + 10 * strength) * k, 1, 1, 0.9, 0.6, 1, 0.6, 0.2, 0, 0, 0, slot);
+    glow.emit(x, 1, z, 0, 0.5, 0, 0.7, 1, (6 + 6 * strength) * k, 0.9, 1, 0.5, 0.12, 0.8, 0.15, 0.02, 0, 0, 0, slot);
+    const sparks = Math.round((25 + 50 * strength) * k);
     for (let i = 0; i < sparks; i++) {
       const a = Math.random() * Math.PI * 2;
-      const sp = rnd(5, 15);
-      glow.emit(
-        x, y + 0.5, z,
-        Math.cos(a) * sp, rnd(2, 11), Math.sin(a) * sp,
-        rnd(0.4, 1.1), rnd(0.35, 0.6), 0.08, 1,
-        1, 0.92, 0.55, 1, 0.35, 0.05,
-        20, 0.5, 0, slot,
-      );
+      const sp = rnd(5, 14);
+      glow.emit(x, 0.9, z, Math.cos(a) * sp + dx * 4, rnd(2, 10), Math.sin(a) * sp + dz * 4,
+        rnd(0.4, 1.1), rnd(0.35, 0.6), 0.08, 1, 1, 0.92, 0.55, 1, 0.35, 0.05, 20, 0.5, 0, slot);
     }
-    // dust puff ring
-    for (let i = 0; i < 18; i++) {
-      const a = (i / 18) * Math.PI * 2;
+    const ring = Math.round(10 + 8 * strength);
+    for (let i = 0; i < ring; i++) {
+      const a = (i / ring) * Math.PI * 2;
       const sp = rnd(3, 6.5);
-      smoke.emit(
-        x, 0.5, z,
-        Math.cos(a) * sp, rnd(0.4, 1.4), Math.sin(a) * sp,
-        rnd(1.3, 2.4), 1.4, rnd(4.5, 6.5), 0.6,
-        0.58, 0.55, 0.5, 0.75, 0.73, 0.7,
-        -0.3, 1.6, rnd(-0.5, 0.5), slot,
-      );
+      smoke.emit(x, 0.5, z, Math.cos(a) * sp, rnd(0.4, 1.4), Math.sin(a) * sp,
+        rnd(1.3, 2.4), 1.4, rnd(4, 6) * k, 0.6, 0.58, 0.55, 0.5, 0.75, 0.73, 0.7, -0.3, 1.6, rnd(-0.5, 0.5), slot);
     }
-    // glass and plastic shards
-    const n = truck ? 46 : 36;
+    if (airbag)
+      for (let i = 0; i < 2; i++)
+        smoke.emit(x + rnd(-0.5, 0.5), 1.15, z + rnd(-0.5, 0.5), rnd(-0.4, 0.4), rnd(0.3, 0.8), rnd(-0.4, 0.4),
+          rnd(0.7, 1.0), 0.4, 1.7, 0.95, 1, 1, 1, 0.95, 0.95, 0.97, 0, 1.5, rnd(-1, 1), slot);
+    // glass, plastic and paint: thrown forward with the momentum, so a pileup leaves a long trail
+    scratch.col.set(paint);
+    const n = Math.round((14 + 26 * strength) * k);
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2;
-      const sp = rnd(2, 9);
+      const sp = rnd(1.5, 7);
+      const fwd = rnd(2, 9);
       const pick = Math.random();
       let r = 0.78;
       let g = 0.93;
       let b = 1;
       if (pick > 0.55 && pick < 0.8) r = g = b = 0.12;
       else if (pick >= 0.8) {
-        hexRGB(paint[i % paint.length], scratch.col);
         r = scratch.col.r;
         g = scratch.col.g;
         b = scratch.col.b;
       }
-      glass.spawn({ x, y: y + 0.6, z, vx: Math.cos(a) * sp, vy: rnd(3, 9), vz: Math.sin(a) * sp, scale: rnd(0.25, 0.6), r, g, b, spin: 20, owner: slot });
+      glass.spawn({ x, y: 0.9, z, vx: Math.cos(a) * sp + dx * fwd, vy: rnd(3, 8), vz: Math.sin(a) * sp + dz * fwd, scale: rnd(0.25, 0.6), r, g, b, spin: 20, owner: slot });
     }
     scratch.debrisDirty = true;
   }
@@ -215,22 +300,29 @@ export default function Crashes() {
       const side = rnd(-0.7, 0.7);
       const pick = Math.random();
       const [r, g, b] = pick < 0.55 ? [0.74, 0.55, 0.33] : pick < 0.85 ? [1, 0.42, 0.1] : [0.95, 0.94, 0.9];
-      fx.cargo.spawn({
-        x: rx + rnd(-0.8, 0.8),
-        y: rnd(1.5, 3.2),
-        z: rz + rnd(-0.8, 0.8),
-        vx: (dx + side * dz) * sp,
-        vy: rnd(2, 7),
-        vz: (dz - side * dx) * sp,
-        scale: rnd(0.7, 1.25),
-        r,
-        g,
-        b,
-        spin: 7,
-        owner: slot,
-      });
+      fx.cargo.spawn({ x: rx + rnd(-0.8, 0.8), y: rnd(1.5, 3.2), z: rz + rnd(-0.8, 0.8), vx: (dx + side * dz) * sp, vy: rnd(2, 7), vz: (dz - side * dx) * sp, scale: rnd(0.7, 1.25), r, g, b, spin: 7, owner: slot });
     }
     scratch.debrisDirty = true;
+  }
+
+  /** Two tyre strips from (x0,z0) to (x1,z1) (world), offset sideways by +-0.8 m. */
+  function skid(slot: number, x0: number, z0: number, x1: number, z1: number) {
+    const len = Math.hypot(x1 - x0, z1 - z0);
+    if (len < 0.5) return;
+    const ox = ((z1 - z0) / len) * 0.8;
+    const oz = (-(x1 - x0) / len) * 0.8;
+    fx.decals.add(x0 + ox, z0 + oz, x1 + ox, z1 + oz, 0.32, slot);
+    fx.decals.add(x0 - ox, z0 - oz, x1 - ox, z1 - oz, 0.32, slot);
+  }
+
+  function addEmitter(sl: Slot, type: Em, x: number, z: number) {
+    if (sl.emitterCount >= MAX_EMITTERS) return;
+    const e = sl.emitters[sl.emitterCount++];
+    e.type = type;
+    e.x = x;
+    e.z = z;
+    e.acc = 0;
+    e.acc2 = 0;
   }
 
   function claimLight(slot: number) {
@@ -251,185 +343,345 @@ export default function Crashes() {
     sl.light = -1;
   }
 
-  /** Clear everything this crash put in the world (VFX, wrecks, light). */
+  function flashAt(index: number, x: number, z: number) {
+    const sl = slots.current[index];
+    if (sl.light < 0) sl.light = claimLight(index);
+    sl.flash = 0.4;
+    sl.flashX = x;
+    sl.flashZ = z;
+  }
+
+  // --- Lifecycle ---------------------------------------------------------------
+
+  /** Remove everything this crash put in the world (VFX, wrecks, light, extra closures). */
   function teardown(index: number) {
     const sl = slots.current[index];
     if (!sl.active) return;
     sl.active = false;
+    sl.choreo = null;
     releaseLight(sl);
+    reopen(sl);
     fx.smoke.killOwner(index, 1.2);
     fx.glow.killOwner(index, 0.25);
     fx.glass.killOwner(index);
     fx.cargo.killOwner(index);
+    fx.decals.killOwner(index);
     scratch.debrisDirty = true;
     const id = sl.incidentId;
     setVisuals((v) => v.filter((x) => x.incidentId !== id));
   }
 
-  /** Our own clearing (safety net / unmount): mark cleared, reopen road, announce. */
-  function finishIncident(sl: Slot) {
-    const w = useWorld.getState();
-    w.updateIncident(sl.incidentId, { status: "cleared" });
-    if (w.blocked[sl.edgeKey] !== undefined) {
-      w.unblockEdge(sl.edgeKey);
-      emit({ type: "road:reopened", edgeKey: sl.edgeKey });
+  // --- Building crashes ----------------------------------------------------------
+
+  const idGen = () => nextId("WRECK");
+
+  /** Real fast vehicles on the given directed lanes, behind the tail of the wreckage. */
+  function approaching(f: Frame, lanes: [string, string][], tailZ: number, exclude: Set<string>): Approaching[] {
+    const out: Approaching[] = [];
+    for (const v of allVehicles()) {
+      if (!CIVIL.has(v.kind) || v.stopped || exclude.has(v.id)) continue;
+      if (!lanes.some(([a, b]) => v.from === a && v.to === b)) continue;
+      const behind = tailZ - localZ(f, v.object.position.x, v.object.position.z);
+      if (behind > 0) out.push({ id: v.id, behind, speed: v.speed });
     }
-    emit({ type: "incident:cleared", incidentId: sl.incidentId });
+    return out;
   }
 
-  function createCrash(kind: CrashKind) {
+  function laneFor(from: string, to: string, len: number, z: number): LaneRef {
+    return { edgeKey: makeEdgeKey(from, to), from, to, t: clamp01(0.5 + z / len) };
+  }
+
+  function createCrash(requested: CrashKind) {
     const index = slots.current.findIndex((s) => !s.active);
     if (index < 0) return;
     const blocked = blockedSet();
-    for (const s of slots.current) if (s.active) blocked.add(s.edgeKey);
-
-    // 1) a real collision between two moving vehicles
-    let victims: VehicleEntry[] = [];
-    let scenario: Scenario = "rear_end";
-    const pair = findRearEnd(allVehicles(), { blocked, kind });
-    if (pair) {
-      for (const v of pair) if (v.crash?.()) victims.push(v);
-      if (victims.length === 1) scenario = "solo";
-    }
-    // 2) a single moving vehicle
-    if (!victims.length) {
-      scenario = "solo";
-      const tried = new Set<string>();
-      for (let attempt = 0; attempt < 4 && !victims.length; attempt++) {
-        const pool = [...allVehicles()].filter((v) => !tried.has(v.id));
-        const v = findSolo(pool, { blocked, kind });
-        if (!v) break;
-        tried.add(v.id);
-        if (v.crash?.()) victims = [v];
-      }
-    }
-
+    for (const s of slots.current) if (s.active) for (const k of s.edges) blocked.add(k);
     const sl = slots.current[index];
-    const paint = [CAR_COLORS[Math.floor(Math.random() * CAR_COLORS.length)], CAR_COLORS[Math.floor(Math.random() * CAR_COLORS.length)]];
-    let x: number;
-    let z: number;
-    let heading: number;
-    let from: string;
-    let to: string;
-    let edge: string;
-    let tri: [number, number];
-    let wreck: Visual["wreck"] = null;
-    let vehicleIds: string[];
-    let aKind = victims[0]?.kind ?? (kind === "truck_crash" ? "truck" : "car");
-    let bKind = victims[1]?.kind ?? "car";
+    const now = performance.now();
 
-    if (victims.length) {
-      const lead = victims[0];
-      from = lead.from!;
-      to = lead.to!;
-      edge = lead.edgeKey ?? makeEdgeKey(from, to);
-      const na = getNode(from);
-      const nb = getNode(to);
-      heading = Math.atan2(nb.x - na.x, nb.z - na.z);
-      x = 0;
-      z = 0;
-      for (const v of victims) {
-        x += v.object.position.x;
-        z += v.object.position.z;
+    let kind = requested;
+    let scenario: Scenario;
+    let frame: Frame;
+    let choreo: Choreo;
+    let edges: string[];
+    let lanes: LaneRef[];
+    let noteFrom: string;
+    let noteTo: string;
+    let aKind: VehicleKind = kind === "truck_crash" ? "truck" : "car";
+    let bKind: VehicleKind = "car";
+    let tri: [number, number] = [2.8, -15];
+    let labelZ = 0;
+    let size = 1;
+    let center = { x: 0, z: 0 };
+    let secondaryLanes: [string, string][];
+    const immediate: VehicleEntry[] = [];
+    let note: string | null = null;
+
+    if (kind === "pileup") {
+      const run = pickPileupRun(Math.random, blocked);
+      if (!run) return;
+      const A = getNode(run.a);
+      const C = getNode(run.c);
+      const total = run.l1 + run.l2;
+      const headS = run.highway ? rnd(90, Math.min(total - 12, 150)) : rnd(58, Math.min(total - 8, 70));
+      const ux = (C.x - A.x) / total;
+      const uz = (C.z - A.z) / total;
+      frame = { cx: A.x + ux * headS, cz: A.z + uz * headS, h: Math.atan2(ux, uz) };
+      const sOf = (v: VehicleEntry) => {
+        if (v.from === run.a && v.to === run.b) return v.t * run.l1;
+        if (v.from === run.b && v.to === run.c) return run.l1 + v.t * run.l2;
+        if (v.from === run.c && v.to === run.b) return run.l1 + (1 - v.t) * run.l2;
+        if (v.from === run.b && v.to === run.a) return (1 - v.t) * run.l1;
+        return null;
+      };
+      const same: RealRef[] = [];
+      const opp: RealRef[] = [];
+      for (const v of allVehicles()) {
+        if (!CIVIL.has(v.kind) || v.stopped || !v.crash) continue;
+        const s = sOf(v);
+        if (s === null) continue;
+        const forward = (v.from === run.a && v.to === run.b) || (v.from === run.b && v.to === run.c);
+        (forward ? same : opp).push({ id: v.id, z: s - headS, kind: v.kind });
       }
-      x /= victims.length;
-      z /= victims.length;
-      // warning triangle 12 m upstream of the rear-most victim, in its lane
-      tri = [0.6, -12 - (victims.length > 1 ? 4 : 2)];
-      vehicleIds = victims.map((v) => v.id);
-      const truck = victims.find((v) => v.kind === "truck");
-      kind = truck ? "truck_crash" : kind;
-      const firePos = truck ? truck.object.position : null;
-      sl.fx = firePos ? firePos.x : x;
-      sl.fz = firePos ? firePos.z : z;
-      sl.sx = x;
-      sl.sz = z;
-      // impact point: between the cars, or the nose of a solo crash
-      const p = toWorld(x, z, heading, 0, victims.length > 1 ? 0 : 2, scratch.p);
-      impactBurst(index, p.x, 0.4, p.z, kind === "truck_crash", paint);
-      if (kind === "truck_crash") {
-        toWorld(sl.fx, sl.fz, heading, 0, -5, scratch.q);
-        spillCargo(index, scratch.q.x, scratch.q.z, -Math.sin(heading), -Math.cos(heading));
-      }
+      choreo = planPileup({ rand: Math.random, highway: run.highway, room: headS, same, opp, ids: idGen, colors: CAR_COLORS });
+      scenario = "pileup";
+      noteFrom = run.a;
+      noteTo = run.c;
+      const midS = headS + choreo.tailZ / 2;
+      const primary = midS > run.l1 ? makeEdgeKey(run.b, run.c) : makeEdgeKey(run.a, run.b);
+      edges = [primary, primary === makeEdgeKey(run.a, run.b) ? makeEdgeKey(run.b, run.c) : makeEdgeKey(run.a, run.b)];
+      lanes = choreo.actors.map((a) => {
+        const s = headS + a.rest.z;
+        return s < run.l1
+          ? { edgeKey: makeEdgeKey(run.a, run.b), from: run.a, to: run.b, t: clamp01(s / run.l1) }
+          : { edgeKey: makeEdgeKey(run.b, run.c), from: run.b, to: run.c, t: clamp01((s - run.l1) / run.l2) };
+      });
+      tri = [2.8, choreo.tailZ - 14];
+      labelZ = choreo.tailZ / 2;
+      size = 2.2;
+      center = toWorld(frame, 0, labelZ, { x: 0, z: 0 });
+      secondaryLanes = [
+        [run.a, run.b],
+        [run.b, run.c],
+      ];
+      note = crashNote("pileup", "pileup", run.a, run.c, Math.random, "car", "car", participants(choreo));
     } else {
-      // 3) scripted wreck on a downtown street or the ring road
-      const key = pickScriptedEdge(Math.random, blocked, new Set());
-      if (!key) return;
-      const e = ROAD_EDGES.get(key)!;
-      [from, to] = Math.random() < 0.5 ? [e.a, e.b] : [e.b, e.a];
-      edge = key;
-      const na = getNode(from);
-      const nb = getNode(to);
-      heading = Math.atan2(nb.x - na.x, nb.z - na.z);
-      [x, z] = edgeMidpoint(key);
-      x += rnd(-0.5, 0.5);
-      z += rnd(-0.5, 0.5);
-      tri = [2.8, -15];
-      const truck = kind === "truck_crash";
-      scenario = truck ? "jackknife" : "tbone";
-      vehicleIds = truck ? [nextId("WRECK")] : [nextId("WRECK"), nextId("WRECK")];
-      wreck = { ids: vehicleIds, colors: [paint[0], paint[1]], edgeKey: edge, from, to };
-      aKind = truck ? "truck" : "car";
-      bKind = "car";
-      if (truck) {
-        const cab = toWorld(x, z, heading, JACKKNIFE.cab.x, JACKKNIFE.cab.z, scratch.p);
-        sl.fx = cab.x;
-        sl.fz = cab.z;
-        sl.sx = cab.x;
-        sl.sz = cab.z;
-        impactBurst(index, cab.x, 0.6, cab.z, true, ["#ff6a1a", "#f4f2ee"]);
-        const rear = toWorld(x, z, heading, JACKKNIFE.rear.x, JACKKNIFE.rear.z, scratch.q);
-        const c = Math.cos(heading);
-        const s = Math.sin(heading);
-        const dl = JACKKNIFE.rearDir;
-        spillCargo(index, rear.x, rear.z, dl.x * c + dl.z * s, -dl.x * s + dl.z * c);
-      } else {
-        const imp = toWorld(x, z, heading, TBONE.impact.x, TBONE.impact.z, scratch.p);
-        impactBurst(index, imp.x, 0.5, imp.z, false, paint);
-        const sm = toWorld(x, z, heading, TBONE.smoke.x, TBONE.smoke.z, scratch.q);
-        sl.sx = sm.x;
-        sl.sz = sm.z;
-        sl.fx = sm.x;
-        sl.fz = sm.z;
+      // 1) real collision first (most of the time), else a scripted set piece
+      const tryReal = Math.random() < (kind === "truck_crash" ? 0.6 : 0.5);
+      scenario = "rear_end";
+      if (tryReal) {
+        const pair = findRearEnd(allVehicles(), { blocked, kind });
+        if (pair) {
+          for (const v of pair) if (v.crash?.()) immediate.push(v);
+          if (immediate.length === 1) scenario = "solo";
+        }
+        if (!immediate.length) {
+          scenario = "solo";
+          const tried = new Set<string>();
+          for (let attempt = 0; attempt < 4 && !immediate.length; attempt++) {
+            const v = findSolo([...allVehicles()].filter((c) => !tried.has(c.id)), { blocked, kind });
+            if (!v) break;
+            tried.add(v.id);
+            if (v.crash?.()) immediate.push(v);
+          }
+        }
       }
+
+      if (immediate.length) {
+        const lead = immediate[0];
+        noteFrom = lead.from!;
+        noteTo = lead.to!;
+        const na = getNode(noteFrom);
+        const nb = getNode(noteTo);
+        let x = 0;
+        let z = 0;
+        for (const v of immediate) {
+          x += v.object.position.x;
+          z += v.object.position.z;
+        }
+        frame = { cx: x / immediate.length, cz: z / immediate.length, h: Math.atan2(nb.x - na.x, nb.z - na.z) };
+        if (immediate.some((v) => v.kind === "truck")) kind = "truck_crash";
+        aKind = immediate[0].kind;
+        bKind = immediate[1]?.kind ?? "car";
+        choreo = { actors: [], impacts: [], tailZ: -4, duration: 0 };
+        edges = [lead.edgeKey ?? makeEdgeKey(noteFrom, noteTo)];
+        lanes = [];
+        tri = [0.6, -16];
+        secondaryLanes = [[noteFrom, noteTo]];
+      } else if (kind === "truck_crash") {
+        const key = pickScriptedEdge(Math.random, blocked, new Set());
+        if (!key) return;
+        const e = ROAD_EDGES.get(key)!;
+        [noteFrom, noteTo] = Math.random() < 0.5 ? [e.a, e.b] : [e.b, e.a];
+        const na = getNode(noteFrom);
+        const nb = getNode(noteTo);
+        const [mx, mz] = edgeMidpoint(key);
+        frame = { cx: mx, cz: mz, h: Math.atan2(nb.x - na.x, nb.z - na.z) };
+        scenario = "jackknife";
+        choreo = planJackknife({ rand: Math.random, ids: idGen, colors: CAR_COLORS });
+        edges = [key];
+        lanes = choreo.actors.map((a) => laneFor(noteFrom, noteTo, e.length, a.rest.z));
+        secondaryLanes = [[noteFrom, noteTo]];
+      } else {
+        const junction = Math.random() < 0.4 ? pickJunction(Math.random, blocked, now) : null;
+        if (junction) {
+          const n = getNode(junction.node);
+          const to = getNode(junction.aTo);
+          frame = { cx: n.x, cz: n.z, h: Math.atan2(to.x - n.x, to.z - n.z) };
+          const bf = getNode(junction.bFrom);
+          const side = (bf.x - n.x) * Math.cos(frame.h) - (bf.z - n.z) * Math.sin(frame.h) > 0 ? 1 : -1;
+          scenario = "junction";
+          choreo = planJunction({ rand: Math.random, ids: idGen, colors: CAR_COLORS }, side);
+          noteFrom = junction.bFrom;
+          noteTo = junction.node;
+          edges = [makeEdgeKey(junction.node, junction.aTo), makeEdgeKey(junction.bFrom, junction.node)];
+          lanes = [
+            { edgeKey: edges[0], from: junction.node, to: junction.aTo, t: 0.1 },
+            { edgeKey: edges[1], from: junction.bFrom, to: junction.node, t: 0.92 },
+          ];
+          tri = [2.8, -12];
+          secondaryLanes = [
+            [junction.aFrom, junction.node],
+            [junction.bFrom, junction.node],
+          ];
+          note = `Car ran a red on ${roadName(edges[1])} and T-boned another at the ${roadName(edges[0])} junction, glass everywhere`;
+        } else {
+          const key = pickScriptedEdge(Math.random, blocked, new Set());
+          if (!key) return;
+          const e = ROAD_EDGES.get(key)!;
+          [noteFrom, noteTo] = Math.random() < 0.5 ? [e.a, e.b] : [e.b, e.a];
+          const na = getNode(noteFrom);
+          const nb = getNode(noteTo);
+          const [mx, mz] = edgeMidpoint(key);
+          frame = { cx: mx, cz: mz, h: Math.atan2(nb.x - na.x, nb.z - na.z) };
+          const r = Math.random();
+          const hw = e.kind === "highway";
+          const s = { rand: Math.random, ids: idGen, colors: CAR_COLORS };
+          if (hw ? r < 0.4 : false) [scenario, choreo] = ["sideswipe", planSideswipe(s)];
+          else if (r < (hw ? 0.75 : 0.65)) [scenario, choreo] = ["shunt", planShunt(s)];
+          else [scenario, choreo] = ["rollover", planRollover(s)];
+          edges = [key];
+          lanes = choreo.actors.map((a) => laneFor(noteFrom, noteTo, e.length, a.rest.z));
+          secondaryLanes = [[noteFrom, noteTo]];
+        }
+      }
+      if (!immediate.length) center = toWorld(frame, 0, 0, { x: 0, z: 0 });
+      else center = { x: frame.cx, z: frame.cz };
+    }
+
+    // Secondary collisions: fast traffic closing on the tail may not stop in time.
+    const involved = new Set(choreo.impacts.map((i) => i.vehicleId ?? "").concat(immediate.map((v) => v.id)));
+    const second = planSecondary(approaching(frame, secondaryLanes, choreo.tailZ, involved), Math.max(0.5, choreo.duration), Math.random, kind === "pileup" ? 0.4 : 0.25);
+    if (second.length) {
+      choreo.impacts.push(...second);
+      choreo.impacts.sort((a, b) => a.at - b.at);
+      choreo.duration = choreo.impacts[choreo.impacts.length - 1].at;
     }
 
     const incidentId = nextId("INC");
-    const note = crashNote(kind, scenario, from, to, Math.random, aKind, bKind);
+    const finalNote = note ?? crashNote(kind, scenario, noteFrom, noteTo, Math.random, aKind, bKind);
     Object.assign(sl, {
       active: true,
       incidentId,
-      edgeKey: edge,
+      note: finalNote,
+      edges,
       kind,
       status: "active" as IncidentStatus,
       age: 0,
-      sy: kind === "truck_crash" ? 2.6 : 1.2,
-      fire: kind === "truck_crash",
-      smokeAcc: 0,
-      fireAcc: 0,
-      flash: 0.45,
-      light: claimLight(index),
+      safety: kind === "pileup" ? SAFETY_PILEUP_S : SAFETY_S,
+      clock: { t: -LEAD_IN },
+      frame,
+      choreo,
+      next: 0,
+      emitterCount: 0,
+      flash: 0,
+      light: -1,
     });
-    const L = sl.light >= 0 ? lights.current[sl.light] : null;
-    if (L) L.position.set(sl.fx, 2.4, sl.fz);
 
     const w = useWorld.getState();
-    w.addIncident({ id: incidentId, kind, edgeKey: edge, x, z, status: "active", createdAt: performance.now(), note });
-    w.blockEdge(edge, note);
+    w.addIncident({ id: incidentId, kind, edgeKey: edges[0], x: center.x, z: center.z, status: "active", createdAt: now, note: finalNote });
+    for (const k of edges) {
+      w.blockEdge(k, finalNote);
+      emit({ type: "road:blocked", edgeKey: k, reason: finalNote });
+    }
     emit({ type: "incident:created", incidentId });
-    emit({ type: "road:blocked", edgeKey: edge, reason: note });
-    for (const vehicleId of vehicleIds) emit({ type: "vehicle:crashed", vehicleId, incidentId });
 
-    const visual: Visual = { slot: index, incidentId, kind, scenario, x, z, heading, tri, wreck, status: "active" };
+    // Real crashes that already happened: VFX now.
+    for (const v of immediate) realImpact(index, v, v.kind === "truck" ? 1 : 0.75, false);
+
+    const title = kind === "pileup" ? `PILEUP ×${participants(choreo)}` : TITLES[scenario];
+    const visual: Visual = { slot: index, incidentId, kind, title, frame, tri, labelZ, size, actors: choreo.actors, lanes, clock: sl.clock, status: "active" };
     setVisuals((v) => [...v, visual]);
   }
 
-  // ---------------------------------------------------------------------------
+  /** VFX + bookkeeping for a real registry vehicle that has just crashed. */
+  function realImpact(index: number, v: VehicleEntry, strength: number, callCrash: boolean) {
+    if (callCrash && !v.crash?.()) return;
+    const sl = slots.current[index];
+    const px = v.object.position.x;
+    const pz = v.object.position.z;
+    const hx = Math.sin(v.object.rotation.y);
+    const hz = Math.cos(v.object.rotation.y);
+    const truck = v.kind === "truck";
+    burst(index, px + hx * 2, pz + hz * 2, hx, hz, strength, truck, !truck, CAR_COLORS[(px * 7) & 7] ?? "#888");
+    skid(index, px - hx * 10, pz - hz * 10, px, pz);
+    flashAt(index, px, pz);
+    if (truck) {
+      addEmitter(sl, Em.Fire, px + hx * 2, pz + hz * 2);
+      spillCargo(index, px - hx * 5, pz - hz * 5, -hx, -hz);
+    } else addEmitter(sl, sl.emitterCount < 2 ? Em.Smoke : Em.Steam, px + hx * 1.5, pz + hz * 1.5);
+    emit({ type: "vehicle:crashed", vehicleId: v.id, incidentId: sl.incidentId });
+  }
+
+  /** A scripted actor reaches its moment of impact. */
+  function actorImpact(index: number, a: Actor, strength: number) {
+    const sl = slots.current[index];
+    const f = sl.frame;
+    const hgv = a.model === "hgv";
+    // impact point: the actor's nose at contact
+    const nose = actorLocal(a.contact.x, a.contact.z, a.contact.yaw, 0, hgv ? 2.8 : 2.1, scratch.p);
+    const P = toWorld(f, nose.x, nose.z, scratch.q);
+    const c = Math.cos(f.h);
+    const s = Math.sin(f.h);
+    const dx = Math.sin(a.contact.yaw) * c + Math.cos(a.contact.yaw) * s;
+    const dz = -Math.sin(a.contact.yaw) * s + Math.cos(a.contact.yaw) * c;
+    burst(index, P.x, P.z, dx, dz, strength, hgv, !hgv && a.role !== "lead", a.color);
+    flashAt(index, P.x, P.z);
+    // skid marks: braking before contact, then the slide to rest
+    if (a.speed > 0) {
+      const brake = Math.min(14, Math.max(5, a.speed * 0.6));
+      const b0 = toWorld(f, a.contact.x - Math.sin(a.contact.yaw) * brake, a.contact.z - Math.cos(a.contact.yaw) * brake, scratch.r);
+      const bx = b0.x;
+      const bz = b0.z;
+      const c0 = toWorld(f, a.contact.x, a.contact.z, scratch.p);
+      const cx = c0.x;
+      const cz = c0.z;
+      skid(index, bx, bz, cx, cz);
+      const r0 = toWorld(f, a.rest.x, a.rest.z, scratch.r);
+      skid(index, cx, cz, r0.x, r0.z);
+    }
+    // what burns / smokes / steams once it comes to rest
+    const eng = actorLocal(a.rest.x, a.rest.z, a.rest.yaw, 0, hgv ? ENGINE_Z.hgv : ENGINE_Z.car, scratch.p);
+    const E = toWorld(f, eng.x, eng.z, scratch.r);
+    if (a.fire) addEmitter(sl, Em.Fire, E.x, E.z);
+    else if (hgv) addEmitter(sl, Em.Heavy, E.x, E.z);
+    else if (a.steam) addEmitter(sl, Em.Steam, E.x, E.z);
+    else if (a.crumpled && Math.random() < 0.4) addEmitter(sl, Em.Smoke, E.x, E.z);
+    if (hgv) {
+      // cargo out of the back of the trailer
+      const rear = actorLocal(a.rest.x, a.rest.z, a.rest.yaw + a.rest.fold, 0, -8.5, scratch.p);
+      const R = toWorld(f, rear.x, rear.z, scratch.r);
+      const yaw = f.h + a.rest.yaw + a.rest.fold;
+      spillCargo(index, R.x, R.z, -Math.sin(yaw), -Math.cos(yaw));
+    }
+    emit({ type: "vehicle:crashed", vehicleId: a.id, incidentId: sl.incidentId });
+  }
+
+  // --- Frame loop ------------------------------------------------------------------
 
   useFrame((_, rawDt) => {
     const w = useWorld.getState();
     const t = performance.now() / 1000;
-    // hazard lights blink even while paused (cheap, looks alive)
     getShared().hazardMat.emissiveIntensity = Math.floor(t * 2.6) % 2 ? 3 : 0.1;
     if (w.paused) return;
     const dt = Math.min(rawDt, 0.1);
@@ -438,26 +690,40 @@ export default function Crashes() {
     timer.current -= dt;
     if (timer.current <= 0) {
       timer.current = rnd(35, 60);
-      queue.current.push(Math.random() < 0.38 ? "truck_crash" : "car_crash");
+      const r = Math.random();
+      queue.current.push(r < 0.15 ? "pileup" : r < 0.45 ? "truck_crash" : "car_crash");
     }
     while (queue.current.length) {
       const k = queue.current.shift()!;
       if (slots.current.some((s) => !s.active)) createCrash(k);
     }
 
-    // Lifecycle
     const incidents = w.incidents;
     for (let i = 0; i < MAX_ACTIVE; i++) {
       const sl = slots.current[i];
       if (!sl.active) continue;
       sl.age += dt;
+      sl.clock.t += dt;
+
+      // Choreography: fire every impact whose time has come.
+      const ch = sl.choreo;
+      while (ch && sl.next < ch.impacts.length && ch.impacts[sl.next].at <= sl.clock.t) {
+        const im = ch.impacts[sl.next++];
+        if (im.actor >= 0) actorImpact(i, ch.actors[im.actor], im.strength);
+        else if (im.vehicleId) {
+          const v = getVehicle(im.vehicleId);
+          if (v) realImpact(i, v, im.strength, true);
+        }
+      }
+
+      // Lifecycle
       let status: IncidentStatus = "cleared";
       for (let j = incidents.length - 1; j >= 0; j--)
         if (incidents[j].id === sl.incidentId) {
           status = incidents[j].status;
           break;
         }
-      if (status === "active" && sl.age > SAFETY_S) {
+      if (status === "active" && sl.age > sl.safety) {
         finishIncident(sl);
         status = "cleared";
       }
@@ -467,53 +733,65 @@ export default function Crashes() {
           teardown(i);
           continue;
         }
-        if (status === "clearing") {
-          sl.fire = false; // fire brigade has it out: steam and the odd wisp
-          releaseLight(sl);
-        }
         const id = sl.incidentId;
         setVisuals((v) => v.map((x) => (x.incidentId === id ? { ...x, status } : x)));
       }
 
       // Emitters
-      const truck = sl.kind === "truck_crash";
       const clearing = sl.status === "clearing";
-      const smokeRate = clearing ? 5 : truck ? 17 : 10;
-      sl.smokeAcc += smokeRate * dt;
-      while (sl.smokeAcc >= 1) {
-        sl.smokeAcc -= 1;
-        const sx = (sl.fire ? sl.fx : sl.sx) + rnd(-0.7, 0.7);
-        const sz = (sl.fire ? sl.fz : sl.sz) + rnd(-0.7, 0.7);
-        if (clearing)
-          fx.smoke.emit(sx, 1, sz, WIND_X * 0.6, rnd(1.5, 2.5), WIND_Z * 0.6, rnd(2.5, 3.5), 0.8, rnd(3.5, 5), 0.45,
-            0.86, 0.87, 0.9, 0.95, 0.95, 0.97, -0.3, 0.3, rnd(-0.4, 0.4), i);
-        else if (truck)
-          fx.smoke.emit(sx, sl.sy, sz, WIND_X + rnd(-0.3, 0.3), rnd(2.4, 3.6), WIND_Z + rnd(-0.3, 0.3), rnd(6, 8.5), rnd(1.6, 2.4), rnd(9, 13), 0.9,
-            0.07, 0.065, 0.065, 0.34, 0.33, 0.32, -0.35, 0.22, rnd(-0.35, 0.35), i);
-        else
-          fx.smoke.emit(sx, sl.sy, sz, WIND_X + rnd(-0.3, 0.3), rnd(2, 3.2), WIND_Z + rnd(-0.3, 0.3), rnd(4.5, 6.5), rnd(1, 1.5), rnd(5, 7.5), 0.8,
-            0.17, 0.16, 0.16, 0.5, 0.49, 0.48, -0.3, 0.25, rnd(-0.35, 0.35), i);
-      }
-      if (sl.fire) {
-        sl.fireAcc += 48 * dt;
-        while (sl.fireAcc >= 1) {
-          sl.fireAcc -= 1;
-          fx.glow.emit(sl.fx + rnd(-1.3, 1.3), rnd(0.8, 2.2), sl.fz + rnd(-1.3, 1.3), WIND_X * 0.4, rnd(2.5, 4.5), WIND_Z * 0.4,
-            rnd(0.45, 0.9), rnd(1.8, 2.8), 0.3, 0.95, 1, 0.78, 0.28, 0.9, 0.16, 0.03, -1, 0.5, rnd(-1, 1), i);
-          if (Math.random() < 0.12)
-            fx.glow.emit(sl.fx + rnd(-1, 1), rnd(2, 3), sl.fz + rnd(-1, 1), WIND_X + rnd(-1, 1), rnd(4, 7), WIND_Z + rnd(-1, 1),
-              rnd(1.2, 2.2), 0.22, 0.08, 1, 1, 0.75, 0.3, 1, 0.3, 0.05, -0.4, 0.2, 0, i);
+      let fireX = 0;
+      let fireZ = 0;
+      let fires = 0;
+      for (let k = 0; k < sl.emitterCount; k++) {
+        const e = sl.emitters[k];
+        const type: Em = clearing ? Em.Steam : e.type;
+        const rate = type === Em.Steam ? (clearing ? 3 : 6) : type === Em.Smoke ? 7 : type === Em.Heavy ? 13 : 12;
+        e.acc += rate * dt;
+        while (e.acc >= 1) {
+          e.acc -= 1;
+          const sx = e.x + rnd(-0.7, 0.7);
+          const sz = e.z + rnd(-0.7, 0.7);
+          if (type === Em.Steam)
+            fx.smoke.emit(sx, 1, sz, WIND_X * 0.6, rnd(1.5, 2.5), WIND_Z * 0.6, rnd(2.2, 3.2), 0.6, rnd(3, 4.5), 0.5,
+              0.88, 0.89, 0.92, 0.96, 0.96, 0.98, -0.3, 0.3, rnd(-0.4, 0.4), i);
+          else if (type === Em.Smoke)
+            fx.smoke.emit(sx, 1.2, sz, WIND_X + rnd(-0.3, 0.3), rnd(2, 3.2), WIND_Z + rnd(-0.3, 0.3), rnd(4.5, 6.5), rnd(1, 1.5), rnd(5, 7.5), 0.8,
+              0.17, 0.16, 0.16, 0.5, 0.49, 0.48, -0.3, 0.25, rnd(-0.35, 0.35), i);
+          else
+            fx.smoke.emit(sx, 2.6, sz, WIND_X + rnd(-0.3, 0.3), rnd(2.4, 3.6), WIND_Z + rnd(-0.3, 0.3), rnd(6, 8.5), rnd(1.6, 2.4), rnd(9, 13), 0.9,
+              0.07, 0.065, 0.065, 0.34, 0.33, 0.32, -0.35, 0.22, rnd(-0.35, 0.35), i);
+        }
+        if (type === Em.Fire) {
+          fireX += e.x;
+          fireZ += e.z;
+          fires++;
+          e.acc2 += 42 * dt;
+          while (e.acc2 >= 1) {
+            e.acc2 -= 1;
+            fx.glow.emit(e.x + rnd(-1.2, 1.2), rnd(0.8, 2.2), e.z + rnd(-1.2, 1.2), WIND_X * 0.4, rnd(2.5, 4.5), WIND_Z * 0.4,
+              rnd(0.45, 0.9), rnd(1.8, 2.8), 0.3, 0.95, 1, 0.78, 0.28, 0.9, 0.16, 0.03, -1, 0.5, rnd(-1, 1), i);
+            if (Math.random() < 0.12)
+              fx.glow.emit(e.x + rnd(-1, 1), rnd(2, 3), e.z + rnd(-1, 1), WIND_X + rnd(-1, 1), rnd(4, 7), WIND_Z + rnd(-1, 1),
+                rnd(1.2, 2.2), 0.22, 0.08, 1, 1, 0.75, 0.3, 1, 0.3, 0.05, -0.4, 0.2, 0, i);
+          }
         }
       }
 
-      // Light: impact flash, then flickering fire
+      // Light: impact flashes, then a flickering fire glow
       if (sl.flash > 0) sl.flash -= dt;
+      if (fires && sl.light < 0) sl.light = claimLight(i);
       if (sl.light >= 0) {
         const L = lights.current[sl.light];
-        const flash = sl.flash > 0 ? (sl.flash / 0.45) * 900 : 0;
-        const flicker = sl.fire ? 170 * (0.72 + 0.18 * Math.sin(t * 23 + i) + 0.1 * Math.sin(t * 61 + i * 3)) : 0;
-        if (L) L.intensity = flash + flicker;
-        if (!sl.fire && sl.flash <= 0) releaseLight(sl);
+        const flashing = sl.flash > 0;
+        const flash = flashing ? (sl.flash / 0.4) * 800 : 0;
+        const flicker = fires ? 170 * (0.72 + 0.18 * Math.sin(t * 23 + i) + 0.1 * Math.sin(t * 61 + i * 3)) : 0;
+        if (L) {
+          L.intensity = flash + flicker;
+          if (flashing) L.position.set(sl.flashX, 2.4, sl.flashZ);
+          else if (fires) L.position.set(fireX / fires, 2.4, fireZ / fires);
+        }
+        const done = !ch || sl.next >= ch.impacts.length;
+        if (!fires && !flashing && done) releaseLight(sl);
       }
     }
 
@@ -529,10 +807,12 @@ export default function Crashes() {
       writeDebris(fx.cargo, fx.cargoMesh, scratch.dummy);
       scratch.debrisDirty = false;
     }
+    if (fx.decals.dirty) writeDecals(fx.decals, fx.decalMesh, scratch.dummy);
   });
 
   return (
     <group name="crashes">
+      <primitive object={fx.decalMesh} />
       <primitive object={fx.glassMesh} />
       <primitive object={fx.cargoMesh} />
       <primitive object={fx.smokeMesh} />
@@ -550,14 +830,39 @@ export default function Crashes() {
         />
       ))}
       {visuals.map((v) => (
-        <group key={v.incidentId} position={[v.x, 0, v.z]} rotation={[0, v.heading, 0]}>
-          <SiteMarker title={TITLES[v.scenario]} status={v.status} slick={v.kind === "truck_crash" ? 4.5 : 2.6} tri={v.tri} phase={v.slot * 2.1} />
-          {v.wreck && v.scenario === "tbone" && <TBoneWreck {...v.wreck} />}
-          {v.wreck && v.scenario === "jackknife" && <JackknifeWreck {...v.wreck} burnt={v.status !== "active"} />}
+        <group key={v.incidentId} position={[v.frame.cx, 0, v.frame.cz]} rotation={[0, v.frame.h, 0]}>
+          <SiteMarker
+            title={v.title}
+            status={v.status}
+            slick={v.kind === "pileup" ? 5 : v.kind === "truck_crash" ? 4.5 : 2.6}
+            tri={v.tri}
+            phase={v.slot * 2.1}
+            size={v.size}
+            labelZ={v.labelZ}
+          />
+          {v.actors.map((a, k) => (
+            <ActorView key={a.id} actor={a} clock={v.clock} frame={v.frame} lane={v.lanes[k]} burnt={v.status !== "active"} />
+          ))}
         </group>
       ))}
     </group>
   );
+}
+
+function reopen(sl: Slot) {
+  const w = useWorld.getState();
+  for (const key of sl.edges)
+    if (w.blocked[key] !== undefined && w.blocked[key] === sl.note) {
+      useWorld.getState().unblockEdge(key);
+      emit({ type: "road:reopened", edgeKey: key });
+    }
+}
+
+/** Our own clearing (safety net / unmount): mark cleared, reopen roads, announce. */
+function finishIncident(sl: Slot) {
+  useWorld.getState().updateIncident(sl.incidentId, { status: "cleared" });
+  reopen(sl);
+  emit({ type: "incident:cleared", incidentId: sl.incidentId });
 }
 
 function writeDebris(pool: DebrisPool, mesh: THREE.InstancedMesh, dummy: THREE.Object3D) {
@@ -572,4 +877,17 @@ function writeDebris(pool: DebrisPool, mesh: THREE.InstancedMesh, dummy: THREE.O
   }
   mesh.instanceMatrix.needsUpdate = true;
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+}
+
+function writeDecals(pool: DecalPool, mesh: THREE.InstancedMesh, dummy: THREE.Object3D) {
+  for (let i = 0; i < pool.n; i++) {
+    dummy.position.set(pool.x[i], 0.075 + (i % 7) * 0.001, pool.z[i]);
+    dummy.rotation.set(0, pool.yaw[i], 0);
+    if (pool.alive[i]) dummy.scale.set(pool.width[i], 1, pool.len[i]);
+    else dummy.scale.set(0, 0, 0);
+    dummy.updateMatrix();
+    mesh.setMatrixAt(i, dummy.matrix);
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+  pool.dirty = false;
 }

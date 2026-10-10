@@ -276,3 +276,56 @@ export class DebrisPool {
     return any;
   }
 }
+
+/** Flat ground decals (skid marks): fixed pool, ring-recycled, removed per owner. */
+export class DecalPool {
+  readonly n: number;
+  readonly x: Float32Array;
+  readonly z: Float32Array;
+  readonly yaw: Float32Array;
+  readonly len: Float32Array;
+  readonly width: Float32Array;
+  readonly alive: Uint8Array;
+  private owner: Int16Array;
+  private cursor = 0;
+  dirty = true;
+
+  constructor(n: number) {
+    this.n = n;
+    this.x = new Float32Array(n);
+    this.z = new Float32Array(n);
+    this.yaw = new Float32Array(n);
+    this.len = new Float32Array(n);
+    this.width = new Float32Array(n);
+    this.alive = new Uint8Array(n);
+    this.owner = new Int16Array(n).fill(-1);
+  }
+
+  /** A strip from (x0,z0) to (x1,z1). */
+  add(x0: number, z0: number, x1: number, z1: number, width: number, owner: number) {
+    const i = this.cursor;
+    this.cursor = (this.cursor + 1) % this.n;
+    this.x[i] = (x0 + x1) / 2;
+    this.z[i] = (z0 + z1) / 2;
+    this.yaw[i] = Math.atan2(x1 - x0, z1 - z0);
+    this.len[i] = Math.hypot(x1 - x0, z1 - z0);
+    this.width[i] = width;
+    this.owner[i] = owner;
+    this.alive[i] = 1;
+    this.dirty = true;
+  }
+
+  killOwner(owner: number) {
+    for (let i = 0; i < this.n; i++)
+      if (this.owner[i] === owner && this.alive[i]) {
+        this.alive[i] = 0;
+        this.dirty = true;
+      }
+  }
+
+  count() {
+    let c = 0;
+    for (let i = 0; i < this.n; i++) c += this.alive[i];
+    return c;
+  }
+}

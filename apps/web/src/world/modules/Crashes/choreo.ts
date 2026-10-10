@@ -177,7 +177,8 @@ export function planPileup(p: PileupInput): Choreo {
     const role: Role = i === 0 ? "lead" : (roles.get(i) ?? "rear_end");
     const a = base(p.ids(), p.colors[Math.floor(rand() * p.colors.length)], role, role === "jackknife" ? "hgv" : "car");
     a.impactAt = at;
-    a.speed = speed * (0.85 + rand() * 0.3);
+    // don't start further back than the road we own (the run may begin at a corner): slow down instead
+    a.speed = Math.min(speed * (0.85 + rand() * 0.3), Math.max(4, (p.room + z + 15) / Math.max(at + 0.15, 0.2)));
     a.contact = { x: 2 + jit(rand, 0.3), z, yaw: jit(rand, 0.05) };
     a.rest = { x: 2 + jit(rand, 1.1), z: z + 1 + rand() * 1.5, yaw: jit(rand, 0.6), roll: jit(rand, 0.06), fold: 0 };
     a.crumpled = true;
