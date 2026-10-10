@@ -1,0 +1,540 @@
+{
+ "version": 1,
+ "runId": "2026-10-10T15:35:07.372Z-reality",
+ "caseId": "007",
+ "flowId": "default-incident",
+ "mode": "reality",
+ "events": [
+  {
+   "t": 0,
+   "kind": "run_start",
+   "title": "007",
+   "inputs": [
+    {
+     "n": 1,
+     "channel": "file",
+     "from": "history.md",
+     "excerpt": "1881 characters"
+    },
+    {
+     "n": 2,
+     "channel": "file",
+     "from": "index.md",
+     "excerpt": "566 characters"
+    }
+   ]
+  },
+  {
+   "t": 0,
+   "kind": "node_start",
+   "nodeId": "ingest",
+   "nodeType": "ingest"
+  },
+  {
+   "t": 10976,
+   "kind": "model_call",
+   "nodeId": "ingest",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 10975,
+   "tokensIn": 6649,
+   "tokensOut": 1527,
+   "costUsd": 0.0209522,
+   "ok": true
+  },
+  {
+   "t": 10976,
+   "kind": "node_end",
+   "nodeId": "ingest",
+   "status": "ok",
+   "summary": "2 files, 1 attachments read",
+   "output": {
+    "type": "ingest",
+    "decisionGroups": [
+     "conflicting_evidence",
+     "truthful_status",
+     "owner_coordination",
+     "dependencies",
+     "missing_evidence",
+     "failed_action"
+    ],
+    "constraints": [
+     {
+      "surface": "goods",
+      "requirement": "Physical availability needs a successful deposit and an assigned compartment; the app 'ready' display alone is not enough.",
+      "owner": "Locker team (availability corrections); locker guide K7",
+      "scope": "VEL-007-26 at Lark-12, Mossbay",
+      "kind": "feasibility",
+      "state": "active",
+      "evidence": "E02 procedure excerpt 08:10; E03 deposit_failed 07:41 with compartment_id=null; E05 allocation still null at 08:40"
+     },
+     {
+      "surface": "recipient",
+      "requirement": "Customer wants to collect on his lunch break today and will set off only if told yes.",
+      "owner": "Davin Pell",
+      "scope": "VEL-007-26",
+      "kind": "customer_requirement",
+      "state": "active",
+      "evidence": "E04 08:30 and E06 08:50 emails"
+     },
+     {
+      "surface": "site_access",
+      "requirement": "Collection can only be confirmed once the locker team confirms the parcel is physically in a compartment; van-custody check is pending.",
+      "owner": "Locker operator / locker team",
+      "scope": "VEL-007-26",
+      "kind": "feasibility",
+      "state": "unconfirmed",
+      "evidence": "E05 locker operator status 08:40"
+     }
+    ]
+   },
+   "latencyMs": 10976,
+   "costUsd": 0.0209522,
+   "detail": [
+    "Davin Pell's app shows parcel VEL-007-26 as ready at locker Lark-12, but locker records show the deposit failed and no compartment is assigned. He asks the desk to confirm he can collect today; the desk cannot truthfully confirm and should ",
+    "4 statements found: 3 from a record or an owning team, 1 unverified.",
+    "Who decides: Locker team (controls availability and compartment allocation)."
+   ]
+  },
+  {
+   "t": 10976,
+   "kind": "node_start",
+   "nodeId": "history",
+   "nodeType": "history_lookup"
+  },
+  {
+   "t": 10976,
+   "kind": "node_end",
+   "nodeId": "history",
+   "status": "ok",
+   "summary": "2 open commitments, 2 deadlines",
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Already asked: Confirm to the customer that he can collect today (requested, owed by Vellora escalation desk).",
+    "Already asked: Van-custody check on VEL-007-26 (requested, owed by Locker operator).",
+    "Deadline: Customer plans to collect on his lunch break today, 2026-10-14; exact time not stated",
+    "Deadline: Decision time 2026-10-14T08:50:00+01:00"
+   ]
+  },
+  {
+   "t": 10976,
+   "kind": "edge",
+   "from": "history",
+   "to": "triage"
+  },
+  {
+   "t": 10976,
+   "kind": "edge",
+   "from": "history",
+   "to": "perspectives"
+  },
+  {
+   "t": 10976,
+   "kind": "edge",
+   "from": "history",
+   "to": "clash"
+  },
+  {
+   "t": 11451,
+   "kind": "node_start",
+   "nodeId": "triage",
+   "nodeType": "triage"
+  },
+  {
+   "t": 11451,
+   "kind": "model_call",
+   "nodeId": "triage",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 474,
+   "tokensIn": 1770,
+   "tokensOut": 0,
+   "costUsd": 0.00007434,
+   "ok": true
+  },
+  {
+   "t": 11451,
+   "kind": "node_end",
+   "nodeId": "triage",
+   "status": "ok",
+   "summary": "missed_or_failed_delivery · high",
+   "output": {
+    "type": "triage",
+    "caseType": "missed_or_failed_delivery",
+    "urgency": "high",
+    "p": 1
+   },
+   "latencyMs": 473,
+   "costUsd": 0.00007434,
+   "detail": [
+    "Kind of problem: missed or failed delivery. Urgency: high."
+   ]
+  },
+  {
+   "t": 11451,
+   "kind": "node_start",
+   "nodeId": "perspectives",
+   "nodeType": "perspectives"
+  },
+  {
+   "t": 11451,
+   "kind": "model_call",
+   "nodeId": "perspectives",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 330,
+   "tokensIn": 1907,
+   "tokensOut": 0,
+   "costUsd": 0.000080094,
+   "ok": true
+  },
+  {
+   "t": 11451,
+   "kind": "node_end",
+   "nodeId": "perspectives",
+   "status": "ok",
+   "summary": "2 flags raised",
+   "output": {
+    "type": "perspectives",
+    "seats": [
+     {
+      "id": "advocate",
+      "name": "Customer advocate",
+      "answers": {
+       "distress": 0.32,
+       "vulnerable": 0.03,
+       "repeat_failure": 0.47
+      },
+      "raised": []
+     },
+     {
+      "id": "rule_keeper",
+      "name": "Rule keeper",
+      "answers": {
+       "beyond_desk": 0.65,
+       "legal_or_public": 0.02
+      },
+      "raised": [
+       "beyond_desk"
+      ]
+     },
+     {
+      "id": "safety",
+      "name": "Safety officer",
+      "answers": {
+       "person_at_risk": 0.03,
+       "asks_advice": 0.47
+      },
+      "raised": []
+     },
+     {
+      "id": "sceptic",
+      "name": "Sceptic",
+      "answers": {
+       "contradiction": 0.8,
+       "embedded_instructions": 0.09,
+       "identity_doubt": 0.13
+      },
+      "raised": [
+       "contradiction"
+      ]
+     },
+     {
+      "id": "ops",
+      "name": "Ops pragmatist",
+      "answers": {
+       "time_critical": 0.39,
+       "nothing_owed": 0.04
+      },
+      "raised": []
+     }
+    ]
+   },
+   "latencyMs": 331,
+   "costUsd": 0.000080094,
+   "detail": [
+    "Rule keeper spoke up (beyond desk).",
+    "Sceptic spoke up (contradiction)."
+   ]
+  },
+  {
+   "t": 11451,
+   "kind": "node_start",
+   "nodeId": "clash",
+   "nodeType": "clash_check"
+  },
+  {
+   "t": 11451,
+   "kind": "model_call",
+   "nodeId": "clash",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 362,
+   "tokensIn": 531,
+   "tokensOut": 0,
+   "costUsd": 0.000022302,
+   "ok": true
+  },
+  {
+   "t": 11451,
+   "kind": "node_end",
+   "nodeId": "clash",
+   "status": "ok",
+   "summary": "1 conflict: Whether the parcel is physically in Lark-12 and collectable",
+   "output": {
+    "type": "clash_check",
+    "clash": true,
+    "p": 0.88,
+    "claims": [
+     {
+      "who": "Customer app (pickup screen)",
+      "says": "VEL-007-26 is ready for collection at Lark-12, Mossbay, captured 08:00"
+     },
+     {
+      "who": "Davin Pell",
+      "says": "App turned green and says ready; he can collect at lunch"
+     },
+     {
+      "who": "Locker events",
+      "says": "Deposit attempt 07:40, deposit_failed 07:41, compartment null, no later deposit by 08:20"
+     },
+     {
+      "who": "Locker operator status",
+      "says": "Allocation remains null at 08:40; van-custody check pending; display refresh last ran 08:00"
+     }
+    ]
+   },
+   "latencyMs": 362,
+   "costUsd": 0.000022302,
+   "detail": [
+    "Disagreement between App 'Ready for collection' display vs locker deposit events and operator status: Whether the parcel is physically in Lark-12 and collectable. What would settle it: Locker team confirming a successful deposit and assigne",
+    "Neither side is treated as proven.",
+    "Missing: Current physical location of the parcel (van custody vs locker) (held by Locker operator / locker team).",
+    "Missing: Whether and when a redeposit or compartment assignment will happen (held by Locker team)."
+   ]
+  },
+  {
+   "t": 11451,
+   "kind": "edge",
+   "from": "triage",
+   "to": "planner"
+  },
+  {
+   "t": 11451,
+   "kind": "edge",
+   "from": "perspectives",
+   "to": "planner"
+  },
+  {
+   "t": 11451,
+   "kind": "edge",
+   "from": "clash",
+   "to": "planner"
+  },
+  {
+   "t": 11454,
+   "kind": "node_start",
+   "nodeId": "planner",
+   "nodeType": "planner"
+  },
+  {
+   "t": 23489,
+   "kind": "model_call",
+   "nodeId": "planner",
+   "runner": "claude",
+   "model": "claude-opus-5-5",
+   "latencyMs": 12034,
+   "tokensIn": 10686,
+   "tokensOut": 1045,
+   "costUsd": 0.0433824,
+   "ok": true
+  },
+  {
+   "t": 23489,
+   "kind": "node_end",
+   "nodeId": "planner",
+   "status": "ok",
+   "summary": "act: The locker team owns availability, and locker records show a failed deposit",
+   "output": {
+    "type": "planner",
+    "nextAction": {
+     "recipient": "Locker operator",
+     "channel": "email (locker@vellora.example)",
+     "message": "Please confirm whether VEL-007-26 is now in a compartment at Lark-12, Mossbay, or where it currently is after the pending van-custody check. Locker events show deposit_failed at 07:41 with no compartment, and allocation was still null at 08:40, yet the customer app shows 'Ready for collection'. The customer, Davin Pell, plans to collect on his lunch break today and is waiting on our answer.",
+     "undoable": true
+    },
+    "wontDo": [
+     "Confirm he can collect today",
+     "Promise a redeposit time",
+     "Ask Davin for his lunch time first"
+    ],
+    "waitingFor": [
+     {
+      "what": "Confirmation of the parcel's location and whether it is in a compartment at Lark-12, including the van-custody check outcome",
+      "from": "Locker operator",
+      "by": ""
+     },
+     {
+      "what": "Update Davin Pell once the locker team confirms availability or a new plan",
+      "from": "Vellora escalation desk (after Locker operator replies)",
+      "by": ""
+     }
+    ],
+    "candidates": []
+   },
+   "latencyMs": 12035,
+   "costUsd": 0.0433824,
+   "detail": [
+    "Ask the locker operator whether VEL-007-26 is in a compartment; tell Davin collection is not yet confirmed.",
+    "Why: The locker team owns availability, and locker records show a failed deposit with no compartment despite the app showing ready.",
+    "Will not: Confirm he can collect today (App readiness is a display field; locker records show no successful deposit, and only the locker team can confirm availability.)",
+    "Will not: Promise a redeposit time (The locker team controls compartment allocation; the desk cannot commit to it.)",
+    "Will not: Ask Davin for his lunch time first (It does not settle availability; the locker team's answer is what is needed.)"
+   ]
+  },
+  {
+   "t": 23489,
+   "kind": "node_start",
+   "nodeId": "gate",
+   "nodeType": "safety_gate"
+  },
+  {
+   "t": 26322,
+   "kind": "model_call",
+   "nodeId": "gate",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 2833,
+   "tokensIn": 3954,
+   "tokensOut": 267,
+   "costUsd": 0.0085224,
+   "ok": true
+  },
+  {
+   "t": 26324,
+   "kind": "node_end",
+   "nodeId": "gate",
+   "status": "ok",
+   "summary": "2 of 2 messages cleared",
+   "output": {
+    "type": "safety_gate",
+    "risk": 0.08,
+    "decision": "allow",
+    "allowBelow": 0.3,
+    "blockAbove": 0.8
+   },
+   "latencyMs": 2835,
+   "costUsd": 0.0085224,
+   "detail": [
+    "Message to Locker operator: clear to send (risk 0.05, below 0.3).",
+    "Message to Davin Pell: clear to send (risk 0.08, below 0.3)."
+   ]
+  },
+  {
+   "t": 26324,
+   "kind": "edge",
+   "from": "gate",
+   "to": "action",
+   "when": "allow"
+  },
+  {
+   "t": 26324,
+   "kind": "node_start",
+   "nodeId": "action",
+   "nodeType": "action"
+  },
+  {
+   "t": 26325,
+   "kind": "node_end",
+   "nodeId": "action",
+   "status": "ok",
+   "summary": "2 of 2 message(s) accepted by the outbox",
+   "output": {
+    "type": "action",
+    "done": {
+     "recipient": "Locker operator",
+     "channel": "email (locker@vellora.example)",
+     "message": "Please confirm whether VEL-007-26 is now in a compartment at Lark-12, Mossbay, or where it currently is after the pending van-custody check. Locker events show deposit_failed at 07:41 with no compartment, and allocation was still null at 08:40, yet the customer app shows 'Ready for collection'. The customer, Davin Pell, plans to collect on his lunch break today and is waiting on our answer.",
+     "undoable": true
+    },
+    "ok": true
+   },
+   "latencyMs": 1,
+   "costUsd": 0,
+   "detail": [
+    "Recorded for Locker operator by email (locker@vellora.example): Get the owner to settle whether the parcel is physically collectable at Lark-12 today",
+    "It says: \"Please confirm whether VEL-007-26 is now in a compartment at Lark-12, Mossbay, or where it currently is after the pending van-custody check. Locker events show deposit_failed at 07:41 with no compartment, and allocation was still ",
+    "Recorded for Davin Pell by email: Correct the impression that the parcel is confirmed ready before he travels",
+    "It says: \"Hi Davin, I can't confirm yet that VEL-007-26 is ready at Lark-12; the app shows ready, but our locker records don't yet show it placed in a compartment. I've asked the locker team to confirm where it is and will email you as soon",
+    "No live system is connected, so nothing has reached a recipient yet."
+   ]
+  },
+  {
+   "t": 26325,
+   "kind": "edge",
+   "from": "action",
+   "to": "verify"
+  },
+  {
+   "t": 26325,
+   "kind": "node_start",
+   "nodeId": "verify",
+   "nodeType": "verify"
+  },
+  {
+   "t": 26325,
+   "kind": "node_end",
+   "nodeId": "verify",
+   "status": "ok",
+   "summary": "accepted by the outbox; receipt and reply unverified",
+   "output": {
+    "type": "verify",
+    "ok": true,
+    "p": 1,
+    "note": "Confirmed: the sandbox outbox recorded the message for email (locker@vellora.example) (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for email (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Confirmation of the parcel's location and whether it is in a compartment at Lark-12, including the van-custody check outcome from Locker operator by ; Update Davin Pell once the locker team confirms availability or a new plan "
+   },
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Every message was recorded. Receipt and replies are not yet confirmed.",
+    "Now waiting for: Confirmation of the parcel's location and whether it is in a compartment at Lark-12, including the van-custody check outcome, from Locker operator.",
+    "Now waiting for: Update Davin Pell once the locker team confirms availability or a new plan, from Vellora escalation desk (after Locker operator replies)."
+   ]
+  },
+  {
+   "t": 26325,
+   "kind": "edge",
+   "from": "verify",
+   "to": "log"
+  },
+  {
+   "t": 26325,
+   "kind": "node_start",
+   "nodeId": "log",
+   "nodeType": "case_log"
+  },
+  {
+   "t": 26325,
+   "kind": "node_end",
+   "nodeId": "log",
+   "status": "ok",
+   "summary": "outcome: acted",
+   "latencyMs": 0,
+   "costUsd": 0
+  },
+  {
+   "t": 26325,
+   "kind": "run_end",
+   "outcome": "acted",
+   "totalCostUsd": 0.073033736,
+   "totalLatencyMs": 26325,
+   "nextAction": {
+    "recipient": "Locker operator",
+    "channel": "email (locker@vellora.example)",
+    "message": "Please confirm whether VEL-007-26 is now in a compartment at Lark-12, Mossbay, or where it currently is after the pending van-custody check. Locker events show deposit_failed at 07:41 with no compartment, and allocation was still null at 08:40, yet the customer app shows 'Ready for collection'. The customer, Davin Pell, plans to collect on his lunch break today and is waiting on our answer.",
+    "undoable": true
+   }
+  }
+ ]
+}

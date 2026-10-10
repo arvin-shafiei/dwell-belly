@@ -1,0 +1,848 @@
+{
+ "bundle": {
+  "id": "009",
+  "title": "009",
+  "documents": [
+   {
+    "name": "history.md",
+    "text": "",
+    "chars": 1800
+   },
+   {
+    "name": "index.md",
+    "text": "",
+    "chars": 647
+   }
+  ],
+  "media": [],
+  "unreadable": []
+ },
+ "outcome": "acted",
+ "gated": [
+  {
+   "action": {
+    "recipient": "Partner integration desk",
+    "channel": "email (partner@vellora.example)",
+    "kind": "request_to_owner",
+    "purpose": "Get Fennel Mile's confirmation of physical receipt and the outcome of the loading review for VEL-009-26.",
+    "message": "Please confirm whether Fennel Mile has physically received VEL-009-26, and the outcome of the loading review. Our record shows the manifest was acknowledged at 07:55, but physical_handover and partner_received are both empty. The customer is asking for custody and a delivery run to be confirmed."
+   },
+   "risk": 0.03,
+   "worst": null,
+   "reasons": [],
+   "verdict": "allow"
+  },
+  {
+   "action": {
+    "recipient": "Liora Tern",
+    "channel": "email",
+    "kind": "status_update",
+    "purpose": "Correct the custody assumption without promising a van or date.",
+    "message": "The entry you saw is an electronic manifest sent to Fennel Mile. It is not a record of them receiving the parcel, and no handover signature or intake scan for VEL-009-26 exists yet. We have asked Fennel Mile, who own loading and the delivery run, to confirm receipt and the run. We will pass on their answer when we have it."
+   },
+   "risk": 0.08,
+   "worst": null,
+   "reasons": [],
+   "verdict": "allow"
+  }
+ ],
+ "outbox": [
+  {
+   "action": {
+    "recipient": "Partner integration desk",
+    "channel": "email (partner@vellora.example)",
+    "kind": "request_to_owner",
+    "purpose": "Get Fennel Mile's confirmation of physical receipt and the outcome of the loading review for VEL-009-26.",
+    "message": "Please confirm whether Fennel Mile has physically received VEL-009-26, and the outcome of the loading review. Our record shows the manifest was acknowledged at 07:55, but physical_handover and partner_received are both empty. The customer is asking for custody and a delivery run to be confirmed."
+   },
+   "status": "recorded",
+   "note": "Recorded in the sandbox outbox for email (partner@vellora.example) (ref sandbox-0001). No live system is connected, so the recipient has not received it and no reply has arrived."
+  },
+  {
+   "action": {
+    "recipient": "Liora Tern",
+    "channel": "email",
+    "kind": "status_update",
+    "purpose": "Correct the custody assumption without promising a van or date.",
+    "message": "The entry you saw is an electronic manifest sent to Fennel Mile. It is not a record of them receiving the parcel, and no handover signature or intake scan for VEL-009-26 exists yet. We have asked Fennel Mile, who own loading and the delivery run, to confirm receipt and the run. We will pass on their answer when we have it."
+   },
+   "status": "recorded",
+   "note": "Recorded in the sandbox outbox for email (ref sandbox-0002). No live system is connected, so the recipient has not received it and no reply has arrived."
+  }
+ ],
+ "revised": false,
+ "trace": {
+  "version": 1,
+  "runId": "2026-10-10T15:35:07.372Z-reality",
+  "caseId": "009",
+  "flowId": "default-incident",
+  "mode": "reality",
+  "events": [
+   {
+    "t": 0,
+    "kind": "run_start",
+    "title": "009",
+    "inputs": [
+     {
+      "n": 1,
+      "channel": "file",
+      "from": "history.md",
+      "excerpt": "1800 characters"
+     },
+     {
+      "n": 2,
+      "channel": "file",
+      "from": "index.md",
+      "excerpt": "647 characters"
+     }
+    ]
+   },
+   {
+    "t": 1,
+    "kind": "node_start",
+    "nodeId": "ingest",
+    "nodeType": "ingest"
+   },
+   {
+    "t": 11120,
+    "kind": "model_call",
+    "nodeId": "ingest",
+    "runner": "claude",
+    "model": "claude-sonnet-5-5",
+    "latencyMs": 11119,
+    "tokensIn": 5285,
+    "tokensOut": 1640,
+    "costUsd": 0.019354200000000002,
+    "ok": true
+   },
+   {
+    "t": 11120,
+    "kind": "node_end",
+    "nodeId": "ingest",
+    "status": "ok",
+    "summary": "2 files, 0 attachments read",
+    "output": {
+     "type": "ingest",
+     "decisionGroups": [
+      "owner_coordination",
+      "dependencies",
+      "missing_evidence",
+      "conflicting_evidence",
+      "truthful_status"
+     ],
+     "constraints": [
+      {
+       "surface": "fleet_route",
+       "requirement": "Local van and delivery run for VEL-009-26 cannot be named or confirmed; next scheduled vehicle loading is under review.",
+       "owner": "Fennel Mile (partner)",
+       "scope": "VEL-009-26 only",
+       "kind": "feasibility",
+       "state": "unconfirmed",
+       "evidence": "Partner integration desk handoff in E03 at 08:20: loading under review, no receiving signature."
+      },
+      {
+       "surface": "goods",
+       "requirement": "Custody must not be stated as transferred to Fennel Mile until a signed physical_handover and/or partner_received scan exists.",
+       "owner": "Vellora operations / Fennel Mile",
+       "scope": "VEL-009-26 only",
+       "kind": "authority_restriction",
+       "state": "active",
+       "evidence": "E02 event dictionary H9; E03 shows physical_handover=null and partner_received=null."
+      },
+      {
+       "surface": "recipient",
+       "requirement": "Customer wants to know the van and have custody and a delivery run confirmed.",
+       "owner": "Liora Tern",
+       "scope": "VEL-009-26",
+       "kind": "customer_requirement",
+       "state": "active",
+       "evidence": "E04 08:30 and E05 08:40 emails."
+      }
+     ]
+    },
+    "latencyMs": 11119,
+    "costUsd": 0.019354200000000002,
+    "detail": [
+     "Customer Liora Tern asks us to confirm that Fennel Mile has custody of VEL-009-26 and which local van will deliver it, based on a 'handover' entry. The records show only an electronic manifest sent and acknowledged; there is no physical han",
+     "3 statements found: 2 from a record or an owning team, 1 unverified.",
+     "Who decides: Fennel Mile (receiving carrier) for custody, loading and the delivery run."
+    ]
+   },
+   {
+    "t": 11120,
+    "kind": "node_start",
+    "nodeId": "history",
+    "nodeType": "history_lookup"
+   },
+   {
+    "t": 11120,
+    "kind": "node_end",
+    "nodeId": "history",
+    "status": "ok",
+    "summary": "2 open commitments, 1 deadlines",
+    "latencyMs": 0,
+    "costUsd": 0,
+    "detail": [
+     "Already asked: Confirm local-carrier custody and a delivery run (customer request) (requested, owed by Vellora escalation desk, dependent on Fennel Mile).",
+     "Already asked: Name the local van bringing the parcel (requested, owed by Fennel Mile).",
+     "Deadline: Decision time 2026-10-14T08:40:00+01:00; no delivery deadline stated"
+    ]
+   },
+   {
+    "t": 11120,
+    "kind": "edge",
+    "from": "history",
+    "to": "triage"
+   },
+   {
+    "t": 11120,
+    "kind": "edge",
+    "from": "history",
+    "to": "perspectives"
+   },
+   {
+    "t": 11120,
+    "kind": "edge",
+    "from": "history",
+    "to": "clash"
+   },
+   {
+    "t": 11376,
+    "kind": "node_start",
+    "nodeId": "triage",
+    "nodeType": "triage"
+   },
+   {
+    "t": 11376,
+    "kind": "model_call",
+    "nodeId": "triage",
+    "runner": "jev",
+    "model": "jev-1.13.0",
+    "latencyMs": 256,
+    "tokensIn": 1690,
+    "tokensOut": 0,
+    "costUsd": 0.00007098,
+    "ok": true
+   },
+   {
+    "t": 11376,
+    "kind": "node_end",
+    "nodeId": "triage",
+    "status": "ok",
+    "summary": "lost_or_misdelivered · medium",
+    "output": {
+     "type": "triage",
+     "caseType": "lost_or_misdelivered",
+     "urgency": "medium",
+     "p": 1
+    },
+    "latencyMs": 255,
+    "costUsd": 0.00007098,
+    "detail": [
+     "Kind of problem: lost or misdelivered. Urgency: medium."
+    ]
+   },
+   {
+    "t": 11376,
+    "kind": "node_start",
+    "nodeId": "perspectives",
+    "nodeType": "perspectives"
+   },
+   {
+    "t": 11376,
+    "kind": "model_call",
+    "nodeId": "perspectives",
+    "runner": "jev",
+    "model": "jev-1.13.0",
+    "latencyMs": 255,
+    "tokensIn": 1827,
+    "tokensOut": 0,
+    "costUsd": 0.000076734,
+    "ok": true
+   },
+   {
+    "t": 11376,
+    "kind": "node_end",
+    "nodeId": "perspectives",
+    "status": "ok",
+    "summary": "0 flags raised",
+    "output": {
+     "type": "perspectives",
+     "seats": [
+      {
+       "id": "advocate",
+       "name": "Customer advocate",
+       "answers": {
+        "distress": 0.64,
+        "vulnerable": 0.03,
+        "repeat_failure": 0.07
+       },
+       "raised": []
+      },
+      {
+       "id": "rule_keeper",
+       "name": "Rule keeper",
+       "answers": {
+        "beyond_desk": 0.49,
+        "legal_or_public": 0.02
+       },
+       "raised": []
+      },
+      {
+       "id": "safety",
+       "name": "Safety officer",
+       "answers": {
+        "person_at_risk": 0.03,
+        "asks_advice": 0.37
+       },
+       "raised": []
+      },
+      {
+       "id": "sceptic",
+       "name": "Sceptic",
+       "answers": {
+        "contradiction": 0.28,
+        "embedded_instructions": 0.15,
+        "identity_doubt": 0.29
+       },
+       "raised": []
+      },
+      {
+       "id": "ops",
+       "name": "Ops pragmatist",
+       "answers": {
+        "time_critical": 0.31,
+        "nothing_owed": 0.07
+       },
+       "raised": []
+      }
+     ]
+    },
+    "latencyMs": 255,
+    "costUsd": 0.000076734,
+    "detail": [
+     "Five reviewers looked at the case. None raised a concern."
+    ]
+   },
+   {
+    "t": 11376,
+    "kind": "node_start",
+    "nodeId": "clash",
+    "nodeType": "clash_check"
+   },
+   {
+    "t": 11376,
+    "kind": "model_call",
+    "nodeId": "clash",
+    "runner": "jev",
+    "model": "jev-1.13.0",
+    "latencyMs": 255,
+    "tokensIn": 484,
+    "tokensOut": 0,
+    "costUsd": 0.000020328,
+    "ok": true
+   },
+   {
+    "t": 11376,
+    "kind": "node_end",
+    "nodeId": "clash",
+    "status": "ok",
+    "summary": "1 conflict: Whether Fennel Mile has physical custody of the parcel",
+    "output": {
+     "type": "clash_check",
+     "clash": true,
+     "p": 0.53,
+     "claims": [
+      {
+       "who": "Vellora operations",
+       "says": "Parcel physically scanned at Fern depot 07:15; manifest transmitted to Fennel Mile 07:55; physical_handover and partner_received are null."
+      },
+      {
+       "who": "Partner integration desk",
+       "says": "Fennel Mile acknowledged the electronic manifest; next vehicle loading is under review; no receiving signature in the record."
+      },
+      {
+       "who": "Liora Tern",
+       "says": "The partner entry means Fennel Mile has the parcel now."
+      }
+     ]
+    },
+    "latencyMs": 255,
+    "costUsd": 0.000020328,
+    "detail": [
+     "Disagreement between Liora Tern vs system record: Whether Fennel Mile has physical custody of the parcel. What would settle it: A signed physical_handover receipt from the depot or a partner_received intake scan from Fennel Mile",
+     "Neither side is treated as proven.",
+     "Missing: Signed depot loading receipt (physical_handover) by the receiving carrier (held by Vellora Fern depot / Fennel Mile).",
+     "Missing: Partner intake scan (partner_received) (held by Fennel Mile)."
+    ]
+   },
+   {
+    "t": 11377,
+    "kind": "edge",
+    "from": "triage",
+    "to": "planner"
+   },
+   {
+    "t": 11377,
+    "kind": "edge",
+    "from": "perspectives",
+    "to": "planner"
+   },
+   {
+    "t": 11377,
+    "kind": "edge",
+    "from": "clash",
+    "to": "planner"
+   },
+   {
+    "t": 11377,
+    "kind": "node_start",
+    "nodeId": "planner",
+    "nodeType": "planner"
+   },
+   {
+    "t": 22264,
+    "kind": "model_call",
+    "nodeId": "planner",
+    "runner": "claude",
+    "model": "claude-opus-5-5",
+    "latencyMs": 10887,
+    "tokensIn": 9226,
+    "tokensOut": 1080,
+    "costUsd": 0.0382424,
+    "ok": true
+   },
+   {
+    "t": 22264,
+    "kind": "node_end",
+    "nodeId": "planner",
+    "status": "ok",
+    "summary": "act: Fennel Mile owns receipt, loading and the delivery run; the record shows on",
+    "output": {
+     "type": "planner",
+     "nextAction": {
+      "recipient": "Partner integration desk",
+      "channel": "email (partner@vellora.example)",
+      "message": "Please confirm whether Fennel Mile has physically received VEL-009-26, and the outcome of the loading review. Our record shows the manifest was acknowledged at 07:55, but physical_handover and partner_received are both empty. The customer is asking for custody and a delivery run to be confirmed.",
+      "undoable": true
+     },
+     "wontDo": [
+      "Confirm Fennel Mile has custody",
+      "Name a van or delivery run",
+      "Give an estimated arrival"
+     ],
+     "waitingFor": [
+      {
+       "what": "Confirmation of physical receipt (handover signature or intake scan) and the loading review outcome for VEL-009-26",
+       "from": "Partner integration desk / Fennel Mile",
+       "by": ""
+      },
+      {
+       "what": "Assigned delivery run, to relay to Liora Tern once Fennel Mile has confirmed receipt",
+       "from": "Fennel Mile",
+       "by": ""
+      }
+     ],
+     "candidates": []
+    },
+    "latencyMs": 10887,
+    "costUsd": 0.0382424,
+    "detail": [
+     "Ask the partner desk whether Fennel Mile has physically received VEL-009-26; tell Liora custody is not yet confirmed.",
+     "Why: Fennel Mile owns receipt, loading and the delivery run; the record shows only a manifest sent, with no handover signature or intake scan.",
+     "Will not: Confirm Fennel Mile has custody (The manifest acknowledgement is not physical receipt; there is no handover signature or partner intake scan.)",
+     "Will not: Name a van or delivery run (Only Fennel Mile can assign these, and the loading is still under review.)",
+     "Will not: Give an estimated arrival (The desk does not control partner loading or timing.)"
+    ]
+   },
+   {
+    "t": 22264,
+    "kind": "node_start",
+    "nodeId": "gate",
+    "nodeType": "safety_gate"
+   },
+   {
+    "t": 24852,
+    "kind": "model_call",
+    "nodeId": "gate",
+    "runner": "claude",
+    "model": "claude-sonnet-5-5",
+    "latencyMs": 2587,
+    "tokensIn": 2554,
+    "tokensOut": 247,
+    "costUsd": 0.005522399999999999,
+    "ok": true
+   },
+   {
+    "t": 24852,
+    "kind": "node_end",
+    "nodeId": "gate",
+    "status": "ok",
+    "summary": "2 of 2 messages cleared",
+    "output": {
+     "type": "safety_gate",
+     "risk": 0.08,
+     "decision": "allow",
+     "allowBelow": 0.3,
+     "blockAbove": 0.8
+    },
+    "latencyMs": 2588,
+    "costUsd": 0.005522399999999999,
+    "detail": [
+     "Message to Partner integration desk: clear to send (risk 0.03, below 0.3).",
+     "Message to Liora Tern: clear to send (risk 0.08, below 0.3)."
+    ]
+   },
+   {
+    "t": 24852,
+    "kind": "edge",
+    "from": "gate",
+    "to": "action",
+    "when": "allow"
+   },
+   {
+    "t": 24852,
+    "kind": "node_start",
+    "nodeId": "action",
+    "nodeType": "action"
+   },
+   {
+    "t": 24852,
+    "kind": "node_end",
+    "nodeId": "action",
+    "status": "ok",
+    "summary": "2 of 2 message(s) accepted by the outbox",
+    "output": {
+     "type": "action",
+     "done": {
+      "recipient": "Partner integration desk",
+      "channel": "email (partner@vellora.example)",
+      "message": "Please confirm whether Fennel Mile has physically received VEL-009-26, and the outcome of the loading review. Our record shows the manifest was acknowledged at 07:55, but physical_handover and partner_received are both empty. The customer is asking for custody and a delivery run to be confirmed.",
+      "undoable": true
+     },
+     "ok": true
+    },
+    "latencyMs": 0,
+    "costUsd": 0,
+    "detail": [
+     "Recorded for Partner integration desk by email (partner@vellora.example): Get Fennel Mile's confirmation of physical receipt and the outcome of the loading review for VEL-009-26.",
+     "It says: \"Please confirm whether Fennel Mile has physically received VEL-009-26, and the outcome of the loading review. Our record shows the manifest was acknowledged at 07:55, but physical_handover and partner_received are both empty. The ",
+     "Recorded for Liora Tern by email: Correct the custody assumption without promising a van or date.",
+     "It says: \"The entry you saw is an electronic manifest sent to Fennel Mile. It is not a record of them receiving the parcel, and no handover signature or intake scan for VEL-009-26 exists yet. We have asked Fennel Mile, who own loading and t",
+     "No live system is connected, so nothing has reached a recipient yet."
+    ]
+   },
+   {
+    "t": 24852,
+    "kind": "edge",
+    "from": "action",
+    "to": "verify"
+   },
+   {
+    "t": 24852,
+    "kind": "node_start",
+    "nodeId": "verify",
+    "nodeType": "verify"
+   },
+   {
+    "t": 24852,
+    "kind": "node_end",
+    "nodeId": "verify",
+    "status": "ok",
+    "summary": "accepted by the outbox; receipt and reply unverified",
+    "output": {
+     "type": "verify",
+     "ok": true,
+     "p": 1,
+     "note": "Confirmed: the sandbox outbox recorded the message for email (partner@vellora.example) (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for email (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Confirmation of physical receipt (handover signature or intake scan) and the loading review outcome for VEL-009-26 from Partner integration desk / Fennel Mile by ; Assigned delivery run, to relay to Liora Tern once Fennel Mil"
+    },
+    "latencyMs": 0,
+    "costUsd": 0,
+    "detail": [
+     "Every message was recorded. Receipt and replies are not yet confirmed.",
+     "Now waiting for: Confirmation of physical receipt (handover signature or intake scan) and the loading review outcome for VEL-009-26, from Partner integration desk / Fennel Mile.",
+     "Now waiting for: Assigned delivery run, to relay to Liora Tern once Fennel Mile has confirmed receipt, from Fennel Mile."
+    ]
+   },
+   {
+    "t": 24852,
+    "kind": "edge",
+    "from": "verify",
+    "to": "log"
+   },
+   {
+    "t": 24852,
+    "kind": "node_start",
+    "nodeId": "log",
+    "nodeType": "case_log"
+   },
+   {
+    "t": 24852,
+    "kind": "node_end",
+    "nodeId": "log",
+    "status": "ok",
+    "summary": "outcome: acted",
+    "latencyMs": 0,
+    "costUsd": 0
+   },
+   {
+    "t": 24852,
+    "kind": "run_end",
+    "outcome": "acted",
+    "totalCostUsd": 0.063287042,
+    "totalLatencyMs": 24852,
+    "nextAction": {
+     "recipient": "Partner integration desk",
+     "channel": "email (partner@vellora.example)",
+     "message": "Please confirm whether Fennel Mile has physically received VEL-009-26, and the outcome of the loading review. Our record shows the manifest was acknowledged at 07:55, but physical_handover and partner_received are both empty. The customer is asking for custody and a delivery run to be confirmed.",
+     "undoable": true
+    }
+   }
+  ]
+ },
+ "understanding": {
+  "summary": "Customer Liora Tern asks us to confirm that Fennel Mile has custody of VEL-009-26 and which local van will deliver it, based on a 'handover' entry. The records show only an electronic manifest sent and acknowledged; there is no physical handover signature and no partner intake scan.",
+  "case_type": "Parcel location query after last-mile handover: electronic manifest mistaken for physical custody",
+  "decision_groups": [
+   "owner_coordination",
+   "dependencies",
+   "missing_evidence",
+   "conflicting_evidence",
+   "truthful_status"
+  ],
+  "constraints": [
+   {
+    "surface": "fleet_route",
+    "requirement": "Local van and delivery run for VEL-009-26 cannot be named or confirmed; next scheduled vehicle loading is under review.",
+    "owner": "Fennel Mile (partner)",
+    "scope": "VEL-009-26 only",
+    "kind": "feasibility",
+    "state": "unconfirmed",
+    "evidence": "Partner integration desk handoff in E03 at 08:20: loading under review, no receiving signature."
+   },
+   {
+    "surface": "goods",
+    "requirement": "Custody must not be stated as transferred to Fennel Mile until a signed physical_handover and/or partner_received scan exists.",
+    "owner": "Vellora operations / Fennel Mile",
+    "scope": "VEL-009-26 only",
+    "kind": "authority_restriction",
+    "state": "active",
+    "evidence": "E02 event dictionary H9; E03 shows physical_handover=null and partner_received=null."
+   },
+   {
+    "surface": "recipient",
+    "requirement": "Customer wants to know the van and have custody and a delivery run confirmed.",
+    "owner": "Liora Tern",
+    "scope": "VEL-009-26",
+    "kind": "customer_requirement",
+    "state": "active",
+    "evidence": "E04 08:30 and E05 08:40 emails."
+   }
+  ],
+  "urgency": "medium",
+  "our_role": "Vellora escalation desk: we relay between the customer and the partner and report the record. We do not control Fennel Mile's loading, van assignment or custody, and cannot confirm them ourselves.",
+  "parties": [
+   {
+    "name": "Liora Tern",
+    "role": "customer",
+    "controls": "nothing stated"
+   },
+   {
+    "name": "Vellora escalation desk",
+    "role": "us",
+    "controls": "Customer communication and escalation to the partner; no control over partner vehicles"
+   },
+   {
+    "name": "Fennel Mile",
+    "role": "carrier_team",
+    "controls": "Receipt of the parcel, local vehicle loading and delivery run in Silverfen"
+   },
+   {
+    "name": "Vellora operations",
+    "role": "us",
+    "controls": "Depot scans and manifest records at Fern depot"
+   },
+   {
+    "name": "Partner integration desk",
+    "role": "carrier_team",
+    "controls": "Statement on the manifest acknowledgement and loading review"
+   },
+   {
+    "name": "partner@vellora.example",
+    "role": "business_contact",
+    "controls": "Verified partner desk contact route"
+   }
+  ],
+  "claims": [
+   {
+    "who": "Vellora operations",
+    "says": "Parcel physically scanned at Fern depot 07:15; manifest transmitted to Fennel Mile 07:55; physical_handover and partner_received are null.",
+    "basis": "system_record"
+   },
+   {
+    "who": "Partner integration desk",
+    "says": "Fennel Mile acknowledged the electronic manifest; next vehicle loading is under review; no receiving signature in the record.",
+    "basis": "owning_team_statement"
+   },
+   {
+    "who": "Liora Tern",
+    "says": "The partner entry means Fennel Mile has the parcel now.",
+    "basis": "unverified_claim"
+   }
+  ],
+  "conflicts": [
+   {
+    "between": "Liora Tern vs system record",
+    "about": "Whether Fennel Mile has physical custody of the parcel",
+    "what_would_settle_it": "A signed physical_handover receipt from the depot or a partner_received intake scan from Fennel Mile"
+   }
+  ],
+  "missing_info": [
+   {
+    "what": "Signed depot loading receipt (physical_handover) by the receiving carrier",
+    "who_has_it": "Vellora Fern depot / Fennel Mile"
+   },
+   {
+    "what": "Partner intake scan (partner_received)",
+    "who_has_it": "Fennel Mile"
+   },
+   {
+    "what": "Assigned van, delivery run and timing, and the outcome of the loading review",
+    "who_has_it": "Fennel Mile"
+   },
+   {
+    "what": "Current physical location of the parcel",
+    "who_has_it": "Vellora operations / Fern depot"
+   }
+  ],
+  "commitments": [
+   {
+    "what": "Confirm local-carrier custody and a delivery run (customer request)",
+    "owed_by": "Vellora escalation desk, dependent on Fennel Mile",
+    "status": "requested",
+    "due": "none stated"
+   },
+   {
+    "what": "Name the local van bringing the parcel",
+    "owed_by": "Fennel Mile",
+    "status": "requested",
+    "due": "none stated"
+   }
+  ],
+  "hazards": [],
+  "vulnerable_or_distressed": "none",
+  "deadlines": [
+   "Decision time 2026-10-14T08:40:00+01:00; no delivery deadline stated"
+  ],
+  "decision_owner": "Fennel Mile (receiving carrier) for custody, loading and the delivery run",
+  "instruction_like_text": [],
+  "nothing_owed": false
+ },
+ "panel": {
+  "ok": true,
+  "seats": [
+   {
+    "id": "advocate",
+    "name": "Customer advocate",
+    "answers": {
+     "distress": 0.64,
+     "vulnerable": 0.03,
+     "repeat_failure": 0.07
+    },
+    "raised": []
+   },
+   {
+    "id": "rule_keeper",
+    "name": "Rule keeper",
+    "answers": {
+     "beyond_desk": 0.49,
+     "legal_or_public": 0.02
+    },
+    "raised": []
+   },
+   {
+    "id": "safety",
+    "name": "Safety officer",
+    "answers": {
+     "person_at_risk": 0.03,
+     "asks_advice": 0.37
+    },
+    "raised": []
+   },
+   {
+    "id": "sceptic",
+    "name": "Sceptic",
+    "answers": {
+     "contradiction": 0.28,
+     "embedded_instructions": 0.15,
+     "identity_doubt": 0.29
+    },
+    "raised": []
+   },
+   {
+    "id": "ops",
+    "name": "Ops pragmatist",
+    "answers": {
+     "time_critical": 0.31,
+     "nothing_owed": 0.07
+    },
+    "raised": []
+   }
+  ],
+  "forceHuman": false,
+  "notes": [],
+  "model": "jev-1.13.0",
+  "latencyMs": 255,
+  "tokensIn": 1827,
+  "costUsd": 0.000076734
+ },
+ "decision": {
+  "decision_type": "act",
+  "headline": "Ask the partner desk whether Fennel Mile has physically received VEL-009-26; tell Liora custody is not yet confirmed.",
+  "why": "Fennel Mile owns receipt, loading and the delivery run; the record shows only a manifest sent, with no handover signature or intake scan.",
+  "actions": [
+   {
+    "recipient": "Partner integration desk",
+    "channel": "email (partner@vellora.example)",
+    "kind": "request_to_owner",
+    "purpose": "Get Fennel Mile's confirmation of physical receipt and the outcome of the loading review for VEL-009-26.",
+    "message": "Please confirm whether Fennel Mile has physically received VEL-009-26, and the outcome of the loading review. Our record shows the manifest was acknowledged at 07:55, but physical_handover and partner_received are both empty. The customer is asking for custody and a delivery run to be confirmed."
+   },
+   {
+    "recipient": "Liora Tern",
+    "channel": "email",
+    "kind": "status_update",
+    "purpose": "Correct the custody assumption without promising a van or date.",
+    "message": "The entry you saw is an electronic manifest sent to Fennel Mile. It is not a record of them receiving the parcel, and no handover signature or intake scan for VEL-009-26 exists yet. We have asked Fennel Mile, who own loading and the delivery run, to confirm receipt and the run. We will pass on their answer when we have it."
+   }
+  ],
+  "wont_do": [
+   {
+    "item": "Confirm Fennel Mile has custody",
+    "reason": "The manifest acknowledgement is not physical receipt; there is no handover signature or partner intake scan."
+   },
+   {
+    "item": "Name a van or delivery run",
+    "reason": "Only Fennel Mile can assign these, and the loading is still under review."
+   },
+   {
+    "item": "Give an estimated arrival",
+    "reason": "The desk does not control partner loading or timing."
+   }
+  ],
+  "waiting_for": [
+   {
+    "what": "Confirmation of physical receipt (handover signature or intake scan) and the loading review outcome for VEL-009-26",
+    "from": "Partner integration desk / Fennel Mile",
+    "by": ""
+   },
+   {
+    "what": "Assigned delivery run, to relay to Liora Tern once Fennel Mile has confirmed receipt",
+    "from": "Fennel Mile",
+    "by": ""
+   }
+  ],
+  "handover": null,
+  "confidence": "high"
+ }
+}

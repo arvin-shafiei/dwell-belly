@@ -1,0 +1,537 @@
+{
+ "version": 1,
+ "runId": "2026-10-10T15:35:07.372Z-reality",
+ "caseId": "015",
+ "flowId": "default-incident",
+ "mode": "reality",
+ "events": [
+  {
+   "t": 0,
+   "kind": "run_start",
+   "title": "015",
+   "inputs": [
+    {
+     "n": 1,
+     "channel": "file",
+     "from": "history.md",
+     "excerpt": "2563 characters"
+    },
+    {
+     "n": 2,
+     "channel": "file",
+     "from": "index.md",
+     "excerpt": "616 characters"
+    }
+   ]
+  },
+  {
+   "t": 0,
+   "kind": "node_start",
+   "nodeId": "ingest",
+   "nodeType": "ingest"
+  },
+  {
+   "t": 10489,
+   "kind": "model_call",
+   "nodeId": "ingest",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 10489,
+   "tokensIn": 7575,
+   "tokensOut": 1671,
+   "costUsd": 0.0242442,
+   "ok": true
+  },
+  {
+   "t": 10489,
+   "kind": "node_end",
+   "nodeId": "ingest",
+   "status": "ok",
+   "summary": "2 files, 1 attachments read",
+   "output": {
+    "type": "ingest",
+    "decisionGroups": [
+     "missing_evidence",
+     "conflicting_evidence",
+     "dependencies",
+     "owner_coordination",
+     "truthful_status",
+     "deadline_math",
+     "communication"
+    ],
+    "constraints": [
+     {
+      "surface": "goods",
+      "requirement": "Reconcile on carton IDs C01-C24, not pallet/handling-unit counts; a carton-level receiving scan or check is needed before confirming full receipt",
+      "owner": "Vellora reconciliation desk / Marshglass intake",
+      "scope": "VEL-015-26",
+      "kind": "feasibility",
+      "state": "active",
+      "evidence": "Procedure F15 (E02); reconciliation ledger E06 states no carton-level scan supplied"
+     },
+     {
+      "surface": "recipient",
+      "requirement": "Customer wants a decision on whole order arrived vs pallet missing; missing-pallet claim requested to be recorded",
+      "owner": "Yara Pell (Ternwood)",
+      "scope": "VEL-015-26",
+      "kind": "customer_requirement",
+      "state": "unconfirmed",
+      "evidence": "Yara Pell emails E04 08:30 and E07 09:00; claim is unverified"
+     },
+     {
+      "surface": "shared_incident",
+      "requirement": "Receiving signature attests only the fields shown (4 handling units), not carton contents",
+      "owner": "Marshglass intake",
+      "scope": "VEL-015-26",
+      "kind": "feasibility",
+      "state": "active",
+      "evidence": "E02 procedure; receiving sheet RC-015 signed IR-15"
+     }
+    ]
+   },
+   "latencyMs": 10489,
+   "costUsd": 0.0242442,
+   "detail": [
+    "Ternwood Supplies shipped 24 cartons on 3 pallets, and Marshglass intake signed for 4 handling units; Yara Pell claims a pallet is missing. The depot repacked into H1-H4 on 2026-10-13, and no carton-level receiving scan exists, so the desk ",
+    "5 statements found: 4 from a record or an owning team, 1 unverified.",
+    "Who decides: Marshglass intake for carton-level receipt confirmation; Vellora reconciliation desk for the reconciliation outcome."
+   ]
+  },
+  {
+   "t": 10489,
+   "kind": "node_start",
+   "nodeId": "history",
+   "nodeType": "history_lookup"
+  },
+  {
+   "t": 10489,
+   "kind": "node_end",
+   "nodeId": "history",
+   "status": "ok",
+   "summary": "0 open commitments, 1 deadlines",
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Deadline: Decision time requested: 2026-10-14T09:00:00+01:00"
+   ]
+  },
+  {
+   "t": 10489,
+   "kind": "edge",
+   "from": "history",
+   "to": "triage"
+  },
+  {
+   "t": 10489,
+   "kind": "edge",
+   "from": "history",
+   "to": "perspectives"
+  },
+  {
+   "t": 10489,
+   "kind": "edge",
+   "from": "history",
+   "to": "clash"
+  },
+  {
+   "t": 10743,
+   "kind": "node_start",
+   "nodeId": "triage",
+   "nodeType": "triage"
+  },
+  {
+   "t": 10743,
+   "kind": "model_call",
+   "nodeId": "triage",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 219,
+   "tokensIn": 2139,
+   "tokensOut": 0,
+   "costUsd": 0.000089838,
+   "ok": true
+  },
+  {
+   "t": 10743,
+   "kind": "node_end",
+   "nodeId": "triage",
+   "status": "ok",
+   "summary": "freight · medium",
+   "output": {
+    "type": "triage",
+    "caseType": "freight",
+    "urgency": "medium",
+    "p": 1
+   },
+   "latencyMs": 217,
+   "costUsd": 0.000089838,
+   "detail": [
+    "Kind of problem: freight. Urgency: medium."
+   ]
+  },
+  {
+   "t": 10743,
+   "kind": "node_start",
+   "nodeId": "perspectives",
+   "nodeType": "perspectives"
+  },
+  {
+   "t": 10743,
+   "kind": "model_call",
+   "nodeId": "perspectives",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 215,
+   "tokensIn": 2293,
+   "tokensOut": 0,
+   "costUsd": 0.000096306,
+   "ok": true
+  },
+  {
+   "t": 10743,
+   "kind": "node_end",
+   "nodeId": "perspectives",
+   "status": "ok",
+   "summary": "0 flags raised",
+   "output": {
+    "type": "perspectives",
+    "seats": [
+     {
+      "id": "advocate",
+      "name": "Customer advocate",
+      "answers": {
+       "distress": 0.94,
+       "vulnerable": 0.03,
+       "repeat_failure": 0.09
+      },
+      "raised": []
+     },
+     {
+      "id": "rule_keeper",
+      "name": "Rule keeper",
+      "answers": {
+       "beyond_desk": 0.18,
+       "legal_or_public": 0.03
+      },
+      "raised": []
+     },
+     {
+      "id": "safety",
+      "name": "Safety officer",
+      "answers": {
+       "person_at_risk": 0.03,
+       "asks_advice": 0.07
+      },
+      "raised": []
+     },
+     {
+      "id": "sceptic",
+      "name": "Sceptic",
+      "answers": {
+       "contradiction": 0.32,
+       "embedded_instructions": 0.15,
+       "identity_doubt": 0.15
+      },
+      "raised": []
+     },
+     {
+      "id": "ops",
+      "name": "Ops pragmatist",
+      "answers": {
+       "time_critical": 0.27,
+       "nothing_owed": 0.06
+      },
+      "raised": []
+     }
+    ]
+   },
+   "latencyMs": 215,
+   "costUsd": 0.000096306,
+   "detail": [
+    "Five reviewers looked at the case. None raised a concern."
+   ]
+  },
+  {
+   "t": 10743,
+   "kind": "node_start",
+   "nodeId": "clash",
+   "nodeType": "clash_check"
+  },
+  {
+   "t": 10743,
+   "kind": "model_call",
+   "nodeId": "clash",
+   "runner": "jev",
+   "model": "jev-1.13.0",
+   "latencyMs": 252,
+   "tokensIn": 591,
+   "tokensOut": 0,
+   "costUsd": 0.000024822,
+   "ok": true
+  },
+  {
+   "t": 10743,
+   "kind": "node_end",
+   "nodeId": "clash",
+   "status": "ok",
+   "summary": "1 conflict: Whether a pallet is missing (3 pallets sent vs 4 units received)",
+   "output": {
+    "type": "clash_check",
+    "clash": true,
+    "p": 0.41,
+    "claims": [
+     {
+      "who": "Yara Pell",
+      "says": "Three pallets were sent but four units were signed for; a pallet is missing"
+     },
+     {
+      "who": "Transit depot",
+      "says": "P1 held C01-C08, P2 C09-C16, P3 C17-C24; repacked 2026-10-13 with carton labels retained on each new handling unit"
+     },
+     {
+      "who": "Vellora operations",
+      "says": "Carton mapping C01-C24 to H1-H4, recorded before receipt"
+     },
+     {
+      "who": "Marshglass intake",
+      "says": "Received 4 handling units H1-H4 on 2026-10-14 at 07:50, signed IR-15"
+     },
+     {
+      "who": "Vellora reconciliation desk",
+      "says": "H1-H4 were created at the depot; no carton-level receiving scan is supplied"
+     }
+    ]
+   },
+   "latencyMs": 252,
+   "costUsd": 0.000024822,
+   "detail": [
+    "Disagreement between Yara Pell vs depot/mapping records: Whether a pallet is missing (3 pallets sent vs 4 units received). What would settle it: Carton-level check at Marshglass confirming C01-C24 are all present across H1-H4, or identifica",
+    "Neither side is treated as proven.",
+    "Missing: Carton-level receiving scan or count of C01-C24 on H1-H4 (held by Marshglass intake).",
+    "Missing: Confirmation that the carton mapping matches what was physically repacked and received, and that labels are intact (held by Transit depot / Marshglass intake)."
+   ]
+  },
+  {
+   "t": 10743,
+   "kind": "edge",
+   "from": "triage",
+   "to": "planner"
+  },
+  {
+   "t": 10743,
+   "kind": "edge",
+   "from": "perspectives",
+   "to": "planner"
+  },
+  {
+   "t": 10743,
+   "kind": "edge",
+   "from": "clash",
+   "to": "planner"
+  },
+  {
+   "t": 10743,
+   "kind": "node_start",
+   "nodeId": "planner",
+   "nodeType": "planner"
+  },
+  {
+   "t": 23382,
+   "kind": "model_call",
+   "nodeId": "planner",
+   "runner": "claude",
+   "model": "claude-opus-5-5",
+   "latencyMs": 12639,
+   "tokensIn": 11688,
+   "tokensOut": 1254,
+   "costUsd": 0.0515704,
+   "ok": true
+  },
+  {
+   "t": 23382,
+   "kind": "node_end",
+   "nodeId": "planner",
+   "status": "ok",
+   "summary": "act: Marshglass intake holds the only missing evidence. Its signature covers han",
+   "output": {
+    "type": "planner",
+    "nextAction": {
+     "recipient": "Marshglass intake",
+     "channel": "Marshglass intake work queue",
+     "message": "For VEL-015-26 (receiving sheet RC-015, signed IR-15), please confirm which carton IDs C01–C24 you received across handling units H1–H4, or list any that are absent. The shipper reports a missing pallet, but the depot repacked 3 pallets into these 4 units. Your sheet records units only. The customer's requested decision time of 09:00 has passed.",
+     "undoable": true
+    },
+    "wontDo": [
+     "Declare the whole order arrived",
+     "Record or reject a missing-pallet claim",
+     "Tell Yara which version is true"
+    ],
+    "waitingFor": [
+     {
+      "what": "Carton-level confirmation of C01–C24 across H1–H4, or a list of absent cartons",
+      "from": "Marshglass intake",
+      "by": ""
+     },
+     {
+      "what": "Reconciliation outcome once the carton check is in",
+      "from": "Vellora reconciliation desk",
+      "by": ""
+     }
+    ],
+    "candidates": []
+   },
+   "latencyMs": 12639,
+   "costUsd": 0.0515704,
+   "detail": [
+    "Ask Marshglass intake for a carton-level check of C01–C24 on H1–H4; tell Yara Pell nothing is decided yet.",
+    "Why: Marshglass intake holds the only missing evidence. Its signature covers handling units, not cartons, so full receipt cannot be confirmed yet.",
+    "Will not: Declare the whole order arrived (No carton-level receiving scan exists, and the signature attests only to 4 handling units.)",
+    "Will not: Record or reject a missing-pallet claim (Reconciliation depends on the carton check, and the claim outcome is not the desk's decision.)",
+    "Will not: Tell Yara which version is true (The conflict must be settled by carton evidence from the owner.)"
+   ]
+  },
+  {
+   "t": 23383,
+   "kind": "node_start",
+   "nodeId": "gate",
+   "nodeType": "safety_gate"
+  },
+  {
+   "t": 25938,
+   "kind": "model_call",
+   "nodeId": "gate",
+   "runner": "claude",
+   "model": "claude-sonnet-5-5",
+   "latencyMs": 2555,
+   "tokensIn": 4854,
+   "tokensOut": 288,
+   "costUsd": 0.010532399999999999,
+   "ok": true
+  },
+  {
+   "t": 25939,
+   "kind": "node_end",
+   "nodeId": "gate",
+   "status": "ok",
+   "summary": "2 of 2 messages cleared",
+   "output": {
+    "type": "safety_gate",
+    "risk": 0.12,
+    "decision": "allow",
+    "allowBelow": 0.3,
+    "blockAbove": 0.8
+   },
+   "latencyMs": 2556,
+   "costUsd": 0.010532399999999999,
+   "detail": [
+    "Message to Marshglass intake: clear to send (risk 0.10, below 0.3).",
+    "Message to Yara Pell: clear to send (risk 0.12, below 0.3)."
+   ]
+  },
+  {
+   "t": 25939,
+   "kind": "edge",
+   "from": "gate",
+   "to": "action",
+   "when": "allow"
+  },
+  {
+   "t": 25939,
+   "kind": "node_start",
+   "nodeId": "action",
+   "nodeType": "action"
+  },
+  {
+   "t": 25939,
+   "kind": "node_end",
+   "nodeId": "action",
+   "status": "ok",
+   "summary": "2 of 2 message(s) accepted by the outbox",
+   "output": {
+    "type": "action",
+    "done": {
+     "recipient": "Marshglass intake",
+     "channel": "Marshglass intake work queue",
+     "message": "For VEL-015-26 (receiving sheet RC-015, signed IR-15), please confirm which carton IDs C01–C24 you received across handling units H1–H4, or list any that are absent. The shipper reports a missing pallet, but the depot repacked 3 pallets into these 4 units. Your sheet records units only. The customer's requested decision time of 09:00 has passed.",
+     "undoable": true
+    },
+    "ok": true
+   },
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Recorded for Marshglass intake by Marshglass intake work queue: Get carton-level receipt evidence to settle the missing-pallet claim",
+    "It says: \"For VEL-015-26 (receiving sheet RC-015, signed IR-15), please confirm which carton IDs C01–C24 you received across handling units H1–H4, or list any that are absent. The shipper reports a missing pallet, but the depot repacked 3 p",
+    "Recorded for Yara Pell by email: Tell the verified contact where her question stands",
+    "It says: \"On VEL-015-26: the transit depot repacked your three pallets into four handling units on 13 October, which is why four units were signed for. Whether all 24 cartons arrived is not yet confirmed. We have asked Marshglass intake to ",
+    "No live system is connected, so nothing has reached a recipient yet."
+   ]
+  },
+  {
+   "t": 25939,
+   "kind": "edge",
+   "from": "action",
+   "to": "verify"
+  },
+  {
+   "t": 25939,
+   "kind": "node_start",
+   "nodeId": "verify",
+   "nodeType": "verify"
+  },
+  {
+   "t": 25939,
+   "kind": "node_end",
+   "nodeId": "verify",
+   "status": "ok",
+   "summary": "accepted by the outbox; receipt and reply unverified",
+   "output": {
+    "type": "verify",
+    "ok": true,
+    "p": 1,
+    "note": "Confirmed: the sandbox outbox recorded the message for Marshglass intake work queue (ref sandbox-0001). Still awaited: sending through a live system, receipt by the recipient, and any reply. Confirmed: the sandbox outbox recorded the message for email (ref sandbox-0002). Still awaited: sending through a live system, receipt by the recipient, and any reply. Waiting for: Carton-level confirmation of C01–C24 across H1–H4, or a list of absent cartons from Marshglass intake by ; Reconciliation outcome once the carton check is in from Vellora reconciliation desk by "
+   },
+   "latencyMs": 0,
+   "costUsd": 0,
+   "detail": [
+    "Every message was recorded. Receipt and replies are not yet confirmed.",
+    "Now waiting for: Carton-level confirmation of C01–C24 across H1–H4, or a list of absent cartons, from Marshglass intake.",
+    "Now waiting for: Reconciliation outcome once the carton check is in, from Vellora reconciliation desk."
+   ]
+  },
+  {
+   "t": 25939,
+   "kind": "edge",
+   "from": "verify",
+   "to": "log"
+  },
+  {
+   "t": 25939,
+   "kind": "node_start",
+   "nodeId": "log",
+   "nodeType": "case_log"
+  },
+  {
+   "t": 25939,
+   "kind": "node_end",
+   "nodeId": "log",
+   "status": "ok",
+   "summary": "outcome: acted",
+   "latencyMs": 0,
+   "costUsd": 0
+  },
+  {
+   "t": 25939,
+   "kind": "run_end",
+   "outcome": "acted",
+   "totalCostUsd": 0.086557966,
+   "totalLatencyMs": 25939,
+   "nextAction": {
+    "recipient": "Marshglass intake",
+    "channel": "Marshglass intake work queue",
+    "message": "For VEL-015-26 (receiving sheet RC-015, signed IR-15), please confirm which carton IDs C01–C24 you received across handling units H1–H4, or list any that are absent. The shipper reports a missing pallet, but the depot repacked 3 pallets into these 4 units. Your sheet records units only. The customer's requested decision time of 09:00 has passed.",
+    "undoable": true
+   }
+  }
+ ]
+}
