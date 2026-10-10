@@ -3,8 +3,9 @@
 // registry as "truck", obey signals and the vehicle ahead, and can be crashed. Client only.
 import * as THREE from "three";
 import { on } from "../../bus";
-import { nextId, registerVehicle, vehiclesAhead, type VehicleEntry, type VehicleKind } from "../../registry";
-import { edgeKey, findPath, getEdge, lanePosition } from "../../roads";
+import { getVehicle, nextId, registerVehicle, vehiclesAhead, type VehicleEntry, type VehicleKind } from "../../registry";
+import { Lookahead, type ObstacleFn } from "../DeliveryFleet/lookahead";
+import { edgeKey, findPath, getEdge, getNode, lanePosition } from "../../roads";
 import { hasSignal, signalFor } from "../../signals";
 import { blockedSet, useWorld } from "../../store";
 import {
@@ -17,6 +18,8 @@ import type { SiteLayout } from "./sites";
 export const MIXER_COUNT = 7;
 const HALF = MIXER.half;
 const STOP_LINE = 5.2;
+const HALF_W = 1.25; // body half-width for the look-ahead corridor
+const JUNCTION_R = 10; // a vehicle this close to the node we're about to enter is "in the junction"
 const KIND_HALF: Record<VehicleKind, number> = {
   car: 2.2, taxi: 2.25, bus: 5.3, van: 2.8, truck: 4.5, police: 2.4, ambulance: 3, fire: 4, roadworks: 3.5, tow: 3.5,
 };
@@ -26,6 +29,7 @@ type Mode = "drive" | "enter" | "pour" | "exit" | "crashed";
 interface Mixer {
   slot: number;
   entry: VehicleEntry;
+  look: Lookahead;
   unregister: () => void;
   mode: Mode;
   path: string[];
@@ -120,8 +124,15 @@ export class MixerFleet {
   private cleanup: (() => void)[] = [];
   private disposables: { dispose(): void }[] = [];
   private selfId = "";
+  /** On-screen test (the renderer sets a camera frustum check); off-screen mixers raycast every 4th frame. */
+  sees: (x: number, z: number) => boolean = () => true;
+  private readonly obstacleFn: ObstacleFn | undefined;
 
-  constructor(private sites: SiteLayout[]) {
+  constructor(
+    private sites: SiteLayout[],
+    opts: { obstacleFn?: ObstacleFn } = {},
+  ) {
+    this.obstacleFn = opts.obstacleFn;
     const m = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0.15, flatShading: true });
     const sm = new THREE.MeshBasicMaterial({ color: "#000", transparent: true, opacity: 0.28, depthWrite: false });
     const bodyG = mixerBody();
@@ -146,7 +157,10 @@ export class MixerFleet {
 
   /** Read-only view for tests and debugging. */
   state() {
-    return this.mixers.map((m) => ({ id: m.entry.id, mode: m.mode, site: m.site, pad: m.pad, x: m.pose.x, z: m.pose.z, h: m.pose.h }));
+    return this.mixers.map((m) => ({
+      id: m.entry.id, mode: m.mode, site: m.site, pad: m.pad, x: m.pose.x, z: m.pose.z, h: m.pose.h,
+      speed: m.speed, from: m.path[m.idx] ?? null, to: m.path[m.idx + 1] ?? null, t: m.t, last: m.idx + 2 >= m.path.length,
+    }));
   }
 
   idAt(instanceId: number) {
@@ -161,8 +175,9 @@ export class MixerFleet {
       const entry: VehicleEntry = {
         id: "", kind: "truck", object: new THREE.Object3D(), edgeKey: null, from: null, to: null, t: 0, speed: 0, stopped: true,
       };
+      const look = new Lookahead({ halfLength: HALF, halfWidth: HALF_W, decel: IDM.bComf, standoff: 0 }, this.obstacleFn, i);
       const mx: Mixer = {
-        slot: i, entry, unregister: () => {}, mode: "pour", path: [], idx: 0, t: 0, speed: 0, committed: false, stillFor: 0,
+        slot: i, entry, look, unregister: () => {}, mode: "pour", path: [], idx: 0, t: 0, speed: 0, committed: false, stillFor: 0,
         checkIn: 1, site: 0, pad: 0, pose: p(), target: p(), off: { x: 0, z: 0, h: 0 }, road: p(), roadFrom: "", roadT: 0,
         u: 0, dur: 1, pourLeft: 0, drum: rand() * 6, crashT: 0, crashFrom: p(), crashV: 0, crashYaw: 0, crashRoll: 0,
         crashedAt: 0, roll: 0,
@@ -389,6 +404,19 @@ export class MixerFleet {
       else if (act === "stop") {
         consider(distToLine + IDM.s0);
         atSignal = true;
+      }
+    }
+    // look-ahead raycast (bumper gap for the IDM); give way at the line to a vehicle sitting in the junction
+    const look = m.look;
+    look.scan(m.entry.id, m.pose.x, m.pose.z, m.pose.h, v, dt, this.sees(m.pose.x, m.pose.z));
+    if (look.hitId) {
+      const toLine = distToNode - STOP_LINE - HALF;
+      const n = !last && toLine > 0 ? getNode(b) : null;
+      if (n && look.hitInJunction(n.x, n.z, JUNCTION_R)) consider(toLine + IDM.s0);
+      if (look.room < gap) {
+        const o = look.hitStopped ? undefined : getVehicle(look.hitId);
+        gap = look.room;
+        closing = v - (o ? Math.max(0, o.speed * Math.cos(o.object.rotation.y - m.pose.h)) : 0);
       }
     }
     if (!last && this.blocked.has(edgeKey(b, m.path[m.idx + 2]))) consider(distToNode - STOP_LINE - HALF + IDM.s0);

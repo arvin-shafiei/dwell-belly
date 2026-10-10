@@ -25,7 +25,17 @@ import {
   type UnitRole,
 } from "./Responders/dispatch";
 import { newLife, stepLife, type Life } from "./Responders/lifecycle";
-import { advance, remainingMetres, type Cursor } from "./Responders/motion";
+import { DEFAULT_BUFFER, Lookahead, ViewCheck } from "./DeliveryFleet/lookahead";
+import {
+  BLUES_BUFFER,
+  UNIT_BRAKE,
+  UNIT_SIZE,
+  advance,
+  approachSpeed,
+  lookTarget,
+  remainingMetres,
+  type Cursor,
+} from "./Responders/motion";
 import { getShared, UnitMesh, type UnitParts } from "./Responders/meshes";
 
 const RESPONSE_SPEED = 1.4; // x speed limit with blues on
@@ -33,6 +43,10 @@ const RETRY_S = 2;
 const MAX_CONES = 48;
 const CONES_PER_SCENE = 4;
 const LIGHT_POOL = 3;
+const STOP_LINE = 6; // where a unit without blues waits to give way to a vehicle in the junction
+
+// Camera frustum check so off-screen units only raycast every 4th frame.
+const view = new ViewCheck();
 
 type Mode = "waiting" | "enroute" | "parked" | "returning" | "gone";
 
@@ -52,6 +66,7 @@ interface Unit {
   retryAt: number;
   departAt: number; // returning units start moving at this sim time
   speed: number;
+  look: Lookahead;
   park: number; // 0..1 police "fend-off" diagonal blend
   placed: boolean;
   x: number;
@@ -143,6 +158,7 @@ export default function Responders() {
           retryAt: now + delays[idx],
           departAt: 0,
           speed: 0,
+          look: new Lookahead({ ...UNIT_SIZE[role], decel: UNIT_BRAKE, buffer: BLUES_BUFFER }, undefined, unitSeq),
           park: 0,
           placed: false,
           x: 0,
@@ -216,7 +232,8 @@ export default function Responders() {
   }, []);
 
   // --- per-frame simulation ---------------------------------------------------------------------
-  useFrame((_, rawDelta) => {
+  useFrame(({ camera }, rawDelta) => {
+    view.update(camera);
     try {
       step(Math.min(rawDelta, 0.1));
     } catch (err) {
@@ -361,7 +378,23 @@ export default function Responders() {
           const limit = e?.speedLimit ?? 11;
           let target = u.returning ? limit : limit * RESPONSE_SPEED;
           target = Math.min(target, 2 + remainingMetres(r, u.cur, edgeLen) * 1.1);
-          u.speed += Math.max(-14 * dt, Math.min(6 * dt, target - u.speed));
+          // look-ahead raycast: brake for anything in front. With blues on the buffer is shorter and we don't
+          // wait at junctions (everyone else yields to us); hits on our own scene (the wreck, colleagues) don't count.
+          if (seg >= 0 && e) {
+            const a = r.nodes[seg];
+            const b = r.nodes[seg + 1];
+            const [lx, lz, lh] = lanePosition(a, b, u.cur.t);
+            u.look.buffer = u.returning ? DEFAULT_BUFFER : BLUES_BUFFER;
+            u.look.scan(u.id, lx, lz, lh, u.speed, dt, view.sees(lx, lz));
+            if (u.look.hitId) {
+              const nb = u.returning && seg + 1 < r.nodes.length - 1 ? getNode(b) : null;
+              target = lookTarget(target, u.look, {
+                scene,
+                junction: nb ? { x: nb.x, z: nb.z, toLine: (1 - u.cur.t) * e.length - STOP_LINE - UNIT_SIZE[u.role].halfLength } : null,
+              });
+            }
+          }
+          u.speed = approachSpeed(u.speed, target, dt);
           const res = advance(r, u.cur, u.speed * dt, edgeLen, (a, b) => {
             const k = makeEdgeKey(a, b);
             if (!u.returning && k === scene.edgeKey) return true;
