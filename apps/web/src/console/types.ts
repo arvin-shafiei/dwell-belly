@@ -240,6 +240,11 @@ export interface TestRunCase {
   got: string | null; // short form of the agent's decision / next action
   costUsd: number | null;
   durationMs: number | null;
+  /** The case's title from the catalogue, shown in plain words while it runs. */
+  title?: string | null;
+  /** Wall-clock start and end of this case in the run (agent + scoring), ISO. */
+  startedAt?: string | null;
+  finishedAt?: string | null;
 }
 
 export interface TestRun {

@@ -16,6 +16,7 @@ import {
   learningCurve, pollReducer, retestBody, type AutoState,
 } from "./testing";
 import { LearningCurve } from "./LearningCurve";
+import { caseElapsedMs, caseTitle, fmtElapsed, isFinished, overallProgress, runningLine } from "./practiceProgress";
 import { cents, scrubLeaks } from "../../ui/plain";
 
 const SET_WORDS: Record<string, string> = {
@@ -54,7 +55,25 @@ export function caseSentence(c: TestRunCase): string {
   return c.status === "passed" ? "Handled it right." : "Didn't handle it right.";
 }
 
-function CaseRow({ c, selected, onClick }: { c: TestRunCase; selected: boolean; onClick: () => void }) {
+/** Current time, ticking every `ms` while `on`; frozen otherwise. */
+function useNow(on: boolean, ms = 500): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!on) return;
+    const tick = () => setNow(Date.now());
+    const t = setInterval(tick, ms);
+    const first = setTimeout(tick, 0);
+    return () => { clearInterval(t); clearTimeout(first); };
+  }, [on, ms]);
+  return now;
+}
+
+function CaseRow({ c, selected, onClick, now, live }: { c: TestRunCase; selected: boolean; onClick: () => void; now: number; live: boolean }) {
+  const done = isFinished(c);
+  const elapsed = caseElapsedMs(c, now);
+  const sub = !live && (c.status === "running" || c.status === "queued")
+    ? (c.status === "running" ? "Still finishing in the background." : "Not started.")
+    : c.status === "queued" ? "Waiting to start…" : caseSentence(c);
   const icon =
     c.status === "queued" ? <span className="block h-4 w-4 rounded-full border-2 border-white/20" />
       : c.status === "running" ? <span className="wf-spin block h-4 w-4 rounded-full border-2 border-[#ff6a1a] border-t-transparent" />
@@ -64,13 +83,20 @@ function CaseRow({ c, selected, onClick }: { c: TestRunCase; selected: boolean; 
     <button
       type="button" onClick={onClick} disabled={!c.executionId}
       title={c.executionId ? "Show this case on the playbook" : undefined}
-      className={`flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left ${selected ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"} disabled:cursor-default`}
+      className={`relative flex w-full items-start gap-2.5 overflow-hidden rounded-md px-2.5 py-2 text-left ${selected ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"} disabled:cursor-default`}
     >
-      <span className="mt-0.5 grid w-5 shrink-0 place-items-center">{icon}</span>
+      <span key={done ? "done" : "live"} className={`mt-0.5 grid w-5 shrink-0 place-items-center ${done ? "wf-appear" : ""}`}>{icon}</span>
       <span className="min-w-0 flex-1">
-        <span className="line-clamp-2 block text-[14px] leading-snug text-white/90">{caseSentence(c)}</span>
-        <span className="block text-[11px] text-white/30">{c.caseId}</span>
+        <span className="block truncate text-[14px] font-medium leading-snug text-white/90" title={c.caseId}>{caseTitle(c)}</span>
+        <span className={`line-clamp-2 block text-[12.5px] leading-snug ${done ? "text-white/60" : "text-white/40"}`}>{sub}</span>
       </span>
+      <span className="shrink-0 text-right tabular-nums">
+        {elapsed !== null && (
+          <span className={`block text-[12.5px] ${c.status === "running" && live ? "text-[#ff9a5c]" : "text-white/50"}`} title={done ? "Time taken" : "Time so far"}>{fmtElapsed(elapsed)}</span>
+        )}
+        {done && cents(c.costUsd) && <span className="block text-[11px] text-white/30">{cents(c.costUsd)}</span>}
+      </span>
+      {c.status === "running" && live && <span aria-hidden className="wf-row-pulse pointer-events-none absolute inset-x-2.5 bottom-0 h-[2px]" />}
     </button>
   );
 }
@@ -339,7 +365,8 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   const disabled = !!blocked || !workflowId || running || autoRunning || improving || !!proposal;
 
   const finishedRun = finished ? run : null;
-  const progress = run ? run.cases.filter((c) => c.status !== "queued" && c.status !== "running").length : 0;
+  const progress = run ? run.cases.filter(isFinished).length : 0;
+  const now = useNow(running && !!run);
 
   return (
     <aside className="flex h-full w-full min-w-0 flex-col bg-[#19191d]">
@@ -362,7 +389,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
 
         {/* Main action */}
         {running ? (
-          <Btn variant="outline" className="h-12 w-full justify-center text-[15px]" onClick={() => void cancel()}>Stop</Btn>
+          <Btn variant="outline" className="h-12 w-full justify-center text-[15px]" title="No new cases start; cases already running finish" onClick={() => void cancel()}>Cancel</Btn>
         ) : (
           <Btn
             variant="primary" className="h-12 w-full justify-center text-[16px] font-semibold"
@@ -378,7 +405,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
         {busyMsg && <div className="text-[13px] text-white/60">{busyMsg}</div>}
 
         {/* Result */}
-        {poll.phase === "starting" && <div className="text-[13px] text-white/60">Starting…</div>}
+        {poll.phase === "starting" && <div className="text-[13px] text-white/60"><span className="wf-pulse-soft">●</span> Checking the playbook and starting {caseCount} case{caseCount === 1 ? "" : "s"}…</div>}
         {run && (
           <div>
             <div
@@ -387,13 +414,25 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
             >
               {running ? <>{progress} of {run.cases.length} <span className="text-[22px] font-medium text-white/50">done</span></> : <>{run.summary.passed} of {run.summary.total} <span className="text-[22px] font-medium text-white/60">right</span></>}
             </div>
-            {running && <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10"><div className="h-full bg-[#ff6a1a] transition-[width] duration-500" style={{ width: `${run.cases.length ? (progress / run.cases.length) * 100 : 0}%` }} /></div>}
+            {running && (
+              <>
+                <div className="mt-1.5 text-[12.5px] text-white/55">{runningLine(run.cases)}</div>
+                <div
+                  role="progressbar" aria-label="Practice progress, estimated from time" aria-valuemin={0} aria-valuemax={100}
+                  aria-valuenow={Math.round(overallProgress(run.cases, now) * 100)}
+                  className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"
+                >
+                  <div className="h-full rounded-full bg-[#ff6a1a] transition-[width] duration-500 ease-out" style={{ width: `${overallProgress(run.cases, now) * 100}%` }} />
+                </div>
+                <div className="mt-1 text-[11px] text-white/30">Bar fills with time and jumps as each case finishes.</div>
+              </>
+            )}
             {poll.phase === "cancelled" && <div className="text-[12px] text-white/45">Stopped early</div>}
             {!running && run.summary.costUsd > 0 && <div className="text-[11px] text-white/30">{cents(run.summary.costUsd)}</div>}
             <div className="mt-2 space-y-0.5">
               {run.cases.map((c) => (
                 <CaseRow
-                  key={`${c.dataset}/${c.caseId}`} c={c} selected={!!c.executionId && c.executionId === selectedExecId}
+                  key={`${c.dataset}/${c.caseId}`} c={c} selected={!!c.executionId && c.executionId === selectedExecId} now={now} live={poll.phase !== "cancelled"}
                   onClick={() => c.executionId && onShowExecution(c.executionId === selectedExecId ? null : c.executionId)}
                 />
               ))}

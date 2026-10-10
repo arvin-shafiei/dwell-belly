@@ -1,6 +1,6 @@
 // Test runs: one workflow version over a scenario set, each case run through the agent API (the same
 // path as Execute, with the version's flow) and scored by the team's judge (scripts/eval/score.mjs).
-// POST returns at once; cases run in the background, 3 at a time, and progress is saved after each.
+// POST returns at once; cases run in the background, all 5 at once (CONCURRENCY), and progress is saved after each.
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -24,8 +24,8 @@ export class TestRunError extends Error {
 
 // ---------- bookkeeping (pure apart from the callbacks; tested) ----------
 
-export function queuedCase(c: Pick<CaseWithMutation, "id" | "dataset">): TestRunCase {
-  return { caseId: c.id, dataset: c.dataset, executionId: null, status: "queued", score: null, breakdown: null, mustNotBroken: [], verdict: null, expected: null, got: null, costUsd: null, durationMs: null };
+export function queuedCase(c: Pick<CaseWithMutation, "id" | "dataset"> & { title?: string | null }): TestRunCase {
+  return { caseId: c.id, dataset: c.dataset, title: c.title ?? null, executionId: null, status: "queued", score: null, breakdown: null, mustNotBroken: [], verdict: null, expected: null, got: null, costUsd: null, durationMs: null, startedAt: null, finishedAt: null };
 }
 
 /**
@@ -39,18 +39,23 @@ export async function runCases(opts: {
   runOne: (c: TestRunCase) => Promise<TestRunCase>;
   onUpdate: (cases: TestRunCase[]) => void;
   isCancelled: () => boolean;
+  now?: () => Date;
 }): Promise<"done" | "cancelled"> {
   const cases = opts.cases;
+  const now = () => (opts.now ? opts.now() : new Date()).toISOString();
   let next = 0;
   const worker = async () => {
     while (next < cases.length && !opts.isCancelled()) {
       const i = next++;
-      cases[i] = { ...cases[i], status: "running" };
+      const started = { ...cases[i], status: "running" as const, startedAt: now() };
+      cases[i] = started;
       opts.onUpdate(cases);
       try {
-        cases[i] = await opts.runOne(cases[i]);
+        const done = await opts.runOne(started);
+        // runOne builds a fresh case; keep the title and timing it does not know about.
+        cases[i] = { ...done, title: done.title ?? started.title ?? null, startedAt: started.startedAt, finishedAt: now() };
       } catch (err) {
-        cases[i] = { ...cases[i], status: "error", verdict: `error: ${err instanceof Error ? err.message : String(err)}` };
+        cases[i] = { ...started, status: "error", verdict: `error: ${err instanceof Error ? err.message : String(err)}`, finishedAt: now() };
       }
       opts.onUpdate(cases);
     }

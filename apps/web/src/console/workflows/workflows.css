@@ -127,3 +127,16 @@
 @media (prefers-reduced-motion: reduce) {
   .wf-fresh, .wf-canvas .react-flow__edge.wf-edge-new .react-flow__edge-path { animation: none; stroke-dasharray: none; }
 }
+
+/* Practice: a running case row breathes along its bottom edge */
+@keyframes wf-row-pulse {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.wf-row-pulse {
+  background: linear-gradient(90deg, transparent, rgba(255, 106, 26, 0.85), transparent);
+  animation: wf-row-pulse 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-row-pulse { animation: none; background: rgba(255, 106, 26, 0.5); }
+}
