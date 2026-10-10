@@ -72,15 +72,36 @@ const MIGRATIONS = [
   `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
 ];
 
+/** Columns added after the first release (voice, PRD I5). ALTER TABLE ADD COLUMN is not idempotent, so check first. */
+const ADDED_COLUMNS: { table: string; column: string; type: string }[] = [
+  { table: "executions", column: "parent_execution_id", type: "TEXT" },
+  { table: "executions", column: "outbox", type: "TEXT" },
+  { table: "executions", column: "card", type: "TEXT" },
+  { table: "executions", column: "voice", type: "TEXT" },
+];
+
 function migrate(db: Database) {
   for (const sql of MIGRATIONS) db.exec(sql);
+  for (const c of ADDED_COLUMNS) {
+    const have = db.prepare(`PRAGMA table_info(${c.table})`).all().some((r) => r.name === c.column);
+    if (!have) db.exec(`ALTER TABLE ${c.table} ADD COLUMN ${c.column} ${c.type}`);
+  }
 }
 
 const g = globalThis as unknown as { __consoleDb?: { path: string; db: Database } };
+let migratedHere = false;
 
 export function getDb(): Database {
   const file = dbPath();
-  if (g.__consoleDb?.path === file) return g.__consoleDb.db;
+  if (g.__consoleDb?.path === file) {
+    // A handle cached across hot reloads was migrated by older code: re-run the (idempotent) migrations once.
+    if (!migratedHere) {
+      migrate(g.__consoleDb.db);
+      migratedHere = true;
+    }
+    return g.__consoleDb.db;
+  }
+  migratedHere = true;
   mkdirSync(path.dirname(file), { recursive: true });
   const sqlite = (process as unknown as { getBuiltinModule(id: string): unknown })
     .getBuiltinModule("node:sqlite") as { DatabaseSync: new (file: string) => Database };

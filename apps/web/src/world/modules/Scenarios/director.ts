@@ -2,7 +2,8 @@
 // timing, run lifecycle (staged -> resolved -> expired). No three.js, no React; the component drives it.
 import type { Modifier } from "../../scenarios";
 
-export type Outcome = "acted" | "asked_for_info" | "escalated" | "blocked" | "no_action";
+/** Same values as bus scenario:resolved.outcome (widened in PRD J3). */
+export type Outcome = import("../../bus").ScenarioOutcome;
 
 export const ALL_MODIFIERS: readonly Modifier[] = [
   "conflicting_stories", "failed_action", "missing_context", "noise", "needs_human", "out_of_policy",

@@ -6,6 +6,7 @@ import { fmtCost, fmtDuration, fmtStarted, fmtTokens, traceTotals } from "./logi
 import Markdown from "./MarkdownView";
 import Timeline from "./Timeline";
 import { Badge, Button, SimulatedBadge, StatusDot, cx } from "./ui";
+import VoiceSlot from "./VoiceSlot";
 
 type View = "timeline" | "answer" | "reasoning";
 
@@ -86,6 +87,7 @@ export default function ExecutionDetail({
           <Stat label="Tokens" value={`${fmtTokens(tt.tokensIn)} / ${fmtTokens(tt.tokensOut)}`} />
           <Stat label="Origin" value={e.origin} />
         </div>
+        <VoiceSlot.Mounts execution={e} />
         {e.eval && <EvalVerdict ev={e.eval} />}
       </header>
 

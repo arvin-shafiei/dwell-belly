@@ -1,8 +1,13 @@
 // "Execute" in the console: builds the case view the eval would send, POSTs it to the agent API
 // (apps/api POST /api/cases), and records the run. A "running" row is written first.
+// Voice re-runs (PRD I1, I5): `parentExecutionId` brings back the parent's sent messages as desk events,
+// `extraEvents` (voice notes, call transcripts) are appended on the case's own timeline, and
+// `humanDecision` is passed through as a trusted input. Any voice input runs in "demo" mode (PRD I2).
 import { randomUUID } from "node:crypto";
+import type { CaseViewEvent, DecisionCard, ExecutionVoice, HumanDecision, OutboxEntry } from "../types";
 import { buildView } from "./catalogue";
 import { summariseTrace, isTrace } from "./mapping";
+import { buildRerun } from "./rerun";
 import { getExecution, getWorkflow, upsertExecution, type ExecutionWrite, type StoredExecution } from "./store";
 
 export const RUN_TIMEOUT_MS = 5 * 60_000;
@@ -17,25 +22,74 @@ export class ExecuteError extends Error {
   }
 }
 
-export async function execute(input: { caseId: string; dataset?: string | null; workflowId?: string | null }): Promise<StoredExecution> {
-  const built = await buildView(input.caseId, input.dataset);
+export interface ExecuteInput {
+  caseId?: string | null;
+  dataset?: string | null;
+  workflowId?: string | null;
+  parentExecutionId?: string | null;
+  extraEvents?: CaseViewEvent[] | null;
+  humanDecision?: HumanDecision | null;
+  voice?: ExecutionVoice | null;
+  mode?: "practice" | "demo" | null;
+  elapsedMs?: number | null;
+}
+
+/** The JSON body for apps/api POST /api/cases: the case view plus `mode` and `humanDecision` when set. */
+export function agentRequestBody<V extends { events: CaseViewEvent[] }>(input: {
+  view: V;
+  parentOutbox?: OutboxEntry[] | null;
+  extraEvents?: CaseViewEvent[] | null;
+  humanDecision?: HumanDecision | null;
+  mode?: "practice" | "demo" | null;
+  elapsedMs: number;
+  rerun: boolean;
+}): { body: V & { mode?: string; humanDecision?: HumanDecision }; synthetic: boolean; voiceInput: boolean } {
+  const voiceInput = Boolean(input.extraEvents?.length || input.humanDecision);
+  const { view, synthetic } = input.rerun || voiceInput
+    ? buildRerun({ view: input.view, previousOutbox: input.parentOutbox, newEvents: input.extraEvents, elapsedMs: input.elapsedMs })
+    : { view: input.view, synthetic: false };
+  const mode = input.mode ?? (voiceInput ? "demo" : null);
+  return {
+    body: { ...view, ...(mode ? { mode } : {}), ...(input.humanDecision ? { humanDecision: input.humanDecision } : {}) },
+    synthetic,
+    voiceInput,
+  };
+}
+
+export async function execute(input: ExecuteInput): Promise<StoredExecution> {
+  const parent = input.parentExecutionId ? getExecution(input.parentExecutionId) : null;
+  if (input.parentExecutionId && !parent) throw new ExecuteError(`Unknown parent execution "${input.parentExecutionId}"`, 404);
+  const caseId = input.caseId || parent?.caseId;
+  if (!caseId) throw new ExecuteError("caseId or parentExecutionId is required", 400);
+  const dataset = input.dataset ?? (parent && parent.caseId === caseId ? parent.dataset : null);
+  const built = await buildView(caseId, dataset);
   if (!built) {
-    throw new ExecuteError(`Unknown case "${input.caseId}"${input.dataset ? ` in dataset "${input.dataset}"` : ""}`, 404);
+    throw new ExecuteError(`Unknown case "${caseId}"${dataset ? ` in dataset "${dataset}"` : ""}`, 404);
   }
+  const elapsedMs = input.elapsedMs ?? (parent ? Math.max(0, Date.now() - Date.parse(parent.startedAt)) || 0 : 0);
+  const request = agentRequestBody({
+    view: built.view,
+    parentOutbox: parent?.outbox,
+    extraEvents: input.extraEvents,
+    humanDecision: input.humanDecision,
+    mode: input.mode,
+    elapsedMs,
+    rerun: Boolean(parent),
+  });
   const startedAt = new Date();
   const base: ExecutionWrite = {
     id: randomUUID(),
     sourceKey: null,
     caseId: built.entry.id,
     dataset: built.entry.dataset,
-    workflowId: input.workflowId || "default-incident",
+    workflowId: input.workflowId || parent?.workflowId || "default-incident",
     status: "running",
     outcome: null,
     startedAt: startedAt.toISOString(),
     durationMs: null,
     costUsd: null,
-    origin: "console",
-    simulated: false,
+    origin: input.voice ? "voice" : "console",
+    simulated: request.synthetic,
     title: built.entry.title,
     nextAction: null,
     gate: null,
@@ -44,6 +98,10 @@ export async function execute(input: { caseId: string; dataset?: string | null; 
     answerMd: null,
     reasoningMd: null,
     eval: null,
+    parentExecutionId: parent?.id ?? null,
+    outbox: null,
+    card: null,
+    voice: input.voice ?? null,
   };
   upsertExecution(base);
 
@@ -56,12 +114,12 @@ export async function execute(input: { caseId: string; dataset?: string | null; 
       headers: { "content-type": "application/json" },
       // A workflow edited in the console runs as edited: the agent API validates the flow and
       // refuses an unsound one. An untouched workflow is left to the API's own flow file.
-      body: JSON.stringify(edited ? { ...built.view, flow: edited.flow } : { ...built.view, flowId: base.workflowId }),
+      body: JSON.stringify(edited ? { ...request.body, flow: edited.flow } : { ...request.body, flowId: base.workflowId }),
       signal: AbortSignal.timeout(RUN_TIMEOUT_MS),
     });
     const text = await res.text();
     if (!res.ok) throw new Error(`agent API answered ${res.status}: ${text.slice(0, 500)}`);
-    const body = JSON.parse(text) as { trace?: unknown; outcome?: string };
+    const body = JSON.parse(text) as { trace?: unknown; outcome?: string; outbox?: OutboxEntry[]; card?: DecisionCard | null };
     const trace = body.trace ?? body;
     if (!isTrace(trace)) throw new Error("agent API response has no trace");
     const s = summariseTrace(trace);
@@ -71,12 +129,16 @@ export async function execute(input: { caseId: string; dataset?: string | null; 
       outcome: s.outcome ?? body.outcome ?? null,
       durationMs: s.durationMs ?? Date.now() - startedAt.getTime(),
       costUsd: s.costUsd,
-      simulated: s.simulated,
+      // Voice runs go in "demo" mode only because the agent admits voice there (PRD I2). They are simulated
+      // only when a simulated persona spoke (trace.synthetic), not because of the mode itself.
+      simulated: request.voiceInput && !input.mode ? trace.synthetic === true || request.synthetic : s.simulated || request.synthetic,
       title: s.title ?? base.title,
       nextAction: s.nextAction,
       gate: s.gate,
       error: s.error,
       trace,
+      outbox: Array.isArray(body.outbox) ? body.outbox : null,
+      card: body.card ?? null,
     });
   } catch (err) {
     const c = err instanceof Error ? (err.cause as { message?: string; code?: string } | undefined) : undefined;
