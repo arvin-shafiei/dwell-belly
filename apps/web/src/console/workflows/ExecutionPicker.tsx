@@ -1,5 +1,6 @@
 "use client";
-// Header dropdown of recent executions (GET /api/console/executions?limit=20).
+// "Show a run": header dropdown of this playbook's recent case runs. Picking one lights up the
+// path it took on the canvas.
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./icons";
 import type { ExecutionSummary } from "./api";
@@ -17,16 +18,19 @@ function ago(iso: string): string {
   return `${Math.floor(d / 86_400_000)}d ago`;
 }
 
-export function ExecutionPicker({ executions, error, selectedId, onSelect, onRefresh }: {
+export function ExecutionPicker({ executions: all, error, selectedId, onSelect, onRefresh, workflowId }: {
   executions: ExecutionSummary[] | null;
+  /** Only runs of this playbook are listed (all runs when null). */
+  workflowId?: string | null;
   error: string | null;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onRefresh: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const executions = all && workflowId ? all.filter((e) => e.workflowId === workflowId).slice(0, 30) : all?.slice(0, 30) ?? null;
   const ref = useRef<HTMLDivElement>(null);
-  const sel = executions?.find((e) => e.id === selectedId) ?? null;
+  const sel = all?.find((e) => e.id === selectedId) ?? null;
 
   useEffect(() => {
     if (!open) return;
@@ -39,7 +43,8 @@ export function ExecutionPicker({ executions, error, selectedId, onSelect, onRef
     <div ref={ref} className="relative">
       <button
         type="button" onClick={() => { setOpen((o) => !o); if (!open) onRefresh(); }}
-        className="inline-flex h-8 max-w-[260px] items-center gap-2 rounded-md border border-white/15 px-2.5 text-[12px] text-white/85 hover:bg-white/[0.06]"
+        aria-haspopup="listbox" aria-expanded={open}
+        className={`inline-flex h-8 max-w-[260px] items-center gap-2 rounded-md border px-2.5 text-[12px] text-white/85 hover:bg-white/[0.06] ${sel ? "border-rv-green/40" : "border-white/15"}`}
       >
         {sel ? (
           <>
@@ -48,14 +53,17 @@ export function ExecutionPicker({ executions, error, selectedId, onSelect, onRef
             {sel.simulated && <Badge tone="amber">Practice case</Badge>}
           </>
         ) : (
-          <span className="text-white/60">Case runs</span>
+          <>
+            <Icon name="play" size={11} className="shrink-0 text-white/45" />
+            <span className="text-white/70">Show a run</span>
+          </>
         )}
         <Icon name="chevron" size={12} className="shrink-0 rotate-90 text-white/45" />
       </button>
       {open && (
         <div className="absolute right-0 top-full z-40 mt-1.5 w-[380px] overflow-hidden rounded-lg border border-white/10 bg-[#222227] shadow-2xl">
           <div className="flex items-center justify-between border-b border-white/10 px-3 py-2 text-[11px] text-white/45">
-            <span>Recent case runs</span>
+            <span>Recent runs of this playbook</span>
             {selectedId && (
               <button type="button" className="text-white/60 hover:text-white" onClick={() => { onSelect(null); setOpen(false); }}>
                 Hide
@@ -65,7 +73,7 @@ export function ExecutionPicker({ executions, error, selectedId, onSelect, onRef
           <div className="max-h-[360px] overflow-y-auto py-1">
             {error && <div className="px-3 py-3 text-[12px] text-[#f87171]">{error}</div>}
             {!error && executions === null && <div className="px-3 py-3 text-[12px] text-white/40">Loading…</div>}
-            {!error && executions?.length === 0 && <div className="px-3 py-3 text-[12px] text-white/40">No case runs yet.</div>}
+            {!error && executions?.length === 0 && <div className="px-3 py-3 text-[12px] text-white/40">This playbook has no case runs yet.</div>}
             {executions?.map((e) => (
               <button
                 key={e.id} type="button" onClick={() => { onSelect(e.id); setOpen(false); }}

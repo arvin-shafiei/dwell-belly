@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Flow } from "../types";
 import flowJson from "../../../../api/flows/default-incident.json";
 import { CARD_W, treeLayout, unmerge } from "./layout";
-import { READ_ZOOM, START_MARGIN, bounds, cardCentre, pathTo, startViewport } from "./view";
+import { READ_ZOOM, START_MARGIN, bounds, canvasKey, cardCentre, pathTo, startViewport } from "./view";
 
 const flow = flowJson as Flow;
 const t = unmerge(flow);
@@ -58,5 +58,17 @@ describe("pathTo", () => {
   it("is empty with nothing selected", () => {
     expect(pathTo(t, null).nodes.size).toBe(0);
     expect(pathTo(t, "nope").edges.size).toBe(0);
+  });
+});
+
+describe("canvasKey", () => {
+  it("maps F, 1 and Esc, and ignores modified keys", () => {
+    expect(canvasKey({ key: "f" })).toBe("fit");
+    expect(canvasKey({ key: "F" })).toBe("fit");
+    expect(canvasKey({ key: "1" })).toBe("zoom100");
+    expect(canvasKey({ key: "Escape" })).toBe("deselect");
+    expect(canvasKey({ key: "f", metaKey: true })).toBeNull();
+    expect(canvasKey({ key: "1", ctrlKey: true })).toBeNull();
+    expect(canvasKey({ key: "a" })).toBeNull();
   });
 });

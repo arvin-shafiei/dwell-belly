@@ -68,3 +68,17 @@ export function cardCentre(t: DisplayTree, pos: Record<string, Pos>, displayId: 
   if (!p || !d) return null;
   return { x: p.x + CARD_W / 2, y: p.y + cardHeight(d.node.type) / 2 };
 }
+
+/** Canvas keyboard shortcuts (n8n-like): F fits everything, 1 goes to 100%, Esc deselects. */
+export type CanvasKey = "fit" | "zoom100" | "deselect";
+
+export function canvasKey(e: { key: string; metaKey?: boolean; ctrlKey?: boolean; altKey?: boolean; shiftKey?: boolean }): CanvasKey | null {
+  if (e.key === "Escape") return "deselect";
+  if (e.metaKey || e.ctrlKey || e.altKey) return null;
+  if (e.key === "f" || e.key === "F") return "fit";
+  if (e.key === "1" && !e.shiftKey) return "zoom100";
+  return null;
+}
+
+/** Snap grid for dragging cards; matches the dotted background gap. */
+export const GRID = 20;

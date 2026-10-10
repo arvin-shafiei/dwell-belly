@@ -4,10 +4,10 @@ import "@xyflow/react/dist/style.css";
 import "./workflows.css";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import {
-  Background, BackgroundVariant, Controls, MiniMap, Panel, ReactFlow, ReactFlowProvider, useReactFlow,
+  Background, BackgroundVariant, MiniMap, Panel, ReactFlow, ReactFlowProvider, useReactFlow,
   type Connection, type Edge, type NodeChange,
 } from "@xyflow/react";
-import type { ExecutionRecord, Flow, FlowNode, ImproveProposal, NodeType, WorkflowRecord, WorkflowVersion } from "../types";
+import type { ExecutionRecord, Flow, FlowNode, ImproveProposal, NodeType, Trace, WorkflowRecord, WorkflowVersion } from "../types";
 import {
   architectValidate, createVersion, deleteWorkflow, executeCase, listVersions, getExecution, listExecutions, loadWorkflows, saveWorkflow,
   type ExecutionSummary,
@@ -19,7 +19,7 @@ import { WorkflowMenu } from "./WorkflowMenu";
 import { TestPanel } from "./TestPanel";
 import { diffCount, diffFlows, edgeMark, latestVersion, nodeMark, practiceLink, type FlowDiff } from "./testing";
 import { Badge, Btn } from "./bits";
-import { ConsoleContext, HeaderActions } from "../ui";
+import { Button, ConsoleContext, HeaderActions, IconCity } from "../ui";
 import {
   addNode, connect, docSignature, edgeKey, moveNodes, removeEdges, removeNodes, sourceHandleFor,
   updateEdgeWhen, updateNode, type FlowDoc, type Pos,
@@ -37,7 +37,12 @@ import { BranchEdge, type BranchEdgeType } from "./BranchEdge";
 import { metaFor, nodeTitle } from "./nodeTypes";
 import { DND_MIME, Palette } from "./Palette";
 import { buildOverlay, pairKey, replayDelays } from "./status";
-import { READ_ZOOM, cardCentre, pathTo, startViewport } from "./view";
+import { GRID, READ_ZOOM, canvasKey, cardCentre, pathTo, startViewport } from "./view";
+import { passedLabel, playbookRuns, tallyRuns } from "./runStats";
+import { ZoomBar } from "./ZoomBar";
+
+/** How many recent case runs of a playbook feed the "n of N cases passed here" counts. */
+const TALLY_RUNS = 20;
 
 const nodeTypes = { card: FlowNodeCard };
 const edgeTypes = { branch: BranchEdge };
@@ -168,7 +173,7 @@ function EditorInner() {
   }, [open]);
 
   const refreshExecutions = useCallback(() => {
-    listExecutions(20).then((r) => {
+    listExecutions(60).then((r) => {
       if (r.ok) { setExecutions(r.data?.executions ?? []); setExecError(null); }
       else { setExecutions([]); setExecError("Couldn't load case runs right now."); }
     });
@@ -235,6 +240,33 @@ function EditorInner() {
     const run = id ? overlay.nodes[id] : null;
     return run && run.detail.length ? run : null;
   }, [overlay, cursor, execution, sel]);
+
+  // ---------- counts over recent runs ----------
+  // Traces of the last TALLY_RUNS finished runs of this playbook, fetched once each and cached.
+  const traceCache = useRef(new Map<string, Trace | null>());
+  const [tallyTraces, setTallyTraces] = useState<{ workflowId: string; traces: Trace[] } | null>(null);
+  const [showCounts, setShowCounts] = useState(false);
+  const recentRuns = useMemo(() => playbookRuns(executions, draft ? null : currentId, TALLY_RUNS), [executions, currentId, draft]);
+  useEffect(() => {
+    if (!currentId || !recentRuns.length) return;
+    let live = true;
+    const want = recentRuns.map((r) => r.id);
+    Promise.all(want.map(async (id) => {
+      if (traceCache.current.has(id)) return traceCache.current.get(id) ?? null;
+      const r = await getExecution(id);
+      const t = r.ok ? r.data?.execution?.trace ?? null : null;
+      traceCache.current.set(id, t);
+      return t;
+    })).then((ts) => {
+      if (live) setTallyTraces({ workflowId: currentId, traces: ts.filter((t): t is Trace => !!t) });
+    });
+    return () => { live = false; };
+  }, [currentId, recentRuns]);
+  const tally = useMemo(() => {
+    if (!tallyTraces || tallyTraces.workflowId !== currentId || !tallyTraces.traces.length || !doc) return null;
+    return tallyRuns(tallyTraces.traces.map((t) => buildOverlay(t, doc.flow)));
+  }, [tallyTraces, currentId, doc]);
+  const countsOn = !!tally && !diffView && !reveal && (showCounts || !!execId);
 
   // ---------- canvas model ----------
   // The canvas draws a display tree (shared nodes copied per branch, loops as badges) laid out as
@@ -313,6 +345,21 @@ function EditorInner() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [doUndo, doRedo]);
+
+  // F fits everything, 1 goes to 100%, Esc deselects (n8n-style). Ignored while typing.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (isTyping(e)) return;
+      const k = canvasKey(e);
+      if (!k) return;
+      if (k === "deselect") { if (sel) { e.preventDefault(); setSel(null); } return; }
+      e.preventDefault();
+      if (k === "fit") void rf.fitView({ padding: 0.15, duration: 400 });
+      else void rf.zoomTo(1, { duration: 300 });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [rf, sel]);
 
   const addAt = useCallback((type: NodeType, pos: Pos) => {
     if (!hist) return;
@@ -608,10 +655,11 @@ function EditorInner() {
           diff: diffView ? { mark: nodeMark(diffView.diff, d.nodeId), change: diffView.diff.changedNodes.get(d.nodeId) } : undefined,
           shared: d.occurrences > 1 ? { count: d.occurrences, stub: d.stub } : undefined,
           loops: d.loops.map((e) => `${e.when ?? "loop"} → ${label(e.to)}`),
+          tally: countsOn && tally ? { passed: tally.nodes[d.nodeId]?.passed ?? 0, runs: tally.runs, label: passedLabel(tally.nodes[d.nodeId], tally.runs) } : undefined,
         },
       };
     });
-  }, [doc, display, positions, overlay, sel, dims, reveal, nodeProblems, diffView, newest, selPath]);
+  }, [doc, display, positions, overlay, sel, dims, reveal, nodeProblems, diffView, newest, selPath, countsOn, tally]);
 
   const rfEdges: Edge[] = useMemo(() => {
     if (!doc || !display) return [];
@@ -639,13 +687,14 @@ function EditorInner() {
           className: diffView
             ? mark === "added" ? "wf-diff-added" : mark === "removed" ? "wf-diff-removed" : "wf-faded"
             : overlay ? (taken ? "wf-taken" : "wf-faded")
+            : countsOn && tally && !selPath ? ((tally.edges[pairKey(de.edge.from, de.edge.to)] ?? 0) > 0 ? "wf-busy" : "wf-faded")
             : selPath ? (onPath ? "wf-path" : "wf-faded")
             : fresh ? "wf-edge-new" : undefined,
           zIndex: taken || mark || onPath ? 1 : 0,
           data: {
             when: de.edge.when,
             trunk: r ? r.trunkX - r.sx : undefined,
-            plain: !overlay && !diffView && !selPath && !fresh,
+            plain: !overlay && !diffView && !selPath && !fresh && !countsOn,
             labelTone: diffView ? (mark === "added" ? "added" : mark === "removed" ? "removed" : "faded")
               : overlay ? (taken ? "taken" : "faded")
               : selPath && !onPath ? "faded" : undefined,
@@ -667,7 +716,7 @@ function EditorInner() {
       }
     }
     return res;
-  }, [doc, display, routes, overlay, sel, reveal, diffView, newest, selPath]);
+  }, [doc, display, routes, overlay, sel, reveal, diffView, newest, selPath, countsOn, tally]);
 
   // Result banner for a new playbook, once every step is placed. Computed from the real flow.
   const draftSafety = useMemo(() => (draft && !reveal && doc ? safetySummary(doc.flow) : null), [draft, reveal, doc]);
@@ -744,7 +793,7 @@ function EditorInner() {
             </span>
           )}
           <ExecutionPicker
-            executions={executions} error={execError} selectedId={execId}
+            executions={executions} error={execError} selectedId={execId} workflowId={draft ? null : currentId}
             onSelect={selectExecution} onRefresh={refreshExecutions}
           />
           {ctx?.headerSlot ? <HeaderActions>{primaryActions}</HeaderActions> : primaryActions}
@@ -855,12 +904,14 @@ function EditorInner() {
             deleteKeyCode={diffView ? null : ["Backspace", "Delete"]}
             defaultEdgeOptions={{ type: "default" }}
             connectionRadius={28}
+            snapToGrid
+            snapGrid={[GRID, GRID]}
             minZoom={0.08}
             maxZoom={2}
             proOptions={{ hideAttribution: true }}
           >
-            <Background variant={BackgroundVariant.Dots} gap={20} size={1.4} color="#3b3b44" bgColor="#1f1f23" />
-            <Controls position="bottom-left" showInteractive={false} />
+            <Background variant={BackgroundVariant.Dots} gap={GRID} size={1.4} color="#3b3b44" bgColor="#1f1f23" />
+            <Panel position="bottom-left" className="!m-3"><ZoomBar /></Panel>
             {explained && (
               <Panel position="bottom-center" className="!mb-3">
                 <div className="max-w-[560px] rounded-xl border border-white/10 bg-[#17171b]/92 px-4 py-3 text-[13px] text-white/85 shadow-xl backdrop-blur">
@@ -883,6 +934,10 @@ function EditorInner() {
                 return d ? metaFor(d.node.type).color : "#3a3a42";
               }}
               nodeBorderRadius={6}
+              nodeStrokeWidth={0}
+              maskStrokeColor="#ff6a1a"
+              maskStrokeWidth={1.5}
+              ariaLabel="Map of the playbook"
               style={{ width: 168, height: 110 }}
             />
           </ReactFlow>
@@ -891,10 +946,20 @@ function EditorInner() {
               <button type="button" onClick={() => goStart(400)} title="Back to the first step, readable" className="px-3 py-1.5 text-[12.5px] font-medium text-white/80 hover:bg-white/[0.07] hover:text-white">
                 Start
               </button>
-              <button type="button" onClick={showAll} title="Fit the whole playbook on screen" className="border-l border-white/10 px-3 py-1.5 text-[12.5px] font-medium text-white/80 hover:bg-white/[0.07] hover:text-white">
+              <button type="button" onClick={showAll} title="Fit the whole playbook on screen (F)" className="border-l border-white/10 px-3 py-1.5 text-[12.5px] font-medium text-white/80 hover:bg-white/[0.07] hover:text-white">
                 Show all
               </button>
+              {tally && !execId && !diffView && !reveal && (
+                <button
+                  type="button" onClick={() => setShowCounts((v) => !v)} aria-pressed={showCounts}
+                  title={`How many of the last ${tally.runs} cases passed through each step`}
+                  className={`border-l border-white/10 px-3 py-1.5 text-[12.5px] font-medium hover:bg-white/[0.07] ${showCounts ? "bg-rv-green/10 text-[#9be8c4]" : "text-white/80 hover:text-white"}`}
+                >
+                  Case counts
+                </button>
+              )}
             </div>
+            <div className="pointer-events-auto ml-auto flex items-start gap-2">
             {draftSafety && (
               <div
                 className={`pointer-events-auto flex items-center gap-2 rounded-lg border px-3.5 py-2 text-[14px] font-semibold shadow-lg backdrop-blur ${draftSafety.everyPath ? "border-[#22c55e]/40 bg-[#0f2417]/90 text-[#4ade80]" : "border-[#f59e0b]/40 bg-[#2a1f0c]/90 text-[#fcd34d]"}`}
@@ -904,6 +969,17 @@ function EditorInner() {
                 {safetyLine(draftSafety)}
               </div>
             )}
+            <Button
+              size="sm" icon={<IconCity size={15} />} className="shadow-lg"
+              title="See this playbook at work in the 3D city"
+              onClick={() => {
+                const id = draft ? null : currentId;
+                window.location.assign(id ? `/city?playbook=${encodeURIComponent(id)}` : "/city");
+              }}
+            >
+              Open the city
+            </Button>
+            </div>
           </div>
         </div>
         <div className={drawer && !(selNode || selEdge) ? "flex h-full w-[380px] shrink-0 flex-col border-l border-white/10 bg-[#19191d]" : "hidden"}>
@@ -954,6 +1030,10 @@ function EditorInner() {
             key={selNode.id}
             node={selNode}
             overlay={overlay}
+            flow={doc.flow}
+            tally={tally?.nodes[selNode.id]}
+            runs={tally?.runs ?? 0}
+            runName={shownExec?.caseId ?? null}
             onChange={(patch) => commit((d) => updateNode(d, selNode.id, patch), `node:${selNode.id}:${Object.keys(patch).join(",")}`)}
             onDelete={() => { commit((d) => removeNodes(d, [selNode.id])); setSel(null); }}
             onClose={() => setSel(null)}
