@@ -1,0 +1,11 @@
+# 003 trace (naive design)
+- Load: escalation view. LEAK: title and index Context ("No permitted access arrangement has been recorded yet") hint at the answer.
+- Ingest (Claude): driver Fen Orlo at 7 Sedgeglass Mews, gate shut, waiting, parcel not left [claim, driver]. Dispatch: contact Elva Kesh on verified callback route, no reusable gate code, driver waits until 10:00 UTC [instruction, owner]. Escalated 09:10 UTC.
+- Triage (Jev): access p=0.86; urgency high p=0.71.
+- Clash (Jev): conflict p=0.06. None.
+- Missing Info (Jev): enough to act yes p=0.81.
+- Planner (Claude): call Elva Kesh on verified callback route; ask her to admit via intercom or come to the gate; say do not share a permanent code; mention 10:00 UTC limit. Fallback: if no answer by 09:50, tell dispatch no access arranged.
+- Gate: rule checks all no; Jev risk 0.12 -> allow.
+- Action: NO CALL TOOL. Naive mapping picks customer_portal.send. Urgent phone request downgraded to a portal message. Fallback timer not implemented (no wake-up mechanism in design).
+- Verify (Jev): tool returned "queued"; "did it work?" yes p=0.64. FLAW: queued is not reached; Jev guesses.
+- Case Log: ANSWER.md, REASONING.md.

@@ -138,6 +138,45 @@ function Counters() {
   );
 }
 
+const SPEEDS = [1, 3, 10, 30];
+const PRESETS: { label: string; hour: number }[] = [
+  { label: "Dawn", hour: 6 },
+  { label: "Noon", hour: 12 },
+  { label: "Golden", hour: 18.5 },
+  { label: "Night", hour: 22.5 },
+];
+
+/** Fast-forward the clock and jump to a time of day (the Sky module adopts external time changes). */
+function TimeControls() {
+  const scale = useWorld((s) => s.timeScale);
+  const setScale = useWorld((s) => s.setTimeScale);
+  const setTime = useWorld((s) => s.setTimeOfDay);
+  const btn = "rounded px-1.5 py-0.5 font-mono text-[10px] tabular-nums transition";
+  return (
+    <div className="flex items-center gap-1">
+      <div className="flex items-center rounded-md border border-white/10 bg-white/5 p-0.5" title="Clock speed">
+        {SPEEDS.map((x) => (
+          <button
+            key={x}
+            type="button"
+            onClick={() => setScale(x)}
+            className={`${btn} ${scale === x ? "bg-[#ff6a1a]/25 text-[#ff8a4a]" : "text-white/60 hover:text-white"}`}
+          >
+            {x}×
+          </button>
+        ))}
+      </div>
+      <div className="flex items-center rounded-md border border-white/10 bg-white/5 p-0.5" title="Jump to time">
+        {PRESETS.map((p) => (
+          <button key={p.label} type="button" onClick={() => setTime(p.hour)} className={`${btn} text-white/60 hover:text-white`}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export const TopBar = memo(function TopBar({ badge, extra }: { badge?: ReactNode; extra?: ReactNode }) {
   const paused = useWorld((s) => s.paused);
   return (
@@ -167,6 +206,7 @@ export const TopBar = memo(function TopBar({ badge, extra }: { badge?: ReactNode
       <div className="flex items-center gap-2">
         <Clock />
         <PauseButton />
+        <TimeControls />
       </div>
 
       <div className="h-8 w-px bg-white/10" />

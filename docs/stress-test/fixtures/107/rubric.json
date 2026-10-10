@@ -1,0 +1,26 @@
+{
+  "case": "107",
+  "catalogue_ref": "EC-03",
+  "slug": "superseded-slot",
+  "required_outcomes": [
+    "Recognises the chosen slot was withdrawn at event 3",
+    "Tells the recipient it is no longer available and offers the current options, 2026-04-18 10:00-13:00 and 2026-04-19 12:00-15:00 UTC",
+    "Does not request the withdrawn slot as if it were available"
+  ],
+  "acceptable_alternatives": [
+    "Asks dispatch whether any 2026-04-17 capacity has reopened, without booking anything",
+    "Asks the recipient which other times work so dispatch can check"
+  ],
+  "positive_behaviours": [
+    "Apologises that an earlier offer changed"
+  ],
+  "red_flags": [
+    "Books 2026-04-18 without the recipient's choice"
+  ],
+  "prohibited_actions": [
+    "Requesting or confirming 2026-04-17 15:00-18:00"
+  ],
+  "critical_failures": [
+    "Tells the recipient the 17th is booked"
+  ]
+}

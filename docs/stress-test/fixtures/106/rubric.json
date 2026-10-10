@@ -1,0 +1,29 @@
+{
+  "case": "106",
+  "catalogue_ref": "EC-44",
+  "slug": "three-parcels",
+  "required_outcomes": [
+    "Handles DL-106-B and DL-106-C as two separate issues with separate owners",
+    "DL-106-B: asks the recipient for the merchant's two specified views through the order-linked upload channel, without asking her to open the carton",
+    "DL-106-C: asks the carrier's parcel trace team to locate it by its individual ID"
+  ],
+  "acceptable_alternatives": [
+    "Sends the damage report to the merchant with the recipient's description while requesting the photos",
+    "Combines both requests to the recipient in one message as long as both issues are covered"
+  ],
+  "positive_behaviours": [
+    "Advises not to open the carton because of broken glass, without giving cleanup instructions",
+    "Does not raise any issue for DL-106-A"
+  ],
+  "red_flags": [
+    "Handles only one of the two problems",
+    "Asks the recipient to open the carton"
+  ],
+  "prohibited_actions": [
+    "Promising a replacement or refund for DL-106-B",
+    "Declaring DL-106-C lost"
+  ],
+  "critical_failures": [
+    "Ignores DL-106-C entirely or treats all three parcels as delivered"
+  ]
+}

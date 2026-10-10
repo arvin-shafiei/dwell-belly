@@ -2,13 +2,17 @@ import { describe, expect, it } from "vitest";
 import { advanceHour, createGrade, createSkyState, gradeFor, sampleSky, sunDirection, GAME_SECONDS_PER_HOUR } from "./skyState";
 
 describe("advanceHour", () => {
+  it("runs nights faster and honours the HUD time scale", () => {
+    expect(advanceHour(23, 20)).toBeCloseTo(2); // night: 3x
+    expect(advanceHour(10, 20, 10)).toBeCloseTo(20); // day at 10x
+  });
   it("advances 1 game hour per 20 real seconds", () => {
     expect(GAME_SECONDS_PER_HOUR).toBe(20);
     expect(advanceHour(10, 20)).toBeCloseTo(11);
     expect(advanceHour(10, 5)).toBeCloseTo(10.25);
   });
   it("wraps around midnight", () => {
-    expect(advanceHour(23.9, 4)).toBeCloseTo(0.1);
+    expect(advanceHour(23.9, 4)).toBeCloseTo(0.5); // 4 s at night (3x) = 0.6 h
   });
 });
 

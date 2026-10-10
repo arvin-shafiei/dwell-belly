@@ -269,7 +269,7 @@ export default function Sky() {
       lastPushed.current = world.timeOfDay;
     }
     if (!paused) {
-      hourRef.current = advanceHour(hourRef.current, dt);
+      hourRef.current = advanceHour(hourRef.current, dt, world.timeScale);
       weatherT.current += dt;
       if (now - lastPushT.current >= STORE_PUSH_MS) {
         lastPushT.current = now;

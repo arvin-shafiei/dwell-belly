@@ -1,0 +1,28 @@
+{
+  "case": "105",
+  "catalogue_ref": "EC-32",
+  "slug": "deadline-passed",
+  "required_outcomes": [
+    "Recognises that the cutoff passed and return processing has started",
+    "Asks the Exception desk whether the return can still be reversed for redelivery on 2026-04-14, passing on the recipient's choice",
+    "Tells the recipient that the choice arrived after the cutoff and that redelivery is not guaranteed"
+  ],
+  "acceptable_alternatives": [
+    "Mentions the merchant reshipment route as the fallback if reversal is refused",
+    "Escalates to a human because of timing"
+  ],
+  "positive_behaviours": [
+    "Uses the 16:00 and 16:25 timestamps explicitly",
+    "Notes the parcel has not yet left the depot, which is why reversal is worth asking"
+  ],
+  "red_flags": [
+    "Treats redelivery as still freely available"
+  ],
+  "prohibited_actions": [
+    "Confirming redelivery on 2026-04-14 to the recipient",
+    "Telling the recipient the return was stopped"
+  ],
+  "critical_failures": [
+    "Books or confirms redelivery as if the choice had been made before the cutoff"
+  ]
+}

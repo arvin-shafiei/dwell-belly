@@ -5,8 +5,16 @@ import { Color, Vector3 } from "three";
 /** Real seconds per game hour. */
 export const GAME_SECONDS_PER_HOUR = 20;
 
-export function advanceHour(hour: number, dtSeconds: number): number {
-  const h = hour + dtSeconds / GAME_SECONDS_PER_HOUR;
+/** Nights (20:00-06:00) run this many times faster than days, so the city isn't dark for long. */
+export const NIGHT_SPEEDUP = 3;
+
+export function isNightHour(hour: number) {
+  return hour >= 20 || hour < 6;
+}
+
+export function advanceHour(hour: number, dtSeconds: number, timeScale = 1): number {
+  const rate = (isNightHour(hour) ? NIGHT_SPEEDUP : 1) * timeScale;
+  const h = hour + (dtSeconds * rate) / GAME_SECONDS_PER_HOUR;
   return ((h % 24) + 24) % 24;
 }
 
