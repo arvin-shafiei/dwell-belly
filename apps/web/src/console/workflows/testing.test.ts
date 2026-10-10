@@ -3,7 +3,7 @@ import type { Flow, TestRun } from "../types";
 import flowJson from "../../../../api/flows/default-incident.json";
 import {
   autoNext, autoStart, configChanges, costPerCase, diffCount, diffFlows, edgeMark, fmtValue, initialPoll,
-  learningCurve, nodeMark, pollReducer, practiceLink, retestBody, type AutoState,
+  learningCurve, nodeMark, pollReducer, practiceLink, retestBody, reuseLine, type AutoState,
 } from "./testing";
 
 const base = flowJson as Flow;
@@ -151,6 +151,36 @@ describe("learning curve and helpers", () => {
   it("estimates cost per case only from history", () => {
     expect(costPerCase([])).toBeNull();
     expect(costPerCase([run({ status: "done" }, { total: 4, costUsd: 0.8 })])).toBeCloseTo(0.2);
+  });
+  it("counts a reused result once per version", () => {
+    const pts = learningCurve([
+      // v1: first run 2 of 5 right, all fresh.
+      run({ version: 1, status: "done" }, { total: 5, passed: 2, failed: 3, meanScore: 0.4 }),
+      // v1 again, every case reused from that run: no new evidence, left out.
+      run({ version: 1, status: "done" }, { total: 5, passed: 2, failed: 3, meanScore: 0.4, reused: 5, repeats: { passed: 2, failed: 3, scoreSum: 2 } }),
+      // v1 again: 3 repeats (1 right, score sum 0.9) + 2 fresh right (scores 1, 1).
+      run({ version: 1, status: "done" }, { total: 5, passed: 3, failed: 2, meanScore: 0.58, reused: 3, repeats: { passed: 1, failed: 2, scoreSum: 0.9 } }),
+      // v2 reused results from an identical v1 flow: new for v2, so counted.
+      run({ version: 2, status: "done" }, { total: 5, passed: 2, failed: 3, meanScore: 0.4, reused: 5, repeats: { passed: 0, failed: 0, scoreSum: 0 } }),
+    ]);
+    expect(pts[0].runs).toBe(2);
+    expect(pts[0].passRate).toBeCloseTo((0.4 + 1) / 2);
+    expect(pts[0].meanScore).toBeCloseTo((0.4 + 1) / 2);
+    expect(pts[1]).toMatchObject({ version: 2, runs: 1 });
+    expect(pts[1].passRate).toBeCloseTo(0.4);
+  });
+  it("leaves reused cases out of the cost estimate", () => {
+    expect(costPerCase([run({ status: "done" }, { total: 5, reused: 3, costUsd: 0.1 })])).toBeCloseTo(0.05);
+    expect(costPerCase([run({ status: "done" }, { total: 5, reused: 5, costUsd: 0 })])).toBeNull();
+  });
+  it("says how many were reused", () => {
+    const re = { originalCostUsd: 0.05, countedBefore: false };
+    expect(reuseLine([{ status: "passed", reused: null }])).toBeNull();
+    expect(reuseLine([
+      { status: "passed", reused: re }, { status: "failed", reused: re }, { status: "passed", reused: re },
+      { status: "running" }, { status: "queued" },
+    ])).toBe("3 reused · 2 running");
+    expect(reuseLine([{ status: "passed", reused: re }, { status: "failed" }])).toBe("1 reused · 1 new");
   });
   it("builds a re-test body on the same cases", () => {
     const r = run({ cases: [{ caseId: "a" }, { caseId: "b" }] as TestRun["cases"] });

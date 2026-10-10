@@ -200,15 +200,31 @@ export function autoNext(s: AutoState, ev: AutoEvent): AutoState {
 
 export interface CurvePoint { version: number; meanScore: number | null; passRate: number; runs: number; costUsd: number }
 
-/** One point per version from finished runs: the mean of their mean scores and pass rates. */
+/**
+ * A run's summary with reused cases this version had already counted taken out, so the same result
+ * is never counted twice for a version. Null when nothing new is left (a run made only of repeats).
+ */
+export function freshSummary(s: TestRun["summary"]): TestRun["summary"] | null {
+  const rp = s.repeats ?? { passed: 0, failed: 0, scoreSum: 0 };
+  const total = s.total - rp.passed - rp.failed;
+  if (total <= 0) return null;
+  const scored = s.passed + s.failed;
+  const freshScored = scored - rp.passed - rp.failed;
+  const meanScore = s.meanScore === null || freshScored <= 0 ? null : (s.meanScore * scored - rp.scoreSum) / freshScored;
+  return { ...s, total, passed: s.passed - rp.passed, failed: s.failed - rp.failed, meanScore, repeats: undefined };
+}
+
+/** One point per version from finished runs: the mean of their mean scores and pass rates (repeats left out). */
 export function learningCurve(runs: Pick<TestRun, "version" | "status" | "summary">[]): CurvePoint[] {
   const by = new Map<number, { scores: number[]; rates: number[]; cost: number; n: number }>();
   for (const r of runs) {
     if (r.status !== "done" || !r.summary.total) continue;
+    const s = freshSummary(r.summary);
+    if (!s) continue;
     const b = by.get(r.version) ?? { scores: [], rates: [], cost: 0, n: 0 };
-    if (r.summary.meanScore !== null) b.scores.push(r.summary.meanScore);
-    b.rates.push(passRate(r.summary));
-    b.cost += r.summary.costUsd;
+    if (s.meanScore !== null) b.scores.push(s.meanScore);
+    b.rates.push(passRate(s));
+    b.cost += s.costUsd;
     b.n += 1;
     by.set(r.version, b);
   }
@@ -218,16 +234,28 @@ export function learningCurve(runs: Pick<TestRun, "version" | "status" | "summar
   }));
 }
 
-/** Cost estimate per case from earlier finished runs (null when there is no history). */
+/** Cost estimate per case from earlier finished runs (null when there is no history). Reused cases cost nothing and are left out. */
 export function costPerCase(runs: Pick<TestRun, "status" | "summary">[]): number | null {
   let cost = 0;
   let n = 0;
   for (const r of runs) {
     if (r.status !== "done" || !r.summary.total) continue;
     cost += r.summary.costUsd;
-    n += r.summary.total;
+    n += r.summary.total - (r.summary.reused ?? 0);
   }
   return n ? cost / n : null;
+}
+
+/** "3 reused · 2 running" style line for a practice run; null when nothing was reused. */
+export function reuseLine(cases: Pick<TestRun["cases"][number], "status" | "reused">[]): string | null {
+  const reused = cases.filter((c) => c.reused).length;
+  if (!reused) return null;
+  const running = cases.filter((c) => !c.reused && (c.status === "running" || c.status === "queued")).length;
+  const ran = cases.filter((c) => !c.reused && (c.status === "passed" || c.status === "failed" || c.status === "error")).length;
+  const parts = [`${reused} reused`];
+  if (running) parts.push(`${running} running`);
+  if (ran) parts.push(`${ran} new`);
+  return parts.join(" · ");
 }
 
 export function latestVersion(versions: WorkflowVersion[]): WorkflowVersion | null {
@@ -245,7 +273,7 @@ export function retestBody(run: Pick<TestRun, "workflowId" | "cases">, version: 
   };
 }
 
-const SET_IDS: ScenarioSetId[] = ["quick", "fixtures", "adversarial", "generated", "city", "custom"];
+const SET_IDS: ScenarioSetId[] = ["quick", "fixtures", "adversarial", "generated", "city", "bulk", "custom"];
 
 /** Deep link into Practice (`?panel=practice&set=<id>[&filter=<pattern>]`), e.g. from Results'
  *  "Run more cases". Null when the link does not ask for the Practice panel. */

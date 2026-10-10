@@ -124,5 +124,21 @@ export function summarise(cases: TestRunCase[]) {
     errors: cases.filter((c) => c.status === "error").length,
     meanScore: scored.length ? Math.round((scored.reduce((s, c) => s + (c.score ?? 0), 0) / scored.length) * 1000) / 1000 : null,
     costUsd: Math.round(costs.reduce((a, b) => a + b, 0) * 1e6) / 1e6,
+    ...reuseTotals(cases),
+  };
+}
+
+/** Reuse counts, present only when a case was reused (older runs keep their exact shape). */
+function reuseTotals(cases: TestRunCase[]): { reused?: number; repeats?: { passed: number; failed: number; scoreSum: number } } {
+  const reused = cases.filter((c) => c.reused);
+  if (!reused.length) return {};
+  const rep = reused.filter((c) => c.reused?.countedBefore && (c.status === "passed" || c.status === "failed"));
+  return {
+    reused: reused.length,
+    repeats: {
+      passed: rep.filter((c) => c.status === "passed").length,
+      failed: rep.filter((c) => c.status === "failed").length,
+      scoreSum: Math.round(rep.reduce((s, c) => s + (c.score ?? 0), 0) * 1e6) / 1e6,
+    },
   };
 }

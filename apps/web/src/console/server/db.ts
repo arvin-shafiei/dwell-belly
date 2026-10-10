@@ -96,6 +96,18 @@ const MIGRATIONS = [
   // Evidence and Reality reads (dashboard v2): per-dataset listing and the ANSWERS/ mirror.
   `CREATE INDEX IF NOT EXISTS executions_dataset ON executions (dataset, started_at)`,
   `CREATE INDEX IF NOT EXISTS executions_origin ON executions (origin, case_id)`,
+  // Practice result cache (practiceCache.ts): key = dataset/caseId#hash of the exact flow JSON under test.
+  `CREATE TABLE IF NOT EXISTS practice_cache (
+     key TEXT PRIMARY KEY,
+     case_id TEXT NOT NULL,
+     dataset TEXT NOT NULL,
+     flow_hash TEXT NOT NULL,
+     execution_id TEXT NOT NULL,
+     workflow_id TEXT,
+     version INTEGER,
+     test_case TEXT NOT NULL,
+     created_at TEXT NOT NULL
+   )`,
 ];
 
 /** Columns added after the first release (voice, PRD I5). ALTER TABLE ADD COLUMN is not idempotent, so check first. */

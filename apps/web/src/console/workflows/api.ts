@@ -83,6 +83,8 @@ export const deleteWorkflow = (id: string) =>
 export type ScenarioSetInfo = ConsoleTestApi["GET /api/console/scenario-sets"]["sets"][number];
 export type TestRunBody = {
   workflowId: string; version?: number; set: ScenarioSetId; filter?: string; caseIds?: string[]; limit?: number;
+  /** Run every case again instead of reusing results this exact playbook already has. */
+  fresh?: boolean;
 };
 
 export const listScenarioSets = () => call<ConsoleTestApi["GET /api/console/scenario-sets"]>("/api/console/scenario-sets");

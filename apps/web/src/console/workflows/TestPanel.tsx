@@ -13,7 +13,7 @@ import {
 } from "./api";
 import {
   AUTO_MAX_ITERATIONS, MAX_MISSES, POLL_MS, autoNext, autoStart, costPerCase, initialPoll, latestVersion,
-  learningCurve, pollReducer, retestBody, type AutoState,
+  learningCurve, pollReducer, retestBody, reuseLine, type AutoState,
 } from "./testing";
 import { LearningCurve } from "./LearningCurve";
 import { caseElapsedMs, caseTitle, fmtElapsed, isFinished, overallProgress, runningLine } from "./practiceProgress";
@@ -49,6 +49,7 @@ export function caseSentence(c: TestRunCase): string {
   if (c.status === "queued") return "Waiting…";
   if (c.status === "running") return "Working on it…";
   if (c.status === "error") return "Couldn't finish this case.";
+  if (c.reused) return `Reused · same playbook, same case. ${scrubLeaks(c.verdict) || (c.status === "passed" ? "Handled it right." : "Didn't handle it right.")}`;
   const v = scrubLeaks(c.verdict);
   if (v) return v;
   if (c.mustNotBroken.length) return "Broke a rule it must keep.";
@@ -92,9 +93,11 @@ function CaseRow({ c, selected, onClick, now, live }: { c: TestRunCase; selected
       </span>
       <span className="shrink-0 text-right tabular-nums">
         {elapsed !== null && (
-          <span className={`block text-[12.5px] ${c.status === "running" && live ? "text-[#ff9a5c]" : "text-white/50"}`} title={done ? "Time taken" : "Time so far"}>{fmtElapsed(elapsed)}</span>
+          <span className={`block text-[12.5px] ${c.status === "running" && live ? "text-[#ff9a5c]" : "text-white/50"}`} title={c.reused ? "Time the original run took" : done ? "Time taken" : "Time so far"}>{fmtElapsed(elapsed)}</span>
         )}
-        {done && cents(c.costUsd) && <span className="block text-[11px] text-white/30">{cents(c.costUsd)}</span>}
+        {c.reused ? (
+          <span className="block text-[11px] text-white/30" title={cents(c.reused.originalCostUsd) ? `The original run cost ${cents(c.reused.originalCostUsd)}` : undefined}>0¢ new</span>
+        ) : done && cents(c.costUsd) && <span className="block text-[11px] text-white/30">{cents(c.costUsd)}</span>}
       </span>
       {c.status === "running" && live && <span aria-hidden className="wf-row-pulse pointer-events-none absolute inset-x-2.5 bottom-0 h-[2px]" />}
     </button>
@@ -166,6 +169,8 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   const [auto, setAuto] = useState<AutoState | null>(null);
   const [confirmAuto, setConfirmAuto] = useState(false);
   const [advanced, setAdvanced] = useState(false);
+  // Default: reuse results this exact playbook already has for a case (instant, free). On: run every case again.
+  const [fresh, setFresh] = useState(false);
   const cancelRef = useRef(false);
   const stopAutoRef = useRef(false);
   const alive = useRef(true);
@@ -274,6 +279,7 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
     if (version !== null) b.version = version;
     if (filter && (set?.filters?.includes(filter) || filter === linkFilter)) b.filter = filter;
     if (setId === "custom") { b.caseIds = custom; b.limit = Math.min(20, Math.max(1, custom.length)); }
+    if (fresh) b.fresh = true;
     return b;
   };
 
@@ -399,6 +405,12 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
             Practice on {caseCount} case{caseCount === 1 ? "" : "s"}
           </Btn>
         )}
+        {!running && (
+          <label className="-mt-3 flex cursor-pointer items-center gap-2 text-[12px] text-white/55" title="Off: a case this exact playbook already ran is reused (instant, free). On: every case calls the agent again.">
+            <input type="checkbox" checked={fresh} onChange={(e) => setFresh(e.target.checked)} disabled={autoRunning} className="accent-[#ff6a1a]" />
+            Run fresh <span className="text-white/35">{fresh ? "· every case runs again" : "· reuses results this playbook already has"}</span>
+          </label>
+        )}
 
         {error && <div className="rounded-md bg-[#ef4444]/10 px-3 py-2 text-[13px] text-[#fca5a5]">{scrubLeaks(error) || "Something went wrong."}</div>}
         {poll.phase === "error" && poll.error && <div className="rounded-md bg-[#ef4444]/10 px-3 py-2 text-[13px] text-[#fca5a5]">Practice stopped: {scrubLeaks(poll.error) || "something went wrong"}.</div>}
@@ -414,6 +426,9 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
             >
               {running ? <>{progress} of {run.cases.length} <span className="text-[22px] font-medium text-white/50">done</span></> : <>{run.summary.passed} of {run.summary.total} <span className="text-[22px] font-medium text-white/60">right</span></>}
             </div>
+            {reuseLine(run.cases) && (
+              <div className="mt-1.5 text-[12.5px] text-white/55" title="Reused cases come from an earlier run of this exact playbook: no new agent call, no new cost">{reuseLine(run.cases)}</div>
+            )}
             {running && (
               <>
                 <div className="mt-1.5 text-[12.5px] text-white/55">{runningLine(run.cases)}</div>

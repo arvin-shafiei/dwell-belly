@@ -225,6 +225,8 @@ export type ScenarioSetId =
   | "adversarial" // Oriol's adversarial cases
   | "generated" // generated hard cases (optionally filtered by mutation)
   | "city" // the 50 hand-written city cases (data/city)
+  | "haiku" // Haiku-made cases (data/haiku), model-written answer keys, unreviewed
+  | "bulk" // 2,500 rule-made cases (data/bulk, scripts/eval/gen-bulk.mjs), answer keys derived by rule
   | "custom"; // explicit case ids
 
 export interface TestRunCase {
@@ -245,6 +247,13 @@ export interface TestRunCase {
   /** Wall-clock start and end of this case in the run (agent + scoring), ISO. */
   startedAt?: string | null;
   finishedAt?: string | null;
+  /** Set when this case was not run again: the same playbook (same flow JSON) already ran it and was judged.
+   *  `executionId` is the original run; costUsd is 0 (nothing new spent); the original cost is kept here. */
+  reused?: {
+    originalCostUsd: number | null;
+    /** True when this version's results already include that run, so it is not new evidence. */
+    countedBefore: boolean;
+  } | null;
 }
 
 export interface TestRun {
@@ -257,7 +266,13 @@ export interface TestRun {
   startedAt: string;
   finishedAt: string | null;
   cases: TestRunCase[];
-  summary: { total: number; passed: number; failed: number; errors: number; meanScore: number | null; costUsd: number };
+  summary: {
+    total: number; passed: number; failed: number; errors: number; meanScore: number | null; costUsd: number;
+    /** Cases reused from an earlier run of the same playbook (no new agent call). */
+    reused?: number;
+    /** Reused cases this version had already counted: subtract them so the learning curve counts each run once. */
+    repeats?: { passed: number; failed: number; scoreSum: number };
+  };
 }
 
 export interface ImproveProposal {

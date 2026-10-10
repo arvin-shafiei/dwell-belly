@@ -1,6 +1,8 @@
 // Test runs: one workflow version over a scenario set, each case run through the agent API (the same
 // path as Execute, with the version's flow) and scored by the team's judge (scripts/eval/score.mjs).
 // POST returns at once; cases run in the background, all 5 at once (CONCURRENCY), and progress is saved after each.
+// A case this exact playbook (same flow JSON) already ran and had judged is reused from practiceCache.ts
+// unless the body says `fresh: true`: no agent call, no judge call, $0.
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -13,6 +15,7 @@ import { resolveSet, SET_LABELS, type SetId } from "./scenarios";
 import { fixtureExpected, scoreFixture, summarise, toTestCase, withMessages, type FixtureRubric } from "./scoring";
 import { recordVerdict } from "./store";
 import { getVersion } from "./versions";
+import { countedBefore, flowHash, lookupCached, reusedCase, storeCached } from "./practiceCache";
 
 export const CONCURRENCY = 5;
 
@@ -29,7 +32,7 @@ export function queuedCase(c: Pick<CaseWithMutation, "id" | "dataset"> & { title
 }
 
 /**
- * Runs every queued case with at most `concurrency` in flight. A case that throws becomes an "error"
+ * Runs every queued case (cases already finished, e.g. reused, are left as they are) with at most `concurrency` in flight. A case that throws becomes an "error"
  * case and the rest carry on. Once `isCancelled()` is true no new case starts; cases already running
  * finish and are recorded. `onUpdate` is called after every state change with the full list.
  */
@@ -43,10 +46,11 @@ export async function runCases(opts: {
 }): Promise<"done" | "cancelled"> {
   const cases = opts.cases;
   const now = () => (opts.now ? opts.now() : new Date()).toISOString();
+  const todo = cases.flatMap((c, i) => (c.status === "queued" ? [i] : []));
   let next = 0;
   const worker = async () => {
-    while (next < cases.length && !opts.isCancelled()) {
-      const i = next++;
+    while (next < todo.length && !opts.isCancelled()) {
+      const i = todo[next++];
       const started = { ...cases[i], status: "running" as const, startedAt: now() };
       cases[i] = started;
       opts.onUpdate(cases);
@@ -60,7 +64,7 @@ export async function runCases(opts: {
       opts.onUpdate(cases);
     }
   };
-  await Promise.all(Array.from({ length: Math.max(1, Math.min(opts.concurrency, cases.length)) }, worker));
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(opts.concurrency, todo.length)) }, worker));
   return opts.isCancelled() ? "cancelled" : "done";
 }
 
@@ -167,6 +171,26 @@ export interface StartBody {
   filter?: unknown;
   caseIds?: unknown;
   limit?: unknown;
+  /** true: run every case again, ignoring cached results. */
+  fresh?: unknown;
+}
+
+/**
+ * Fills in cached results for cases this flow already ran (pure apart from the two lookups, tested).
+ * Returns how many were reused.
+ */
+export function applyCache(cases: TestRunCase[], opts: {
+  lookup: (c: TestRunCase) => TestRunCase | null;
+  countedBefore: (executionId: string) => boolean;
+}): number {
+  let n = 0;
+  for (let i = 0; i < cases.length; i++) {
+    const hit = cases[i].status === "queued" ? opts.lookup(cases[i]) : null;
+    if (!hit?.executionId) continue;
+    cases[i] = reusedCase(hit, cases[i], opts.countedBefore(hit.executionId));
+    n++;
+  }
+  return n;
 }
 
 async function validateWithAgent(flow: unknown): Promise<string[]> {
@@ -197,12 +221,24 @@ export async function startTestRun(body: StartBody): Promise<TestRun> {
   } catch (err) {
     throw new TestRunError(err instanceof Error ? err.message : String(err), 400);
   }
-  if (!ensureJudgeKey()) throw new TestRunError("no ANTHROPIC_API_KEY for the judge (set it in apps/api/.env.local)", 503);
-  if (!(await agentHealthy())) throw new TestRunError(`the agent API at ${agentUrl()} is not answering`, 503);
-  const problems = await validateWithAgent(version.flow);
-  if (problems.length) throw new TestRunError(`version ${version.version} of ${workflowId} is not a valid flow`, 422, problems);
-  const ev = await evalModules();
-  const evalCases = new Map((await ev.loadCases("all")).map((c) => [c.id, c]));
+  const hash = flowHash(version.flow);
+  const cases = picked.map(queuedCase);
+  if (body.fresh !== true) {
+    applyCache(cases, {
+      lookup: (c) => lookupCached(c.caseId, c.dataset, hash)?.testCase ?? null,
+      countedBefore: (executionId) => countedBefore(workflowId, version.version, executionId),
+    });
+  }
+  const toRun = cases.filter((c) => c.status === "queued").length;
+  // Nothing to run: no agent, judge or flow check needed (a flow that already ran was valid).
+  if (toRun > 0) {
+    if (!ensureJudgeKey()) throw new TestRunError("no ANTHROPIC_API_KEY for the judge (set it in apps/api/.env.local)", 503);
+    if (!(await agentHealthy())) throw new TestRunError(`the agent API at ${agentUrl()} is not answering`, 503);
+    const problems = await validateWithAgent(version.flow);
+    if (problems.length) throw new TestRunError(`version ${version.version} of ${workflowId} is not a valid flow`, 422, problems);
+  }
+  const ev = toRun > 0 ? await evalModules() : null;
+  const evalCases = new Map(ev ? (await ev.loadCases("all")).map((c) => [c.id, c]) : []);
 
   const run: TestRun = {
     id: randomUUID(),
@@ -213,15 +249,22 @@ export async function startTestRun(body: StartBody): Promise<TestRun> {
     status: "running",
     startedAt: new Date().toISOString(),
     finishedAt: null,
-    cases: picked.map(queuedCase),
+    cases,
     summary: summarise([]),
   };
   run.summary = summarise(run.cases);
+  if (toRun === 0) {
+    run.status = "done";
+    run.finishedAt = new Date().toISOString();
+    saveRun(run);
+    return run;
+  }
   saveRun(run);
   const handle = { cancelled: false };
   active.set(run.id, handle);
 
   const runOne = async (c: TestRunCase): Promise<TestRunCase> => {
+    if (!ev) throw new Error("eval modules not loaded");
     const ctx = await contextFor(c, evalCases);
     const exec = await execute({ caseId: c.caseId, dataset: c.dataset, workflowId, flow: version.flow });
     const base = { caseId: c.caseId, dataset: c.dataset, executionId: exec.id };
@@ -250,6 +293,14 @@ export async function startTestRun(body: StartBody): Promise<TestRun> {
     const scored = toTestCase(base, { result, agentError, judgement, judgeError, verdict, expected: ctx.expected, costUsd: exec.costUsd, durationMs: exec.durationMs });
     if (verdict?.completed && (scored.status === "passed" || scored.status === "failed")) {
       recordVerdictOnExecution(exec.id, verdict, scored.verdict, judgement);
+      // Only a finished run with a trace and a completed verdict is worth reusing.
+      if (exec.status === "success" && exec.trace && !exec.error) {
+        try {
+          storeCached({ ...scored, title: c.title ?? null, startedAt: c.startedAt ?? null, finishedAt: new Date().toISOString() }, hash, workflowId, version.version);
+        } catch {
+          // Not caching never fails the case.
+        }
+      }
     }
     return scored;
   };
