@@ -14,6 +14,7 @@ const DECISION_LABEL: Record<string, string> = {
 
 const STATUS_LABEL = {
   recorded: "Recorded in sandbox outbox, awaiting reply",
+  failed: "Not delivered: every channel failed",
   held_for_human: "Proposed, held for a human",
   blocked: "Not sent: stopped by the safety check",
 };
@@ -68,7 +69,9 @@ export function renderAnswer(r: RunResult): string {
 
   lines.push("", "## What failed", list([
     ...u.commitments.filter((c) => c.status === "rejected_or_failed").map((c) => `Earlier in the case: ${c.what} (owed by ${c.owed_by}) failed or was rejected.`),
+    ...outbox.filter((o) => o.status === "failed").map((o) => `Message to ${o.action.recipient}: ${o.note}`),
     ...bundle.unreadable.map((f) => `Could not read ${f}.`),
+    ...(bundle.tools?.length ? [`${bundle.tools.length} tool(s) came with the case (${bundle.tools.map((t) => t.name).join(", ")}). None was called: the agent only calls tools it has been configured to trust.`] : []),
     ...(r.panel && !r.panel.ok ? [`The perspectives check did not run (${r.panel.error}); the flow continued without it.`] : []),
   ], "Nothing."));
 

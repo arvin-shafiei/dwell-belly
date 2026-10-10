@@ -5,9 +5,12 @@
 import type { Flow } from "../lib/flow.ts";
 import { runPanel, type PanelResult, type PanelRule } from "../lib/panel.ts";
 import type { DecisionCard, NextAction, NodeOutput, Outcome, Trace, TraceEvent } from "../lib/trace.ts";
+import { caseNow, clockBrief, deadlines } from "./clock.ts";
 import { gate, type GateConfig } from "./gate.ts";
+import type { clash, messageRisk, triage } from "./judge.ts";
 import { bundleText } from "./load.ts";
 import type { Models, ModelUsage } from "./models.ts";
+import { deliver, sandboxTransport, verify, type DeliveryLedger, type DeliveryResult, type Transport } from "./outbox.ts";
 import { CRITIC_SYSTEM, DECIDE_SYSTEM, UNDERSTAND_SYSTEM } from "./prompts.ts";
 import { Critique, Decision, Understanding, type CaseBundle, type GatedAction, type OutboxEntry } from "./types.ts";
 
@@ -21,6 +24,10 @@ export interface RunOptions {
   runId: string;
   /** Jev panel. Left out, or failing, the flow carries on without its notes. */
   panel?: typeof runPanel;
+  /** Jev's quick judgements. Each returns null when Jev is unavailable, and the flow falls back. */
+  judge?: { triage?: typeof triage; clash?: typeof clash; messageRisk?: typeof messageRisk };
+  /** Where cleared messages go. Default: a sandbox outbox that reaches nobody and says so. */
+  transports?: Transport[];
   /** Whole-case limit. A case past it becomes a failure answer and its model calls are aborted. */
   timeoutMs?: number;
 }
@@ -102,7 +109,14 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
       return res;
     },
   };
-  const gateConfig = { ...DEFAULT_GATE, ...nodeConfig<Partial<GateConfig>>(flow, "safety_gate") };
+  const gateNode = nodeConfig<Partial<GateConfig> & { critic?: "claude" | "jev" }>(flow, "safety_gate");
+  const gateConfig = { ...DEFAULT_GATE, ...gateNode };
+  // A judgement that throws or is cut off counts as unavailable, never as a failed case.
+  const quick = async <T>(call: Promise<T | null> | undefined): Promise<T | null> => {
+    const value = call ? await call.catch(() => null) : null;
+    signal.throwIfAborted();
+    return value;
+  };
   const block = caseBlock(bundle);
 
   rec.begin("ingest", "ingest");
@@ -112,7 +126,10 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
   rec.end(`${bundle.documents.length} files, ${bundle.media.length} attachments read`);
 
   rec.view("history", "history_lookup", `${u.commitments.length} open commitments, ${u.deadlines.length} deadlines`);
-  rec.view("triage", "triage", `${u.case_type} · ${u.urgency}`, { type: "triage", caseType: u.case_type, urgency: u.urgency, p: 1 });
+  rec.begin("triage", "triage");
+  const fast = await quick(opts.judge?.triage?.(bundleText(bundle)));
+  if (fast) rec.call("jev", fast.usage);
+  rec.end(`${fast?.caseType ?? u.case_type} · ${fast?.urgency ?? u.urgency}`, { type: "triage", caseType: fast?.caseType ?? u.case_type, urgency: fast?.urgency ?? u.urgency, p: 1 });
 
   const rules = nodeConfig<{ rules: Record<string, PanelRule> }>(flow, "perspectives")?.rules;
   rec.begin("perspectives", "perspectives");
@@ -132,13 +149,28 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
     rec.end("skipped: no Jev key", undefined, "skipped");
   }
 
-  rec.view("clash", "clash_check", u.conflicts.length ? `${u.conflicts.length} conflict: ${u.conflicts[0].about}` : "no conflict",
-    { type: "clash_check", clash: u.conflicts.length > 0, p: 1, claims: u.claims.slice(0, 6).map((c) => ({ who: c.who, says: c.says })) });
+  rec.begin("clash", "clash_check");
+  const clashAt = nodeConfig<{ clash_at?: number }>(flow, "clash_check")?.clash_at ?? 0.5;
+  const scored = await quick(opts.judge?.clash?.(u.claims.map((c) => ({ who: c.who, says: c.says }))));
+  if (scored) rec.call("jev", scored.usage);
+  // The analysis's own conflicts always count; Jev's score can add a clash, never remove one.
+  const clashed = u.conflicts.length > 0 || (scored ? scored.p >= clashAt : false);
+  rec.end(u.conflicts.length ? `${u.conflicts.length} conflict: ${u.conflicts[0].about}` : clashed ? "sources may conflict" : "no conflict",
+    { type: "clash_check", clash: clashed, p: scored?.p ?? 1, claims: u.claims.slice(0, 6).map((c) => ({ who: c.who, says: c.says })) });
+
+  // Dates are compared in code and handed over as text; models get this arithmetic wrong.
+  let clock = "";
+  try {
+    const now = caseNow(bundle);
+    clock = clockBrief(now, deadlines([...u.deadlines, ...u.commitments.map((c) => c.due)], now));
+  } catch { /* an unreadable clock is the same as no clock */ }
 
   const notes = result.panel?.ok ? result.panel.notes : [];
   const brief = [
     `<analysis>\n${JSON.stringify(u, null, 1)}\n</analysis>`,
     notes.length ? `<reviewer_notes>\n${notes.map((n) => `- ${n}`).join("\n")}\n</reviewer_notes>` : "",
+    clashed && u.conflicts.length === 0 ? "A quick check suggests two sources in this case may contradict each other. Look for it before deciding." : "",
+    clock ? `<clock>\n${clock}\n</clock>` : "",
     result.panel?.forceHuman ? "A reviewer has determined that a person at the desk must decide this case: use escalate_to_human." : "",
     block,
   ].filter(Boolean).join("\n\n");
@@ -150,6 +182,10 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
 
   const critique = async (actions: Decision["actions"]) => {
     if (actions.length === 0) return null;
+    if (gateNode?.critic === "jev") {
+      const risk = await quick(opts.judge?.messageRisk?.(block, actions.map((a, index) => ({ index, to: a.recipient, channel: a.channel, message: a.message }))));
+      if (risk) { rec.call("jev", risk.usage); return risk; }
+    }
     const user = `${block}\n\n<analysis_instruction_like_text>\n${JSON.stringify(u.instruction_like_text)}\n</analysis_instruction_like_text>\n\n` +
       `<outgoing_messages>\n${JSON.stringify(actions.map((a, index) => ({ index, to: a.recipient, channel: a.channel, message: a.message })), null, 1)}\n</outgoing_messages>`;
     const res = await models.structured({ system: CRITIC_SYSTEM, user, schema: Critique, media: bundle.media, effort: "low" });
@@ -188,22 +224,49 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
 
   // A panel rule with effect force_human is enforced here, in code: nothing goes out until a person decides.
   const forced = result.panel?.ok === true && result.panel.forceHuman;
-  const sent = forced ? [] : gated.filter((g) => g.verdict === "allow");
+  const cleared = forced ? [] : gated.filter((g) => g.verdict === "allow");
   const held = gated.filter((g) => g.verdict === "ask" || (forced && g.verdict === "allow"));
   const blocked = gated.filter((g) => g.verdict === "block");
   const waiting = d.decision_type === "wait_no_action" && !forced;
+
+  const delivered: { g: GatedAction; res: DeliveryResult }[] = [];
+  const undelivered: { g: GatedAction; res: DeliveryResult }[] = [];
+  if (cleared.length) {
+    rec.edge("gate", "action", "allow");
+    rec.begin("action", "action");
+    const transports = opts.transports ?? [sandboxTransport()];
+    const ledger: DeliveryLedger = new Map();
+    for (const g of cleared) {
+      const res = await deliver(g.action, transports, { ledger });
+      signal.throwIfAborted();
+      (res.status === "recorded" ? delivered : undelivered).push({ g, res });
+    }
+    rec.end(`${delivered.length} of ${cleared.length} message(s) accepted by the outbox`,
+      delivered[0] ? { type: "action", done: toNext(delivered[0].g.action), ok: true } : undefined, delivered.length ? "ok" : "error");
+    rec.edge("action", "verify");
+    // verify() only restates what the transport accepted; nothing downstream has been checked.
+    const checks = [...delivered, ...undelivered].map(({ res }) => verify(res));
+    const awaiting = d.waiting_for.map((w) => `${w.what} from ${w.from} by ${w.by}`).join("; ");
+    rec.view("verify", "verify", undelivered.length ? `${undelivered.length} message(s) not delivered` : "accepted by the outbox; receipt and reply unverified",
+      { type: "verify", ok: undelivered.length === 0, p: 1, note: `${checks.map((c) => c.note).join(" ")}${awaiting ? ` Waiting for: ${awaiting}` : ""}`.slice(0, 600) });
+  }
+
   // Wanting to act but having nothing to send is not "no action needed": a person has to pick it up.
   const nothingPlanned = !waiting && gated.length === 0;
-  const needsHuman = forced || d.decision_type === "escalate_to_human" || held.length > 0 || blocked.length > 0 || nothingPlanned;
+  const needsHuman = forced || d.decision_type === "escalate_to_human" || held.length > 0 || blocked.length > 0 || undelivered.length > 0 || nothingPlanned;
+  const last = cleared.length ? "verify" : "gate";
 
   if (needsHuman) {
-    rec.edge("gate", "human", "ask");
+    rec.edge(last, "human", cleared.length ? undefined : "ask");
     const h = d.handover;
-    const stopped = [...held, ...blocked];
-    const stoppedLine = stopped.map((g) => `to ${g.action.recipient}: ${g.reasons.join("; ") || "held until a person decides"}`).join(" | ");
+    const stoppedLine = [
+      ...[...held, ...blocked].map((g) => `to ${g.action.recipient}: ${g.reasons.join("; ") || "held until a person decides"}`),
+      ...undelivered.map(({ g }) => `to ${g.action.recipient}: could not be delivered on any channel`),
+    ].join(" | ");
+    const stopped = held.length + blocked.length + undelivered.length;
     const card: DecisionCard = result.card = {
       routeTo: h?.route_to ?? "desk supervisor",
-      summary: h?.summary ?? (stopped.length ? `${stopped.length} message(s) stopped before sending (${stoppedLine})` : d.why),
+      summary: h?.summary ?? (stopped ? `${stopped} message(s) did not go out (${stoppedLine})` : d.why),
       clash: h?.clash || u.conflicts[0]?.about,
       tried: u.commitments.map((c) => `${c.what} (${c.status})`).slice(0, 5),
       // A blocked message is never offered for approval; only held ones are.
@@ -211,30 +274,22 @@ async function work(bundle: CaseBundle, opts: WorkOptions, rec: Recorder, result
         .map((label, i) => ({ id: `option-${i + 1}`, label, undoable: true })),
       wouldChangeMyMind: h?.would_change_my_mind ?? "",
       deadlineMins: u.urgency === "high" ? 15 : 60,
-      fallback: h?.safe_fallback ?? (stopped.length ? "Hold the stopped messages; send nothing further." : "Take no further action until a person at the desk has decided."),
+      fallback: h?.safe_fallback ?? (stopped ? "Hold the stopped messages; send nothing further." : "Take no further action until a person at the desk has decided."),
     };
     rec.view("human", "human_decision", `Card for ${card.routeTo}; no human available, fallback logged`, { type: "human_decision", card });
+    rec.edge("human", "log");
+  } else {
+    rec.edge(last, "log");
   }
 
-  if (sent.length) {
-    rec.edge(needsHuman ? "human" : "gate", "action", needsHuman ? undefined : "allow");
-    rec.begin("action", "action");
-    for (const g of sent) result.outbox.push({ action: g.action, status: "recorded", note: "Recorded in the sandbox outbox. No live system is connected, so nothing has been confirmed by the recipient." });
-    rec.end(`${sent.length} message(s) recorded in the sandbox outbox`, { type: "action", done: toNext(sent[0].action), ok: true });
-    rec.edge("action", "verify");
-    // "ok" here means only that the outbox took the message. Nothing downstream has been checked.
-    const awaiting = d.waiting_for.map((w) => `${w.what} from ${w.from} by ${w.by}`).join("; ");
-    rec.view("verify", "verify", "recorded, unverified: no live system connected",
-      { type: "verify", ok: true, p: 1, note: `Outbox accepted the message. Delivery and reply are unverified.${awaiting ? ` Waiting for: ${awaiting}` : ""}` });
-    rec.edge("verify", "log");
-  } else {
-    rec.edge(needsHuman ? "human" : "gate", "log", blocked.length && !held.length ? "block" : undefined);
-  }
+  for (const { g, res } of delivered) result.outbox.push({ action: g.action, status: "recorded", note: res.note });
+  for (const { g, res } of undelivered) result.outbox.push({ action: g.action, status: "failed", note: res.note });
   for (const g of held) result.outbox.push({ action: g.action, status: "held_for_human", note: g.reasons.join("; ") || "A reviewer rule requires a person to decide before anything is sent." });
   for (const g of blocked) result.outbox.push({ action: g.action, status: "blocked", note: g.reasons.join("; ") });
 
+  const onlyBlocked = blocked.length > 0 && delivered.length + undelivered.length + held.length === 0;
   if (waiting) result.outcome = "no_action";
-  else if (sent.length === 0 && held.length === 0 && blocked.length > 0 && d.decision_type !== "escalate_to_human" && !forced) result.outcome = "blocked";
+  else if (onlyBlocked && d.decision_type !== "escalate_to_human" && !forced) result.outcome = "blocked";
   else if (needsHuman) result.outcome = "escalated";
   else result.outcome = d.decision_type === "ask_for_info" ? "asked_for_info" : "acted";
 }

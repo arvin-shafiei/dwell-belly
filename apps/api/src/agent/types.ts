@@ -8,6 +8,8 @@ export interface CaseBundle {
   /** PDFs and images go to Claude as native blocks; no OCR step of our own. */
   media: { name: string; mediaType: string; base64: string }[];
   unreadable: string[];
+  /** Tools that arrived with the case. Listed for the record; none is called without a configured mapping. */
+  tools?: { name: string; description: string }[];
 }
 
 export const Understanding = z.object({
@@ -106,6 +108,6 @@ export interface GatedAction {
 
 export interface OutboxEntry {
   action: PlannedAction;
-  status: "recorded" | "held_for_human" | "blocked";
+  status: "recorded" | "failed" | "held_for_human" | "blocked";
   note: string;
 }

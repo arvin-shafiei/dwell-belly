@@ -70,7 +70,12 @@ export async function loadFolder(dir: string): Promise<CaseBundle> {
   return bundle;
 }
 
-interface ViewEvent { n: number; timestamp: string; stage: string | null; channel: string | null; from: string | null; to: string | null; body: string }
+export type EventSource = "live_human" | "simulated_persona" | "audio_attachment";
+interface ViewEvent {
+  n: number; timestamp: string; stage: string | null; channel: string | null; from: string | null; to: string | null; body: string;
+  /** Set on events that came in by voice. Absent means an ordinary written message. */
+  source?: EventSource;
+}
 export interface CaseView {
   id: string;
   title?: string | null;
@@ -80,14 +85,21 @@ export interface CaseView {
   attachments?: { name: string; text: string | null }[];
 }
 
-/** A parsed case view (the eval's cut of a practice or generated case) as a bundle. */
-export function fromView(view: CaseView): CaseBundle {
-  const history = view.events.map((e) =>
-    `Event ${e.n} | ${e.timestamp} | ${e.stage ?? ""} | ${e.channel ?? ""}\nFrom: ${e.from ?? ""}\nTo: ${e.to ?? ""}\n${e.body}`).join("\n\n");
+/**
+ * A parsed case view (the eval's cut of a practice or generated case) as a bundle.
+ * Events voiced by a simulated persona are left out unless the caller asks for them: they are
+ * for demos, and must never be treated as evidence in a scored run.
+ */
+export function fromView(view: CaseView, options: { allowSimulated?: boolean } = {}): CaseBundle {
+  const events = options.allowSimulated ? view.events : view.events.filter((e) => e.source !== "simulated_persona");
+  const dropped = view.events.length - events.length;
+  const history = events.map((e) =>
+    `Event ${e.n} | ${e.timestamp} | ${e.stage ?? ""} | ${e.channel ?? ""}${e.source ? ` | voice: ${e.source.replace("_", " ")}` : ""}\nFrom: ${e.from ?? ""}\nTo: ${e.to ?? ""}\n${e.body}`).join("\n\n");
   const documents = [{ name: "history", text: history }];
   if (view.context) documents.unshift({ name: "context", text: view.context });
   for (const a of view.attachments ?? []) if (a.text) documents.push({ name: `attachment ${a.name}`, text: a.text });
-  return { id: view.id, title: view.title ?? view.id, documents, media: [], unreadable: [] };
+  const unreadable = dropped ? [`${dropped} event(s) voiced by a simulated persona (excluded from the evidence)`] : [];
+  return { id: view.id, title: view.title ?? view.id, documents, media: [], unreadable };
 }
 
 export function bundleText(bundle: CaseBundle): string {
