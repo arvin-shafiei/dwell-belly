@@ -9,14 +9,14 @@ import {
 } from "@xyflow/react";
 import type { ExecutionRecord, Flow, FlowNode, ImproveProposal, NodeType, WorkflowRecord, WorkflowVersion } from "../types";
 import {
-  architectValidate, deleteWorkflow, executeCase, getExecution, listExecutions, loadWorkflows, saveWorkflow,
+  architectValidate, createVersion, deleteWorkflow, executeCase, listVersions, getExecution, listExecutions, loadWorkflows, saveWorkflow,
   type ExecutionSummary,
 } from "./api";
 import { ArchitectPanel, Sparkle } from "./ArchitectPanel";
 import { nameFrom, problemsByNode, revealFrame, revealOrder, slugify, type ArchitectUsage } from "./architect";
 import { WorkflowMenu } from "./WorkflowMenu";
 import { TestPanel } from "./TestPanel";
-import { diffCount, diffFlows, edgeMark, nodeMark, type FlowDiff } from "./testing";
+import { diffCount, diffFlows, edgeMark, latestVersion, nodeMark, type FlowDiff } from "./testing";
 import { Badge, Btn } from "./bits";
 import { ConsoleContext, HeaderActions } from "../ui";
 import {
@@ -29,16 +29,21 @@ import { ExecutionPicker } from "./ExecutionPicker";
 import { CARD_W, FlowNodeCard, type CardNode } from "./FlowNodeCard";
 import { checkpoint, initHistory, push, redo, replace, undo, type History } from "./history";
 import { Icon } from "./icons";
-import { layoutFlow, withPositions } from "./layout";
-import { metaFor } from "./nodeTypes";
+import {
+  TREE_MARK, displayPositions, edgeRoutes, tidyPositions, treeLayout, unmerge, type DisplayTree,
+} from "./layout";
+import { BranchEdge, type BranchEdgeType } from "./BranchEdge";
+import { metaFor, nodeTitle } from "./nodeTypes";
 import { DND_MIME, Palette } from "./Palette";
 import { buildOverlay, fmtMs, fmtUsd, pairKey, replayDelays } from "./status";
 
 const nodeTypes = { card: FlowNodeCard };
+const edgeTypes = { branch: BranchEdge };
 type Selection = { kind: "node"; id: string } | { kind: "edge"; key: string } | null;
 type Dims = Record<string, { width: number; height: number }>;
 
-const docOf = (w: WorkflowRecord): FlowDoc => ({ flow: w.flow, positions: withPositions(w.flow, w.positions) });
+// Saved positions are kept only when the tree canvas wrote them; anything else gets the tidy tree.
+const docOf = (w: WorkflowRecord): FlowDoc => ({ flow: w.flow, positions: w.positions?.[TREE_MARK] ? w.positions : {} });
 
 function isTyping(e: KeyboardEvent) {
   const t = e.target as HTMLElement | null;
@@ -85,12 +90,13 @@ function EditorInner() {
     setSel(null);
     if (k) setMounted((m) => (m[k] ? m : { ...m, [k]: true }));
   }, []);
-  const [diffView, setDiffView] = useState<{ proposal: ImproveProposal; diff: FlowDiff; positions: Record<string, Pos> } | null>(null);
+  const [diffView, setDiffView] = useState<{ proposal: ImproveProposal; diff: FlowDiff } | null>(null);
   const [draft, setDraft] = useState<{ record: WorkflowRecord; description: string; prevId: string | null } | null>(null);
   const [reveal, setReveal] = useState<{ order: string[]; count: number } | null>(null);
   const [accepting, setAccepting] = useState(false);
   const [check, setCheck] = useState<{ sig: string; problems: string[]; state: "ok" | "problems" | "unavailable"; msg?: string } | null>(null);
   const [validating, setValidating] = useState(false);
+  const [versionsTick, setVersionsTick] = useState(0);
 
   const doc = hist?.present ?? null;
   const current = draft?.record ?? records?.find((r) => r.id === currentId) ?? null;
@@ -164,6 +170,29 @@ function EditorInner() {
     return buildOverlay(execution.trace, doc?.flow ?? null, cursor ?? undefined);
   }, [execId, execution, doc?.flow, cursor, diffView]);
 
+  // ---------- canvas model ----------
+  // The canvas draws a display tree (shared nodes copied per branch, loops as badges) laid out as
+  // a tidy tree. Saved positions are used only when they cover every display node.
+  const canvasFlow = diffView ? diffView.diff.merged : doc?.flow ?? null;
+  const display: DisplayTree | null = useMemo(() => (canvasFlow ? unmerge(canvasFlow) : null), [canvasFlow]);
+  const layoutPos = useMemo(() => (display ? treeLayout(display) : {}), [display]);
+  const positions = useMemo(
+    () => (!display ? {} : diffView ? layoutPos : displayPositions(display, doc?.positions)),
+    [display, diffView, layoutPos, doc?.positions],
+  );
+  const positionsRef = useRef(positions);
+  useEffect(() => { positionsRef.current = positions; }, [positions]);
+  const routes = useMemo(() => (display ? edgeRoutes(display, layoutPos) : new Map()), [display, layoutPos]);
+  // Display id -> node id, and display edge id -> flow edge key.
+  const nodeOf = useMemo(() => {
+    const m = new Map((display?.nodes ?? []).map((d) => [d.id, d.nodeId]));
+    return (id: string) => m.get(id) ?? id.split("~")[0];
+  }, [display]);
+  const edgeKeyOf = useMemo(() => {
+    const m = new Map((display?.edges ?? []).map((e) => [e.id, edgeKey(e.edge)]));
+    return (id: string): string | null => m.get(id) ?? null;
+  }, [display]);
+
   // ---------- edits ----------
   const commit = useCallback((fn: (d: FlowDoc) => FlowDoc, coalesce?: string) => {
     // Rapid edits of the same field (slider drags) collapse into one undo step.
@@ -190,7 +219,9 @@ function EditorInner() {
 
   const addAt = useCallback((type: NodeType, pos: Pos) => {
     if (!hist) return;
-    const r = addNode(hist.present, type, pos);
+    // Pin the current layout so the dropped card stays where it was dropped.
+    const pinned: FlowDoc = { ...hist.present, positions: { ...positionsRef.current, [TREE_MARK]: { x: 1, y: 1 } } };
+    const r = addNode(pinned, type, pos);
     lastEdit.current = null;
     setHist(push(hist, r.doc));
     setSel({ kind: "node", id: r.id });
@@ -222,22 +253,35 @@ function EditorInner() {
   }, []);
 
   const onDelete = useCallback(({ nodes, edges }: { nodes: CardNode[]; edges: Edge[] }) => {
-    const nodeIds = nodes.map((n) => n.id);
-    const keys = edges.filter((e) => !e.id.startsWith("run:")).map((e) => e.id);
+    if (diffView) return;
+    const nodeIds = [...new Set(nodes.map((n) => nodeOf(n.id)))];
+    const keys = [...new Set(edges.map((e) => edgeKeyOf(e.id)).filter((k): k is string => !!k))];
     if (!nodeIds.length && !keys.length) return;
     commit((d) => removeEdges(removeNodes(d, nodeIds), keys));
     setSel(null);
-  }, [commit]);
+  }, [commit, diffView, nodeOf, edgeKeyOf]);
 
   const onConnect = useCallback((c: Connection) => {
     if (!c.source || !c.target) return;
-    commit((d) => connect(d, c.source, c.target, c.sourceHandle));
-  }, [commit]);
+    commit((d) => connect(d, nodeOf(c.source), nodeOf(c.target), c.sourceHandle));
+  }, [commit, nodeOf]);
 
   const autoLayout = useCallback(() => {
-    commit((d) => ({ ...d, positions: layoutFlow(d.flow) }));
-    requestAnimationFrame(() => rf.fitView({ padding: 0.2, duration: 300 }));
+    commit((d) => ({ ...d, positions: tidyPositions(d.flow) }));
+    setTimeout(() => rf.fitView({ padding: 0.15, duration: 350 }), 60);
   }, [commit, rf]);
+
+  /** Every save is also a version (the test loop runs versions). Skipped when the graph equals
+   *  the latest version, e.g. a save that only moved cards. Never blocks the save. */
+  const recordVersion = useCallback(async (workflowId: string, flow: Flow, createdBy: WorkflowVersion["createdBy"], note: string) => {
+    const vs = await listVersions(workflowId);
+    if (!vs.ok && vs.status === 404) return;
+    const latest = latestVersion(vs.ok ? vs.data?.versions ?? [] : []);
+    const graph = (f: Flow) => JSON.stringify({ nodes: f.nodes, edges: f.edges });
+    if (latest && graph(latest.flow) === graph(flow)) return;
+    const cv = await createVersion(workflowId, { flow, createdBy, note, parentVersion: latest?.version ?? null });
+    if (cv.ok) setVersionsTick((t) => t + 1);
+  }, []);
 
   /** Ask the Architect to check the flow. Never blocks on a missing agent API. */
   const runValidate = useCallback(async (): Promise<"ok" | "problems" | "unavailable"> => {
@@ -272,6 +316,7 @@ function EditorInner() {
     setAccepting(false);
     if (r.ok) {
       const saved = r.data?.workflow ?? rec;
+      void recordVersion(saved.id, rec.flow, isDraft ? "architect" : "user", isDraft ? "Built with the Architect" : "Saved in the editor");
       setRecords((rs) => {
         const list = rs ?? [];
         return list.some((x) => x.id === saved.id) ? list.map((x) => (x.id === saved.id ? saved : x)) : [...list, saved];
@@ -288,7 +333,7 @@ function EditorInner() {
     } else {
       setSave({ state: "error", msg: r.status === 404 ? "Save endpoint not available yet (404)" : `Save failed: ${r.error}` });
     }
-  }, [doc, current, draft, runValidate]);
+  }, [doc, current, draft, runValidate, recordVersion]);
 
   // ---------- Architect drafts ----------
   const startDraft = useCallback((d: { flow: Flow; description: string; problems: string[]; usage?: ArchitectUsage[] }) => {
@@ -296,7 +341,7 @@ function EditorInner() {
     const name = draft?.record.name ?? nameFrom(brief);
     const id = draft?.record.id ?? slugify(name, (records ?? []).map((r) => r.id));
     const flow: Flow = { ...d.flow, id, name };
-    const next: FlowDoc = { flow, positions: layoutFlow(flow) };
+    const next: FlowDoc = { flow, positions: {} };
     const record: WorkflowRecord = { id, name, flow, positions: next.positions, active: false, updatedAt: new Date().toISOString(), source: "db" };
     lastEdit.current = null;
     setDraft({ record, description: d.description, prevId: draft ? draft.prevId : currentId });
@@ -411,7 +456,7 @@ function EditorInner() {
   const showProposal = useCallback((p: { proposal: ImproveProposal; base: Flow | null } | null) => {
     if (!p) { setDiffView(null); return; }
     const diff = diffFlows(p.base ?? doc?.flow ?? p.proposal.flow, p.proposal.flow);
-    setDiffView({ proposal: p.proposal, diff, positions: layoutFlow(diff.merged) });
+    setDiffView({ proposal: p.proposal, diff });
     setSel(null);
     setTimeout(() => rf.fitView({ padding: 0.2, duration: 400 }), 60);
   }, [rf, doc]);
@@ -421,92 +466,109 @@ function EditorInner() {
     const flow: Flow = { ...v.flow, id: current?.id ?? v.flow.id, name: current?.name ?? v.flow.name };
     // Keep known positions; place any new node with the auto-layout. The saved workflow is
     // untouched, so "Unsaved" shows when this version differs from it.
-    const next: FlowDoc = { flow, positions: withPositions(flow, doc.positions) };
+    const next: FlowDoc = { flow, positions: doc.positions };
     lastEdit.current = null;
     setHist((h) => (h ? push(h, next) : initHistory(next)));
     setCheck(null);
     setTimeout(() => rf.fitView({ padding: 0.2, duration: 300 }), 60);
   }, [doc, current, rf]);
 
-  // ---------- canvas model ----------
+  /** Make a version the workflow Execute and the agent use: PUT it, and show it as saved. */
+  const makeCurrent = useCallback(async (v: WorkflowVersion): Promise<boolean> => {
+    if (!current || !doc || draft) return false;
+    const flow: Flow = { ...v.flow, id: current.id, name: current.name };
+    const rec: WorkflowRecord = { ...current, flow, positions: doc.positions, updatedAt: new Date().toISOString() };
+    const r = await saveWorkflow(rec);
+    if (!r.ok) { setSave({ state: "error", msg: `Could not make v${v.version} current: ${r.error}` }); return false; }
+    const saved = r.data?.workflow ?? rec;
+    setRecords((rs) => (rs ?? []).map((x) => (x.id === saved.id ? saved : x)));
+    const next: FlowDoc = { flow, positions: doc.positions };
+    lastEdit.current = null;
+    setHist((h) => (h ? push(h, next) : initHistory(next)));
+    setSavedSig(docSignature(next));
+    setCheck(null);
+    setSave({ state: "saved" });
+    setTimeout(() => setSave((s) => (s.state === "saved" ? { state: "idle" } : s)), 2000);
+    setTimeout(() => rf.fitView({ padding: 0.2, duration: 300 }), 60);
+    return true;
+  }, [current, doc, draft, rf]);
+
   const rfNodes: CardNode[] = useMemo(() => {
-    if (!doc) return [];
-    if (diffView) {
-      return diffView.diff.merged.nodes.map((n) => ({
-        id: n.id,
-        type: "card",
-        position: diffView.positions[n.id] ?? { x: 0, y: 0 },
-        measured: dims[n.id],
-        draggable: false,
-        data: { node: n, run: null, dimmed: false, diff: { mark: nodeMark(diffView.diff, n.id), change: diffView.diff.changedNodes.get(n.id) } },
-      }));
-    }
-    const visible = reveal ? revealFrame(doc.flow, reveal.order, reveal.count).nodes : null;
-    return doc.flow.nodes.filter((n) => !visible || visible.has(n.id)).map((n) => {
-      const run = overlay?.nodes[n.id] ?? null;
+    if (!doc || !display) return [];
+    const visible = reveal && !diffView ? revealFrame(doc.flow, reveal.order, reveal.count).nodes : null;
+    const label = (id: string) => { const n = display.byId.get(id)?.node; return n ? nodeTitle(n) : id; };
+    return display.nodes.filter((d) => !visible || visible.has(d.nodeId)).map((d) => {
+      const run = overlay?.nodes[d.nodeId] ?? null;
       return {
-        id: n.id,
+        id: d.id,
         type: "card",
-        position: doc.positions[n.id] ?? { x: 0, y: 0 },
-        selected: sel?.kind === "node" && sel.id === n.id,
-        measured: dims[n.id],
-        data: { node: n, run, dimmed: !!overlay && !run, problems: nodeProblems?.byNode[n.id], appear: !!reveal },
+        position: positions[d.id] ?? { x: 0, y: 0 },
+        selected: sel?.kind === "node" && sel.id === d.nodeId,
+        measured: dims[d.id],
+        draggable: !diffView,
+        data: {
+          node: d.node,
+          run,
+          dimmed: !!overlay && !run,
+          problems: diffView ? undefined : nodeProblems?.byNode[d.nodeId],
+          appear: !!reveal,
+          diff: diffView ? { mark: nodeMark(diffView.diff, d.nodeId), change: diffView.diff.changedNodes.get(d.nodeId) } : undefined,
+          shared: d.occurrences > 1 ? { count: d.occurrences, stub: d.stub } : undefined,
+          loops: d.loops.map((e) => `${e.when ?? "loop"} → ${label(e.to)}`),
+        },
       };
     });
-  }, [doc, overlay, sel, dims, reveal, nodeProblems, diffView]);
+  }, [doc, display, positions, overlay, sel, dims, reveal, nodeProblems, diffView]);
 
   const rfEdges: Edge[] = useMemo(() => {
-    if (!doc) return [];
-    if (diffView) {
-      const f = diffView.diff.merged;
-      return f.edges.map((e) => {
-        const mark = edgeMark(diffView.diff, e);
+    if (!doc || !display) return [];
+    const visible = reveal && !diffView ? revealFrame(doc.flow, reveal.order, reveal.count).nodes : null;
+    const res: Edge[] = display.edges
+      .filter((de) => !visible || (visible.has(de.edge.from) && visible.has(de.edge.to)))
+      .map((de): BranchEdgeType => {
+        const key = edgeKey(de.edge);
+        const taken = !!overlay?.taken.has(pairKey(de.edge.from, de.edge.to));
+        const mark = diffView ? edgeMark(diffView.diff, de.edge) : null;
+        const r = routes.get(de.id);
         return {
-          id: `diff:${edgeKey(e)}`, source: e.from, target: e.to, targetHandle: "in", sourceHandle: sourceHandleFor(f, e),
-          label: e.when, animated: mark === "added", selectable: false, deletable: false, focusable: false,
-          className: mark === "added" ? "wf-diff-added" : mark === "removed" ? "wf-diff-removed" : "wf-faded",
-          labelStyle: { fill: mark === "added" ? "#4ade80" : mark === "removed" ? "#f87171" : "#a1a1aa", fontSize: 11, fontWeight: 600 },
-          labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, zIndex: mark ? 1 : 0,
+          id: de.id,
+          type: "branch",
+          source: de.source,
+          target: de.target,
+          sourceHandle: de.handle,
+          targetHandle: "in",
+          selected: !diffView && sel?.kind === "edge" && sel.key === key,
+          selectable: !diffView,
+          deletable: !diffView,
+          animated: taken || mark === "added",
+          className: diffView
+            ? mark === "added" ? "wf-diff-added" : mark === "removed" ? "wf-diff-removed" : "wf-faded"
+            : overlay ? (taken ? "wf-taken" : "wf-faded") : undefined,
+          zIndex: taken || mark ? 1 : 0,
+          data: {
+            when: de.edge.when,
+            trunk: r ? r.trunkX - r.sx : undefined,
+            plain: !overlay && !diffView,
+            labelTone: diffView ? (mark === "added" ? "added" : mark === "removed" ? "removed" : "faded") : overlay ? (taken ? "taken" : "faded") : undefined,
+          },
         };
       });
-    }
-    const ids = new Set(doc.flow.nodes.map((n) => n.id));
-    const flowPairs = new Set(doc.flow.edges.map((e) => pairKey(e.from, e.to)));
-    const shown = reveal ? revealFrame(doc.flow, reveal.order, reveal.count).edges : doc.flow.edges;
-    const res: Edge[] = shown.map((e) => {
-      const key = edgeKey(e);
-      const taken = !!overlay?.taken.has(pairKey(e.from, e.to));
-      const live = taken && cursor !== null;
-      return {
-        id: key,
-        source: e.from,
-        target: e.to,
-        sourceHandle: sourceHandleFor(doc.flow, e),
-        targetHandle: "in",
-        label: e.when,
-        selected: sel?.kind === "edge" && sel.key === key,
-        animated: taken,
-        className: overlay ? (taken ? "wf-taken" : "wf-faded") : undefined,
-        labelStyle: { fill: taken ? "#4ade80" : "#d4d4d8", fontSize: 11, fontWeight: 600 },
-        labelBgPadding: [6, 3] as [number, number],
-        labelBgBorderRadius: 4,
-        zIndex: taken ? 1 : 0,
-        ...(live ? { style: { strokeWidth: 3 } } : {}),
-      };
-    });
     // Hops the run took that the flow does not draw (e.g. action -> log): dotted, not editable.
-    for (const t of overlay?.edges ?? []) {
-      if (flowPairs.has(pairKey(t.from, t.to)) || !ids.has(t.from) || !ids.has(t.to)) continue;
-      res.push({
-        id: `run:${t.from}->${t.to}`, source: t.from, target: t.to, targetHandle: "in",
-        sourceHandle: sourceHandleFor(doc.flow, { from: t.from, to: t.to, when: t.when }),
-        label: t.when ? `${t.when} (run)` : "run", animated: true, className: "wf-extra",
-        selectable: false, deletable: false, focusable: false,
-        labelStyle: { fill: "#4ade80", fontSize: 10 }, labelBgPadding: [5, 2] as [number, number], labelBgBorderRadius: 4,
-      });
+    if (overlay && !diffView) {
+      const drawn = new Set(display.edges.map((e) => pairKey(e.edge.from, e.edge.to)));
+      for (const t of overlay.edges) {
+        if (drawn.has(pairKey(t.from, t.to)) || !display.byId.has(t.from) || !display.byId.has(t.to)) continue;
+        res.push({
+          id: `run:${t.from}->${t.to}`, source: t.from, target: t.to, targetHandle: "in", type: "smoothstep",
+          sourceHandle: sourceHandleFor(doc.flow, { from: t.from, to: t.to, when: t.when }),
+          label: t.when ? `${t.when} (run)` : "run", animated: true, className: "wf-extra",
+          selectable: false, deletable: false, focusable: false,
+          labelStyle: { fill: "#4ade80", fontSize: 10 }, labelBgPadding: [5, 2] as [number, number], labelBgBorderRadius: 4,
+        });
+      }
     }
     return res;
-  }, [doc, overlay, sel, cursor, reveal, diffView]);
+  }, [doc, display, routes, overlay, sel, reveal, diffView]);
 
   const selNode: FlowNode | null = sel?.kind === "node" ? doc?.flow.nodes.find((n) => n.id === sel.id) ?? null : null;
   const selEdge = sel?.kind === "edge" ? doc?.flow.edges.find((e) => edgeKey(e) === sel.key) ?? null : null;
@@ -688,19 +750,25 @@ function EditorInner() {
             nodes={rfNodes}
             edges={rfEdges}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             colorMode="dark"
             onNodesChange={onNodesChange}
             onConnect={onConnect}
             onDelete={onDelete}
-            onNodeDragStart={() => setHist((h) => (h ? checkpoint(h) : h))}
-            onNodeClick={(_, n) => { if (!diffView) setSel({ kind: "node", id: n.id }); }}
-            onEdgeClick={(_, e) => { if (!diffView && !e.id.startsWith("run:")) setSel({ kind: "edge", key: e.id }); }}
+            onNodeDragStart={() => setHist((h) => {
+              if (!h) return h;
+              // Pin every card so moving one does not drop the rest back to the auto-layout.
+              const c = checkpoint(h);
+              return replace(c, { ...c.present, positions: { ...positionsRef.current, ...c.present.positions, [TREE_MARK]: { x: 1, y: 1 } } });
+            })}
+            onNodeClick={(_, n) => { if (!diffView) setSel({ kind: "node", id: nodeOf(n.id) }); }}
+            onEdgeClick={(_, e) => { const k = edgeKeyOf(e.id); if (!diffView && k) setSel({ kind: "edge", key: k }); }}
             onPaneClick={() => setSel(null)}
             nodesConnectable={!diffView}
             deleteKeyCode={diffView ? null : ["Backspace", "Delete"]}
             defaultEdgeOptions={{ type: "default" }}
             connectionRadius={28}
-            minZoom={0.2}
+            minZoom={0.08}
             maxZoom={2}
             fitView
             fitViewOptions={{ padding: 0.2 }}
@@ -755,6 +823,8 @@ function EditorInner() {
                 onShowExecution={(id) => { if (id) setDiffView(null); selectExecution(id); }}
                 onProposal={showProposal}
                 onLoadVersion={loadVersion}
+                onMakeCurrent={makeCurrent}
+                versionsTick={versionsTick}
                 onClose={() => openDrawer(null)}
               />
             </div>

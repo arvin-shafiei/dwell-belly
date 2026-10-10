@@ -83,6 +83,11 @@ export function metaFor(type: string): NodeMeta {
   };
 }
 
+/** Display title of a node: its `name` when the flow gives one (optional, not yet in every flow), else the type label. */
+export function nodeTitle(node: { type: string; name?: unknown }): string {
+  return typeof node.name === "string" && node.name.trim() ? node.name.trim() : metaFor(node.type).label;
+}
+
 /** Palette search: matches label, type, group or description, case-insensitive. */
 export function searchNodeTypes(q: string): NodeMeta[] {
   const s = q.trim().toLowerCase();

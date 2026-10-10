@@ -4,7 +4,7 @@
 import { useState } from "react";
 import type { FlowEdge, FlowNode, Runner } from "../types";
 import { Icon } from "./icons";
-import { ALL_RUNNERS, metaFor } from "./nodeTypes";
+import { ALL_RUNNERS, metaFor, nodeTitle } from "./nodeTypes";
 import { fmtMs, fmtUsd, inputsOf, type NodeRun, type RunOverlay } from "./status";
 import { Badge, Btn, JsonView, RunnerChip, SectionLabel } from "./bits";
 
@@ -156,7 +156,7 @@ export function NodePanel({ node, overlay, onChange, onDelete, onClose }: {
           <Icon name={meta.icon} size={18} />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[14px] font-semibold text-white">{meta.label}</div>
+          <div className="truncate text-[14px] font-semibold text-white">{nodeTitle(node)}</div>
           <div className="truncate text-[11px] text-white/45"><code>{node.id}</code> · {node.type}</div>
         </div>
         <button type="button" onClick={onDelete} title="Delete node" className="rounded p-1.5 text-white/45 hover:bg-[#ef4444]/15 hover:text-[#f87171]"><Icon name="trash" size={15} /></button>

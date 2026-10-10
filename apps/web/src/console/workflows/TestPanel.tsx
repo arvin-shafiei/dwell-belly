@@ -100,7 +100,7 @@ function ConfirmAuto({ cases, perCase, onGo, onCancel }: { cases: number; perCas
   );
 }
 
-export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExecution, onProposal, onLoadVersion, onClose }: {
+export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExecution, onProposal, onLoadVersion, onMakeCurrent, versionsTick, onClose }: {
   workflowId: string | null;
   /** Why testing is unavailable right now (draft, unsaved changes), or null. */
   blocked: string | null;
@@ -111,6 +111,10 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
   /** Soft warning shown above the controls (e.g. unsaved canvas edits). */
   hint?: string | null;
   onLoadVersion: (v: WorkflowVersion) => void;
+  /** Make a version the workflow Execute uses (PUT the workflow). */
+  onMakeCurrent: (v: WorkflowVersion) => Promise<boolean>;
+  /** Bumped when the editor saved a new version. */
+  versionsTick?: number;
   onClose: () => void;
 }) {
   const [sets, setSets] = useState<ScenarioSetInfo[]>(FALLBACK_SETS);
@@ -185,6 +189,12 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
     });
     return () => { live = false; };
   }, [workflowId]);
+
+  useEffect(() => {
+    if (!versionsTick) return;
+    const t = setTimeout(() => { void refreshVersions(); }, 0);
+    return () => clearTimeout(t);
+  }, [versionsTick, refreshVersions]);
 
   useEffect(() => {
     if (setId !== "custom") return;
@@ -278,9 +288,10 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
     setProposal(null);
     onProposal(null);
     await refreshVersions(v.version);
-    onLoadVersion(v);
+    // Accepting makes it the workflow Execute and the agent use.
+    if (!(await onMakeCurrent(v))) onLoadVersion(v);
     return v;
-  }, [workflowId, onProposal, onLoadVersion, refreshVersions]);
+  }, [workflowId, onProposal, onLoadVersion, onMakeCurrent, refreshVersions]);
 
   const reject = () => { setProposal(null); onProposal(null); };
 
@@ -359,6 +370,24 @@ export function TestPanel({ workflowId, blocked, hint, selectedExecId, onShowExe
             </select>
           ) : (
             <div className="text-[11.5px] text-white/45">No versions yet: the first test run starts v1 from the saved workflow.</div>
+          )}
+          {versions.length > 0 && version !== null && (
+            <div className="mt-1.5 flex items-center gap-2">
+              <span className="min-w-0 flex-1 text-[11px] text-white/40">Picking a version previews it on the canvas.</span>
+              <Btn
+                variant="outline" disabled={running || autoRunning || !!busyMsg || !!blocked}
+                title="Save this version as the workflow, so Execute and the agent use it"
+                onClick={async () => {
+                  const v = versions.find((x) => x.version === version);
+                  if (!v) return;
+                  setBusyMsg(`Making v${v.version} current…`);
+                  await onMakeCurrent(v);
+                  setBusyMsg(null);
+                }}
+              >
+                Make v{version} current
+              </Btn>
+            </div>
           )}
         </div>
 

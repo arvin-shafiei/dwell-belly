@@ -3,7 +3,7 @@ import type { Flow, Trace } from "../types";
 import flowJson from "../../../../api/flows/default-incident.json";
 import { addNode, connect, docSignature, edgeKey, removeNodes, sourceHandleFor, uniqueNodeId, updateEdgeWhen, type FlowDoc } from "./doc";
 import { checkpoint, initHistory, push, redo, replace, undo } from "./history";
-import { COL_W, layoutFlow, withPositions } from "./layout";
+import { withPositions } from "./layout";
 import { ALL_NODE_TYPES, NODE_META, searchNodeTypes } from "./nodeTypes";
 import { buildOverlay, fmtMs, fmtUsd, inputsOf, pairKey, replayDelays } from "./status";
 
@@ -102,31 +102,6 @@ describe("replayDelays", () => {
     expect(d[0]).toBe(0);
     expect(Math.min(...d.slice(1))).toBeGreaterThanOrEqual(60);
     expect(Math.max(...d)).toBeLessThanOrEqual(900);
-  });
-});
-
-describe("layoutFlow", () => {
-  it("places each node right of its predecessors, gate branches stacked", () => {
-    const pos = layoutFlow(flow);
-    for (const e of flow.edges) expect(pos[e.to].x).toBeGreaterThan(pos[e.from].x);
-    expect(pos.ingest.x).toBe(0);
-    expect(pos.history.x).toBe(COL_W);
-    expect(pos.log.x).toBeGreaterThan(pos.verify.x);
-    const ys = new Set([pos.human.y, pos.action.y]);
-    expect(ys.size).toBe(2);
-  });
-  it("survives cycles, self loops and dangling edges", () => {
-    const pos = layoutFlow({
-      nodes: [{ id: "a", type: "ingest", runs_on: [] }, { id: "b", type: "triage", runs_on: [] }],
-      edges: [{ from: "a", to: "b" }, { from: "b", to: "a" }, { from: "a", to: "a" }, { from: "a", to: "zz" }],
-    });
-    expect(pos.a.x).toBe(0);
-    expect(pos.b.x).toBe(COL_W);
-  });
-  it("keeps saved positions and fills missing ones", () => {
-    const pos = withPositions(flow, { ingest: { x: 7, y: 8 } });
-    expect(pos.ingest).toEqual({ x: 7, y: 8 });
-    expect(Object.keys(pos)).toHaveLength(flow.nodes.length);
   });
 });
 
