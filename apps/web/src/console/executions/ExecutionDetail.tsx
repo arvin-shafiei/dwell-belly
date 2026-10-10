@@ -111,10 +111,15 @@ export default function ExecutionDetail({
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const [replayFor, setReplayFor] = useState<string | null>(null);
+  // With Live calls on, a run that just finished and decided to phone someone rings (VoiceSlot.Ring).
+  const [ringFor, setRingFor] = useState<string | null>(null);
   // When the open run finishes while you watch, play it back straight away.
   const [seen, setSeen] = useState<{ id: string; status: string } | null>(null);
   if (execution && (seen?.id !== execution.id || seen.status !== execution.status)) {
-    if (seen?.id === execution.id && seen.status === "running" && execution.status !== "running" && execution.trace) setReplayFor(execution.id);
+    if (seen?.id === execution.id && seen.status === "running" && execution.status !== "running" && execution.trace) {
+      setReplayFor(execution.id);
+      setRingFor(execution.id);
+    }
     setSeen({ id: execution.id, status: execution.status });
   }
 
@@ -177,6 +182,7 @@ export default function ExecutionDetail({
                   {replaying ? "Stop watching" : "▶ Watch it think"}
                 </Button>
               )}
+              <VoiceSlot.LiveCallsSwitch />
               <Button variant="primary" className="!px-4 !py-2 !text-sm" onClick={() => onRerun(e)} disabled={rerunning || running}>
                 {rerunning ? "Starting…" : "Run again"}
               </Button>
@@ -184,6 +190,7 @@ export default function ExecutionDetail({
           </div>
         </header>
 
+        {ringFor === e.id && !running && <VoiceSlot.Ring execution={e} onDismiss={() => setRingFor(null)} />}
         {running && <LiveSteps execution={e} />}
         {replaying && <Replay key={e.id} execution={e} verdict={verdict} why={why} onClose={() => setReplayFor(null)} />}
 

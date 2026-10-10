@@ -13,14 +13,18 @@
 //   <VoiceSlot.NoteButton execution onEvent />        case header: driver voice note
 //   <VoiceSlot.CallDrawer execution row onDone />      an outbox row on a Call / Phone channel
 //   <VoiceSlot.ApproveByVoice execution card onDecision />  an open decision card
-//   <VoiceSlot.Mounts execution />                     all three, wired to POST /api/console/execute re-runs
+//   <VoiceSlot.Mounts execution />                     the call and approve-by-voice cards, wired to POST /api/console/execute re-runs
+//   <VoiceSlot.Ring execution onDismiss />             with Live calls on: the incoming call when a run just decided to phone someone
+//   <VoiceSlot.LiveCallsSwitch />                      the "📞 Live calls" switch (off: calls are only recorded, like any message)
+// Driver voice notes come in on New case as attached recordings, not as a box on every run.
 import { Component, Suspense, createElement, use, useState, useSyncExternalStore, type ComponentType, type ReactNode } from "react";
 import type { CaseViewEvent, ConsoleApi, DecisionCard, ExecuteRequest, ExecutionRecord, HumanDecision, OutboxEntry } from "../types";
 import { useConsoleNav } from "./nav";
 import { VOICE_LOADERS, registeredVoiceComponent } from "./voiceComponents";
 import { Badge, getJson } from "./ui";
+import { liveCallsOn, setLiveCalls, subscribeLiveCalls } from "../../voice/liveCalls";
 import {
-  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noCallLine, noteCaseText, noteRerun, type VoiceComponentName,
+  approvalRerun, callableRows, callRequest, callRerun, callStateSeed, cardOpen, noCallLine, noteCaseText, partyRole, type VoiceComponentName,
 } from "./voiceSlots";
 
 // The voice components' props are owned by the voice layer; the slots pass the documented shapes.
@@ -129,18 +133,19 @@ function NoteButton({ execution, from = "Driver", onEvent }: { execution: Execut
 }
 
 function CallDrawer({
-  execution, row, simulated = false, onDone,
+  execution, row, simulated = false, label, onDone,
 }: {
   execution: ExecutionRecord;
   row: OutboxEntry;
   simulated?: boolean;
+  label?: string;
   onDone: (r: { events: CaseViewEvent[]; decision?: HumanDecision; callId?: string }) => void;
 }) {
   return (
     <Slot
       name="CallDrawer"
       label={`Call ${row.action.recipient}`}
-      props={{ request: callRequest(execution, row), state: callStateSeed(execution, row.action.recipient, simulated), simulated, label: `Start call as ${row.action.recipient}`, onDone }}
+      props={{ request: callRequest(execution, row), state: callStateSeed(execution, row.action.recipient, simulated), simulated, label: label ?? `Start call as ${row.action.recipient}`, onDone }}
     />
   );
 }
@@ -149,15 +154,11 @@ function ApproveByVoice({ execution, card, onDecision }: { execution: ExecutionR
   return <Slot name="ApproveByVoice" label="Approve by voice" props={{ card, caseId: execution.caseId, onDecision }} />;
 }
 
-/** The voice strip under the execution header: each voice moment re-runs the case and opens the new execution. */
-function Mounts({ execution }: { execution: ExecutionRecord }) {
+/** Re-runs the case with what a voice moment produced, then opens the new run. */
+function useVoiceRerun() {
   const { go } = useConsoleNav();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const e = execution;
-  const calls = callableRows(e.outbox);
-  const card = cardOpen(e.card) ? e.card : null;
-
   const rerun = async (what: string, body: ExecuteRequest) => {
     setBusy(what);
     setError(null);
@@ -175,11 +176,67 @@ function Mounts({ execution }: { execution: ExecutionRecord }) {
     }
   };
 
+  return { go, busy, error, rerun };
+}
+
+function useLiveCalls(): [boolean, (on: boolean) => void] {
+  return [useSyncExternalStore(subscribeLiveCalls, liveCallsOn, () => false), setLiveCalls];
+}
+
+/** "📞 Live calls": when on, a run that decides to phone someone rings as soon as it finishes. */
+function LiveCallsSwitch() {
+  const [on, set] = useLiveCalls();
+  return (
+    <label
+      className="inline-flex cursor-pointer select-none items-center gap-2 text-[13px] text-white/65"
+      title="On: when a run decides to phone someone, it rings here as soon as it finishes, and you answer as that person. Off: the call is only recorded, like any other message."
+    >
+      <input type="checkbox" checked={on} onChange={(ev) => set(ev.target.checked)} className="accent-[#ff6a1a]" />
+      📞 Live calls
+    </label>
+  );
+}
+
+/** The incoming call when Live calls is on and the run just decided to phone someone. */
+function Ring({ execution, onDismiss }: { execution: ExecutionRecord; onDismiss: () => void }) {
+  const [live] = useLiveCalls();
+  const { busy, error, rerun } = useVoiceRerun();
+  const row = callableRows(execution.outbox)[0];
+  if (!live || !row) return null;
+  const who = row.action.recipient;
+  const role = partyRole(who, execution);
+  return (
+    <section className="rounded-xl border border-[#ff6a1a]/50 bg-[#ff6a1a]/10 p-4" aria-live="polite">
+      <div className="flex items-start gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="text-[17px] font-semibold text-white">📞 Rivet is calling {who}{role ? `, the ${role}` : ""}</div>
+          {row.action.purpose && <p className="mt-1 text-[14px] text-white/70">Why: {row.action.purpose}</p>}
+          <p className="mt-1 text-[14px] text-white/70">You answer as {who}. When you hang up, the case runs again with what was said.</p>
+        </div>
+        <button type="button" onClick={onDismiss} className="shrink-0 text-[13px] text-white/50 hover:text-white/85">Not now</button>
+      </div>
+      <div className="mt-3">
+        <CallDrawer execution={execution} row={row} label="Answer" onDone={(r) => rerun("call", callRerun(execution, r))} />
+      </div>
+      {busy && <p className="mt-2 text-[12px] text-[#ff6a1a]">Re-running the case with the {busy}…</p>}
+      {error && <p className="mt-2 text-[12px] text-[#ff5c5c]">{error}</p>}
+    </section>
+  );
+}
+
+/** The voice cards under what the agent sent: each voice moment re-runs the case and opens the new run. */
+function Mounts({ execution }: { execution: ExecutionRecord }) {
+  const e = execution;
+  const { go, busy, error, rerun } = useVoiceRerun();
+
+  const calls = callableRows(e.outbox);
+  const card = cardOpen(e.card) ? e.card : null;
+
   return (
     <div className="flex flex-col gap-3">
       {calls.length ? (
         calls.map((row, i) => (
-          <VoiceCard key={`${row.action.recipient}-${i}`} icon="📞" title={`The agent decided to phone ${row.action.recipient}`}>
+          <VoiceCard key={`${row.action.recipient}-${i}`} icon="📞" title={`The agent decided to phone ${row.action.recipient}${partyRole(row.action.recipient, e) ? `, the ${partyRole(row.action.recipient, e)}` : ""}`}>
             {row.action.purpose && <p>Why: {row.action.purpose}</p>}
             <p>You play {row.action.recipient}. Our AI desk agent calls you. Anything it promises is checked before it says it.</p>
             <CallDrawer execution={e} row={row} onDone={(r) => rerun("call", callRerun(e, r))} />
@@ -188,10 +245,6 @@ function Mounts({ execution }: { execution: ExecutionRecord }) {
       ) : (
         <p className="text-[13px] text-white/45">📞 {noCallLine(e.outbox)}</p>
       )}
-      <VoiceCard icon="🎙" title="Be the driver">
-        <p>Record a voice note the way a driver at the wheel would, in any language. You&apos;ll see it in English.</p>
-        <NoteButton execution={e} onEvent={(ev) => rerun("voice note", noteRerun(e, ev))} />
-      </VoiceCard>
       {card && (
         <VoiceCard icon="✅" title="A person must decide">
           <p>Say your choice out loud. The agent reads it back before it counts.</p>
@@ -225,5 +278,5 @@ function VoiceCard({ icon, title, children }: { icon: string; title: string; chi
   );
 }
 
-export const VoiceSlot = { NoteButton, CallDrawer, ApproveByVoice, Mounts };
+export const VoiceSlot = { NoteButton, CallDrawer, ApproveByVoice, Mounts, Ring, LiveCallsSwitch };
 export default VoiceSlot;
