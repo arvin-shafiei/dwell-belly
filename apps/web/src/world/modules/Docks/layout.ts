@@ -264,8 +264,8 @@ export const SHEDS: Shed[] = [
 export const LIGHT_TOWERS = [
   { x: 246, z: -40 },
   { x: 246, z: 40 },
-  { x: 312, z: -73 },
-  { x: 312, z: 73 },
+  { x: 290, z: -74 },
+  { x: 290, z: 74 },
   { x: 276, z: 0 },
   { x: 320, z: -30 },
   { x: 320, z: 32 },
