@@ -15,6 +15,7 @@ import { useReviewQueue } from "../../review/useReviewQueue";
 import { RealDecisionToast } from "./WorkflowHud/decision";
 import { ScenarioButton, ScenarioPanel, TourBadge, useScenarioCoverage } from "./WorkflowHud/scenarios";
 import { Clock, TopBar } from "./WorkflowHud/topbar";
+import { DeskLinks } from "./WorkflowHud/deskLinks";
 
 const px = (b: Insets): CSSProperties => ({ left: b.left, right: b.right, top: b.top, bottom: b.bottom });
 
@@ -157,6 +158,7 @@ export default function WorkflowHud({ embed = false, onReviewOpen }: { embed?: b
       <div ref={barRef} className="absolute z-30" style={px(L.topBar)}>
         <TopBar
           scenarios={<ScenarioButton open={scenOpen} onToggle={() => setScenOpen((o) => !o)} cov={cov} />}
+          badge={<DeskLinks />}
         />
       </div>
     </div>

@@ -15,7 +15,6 @@ import {
   IconChevronRight,
   IconCity,
   IconEvidence,
-  IconExternal,
   IconInfo,
   IconSearch,
   IconWorkflow,
@@ -259,13 +258,10 @@ function DefaultPrimary({ tab }: { tab: TabId }): ReactNode {
       return (
         <a
           href="/city"
-          target="_blank"
-          rel="noopener"
           className="inline-flex h-9 items-center gap-2 rounded-md bg-rv-orange px-4 text-sm font-medium text-white hover:bg-rv-orange-hi"
         >
           <IconCity size={15} />
           Open the city
-          <IconExternal size={13} className="opacity-80" />
         </a>
       );
     default:

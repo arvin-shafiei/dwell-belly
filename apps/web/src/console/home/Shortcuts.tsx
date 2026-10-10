@@ -1,7 +1,7 @@
 "use client";
 // Three big ways in: New case, Practice a playbook, Open the live city.
 import type { ComponentType, ReactNode } from "react";
-import { IconCity, IconExecutions, IconExternal, IconWorkflow, useConsole, type IconProps } from "../ui";
+import { IconCity, IconExecutions, IconWorkflow, useConsole, type IconProps } from "../ui";
 
 function Tile({
   icon: Icon,
@@ -33,7 +33,7 @@ function Tile({
     </>
   );
   return href ? (
-    <a href={href} target="_blank" rel="noopener" className={cls}>
+    <a href={href} className={cls}>
       {inner}
     </a>
   ) : (
@@ -54,7 +54,6 @@ export default function Shortcuts() {
         title="Open the live city"
         line="Watch deliveries go wrong live"
         href="/city"
-        trailing={<IconExternal size={16} className="text-white/35 group-hover:text-white/70" />}
       />
     </div>
   );
