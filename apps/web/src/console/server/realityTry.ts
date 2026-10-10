@@ -6,16 +6,26 @@
 //   runs/reality-try/<stamp>/console.log  the runner's output
 // It never writes into the repo's ANSWERS/ (the real submission).
 import { spawn } from "node:child_process";
-import { cp, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { createWriteStream } from "node:fs";
 import path from "node:path";
 import { repoRoot } from "./db";
+import { readStaged } from "./realityUpload";
 
 export const TRY_MAX = 10;
 export const TRY_DEFAULT = 3;
 /** About what one case costs on the real agent, in US cents. */
 export const CENTS_PER_CASE = 5;
 export const TRY_BUDGET_USD = 1;
+export const TRY_BUDGET_MAX_USD = 5;
+
+/** The --budget-usd for a try run: 0.1..TRY_BUDGET_MAX_USD, TRY_BUDGET_USD when missing; null when not a number. */
+export function tryBudget(v: unknown): number | null {
+  if (v === undefined || v === null || v === "") return TRY_BUDGET_USD;
+  const n = typeof v === "string" ? Number(v) : v;
+  if (typeof n !== "number" || !Number.isFinite(n)) return null;
+  return Math.min(TRY_BUDGET_MAX_USD, Math.max(0.1, Math.round(n * 100) / 100));
+}
 
 export const tryRoot = () => process.env.CONSOLE_TRY_DIR ?? path.join(repoRoot(), "runs", "reality-try");
 export const rawRoot = () => path.join(repoRoot(), "data", "raw");
@@ -100,6 +110,9 @@ export interface TryRun {
   exitCode: number | null;
   finishedAt: string | null;
   estimateCents: number;
+  /** Practice cases picked at random, or the user's own upload. */
+  origin?: "practice" | "upload";
+  budgetUsd?: number;
 }
 
 /** The server's env without the Reality deadline/budget overrides, so the flags here are the only ones. */
@@ -146,32 +159,49 @@ export async function listTryRuns(root = tryRoot()): Promise<TryRun[]> {
   return runs.filter((r): r is TryRun => r !== null);
 }
 
-/** Starts a try run of `n` cases in the background. Throws (with status) when one is already running. */
-export async function startTry(n: number): Promise<TryRun> {
+/** Starts a try run in the background: `n` random practice cases, or a staged upload. Throws (with status) when one is already running. */
+export async function startTry(n: number, opts: { upload?: string; budgetUsd?: number } = {}): Promise<TryRun> {
+  const budgetUsd = opts.budgetUsd ?? TRY_BUDGET_USD;
   const running = (await listTryRuns()).find((r) => r.status === "running");
   if (running) throw Object.assign(new Error(`A try run is already going (${running.stamp}).`), { status: 409 });
-  const track = await deliveryRawDir();
-  if (!track) throw Object.assign(new Error("No Delivery practice cases in data/raw."), { status: 404 });
-  const all = await rawCases(track);
-  if (!all.length) throw Object.assign(new Error("No Delivery practice cases in data/raw."), { status: 404 });
+  const staged = opts.upload !== undefined ? await readStaged(opts.upload, tryRoot()) : null;
+  if (opts.upload !== undefined && !staged) throw Object.assign(new Error("That upload is gone. Drop the files again."), { status: 404 });
+  let track: string | null = null;
+  let all: string[] = [];
+  if (!staged) {
+    track = await deliveryRawDir();
+    all = track ? await rawCases(track) : [];
+    if (!track || !all.length) throw Object.assign(new Error("No Delivery practice cases in data/raw."), { status: 404 });
+  }
 
   let stamp = stampFor(new Date());
   for (let i = 1; await stat(path.join(tryRoot(), stamp)).then(() => true, () => false); i++) stamp = `${stampFor(new Date())}-${i}`;
   const dir = path.join(tryRoot(), stamp);
   const drop = path.join(dir, "cases");
   const out = path.join(dir, "ANSWERS");
-  const picked = await buildDropFolder(track, pickCases(all, n), drop);
+  let picked: { name: string; source: string }[];
+  if (staged) {
+    await mkdir(dir, { recursive: true });
+    await rename(path.join(staged.dir, "cases"), drop);
+    await rm(staged.dir, { recursive: true, force: true }).catch(() => {});
+    picked = staged.staged.cases.map((c) => ({ name: c.name, source: c.source }));
+  } else {
+    picked = await buildDropFolder(track!, pickCases(all, n), drop);
+  }
 
   const log = createWriteStream(path.join(dir, "console.log"));
-  // The same command as `npm run reality -- <drop> <out> --budget-usd 1` (root package.json), no deadline.
-  const child = spawn("npm", ["run", "reality", "--", drop, out, "--budget-usd", String(TRY_BUDGET_USD)], {
+  // The same command as `npm run reality -- <drop> <out> --budget-usd <budget>` (root package.json), no deadline.
+  const child = spawn("npm", ["run", "reality", "--", drop, out, "--budget-usd", String(budgetUsd)], {
     cwd: repoRoot(),
     env: childEnv(),
     stdio: ["ignore", "pipe", "pipe"],
   });
   child.stdout?.pipe(log, { end: false });
   child.stderr?.pipe(log, { end: false });
-  const meta = { stamp, n: picked.length, startedAt: new Date().toISOString(), picked, pid: child.pid ?? null, estimateCents: picked.length * CENTS_PER_CASE };
+  const meta = {
+    stamp, n: picked.length, startedAt: new Date().toISOString(), picked, pid: child.pid ?? null,
+    estimateCents: picked.length * CENTS_PER_CASE, origin: staged ? ("upload" as const) : ("practice" as const), budgetUsd,
+  };
   await writeFile(path.join(dir, "try.json"), JSON.stringify(meta, null, 2));
   g.__realityTry = stamp;
   const finish = (code: number | null) => {

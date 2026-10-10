@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { tryCostLine } from "../reality/logic";
 import { diskReport, findAnswerFolder, realityFiles } from "./reality";
-import { buildDropFolder, deliveryRawDir, tryCaseInput, isStamp, pickCases, rawCases, stampFor, tryCount, tryRunDir } from "./realityTry";
+import { buildDropFolder, deliveryRawDir, tryBudget, tryCaseInput, isStamp, pickCases, rawCases, stampFor, tryCount, tryRunDir } from "./realityTry";
 
 describe("try run paths", () => {
   it("accepts only stamps made by stampFor", () => {
@@ -25,6 +25,15 @@ describe("try run paths", () => {
     expect(tryCount(99)).toBe(10);
     expect(tryCount("abc")).toBeNull();
     expect(tryCount(undefined)).toBeNull();
+  });
+
+  it("clamps the budget to 0.1..5 dollars, default 1", () => {
+    expect(tryBudget(undefined)).toBe(1);
+    expect(tryBudget("")).toBe(1);
+    expect(tryBudget("2.5")).toBe(2.5);
+    expect(tryBudget(50)).toBe(5);
+    expect(tryBudget(0)).toBe(0.1);
+    expect(tryBudget("x")).toBeNull();
   });
 
   it("states the cost before starting", () => {

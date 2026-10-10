@@ -25,6 +25,7 @@ import {
 import { cents } from "../../ui/plain";
 import { postJson, useApi } from "../useApi";
 import CaseDetail from "./CaseDetail";
+import UploadArea, { type StagedUpload } from "./UploadArea";
 import { TONE_CLASS, TileStatusDot } from "./tone";
 import {
   LEGEND,
@@ -58,6 +59,10 @@ interface TryList {
   max: number;
   defaultN: number;
   centsPerCase: number;
+  budgetUsd?: number;
+  budgetMaxUsd?: number;
+  uploadMaxBytes?: number;
+  uploadMaxCases?: number;
 }
 
 type Source = "answers" | "try";
@@ -180,15 +185,22 @@ function NoRun({ onTry, error }: { onTry: () => void; error?: string }) {
 
 function TryPanel({ list, current, onPick }: { list: TryList | undefined; current: TryRun | null; onPick: (stamp: string) => void }) {
   const max = list?.max ?? 10;
+  const budgetMax = list?.budgetMaxUsd ?? 5;
+  const [mode, setMode] = useState<"practice" | "upload">("practice");
   const [n, setN] = useState(list?.defaultN ?? 3);
+  const [budget, setBudget] = useState(list?.budgetUsd ?? 1);
+  const [staged, setStaged] = useState<StagedUpload | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const running = list?.runs.some((r) => r.status === "running") ?? false;
+  const count = mode === "upload" ? (staged?.cases.length ?? 0) : n;
   const start = async () => {
     setBusy(true);
     setError(null);
     try {
-      const res = await postJson<{ run: TryRun }>("/api/console/reality/try", { n });
+      const body = mode === "upload" ? { upload: staged?.id, budget } : { n, budget };
+      const res = await postJson<{ run: TryRun }>("/api/console/reality/try", body);
+      if (mode === "upload") setStaged(null);
       onPick(res.run.stamp);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -196,23 +208,68 @@ function TryPanel({ list, current, onPick }: { list: TryList | undefined; curren
       setBusy(false);
     }
   };
+  const tab = (k: "practice" | "upload", label: string) => (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={mode === k}
+      onClick={() => setMode(k)}
+      className={cx(
+        "rounded px-2.5 py-1 text-[12px] font-medium transition-colors",
+        mode === k ? "bg-white/[0.08] text-white" : "text-white/50 hover:text-white/80",
+      )}
+    >
+      {label}
+    </button>
+  );
   return (
-    <Panel title="Try it now" subtitle="Picks practice cases from the organisers' Delivery folder, renames them 1..N, and runs npm run reality on them. Paid: each case is a real agent run.">
+    <Panel
+      title="Try it now"
+      subtitle={mode === "practice"
+        ? "Picks practice cases from the organisers' Delivery folder, renames them 1..N, and runs npm run reality on them. Paid: each case is a real agent run."
+        : "Your own case data, renamed 1..N, through the same npm run reality command. Paid: each case is a real agent run."}
+      actions={<span className="inline-flex rounded-md border border-white/[0.08] p-0.5" role="tablist">{tab("practice", "Practice cases")}{tab("upload", "Upload cases")}</span>}
+    >
+      {mode === "upload" && (
+        <div className="mb-3">
+          <UploadArea maxBytes={list?.uploadMaxBytes ?? 50 * 1024 * 1024} staged={staged} onStaged={setStaged} />
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-2 text-[13px] text-white/70">
-          Cases
+        {mode === "practice" && (
+          <label className="flex items-center gap-2 text-[13px] text-white/70">
+            Cases
+            <input
+              type="number"
+              min={1}
+              max={max}
+              value={n}
+              onChange={(e) => setN(Math.min(max, Math.max(1, Math.round(Number(e.target.value) || 1))))}
+              className="w-16 rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-white tabular"
+            />
+          </label>
+        )}
+        <label className="flex items-center gap-2 text-[13px] text-white/70" title="Passed as --budget-usd. The run hands remaining cases to a person once it is spent.">
+          Budget $
           <input
             type="number"
-            min={1}
-            max={max}
-            value={n}
-            onChange={(e) => setN(Math.min(max, Math.max(1, Math.round(Number(e.target.value) || 1))))}
+            min={0.1}
+            max={budgetMax}
+            step={0.5}
+            value={budget}
+            onChange={(e) => setBudget(Math.min(budgetMax, Math.max(0.1, Number(e.target.value) || 1)))}
             className="w-16 rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-white tabular"
           />
         </label>
-        <span className="text-[13px] text-white/60 tabular">{tryCostLine(n, list?.centsPerCase ?? 5)}</span>
-        <Button variant="primary" icon={<IconPlay size={13} />} loading={busy} disabled={running || !list?.available} onClick={start}>
-          {running ? "A try run is going" : "Try it now"}
+        {count > 0 && <span className="text-[13px] text-white/60 tabular">{tryCostLine(count, list?.centsPerCase ?? 5)}</span>}
+        <Button
+          variant="primary"
+          icon={<IconPlay size={13} />}
+          loading={busy}
+          disabled={running || (mode === "practice" ? !list?.available : !staged)}
+          onClick={start}
+        >
+          {running ? "A try run is going" : mode === "upload" ? "Run" : "Try it now"}
         </Button>
         {list && list.runs.length > 0 && (
           <label className="ml-auto flex items-center gap-2 text-[12px] text-white/50">
@@ -231,6 +288,9 @@ function TryPanel({ list, current, onPick }: { list: TryList | undefined; curren
           </label>
         )}
       </div>
+      {count > 0 && (count * (list?.centsPerCase ?? 5)) / 100 > budget && (
+        <p className="mt-2 text-[12px] text-rv-amber/80">The estimate is over the budget: cases left when it runs out are handed to a person without analysis.</p>
+      )}
       {error && <p className="mt-2 text-[12px] text-rv-red/80">{error}</p>}
       {list && list.runs.length === 0 && <p className="mt-2 text-[12px] text-white/45">No try runs yet.</p>}
     </Panel>
