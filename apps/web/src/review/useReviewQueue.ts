@@ -66,7 +66,8 @@ export function useReviewQueue() {
     };
   }, [refresh]);
 
-  const decide = useCallback(async (task: ReviewTask, optionId: string, who: string, note: string) => {
+  /** Saves the choice. Returns the saved task (with its case run link) for live cards, null for city ones. */
+  const decide = useCallback(async (task: ReviewTask, optionId: string, who: string, note: string): Promise<ReviewTask | null> => {
     if (task.origin === "city") {
       if (!channel.current) throw new Error("Open the city in this browser to decide this case");
       const requestId = crypto.randomUUID();
@@ -78,14 +79,16 @@ export function useReviewQueue() {
         requests.current.set(requestId, { resolve, reject, timer });
         channel.current!.postMessage({ type: "decision:request", requestId, taskId: task.id, optionId, who, note } satisfies ReviewMessage);
       });
-      return;
+      return null;
     }
     const response = await fetch(`/api/review/tasks/${encodeURIComponent(task.id)}/decision`, {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ optionId, who, note }), signal: AbortSignal.timeout(10_000),
     });
     const body = await response.json();
     if (!response.ok) { void refresh(); throw new Error(body.error ?? "Your decision was not saved"); }
-    setQueue((prior) => ({ ...prior, tasks: prior.tasks.map((t) => t.id === task.id ? body.task : t) }));
+    const saved: ReviewTask = { ...body.task, executionId: body.task?.executionId ?? task.executionId ?? null };
+    setQueue((prior) => ({ ...prior, tasks: prior.tasks.map((t) => t.id === task.id ? saved : t) }));
+    return saved;
   }, [refresh]);
 
   const simulated = Object.values(sessions).filter((session) => now - session.at < 8000).flatMap((session) => session.tasks);

@@ -26,6 +26,8 @@ export const INCIDENT_LABEL: Record<IncidentKind, string> = {
   pileup: "Pileup",
   emergency_landing: "Emergency landing",
   plane_crash: "Plane crash",
+  cyclist_hit: "Cyclist hit",
+  event_closure: "City event",
 };
 
 export const INCIDENT_COLOR: Record<IncidentKind, string> = {
@@ -36,4 +38,6 @@ export const INCIDENT_COLOR: Record<IncidentKind, string> = {
   pileup: "#e11d48",
   emergency_landing: "#38bdf8",
   plane_crash: "#dc2626",
+  cyclist_hit: "#f97316",
+  event_closure: "#6366f1",
 };

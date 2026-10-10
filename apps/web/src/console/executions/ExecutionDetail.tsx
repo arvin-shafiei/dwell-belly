@@ -8,7 +8,8 @@ import type { ExecutionRecord } from "../types";
 import { fmtDuration, fmtStarted, fmtTokens, traceTotals } from "./logic";
 import Markdown from "./MarkdownView";
 import { caseName, checklist, decisionCardOf, headline, messageOf, statusTone, statusWord } from "./plainView";
-import Timeline, { DecisionCardView, MessageCard } from "./Timeline";
+import DecideRerun from "./DecideRerun";
+import Timeline, { MessageCard } from "./Timeline";
 import { Badge, Button, cx } from "./ui";
 
 type DetailView = "steps" | "answer" | "reasoning";
@@ -91,7 +92,7 @@ function Details({ e }: { e: ExecutionRecord }) {
 }
 
 export default function ExecutionDetail({
-  execution, title, loading, error, onRerun, rerunning,
+  execution, title, loading, error, onRerun, rerunning, onOpen,
 }: {
   execution: ExecutionRecord | null;
   title: string | null;
@@ -99,6 +100,8 @@ export default function ExecutionDetail({
   error: string | null;
   onRerun: (e: ExecutionRecord) => void;
   rerunning: boolean;
+  /** Open another case run (the re-run a decision started). */
+  onOpen: (executionId: string) => void;
 }) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -141,7 +144,7 @@ export default function ExecutionDetail({
         </header>
 
         {msg && <MessageCard title={msg.title} to={msg.to} how={msg.how} message={msg.message} />}
-        {card && <DecisionCardView card={card} />}
+        {card && <DecideRerun key={e.id} execution={e} card={card} onOpen={onOpen} />}
 
         {steps.length > 0 && (
           <section>

@@ -41,6 +41,9 @@ export const ZONES = {
   shoreditch: { minX: 80, maxX: 335, minZ: -540, maxZ: -240 },
   // Far north, across the river: Hampstead, hilly villas, a heath, winding roads.
   hampstead: { minX: -620, maxX: 260, minZ: -960, maxZ: -700 },
+  // Layer 3: the government quarter (White House-style residence, PM office, ministries) on the east side
+  // between the ring and the coast road, north of the docks.
+  government: { minX: 236, maxX: 330, minZ: -236, maxZ: -90 },
 } satisfies Record<string, Box>;
 
 export type ZoneName = keyof typeof ZONES;

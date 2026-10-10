@@ -149,3 +149,12 @@
   .review-inputs { grid-template-columns:1fr; } .review-detail-empty { min-height:300px; }
   .review-drawer-backdrop { padding:4px; }
 }
+/* Re-run with a person's choice (RerunStatus.tsx) */
+.review-rerun { margin:16px 0 0; padding:14px 16px; border:1px solid var(--d-line); border-radius:8px; font-size:14px; color:var(--d-copy); }
+.review-rerun strong { display:block; font-size:16px; color:var(--d-ink); margin-bottom:4px; }
+.review-rerun.ok strong { color:var(--d-green); }
+.review-rerun.warn strong { color:#f5b83d; }
+.review-rerun.err strong { color:var(--d-red); }
+.review-rerun a { color:var(--d-accent); text-decoration:none; }
+.review-rerun a:hover { text-decoration:underline; }
+.review-rerun button { margin-left:12px; border:1px solid var(--d-line); border-radius:6px; padding:4px 10px; background:transparent; color:var(--d-ink); }

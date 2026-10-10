@@ -99,6 +99,7 @@ export class CrashGate {
 const NAMES: Record<VehicleKind, string> = {
   car: "car", taxi: "black cab", bus: "bus", van: "van", truck: "lorry", police: "police car",
   ambulance: "ambulance", fire: "fire engine", roadworks: "roadworks lorry", tow: "tow truck",
+  cyclist: "cyclist", motorcade: "motorcade car",
 };
 
 /** One HUD line, e.g. "Lorry hgv-4 ploughed into a stopped car car-12 at 31 mph". */

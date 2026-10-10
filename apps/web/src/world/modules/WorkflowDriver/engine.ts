@@ -223,7 +223,7 @@ const START_TEXT: Record<NodeId, string> = {
   log: "Log: writing the case record",
 };
 
-const INCIDENT_SPECS: Record<IncidentKind, Omit<Spec, "kind" | "title" | "incidentId" | "deliveryIds" | "group" | "ingestRunner"> & { headline: string; clashChance: number }> = {
+const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" | "incidentId" | "deliveryIds" | "group" | "ingestRunner"> & { headline: string; clashChance: number }>> = {
   roadworks: {
     headline: "Roadworks closed {street}",
     ingest: "Ingest: council alert · {street} closed for roadworks",
@@ -388,7 +388,7 @@ export class WorkflowEngine {
   // ---------- Triggers ----------
 
   incident(i: IncidentInput) {
-    const s = INCIDENT_SPECS[i.kind];
+    const s = INCIDENT_SPECS[i.kind] ?? INCIDENT_SPECS.car_crash!; // legacy mock (tests only): new kinds reuse the crash wording
     const note = (i.note ?? "").trim();
     const street = /\b(?:on|at|closed) ((?:the )?[A-Z][A-Za-z']*(?: [A-Z][A-Za-z']*)*)/.exec(note)?.[1] ?? this.streetFor(i.edgeKey);
     const n = String(i.affected && i.affected > 0 ? i.affected : 3 + Math.floor(this.rand() * 6));

@@ -3,11 +3,13 @@
 // Fed by (a) replayed real traces whose human node carries a card and (b) the human review queue gaining a
 // new agent card. Shows the agent's own fields (whyStopped, evidence, alreadyDone, options with effect).
 // A choice is recorded through the review queue API (backendLink.recordDecision). If that fails, the choice
-// stays local and is labelled NOT SENT. Nothing is re-run: the agent API has no humanDecision input yet.
+// stays local and is labelled NOT SENT. Once saved, a card from a console case run is re-run by the agent
+// with the choice (rerun.ts) and the new trace replays in the feed as "Re-run with your choice".
 import { useEffect, useRef, useState } from "react";
 import { useWorld, type WorkflowEvent } from "../../store";
 import type { ReviewTask } from "../../../review/types";
-import { browserFetchJson, provenanceLabel, recordDecision, replayByRun, replayFor, type DecisionOutcome } from "../../backendLink";
+import { browserFetchJson, provenanceLabel, recordDecision, rememberReplay, replayByRun, replayFor, type DecisionOutcome } from "../../backendLink";
+import { findExecutionId, rerunFeed, rerunWithChoice, type CityRerun } from "./rerun";
 import { isReal, newAsks } from "./flow";
 import { plainOwner, scrubLeaks } from "../../../ui/plain";
 import { GLASS, RealAgentTag } from "./parts";
@@ -23,6 +25,8 @@ export interface ToastItem {
   prov: string;
   /** performance.now() when it arrived, for the deadline. */
   at: number;
+  /** The console case run behind the card, when the review queue links one. */
+  executionId?: string | null;
 }
 
 /** A real replayed card event -> toast item (null for mock events or events without a card). */
@@ -44,6 +48,7 @@ export function toastFromTask(t: ReviewTask, at: number): ToastItem | null {
     traceCaseId: t.caseId,
     prov: t.simulated ? "Practice case" : "Live",
     at,
+    executionId: t.executionId ?? null,
     card: {
       cardId: t.cardId,
       summary: t.summary,
@@ -103,7 +108,26 @@ const BASIS_DOT: Record<string, string> = {
   unverified_claim: "bg-amber-400",
 };
 
-type Choice = { optionId: string; state: "sending" } | { optionId: string; state: "done"; result: DecisionOutcome };
+type Choice =
+  | { key: string; optionId: string; state: "sending" }
+  | { key: string; optionId: string; state: "done"; result: DecisionOutcome; rerun?: "running" | CityRerun };
+
+/** Replay the re-run's trace on the case's feed line and remember it, so a new card can be answered too. */
+function replayRerun(item: ToastItem, rerun: CityRerun) {
+  if (rerun.status === "failed") {
+    useWorld.getState().pushWorkflow({
+      id: `rr-${Math.random().toString(36).slice(2, 10)}`, t: performance.now(), caseId: item.caseLabel, nodeId: "log",
+      status: "error", summary: scrub(rerun.reason).slice(0, 120) || "Couldn't run it again.", source: "agent", runId: item.runId,
+    });
+    return;
+  }
+  if (rerun.status !== "done" || !rerun.execution.trace) return;
+  const ex = rerun.execution;
+  rememberReplay({ caseLabel: item.caseLabel, trace: ex.trace!, card: ex.card ?? null, outbox: ex.outbox ?? null, origin: "console", executionId: ex.id });
+  for (const t of rerunFeed(ex, item.caseLabel)) {
+    setTimeout(() => useWorld.getState().pushWorkflow({ ...t.event, id: `rr-${Math.random().toString(36).slice(2, 10)}`, t: performance.now() }), t.atMs);
+  }
+}
 
 export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: ReviewTask[]; loading: boolean; onOpenQueue: () => void }) {
   const [queue, setQueue] = useState<ToastItem[]>([]);
@@ -112,6 +136,7 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
   const seenKeys = useRef(new Set<string>());
   const seededQueue = useRef(false);
   const lastId = useRef<string | null>(null);
+  const sending = useRef(false);
 
   const enqueue = (items: ToastItem[]) => {
     const fresh = items.filter((i) => !seenKeys.current.has(i.key));
@@ -163,15 +188,35 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
   };
 
   async function choose(optionId: string) {
-    if (!cur || choice) return;
-    setChoice({ optionId, state: "sending" });
-    const label = cur.card.options.find((o) => o.id === optionId)?.label ?? optionId;
-    const result = await recordDecision(
-      { runId: cur.runId, caseId: cur.traceCaseId, optionId, who: reviewer(), note: "Chosen in the city HUD", replay: replayByRun(cur.runId, cur.traceCaseId) },
-      browserFetchJson,
-    );
-    setChoice({ optionId, state: "done", result });
-    pushChoice(cur, label, result);
+    if (!cur || choice || sending.current) return;
+    sending.current = true;
+    const item = cur;
+    const key = item.key;
+    // Updates land only while this card is still the one on screen.
+    const update = (next: Choice) => setChoice((c) => (c && c.key !== key ? c : next));
+    try {
+      update({ key, optionId, state: "sending" });
+      const label = item.card.options.find((o) => o.id === optionId)?.label ?? optionId;
+      const who = reviewer();
+      const replay = replayByRun(item.runId, item.traceCaseId);
+      const result = await recordDecision(
+        { runId: item.runId, caseId: item.traceCaseId, optionId, who, note: "Chosen in the city HUD", replay },
+        browserFetchJson,
+      );
+      update({ key, optionId, state: "done", result });
+      pushChoice(item, label, result);
+      // Saved once; this card's buttons stay locked by `choice`, so other cards can be answered meanwhile.
+      sending.current = false;
+      if (result.status !== "recorded") return;
+      const executionId = item.executionId ?? (await findExecutionId({ runId: item.runId, caseId: item.traceCaseId, taskId: result.taskId, replay }, browserFetchJson));
+      if (!executionId) return;
+      update({ key, optionId, state: "done", result, rerun: "running" });
+      const rerun = await rerunWithChoice({ executionId, option: { id: optionId, label }, person: who }, (url, init) => fetch(url, init));
+      update({ key, optionId, state: "done", result, rerun });
+      replayRerun(item, rerun);
+    } finally {
+      sending.current = false;
+    }
   }
 
   if (!cur) return null;
@@ -179,8 +224,13 @@ export function RealDecisionToast({ tasks, loading, onOpenQueue }: { tasks: Revi
   const mins = Math.round(c.deadlineMs / 60_000);
   const picked = choice?.optionId ?? null;
   const why = scrub(c.whyStopped?.line || c.summary);
+  const rerun = choice?.state === "done" ? choice.rerun : undefined;
   const status =
     choice?.state === "sending" ? { text: "Saving…", cls: "text-white/55", title: "" }
+    : rerun === "running" ? { text: "Running again with your choice…", cls: "text-white/70", title: "Saved. The agent is running the case again." }
+    : rerun?.status === "done"
+      ? { text: rerun.result.text, cls: rerun.result.tone === "ok" ? "text-emerald-300" : rerun.result.tone === "warn" ? "text-amber-300" : "text-red-300", title: `Saved and run again: ${rerun.result.text}` }
+    : rerun?.status === "failed" ? { text: "Saved. Not run again", cls: "text-amber-300", title: scrub(rerun.reason) }
     : choice?.state === "done"
       ? choice.result.status === "recorded"
         ? { text: "Saved for the team", cls: "text-emerald-300", title: "Your choice is saved. The team carries it out." }

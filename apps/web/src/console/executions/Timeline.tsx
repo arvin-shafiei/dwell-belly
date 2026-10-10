@@ -77,7 +77,13 @@ function BasisQuote({ e }: { e: CardView["evidence"][number] }) {
 }
 
 /** "A person needs to decide": the reason in one line, then big options. The rest is behind "More". */
-export function DecisionCardView({ card }: { card: DecisionCard }) {
+export function DecisionCardView({ card, onChoose, picked }: {
+  card: DecisionCard;
+  /** When set, the option tiles are buttons: the choice re-runs the case (DecideRerun.tsx). */
+  onChoose?: (option: { id: string; label: string }) => void;
+  /** The option being confirmed or sent; every tile is locked while it is set. */
+  picked?: string | null;
+}) {
   const v = cardView(card);
   const [more, setMore] = useState(false);
   const hasMore = v.evidence.length > 0 || v.done.items.length > 0 || !!card.wouldChangeMyMind || !!card.fallback || !!v.summary || !!v.clash;
@@ -98,10 +104,16 @@ export function DecisionCardView({ card }: { card: DecisionCard }) {
       )}
       {v.options.length > 0 && (
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          {v.options.map((o) => (
-            <div
+          {v.options.map((o) => {
+            const Tile = onChoose ? "button" : "div";
+            const on = o.chosen || picked === o.id;
+            return (
+            <Tile
               key={o.id}
-              className={`rounded-lg border px-4 py-3 ${o.chosen ? "border-[#ff6a1a] bg-[#ff6a1a]/10" : "border-white/15 bg-white/[0.03]"}`}
+              {...(onChoose ? { type: "button" as const, disabled: !!picked, onClick: () => onChoose({ id: o.id, label: o.label }) } : {})}
+              className={`rounded-lg border px-4 py-3 text-left ${on ? "border-[#ff6a1a] bg-[#ff6a1a]/10" : "border-white/15 bg-white/[0.03]"} ${
+                onChoose ? (picked ? (on ? "" : "opacity-40") : "cursor-pointer transition-colors hover:border-[#ff6a1a] hover:bg-[#ff6a1a]/10") : ""
+              }`}
             >
               <div className="flex items-start gap-2">
                 <span className="text-[15px] font-semibold text-white">{o.label}</span>
@@ -111,8 +123,9 @@ export function DecisionCardView({ card }: { card: DecisionCard }) {
                 </span>
               </div>
               {o.effect && <p className="mt-1 text-[13px] leading-snug text-white/60">{o.effect}</p>}
-            </div>
-          ))}
+            </Tile>
+            );
+          })}
         </div>
       )}
       {hasMore && (

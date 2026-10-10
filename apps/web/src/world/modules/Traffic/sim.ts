@@ -71,7 +71,7 @@ const ID_PREFIX: Record<Archetype, string> = {
   hatch: "car", saloon: "car", suv: "car", estate: "car", sports: "car", cab: "taxi", minibus: "minibus", van: "cvan", hgv: "hgv", moto: "moto",
 };
 const KIND_HALF: Record<VehicleKind, number> = {
-  car: 2.2, taxi: 2.25, bus: 5.3, van: 2.8, truck: 4.5, police: 2.4, ambulance: 3, fire: 4, roadworks: 3.5, tow: 3.5,
+  car: 2.2, taxi: 2.25, bus: 5.3, van: 2.8, truck: 4.5, police: 2.4, ambulance: 3, fire: 4, roadworks: 3.5, tow: 3.5, cyclist: 0.9, motorcade: 2.6,
 };
 const SPEED_FACTOR: Record<Archetype, [number, number]> = {
   hatch: [0.85, 1.05], saloon: [0.88, 1.08], suv: [0.85, 1.02], estate: [0.86, 1.02], sports: [1.05, 1.25],

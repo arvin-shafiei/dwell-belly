@@ -4,7 +4,8 @@
 //   2. Console runs (Execute and test runs) -> polled from the same-origin /api/console/executions every 4 s;
 //      each NEW finished execution with a trace is replayed once.
 //   3. Decision cards -> recorded through the human review queue's API (/api/review/tasks...), the same
-//      endpoints useReviewQueue uses. The agent API has no humanDecision input yet, so nothing is re-run.
+//      endpoints useReviewQueue uses. A card from a console case run is then re-run with the choice
+//      (WorkflowHud/rerun.ts); the toast replays that re-run itself, so the poller skips it.
 // Data rule (PRD J0): every replayed event carries source "agent" plus origin and synthetic flags; nothing
 // here invents results. The pure parts (builder, poller, decision recording) take their I/O as arguments.
 import type { DecisionCard, Trace } from "../../../api/src/lib/trace";
@@ -34,6 +35,8 @@ const KIND_PHRASE: Record<IncidentKind, string> = {
   breakdown: "a van breakdown",
   plane_crash: "an aircraft crash near the airport",
   emergency_landing: "an emergency landing at the airport",
+  cyclist_hit: "a cyclist hit by a vehicle",
+  event_closure: "roads closed for a city event",
 };
 
 function driverReport(kind: IncidentKind, dls: Delivery[]): string {
@@ -207,7 +210,11 @@ export interface ExecutionRow {
   simulated: boolean;
   costUsd: number | null;
   startedAt: string;
+  parentExecutionId?: string | null;
 }
+
+/** Parents whose decision re-run the HUD toast replays itself (WorkflowHud/rerun.ts); the poller skips those. */
+export const rerunParents = new Set<string>();
 
 /** GET /api/console/executions/:id -> execution with trace and card. */
 export interface ExecutionDetail extends ExecutionRow {
@@ -245,6 +252,7 @@ export class ExecutionPoller {
     for (const r of [...rows].reverse()) {
       if (this.seen.has(r.id) || r.status === "running") continue;
       this.seen.add(r.id);
+      if (r.parentExecutionId && rerunParents.has(r.parentExecutionId)) continue;
       const d = (await this.fetchJson(`/api/console/executions/${encodeURIComponent(r.id)}`)) as { execution?: ExecutionDetail } | null;
       const ex = d?.execution;
       if (!ex?.trace?.events?.length) continue;
@@ -341,7 +349,7 @@ export async function recordDecision(
       body: JSON.stringify({ optionId: args.optionId, who: args.who, note: args.note ?? "" }),
     })) as { task?: TaskRef; error?: string } | null;
     if (!res?.task) return { status: "not_sent", reason: res?.error ?? "The review queue did not save the decision" };
-    return { status: "recorded", taskId: task.id, note: "Recorded in the human review queue. Not re-run: the agent API does not accept a humanDecision yet." };
+    return { status: "recorded", taskId: task.id, note: "Recorded in the human review queue." };
   } catch (e) {
     return { status: "not_sent", reason: e instanceof Error ? e.message : "The review queue is unreachable" };
   }

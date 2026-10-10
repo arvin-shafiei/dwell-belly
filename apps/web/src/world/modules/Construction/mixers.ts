@@ -21,7 +21,7 @@ const STOP_LINE = 5.2;
 const HALF_W = 1.25; // body half-width for the look-ahead corridor
 const JUNCTION_R = 10; // a vehicle this close to the node we're about to enter is "in the junction"
 const KIND_HALF: Record<VehicleKind, number> = {
-  car: 2.2, taxi: 2.25, bus: 5.3, van: 2.8, truck: 4.5, police: 2.4, ambulance: 3, fire: 4, roadworks: 3.5, tow: 3.5,
+  car: 2.2, taxi: 2.25, bus: 5.3, van: 2.8, truck: 4.5, police: 2.4, ambulance: 3, fire: 4, roadworks: 3.5, tow: 3.5, cyclist: 0.9, motorcade: 2.6,
 };
 
 type Mode = "drive" | "enter" | "pour" | "exit" | "crashed";

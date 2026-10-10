@@ -1,8 +1,13 @@
+import { withExecutionLinks } from "@/console/server/runLinks";
 import { listTasks, registerTrace, ReviewError } from "@/review/server";
 
 export async function GET(request: Request) {
   void request.url; // Request-time filesystem data with Cache Components.
-  try { return Response.json(await listTasks(), { headers: { "Cache-Control": "no-store" } }); }
+  try {
+    const queue = await listTasks();
+    // Each card links to the console case run it came from, so a choice can re-run that case.
+    return Response.json({ ...queue, tasks: withExecutionLinks(queue.tasks) }, { headers: { "Cache-Control": "no-store" } });
+  }
   catch { return Response.json({ error: "The review queue could not be loaded. Try again." }, { status: 503 }); }
 }
 

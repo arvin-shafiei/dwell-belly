@@ -32,6 +32,7 @@ const ZONE_TINT: Record<ZoneName, string> = {
   oldTown: "rgba(200, 170, 120, 0.24)",
   shoreditch: "rgba(170, 120, 160, 0.22)",
   hampstead: "rgba(120, 190, 110, 0.22)",
+  government: "rgba(240, 240, 250, 0.28)",
 };
 
 const ZONE_LABEL: Partial<Record<ZoneName, string>> = {
@@ -46,6 +47,7 @@ const ZONE_LABEL: Partial<Record<ZoneName, string>> = {
   oldTown: "OLD TOWN",
   shoreditch: "SHOREDITCH",
   hampstead: "HAMPSTEAD",
+  government: "GOV",
 };
 
 const ROAD_STYLE: Record<RoadKind, { w: number; c: string }> = {
@@ -72,6 +74,8 @@ const DOT: Record<VehicleKind, DotStyle> = {
   car: { fill: "#9ca3af", r: 1.6 },
   bus: { fill: "#dc2626", r: 2.6 },
   taxi: { fill: "#111111", stroke: "#ffffff", r: 2 },
+  cyclist: { fill: "#22d3ee", r: 1.2 },
+  motorcade: { fill: "#1e3a8a", stroke: "#ffffff", r: 2.8 },
 };
 
 const LEGEND: { label: string; style: DotStyle }[] = [

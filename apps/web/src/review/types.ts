@@ -45,6 +45,8 @@ export interface ReviewTask {
   timeline: { node: string; summary: string; status: string }[];
   costUsd: number | null;
   durationMs: number | null;
+  /** The console case run this card came from, when there is one. A choice re-runs it with the decision. */
+  executionId?: string | null;
 }
 
 export interface ReviewQueue {

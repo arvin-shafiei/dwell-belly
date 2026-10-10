@@ -23,6 +23,11 @@ export type WorldEvent =
   // Requests from the UI (demo buttons). The owning module listens and acts.
   | { type: "request:crash"; kind: "car_crash" | "truck_crash" | "pileup" }
   | { type: "request:plane"; kind: "emergency_landing" | "plane_crash" }
+  // City events (Events module): start one now.
+  | { type: "request:event"; kind: "motorcade" | "marathon" | "protest" | "parade" | "concert" | "fireworks" | "state_visit" }
+  | { type: "event:started"; eventId: string }
+  | { type: "event:ended"; eventId: string }
+  | { type: "request:cyclist_hit" }
   | { type: "request:roadworks" }
   | { type: "request:breakdown" }
   // Scenarios (see scenarios.ts): the HUD fires one; the Scenarios module acts it out in the city and

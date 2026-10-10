@@ -44,6 +44,8 @@ import Crowds from "./modules/Crowds";
 import Streetscape from "./modules/Streetscape";
 import Construction from "./modules/Construction";
 import Chases from "./modules/Chases";
+import Government from "./modules/Government";
+import Events from "./modules/Events";
 import Collisions from "./modules/Collisions";
 import CityRemote from "./modules/CityRemote";
 import VoiceFx from "./modules/VoiceFx";
@@ -51,7 +53,7 @@ import VoiceFx from "./modules/VoiceFx";
 const MODULES = {
   Sky, Ground, Roads, Buildings, Landmarks, Docks, Countryside, Depot, Suburbs, Airport,
   Traffic, Transit, TrafficLights, DeliveryFleet, Crashes, Responders, Roadworks, Scenarios, Life, CameraRig, WorkflowDriver,
-  Motorway, River, ContainerTerminal, Shipping, Industrial, Southbank, OldTown, Shoreditch, Hampstead, Rail, Crowds, Streetscape, Construction, Chases, Collisions,
+  Motorway, River, ContainerTerminal, Shipping, Industrial, Southbank, OldTown, Shoreditch, Hampstead, Rail, Crowds, Streetscape, Construction, Chases, Government, Events, Collisions,
   CityRemote, VoiceFx,
 };
 

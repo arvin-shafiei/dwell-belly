@@ -5,7 +5,9 @@ import { on, type Party, type VoiceSource, type WorldEvent } from "./bus";
 import { addSpend, clampMax, claimRun, mergeStarts, newBudget, type AgentBudget } from "./modules/WorkflowDriver/budget";
 
 export type IncidentKind =
-  | "car_crash" | "truck_crash" | "pileup" | "roadworks" | "breakdown" | "plane_crash" | "emergency_landing";
+  | "car_crash" | "truck_crash" | "pileup" | "roadworks" | "breakdown" | "plane_crash" | "emergency_landing"
+  | "cyclist_hit" // a vehicle hit a cyclist: ambulance priority
+  | "event_closure"; // a planned city event (motorcade, marathon, march…) closed roads
 export type IncidentStatus = "active" | "responding" | "clearing" | "cleared";
 
 export interface Incident {
@@ -33,6 +35,20 @@ export interface DamageZone {
   state: "destroyed" | "rebuilding" | "restored";
   cause: string; // e.g. "Cargo jet RV880 crashed"
   createdAt: number; // performance.now() ms
+}
+
+/** A planned or live city event (owned by the Events module). Roads it closes are in `blocked` too. */
+export interface CityEvent {
+  id: string;
+  kind: "motorcade" | "marathon" | "protest" | "parade" | "concert" | "fireworks" | "state_visit";
+  title: string; // plain words, e.g. "President's motorcade: Airport → White House"
+  status: "planned" | "live" | "ended";
+  startsAt: number; // performance.now() ms
+  endsAt: number | null;
+  route: string[]; // road node ids it uses (for map lines / closures)
+  closedEdges: string[]; // edge keys currently closed by it
+  x: number; // where to look
+  z: number;
 }
 
 export interface WorkflowEvent {
@@ -211,6 +227,7 @@ interface WorldState extends VoiceSlice {
   /** Roads closed right now: edgeKey -> reason. Read with blockedSet(). */
   blocked: Record<string, string>;
   incidents: Incident[];
+  events: CityEvent[];
   damage: DamageZone[];
   deliveries: Record<string, Delivery>;
   workflow: WorkflowEvent[]; // newest last, capped at 200
@@ -238,6 +255,7 @@ interface WorldState extends VoiceSlice {
   blockEdge: (key: string, reason: string) => void;
   unblockEdge: (key: string) => void;
   addIncident: (i: Incident) => void;
+  upsertEvent: (e: CityEvent) => void;
   addDamage: (d: DamageZone) => void;
   updateDamage: (id: string, patch: Partial<DamageZone>) => void;
   removeDamage: (id: string) => void;
@@ -269,6 +287,7 @@ interface WorldState extends VoiceSlice {
 export const useWorld = create<WorldState>((set) => ({
   blocked: {},
   incidents: [],
+  events: [],
   damage: [],
   deliveries: {},
   workflow: [],
@@ -296,6 +315,7 @@ export const useWorld = create<WorldState>((set) => ({
       return { blocked: next };
     }),
   addIncident: (i) => set((s) => ({ incidents: [...s.incidents.slice(-49), i] })),
+  upsertEvent: (e) => set((s) => ({ events: [...s.events.filter((x) => x.id !== e.id), e].slice(-30) })),
   addDamage: (d) => set((s) => ({ damage: [...s.damage, d] })),
   updateDamage: (id, patch) => set((s) => ({ damage: s.damage.map((d) => (d.id === id ? { ...d, ...patch } : d)) })),
   removeDamage: (id) => set((s) => ({ damage: s.damage.filter((d) => d.id !== id) })),

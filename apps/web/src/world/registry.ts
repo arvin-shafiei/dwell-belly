@@ -2,7 +2,10 @@
 // (traffic spacing, crashes picking victims, camera follow, minimap). Mutable, read every frame.
 import type { Object3D } from "three";
 
-export type VehicleKind = "car" | "taxi" | "bus" | "van" | "truck" | "police" | "ambulance" | "fire" | "roadworks" | "tow";
+export type VehicleKind =
+  | "car" | "taxi" | "bus" | "van" | "truck" | "police" | "ambulance" | "fire" | "roadworks" | "tow"
+  | "cyclist" // a bike + rider; can be hit (Collisions turns that into a cyclist_hit incident)
+  | "motorcade"; // an escorted VIP vehicle (other traffic must yield, never crash into it)
 
 export interface VehicleEntry {
   id: string;

@@ -223,6 +223,10 @@ export default function ExecutionsView() {
           error={rerunError ?? current?.error ?? null}
           onRerun={rerun}
           rerunning={rerunning}
+          onOpen={(id) => {
+            go("executions", { id });
+            void loadList();
+          }}
         />
       </section>
     </div>

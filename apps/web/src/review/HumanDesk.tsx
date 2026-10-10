@@ -1,8 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { decisionRerunBody, type DecisionRerunBody } from "../console/decisionRerun";
+import { useDecisionRerun } from "../console/useDecisionRerun";
 import { cents, plainOwner, plainStep, riskWord, scrubLeaks } from "../ui/plain";
 import { deadlineLabel, keyEvidence, shortLine } from "./model";
+import RerunStatus from "./RerunStatus";
 import type { ReviewTask } from "./types";
 import { useReviewQueue } from "./useReviewQueue";
 import "./review.css";
@@ -19,7 +22,7 @@ function Status({ task, now }: { task: ReviewTask; now: number }) {
 }
 
 function CaseDetail({ task, now, onDecide }: {
-  task: ReviewTask; now: number; onDecide: (task: ReviewTask, optionId: string, who: string, note: string) => Promise<void>;
+  task: ReviewTask; now: number; onDecide: (task: ReviewTask, optionId: string, who: string, note: string) => Promise<ReviewTask | null>;
 }) {
   const [selected, setSelected] = useState("");
   const [who, setWho] = useState(() => {
@@ -29,6 +32,9 @@ function CaseDetail({ task, now, onDecide }: {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  // After a live card is saved, the case is run again by the agent with this choice (send once).
+  const rerun = useDecisionRerun();
+  const rerunBody = useRef<DecisionRerunBody | null>(null);
   const option = task.options.find((o) => o.id === selected);
   const readonly = task.mode === "reality";
   const canDecide = task.status === "pending" && !readonly;
@@ -44,12 +50,18 @@ function CaseDetail({ task, now, onDecide }: {
     if (!option || !who.trim() || saving) return;
     setSaving(true); setError(null);
     try {
-      await onDecide(task, option.id, who.trim(), note.trim());
+      const saved = await onDecide(task, option.id, who.trim(), note.trim());
       try { localStorage.setItem("rivet-reviewer", who.trim()); } catch { /* approval still succeeds */ }
       setSuccess(true);
+      const executionId = saved?.executionId ?? task.executionId;
+      if (saved && executionId) {
+        rerunBody.current = decisionRerunBody({ parentExecutionId: executionId, option, person: who });
+        void rerun.run(rerunBody.current, option);
+      }
     } catch (e) { setError(scrubLeaks(e instanceof Error ? e.message : "") || "Your decision wasn't saved. Try again."); }
     finally { setSaving(false); }
   }
+  const retry = () => { if (rerunBody.current) void rerun.run(rerunBody.current); };
   return (
     <article className="review-detail" aria-label="A person needs to decide">
       <header className="review-case-heading">
@@ -63,7 +75,8 @@ function CaseDetail({ task, now, onDecide }: {
           <div className="review-label">{task.decision.execution === "simulation" ? "Done in the city" : "Decision saved"}</div>
           <h3>{task.decision.optionLabel}</h3>
           <p>By {task.decision.who}{task.decision.note ? `: ${task.decision.note}` : ""}</p>
-          {task.decision.execution === "pending" && <p className="review-muted">{owner} will carry it out.</p>}
+          {task.decision.execution === "pending" && rerun.state.phase === "idle" && <p className="review-muted">{owner} will carry it out.</p>}
+          <RerunStatus state={rerun.state} onRetry={retry} />
         </section>
       ) : (
         <form className="review-choice" onSubmit={submit}>
@@ -94,6 +107,7 @@ function CaseDetail({ task, now, onDecide }: {
           </>}
           {error && <p className="review-error" role="alert">{error}</p>}
           {success && !task.decision && <p className="review-confirmation" role="status">Saved. Updating…</p>}
+          {!task.decision && <RerunStatus state={rerun.state} onRetry={retry} />}
         </form>
       )}
 
@@ -143,8 +157,9 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
     }
   }
   async function apply(task: ReviewTask, option: string, who: string, note: string) {
-    await decide(task, option, who, note);
+    const saved = await decide(task, option, who, note);
     setFilter("decisions"); setSelectedId(task.id);
+    return saved;
   }
   return (
     <div className={`review-desk ${embedded ? "review-embedded" : ""}`}>

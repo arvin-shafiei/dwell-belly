@@ -94,16 +94,16 @@ describe("budget guard", () => {
     expect(clampMax(1000)).toBe(60);
     expect(clampMax(4.4)).toBe(4);
   });
-  it("lives in the store: claim, fall back and tune", () => {
+  it("lives in the store: claim, refuse (the case waits) and tune", () => {
     const st = useWorld.getState();
     st.setAgentBudgetMax(1);
     expect(useWorld.getState().claimAgentRun(5_000_000)).toBe(true);
     expect(useWorld.getState().claimAgentRun(5_000_001)).toBe(false);
-    expect(useWorld.getState().agentBudget.overBudget).toBe(1);
     useWorld.getState().addAgentSpend(0.0421);
     expect(useWorld.getState().agentBudget.spentUsd).toBeCloseTo(0.0421);
-    useWorld.getState().setAgentBudgetMax(6);
-    expect(useWorld.getState().agentBudget.maxPerWindow).toBe(6);
+    useWorld.getState().setAgentBudgetMax(20);
+    expect(useWorld.getState().agentBudget.maxPerWindow).toBe(20);
+    expect(newBudget().maxPerWindow).toBe(20); // default
   });
 });
 
@@ -172,10 +172,10 @@ describe("console execution polling", () => {
   it("maps origins and provenance labels without mixing them", () => {
     expect(originOf({ origin: "voice" })).toBe("voice");
     expect(originOf({ origin: "console" })).toBe("console");
-    expect(provenanceLabel({ source: "agent", synthetic: true, origin: "city_incident" })).toBe("Real agent · Synthetic case");
-    expect(provenanceLabel({ source: "agent", origin: "console" })).toBe("Real agent · Console run");
-    expect(provenanceLabel({ source: "mock" })).toBe("Simulated");
-    expect(provenanceLabel({})).toBe("Simulated");
+    expect(provenanceLabel({ source: "agent", synthetic: true, origin: "city_incident" })).toBe("Practice case");
+    expect(provenanceLabel({ source: "agent", origin: "console" })).toBe("Live");
+    expect(provenanceLabel({ source: "mock" })).toBe("Not live");
+    expect(provenanceLabel({})).toBe("Not live");
   });
 });
 
