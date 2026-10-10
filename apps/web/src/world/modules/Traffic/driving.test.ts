@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { ROAD_NODES, edgeKey, getEdge, getNode, lanePosition, neighbours } from "../../roads";
+import { ROAD_EDGES, ROAD_NODES, edgeKey, getEdge, getNode, lanePosition, neighbours } from "../../roads";
 import {
   FREIGHT_NODES,
   HIGHWAY_NODES,
   IDM,
   isJunction,
+  lateralOf,
+  pathPointAhead,
+  shouldYield,
   turnSpeed,
   advance,
   blockageT,
@@ -251,5 +254,36 @@ describe("isJunction", () => {
     expect(isJunction("g_0_0")).toBe(true);
     const quiet = [...ROAD_NODES.keys()].find((id) => neighbours(id).length < 3)!;
     expect(isJunction(quiet)).toBe(false);
+  });
+});
+
+describe("beam helpers", () => {
+  it("lateralOf: left is positive (heading +z, left is +x)", () => {
+    // heading 0 faces +z; with x to the right on screen... sign convention: (dz*sin h - dx*cos h)
+    expect(lateralOf(0, 0, 0, 3, 0)).toBeCloseTo(-3);
+    expect(lateralOf(0, 0, 0, -3, 0)).toBeCloseTo(3);
+  });
+  it("shouldYield is antisymmetric: exactly one of two conflicting vehicles yields", () => {
+    const cases: [number, number, number, number, number, number][] = [
+      [0, 0, 0, 5, 5, -Math.PI / 2], // perpendicular
+      [0, 0, 0, -5, 5, Math.PI / 2],
+      [0, 0, 0, 1, 10, Math.PI], // head-on, offset
+      [0, 0, 0, 0, 6, 0], // same direction
+      [2, -3, 0.4, -4, 2, 2.2],
+    ];
+    for (const [x, z, h, ox, oz, oh] of cases) {
+      const a = shouldYield(x, z, h, "a", ox, oz, oh, "b");
+      const b = shouldYield(ox, oz, oh, "b", x, z, h, "a");
+      expect(a).not.toBe(b);
+    }
+  });
+  it("pathPointAhead walks along the path and reports overflow at its end", () => {
+    const e = [...ROAD_EDGES.values()].find((x) => x.length > 30)!;
+    const out = { x: 0, z: 0, h: 0 };
+    expect(pathPointAhead([e.a, e.b], 0, 0, 10, out)).toBe(0);
+    const p0 = { x: 0, z: 0, h: 0 };
+    pathPointAhead([e.a, e.b], 0, 0, 0, p0);
+    expect(Math.hypot(out.x - p0.x, out.z - p0.z)).toBeCloseTo(10, 1);
+    expect(pathPointAhead([e.a, e.b], 0, 0.5, e.length, out)).toBeCloseTo(e.length / 2, 3);
   });
 });
