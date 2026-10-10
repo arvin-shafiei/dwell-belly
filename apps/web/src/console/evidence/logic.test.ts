@@ -67,3 +67,16 @@ describe("totals and groups", () => {
     expect(fmtPct(null)).toBe("–");
   });
 });
+
+import { resultNumbers, wasRun } from "./logic";
+
+describe("resultNumbers", () => {
+  it("counts only cases that were run", () => {
+    const notRun = row({ caseId: "x", executionId: null, decision: null, pass: null, score: null });
+    expect(wasRun(notRun)).toBe(false);
+    expect(resultNumbers([...rows, notRun])).toEqual({ known: 4, run: 3, right: 1, wrong: 1, unchecked: 1 });
+  });
+  it("searches plain words too", () => {
+    expect(filterRows(rows, { ...EMPTY_FILTER, q: "needs a person" }).map((r) => r.caseId)).toEqual(["gen-1"]);
+  });
+});

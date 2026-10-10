@@ -1,5 +1,6 @@
 // Pure helpers for the Executions tab: list filtering, polling decision, formatting,
 // and turning a Trace's flat event list into a timeline of node steps.
+import { scrubLeaks } from "../../ui/plain";
 import type { ExecutionRecord, Trace } from "../types";
 import type { DecisionCard, NextAction, TraceEvent } from "../../../../api/src/lib/trace";
 
@@ -276,13 +277,13 @@ export function cardView(card: DecisionCard): CardView {
     });
   const useDone = Array.isArray(card.alreadyDone);
   return {
-    headline: hasWs ? { chip: reason, line: ws?.line || card.summary } : { chip: null, line: card.summary },
-    summary: hasWs && card.summary && card.summary !== ws?.line ? card.summary : null,
-    clash: card.clash || null,
+    headline: { chip: hasWs ? reason : null, line: scrubLeaks(hasWs ? ws?.line || card.summary : card.summary) },
+    summary: hasWs && card.summary && card.summary !== ws?.line ? scrubLeaks(card.summary) : null,
+    clash: card.clash ? scrubLeaks(card.clash) : null,
     evidence,
-    done: useDone ? { title: "Already done", items: card.alreadyDone! } : { title: "Already tried", items: card.tried ?? [] },
+    done: useDone ? { title: "Already done", items: card.alreadyDone!.map(scrubLeaks) } : { title: "Already tried", items: (card.tried ?? []).map(scrubLeaks) },
     options: (card.options ?? []).map((o) => ({
-      id: o.id, label: o.label, effect: o.effect || null, undoable: o.undoable !== false, chosen: card.chosen === o.id,
+      id: o.id, label: scrubLeaks(o.label), effect: o.effect ? scrubLeaks(o.effect) : null, undoable: o.undoable !== false, chosen: card.chosen === o.id,
     })),
   };
 }

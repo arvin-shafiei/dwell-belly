@@ -1,4 +1,5 @@
 // Pure helpers for the Evidence grid: search/filter, sort, group by dataset, totals.
+import { plainDataset, plainGate, plainOutcome } from "../../ui/plain";
 import type { EvidenceRow } from "../types";
 
 export type SortKey =
@@ -32,7 +33,10 @@ export function filterRows(rows: EvidenceRow[], f: EvidenceFilter): EvidenceRow[
     if (f.pass === "fail" && r.pass !== false) return false;
     if (f.pass === "unevaluated" && r.pass !== null) return false;
     if (!terms.length) return true;
-    const hay = [r.caseId, r.dataset, r.title, r.decision, r.nextAction, r.gate].filter(Boolean).join(" ").toLowerCase();
+    const hay = [r.caseId, r.dataset, plainDataset(r.dataset), r.title, r.decision, r.decision && plainOutcome(r.decision), r.nextAction, r.gate && plainGate(r.gate)]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
     return terms.every((t) => hay.includes(t));
   });
 }
@@ -101,4 +105,17 @@ export function distinct(rows: EvidenceRow[], k: "dataset" | "gate"): string[] {
 
 export function fmtPct(x: number | null): string {
   return x === null ? "–" : `${(x * 100).toFixed(x === 1 || x === 0 ? 0 : 1)}%`;
+}
+
+/** A row was actually run when it has a run, a decision or a verdict (the grid also lists cases not run yet). */
+export function wasRun(r: EvidenceRow): boolean {
+  return r.executionId !== null || r.decision !== null || r.pass !== null;
+}
+
+/** The big numbers on top of Results: "40 cases · 34 right · 6 wrong". */
+export function resultNumbers(rows: EvidenceRow[]): { known: number; run: number; right: number; wrong: number; unchecked: number } {
+  const run = rows.filter(wasRun);
+  const right = run.filter((r) => r.pass === true).length;
+  const wrong = run.filter((r) => r.pass === false).length;
+  return { known: rows.length, run: run.length, right, wrong, unchecked: run.length - right - wrong };
 }
