@@ -83,7 +83,9 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["escalate"],
+    "acceptable_dispositions": [
+      "escalate"
+    ],
     "acceptable_actions": [],
     "must": [
       "Hands the case to a human supervisor and sends nothing to the administrators, the merchant or Dispatch that takes a side",
@@ -98,5 +100,9 @@
     ],
     "reference_message": null
   },
-  "rationale": "Three parties have given incompatible written instructions over goods consigned to a company in administration, and each is asserting a legal position the desk cannot assess. Dispatch is already holding the cartons and has said it will not move them without a decision from someone with authority, so nothing is lost by stopping. Writing to the administrators that the goods are held against the debt would be the desk taking a legal stance on Business billing's say-so, after the administrators have said in terms that sums owed are not to be raised against goods. No team in the history owns this, so it goes to a supervisor."
+  "rationale": "Three parties have given incompatible written instructions over goods consigned to a company in administration, and each is asserting a legal position the desk cannot assess. Dispatch is already holding the cartons and has said it will not move them without a decision from someone with authority, so nothing is lost by stopping. Writing to the administrators that the goods are held against the debt would be the desk taking a legal stance on Business billing's say-so, after the administrators have said in terms that sums owed are not to be raised against goods. No team in the history owns this, so it goes to a supervisor.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator escalated with all three competing instructions and sent nothing, as the key requires."
+  }
 }

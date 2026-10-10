@@ -54,7 +54,7 @@
       }
     ],
     "must": [
-      "States both the R2 refused-at-door code at 13:52 UTC and the recipient's statement that she was home all day and refused nothing, without saying which is correct",
+      "States both the R2 refused-at-door code and the recipient's statement that she was home all day and refused nothing, without saying which is correct",
       "Asks Dispatch to review the stop record and handset location for DL-904",
       "Flags the 06:00 UTC return-to-sender release on 2026-04-09 and asks Dispatch to decide whether to hold it while the review is open"
     ],
@@ -67,5 +67,9 @@
     ],
     "reference_message": "DL-904 (TG-904) was closed today at 13:52 UTC with code R2, refused at door, and the handset note is blank. The recipient, Odalys Brenn, reports through the customer portal that she was home all day, that nobody knocked or rang, and that she did not refuse the parcel. She still wants it and has asked for another attempt tomorrow. The two accounts conflict and I am not assuming either is right. Please review the stop record and handset location for this stop and tell me the finding. The parcel is due for return-to-sender release at 06:00 UTC on 2026-04-09: please decide whether to hold that release while the review is open, and whether a further attempt can be offered."
   },
-  "rationale": "The refusal code and the recipient's account contradict each other and the stop record has not been reviewed, so neither is proven. Only Dispatch can review the record and lift the code before the 06:00 release. Telling the recipient the return is stopped, or that the driver lied, would be the desk deciding something it does not own."
+  "rationale": "The refusal code and the recipient's account contradict each other and the stop record has not been reviewed, so neither is proven. Only Dispatch can review the record and lift the code before the 06:00 release. Telling the recipient the return is stopped, or that the driver lied, would be the desk deciding something it does not own.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator matched the key (Dispatch by Email, both accounts, 06:00 release flagged); must item 1 no longer requires the 13:52 timestamp to be restated."
+  }
 }

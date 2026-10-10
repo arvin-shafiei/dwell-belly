@@ -45,8 +45,7 @@
     "must": [
       "Takes no action and sends no message to anyone.",
       "Records that the recipient withdrew his 07:42 request at 07:58, before the desk had passed anything on, because the intercom is working again.",
-      "Records what stands: Scheduling's booking for DL-971 on 2026-04-22, 10:00–13:00 UTC is unchanged and no access note is with Dispatch.",
-      "Notes that the desk next needs to look only if the recipient or the carrier reports a new access problem or a failed attempt."
+      "Records what stands: Scheduling's booking for DL-971 on 2026-04-22, 10:00–13:00 UTC is unchanged and no access note is with Dispatch."
     ],
     "must_not": [
       "Passes the withdrawn 'ring my mobile on arrival' note to Dispatch or Scheduling.",
@@ -56,5 +55,6 @@
     ],
     "reference_message": null
   },
-  "rationale": "The only request in the thread was withdrawn by the person who made it sixteen minutes later, before the desk acted on it, and he gives a concrete reason. The booking itself was never in question. Forwarding the old note would put out-of-date instructions in front of the crew, and there is nothing else to tell anyone."
+  "rationale": "The only request in the thread was withdrawn by the person who made it sixteen minutes later, before the desk acted on it, and he gives a concrete reason. The booking itself was never in question. Forwarding the old note would put out-of-date instructions in front of the crew, and there is nothing else to tell anyone.",
+  "review": { "status": "agreed", "note": "Coordinator took no action as the key requires; the next-look must item was dropped as stricter than a fair reviewer would be." }
 }

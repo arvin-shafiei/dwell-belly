@@ -133,5 +133,9 @@
     ],
     "reference_message": "Thursday is not booked, I'm sorry. Dispatch tells me the 2026-03-12 08:00–12:00 slot was taken before they could move you, so they changed nothing: DL-912 is still booked for Wednesday 2026-03-11, 13:00–17:00. What they have open now is Friday 2026-03-13, 13:00–17:00, or Saturday 2026-03-14, 08:00–12:00, both at no charge. Which would you like me to ask them for, or would you rather keep Wednesday? Their slots are not held until booked, so the sooner you tell me the better."
   },
-  "rationale": "Corwin's latest instruction (Thursday morning) replaced his first choice, but Dispatch could not action it and left the Wednesday booking in place. He believes Thursday is arranged and is making plans around it. Dispatch needs his choice before moving anything, so the only correct message is to him, with the true booking state and the slots actually open."
+  "rationale": "Corwin's latest instruction (Thursday morning) replaced his first choice, but Dispatch could not action it and left the Wednesday booking in place. He believes Thursday is arranged and is making plans around it. Dispatch needs his choice before moving anything, so the only correct message is to him, with the true booking state and the slots actually open.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator told the recipient Thursday is gone, Wednesday still stands and offered the two open slots, matching the key."
+  }
 }

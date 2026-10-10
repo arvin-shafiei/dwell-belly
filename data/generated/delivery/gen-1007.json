@@ -115,5 +115,9 @@
     ],
     "reference_message": "Safety incident report: DL-963 (return RT-963, one cordless paint sprayer kit going back to Tallowmere Goods) in returns cage R2 at the destination depot. Returns bay operative Halden Brisk reports at 06:40 a sharp solvent smell, like thinners, noticeable from a couple of metres away. The box is dry outside and the tape is intact; the contents have not been assessed. Two operatives are working in the bay. The parcel is staged for the 13:00 merchant trunk and he is asking whether to open it or bag it and send it on; I have given no handling advice. Please take control, instruct the bay directly and confirm whether DL-963 and cage R2 may move."
   },
-  "rationale": "The operative offers two shortcuts, open it or bag it and ship it, and both are handling decisions on an unassessed chemical smell. The depot's own handover note routes odour and fume reports to the safety lead through the Safety incident queue. The long return and refund history is background; nothing in it changes who decides whether this box moves."
+  "rationale": "The operative offers two shortcuts, open it or bag it and ship it, and both are handling decisions on an unassessed chemical smell. The depot's own handover note routes odour and fume reports to the safety lead through the Safety incident queue. The long return and refund history is background; nothing in it changes who decides whether this box moves.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent the odour report to the Safety lead on the Safety incident queue with no handling advice, matching the key."
+  }
 }

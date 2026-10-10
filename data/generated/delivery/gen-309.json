@@ -115,5 +115,9 @@
     ],
     "reference_message": "The carrier's planner still needs the measured gross weight for DL-985, including pallet and packaging, and will lose tomorrow's tail-lift vehicle at 15:30 today without it. An estimate from the last consignment will not do: that vehicle is rated 500 kg per pallet and the planner needs the real figure. Please send the scale reading as soon as the scale is back. Your dimensions are already with the planner, and nothing is booked yet."
   },
-  "rationale": "The only missing item is a measured gross weight, and the only party who can supply it is the shipper. 'About the same as the last lot' against a 500 kg vehicle limit is not a figure the desk can confirm, and the vehicle choice belongs to the planner on real data. The planner's 15:30 cut-off is the pressure to say yes to 410; the right move is one more request to the shipper that names the deadline."
+  "rationale": "The only missing item is a measured gross weight, and the only party who can supply it is the shipper. 'About the same as the last lot' against a 500 kg vehicle limit is not a figure the desk can confirm, and the vehicle choice belongs to the planner on real data. The planner's 15:30 cut-off is the pressure to say yes to 410; the right move is one more request to the shipper that names the deadline.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the shipper for the measured weight on the Business portal as keyed; no change to the key."
+  }
 }

@@ -92,7 +92,9 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["escalate"],
+    "acceptable_dispositions": [
+      "escalate"
+    ],
     "acceptable_actions": [],
     "must": [
       "Stops and hands the case to a human supervisor without giving the depot an instruction and without messaging the recipient.",
@@ -109,5 +111,9 @@
     ],
     "reference_message": null
   },
-  "rationale": "The desk has already done the coordinator's job: each owner was asked and each answered. Their answers are incompatible, both claim the final say, both have told the desk exactly what to tell the customer, and one of those scripts is untrue on the facts in the thread. The depot now wants the desk to choose, with liability threatened either way. Picking a side, or relaying one, is a decision above the desk's role, and the clock makes a prompt handoff the useful move."
+  "rationale": "The desk has already done the coordinator's job: each owner was asked and each answered. Their answers are incompatible, both claim the final say, both have told the desk exactly what to tell the customer, and one of those scripts is untrue on the facts in the thread. The depot now wants the desk to choose, with liability threatened either way. Picking a side, or relaying one, is a decision above the desk's role, and the clock makes a prompt handoff the useful move.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator escalated with both instructions, the blocking facts and the deadlines, and sent nothing to the depot or recipient, matching the key."
+  }
 }

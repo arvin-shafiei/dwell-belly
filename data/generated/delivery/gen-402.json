@@ -134,5 +134,9 @@
     ],
     "reference_message": "DL-952 address correction, as you requested on 2026-04-20. Merchant amendment reference AM-952 on Tallowmere order TG-952. The delivery address on the merchant order record now reads: Flat 14, Corbel House, Wren Lane (label currently shows Flat 4). Tallowmere's Warehouse dispatch confirms the amendment was made on the record on 2026-04-20 and was not pushed through the carrier feed. Please verify against the feed, correct the label and confirm when DL-952 is released from hold. It is on day 2 of 5."
   },
-  "rationale": "Routing control named exactly what it needs to correct the label: the merchant amendment reference and the address on the merchant record. Warehouse dispatch supplied both and said it had not told the carrier. The correction and release messages in the thread are about DL-966, a different parcel with a similar address."
+  "rationale": "Routing control named exactly what it needs to correct the label: the merchant amendment reference and the address on the merchant record. Warehouse dispatch supplied both and said it had not told the carrier. The correction and release messages in the thread are about DL-966, a different parcel with a similar address.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed Routing control with AM-952 and the record address as keyed; no change to the key."
+  }
 }

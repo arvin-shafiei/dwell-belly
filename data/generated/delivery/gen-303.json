@@ -61,5 +61,9 @@
     ],
     "reference_message": "Your 14:38 message for DL-926 reached me with no file attached. Please send the amended entry summary again as an attachment on this portal. Import billing will only rerun the charge from the document itself, so I have not passed the figure on. I will forward the file to them as soon as it arrives."
   },
-  "rationale": "Import billing stated that it will not accept a corrected figure from a message body, and the portal shows the broker's message came with no file. Relaying EUR 1,870 would be useless at best and would misrepresent what the desk holds. The broker has the document and is the only party who can resend it."
+  "rationale": "Import billing stated that it will not accept a corrected figure from a message body, and the portal shows the broker's message came with no file. Relaying EUR 1,870 would be useless at best and would misrepresent what the desk holds. The broker has the document and is the only party who can resend it.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the broker on the Broker portal to resend the file as keyed; no change to the key."
+  }
 }

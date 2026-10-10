@@ -117,5 +117,9 @@
     ],
     "reference_message": "Reconciliation request for DL-972, entry IE-70972. Your ledger shows nothing posted and a balance of £248.40. The broker, Anselm Voight of Quayline Customs Brokers, states the duty was paid on 30 April and has supplied this statement line: 30/04 DEF QCB-55180 £212.40 PLOVER ARC IMPORT. He says £212.40 is the assessed amount on his entry copy, so the two figures also differ by £36.00. Please search deferment statements and other entries for QCB-55180 and tell me what you find and what, if anything, remains due on IE-70972. I am not treating either position as settled. The parcel is on payment hold in bay H-4 and storage of £6.50 a day started today; the broker disputes the storage. The recipient has asked whether he should pay £248.40 by card to collect, and I have not advised him either way. Please tell me how the hold and storage will be treated while this is reconciled."
   },
-  "rationale": "The broker has a statement line for a £212.40 payment and the carrier's entry ledger shows £248.40 unpaid with that reference absent; Import billing has not yet searched deferment statements. Only Import billing can reconcile and lift the hold, and it has said what it needs to do so. Telling the recipient to pay again, telling the broker it will be released, or leaning on the depot would each assume one record is right."
+  "rationale": "The broker has a statement line for a £212.40 payment and the carrier's entry ledger shows £248.40 unpaid with that reference absent; Import billing has not yet searched deferment statements. Only Import billing can reconcile and lift the hold, and it has said what it needs to do so. Telling the recipient to pay again, telling the broker it will be released, or leaning on the depot would each assume one record is right.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind coordinator sent the reconciliation request with the broker's statement line to Import billing by Email, as the key expects."
+  }
 }

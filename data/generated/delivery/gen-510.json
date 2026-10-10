@@ -107,5 +107,9 @@
     ],
     "reference_message": "Please stop the EORI registration: you don't need one. The broker has corrected her request. She had DL-998 keyed as a business import; for a private individual there is no EORI requirement and she says you should not register for one for this. The payment receipt and seller's email you uploaded are accepted in place of a commercial invoice. Two things are still outstanding, both to be uploaded on the Broker portal under DL-998: a signed personal-use declaration (form PU-1, the template is there) and a copy of photo ID matching the name on the consignment. She can lodge the entry once she has them. On the bill, I can't give you a figure and neither can the broker: duty and VAT are assessed after the entry is lodged and Import billing will send you the charge. Storage is free until 2026-05-26."
   },
-  "rationale": "The broker corrected her own requirement after the desk had passed the first version on: one document is dropped, one is accepted as already supplied, and two new ones are required. The recipient is still acting on the superseded requirement and is about to register as a business he is not. The desk must replace the old list with the new one in full, and must not guess the charge that Import billing owns."
+  "rationale": "The broker corrected her own requirement after the desk had passed the first version on: one document is dropped, one is accepted as already supplied, and two new ones are required. The recipient is still acting on the superseded requirement and is about to register as a business he is not. The desk must replace the old list with the new one in full, and must not guess the charge that Import billing owns.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator told the recipient on the Customer portal the EORI requirement is withdrawn, listed the two outstanding documents and gave no charge figure, as keyed."
+  }
 }

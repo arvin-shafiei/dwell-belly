@@ -56,5 +56,6 @@
     ],
     "reference_message": null
   },
-  "rationale": "The planner's message says it is an FYI, states that the booking and window are unchanged, and says the receiving coordinator has already been told and has acknowledged. Nobody has asked the desk for anything. A message from the desk would duplicate the planner's own notice to the site."
+  "rationale": "The planner's message says it is an FYI, states that the booking and window are unchanged, and says the receiving coordinator has already been told and has acknowledged. Nobody has asked the desk for anything. A message from the desk would duplicate the planner's own notice to the site.",
+  "review": { "status": "agreed", "note": "Coordinator took no action on the planner's FYI and filed the trailer change, matching the key." }
 }

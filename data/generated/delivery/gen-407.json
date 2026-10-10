@@ -124,5 +124,6 @@
     ],
     "reference_message": "DL-907, Unit 6 Larkspur Mews: no code. The recipient says there is a concierge in the lodge from 08:00 to 18:00 every day. The driver should press the button marked LODGE on the intercom panel (not the keypad), say it is a delivery for Unit 6, and the concierge will open the gate and can sign for it if the recipient is out. Please keep the attempt inside those hours. The code in yesterday's notes was for DL-955 at Larkspur Court, a different site, so please do not put it on this job."
   },
-  "rationale": "The recipient gave a complete access arrangement that needs no code and explicitly refused to share one. The code Dispatch remembers belongs to a different recipient at Larkspur Court. The desk's job is to pass the right instruction to Dispatch for the job notes."
+  "rationale": "The recipient gave a complete access arrangement that needs no code and explicitly refused to share one. The code Dispatch remembers belongs to a different recipient at Larkspur Court. The desk's job is to pass the right instruction to Dispatch for the job notes.",
+  "review": {"status":"agreed","note":"Coordinator gave Dispatch the LODGE intercom arrangement on Dispatch chat and did not repeat the other site's code."}
 }

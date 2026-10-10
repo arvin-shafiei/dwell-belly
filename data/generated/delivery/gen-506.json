@@ -106,5 +106,9 @@
     ],
     "reference_message": "Correction on PT-962, please reopen. The recipient has now opened the parcel her neighbour at number 9 handed over and it is a different shipment, DL-958 (a garden hose from another order), not DL-962. The binoculars on DL-962 have still not been received, and number 9 says that was the only parcel they were given. Her 13:02 message asking to close was a mistake on that basis. Please reopen the trace on DL-962, reinstate the driver interview, and confirm the new status so I can update her."
   },
-  "rationale": "The recipient withdrew her report, the desk passed that on, and the owning team closed the trace and cancelled the interview. She has now corrected herself with a specific reason (the label reads DL-958), so the closure rests on a superseded statement and has to be undone by the team that owns it. The desk cannot reopen it itself and must not present the parcel as found or as lost."
+  "rationale": "The recipient withdrew her report, the desk passed that on, and the owning team closed the trace and cancelled the interview. She has now corrected herself with a specific reason (the label reads DL-958), so the closure rests on a superseded statement and has to be undone by the team that owns it. The desk cannot reopen it itself and must not present the parcel as found or as lost.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the Parcel trace team by Email to reopen PT-962 with the DL-958 correction, matching the key."
+  }
 }

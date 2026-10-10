@@ -124,5 +124,6 @@
     ],
     "reference_message": "Log request for DL-974 (chilled, Brineleaf Pantry), placed in chiller bay C at 06:10 today. Please release the bay C temperature log from 06:00 to the proposed reload at 14:00 on 2026-06-05, including any door alarms, and send it to the Food-safety lead at Brineleaf Pantry on the Safety incident queue (incident BP-0605-2). The lead has already reviewed bay A for DL-929 and is waiting only on bay C before deciding release or scrap for DL-974. The afternoon chilled run leaves at 14:15."
   },
-  "rationale": "The food-safety lead decides release and has said she is waiting only on the bay C log; the depot releases logs on request through its queue. Nobody has asked for bay C. The 'in range, released' message is about DL-929 in bay A, so nothing can be said to the customer about DL-974 arriving."
+  "rationale": "The food-safety lead decides release and has said she is waiting only on the bay C log; the depot releases logs on request through its queue. Nobody has asked for bay C. The 'in range, released' message is about DL-929 in bay A, so nothing can be said to the customer about DL-974 arriving.",
+  "review": { "status": "agreed", "note": "Coordinator requested the bay C log from the Destination depot on the Depot work queue for the food-safety lead and told the recipient nothing, matching the key." }
 }

@@ -101,5 +101,6 @@
     ],
     "reference_message": null
   },
-  "rationale": "The notice names the two suspended depots and says every other depot, Wrenfold included, is running to booked windows; Scheduling's own messages place DL-993 at Wrenfold. Scheduling has said it will contact affected recipients and that desks should not. A warning would alarm a customer whose booking has not changed, and a reassurance would turn a general notice into a delivery promise."
+  "rationale": "The notice names the two suspended depots and says every other depot, Wrenfold included, is running to booked windows; Scheduling's own messages place DL-993 at Wrenfold. Scheduling has said it will contact affected recipients and that desks should not. A warning would alarm a customer whose booking has not changed, and a reassurance would turn a general notice into a delivery promise.",
+  "review": { "status": "agreed", "note": "Coordinator took no action and checked Wrenfold against the notice, matching the key." }
 }

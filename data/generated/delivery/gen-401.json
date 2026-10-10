@@ -142,5 +142,9 @@
     ],
     "reference_message": "Please book a new two-person delivery slot for DL-941. The 2026-04-08 hold lapsed and nothing is currently held. The recipient, Marguerite Oyelaran, can receive on Friday 2026-04-10 any time after 13:00 UTC or on Saturday 2026-04-11 in the morning. Please confirm the specific window you can reserve and whether you will notify her directly."
   },
-  "rationale": "Scheduling says the 8 April hold dropped and it needs the recipient's preferred day; she gave two options that morning, which match the route days. The desk has everything Scheduling asked for, so the next step is to pass the availability to Scheduling. The 8 April dates in the thread are an expired offer and a different shipment's booking."
+  "rationale": "Scheduling says the 8 April hold dropped and it needs the recipient's preferred day; she gave two options that morning, which match the route days. The desk has everything Scheduling asked for, so the next step is to pass the availability to Scheduling. The 8 April dates in the thread are an expired offer and a different shipment's booking.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator passed the recipient's two available days to Scheduling by Email and treated nothing as booked, matching the key."
+  }
 }

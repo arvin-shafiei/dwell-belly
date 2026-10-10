@@ -74,5 +74,6 @@
     ],
     "reference_message": null
   },
-  "rationale": "The email is word for word the portal message the desk already forwarded, and the recipient said in advance he would send it twice. Routing control has acknowledged the request to both parties, asked not to be sent it again, and its stated time has not passed. A second forward risks a duplicate change and a second customer reply adds nothing."
+  "rationale": "The email is word for word the portal message the desk already forwarded, and the recipient said in advance he would send it twice. Routing control has acknowledged the request to both parties, asked not to be sent it again, and its stated time has not passed. A second forward risks a duplicate change and a second customer reply adds nothing.",
+  "review": { "status": "agreed", "note": "Coordinator took no action on the duplicate email and noted the 15:00 UTC check, matching the key." }
 }

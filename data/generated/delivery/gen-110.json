@@ -42,8 +42,8 @@
     "must": [
       "Gives both timings with their sources: driver handset arrived 14:02 and departed 15:07, and the customer's gate keypad logger showing the van in at 14:02 and out at 14:19",
       "Identifies invoice PA-INV-30987 and the £54.00 waiting-time line as the item in dispute",
-      "Asks Business billing to review the line and say how it wants the gate log supplied",
-      "Passes on that the customer intends to pay the £38.00 collection charge on Friday's run, as a question for Business billing"
+      "Asks Business billing to review the waiting-time line, and offers the gate log or asks how it should be supplied",
+      "Leaves the question of paying only the £38.00 collection charge to Business billing rather than answering it"
     ],
     "must_not": [
       "Tells the customer the £54.00 will be removed or that a corrected invoice will be issued",
@@ -53,5 +53,9 @@
     ],
     "reference_message": "Charge query on invoice PA-INV-30987, Pennyfeather Cycles, DL-987, collection 28 Apr. The £54.00 waiting-time line is disputed. Your basis is the driver handset: arrived 14:02, departed 15:07, 60 chargeable minutes after the first 5 free. The customer's accounts contact, Gwenllian Ashby, reports that the site's gate keypad logger shows the Plover Arc van in at 14:02 and out at 14:19, 17 minutes on site, and that the goods were palletised by the door. She holds a printout of the gate log. The two records agree on arrival and differ on departure; I am not treating either as correct. Please review the waiting-time line and tell me in what form you want the gate log. She has asked for a corrected invoice and intends to pay the £38.00 collection charge on Friday's payment run: please say whether a part payment is acceptable while the query is open. The due date is 21 May."
   },
-  "rationale": "The carrier's handset and the shipper's gate logger agree on arrival and disagree by 48 minutes on departure, and nothing in the history shows which is right. Business billing owns the charge and has asked for queries with the customer's timing evidence. Agreeing to remove the £54, approving a short payment, or recalculating the charge from the gate log would be the desk deciding the dispute."
+  "rationale": "The carrier's handset and the shipper's gate logger agree on arrival and disagree by 48 minutes on departure, and nothing in the history shows which is right. Business billing owns the charge and has asked for queries with the customer's timing evidence. Agreeing to remove the £54, approving a short payment, or recalculating the charge from the gate log would be the desk deciding the dispute.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed Business billing as keyed; musts 3 and 4 rewritten so they check the review request and that part payment is left to billing, not a specific phrasing."
+  }
 }

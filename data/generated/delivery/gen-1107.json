@@ -90,8 +90,7 @@
     "must": [
       "Takes no action and sends no message to anyone.",
       "Recognises that the desk is copied for visibility only: every message is between Warehouse dispatch and Business billing, and none asks the desk a question or for an action.",
-      "Records where things stand in the owners' words: Business billing issued credit note PA-CN-984 for GBP 45.00 against line 7 and closed BD-984 on its side; the merchant has not yet replied to that message.",
-      "Notes that the desk next needs to look only if either party addresses it directly."
+      "Gives the reason nothing is owed: Business billing owns the dispute and has issued credit note PA-CN-984 for line 7, and its closing question is addressed to the merchant, not the desk."
     ],
     "must_not": [
       "Replies to the thread to acknowledge, summarise or confirm the credit to either party.",
@@ -102,5 +101,9 @@
     ],
     "reference_message": null
   },
-  "rationale": "The two parties that own the invoice are settling it between themselves and copied the desk for visibility, saying so in the first message. The last message is addressed to the merchant and its only open point is for the merchant. A reply from the desk would add a third voice to a billing thread it has no authority in."
+  "rationale": "The two parties that own the invoice are settling it between themselves and copied the desk for visibility, saying so in the first message. The last message is addressed to the merchant and its only open point is for the merchant. A reply from the desk would add a third voice to a billing thread it has no authority in.",
+  "review": {
+    "status": "widened",
+    "note": "Coordinator's no_action matched, but two must items demanded log wording a fair reviewer would not require; rewritten to be checkable."
+  }
 }

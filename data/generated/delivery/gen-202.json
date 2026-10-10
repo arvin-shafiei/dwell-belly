@@ -56,7 +56,9 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["contact"],
+    "acceptable_dispositions": [
+      "contact"
+    ],
     "acceptable_actions": [
       {
         "recipient": "Return label team, Tallowmere Goods",
@@ -78,5 +80,9 @@
     ],
     "reference_message": "Return RT-929 for order TG-929 (original shipment DL-929, cast-iron casserole set) was approved by Returns authorisations on 2026-03-24, but the customer, Halvard Imrie, still has no printable label on his order. A request this desk posted through your Business portal on 2026-03-24 was rejected by the portal and never reached you, so this is the first time you are seeing it. Please issue the label against RT-929 and send it to the customer in the verified returns thread. The approval lapses on 2026-03-31 and he is away from Sunday 2026-03-29, so he needs it in time to post by Saturday 2026-03-28. Please confirm once it is issued."
   },
-  "rationale": "The portal rejected the desk's request, so the label team has never been asked and two days of the approval window are gone. Returns authorisations said the label team takes requests by email, which is the working route. The desk cannot issue a label or extend the approval, and telling the customer it is on its way would repeat a request that never landed."
+  "rationale": "The portal rejected the desk's request, so the label team has never been asked and two days of the approval window are gone. Returns authorisations said the label team takes requests by email, which is the working route. The desk cannot issue a label or extend the approval, and telling the customer it is on its way would repeat a request that never landed.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed the Return label team as keyed; no change to the key."
+  }
 }

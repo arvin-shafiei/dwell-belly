@@ -65,7 +65,9 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["contact"],
+    "acceptable_dispositions": [
+      "contact"
+    ],
     "acceptable_actions": [
       {
         "recipient": "Business billing, Plover Arc Logistics",
@@ -88,5 +90,9 @@
     ],
     "reference_message": "Please log a dispute on invoice INV-70962, shipment DL-981: 5-day storage charge, 112.50. The shipper, Sable & Thorn Ceramics, says the goods were held at the depot because it was closed for a stock count and not for any reason on their side. This desk submitted the dispute on the Business portal form on 2026-03-23, but the form rejected it as a duplicate of BD-4410. BD-4410 was the redelivery fee on INV-70318, which you closed and credited on 2026-02-27, so there is currently no dispute on the storage charge and your statement shows it as payable. The invoice is due for direct debit collection tomorrow, 2026-03-27. Please confirm today whether the dispute is logged and whether collection of the 112.50 will be held while you review it."
   },
-  "rationale": "The portal rejected the dispute as a duplicate of BD-4410, which was a different, already-closed fee, so nothing is open against the storage charge and billing's own statement lists it as payable for collection tomorrow. The rejection notice itself says to write to Business billing for anything beyond one dispute per shipment. Only billing can hold or credit a charge, and whether the shipper cancels its mandate is its own decision."
+  "rationale": "The portal rejected the dispute as a duplicate of BD-4410, which was a different, already-closed fee, so nothing is open against the storage charge and billing's own statement lists it as payable for collection tomorrow. The rejection notice itself says to write to Business billing for anything beyond one dispute per shipment. Only billing can hold or credit a charge, and whether the shipper cancels its mandate is its own decision.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed Business billing to raise the dispute and ask about the hold, matching the key."
+  }
 }

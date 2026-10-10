@@ -66,5 +66,6 @@
     ],
     "reference_message": "Thanks for your voicemail about DL-959. Scheduling has a crew slot open on two Tuesday afternoons: Tuesday 10 March and Tuesday 17 March. Which one do you want? Nothing has been moved yet and slots are not held, so please reply as soon as you can and I will ask Scheduling for that date."
   },
-  "rationale": "Two Tuesday afternoon crew slots are open and the voicemail does not say which, nor how long the recipient is away. Scheduling asked for an exact date and will not move a crew booking twice, so picking the nearer Tuesday risks a failed delivery that cannot be rebooked easily. Only the recipient can say which Tuesday he means."
+  "rationale": "Two Tuesday afternoon crew slots are open and the voicemail does not say which, nor how long the recipient is away. Scheduling asked for an exact date and will not move a crew booking twice, so picking the nearer Tuesday risks a failed delivery that cannot be rebooked easily. Only the recipient can say which Tuesday he means.",
+  "review": { "status": "agreed", "note": "Blind answer asked the recipient on the Customer portal which Tuesday he meant and sent nothing to Scheduling, as the key expects." }
 }

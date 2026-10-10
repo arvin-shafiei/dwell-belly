@@ -97,5 +97,9 @@
     ],
     "reference_message": "DMG-965, DL-965 (TG-965): the carrier's condition records as received, which do not agree with each other. Destination depot: hub exception 27 Apr 22:14, 'carton corner damage, retaped, contents not inspected', retape band applied, forwarded for delivery as normal. Dispatch: driver handover note 28 Apr 13:32, 'delivered good condition, customer signed clear, no damage noted', signature on handset. The recipient, Leocadia Frum, reports a crushed corner under a band of brown carrier tape and one lamp base cracked through, with photos on the order. She adds that she signed the handset on the doorstep before taking the box indoors, to acknowledge receipt and not condition, and asks whether a 'signed clear' note affects her claim. I have not reconciled these or told her anything about the outcome. Please assess and tell me what she should be told."
   },
-  "rationale": "The depot's hub exception records carton damage the night before delivery while the driver's note says good condition and signed clear, and the recipient disputes what her signature meant. Damage intake asked for conflicting records to be sent as they stand and said no replacement decision would come before that. Answering her question either way, or naming who caused the damage, would be the desk assessing the claim."
+  "rationale": "The depot's hub exception records carton damage the night before delivery while the driver's note says good condition and signed clear, and the recipient disputes what her signature meant. Damage intake asked for conflicting records to be sent as they stand and said no replacement decision would come before that. Answering her question either way, or naming who caused the damage, would be the desk assessing the claim.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent both carrier records and the recipient's account unreconciled to Damage intake by Email under DMG-965, matching the key."
+  }
 }

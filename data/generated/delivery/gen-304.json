@@ -115,5 +115,9 @@
     ],
     "reference_message": "I am sorry one of your boxes arrived crushed. You had two parcels delivered yesterday: DL-937 (the planter set) and DL-938 (the bathroom cabinet). Please tell me which reference is on the label of the crushed box. Please do not open it to check. The merchant's damage team opens one assessment per parcel and needs that reference first; they will then decide on a replacement, which is their decision and not one I can make."
   },
-  "rationale": "Two parcels arrived at the same stop and the recipient says only 'one of the boxes'. Damage intake will not open an assessment without the shipment reference, and guessing the fragile-labelled cabinet could put the claim against the wrong order. Asking for the photo views in the same message is fine because Damage intake requires them and the label view also identifies the box, but nothing can go to Damage intake until the recipient says which one."
+  "rationale": "Two parcels arrived at the same stop and the recipient says only 'one of the boxes'. Damage intake will not open an assessment without the shipment reference, and guessing the fragile-labelled cabinet could put the claim against the wrong order. Asking for the photo views in the same message is fine because Damage intake requires them and the label view also identifies the box, but nothing can go to Damage intake until the recipient says which one.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the recipient on the Customer portal which DL reference is on the crushed box before anything goes to Damage intake, as keyed."
+  }
 }

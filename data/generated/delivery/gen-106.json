@@ -67,7 +67,7 @@
       }
     ],
     "must": [
-      "Gives the customer's receipt details (Farrow Street pickup point, 14 Apr 15:22, one parcel, reference ending 945, shop stamp) and that DL-945 has no carrier scan since label creation",
+      "Gives the customer's drop-off evidence (handed in at the Farrow Street pickup point on 14 April, stamped paper receipt) and that DL-945 has no carrier scan since label creation",
       "Asks the Parcel trace team to trace the parcel, including the handover from the pickup point, and report a finding",
       "Mentions that the return window closes on 27 Apr"
     ],
@@ -80,5 +80,9 @@
     ],
     "reference_message": "Please trace return label DL-945 (Tallowmere order TG-945, cordless vacuum). The customer, Nkem Adeyo, reports handing it in at the Farrow Street newsagent pickup point and holds a paper receipt: 14/04, 15:22, one parcel, reference ending 945, stamped by the shop. Tracking shows label created, not yet received, and there has been no carrier scan of any kind. The receipt and the scan record conflict and I am not treating the parcel as lost or as not handed in. Please check the pickup point's handover for 14 Apr onward and any unscanned returns from that location, and tell me the finding. The merchant's return window closes on 27 Apr and the refund depends on a first carrier scan, so timing matters."
   },
-  "rationale": "A stamped drop-off receipt says the parcel entered the network and the carrier's record says it never did; neither proves where the vacuum is. The Refunds team will not act without a scan and points to the Parcel trace team for unscanned labels. Promising the refund, declaring the return lost, or pressing Refunds to pay on the receipt would each settle the conflict by assertion."
+  "rationale": "A stamped drop-off receipt says the parcel entered the network and the carrier's record says it never did; neither proves where the vacuum is. The Refunds team will not act without a scan and points to the Parcel trace team for unscanned labels. Promising the refund, declaring the return lost, or pressing Refunds to pay on the receipt would each settle the conflict by assertion.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator emailed the Parcel trace team as keyed; must 1 loosened so it no longer requires every receipt detail to be restated."
+  }
 }

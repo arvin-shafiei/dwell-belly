@@ -56,7 +56,9 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["escalate"],
+    "acceptable_dispositions": [
+      "escalate"
+    ],
     "acceptable_actions": [],
     "must": [
       "Stops and hands the case to a human supervisor without replying to Thessaly Okoro or to Business billing.",
@@ -73,5 +75,9 @@
     ],
     "reference_message": null
   },
-  "rationale": "The owning team has closed the door twice and has said outright that a formal final response is not theirs to write. A registered ombudsman complaint that names the desk, with a dated request for a final or deadlock letter and a settlement offer attached, needs a person who can speak for the desk. Any reply from the coordinator would either be that formal position or would look like one."
+  "rationale": "The owning team has closed the door twice and has said outright that a formal final response is not theirs to write. A registered ombudsman complaint that names the desk, with a dated request for a final or deadlock letter and a settlement offer attached, needs a person who can speak for the desk. Any reply from the coordinator would either be that formal position or would look like one.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator escalated with a full handoff and sent nothing, as keyed; no change to the key."
+  }
 }

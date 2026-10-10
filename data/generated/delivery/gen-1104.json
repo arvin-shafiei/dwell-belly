@@ -101,5 +101,6 @@
     ],
     "reference_message": null
   },
-  "rationale": "Damage intake gave a clear time, 16:00 UTC, and it is 13:00. The customer knows the time and has said she will wait. The reminder is system-generated, goes to every watcher and says no response is required, so the only correct record is that the item is in hand and not overdue."
+  "rationale": "Damage intake gave a clear time, 16:00 UTC, and it is 13:00. The customer knows the time and has said she will wait. The reminder is system-generated, goes to every watcher and says no response is required, so the only correct record is that the item is in hand and not overdue.",
+  "review": { "status": "agreed", "note": "Coordinator took no action, sent nothing and set the 16:00 UTC check, matching the key." }
 }

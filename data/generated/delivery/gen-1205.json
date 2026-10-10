@@ -65,7 +65,10 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["contact", "escalate"],
+    "acceptable_dispositions": [
+      "contact",
+      "escalate"
+    ],
     "acceptable_actions": [
       {
         "recipient": "Replacement authorisations, Tallowmere Goods",
@@ -87,5 +90,9 @@
     ],
     "reference_message": "Replacement request for TG-961 / DL-961, for your decision. Carrier finding (Delivery investigations, 25 Feb): delivery valid, signed for by the concierge at Tarn House front desk at 11:40 on 24 Feb, signature, photo and GPS match; the carrier has closed its side and will not send a driver to a sealed building. Customer's account: Tarn House was evacuated at about 13:00 the same day and sealed by the council, she has never had the parcel and has been told access may be days or weeks away. She asks for a replacement sent to a temporary address and offers to return the original when the building reopens. She mentions a work deadline of 9 March. I have promised her nothing. Please tell me your decision and what I may say to her."
   },
-  "rationale": "Both things are true: the delivery was valid and the customer has never had the goods, for a reason no one planned for. The carrier has closed its side and said the rest is for the merchant, and the merchant's own note says replacement requests on delivered orders come to Replacement authorisations with the carrier's finding. The desk asks and does not decide, so it must not promise a replacement, shut the customer down on the strength of the delivered scan, or send a driver to a sealed building. A supervisor handoff is also acceptable because the situation sits outside any written rule."
+  "rationale": "Both things are true: the delivery was valid and the customer has never had the goods, for a reason no one planned for. The carrier has closed its side and said the rest is for the merchant, and the merchant's own note says replacement requests on delivered orders come to Replacement authorisations with the carrier's finding. The desk asks and does not decide, so it must not promise a replacement, shut the customer down on the strength of the delivered scan, or send a driver to a sealed building. A supervisor handoff is also acceptable because the situation sits outside any written rule.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator put the replacement request to Replacement authorisations by Email with the carrier finding quoted and no outcome promised, as keyed."
+  }
 }

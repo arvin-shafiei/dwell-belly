@@ -83,7 +83,9 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["contact"],
+    "acceptable_dispositions": [
+      "contact"
+    ],
     "acceptable_actions": [
       {
         "recipient": "Warehouse dispatch, Tallowmere Goods",
@@ -105,5 +107,9 @@
     ],
     "reference_message": "TG-926 / DL-926, for your decision as shipper. Delivery failed on 13 April because the recipient, Lucan Abara, has moved out of the order address. He has since given an address abroad (Apt 9, Rua do Farol 41, Porto Selva, Ilhas Marrow) and asks for the parcel to be forwarded there at his cost; he says he cannot collect and no one at the old address will accept it. Routing control confirms the carrier has no international service or tariff on your account. The parcel is held at Wexcombe depot until 21 April and then returns to you. I have told him only that. What do you want done with the order, and what may I tell him?"
   },
-  "rationale": "This looks like an address fix, but the carrier has no international service and no tariff, so any fee or forwarding promise would be made up. Routing control has named the owner of an order that cannot be delivered in-country: the shipper's Warehouse dispatch, by Email. The desk puts the question there before the 21 April return date and tells the recipient nothing new until the shipper decides."
+  "rationale": "This looks like an address fix, but the carrier has no international service and no tariff, so any fee or forwarding promise would be made up. Routing control has named the owner of an order that cannot be delivered in-country: the shipper's Warehouse dispatch, by Email. The desk puts the question there before the 21 April return date and tells the recipient nothing new until the shipper decides.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator put the decision to Warehouse dispatch by Email with the carrier's position and the 21 April date, breaking no must_not rule."
+  }
 }

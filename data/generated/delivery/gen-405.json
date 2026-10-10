@@ -142,5 +142,9 @@
     ],
     "reference_message": "Please go ahead and reissue return label RL-985 (RA-985, DL-985, coffee grinder) as you offered on 2026-05-05. The original bounced and the customer, Bartholomew Ekwueme, confirms he never received it; he says his old mailbox is closed and his current email is already on his Tallowmere account. Please send the reissue to the email now held on that account and confirm to me once it has gone. The return window closes on 2026-05-16, and Returns authorisations is chasing."
   },
-  "rationale": "The label team said the first label bounced and that it will reissue to the account email as soon as the desk asks. The customer confirmed the account email is current. The drop-off scan Returns authorisations mentions belongs to RL-938, the customer's kettle, not this return."
+  "rationale": "The label team said the first label bounced and that it will reissue to the account email as soon as the desk asks. The customer confirmed the account email is current. The drop-off scan Returns authorisations mentions belongs to RL-938, the customer's kettle, not this return.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked the Return label team by Email to reissue RL-985 to the account email and confirm, as keyed, and broke no must_not rule."
+  }
 }

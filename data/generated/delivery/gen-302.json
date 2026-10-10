@@ -61,5 +61,6 @@
     ],
     "reference_message": "I am sorry part of your order is missing. TG-914 was sent as two cartons with their own labels: the desk frame (long flat carton, label DL-914) and the desk top (square carton, label DL-915). Please tell me which one you have received, or the DL number on the label of the carton that did arrive. With that I can ask the carrier to trace the right one. I cannot say yet where the other carton is."
   },
-  "rationale": "TG-914 covers two shipments and the recipient does not say which half arrived, so a trace request cannot name a parcel. The porch-drop scan makes DL-914 the tempting guess, but a trace opened on the wrong carton wastes the carrier's time and leaves the missing one unlooked for. One question to the recipient settles it."
+  "rationale": "TG-914 covers two shipments and the recipient does not say which half arrived, so a trace request cannot name a parcel. The porch-drop scan makes DL-914 the tempting guess, but a trace opened on the wrong carton wastes the carrier's time and leaves the missing one unlooked for. One question to the recipient settles it.",
+  "review": { "status": "agreed", "note": "Coordinator asked the recipient on the Customer portal which carton arrived, matching the key; its extra questions about the porch and other residents sit close to the fourth must_not." }
 }

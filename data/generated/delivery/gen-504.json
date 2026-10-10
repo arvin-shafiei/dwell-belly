@@ -124,5 +124,9 @@
     ],
     "reference_message": "Change to DL-941, at the recipient's request in his order thread: Bryn no longer wants the redelivery on 2026-03-27 and has asked to collect from the destination depot counter instead. Please release DL-941 from run R-27C and remove the Friday redelivery so the depot can move it to the collection shelf; they tell us they cannot do that until you release it. He is hoping to collect on Thursday 2026-03-26 after 17:00. Please confirm once it is released."
   },
-  "rationale": "The Friday redelivery was the recipient's first instruction and has been actioned by Dispatch; he has since replaced it with depot collection and confirmed that after being told what it involves. The depot cannot act until Dispatch releases the parcel, so the undo has to go through Dispatch. Nothing is arranged yet, so telling him to come, or leaving Friday in place, are both wrong."
+  "rationale": "The Friday redelivery was the recipient's first instruction and has been actioned by Dispatch; he has since replaced it with depot collection and confirmed that after being told what it involves. The depot cannot act until Dispatch releases the parcel, so the undo has to go through Dispatch. Nothing is arranged yet, so telling him to come, or leaving Friday in place, are both wrong.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator asked Dispatch by Email to release DL-941 from run R-27C and remove the Friday redelivery, matching the key."
+  }
 }

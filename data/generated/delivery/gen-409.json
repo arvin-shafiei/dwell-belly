@@ -133,5 +133,6 @@
     ],
     "reference_message": "INV-926, DL-926: the information you asked for on 2026-06-08. Dispatch records attempt 1 on 2026-06-03 as not leaving the depot because of a vehicle fault, reason code F-07, carrier-caused. Attempt 2 on 2026-06-04 was delivered at 10:14. Please review the GBP 24.00 failed delivery re-attempt line on INV-926 on that basis and confirm whether it is waived and, if so, the credit note reference and revised amount due. The customer, Fernhollow Print, has a payment run on Friday and has seen CN-939 on its statement; that credit is against INV-939, so a clear answer on INV-926 before Friday would help."
   },
-  "rationale": "Business billing said it will review the fee once it has Dispatch's reason code, and Dispatch has since supplied F-07, carrier-caused. Billing has not been given it. The GBP 24.00 credit note on the portal is for a different invoice, so the desk cannot confirm any deduction from INV-926."
+  "rationale": "Business billing said it will review the fee once it has Dispatch's reason code, and Dispatch has since supplied F-07, carrier-caused. Billing has not been given it. The GBP 24.00 credit note on the portal is for a different invoice, so the desk cannot confirm any deduction from INV-926.",
+  "review": { "status": "agreed", "note": "Coordinator sent reason code F-07 to Business billing by Email and treated the fee as under review, matching the key." }
 }

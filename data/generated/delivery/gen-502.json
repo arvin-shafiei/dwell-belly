@@ -112,5 +112,9 @@
     ],
     "reference_message": "DL-927: Flat 14 goes on the label. Please keep the queued correction to Flat 14, Sorrel Court, 18 Pennon Lane. That is the only change the order holder, Marnie Oduya, has asked for in her authenticated thread; she wrote again there at 12:10 and said nothing about a different address. The Dray Street request reached us by phone from the same caller, who is not the order holder, and under your own rule a different street address needs Tallowmere Goods to re-verify her first. Please do not apply it. Can you confirm once the label has reprinted with Flat 14?"
   },
-  "rationale": "The most recent request (Dray Street) comes from a caller with no authority over the order, by a channel Routing control says it does not accept, and for a change that needs merchant re-verification. The order holder's own instruction is Flat 14, and she wrote in her thread after the call without mentioning any redirect. The latest valid instruction is therefore Flat 14, and pulling it would send the parcel to an empty flat."
+  "rationale": "The most recent request (Dray Street) comes from a caller with no authority over the order, by a channel Routing control says it does not accept, and for a change that needs merchant re-verification. The order holder's own instruction is Flat 14, and she wrote in her thread after the call without mentioning any redirect. The latest valid instruction is therefore Flat 14, and pulling it would send the parcel to an empty flat.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator told Routing control in Dispatch chat to keep Flat 14 and not apply the Dray Street redirect, as keyed."
+  }
 }

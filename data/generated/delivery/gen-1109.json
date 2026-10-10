@@ -64,7 +64,7 @@
       "Takes no action and sends no message to anyone.",
       "Recognises that the customer's message repeats back, correctly, the details the desk passed on at 11:50 and contains no question or new request.",
       "Records what is in hand: label RL-939 is issued and received, the drop-off is the customer's to make by 2026-04-21, and the refund sits with the Refunds team after warehouse receipt and inspection.",
-      "Notes that the desk next needs to look only if the customer or a merchant team reports a problem with the label, the drop-off or the return."
+      "Notes that nothing further is due from the desk unless a new message or a problem with the label, the drop-off or the return arrives."
     ],
     "must_not": [
       "Sends the customer a message repeating the label, counter or date details she has just confirmed.",
@@ -74,5 +74,9 @@
     ],
     "reference_message": null
   },
-  "rationale": "The customer has the label and has restated every detail accurately, including that the refund comes only after inspection. She asks nothing. The next step is hers, and the only things the desk could add are a repeat of its own message or a refund assurance it does not control."
+  "rationale": "The customer has the label and has restated every detail accurately, including that the refund comes only after inspection. She asks nothing. The next step is hers, and the only things the desk could add are a repeat of its own message or a refund assurance it does not control.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator took no action as keyed; must 4 rewritten to accept any note that the case rests until a new message or problem."
+  }
 }

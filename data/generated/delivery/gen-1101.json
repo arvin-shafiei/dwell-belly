@@ -90,7 +90,7 @@
     "must": [
       "Takes no action and sends no message to anyone.",
       "Records why nothing is owed: the Recovery team confirmed handover of DL-919 to the recipient at 16:44 with signature and photo, closed RC-919, and the recipient herself confirms she has the sealed parcel.",
-      "Notes that the final message is a thank-you with no question or request in it, and that the desk only needs to look again if the recipient or a carrier team writes with something new."
+      "Notes that the recipient's final message is a thank-you that asks for nothing further."
     ],
     "must_not": [
       "Sends Odile a closing or 'you're welcome' message that restates the delivery or the case status.",
@@ -101,5 +101,9 @@
     ],
     "reference_message": null
   },
-  "rationale": "The Recovery team, which owns retrieval, has confirmed the handover with signature and closed its reference, and the recipient has independently confirmed she has the sealed parcel. Her last message is thanks and asks for nothing. Any further message would only repeat what both sides already know."
+  "rationale": "The Recovery team, which owns retrieval, has confirmed the handover with signature and closed its reference, and the recipient has independently confirmed she has the sealed parcel. Her last message is thanks and asks for nothing. Any further message would only repeat what both sides already know.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator took no action for the keyed reasons; the third must item was trimmed to the checkable part (the last message asks for nothing)."
+  }
 }

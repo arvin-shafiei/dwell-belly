@@ -56,7 +56,9 @@
     }
   ],
   "expected": {
-    "acceptable_dispositions": ["contact"],
+    "acceptable_dispositions": [
+      "contact"
+    ],
     "acceptable_actions": [
       {
         "recipient": "Damage intake, Tallowmere Goods",
@@ -78,5 +80,9 @@
     ],
     "reference_message": "Damage report for order TG-942 / shipment DL-942, floor lamp, delivered 2026-03-09. The customer, Corwen Adeyemi-Lisk, reports the glass shade cracked across and one corner of the carton crushed. Four photos are uploaded on the order. This desk first sent the report to your Refunds team on 2026-03-11; they have told us it is not theirs, has not been passed to you and nothing is logged. Please log it for assessment. The 7-day window from delivery ends on 2026-03-16, so please confirm here that it is logged and give the reference."
   },
-  "rationale": "The Refunds team said plainly that the report reached the wrong team, was not forwarded and nothing is logged, and it named Damage intake and the Warehouse work queue as the route. The 7-day logging window from the 2026-03-09 delivery runs out on 2026-03-16, so the report has to be logged properly now. The desk cannot say a claim exists or that money is coming back; Damage intake assesses and Refunds decides."
+  "rationale": "The Refunds team said plainly that the report reached the wrong team, was not forwarded and nothing is logged, and it named Damage intake and the Warehouse work queue as the route. The 7-day logging window from the 2026-03-09 delivery runs out on 2026-03-16, so the report has to be logged properly now. The desk cannot say a claim exists or that money is coming back; Damage intake assesses and Refunds decides.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator logged the report with Damage intake on the Warehouse work queue and flagged the 7-day window, matching the key."
+  }
 }

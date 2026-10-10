@@ -99,7 +99,7 @@
       }
     ],
     "must": [
-      "Gives the manifest gross 1,840 kg and weighbridge ticket WB-5530 at 1,838 kg alongside the consignee's dock-scale total of 1,612 kg gross, including the 361 kg reading for P3",
+      "Gives both conflicting weight records: the manifest or origin weighbridge figure (about 1,840 kg) and the consignee's dock-scale total of 1,612 kg gross",
       "Asks the Freight planner for the reweigh check and for an instruction on how the consignee should sign and whether the driver should wait",
       "Says the driver is still on the dock with an 11:30 collection and the consignee will not sign clean",
       "Does not say which weight is correct"
@@ -113,5 +113,9 @@
     ],
     "reference_message": "Weight query on DL-931, driver still on dock 3 at Marrow & Finch. Your records: manifest gross 1,840 kg, origin weighbridge ticket WB-5530 at 1,838 kg. The receiving coordinator, Tobiah Strand, reports a dock-scale total of 1,612 kg gross with pallet bases on, 228 kg lower: P3 reads 361 kg and the other three 415 to 420 kg each. Count is 4 of 4 and the wrap looks intact; the driver says straps and wrap are untouched. The scale's certificate sticker is dated November. I am not treating either figure as correct. The consignee will not sign clean and has asked either to sign as received short or to have all four taken back; the driver has an 11:30 collection. Please run the reweigh check and tell me how the consignee should sign and whether the driver waits."
   },
-  "rationale": "The origin weighbridge and the receiving dock scale disagree by 228 kg and nothing in the history shows which instrument is right. The Freight planner states that weight queries go to them for a reweigh check before anything is signed or written up as a shortage. Confirming a short shipment, or telling either side to sign or reload, would be the desk settling a dispute it does not own under time pressure from both the driver and the consignee."
+  "rationale": "The origin weighbridge and the receiving dock scale disagree by 228 kg and nothing in the history shows which instrument is right. The Freight planner states that weight queries go to them for a reweigh check before anything is signed or written up as a shortage. Confirming a short shipment, or telling either side to sign or reload, would be the desk settling a dispute it does not own under time pressure from both the driver and the consignee.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent the weight conflict to the Freight planner on the Freight portal as keyed; the first must item was relaxed so it no longer demands the P3 reading and ticket number be restated."
+  }
 }

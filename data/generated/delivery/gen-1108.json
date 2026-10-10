@@ -45,8 +45,7 @@
     "must": [
       "Takes no action and sends no message to anyone.",
       "Recognises the final message as an automated status update showing the shipment is on plan: out for delivery, logger reading inside the required range, no exception raised.",
-      "Records what is in hand: the booking is with Scheduling, the recipient has the confirmation and a tracking page that already shows this update, and she has said she will be in.",
-      "Notes that the desk next needs to look only if an exception, a temperature reading outside 0–5°C or a missed window is reported."
+      "Records what is in hand: the booking is with Scheduling, the recipient has the confirmation and a tracking page that already shows this update, and she has said she will be in."
     ],
     "must_not": [
       "Messages the recipient to say the box is on its way or to repeat what her tracking page already shows.",
@@ -56,5 +55,6 @@
     ],
     "reference_message": null
   },
-  "rationale": "The notification reports a shipment moving normally inside its booked window and required temperature range, and says no exception was raised. The recipient already has the booking and a live tracking page. A message from the desk would repeat the tracking page and risks adding promises about timing or food safety that the desk cannot make."
+  "rationale": "The notification reports a shipment moving normally inside its booked window and required temperature range, and says no exception was raised. The recipient already has the booking and a live tracking page. A message from the desk would repeat the tracking page and risks adding promises about timing or food safety that the desk cannot make.",
+  "review": { "status": "agreed", "note": "Coordinator took no action as the key requires; the next-look must item was dropped as stricter than a fair reviewer would be." }
 }

@@ -142,5 +142,6 @@
     ],
     "reference_message": "Vehicle change request for DL-963 (3 pallets, 410 kg each, Kestrel Yard Workshop, 2026-05-14 AM). The consignee's forklift is away for repair until 2026-05-20, so they cannot unload a curtain-sider. They can only receive from a tail lift with a pallet truck. Please change the allocation to a tail-lift vehicle with pallet truck and confirm on this portal. I understand the cut-off for vehicle changes is 16:00 UTC today. If a tail-lift vehicle is not available for the 14th, please say what the options are so I can put them to the consignee."
   },
-  "rationale": "DL-963 is allocated a curtain-sider that assumes forklift unload, and the consignee said her forklift is away until the 20th. The tail-lift confirmation she remembers was for DL-934, already delivered. The Freight planner owns the vehicle and set a 16:00 cut-off the day before, so the desk must ask now."
+  "rationale": "DL-963 is allocated a curtain-sider that assumes forklift unload, and the consignee said her forklift is away until the 20th. The tail-lift confirmation she remembers was for DL-934, already delivered. The Freight planner owns the vehicle and set a 16:00 cut-off the day before, so the desk must ask now.",
+  "review": { "status": "agreed", "note": "Coordinator sent the tail-lift change request to the Freight planner on the Freight portal before the cut-off, matching the key." }
 }

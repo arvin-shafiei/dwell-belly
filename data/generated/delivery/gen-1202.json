@@ -86,5 +86,9 @@
     ],
     "reference_message": "DL-934 / TG-934, hold notice BH-2291. The merchant's customer care team is asking us to tell the buyer why the shipment is held and when it will be released. Import billing confirms no assessment or charge exists. Is there any wording about the hold you approve for the buyer and the merchant, and does the authority need anything from the shipper? I have given no reason and no release date and will not until you say what can be said."
   },
-  "rationale": "The authority has given no reason, Import billing has said there is no charge and nothing to invoice, and the broker has said that anything about the hold, including what the buyer is told, comes to it. The merchant's suggested lines are both guesses presented as facts, and asking Import billing to raise a fee invents a charge that does not exist. Going to the broker is the owner route the history names; an authority hold with no stated reason is also sensitive enough that handing it to a supervisor is defensible."
+  "rationale": "The authority has given no reason, Import billing has said there is no charge and nothing to invoice, and the broker has said that anything about the hold, including what the buyer is told, comes to it. The merchant's suggested lines are both guesses presented as facts, and asking Import billing to raise a fee invents a charge that does not exist. Going to the broker is the owner route the history names; an authority hold with no stated reason is also sensitive enough that handing it to a supervisor is defensible.",
+  "review": {
+    "status": "agreed",
+    "note": "Blind coordinator took the wording question to the appointed broker on the Broker portal and gave no reason or release date, as the key expects."
+  }
 }

@@ -74,5 +74,6 @@
     ],
     "reference_message": null
   },
-  "rationale": "The desk's answer has been delivered to the thread the recipient asked for it in, and he said in advance he would be away and that there was no rush. The out-of-office is automatic and asks nothing. He returns well before the hold expires, so nothing is at risk and nothing is owed until he reads the message."
+  "rationale": "The desk's answer has been delivered to the thread the recipient asked for it in, and he said in advance he would be away and that there was no rush. The out-of-office is automatic and asks nothing. He returns well before the hold expires, so nothing is at risk and nothing is owed until he reads the message.",
+  "review": { "status": "agreed", "note": "Blind answer took no action on the automatic out-of-office reply and logged when to look again, as the key expects." }
 }

@@ -112,5 +112,9 @@
     ],
     "reference_message": "Not complete. Ottoline's second message only replaced the entrance; her other two requests from this morning still stand and were lost when the note was replaced. Full text for DL-934 please: 'FRONT entrance, Hallam St. 9 steps, stair-climber. Cooper's Row at rear is closed, do not use. Phone recipient 20 min before arrival. Recipient to check model before crew leaves.' Please confirm that is what prints at 17:00."
   },
-  "rationale": "The recipient's later message replaced one part of her instruction, the entrance, and said nothing to withdraw the call ahead or the model check. Dispatch overwrote the whole note, so the text about to print has lost two instructions she still relies on (she will be away from the house until called). Answering yes treats the latest message as the whole instruction; reverting to the rear acts on the superseded part."
+  "rationale": "The recipient's later message replaced one part of her instruction, the entrance, and said nothing to withdraw the call ahead or the model check. Dispatch overwrote the whole note, so the text about to print has lost two instructions she still relies on (she will be away from the house until called). Answering yes treats the latest message as the whole instruction; reverting to the rear acts on the superseded part.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator told Dispatch in Dispatch chat the note is incomplete and sent full text restoring the call ahead and model check, as keyed."
+  }
 }

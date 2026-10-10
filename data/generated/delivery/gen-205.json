@@ -87,5 +87,6 @@
     ],
     "reference_message": "Commercial invoice CI-2291 for DL-956, from the shipper Fernwick Looms, is uploaded here against the shipment: PDF, 3 pages, HS codes on page 2, declared value on page 3. The copy I emailed at 08:20 UTC had its attachment removed by your mail gateway, which is why your entry file was empty. Please confirm you can see the document on the entry file and whether it is enough to lodge before the 14:00 UTC cut-off."
   },
-  "rationale": "The broker's mail gateway stripped the attachment, so he received an email with no invoice and the entry file is empty. He told the desk in event 2 that documents uploaded in the Broker portal go straight onto the entry file, and the desk already holds the invoice from the shipper. Emailing it again will lose the attachment again, and whether it clears today is the broker's and customs' call."
+  "rationale": "The broker's mail gateway stripped the attachment, so he received an email with no invoice and the entry file is empty. He told the desk in event 2 that documents uploaded in the Broker portal go straight onto the entry file, and the desk already holds the invoice from the shipper. Emailing it again will lose the attachment again, and whether it clears today is the broker's and customs' call.",
+  "review": { "status": "agreed", "note": "Coordinator sent the invoice to Jorun Pell on the Broker portal and asked for confirmation on the entry file, matching the key." }
 }

@@ -101,7 +101,7 @@
     "must": [
       "Asks Dispatch to stop the 2026-04-22 delivery of DL-976 and remove it from the route.",
       "Asks for the box to be held at the depot for Brineleaf Pantry's collection.",
-      "Attributes the instruction to the Brineleaf Pantry food-safety lead and corrects the earlier 72-hour figure (the box is validated for 36 hours from pack, which runs out at 02:00 on 2026-04-22, before the delivery window).",
+      "Attributes the instruction to the Brineleaf Pantry food-safety lead and tells Dispatch the earlier 72-hour figure does not apply to this box, whose validation ends before the 2026-04-22 delivery window.",
       "Asks Dispatch to confirm the hold."
     ],
     "must_not": [
@@ -112,5 +112,9 @@
     ],
     "reference_message": "Urgent on DL-976 (Brineleaf Pantry chilled box, on tomorrow's 08:00–12:00 load list): please stop it. The Brineleaf Pantry food-safety lead has corrected the figure I passed you yesterday. The 72 hours their warehouse quoted applies to a different product line; this box is validated for 36 hours from pack, which runs out at 02:00 on 2026-04-22, before the delivery window opens. Their instruction is that the 2026-04-22 delivery must not go ahead. Please take DL-976 off the route and hold it at the depot for Brineleaf's collection, and confirm when the hold is in place. Brineleaf will contact the recipient themselves."
   },
-  "rationale": "The rebooking was made on the merchant warehouse's 72-hour statement, which the food-safety lead, who owns that judgement, has now corrected. The booking has already been actioned by Dispatch, so it has to be undone through Dispatch. The food-safety lead also asked the desk not to contact the customer yet, so the only correct message is the stop-and-hold request."
+  "rationale": "The rebooking was made on the merchant warehouse's 72-hour statement, which the food-safety lead, who owns that judgement, has now corrected. The booking has already been actioned by Dispatch, so it has to be undone through Dispatch. The food-safety lead also asked the desk not to contact the customer yet, so the only correct message is the stop-and-hold request.",
+  "review": {
+    "status": "agreed",
+    "note": "Coordinator sent the stop-and-hold request to Dispatch on Dispatch chat, an accepted action; one must item loosened so it does not demand exact figures."
+  }
 }
