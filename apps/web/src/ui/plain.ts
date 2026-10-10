@@ -121,6 +121,21 @@ export function plainDataset(d: string | null | undefined): string {
 
 const STATUS: Record<string, string> = { running: "Working on it", success: "Finished", error: "Didn't finish" };
 
+/**
+ * Why a case run did not finish, in words a person can act on. The raw error can carry request
+ * ids and provider text, so it is never shown; only the kind of failure is.
+ */
+export function plainFailure(error: string | null | undefined): string {
+  if (!error) return "";
+  if (/usage limit|credit balance|billing|quota/i.test(error)) return "The AI account has run out of credit. No case can run until it is topped up.";
+  if (/\b401\b|\b403\b|authentication|api[- ]key|permission/i.test(error)) return "The AI key was refused. Check the key in the settings file.";
+  if (/\b429\b|rate limit|overloaded|\b529\b/i.test(error)) return "The AI service is busy. Try again in a minute.";
+  if (/did not answer|timed? ?out|exceeded \d+s/i.test(error)) return "It took too long and was stopped.";
+  if (/ECONNREFUSED|fetch failed|network/i.test(error)) return "The agent is not reachable. Is it running?";
+  if (/not valid|\b422\b/i.test(error)) return "This playbook has a problem, so it was not run.";
+  return "Something went wrong before it could finish.";
+}
+
 /** Case run status: running / success / error. */
 export function plainStatus(s: string | null | undefined): string {
   if (!s) return "";
