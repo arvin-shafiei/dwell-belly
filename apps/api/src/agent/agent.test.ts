@@ -11,6 +11,7 @@ import { renderAnswer, renderReasoning } from "./report.ts";
 import { mkdtemp, mkdir, readdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { validateFlow } from "./architect.ts";
+import { buildIndex, incomplete } from "./answers-index.ts";
 import { replay } from "./replay.ts";
 import { runCase, savedResult } from "./run.ts";
 import { Decision, Understanding } from "./types.ts";
@@ -461,4 +462,30 @@ test("a planner seat that fails is dropped and the decision is still made", asyn
   const r = await runCase(bundle, { ...opts(models), flow: panelFlow });
   assert.equal(r.outcome, "acted");
   assert.equal(r.candidates?.length, 2);
+});
+
+test("the index lists every case with what was done, and incomplete cases are found by name", async () => {
+  const ok = await runCase(bundle, opts(fake({ understand: [understanding], decide: [decision], critic: [{ actions: [scores(0)] }] })));
+  const failed = await runCase(bundle, opts(fake({ understand: [understanding], decide: [new Error("529 overloaded")] })));
+  const cases = await mkdtemp(path.join(tmpdir(), "cases-"));
+  const out = await mkdtemp(path.join(tmpdir(), "answers-"));
+  for (const name of ["1", "2", "10"]) await mkdir(path.join(cases, name));
+  for (const [name, r] of [["1", ok], ["2", failed]] as const) {
+    await mkdir(path.join(out, name));
+    await writeFile(path.join(out, name, "result.json"), JSON.stringify(savedResult(r)));
+    await writeFile(path.join(out, name, "trace.json"), JSON.stringify(r.trace));
+    await writeFile(path.join(out, name, "ANSWER.md"), renderAnswer(r));
+    await writeFile(path.join(out, name, "REASONING.md"), renderReasoning(r));
+  }
+  await mkdir(path.join(out, "10"));
+  await writeFile(path.join(out, "10", "ANSWER.md"), "# 10\n");
+
+  assert.deepEqual(await incomplete(cases, out), [{ name: "10", missing: ["REASONING.md", "trace.json", "result.json"] }]);
+  const index = await buildIndex(out);
+  assert.equal(index.cases, 3);
+  assert.deepEqual(index.counts, { acted: 1, error: 2 });
+  assert.match(index.text, /\| \[1\]\(1\/ANSWER\.md\) \| Sent \| Ask the carrier to open an investigation\. \| Delivery investigations, Plover Arc Logistics \|/);
+  assert.match(index.text, /\| \[2\]\(2\/ANSWER\.md\) \| System failure, handed to a person \| Failed at the planner step\./);
+  assert.ok(index.text.indexOf("[2](") < index.text.indexOf("[10]("), "cases are listed in numeric order");
+  assert.match(index.text, /nothing has been delivered to or confirmed by a recipient/);
 });

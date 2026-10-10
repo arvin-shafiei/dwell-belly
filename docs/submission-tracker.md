@@ -14,11 +14,11 @@ git grep -n "\[MISSING\]" -- ':!docs/submission-tracker.md' ':!docs/PRD.md'
 | First real run: 5 practice cases plus the 12 fixtures | PRD K3, C4 | `npm run answer` | Anson | Partly done. 3 practice folders through `npm run answer`, and 48 cases through the eval (12 practice, 36 generated). The 12 stress-test fixtures have not been run. |
 | Full timed run (target: 62 cases under 8 minutes) | PRD D5, C4 | `npm run answer` | Anson | Done once. All 50 practice cases, each cut at its escalation, 8 at a time: 50 of 50 answered, no failures, 165 s in total (17 to 32 s per case), $2.70 (about $0.054 per case). Deciding on `claude-opus-5-5`, reading and checking on `claude-sonnet-5-5`, Jev on. The 12 stress-test fixtures were not in this run. |
 | Extra test cases | PRD B6 | `data/generated/`, plus new sets | Anson, Oriol, another group | 120 generated plus 123 grounded cases merged; about 100 more in progress (Oriol) and another set from another group |
-| Demo-only modules kept out of the scored path | 6B, 15 | `apps/api/src/agent/watch.ts`, `replan.ts`, `architect.ts`, `selftest` | Anson | Built, and not imported by the runner. The README must label them "demo only, not used in the Reality Test run" so it doesn't overclaim. |
+| Demo-only modules kept out of the scored path | 6B, 15 | `apps/api/src/agent/watch.ts`, `replan.ts`, `architect.ts`, `selftest` | Anson | Built, and not used by the runner. The README lists each one under "What is and is not in the scored run". |
 | Env vars documented | 6A | `apps/api/.env.example`, `apps/web/.env.example` | Oriol | Done (these were silently gitignored before) |
-| README with the 8 required sections | 6B | `README.md` | Arvin (PRD K1) | Exists but overclaims (Watch flow, Jev on four steps, OR-Tools). Missing: the problem, assumptions, known limitations, what's next, the dependency list with licences, and data attribution. Rewrite once PR #3 is merged (it also edits the README). |
+| README with the 8 required sections | 6B | `README.md` | Arvin (PRD K1) | Rewritten: what it is, the problem, how it works, how to run, models and services, assumptions, known limitations, what is next, data attribution. Overclaims removed (no OR-Tools; Jev only where it runs). Not yet read by a second person. Dependency licences are not listed. |
 | Reality Test answers | 6C | `ANSWERS/` | The runner, at 16:32 | Placeholder. The runner also writes `ANSWERS/case-history.jsonl` (its cross-case log). Decide whether that file stays in the submission. |
-| Results index | PRD F1 | `ANSWERS/INDEX.md` | Oriol | Generator not built |
+| Results index | PRD F1 | `ANSWERS/INDEX.md` | Anson | Done: `npm run reality` writes `ANSWERS/INDEX.md` from each case's `result.json`. |
 | Logs and traces | 6D | `ANSWERS/<n>/trace.json`, `ANSWERS/RUNLOG.md` | The runner | Built in PR #3 |
 | Demo video in the repo | 6E | `demo/` | Arvin | Placeholder |
 | Desk console (the main UI, PRD J0) | 8, 10 (demo) | `apps/web/src/app/` (home page) | Arvin | Missing. The home page is a stub ("Flowchart UI goes here"). Needs the first real run's outputs. |
@@ -30,9 +30,9 @@ git grep -n "\[MISSING\]" -- ':!docs/submission-tracker.md' ':!docs/PRD.md'
 | Voice approval feeding the agent (`humanDecision` in `run.ts`) | 8 | `apps/api/src/agent/run.ts` | Anson | Missing. Until then a voice decision is shown and recorded but does not release held messages. |
 | Voice marked as an unverified claim in the agent's input | PRD D2.14, I5 | `apps/api/src/agent/load.ts` (`fromView`), `prompts.ts` | Anson | Missing. `fromView` still labels events `voice: live human`; it should say `voice (unverified claim)`, plus one Understand-prompt sentence that voice is a claim even from carrier staff. |
 | Keys for a full voice rehearsal | | `apps/api/.env.local` | Oriol | All set and verified on Oriol's machine: ElevenLabs key, Desk Caller agent id, Anthropic, TypeSafe (Jev answered in 280 ms; a spoken refund promise was denied in 274 ms, a harmless sentence allowed in 225 ms). Regenerate all of them after the event. |
-| README section saying `/city` is a visualisation, not part of the agent | 6B, 15 | `README.md` | Arvin | Missing |
+| README section saying `/city` is a visualisation, not part of the agent | 6B, 15 | `README.md` | Arvin | Done, under "What is and is not in the scored run". |
 | LinkedIn and X posts | 6F | `docs/launch-posts.md`, `SUBMISSION.md` | Unassigned | Placeholder |
-| Apache 2.0 licence | 6G | `LICENSE` | | Done |
+| Apache 2.0 licence | 6G | `LICENSE` |  | Done. Replaced the reformatted 55-line copy with the standard 202-line text from apache.org. |
 | Third-party material | 6G, 17 | `docs/hackathon/`, `data/raw/` | Oriol (decision) | Open. Recommended: remove the kickoff transcript, replace the rules and guides with links plus our own summary, credit the organisers' practice cases. |
 | Submission form fields | 7 | `SUBMISSION.md` | Unassigned | Placeholder |
 | Committed eval results | PRD F4, rules 16 | `eval/results.md` | Anson | Done for two 48-case runs, generated by `node scripts/eval/report.mjs`. Neither run is the current code, the with-Context view is not run, and cost and time are not in the eval output. The file says so. |
