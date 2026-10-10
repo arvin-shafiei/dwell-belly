@@ -31,6 +31,8 @@ import WorkflowsTab from "./tabs/Workflows";
 import ExecutionsTab from "./tabs/Executions";
 import EvidenceTab from "./tabs/Evidence";
 import CityTab from "./tabs/City";
+import ReviewEntry from "../review/ReviewEntry";
+import ReviewDrawer from "../review/ReviewDrawer";
 
 const TAB_COMPONENT: Record<TabId, ComponentType> = {
   overview: OverviewTab,
@@ -90,6 +92,8 @@ export default function Shell() {
   const rawTab = search.get("tab");
   const tab: TabId = isTabId(rawTab) ? rawTab : "overview";
   const [headerSlot, setHeaderSlot] = useState<HTMLDivElement | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const closeReview = useCallback(() => setReviewOpen(false), []);
   const [collapsed, setCollapsed] = useCollapsed();
 
   const workflows = useWorkflows({ pollMs: 30_000 });
@@ -153,6 +157,7 @@ export default function Shell() {
                 href={hrefFor("workflows")}
               />
             </div>
+            <ReviewEntry onOpen={() => setReviewOpen(true)} />
             {/* Execute slot: tabs portal their primary actions here via <HeaderActions>. */}
             <div ref={setHeaderSlot} className="flex shrink-0 items-center gap-2" />
           </header>
@@ -161,6 +166,7 @@ export default function Shell() {
           </main>
         </div>
       </div>
+      {reviewOpen && <ReviewDrawer onClose={closeReview} source="agent" />}
     </ConsoleContext.Provider>
   );
 }

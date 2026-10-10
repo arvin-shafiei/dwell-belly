@@ -100,7 +100,7 @@ describe("modifiers drive the path", () => {
     expect(done[0].outcome).toBe("acted");
   });
 
-  it.each(["needs_human", "time_pressure"] as Modifier[])("%s: gate asks a human", (m) => {
+  it.each(["needs_human"] as Modifier[])("%s: gate asks a human", (m) => {
     const { of, nodes, done } = runScenario(ID, [m]);
     expect(of("gate")[0].summary).toMatch(/ask a human/);
     expect(nodes).toContain("human");
@@ -157,5 +157,60 @@ describe("modifiers drive the path", () => {
   it("unknown scenario ids still make a case", () => {
     const { done } = runScenario("delivery-999");
     expect(done).toHaveLength(1);
+  });
+
+  it("a deadline prioritises the owner request without requiring a desk approval", () => {
+    const { c, nodes, done, of } = runScenario(ID, ["time_pressure"]);
+    expect(c.gate).toBe("allow");
+    expect(nodes).not.toContain("human");
+    expect(of("triage")[0].summary).toContain("high");
+    expect(of("gate")[0].summary).toContain("notify owner now");
+    expect(done[0].outcome).toBe("acted");
+  });
+
+  it("legal escalation still wins when a deadline or missing information is also present", () => {
+    const { c, nodes, done } = runScenario(ID, ["needs_human", "time_pressure", "missing_context"]);
+    expect(c.decision?.reason).toMatch(/legal action/);
+    expect(nodes).toContain("human");
+    expect(done[0].outcome).toBe("escalated");
+  });
+
+  it("sends the safe owner request before asking a person to decide the legal response", () => {
+    const { c, nodes, of } = runScenario(ID, ["needs_human"]);
+    expect(nodes.indexOf("action")).toBeLessThan(nodes.indexOf("human"));
+    expect(of("action")).toHaveLength(1);
+    expect(c.decision?.options).not.toContain("Send planned message");
+    expect(c.decision?.safe).toBe("Keep claim open");
+  });
+});
+
+describe("review routing across the complete public catalogue", () => {
+  it("never asks for approval of a public case's routine owner request across seeds", () => {
+    for (const seed of [1, 7, 11, 42, 91]) {
+      const engine = new WorkflowEngine({ seed, background: false, emit: () => {} });
+      for (const scenario of SCENARIOS) {
+        const c = engine.scenario({ runId: `audit-${seed}`, scenarioId: scenario.id, modifiers: [] });
+        expect(c.gate, `${scenario.id}, seed ${seed}`).toBe("allow");
+        expect(c.decision).toBeUndefined();
+      }
+    }
+  });
+
+  it("routine modifiers do not send any public case to a person", () => {
+    const routine: Modifier[][] = [["time_pressure"], ["conflicting_stories"], ["missing_context"], ["out_of_policy"], ["privacy_request"], ["repeat_complaint"], ["time_pressure", "conflicting_stories"]];
+    for (const scenario of SCENARIOS) for (const modifiers of routine) {
+      const { c, nodes } = runScenario(scenario.id, modifiers);
+      expect(c.gate, `${scenario.id}: ${modifiers}`).toBe("allow");
+      expect(nodes).not.toContain("human");
+    }
+  });
+
+  it("requires review for explicit legal/high-value escalation on every public scenario", () => {
+    for (const scenario of SCENARIOS) {
+      const { c, done } = runScenario(scenario.id, ["needs_human"]);
+      expect(c.gate).toBe("ask");
+      expect(c.decision?.reason).toMatch(/legal action/);
+      expect(done[0].outcome).toBe("escalated");
+    }
   });
 });

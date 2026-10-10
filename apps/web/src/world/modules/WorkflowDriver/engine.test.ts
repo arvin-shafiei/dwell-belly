@@ -43,6 +43,21 @@ describe("parseDecisionCard", () => {
 });
 
 describe("incident cases", () => {
+  it("ordinary disruptions route automatically across seeds; welfare and major incidents need a lead", () => {
+    for (const seed of [1, 7, 11, 42, 91]) {
+      const { engine } = setup({ seed });
+      for (const kind of ["roadworks", "car_crash", "pileup", "breakdown", "emergency_landing"] as const) {
+        const c = engine.incident({ id: kind, kind, edgeKey: "a|b" });
+        expect(c.gate, `${kind}, seed ${seed}`).toBe("allow");
+      }
+      for (const kind of ["truck_crash", "plane_crash"] as const) {
+        const c = engine.incident({ id: kind, kind, edgeKey: "a|b" });
+        expect(c.gate).toBe("ask");
+        expect(c.decision?.reason).toMatch(/lead must decide/);
+      }
+    }
+  });
+
   it("opens CASE-0001 for a roadworks incident and starts at ingest", () => {
     const { engine, events } = setup();
     engine.incident({ id: "INC-1", kind: "roadworks", edgeKey: "g_0_0|g_1_0", note: "Roadworks closed King St", affected: 6 });
@@ -136,6 +151,28 @@ describe("delayed deliveries", () => {
 });
 
 describe("background customer messages", () => {
+  it("routine templates never cross into review because of random risk jitter", () => {
+    for (const seed of [1, 7, 11, 42, 91]) {
+      const { engine } = setup({ seed });
+      for (const id of CUSTOMER_TEMPLATE_IDS.filter((id) => id !== "legal_notice")) {
+        const c = engine.customerMessage(id);
+        expect(c.gate, `${id}, seed ${seed}`).toBe("allow");
+        expect(c.decision).toBeUndefined();
+      }
+    }
+  });
+
+  it("a solicitor's legal hold reaches a person and never sends a fallback message", () => {
+    const { engine, events } = setup();
+    const c = engine.customerMessage("legal_notice");
+    run(engine, 60_000);
+    expect(c.gate).toBe("ask");
+    expect(c.decision?.reason).toMatch(/formal solicitor/);
+    expect(c.decision?.chosen).toBe("Keep legal hold");
+    expect(nodesOf(events)).not.toContain("action");
+    expect(c.outcome).toBe("escalated");
+  });
+
   it("opens a customer case every 12 to 20 s", () => {
     const { engine } = setup({ background: true });
     run(engine, 11_900);
