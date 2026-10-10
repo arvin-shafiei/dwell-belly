@@ -27,3 +27,10 @@ test("unknownReferences flags a reference the case does not contain, ignoring hy
   assert.deepEqual(unknownReferences("Parcel dl6010 and TG-6010 are here", caseText), []);
   assert.deepEqual(unknownReferences("The gate is locked", caseText), []);
 });
+
+test("caseTextOf turns case events into text the keyterms and reference check can read", async () => {
+  const { caseTextOf } = await import("./references.ts");
+  const text = caseTextOf([{ from: "Dispatch, carrier", body: "DL-6010 booked." }, { from: null, body: "Second." }]);
+  assert.equal(text, "From: Dispatch, carrier\nDL-6010 booked.\n\nFrom: \nSecond.");
+  assert.ok(caseKeyterms(text).includes("DL-6010"));
+});

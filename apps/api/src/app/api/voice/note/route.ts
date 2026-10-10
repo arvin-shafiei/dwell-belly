@@ -1,4 +1,6 @@
 import { json } from "@/lib/cors";
+import { escalationView, getCase } from "@/lib/data";
+import { caseTextOf } from "@/voice/references";
 import { transcribe } from "@/voice/elevenlabs";
 import { handleNote } from "@/voice/notes";
 import type { VoiceMode, VoiceSource } from "@/voice/policy";
@@ -7,7 +9,8 @@ const MODES: VoiceMode[] = ["practice", "reality", "demo"];
 const SOURCES: VoiceSource[] = ["live_human", "simulated_persona", "audio_attachment"];
 
 // POST /api/voice/note: multipart (an "audio" file plus fields), or a JSON body sent as text/plain so
-// the browser needs no CORS preflight. Fields: mode, source, from, n, at, and transcript for a typed note.
+// the browser needs no CORS preflight. Fields: mode, source, from, n, at, transcript for a typed note,
+// caseId or caseText (the case's references guide transcription), and languageCode (default "en").
 // Returns { event } to append to the case, or { error } with 400, 403, 422 or 502.
 export async function POST(req: Request) {
   let fields: Record<string, unknown>;
@@ -33,6 +36,12 @@ export async function POST(req: Request) {
   if (!MODES.includes(mode) || !SOURCES.includes(source)) {
     return json({ error: "mode and source must be valid values" }, { status: 400 });
   }
+  // The case's own references guide transcription; looked up by id when the caller did not send the text.
+  let caseText = typeof fields.caseText === "string" ? fields.caseText : "";
+  if (!caseText && typeof fields.caseId === "string") {
+    const known = await getCase(fields.caseId).catch(() => null);
+    if (known) caseText = caseTextOf(escalationView(known).events);
+  }
   const res = await handleNote(
     {
       mode, source, audio, filename,
@@ -40,6 +49,8 @@ export async function POST(req: Request) {
       n: Number(fields.n ?? 0) || 0,
       at: String(fields.at ?? ""),
       transcript: typeof fields.transcript === "string" ? fields.transcript : undefined,
+      caseText,
+      languageCode: typeof fields.languageCode === "string" && fields.languageCode ? fields.languageCode : "en",
     },
     { transcribe },
   );

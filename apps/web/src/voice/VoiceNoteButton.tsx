@@ -9,9 +9,12 @@ const extensionFor = (mime: string) => (mime.includes("ogg") ? "ogg" : mime.incl
 
 // The console's slot passes { caseId, from, onEvent }: number and time are optional, because the
 // re-run builder renumbers new events and stamps them on the case's own timeline.
-export function VoiceNoteButton({ from, n = 0, at = "", source = "live_human", onEvent }: {
+export function VoiceNoteButton({ from, caseId, caseText, languageCode = "en", n = 0, at = "", source = "live_human", onEvent }: {
   from: string;
   caseId?: string;
+  /** The case so far, when known; otherwise the server looks it up by caseId. */
+  caseText?: string;
+  languageCode?: string;
   n?: number;
   at?: string;
   source?: VoiceSource;
@@ -35,7 +38,7 @@ export function VoiceNoteButton({ from, n = 0, at = "", source = "live_human", o
         const mime = rec.mimeType || "audio/webm";
         setState("sending");
         try {
-          onEvent(await sendRecordedNote({ audio: new Blob(chunks.current, { type: mime }), filename: `voice-note.${extensionFor(mime)}`, from, n, at, source }));
+          onEvent(await sendRecordedNote({ audio: new Blob(chunks.current, { type: mime }), filename: `voice-note.${extensionFor(mime)}`, from, n, at, source, caseId, caseText, languageCode }));
         } catch (err) {
           setError(err instanceof Error ? err.message : "The voice note could not be sent");
         } finally {
@@ -54,7 +57,7 @@ export function VoiceNoteButton({ from, n = 0, at = "", source = "live_human", o
     if (!typed.trim()) return;
     setState("sending");
     try {
-      onEvent(await sendTypedNote({ transcript: typed, from, n, at, source }));
+      onEvent(await sendTypedNote({ transcript: typed, from, n, at, source, caseId, caseText, languageCode }));
       setTyped("");
       setError(null);
     } catch (err) {

@@ -1,6 +1,7 @@
 // Creates the "Desk Caller" ElevenLabs agent and its four client tools, then reads the agent back to
 // check every dynamic variable has a default (a missing one stops a call from starting).
 // Usage: node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs
+//        node --env-file=apps/api/.env.local scripts/voice/create-agent.mjs --update <agent_id>   (new prompt, same tools)
 // Prints ELEVENLABS_AGENT_ID=<id> to put in apps/api/.env.local.
 
 const API = "https://api.elevenlabs.io";
@@ -37,7 +38,9 @@ Rules you must always follow:
 {{boundaries}}
 
 How to behave:
+- Before sharing anything about the case, confirm you are speaking to {{callee_name}}. If you reach voicemail or someone else, leave no case details: only ask them to contact the delivery desk.
 - Keep sentences short and plain. One question at a time.
+- Reference numbers, times, dates and addresses are easy to mishear. Read any that matter back to the person and wait for a clear yes before relying on them.
 - Before saying anything that promises money, a refund, compensation, a time or an outcome, call propose_commitment with the exact sentence you want to say, then say only the wording it returns.
 - When the person tells you a fact that matters to the case, call record_fact.
 - If the person wants a human, asks for something outside these rules, or the call goes off track, call request_human and end the call politely.
@@ -104,8 +107,43 @@ async function call(method, path, body) {
   return JSON.parse(text);
 }
 
+async function update(id) {
+  const current = await call("GET", `/v1/convai/agents/${id}`);
+  const prompt = current?.conversation_config?.agent?.prompt ?? {};
+  await call("PATCH", `/v1/convai/agents/${id}`, {
+    conversation_config: {
+      agent: {
+        first_message: FIRST_MESSAGE,
+        prompt: { prompt: SYSTEM_PROMPT, llm: prompt.llm ?? LLM, tool_ids: prompt.tool_ids ?? [] },
+        dynamic_variables: { dynamic_variable_placeholders: PLACEHOLDERS },
+      },
+    },
+  });
+  return id;
+}
+
+async function verify(id) {
+  const stored = await call("GET", `/v1/convai/agents/${id}`);
+  const agentCfg = stored?.conversation_config?.agent ?? {};
+  const kept = agentCfg.dynamic_variables?.dynamic_variable_placeholders ?? {};
+  const missing = Object.keys(PLACEHOLDERS).filter((k) => !(k in kept));
+  console.log(`agent model: ${agentCfg.prompt?.llm}, tools: ${(agentCfg.prompt?.tool_ids ?? []).length}`);
+  console.log(`prompt has read-back rule: ${String(agentCfg.prompt?.prompt ?? "").includes("Read any that matter back")}`);
+  if (missing.length) console.log(`WARNING: placeholders not stored for: ${missing.join(", ")}`);
+  else console.log("all 10 variable defaults stored");
+}
+
 async function main() {
   if (!KEY) throw new Error("ELEVENLABS_API_KEY is not set. Run with --env-file=apps/api/.env.local");
+  const at = process.argv.indexOf("--update");
+  if (at !== -1) {
+    const id = process.argv[at + 1];
+    if (!id) throw new Error("--update needs the agent id");
+    await update(id);
+    await verify(id);
+    console.log(`updated ELEVENLABS_AGENT_ID=${id}`);
+    return;
+  }
   const toolIds = [];
   for (const tool of TOOLS) {
     const created = await call("POST", "/v1/convai/tools", {
@@ -126,14 +164,7 @@ async function main() {
     },
   });
   const id = agent.agent_id;
-  // Read it back: the placeholders must be stored, or a call missing a variable would fail to start.
-  const stored = await call("GET", `/v1/convai/agents/${id}`);
-  const kept = stored?.conversation_config?.agent?.dynamic_variables?.dynamic_variable_placeholders ?? {};
-  const missing = Object.keys(PLACEHOLDERS).filter((k) => !(k in kept));
-  const llm = stored?.conversation_config?.agent?.prompt?.llm;
-  console.log(`agent model: ${llm}`);
-  if (missing.length) console.log(`WARNING: placeholders not stored for: ${missing.join(", ")}`);
-  else console.log("all 10 variable defaults stored");
+  await verify(id);
   console.log(`ELEVENLABS_AGENT_ID=${id}`);
 }
 

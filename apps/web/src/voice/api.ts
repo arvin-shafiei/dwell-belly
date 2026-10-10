@@ -50,17 +50,21 @@ async function postJson<T>(path: string, body: unknown, timeoutMs = 15_000): Pro
   return data;
 }
 
-export async function sendRecordedNote(input: { audio: Blob; filename: string; from: string; n: number; at: string; source: VoiceSource }): Promise<ViewEvent> {
+/** caseId or caseText lets the server guide transcription with the case's own references. */
+export interface NoteContext { caseId?: string; caseText?: string; languageCode?: string }
+
+export async function sendRecordedNote(input: { audio: Blob; filename: string; from: string; n: number; at: string; source: VoiceSource } & NoteContext): Promise<ViewEvent> {
   const form = new FormData();
   form.append("audio", input.audio, input.filename);
-  for (const [k, v] of Object.entries({ mode: "demo", source: input.source, from: input.from, n: String(input.n), at: input.at })) form.append(k, v);
+  const fields = { mode: "demo", source: input.source, from: input.from, n: String(input.n), at: input.at, caseId: input.caseId ?? "", caseText: input.caseText ?? "", languageCode: input.languageCode ?? "en" };
+  for (const [k, v] of Object.entries(fields)) form.append(k, v);
   const res = await fetch(`${AGENT_API}/api/voice/note`, { method: "POST", body: form, signal: AbortSignal.timeout(45_000) });
   const data = (await res.json().catch(() => ({}))) as { event?: ViewEvent; error?: string };
   if (!res.ok || !data.event) throw new Error(data.error || `voice note failed (${res.status})`);
   return data.event;
 }
 
-export async function sendTypedNote(input: { transcript: string; from: string; n: number; at: string; source: VoiceSource }): Promise<ViewEvent> {
+export async function sendTypedNote(input: { transcript: string; from: string; n: number; at: string; source: VoiceSource } & NoteContext): Promise<ViewEvent> {
   const data = await postJson<{ event: ViewEvent }>("/api/voice/note", { mode: "demo", ...input });
   return data.event;
 }

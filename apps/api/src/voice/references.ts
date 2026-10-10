@@ -42,3 +42,8 @@ export function withReferenceCheck(transcript: string, caseText: string): string
   if (!unknown.length) return transcript;
   return `${transcript} [possible mis-hearing: ${unknown.join(", ")} ${unknown.length === 1 ? "is" : "are"} not ${unknown.length === 1 ? "a reference" : "references"} in this case; confirm with the speaker]`;
 }
+
+/** Case events as plain text ("From: sender" then the message), the form caseKeyterms and the reference check read. */
+export function caseTextOf(events: { from?: string | null; body: string }[]): string {
+  return events.map((e) => `From: ${e.from ?? ""}\n${e.body}`).join("\n\n");
+}
