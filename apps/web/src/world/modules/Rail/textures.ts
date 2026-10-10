@@ -3,7 +3,7 @@
 import * as THREE from "three";
 import { canvasTexture, fitFont, railArrows } from "./kit";
 
-export const BOARD_NAMES = ["King's Rivet", "Airport Parkway", "Old Town", "Hampstead Heath", "Shoreditch"] as const;
+export const BOARD_NAMES = ["King's Hamyway", "Airport Parkway", "Old Town", "Hampstead Heath", "Shoreditch"] as const;
 const ROW = 128;
 
 /** Station boards, one per row: BR-blue with white lettering and the double-arrow. */
@@ -76,7 +76,7 @@ export function terminusSign() {
     c.font = "bold 92px Georgia, serif";
     c.textAlign = "center";
     c.textBaseline = "middle";
-    c.fillText("KING'S RIVET", 512, 84);
+    c.fillText("KING'S HAMYWAY", 512, 84);
   });
 }
 

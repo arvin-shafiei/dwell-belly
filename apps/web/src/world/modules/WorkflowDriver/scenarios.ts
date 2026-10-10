@@ -270,6 +270,6 @@ export const NAMES = [
 ];
 
 export const STREETS = [
-  "King St", "Fleet Row", "Rivet Lane", "Cannon Way", "Bow St", "Tanner Rd",
+  "King St", "Fleet Row", "Hamyway Lane", "Cannon Way", "Bow St", "Tanner Rd",
   "Ludgate Hill", "Mercer St", "Copper Row", "Wharf Rd", "Chandler St", "Gilt Lane",
 ];

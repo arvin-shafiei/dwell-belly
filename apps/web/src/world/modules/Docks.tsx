@@ -128,7 +128,7 @@ export default function Docks() {
     const hullName = std("#ffffff", { map: nameMap, transparent: true, roughness: 0.6, polygonOffset: true, polygonOffsetFactor: -2 });
     const signMaps = [
       ...SHEDS.map((s, i) => signTexture(s.sign, i === 0 ? "#ff6a1a" : "#24427f", "#ffffff", 1024, 128)),
-      signTexture("PORT OF RIVET", "#1f2e4a", "#ffffff", 1024, 192, "BERTH 3 · CONTAINER TERMINAL"),
+      signTexture("PORT OF HAMYWAY", "#1f2e4a", "#ffffff", 1024, 192, "BERTH 3 · CONTAINER TERMINAL"),
     ];
     const signMats = signMaps.map((m) =>
       std("#ffffff", { map: m, emissiveMap: m, emissive: new THREE.Color("#ffffff"), emissiveIntensity: 0.05 }),

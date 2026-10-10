@@ -78,7 +78,7 @@ export const SceneDecision: React.FC = () => {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontSize: 38, fontWeight: 700 }}>A person needs to decide</div>
             <div style={{ fontSize: 22, color: K.muted, opacity: ramp(frame, 50, 64) }}>
-              Asked: <span style={{ color: K.text }}>Rivet Delivery Desk supervisor</span> · within 15 min
+              Asked: <span style={{ color: K.text }}>Hamyway City desk supervisor</span> · within 15 min
             </div>
           </div>
           <div style={{ display: "flex", gap: 18, alignItems: "flex-start", marginTop: 20 }}>

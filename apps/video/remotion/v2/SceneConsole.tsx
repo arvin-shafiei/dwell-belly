@@ -219,10 +219,10 @@ export const SceneEnd: React.FC = () => {
       <AbsoluteFill style={{ justifyContent: "center", paddingLeft: 160 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 26, opacity: Math.min(1, a), transform: `translateY(${(1 - a) * 30}px)` }}>
           <div style={{ width: 44, height: 44, background: K.orange }} />
-          <div style={{ fontSize: 150, fontWeight: 700, letterSpacing: -5, lineHeight: 1 }}>Rivet</div>
+          <div style={{ fontSize: 144, fontWeight: 700, letterSpacing: -5, lineHeight: 1 }}>Hamyway City</div>
         </div>
         <Kinetic text="The delivery desk that knows *when to stop.*" at={8} size={60} weight={560} style={{ marginTop: 30 }} />
-        <div style={{ fontFamily: MONO, fontSize: 30, color: K.orange, marginTop: 44, opacity: ramp(frame, 26, 40) }}>github.com/arvin-shafiei/dwell-belly</div>
+        <div style={{ fontFamily: MONO, fontSize: 30, color: K.orange, marginTop: 44, opacity: ramp(frame, 26, 40) }}>github.com/arvin-shafiei/hamyway-city</div>
         <div style={{ fontSize: 24, color: K.muted, marginTop: 18, opacity: ramp(frame, 34, 48) }}>Real-World Agents Hackathon · Delivery & Logistics · Apache 2.0</div>
       </AbsoluteFill>
     </Stage>

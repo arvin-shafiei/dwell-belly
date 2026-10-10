@@ -1,5 +1,5 @@
 // Static railway scenery, built once: track (instanced sleepers, merged rails and ballast), brick arch
-// viaducts with steel spans over roads, embankments, the river truss bridge, the King's Rivet terminus,
+// viaducts with steel spans over roads, embankments, the river truss bridge, the King's Hamyway terminus,
 // stations, overhead line gantries, signals and level crossings. Moving parts (signal lamps, barrier arms,
 // crossing lamps) are instanced meshes whose instances the engine updates.
 import * as THREE from "three";

@@ -18,13 +18,13 @@ The demo's 30 points cover the video **and** this presentation (rules sections 8
 
 **0:15 to 0:25: what we built.** *(Screen: Case runs)*
 
-> Rivet reads the case, works out who owns the decision, and takes one step: message the right team, ask for the missing fact, do nothing, or hand a person a decision card.
+> Hamyway City reads the case, works out who owns the decision, and takes one step: message the right team, ask for the missing fact, do nothing, or hand a person a decision card.
 
 **0:25 to 0:55: one case, two looks.** *(Screen: `delivery-013`, then `gen-1201`)*
 
-> Here the scan says "failed attempt" and the recipient says she was home. Rivet flags the clash, picks no side, and asks the carrier's tracking team for their finding.
+> Here the scan says "failed attempt" and the recipient says she was home. Hamyway City flags the clash, picks no side, and asks the carrier's tracking team for their finding.
 >
-> Harder: the recipient has died, and his daughter wants a redirect and a refund. Only the verified recipient may choose. Rivet sends one kind reply that promises nothing, and gives the supervisor a card: three options, the deadline, and the fallback.
+> Harder: the recipient has died, and his daughter wants a redirect and a refund. Only the verified recipient may choose. Hamyway City sends one kind reply that promises nothing, and gives the supervisor a card: three options, the deadline, and the fallback.
 
 **0:55 to 1:20: why it's safe.** *(Screen: the gen-1201 card, then Results)*
 

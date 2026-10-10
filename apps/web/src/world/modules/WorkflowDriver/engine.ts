@@ -86,7 +86,7 @@ export interface IncidentInput {
   kind: IncidentKind;
   edgeKey: string;
   note?: string;
-  /** Rivet deliveries on affected routes; random 3..8 when omitted/0. */
+  /** Hamyway deliveries on affected routes; random 3..8 when omitted/0. */
   affected?: number;
 }
 
@@ -227,7 +227,7 @@ const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" |
   roadworks: {
     headline: "Roadworks closed {street}",
     ingest: "Ingest: council alert · {street} closed for roadworks",
-    history: "History: {n} Rivet deliveries routed via {street}",
+    history: "History: {n} Hamyway City deliveries routed via {street}",
     intent: "route_disruption", priority: "high", p: 0.94,
     clashChance: 0, clash: "",
     missing: "Missing info: reopen time unknown · ask council works desk",
@@ -242,7 +242,7 @@ const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" |
   car_crash: {
     headline: "Car crash on {street}",
     ingest: "Ingest: police feed · car crash on {street}, lane closed",
-    history: "History: {n} Rivet deliveries due via {street} in 30 min",
+    history: "History: {n} Hamyway City deliveries due via {street} in 30 min",
     intent: "road_incident", priority: "high", p: 0.92,
     clashChance: 0.5, clash: "Clash: driver 'just a bump' vs police 'road closed 2h'",
     plan: "Plan: reroute {n} vans · log for insurer · no blame in messages",
@@ -254,7 +254,7 @@ const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" |
     verifyOk: "Verify: {n}/{n} vans on new routes",
   },
   truck_crash: {
-    headline: "Rivet truck crash on {street}",
+    headline: "Hamyway City truck crash on {street}",
     ingest: "Ingest: telematics hard-brake + 999 call · truck on {street}",
     history: "History: truck carried {n} parcels · driver 4 h on shift",
     intent: "vehicle_collision", priority: "high", p: 0.97,
@@ -262,7 +262,7 @@ const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" |
     missing: "Missing info: injury status · ask ops lead, not the driver",
     plan: "Plan: spare truck, transfer {n} parcels, notify insurer",
     risk: [0.55, 0.75],
-    reviewReason: "A Rivet driver may be injured after a collision. The ops lead must decide the welfare response and any parcel transfer.",
+    reviewReason: "A Hamyway City driver may be injured after a collision. The ops lead must decide the welfare response and any parcel transfer.",
     reviewOwner: "On-call lead",
     card: ["Spare truck + transfer", "Hold parcels", "Notify insurer only"], safe: "Hold parcels",
     blockReason: "possible injury · ops lead takes over",
@@ -273,10 +273,10 @@ const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" |
   pileup: {
     headline: "Multi-car pileup on {street}",
     ingest: "Ingest: police feed + 4 driver alerts · pileup on {street}",
-    history: "History: {n} Rivet deliveries queued behind {street}",
+    history: "History: {n} Hamyway City deliveries queued behind {street}",
     intent: "road_incident", priority: "high", p: 0.96,
     clashChance: 0.5, clash: "Clash: map says 1 lane open vs police 'full closure'",
-    missing: "Missing info: are any Rivet drivers involved? · ask fleet desk",
+    missing: "Missing info: are any Hamyway City drivers involved? · ask fleet desk",
     plan: "Plan: hold vans clear of {street}, reroute {n} · tell recipients, no ETAs",
     risk: [0.08, 0.24],
     card: ["Reroute all", "Hold vans in place", "Investigate"], safe: "Hold vans in place",
@@ -288,7 +288,7 @@ const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" |
   plane_crash: {
     headline: "Light aircraft down near {street}",
     ingest: "Ingest: emergency broadcast · aircraft down near {street}",
-    history: "History: {n} Rivet deliveries inside the cordon",
+    history: "History: {n} Hamyway City deliveries inside the cordon",
     intent: "major_incident", priority: "high", p: 0.98,
     clashChance: 0.4, clash: "Clash: news says 'airport area' vs police cordon at {street}",
     missing: "Missing info: cordon size and duration · follow police updates",
@@ -305,7 +305,7 @@ const INCIDENT_SPECS: Partial<Record<IncidentKind, Omit<Spec, "kind" | "title" |
   emergency_landing: {
     headline: "Emergency landing closed {street}",
     ingest: "Ingest: police feed · aircraft landed on {street}, road shut",
-    history: "History: {n} Rivet deliveries routed via {street}",
+    history: "History: {n} Hamyway City deliveries routed via {street}",
     intent: "road_closure", priority: "high", p: 0.95,
     clashChance: 0.3, clash: "Clash: driver video shows road open vs police 'closed 3h'",
     plan: "Plan: reroute {n} vans around {street} · no exact ETAs to recipients",
@@ -399,7 +399,7 @@ export class WorkflowEngine {
     const spec: Spec = {
       ...s,
       kind: "incident",
-      title: `${headline}: ${n} Rivet deliveries on affected routes`,
+      title: `${headline}: ${n} Hamyway City deliveries on affected routes`,
       ingestRunner: "code",
       clash: clash && fill(clash, vars),
       group: `Group: ${n} deliveries share 1 cause → 1 case`,

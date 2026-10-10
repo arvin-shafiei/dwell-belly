@@ -1,4 +1,4 @@
-# Rivet Framework Map (team source of truth, 14:10)
+# Hamyway City Framework Map (team source of truth, 14:10)
 Legend: JEV fast judgement · CLAUDE reads/writes · CODE rules. In the scored run / built, outside it / not done.
 
 ## Where it stands (14:10)

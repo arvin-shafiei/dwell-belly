@@ -68,14 +68,14 @@ export const SimTag: React.FC<{ label?: string }> = ({ label = "Simulated city Â
   );
 };
 
-/** Small "Rivet" wordmark, bottom right. */
+/** Small "Hamyway City" wordmark, bottom right. */
 export const Wordmark: React.FC<{ opacity?: number }> = ({ opacity = 1 }) => {
   const u = useUnit();
   return (
     <AbsoluteFill style={{ alignItems: "flex-end", justifyContent: "flex-end", padding: `${52 * u}px ${64 * u}px`, pointerEvents: "none", opacity }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12 * u, background: "rgba(17,17,19,0.7)", padding: `${8 * u}px ${14 * u}px` }}>
         <div style={{ width: 14 * u, height: 14 * u, background: C.orange }} />
-        <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 26 * u, color: C.text, letterSpacing: -0.2 * u }}>Rivet</div>
+        <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 26 * u, color: C.text, letterSpacing: -0.2 * u }}>Hamyway City</div>
       </div>
     </AbsoluteFill>
   );

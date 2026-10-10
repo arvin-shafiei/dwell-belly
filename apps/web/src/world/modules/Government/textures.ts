@@ -70,7 +70,7 @@ const DRAW: ((g: CanvasRenderingContext2D) => void)[] = [
     g.fillRect(36, 0, 16, FH);
     g.fillRect(0, FH / 2 - 8, FW, 16);
   },
-  // the city flag: Rivet orange with a white rivet ring
+  // the city flag: Hamyway orange with a white rivet ring
   (g) => {
     g.fillStyle = "#ff6a1a";
     g.fillRect(0, 0, FW, FH);

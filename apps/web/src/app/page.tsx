@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Shell from "@/console/Shell";
 import { RivetMark } from "@/console/ui/icons";
 
-// Rivet console. The Shell reads `?tab=` (useSearchParams), so it lives inside <Suspense>
+// Hamyway console. The Shell reads `?tab=` (useSearchParams), so it lives inside <Suspense>
 // (Next 16: URL data outside a Suspense boundary blocks prerendering).
 export default function Home() {
   return (

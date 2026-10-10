@@ -1,9 +1,9 @@
-// The mainline railway: four lines out of the King's Rivet terminus (an elevated trainshed north of the
+// The mainline railway: four lines out of the King's Hamyway terminus (an elevated trainshed north of the
 // ring, St Pancras style: platforms on a brick undercroft at viaduct height) plus the goods line.
 //
-//   west    King's Rivet -> Airport Parkway -> Old Town          (intercity, 3 trains)
-//   north   King's Rivet -> steel truss over the river -> Hampstead Heath   (intercity, 2 trains)
-//   east    King's Rivet -> level crossing -> Shoreditch (runs onto the Shoreditch module's viaduct)  (EMU)
+//   west    King's Hamyway -> Airport Parkway -> Old Town          (intercity, 3 trains)
+//   north   King's Hamyway -> steel truss over the river -> Hampstead Heath   (intercity, 2 trains)
+//   east    King's Hamyway -> level crossing -> Shoreditch (runs onto the Shoreditch module's viaduct)  (EMU)
 //   freight Goods yard -> outside the ring (north and east) -> level crossing -> Thameside freight yard
 //           between the container terminal and the industrial estate (3 long freight trains)
 //
@@ -102,7 +102,7 @@ interface LineSpec {
 const TERMINUS_PLATFORM = 128;
 
 export const TERMINUS = {
-  name: "King's Rivet",
+  name: "King's Hamyway",
   // platform islands (x) of the 8 platforms; platforms run z -462..-334, buffers at z -333
   islands: [-184, -168, -152, -136],
   buffersZ: -333,
@@ -181,7 +181,7 @@ const LINE_SPECS: LineSpec[] = [
     radius: [45, 22, 25],
     heights: [["start", H], [[233, 112], H], [[233, 212], 0], ["end", 0]],
     stations: [
-      { name: "King's Rivet Goods", at: "start", platform: 140, dwell: 26, island: false },
+      { name: "King's Hamyway Goods", at: "start", platform: 140, dwell: 26, island: false },
       { name: "Thameside Freight Yard", at: "end", platform: 140, dwell: 30, island: false },
     ],
     consists: [freight("flat"), freight("tank"), freight("flat")],

@@ -4,7 +4,7 @@
 
 ## Where to work
 
-- Work ONLY in this worktree: **`/Users/arvin/orca/dwell-dashboard`**, branch `arvin/dashboard-v2`. Don't touch `/Users/arvin/orca/dwell-belly` (main; other people work there).
+- Work ONLY in this worktree: **`/Users/arvin/orca/dwell-dashboard`**, branch `arvin/dashboard-v2`. Don't touch `/Users/arvin/orca/hamyway-city` (main; other people work there).
 - The dev server for this branch is **http://localhost:3001**. It uses the real agent API on :4000 and the real run data, since `runs/` is symlinked. Never start or kill servers.
 - No git commands; the lead commits and merges.
 - **Don't modify other people's code:** `apps/api/**` (Anson), `apps/web/src/voice/**` (Oriol), and `apps/web/src/review/**` (anatomyOFair), except where your brief says so, and then only small UI-layer edits.

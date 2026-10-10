@@ -14,7 +14,7 @@ Two cuts of the same video, both recorded from the real running product. Neither
 | About | What you see |
 |---|---|
 | 0:00 | The problem: case after case lands on the desk, which controls none of the parties, and the stories don't match (the carrier's record says failed attempt at 08:40; the recipient says she was home and didn't hear the intercom) |
-| 0:05 | Title: "Rivet. The delivery desk that knows when to stop." |
+| 0:05 | Title: "Hamyway City. The delivery desk that knows when to stop." |
 | 0:07 | One real case (`delivery-013`) through the flow: Load, Understand, three quick checks, Plan the reply (act, ask, hand over), then the safety check, where the needle lands under 0.3 (clear), and the one email it sent to Tracking support |
 | 0:19 | The desk console, real footage: **Watch it think** (each step appears as the agent works the case), **Decisions** (cases waiting for a person, each option spelled out, nothing on hold sent until someone decides), **Playbooks** (the same flow as a graph you can edit, with a case lighting up its path) |
 | 0:44 | The 3D city, tagged "Simulated city · visualisation of agent traces · not the agent": deliveries, traffic, the river and the port; a truck crash becomes an incident and a case for the desk |
@@ -26,7 +26,7 @@ Two cuts of the same video, both recorded from the real running product. Neither
 | About | What you see |
 |---|---|
 | 0:00 | The problem: case after case lands on the desk, and the desk controls none of the parties |
-| 0:08 | Title: "Rivet. The delivery desk that knows when to stop." |
+| 0:08 | Title: "Hamyway City. The delivery desk that knows when to stop." |
 | 0:12 | One real case, start to finish (`delivery-013`, a recipient disputes a failed delivery attempt): Load reads the whole folder (emails, portal messages, call transcripts, attachments) |
 | 0:20 | Understand sorts records from claims; three quick checks run at once (what kind of problem, five seats, do the stories match); Plan picks one move: act, ask, hand over or wait |
 | 0:32 | The safety check: every message is scored before it goes (below 0.3 clear, 0.3 to 0.8 a person decides, 0.8 or more stopped), then the one email it sent to the team that owns the problem |

@@ -293,7 +293,7 @@ export function Person({ p = [0, 0, 0], c = C.orange, head = C.skin, gref, child
   );
 }
 
-/** Rivet van, long axis along local +x (so it parks along the road). Not registered as traffic. */
+/** Hamyway van, long axis along local +x (so it parks along the road). Not registered as traffic. */
 export function Van({ p = [0, 0, 0], r = 0, hazard = false, t0 = 0 }: { p?: V3; r?: number; hazard?: boolean; t0?: number }) {
   const l1 = useRef<import("three").Mesh>(null);
   const l2 = useRef<import("three").Mesh>(null);

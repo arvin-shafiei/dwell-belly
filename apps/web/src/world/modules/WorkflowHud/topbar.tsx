@@ -67,11 +67,10 @@ function Brand() {
     <div className="flex shrink-0 items-center gap-2">
       <div className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-[#ff6a1a]">
         <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden>
-          <path d="M3 3 H10 A3 3 0 0 1 10 9 H6 L11 13" stroke="#111318" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M3 3 V13" stroke="#111318" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M4 3 V13 M12 3 V13 M4 8 H12" stroke="#111318" strokeWidth="2.2" fill="none" strokeLinecap="round" />
         </svg>
       </div>
-      <div className="whitespace-nowrap text-[13px] font-semibold text-white">Rivet</div>
+      <div className="whitespace-nowrap text-[13px] font-semibold text-white">Hamyway City</div>
     </div>
   );
 }

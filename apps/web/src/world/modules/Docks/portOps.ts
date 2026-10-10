@@ -111,7 +111,7 @@ export interface PortOps {
 }
 
 const TINTS = ["#c0392b", "#2e6fb7", "#3f8f4f", "#e0b52c", "#2a9d8f", "#8e3b46", "#8a9199", "#c76b29", "#e6e6e2", "#2c3e75", "#6d4c8c"];
-export const EXPORT_BRANDS = ["RIVET", "HAMSTER LINE", "NORTHWIND", "KESTREL"];
+export const EXPORT_BRANDS = ["HAMYWAY", "HAMSTER LINE", "NORTHWIND", "KESTREL"];
 
 function mulberry(seed: number) {
   let s = seed >>> 0;
@@ -125,7 +125,7 @@ function mulberry(seed: number) {
 }
 export function randomBox(r: () => number): Box {
   const p = r();
-  if (p < 0.3) return { color: "#ff6a1a", brand: "RIVET" };
+  if (p < 0.3) return { color: "#ff6a1a", brand: "HAMYWAY" };
   if (p < 0.4) return { color: "#1f8a7a", brand: "HAMSTER LINE" };
   return { color: TINTS[Math.floor(r() * TINTS.length)] };
 }

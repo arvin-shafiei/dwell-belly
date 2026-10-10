@@ -24,7 +24,7 @@ export interface Brand {
   sub?: string;
 }
 export const BRANDS: Brand[] = [
-  { name: "RIVET", base: "#ff6a1a", text: "#ffffff", sub: "DELIVERY · LONDON" },
+  { name: "HAMYWAY", base: "#ff6a1a", text: "#ffffff", sub: "DELIVERY · LONDON" },
   { name: "HAMSTER LINE", base: "#1f8a7a", text: "#f3f0e6" },
   { name: "NORTHWIND", base: "#24427f", text: "#ffffff", sub: "GLOBAL SHIPPING" },
   { name: "KESTREL", base: "#f1c232", text: "#2a2a2a" },
@@ -234,7 +234,7 @@ export function hullNameTexture() {
   g.textAlign = "center";
   g.textBaseline = "middle";
   g.font = `900 120px "Arial Black", Impact, sans-serif`;
-  g.fillText("RIVET  STAR", 1024, 84);
+  g.fillText("HAMYWAY  STAR", 1024, 84);
   return tex(c);
 }
 

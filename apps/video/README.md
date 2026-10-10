@@ -1,6 +1,6 @@
 # video
 
-Turns real screenshots and screen recordings of Rivet into the demo video and the README GIFs.
+Turns real screenshots and screen recordings of Hamyway City into the demo video and the README GIFs.
 
 1. `scripts/capture.mjs` (Playwright) captures stills and clips from the running app into `docs/media/`, and lists them in `docs/media/manifest.json`.
 2. `remotion/` (Remotion) cuts them into a video and GIFs. Console and city shots are captured footage, and a shot whose file is missing is skipped. The animated explainer scenes in v2 (flow, seats, decision card, numbers) are drawn in code, using text and numbers taken from real runs and the team's framework map.

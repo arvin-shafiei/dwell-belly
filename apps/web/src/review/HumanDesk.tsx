@@ -291,7 +291,7 @@ export default function HumanDesk({ embedded = false, onClose, initialTaskId = "
   return (
     <div className={`review-desk ${embedded ? "review-embedded" : ""}`}>
       {!embedded && <header className="review-topbar">
-        <Link href="/" className="review-brand" aria-label="Rivet home"><span className="review-brand-mark">R</span>Rivet</Link>
+        <Link href="/" className="review-brand" aria-label="Hamyway City home"><span className="review-brand-mark">H</span>Hamyway City</Link>
         <nav aria-label="Pages"><Link href="/?tab=workflows" onClick={onClose}>Playbooks</Link><Link href="/city">City</Link><span aria-current="page">Decisions</span></nav>
         {onClose && <button onClick={onClose} className="review-close" aria-label="Close decisions">×</button>}
       </header>}

@@ -73,7 +73,7 @@ export type ActivityTone = "green" | "amber" | "red" | "blue" | "neutral";
 
 export interface ActivityLine {
   id: string;
-  /** What Rivet did, as a short sentence. */
+  /** What Hamyway did, as a short sentence. */
   sentence: string;
   /** The case it was about. */
   about: string;

@@ -22,7 +22,7 @@ const PALETTES = [
   ["#9dff3f", "#121212", "#ff3fa4", "#ffffff", "#5e60ce"],
   ["#ff9f1c", "#2ec4b6", "#e71d36", "#fdfffc", "#011627"],
 ];
-const WORDS = ["RIVET", "E2", "DREAM", "LDN", "HYPE", "WILD", "BOOM", "ZAP!", "LOVE", "ART", "GO!", "FREE"];
+const WORDS = ["HAMYWAY", "E2", "DREAM", "LDN", "HYPE", "WILD", "BOOM", "ZAP!", "LOVE", "ART", "GO!", "FREE"];
 
 function drawMural(ctx: CanvasRenderingContext2D, ox: number, oy: number, design: number) {
   const r = mulberry32(9001 + design * 77);

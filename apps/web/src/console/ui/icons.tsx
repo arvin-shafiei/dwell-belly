@@ -188,13 +188,12 @@ export const IconSend = make("Send", <>
   <path d="M20.5 3.5 14 20.5l-4-6.5-6.5-4 17-6.5Z" />
 </>);
 
-/** Rivet brand mark: a rivet head seen from above, in our own geometry. */
+/** Hamyway City brand mark: an "H" on the orange tile (identifier kept for imports). */
 export function RivetMark({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
       <rect width="32" height="32" rx="8" fill="#ff6a1a" />
-      <circle cx="16" cy="16" r="8.5" fill="none" stroke="#1f1f23" strokeWidth="2.6" />
-      <circle cx="16" cy="16" r="3.2" fill="#1f1f23" />
+      <path d="M10.5 9v14M21.5 9v14M10.5 16h11" fill="none" stroke="#1f1f23" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }

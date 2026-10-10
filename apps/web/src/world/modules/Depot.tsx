@@ -1,5 +1,5 @@
 "use client";
-// Module: Depot. The Rivet Delivery depot south of the city (ZONES.depot): warehouse with a huge branded sign,
+// Module: Depot. The Hamyway Delivery depot south of the city (ZONES.depot): warehouse with a huge branded sign,
 // loading bays, conveyor with parcels, forklifts shuttling pallets, trailer park, light masts, fence and a
 // gatehouse whose barrier lifts when any registry vehicle comes near the gate.
 import { useFrame } from "@react-three/fiber";

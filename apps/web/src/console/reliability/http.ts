@@ -7,7 +7,7 @@ export const DEFAULT_TIMEOUT_MS = 15_000;
 /** Running a case waits for the agent's whole trace (the server allows 5 minutes). */
 export const EXECUTE_TIMEOUT_MS = 6 * 60_000;
 
-export const MSG_UNREACHABLE = "Can't reach Rivet right now.";
+export const MSG_UNREACHABLE = "Can't reach Hamyway City right now.";
 export const MSG_TIMEOUT = "This is taking too long. Try again in a moment.";
 export const MSG_SERVER = "Something went wrong. Try again in a moment.";
 
@@ -51,7 +51,7 @@ function describe(status: number, body: unknown, path: string): ApiError {
   const detail = `${path}: HTTP ${status}${server ? `: ${server}` : ""}`;
   if (status === 404) return new ApiError("This isn't ready yet.", status, detail);
   if (status === 408 || status === 504) return new ApiError(MSG_TIMEOUT, status, detail);
-  if (status === 429) return new ApiError("Rivet is busy. Try again in a moment.", status, detail);
+  if (status === 429) return new ApiError("Hamyway City is busy. Try again in a moment.", status, detail);
   if (status >= 500) return new ApiError(MSG_SERVER, status, detail);
   return new ApiError(server ? scrubLeaks(server) || "That didn't work." : "That didn't work.", status, detail);
 }

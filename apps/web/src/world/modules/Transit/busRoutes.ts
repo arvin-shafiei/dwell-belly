@@ -37,7 +37,7 @@ export function expandGridLoop(corners: readonly [number, number][]): string[] {
 }
 
 const STOP_NAMES = [
-  "Kings Rd", "Market St", "Bridge Row", "Fleet Lane", "Rivet House", "Old Kent Rd", "Bow Church", "Mile End",
+  "Kings Rd", "Market St", "Bridge Row", "Fleet Lane", "Hamyway House", "Old Kent Rd", "Bow Church", "Mile End",
   "Gasworks", "Tower Gate", "Strand", "Cheapside", "Brick Lane", "Union Sq", "St Paul's", "Holloway",
   "Shoreditch", "Angel", "Borough", "Pimlico", "Elm Grove", "Oak Close", "Hill Crest", "The Green",
 ];

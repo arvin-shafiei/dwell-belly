@@ -258,7 +258,7 @@ export interface Shed {
   sign: string;
 }
 export const SHEDS: Shed[] = [
-  { x: 263, z: -68, w: 36, d: 18, h: 9, color: "#c8ccd2", sign: "RIVET DELIVERY" },
+  { x: 263, z: -68, w: 36, d: 18, h: 9, color: "#c8ccd2", sign: "HAMYWAY DELIVERY" },
   { x: 263, z: 68, w: 36, d: 18, h: 9, color: "#b8c4b0", sign: "BONDED STORE 7" },
 ];
 export const LIGHT_TOWERS = [

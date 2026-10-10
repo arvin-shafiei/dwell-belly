@@ -1,4 +1,4 @@
-// Geometry layouts and canvas textures for the Rivet fleet (no network assets).
+// Geometry layouts and canvas textures for the Hamyway fleet (no network assets).
 import { CanvasTexture, Euler, Matrix4, Quaternion, SRGBColorSpace, Vector3 } from "three";
 import type { VanKind } from "./sim";
 
@@ -79,7 +79,7 @@ function tex(c: HTMLCanvasElement) {
   return t;
 }
 
-/** White panel with a Rivet orange stripe and the RIVET wordmark. Every face of the cargo box shows it. */
+/** White panel with a Hamyway orange stripe and the HAMYWAY wordmark. Every face of the cargo box shows it. */
 export function makeLiveryTexture() {
   const [c, g] = canvas(512, 256);
   g.fillStyle = "#f6f5f1";
@@ -101,14 +101,14 @@ export function makeLiveryTexture() {
   g.font = "italic 900 112px system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif";
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.fillText("RIVET", 256, 88);
+  g.fillText("HAMYWAY", 256, 88);
   g.fillStyle = "#2a2d34";
   g.font = "700 26px system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif";
   g.fillText("D E L I V E R Y", 256, 146);
   return tex(c);
 }
 
-/** Cardboard with orange Rivet tape. */
+/** Cardboard with orange Hamyway tape. */
 export function makeParcelTexture() {
   const [c, g] = canvas(64, 64);
   g.fillStyle = "#c99a62";

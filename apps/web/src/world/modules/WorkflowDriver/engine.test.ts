@@ -64,7 +64,7 @@ describe("incident cases", () => {
     engine.advance(10);
     const c = engine.cases()[0];
     expect(c.id).toBe("CASE-0001");
-    expect(c.title).toBe("Roadworks closed King St: 6 Rivet deliveries on affected routes");
+    expect(c.title).toBe("Roadworks closed King St: 6 Hamyway City deliveries on affected routes");
     expect(events[0]).toMatchObject({ caseId: "CASE-0001", nodeId: "ingest", status: "start" });
   });
 
@@ -81,7 +81,7 @@ describe("incident cases", () => {
 
   it("keeps every summary at 90 characters or fewer", () => {
     const { engine, events } = setup({ background: true });
-    engine.incident({ id: "INC-1", kind: "truck_crash", edgeKey: "a|b", note: "A Rivet truck hit a bus on the Embankment near the very long named junction", affected: 9 });
+    engine.incident({ id: "INC-1", kind: "truck_crash", edgeKey: "a|b", note: "A Hamyway truck hit a bus on the Embankment near the very long named junction", affected: 9 });
     engine.incident({ id: "INC-2", kind: "breakdown", edgeKey: "c|d", note: "", affected: 4 });
     run(engine, 180_000);
     expect(events.length).toBeGreaterThan(50);
@@ -110,7 +110,7 @@ describe("incident cases", () => {
       const nodes = nodesOf(events);
       expect(nodes[0]).toBe("ingest");
       expect(nodes[nodes.length - 1]).toBe("log");
-      expect(engine.cases()[0].title).toMatch(/: 5 Rivet deliveries on affected routes$/);
+      expect(engine.cases()[0].title).toMatch(/: 5 Hamyway City deliveries on affected routes$/);
     },
   );
 

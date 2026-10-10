@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Repository | https://github.com/arvin-shafiei/dwell-belly (it must open without logging in) |
+| Repository | https://github.com/arvin-shafiei/hamyway-city (it must open without logging in) |
 | Team name | [MISSING] |
 | Track | Delivery & Logistics |
 | Members | [MISSING] full names as registered for the event |

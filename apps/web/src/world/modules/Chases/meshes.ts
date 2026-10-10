@@ -30,7 +30,7 @@ function rivetSide() {
     c.font = "bold 72px sans-serif";
     c.textAlign = "center";
     c.textBaseline = "middle";
-    c.fillText("RIVET", 256, 62);
+    c.fillText("HAMYWAY", 256, 62);
   });
 }
 
@@ -182,7 +182,7 @@ function hazardLamps(body: THREE.Group, k: Kit, halfW: number, halfL: number, y:
   return hazard;
 }
 
-/** The getaway: a fast black saloon, or (for comedy) a stolen white Rivet van. */
+/** The getaway: a fast black saloon, or (for comedy) a stolen white Hamyway van. */
 export function buildGetaway(kind: "saloon" | "van"): CarParts {
   const k = getKit();
   const root = new THREE.Group();

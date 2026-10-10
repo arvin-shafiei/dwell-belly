@@ -112,7 +112,7 @@ export function signTexture(text: string, opts: { fg: string; bg: string | null;
   }
   let x = W / 2;
   if (opts.accent) {
-    // Rivet mark: an orange rounded square with a white "R"
+    // Hamyway mark: an orange rounded square with a white "R"
     const s = H * 0.66;
     const left = 22;
     g.fillStyle = opts.accent;

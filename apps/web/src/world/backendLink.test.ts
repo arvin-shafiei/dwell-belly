@@ -61,7 +61,7 @@ describe("incident -> case view", () => {
     const c = buildIncidentCase({ ...incident, kind: "breakdown" }, {}, { now, seq: 1 });
     expect(c.affected).toEqual([]);
     expect(c.view.events.every((e) => e.source === "simulated_persona")).toBe(true);
-    expect(c.view.context).toContain("No Rivet delivery is confirmed");
+    expect(c.view.context).toContain("No Hamyway delivery is confirmed");
   });
 
   it("caps affected deliveries", () => {

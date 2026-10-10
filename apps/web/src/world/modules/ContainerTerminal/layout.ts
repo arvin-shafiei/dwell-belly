@@ -22,13 +22,13 @@ export interface Brand {
 /** Row 0 is the plain box (tinted per instance). Fictional lines only. */
 export const BRANDS: Brand[] = [
   { name: "", base: "#f4f4f2", text: "#333" },
-  { name: "RIVET", base: "#ff6a1a", text: "#ffffff", sub: "DELIVERY · LONDON" },
+  { name: "HAMYWAY", base: "#ff6a1a", text: "#ffffff", sub: "DELIVERY · LONDON" },
   { name: "MAERLIN", base: "#4bb4d6", text: "#ffffff", mark: "star" },
   { name: "EVERGLOW", base: "#2f7d4f", text: "#f2f0e8", sub: "MARINE" },
   { name: "KOSKA", base: "#2c5aa0", text: "#ffffff", mark: "wave" },
   { name: "SUDWIND", base: "#c8322b", text: "#ffffff" },
   { name: "ONEWAVE", base: "#c2185b", text: "#ffffff", mark: "ring" },
-  { name: "RIVET COLD", base: "#eef1f3", text: "#1d4f8a", sub: "REEFER · +4°C" },
+  { name: "HAMYWAY COLD", base: "#eef1f3", text: "#1d4f8a", sub: "REEFER · +4°C" },
 ];
 export const BRAND_ROWS = BRANDS.length; // 8
 export const REEFER_BRAND = 7;

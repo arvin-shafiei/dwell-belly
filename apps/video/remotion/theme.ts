@@ -19,5 +19,5 @@ export const C = {
 export const FONT = `"Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif`;
 export const MONO = `"Spline Sans Mono", ui-monospace, "SF Mono", Menlo, monospace`;
 
-export const REPO_URL = "github.com/arvin-shafiei/dwell-belly";
-export const ONE_LINER = "Rivet: the delivery desk that knows when to stop";
+export const REPO_URL = "github.com/arvin-shafiei/hamyway-city";
+export const ONE_LINER = "Hamyway City: the delivery desk that knows when to stop";

@@ -165,7 +165,7 @@ export class CollisionEngine {
   }
 
   /**
-   * request:cyclist_hit: pick a moving van (Rivet first) near a cyclist and stage it: the driver doesn't
+   * request:cyclist_hit: pick a moving van (Hamyway first) near a cyclist and stage it: the driver doesn't
    * see the cyclist pulling out of the gutter in time. The rider goes down just off the van's nose.
    */
   stageCyclistHit(now: number): boolean {

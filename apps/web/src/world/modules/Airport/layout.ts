@@ -1,4 +1,4 @@
-// London Rivet City Airport: every coordinate in one place (pure data, no three.js).
+// London Hamyway City Airport: every coordinate in one place (pure data, no three.js).
 // Runway 09/27 runs along x at the north of the zone. Landings and take-offs use runway 09 (eastbound):
 // arrivals come in low from the far west, departures climb out east/north-east over the suburbs.
 // Ground layout, north (-z) to south (+z): runway, taxiway, apron with stands, terminal + cargo sheds,

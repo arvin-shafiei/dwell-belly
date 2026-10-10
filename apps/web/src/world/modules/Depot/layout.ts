@@ -84,7 +84,7 @@ export interface DepotLayout {
   doors: Item[]; // closed roller doors
   interior: Item[]; // warm-lit open bay interiors
   lamps: Item[]; // emissive lamp heads, wall packs, gatehouse windows
-  signs: Item[]; // "RIVET DELIVERY" planes
+  signs: Item[]; // "HAMYWAY DELIVERY" planes
   livery: Item[]; // trailer side planes
   fence: Item[]; // translucent mesh panels
   pools: Item[]; // ground light pools (flat unit discs scaled in x/z)

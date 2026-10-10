@@ -41,7 +41,7 @@ describe("metro lines", () => {
       expect(l.stations.length).toBeLessThanOrEqual(5);
     }
     const names = METRO_LINES.flatMap((l) => l.stations.map((s) => s.name));
-    for (const n of ["Canary Wharf", "Bank", "Docklands", "Rivet Cross"]) expect(names).toContain(n);
+    for (const n of ["Canary Wharf", "Bank", "Docklands", "Hamyway Cross"]) expect(names).toContain(n);
   });
   it("stations are ordered along the track, sit on it, and have room for a train", () => {
     for (const l of METRO_LINES) {

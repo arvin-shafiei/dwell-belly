@@ -57,7 +57,7 @@ describe("splitThread", () => {
     const text = [
       "Any news? It is urgent.",
       "",
-      "On Wed, 25 Feb 2026 at 09:20, Rivet Desk <desk@rivet.example> wrote:",
+      "On Wed, 25 Feb 2026 at 09:20, Hamyway Desk <desk@rivet.example> wrote:",
       "> We are checking with the carrier.",
       ">",
       "> On Wed, 25 Feb 2026 at 09:10, Sorin Vaal wrote:",
@@ -66,7 +66,7 @@ describe("splitThread", () => {
     const m = splitThread(text);
     expect(m.map((x) => x.body)).toEqual(["No one in my household has the parcel.", "We are checking with the carrier.", "Any news? It is urgent."]);
     expect(m[0]).toMatchObject({ from: "Sorin Vaal", date: "2026-02-25T09:10:00.000Z" });
-    expect(m[1]).toMatchObject({ from: "Rivet Desk", date: "2026-02-25T09:20:00.000Z" });
+    expect(m[1]).toMatchObject({ from: "Hamyway Desk", date: "2026-02-25T09:20:00.000Z" });
     expect(m[2].from).toBeNull();
   });
 

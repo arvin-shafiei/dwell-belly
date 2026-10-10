@@ -359,7 +359,7 @@ function house(f: Frame, rng: Rng, o: HouseOpts) {
 // Special buildings (hand placed)
 
 const SHOPS = [
-  { name: "RIVET PARCELS", bg: "#ff6a1a", fg: "#ffffff", awning: "#ff6a1a" },
+  { name: "HAMYWAY PARCELS", bg: "#ff6a1a", fg: "#ffffff", awning: "#ff6a1a" },
   { name: "BAKERY", bg: "#f3d9a4", fg: "#6b3a1a", awning: "#c8463a" },
   { name: "FISH & CHIPS", bg: "#1f5fae", fg: "#ffffff", awning: "#1f5fae" },
   { name: "NEWSAGENT", bg: "#c8202a", fg: "#ffffff", awning: "#2f8a57" },

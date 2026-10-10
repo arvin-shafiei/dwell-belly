@@ -1,5 +1,5 @@
 "use client";
-// Console tab: How it works. A plain, static explainer of the Rivet flow for judges and visitors.
+// Console tab: How it works. A plain, static explainer of the Hamyway flow for judges and visitors.
 // Content is hardcoded from docs/framework-map.md (see ../howitworks/content.ts).
 import type { ReactNode } from "react";
 import { Badge, BigNumber, IconArrowRight, KeyValue, SectionCard, StatusPill, Table, Td, Th, Tr, cx, type Tone } from "../ui";
@@ -41,7 +41,7 @@ export default function HowItWorksTab() {
     <div className="h-full overflow-y-auto">
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-8 px-6 py-8">
         <p className="text-[15px] leading-relaxed text-white/60">
-          Rivet reads a delivery problem, checks the facts, plans a reply and checks it is safe before anything goes out.
+          Hamyway City reads a delivery problem, checks the facts, plans a reply and checks it is safe before anything goes out.
           When it is not sure, a person decides.
         </p>
 

@@ -1,4 +1,4 @@
-// Rivet fleet simulation: vans and HGVs loading at the depot, driving delivery rounds, rerouting
+// Hamyway fleet simulation: vans and HGVs loading at the depot, driving delivery rounds, rerouting
 // around closures, breaking down and crashing. Per-frame state lives here (mutable, no React),
 // the store only hears about status changes.
 import { Group } from "three";
@@ -234,7 +234,7 @@ export class FleetSim {
       v.phaseStart = this.now;
       if (!v.waitNoted && v.parcels.length) {
         v.waitNoted = true;
-        this.markDelayed(v, `Rivet ${v.kind} ${v.id} has no open route to ${v.parcels[0].stop}`);
+        this.markDelayed(v, `Hamyway City ${v.kind} ${v.id} has no open route to ${v.parcels[0].stop}`);
       }
       this.setLabel(v);
       return;
@@ -417,7 +417,7 @@ export class FleetSim {
       if (!v.delayedThisLeg && v.parcels.length) {
         v.delayedThisLeg = true;
         const where = s.edge >= 0 ? roadName(route.edgeKeys[s.edge]) : "the depot yard";
-        this.markDelayed(v, `Rivet ${v.kind} ${v.id} stuck in traffic on ${where}`);
+        this.markDelayed(v, `Hamyway City ${v.kind} ${v.id} stuck in traffic on ${where}`);
       }
     }
 
@@ -474,7 +474,7 @@ export class FleetSim {
     const st = useWorld.getState();
     const inc = st.incidents.find((x) => x.edgeKey === key && x.status !== "cleared");
     const why = inc?.note || st.blocked[key] || `road closed on ${roadName(key)}`;
-    return `Rivet ${v.kind} ${v.id} rerouted: ${why}`;
+    return `Hamyway City ${v.kind} ${v.id} rerouted: ${why}`;
   }
 
   private arrive(v: Van) {
@@ -546,7 +546,7 @@ export class FleetSim {
     v.entry.speed = 0;
     v.entry.stopped = true;
     const key = v.entry.edgeKey;
-    this.markDelayed(v, `Rivet ${v.kind} ${v.id} crashed${key ? ` on ${roadName(key)}` : ""}`);
+    this.markDelayed(v, `Hamyway City ${v.kind} ${v.id} crashed${key ? ` on ${roadName(key)}` : ""}`);
     this.setLabel(v);
     return true;
   }
@@ -589,7 +589,7 @@ export class FleetSim {
     v.entry.speed = 0;
     v.entry.stopped = true;
     const id = nextId("INC");
-    const note = `Rivet ${v.kind === "van" ? "van" : "truck"} ${v.id} broke down on ${roadName(key)}`;
+    const note = `Hamyway City ${v.kind === "van" ? "van" : "truck"} ${v.id} broke down on ${roadName(key)}`;
     v.incidentId = id;
     v.incidentKey = key;
     v.incidentNote = note;

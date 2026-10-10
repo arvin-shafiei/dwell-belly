@@ -153,7 +153,7 @@ export function adAtlas() {
       g.fillRect(x, y, 512, 256);
       g.fillStyle = "#ffffff";
       g.font = "900 92px Arial, Helvetica, sans-serif";
-      g.fillText("RIVET", x + 34, y + 120);
+      g.fillText("HAMYWAY", x + 34, y + 120);
       g.font = "700 30px Arial, Helvetica, sans-serif";
       g.fillText("Building the city that", x + 36, y + 172);
       g.fillText("delivers tomorrow.", x + 36, y + 208);
@@ -170,7 +170,7 @@ export function adAtlas() {
       g.fillRect(x, y + 206, 512, 50);
       g.fillStyle = "#ffffff";
       g.font = "800 46px Arial, Helvetica, sans-serif";
-      g.fillText("RIVET TOWER", x + 30, y + 78);
+      g.fillText("HAMYWAY TOWER", x + 30, y + 78);
       g.font = "600 30px Arial, Helvetica, sans-serif";
       g.fillText("42 floors of same-day.", x + 30, y + 128);
       g.fillStyle = "#1b1f2a";
@@ -188,7 +188,7 @@ export function adAtlas() {
       g.fillText("every time.", x + 50, y + 142);
       g.fillStyle = ORANGE;
       g.font = "900 44px Arial, Helvetica, sans-serif";
-      g.fillText("RIVET", x + 50, y + 214);
+      g.fillText("HAMYWAY", x + 50, y + 214);
     },
     (x, y) => {
       g.fillStyle = "#2c6e49";
@@ -202,7 +202,7 @@ export function adAtlas() {
       g.fillRect(x + 30, y + 150, 220, 64);
       g.fillStyle = "#ffffff";
       g.font = "900 40px Arial, Helvetica, sans-serif";
-      g.fillText("RIVET", x + 52, y + 196);
+      g.fillText("HAMYWAY", x + 52, y + 196);
     },
   ];
   boards.forEach((draw, i) => draw((i % 2) * 512, Math.floor(i / 2) * 256));
