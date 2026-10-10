@@ -10,10 +10,14 @@ git grep -n "\[MISSING\]" -- ':!docs/submission-tracker.md' ':!docs/PRD.md'
 
 | Item | Rule | Path | Owner | Status |
 |---|---|---|---|---|
-| Source code: the agent runtime | 6A | `apps/api/src/agent/` | Anson | In PR #3, not merged, never run with a real key |
+| Source code: the agent runtime | 6A | `apps/api/src/agent/` | Anson | Merged (PR #3). 221 agent tests and 15 eval tests pass offline with a fake model. **Never run with a real key yet.** |
+| First real run: 5 practice cases plus the 12 fixtures | PRD K3, C4 | `npm run answer` | Unassigned | Missing. Needs `ANTHROPIC_API_KEY` in `apps/api/.env.local`; no key on Oriol's machine yet. |
+| Full timed run (target: 62 cases under 8 minutes) | PRD D5, C4 | `npm run answer` | Unassigned | Missing. Runs on `claude-opus-5-5`, with 150 s per call and 300 s per case, and the speed is unmeasured. |
+| Extra test cases | PRD B6 | `data/generated/`, plus new sets | Anson, Oriol, another group | 120 generated plus 123 grounded cases merged; about 100 more in progress (Oriol) and another set from another group |
+| Demo-only modules kept out of the scored path | 6B, 15 | `apps/api/src/agent/watch.ts`, `replan.ts`, `architect.ts`, `selftest` | Anson | Built, and not imported by the runner. The README must label them "demo only, not used in the Reality Test run" so it doesn't overclaim. |
 | Env vars documented | 6A | `apps/api/.env.example`, `apps/web/.env.example` | Oriol | Done (these were silently gitignored before) |
 | README with the 8 required sections | 6B | `README.md` | Arvin (PRD K1) | Exists but overclaims (Watch flow, Jev on four steps, OR-Tools). Missing: the problem, assumptions, known limitations, what's next, the dependency list with licences, and data attribution. Rewrite once PR #3 is merged (it also edits the README). |
-| Reality Test answers | 6C | `ANSWERS/` | The runner, at 16:32 | Placeholder |
+| Reality Test answers | 6C | `ANSWERS/` | The runner, at 16:32 | Placeholder. The runner also writes `ANSWERS/case-history.jsonl` (its cross-case log). Decide whether that file stays in the submission. |
 | Results index | PRD F1 | `ANSWERS/INDEX.md` | Oriol | Generator not built |
 | Logs and traces | 6D | `ANSWERS/<n>/trace.json`, `ANSWERS/RUNLOG.md` | The runner | Built in PR #3 |
 | Demo video in the repo | 6E | `demo/` | Arvin | Placeholder |
